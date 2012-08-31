@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="au.gov.ga.earthsci.ui.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="RCP Perspective"
+            class="au.gov.ga.earthsci.ui.Perspective"
+            id="au.gov.ga.earthsci.ui.perspective">
+      </perspective>
+   </extension>
+
+</plugin>

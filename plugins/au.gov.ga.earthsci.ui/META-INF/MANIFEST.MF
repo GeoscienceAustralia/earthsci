@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EarthSci UI
+Bundle-SymbolicName: au.gov.ga.earthsci.ui; singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: au.gov.ga.earthsci.ui.Activator
+Bundle-Vendor: Geoscience Australia
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ au.gov.ga.earthsci.core;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
