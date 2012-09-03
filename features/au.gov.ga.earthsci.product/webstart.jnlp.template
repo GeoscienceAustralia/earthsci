@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://marl.ga.gov.au:8500/apps/world-wind/rcp/"
+	href="webstart.jnlp">
+	<information>
+		<title>Eclipse e4 Rich Client Platform</title>
+		<vendor>Eclipse.org</vendor>
+		<offline-allowed />
+	</information>
+
+	<security>
+		<all-permissions />
+	</security>
+
+	<component-desc />
+
+	<application-desc main-class="org.eclipse.equinox.launcher.WebStartMain">
+		<argument>-showsplash</argument>
+		<!-- <argument>-nosplash</argument> -->
+	</application-desc>
+
+	<resources os="Windows">
+		<j2se version="1.6+" />
+	</resources>
+	<resources os="Mac">
+		<j2se version="1.6+" java-vm-args="-XstartOnFirstThread" />
+	</resources>
+	<resources os="Linux">
+		<j2se version="1.6+" />
+	</resources>
+
+	<resources>
+		<property name="eclipse.product" value="au.gov.ga.earthsci.ui.product" />
+		<property name="eclipse.application" value="au.gov.ga.earthsci.ui.application" />
+		<property name="osgi.instance.area" value="@user.home/.earthsci" />
+		<property name="osgi.install.area" value="@user.home/.earthsci/osgi" />
+		<property name="osgi.configuration.area" value="@user.home/.earthsci" />
+		<!-- <property name="osgi.splashPath" value="platform:/base/plugins/au.gov.ga.earthsci.branding.blue" 
+			/> -->
+	</resources>
+
+	<resources>
+		<jar href="@resources.all@" />
+	</resources>
+	<resources os="Windows" arch="x86">
+		<jar href="@resources.win32.x86@" />
+	</resources>
+	<resources os="Windows" arch="x86_64">
+		<jar href="@resources.win32.x86_64@" />
+	</resources>
+	<resources os="Mac" arch="x86_64">
+		<jar href="@resources.macosx.x86_64@" />
+	</resources>
+	<resources os="Linux" arch="x86">
+		<jar href="@resources.linux.x86@" />
+	</resources>
+	<resources os="Linux" arch="x86_64">
+		<jar href="@resources.linux.x86_64@" />
+	</resources>
+
+</jnlp>
