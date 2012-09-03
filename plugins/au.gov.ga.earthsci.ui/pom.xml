@@ -12,7 +12,7 @@
 
 	<groupId>au.gov.ga.earthsci</groupId>
 	<artifactId>au.gov.ga.earthsci.ui</artifactId>
-	<version>1.0.0.qualifier</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 
 </project>
