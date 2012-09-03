@@ -19,5 +19,18 @@
             id="au.gov.ga.earthsci.ui.perspective">
       </perspective>
    </extension>
+   <extension
+         id="product"
+         name="EarthSci"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="au.gov.ga.earthsci.ui.application"
+            name="EarthSci Product">
+         <property
+               name="appName"
+               value="EarthSci Product">
+         </property>
+      </product>
+   </extension>
 
 </plugin>
