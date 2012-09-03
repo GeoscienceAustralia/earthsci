@@ -1,0 +1,137 @@
+<?xml version="1.0" ?>
+
+<project name="EarthSci" basedir="." default="run">
+
+	<property name="target.dir" value="${basedir}/target" />
+	<property name="product.zip" value="au.gov.ga.earthsci.*.zip" />
+
+	<property name="webstart.dir" value="${target.dir}/webstart" />
+	<property name="temp.dir" value="${webstart.dir}/temp" />
+	<property name="unsigned.dir" value="${webstart.dir}/unsigned" />
+	<property name="jars.dir" value="${webstart.dir}/jars" />
+
+	<property name="jnlp.file" value="${webstart.dir}/webstart.jnlp" />
+	<property name="jnlp.template" value="${basedir}/webstart.jnlp.template" />
+
+	<property name="keystore_file" value="${basedir}/keystore" />
+	<property name="keystore_alias" value="selfsigned" />
+	<property name="keystore_password" value="password" />
+
+	<path id="latest.file.id">
+		<last>
+			<sort>
+				<date xmlns="antlib:org.apache.tools.ant.types.resources.comparators" />
+				<resources>
+					<fileset dir="${target.dir}">
+						<include name="${product.zip}" />
+					</fileset>
+				</resources>
+			</sort>
+		</last>
+	</path>
+
+	<target name="copy-jars">
+		<mkdir dir="${webstart.dir}" />
+		<mkdir dir="${temp.dir}" />
+		<mkdir dir="${unsigned.dir}" />
+
+		<unzip dest="${temp.dir}">
+			<path refid="latest.file.id" />
+		</unzip>
+
+		<copy todir="${unsigned.dir}">
+			<fileset dir="${temp.dir}/plugins">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+
+		<delete dir="${temp.dir}" />
+	</target>
+
+	<target name="sign-jars" depends="copy-jars">
+		<mkdir dir="${jars.dir}" />
+
+		<signjar destDir="${jars.dir}" keystore="${keystore_file}" alias="${keystore_alias}" storepass="${keystore_password}">
+			<path>
+				<fileset dir="${unsigned.dir}" includes="**/*.jar" />
+			</path>
+			<flattenmapper />
+		</signjar>
+	</target>
+
+	<target name="generate-jnlp" depends="sign-jars">
+		<delete file="${jnlp.file}" />
+		<copy file="${jnlp.template}" tofile="${jnlp.file}" />
+
+		<patternset id="patternset.all">
+			<include name="*.jar" />
+			<exclude name="com.ibm.icu_*" />
+			<exclude name="*.win32.*" />
+			<exclude name="*.macosx.*" />
+			<exclude name="*.linux.*" />
+		</patternset>
+		<patternset id="patternset.win32.x86">
+			<include name="*.win32.x86*.jar" />
+			<exclude name="*.win32.x86_64*" />
+		</patternset>
+		<patternset id="patternset.win32.x86_64">
+			<include name="*.win32.x86_64*.jar" />
+		</patternset>
+		<patternset id="patternset.macosx.x86_64">
+			<include name="*.macosx.x86_64*.jar" />
+		</patternset>
+		<patternset id="patternset.linux.x86">
+			<include name="*.linux.x86*.jar" />
+			<exclude name="*.linux.x86_64*" />
+		</patternset>
+		<patternset id="patternset.linux.x86_64">
+			<include name="*.linux.x86_64*.jar" />
+		</patternset>
+
+		<antcall target="replace-resources-token">
+			<reference torefid="replace.patternset" refid="patternset.all" />
+			<param name="replace.token" value="@resources.all@" />
+		</antcall>
+		<antcall target="replace-resources-token">
+			<reference torefid="replace.patternset" refid="patternset.win32.x86" />
+			<param name="replace.token" value="@resources.win32.x86@" />
+		</antcall>
+		<antcall target="replace-resources-token">
+			<reference torefid="replace.patternset" refid="patternset.win32.x86_64" />
+			<param name="replace.token" value="@resources.win32.x86_64@" />
+		</antcall>
+		<antcall target="replace-resources-token">
+			<reference torefid="replace.patternset" refid="patternset.macosx.x86_64" />
+			<param name="replace.token" value="@resources.macosx.x86_64@" />
+		</antcall>
+		<antcall target="replace-resources-token">
+			<reference torefid="replace.patternset" refid="patternset.linux.x86" />
+			<param name="replace.token" value="@resources.linux.x86@" />
+		</antcall>
+		<antcall target="replace-resources-token">
+			<reference torefid="replace.patternset" refid="patternset.linux.x86_64" />
+			<param name="replace.token" value="@resources.linux.x86_64@" />
+		</antcall>
+	</target>
+
+	<target name="replace-resources-token">
+		<pathconvert property="replace.value" pathsep="&quot; /&gt;${line.separator}        &lt;jar href=&quot;">
+			<path>
+				<fileset dir="${jars.dir}">
+					<patternset refid="replace.patternset" />
+				</fileset>
+			</path>
+			<mapper>
+				<chainedmapper>
+					<flattenmapper />
+					<regexpmapper from="^(.*)\.jar$$" to="jars/\1.jar" />
+				</chainedmapper>
+			</mapper>
+		</pathconvert>
+
+		<replace file="${jnlp.file}" token="${replace.token}" value="${replace.value}" />
+	</target>
+
+	<target name="run" depends="generate-jnlp" />
+
+</project>
