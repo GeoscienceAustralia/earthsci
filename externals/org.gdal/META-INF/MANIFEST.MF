@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GDAL
+Bundle-SymbolicName: org.gdal
+Bundle-Version: 1.7.2
+Bundle-ClassPath: gdal.jar
+Bundle-Vendor: GDAL
+Export-Package: org.gdal.gdal,
+ org.gdal.gdalconst,
+ org.gdal.ogr,
+ org.gdal.osr
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

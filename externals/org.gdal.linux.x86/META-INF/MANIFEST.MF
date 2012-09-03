@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GDAL natives for Linux x86
+Bundle-SymbolicName: org.gdal.linux.x86
+Bundle-Version: 1.7.2
+Fragment-Host: org.gdal;bundle-version="1.7.2"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
