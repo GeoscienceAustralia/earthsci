@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JOGL Natives for Linux amd64
+Bundle-SymbolicName: com.jogamp.jogl.linux.amd64
+Bundle-Version: 2.0.0
+Bundle-Vendor: JOGAMP
+Fragment-Host: com.jogamp.jogl;bundle-version="2.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

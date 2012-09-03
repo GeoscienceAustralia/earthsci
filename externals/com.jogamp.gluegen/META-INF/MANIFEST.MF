@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Gluegen
+Bundle-SymbolicName: com.jogamp.gluegen
+Bundle-Version: 2.0
+Bundle-ClassPath: gluegen-rt.jar
+Bundle-Vendor: JogAmp Community
+Export-Package: com.jogamp.common,
+ com.jogamp.common.jvm,
+ com.jogamp.common.net,
+ com.jogamp.common.net.asset,
+ com.jogamp.common.nio,
+ com.jogamp.common.os,
+ com.jogamp.common.type,
+ com.jogamp.common.util,
+ com.jogamp.common.util.cache,
+ com.jogamp.common.util.locks,
+ com.jogamp.gluegen.runtime,
+ jogamp.common,
+ jogamp.common.awt,
+ jogamp.common.jvm,
+ jogamp.common.os,
+ jogamp.common.util.locks
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
