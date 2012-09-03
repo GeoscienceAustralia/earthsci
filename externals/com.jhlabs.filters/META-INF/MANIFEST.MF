@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JHLabs Image Processing Filters
+Bundle-SymbolicName: com.jhlabs.filters
+Bundle-Version: 1.0.0
+Bundle-ClassPath: jhlabs-filters.jar
+Bundle-Vendor: JHLabs
+Export-Package: com.jhlabs.composite,
+ com.jhlabs.image,
+ com.jhlabs.math,
+ com.jhlabs.vecmath
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
