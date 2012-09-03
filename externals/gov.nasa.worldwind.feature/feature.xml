@@ -17,6 +17,11 @@
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import feature="com.jogamp.gluegen.feature" version="2.0.0"/>
+      <import feature="com.jogamp.jogl.feature" version="2.0.0"/>
+   </requires>
+
    <plugin
          id="gov.nasa.worldwind.macosx.universal"
          os="macosx"

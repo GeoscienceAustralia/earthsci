@@ -120,3 +120,6 @@ Export-Package: com.zebraimaging,
  org.codehaus.jackson.type,
  org.codehaus.jackson.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: com.jogamp.gluegen;bundle-version="2.0.0",
+ com.jogamp.jogl;bundle-version="2.0.0",
+ org.gdal;bundle-version="1.7.2"
