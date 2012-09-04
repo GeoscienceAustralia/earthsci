@@ -24,7 +24,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="com.jogamp.gluegen.linux.amd64"
+         id="com.jogamp.gluegen.linux.x86_64"
          os="linux"
          arch="x86_64"
          download-size="0"
@@ -33,7 +33,7 @@
          fragment="true"/>
 
    <plugin
-         id="com.jogamp.gluegen.linux.i586"
+         id="com.jogamp.gluegen.linux.x86"
          os="linux"
          arch="x86"
          download-size="0"
@@ -50,7 +50,7 @@
          fragment="true"/>
 
    <plugin
-         id="com.jogamp.gluegen.windows.amd64"
+         id="com.jogamp.gluegen.windows.x86_64"
          os="win32"
          arch="x86_64"
          download-size="0"
@@ -59,7 +59,7 @@
          fragment="true"/>
 
    <plugin
-         id="com.jogamp.gluegen.windows.i586"
+         id="com.jogamp.gluegen.windows.x86"
          os="win32"
          arch="x86"
          download-size="0"

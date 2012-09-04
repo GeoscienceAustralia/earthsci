@@ -28,7 +28,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="com.jogamp.jogl.linux.amd64"
+         id="com.jogamp.jogl.linux.x86_64"
          os="linux"
          arch="x86_64"
          download-size="0"
@@ -37,7 +37,7 @@
          fragment="true"/>
 
    <plugin
-         id="com.jogamp.jogl.linux.i586"
+         id="com.jogamp.jogl.linux.x86"
          os="linux"
          arch="x86"
          download-size="0"
@@ -54,7 +54,7 @@
          fragment="true"/>
 
    <plugin
-         id="com.jogamp.jogl.windows.amd64"
+         id="com.jogamp.jogl.windows.x86_64"
          os="win32"
          arch="x86_64"
          download-size="0"
@@ -63,7 +63,7 @@
          fragment="true"/>
 
    <plugin
-         id="com.jogamp.jogl.windows.i586"
+         id="com.jogamp.jogl.windows.x86"
          os="win32"
          arch="x86"
          download-size="0"
