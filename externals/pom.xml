@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>au.gov.ga.earthsci</groupId>
+		<artifactId>earthsci-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../parent-pom.xml</relativePath>
+	</parent>
+
+	<groupId>au.gov.ga.earthsci</groupId>
+	<artifactId>earthsci-externals</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>com.jhlabs.filters</module>
+		
+		<module>com.jogamp.gluegen.windows.x86</module>
+		<module>com.jogamp.gluegen.windows.x86_64</module>
+		<module>com.jogamp.gluegen.linux.x86</module>
+		<module>com.jogamp.gluegen.linux.x86_64</module>
+		<module>com.jogamp.gluegen.macosx.universal</module>
+		<module>com.jogamp.gluegen</module>
+		<module>com.jogamp.gluegen.feature</module>
+
+		<module>com.jogamp.jogl.windows.x86</module>
+		<module>com.jogamp.jogl.windows.x86_64</module>
+		<module>com.jogamp.jogl.linux.x86</module>
+		<module>com.jogamp.jogl.linux.x86_64</module>
+		<module>com.jogamp.jogl.macosx.universal</module>
+		<module>com.jogamp.jogl</module>
+		<module>com.jogamp.jogl.feature</module>
+		
+		<module>org.gdal.windows.x86</module>
+		<module>org.gdal.windows.x86_64</module>
+		<module>org.gdal.linux.x86</module>
+		<module>org.gdal.linux.x86_64</module>
+		<module>org.gdal.macosx.universal</module>
+		<module>org.gdal</module>
+		<module>org.gdal.feature</module>
+		
+		<module>gov.nasa.worldwind.windows.x86</module>
+		<module>gov.nasa.worldwind.windows.x86_64</module>
+		<module>gov.nasa.worldwind.macosx.universal</module>
+		<module>gov.nasa.worldwind.newt</module>
+		<module>gov.nasa.worldwind.feature</module>
+	</modules>
+
+</project>
