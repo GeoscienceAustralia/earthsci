@@ -4,5 +4,6 @@ Bundle-Name: GDAL natives for Linux x86_64
 Bundle-SymbolicName: org.gdal.linux.x86_64
 Bundle-Version: 1.7.2
 Bundle-Vendor: GDAL
+Bundle-NativeCode: libgdalalljni64.so; osname="linux"; processor="x86-64"
 Fragment-Host: org.gdal;bundle-version="1.7.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
