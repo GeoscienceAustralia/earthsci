@@ -17,6 +17,10 @@
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import plugin="org.gdal" version="1.7.2" match="greaterOrEqual"/>
+   </requires>
+
    <plugin
          id="org.gdal"
          download-size="0"

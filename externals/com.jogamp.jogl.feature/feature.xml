@@ -21,6 +21,8 @@
 
    <requires>
       <import feature="com.jogamp.gluegen.feature" version="2.0.0"/>
+      <import plugin="com.jogamp.gluegen" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="com.jogamp.jogl" version="2.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

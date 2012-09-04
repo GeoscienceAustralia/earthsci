@@ -20,8 +20,13 @@
    </license>
 
    <requires>
+      <import plugin="gov.nasa.worldwind.newt" version="1.4.0" match="greaterOrEqual"/>
+      <import plugin="com.jogamp.gluegen" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="com.jogamp.jogl" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.gdal" version="1.7.2" match="greaterOrEqual"/>
       <import feature="com.jogamp.gluegen.feature" version="2.0.0"/>
       <import feature="com.jogamp.jogl.feature" version="2.0.0"/>
+      <import feature="org.gdal.feature" version="1.7.2"/>
    </requires>
 
    <plugin

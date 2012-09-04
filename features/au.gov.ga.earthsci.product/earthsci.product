@@ -100,6 +100,7 @@
       <feature id="com.jogamp.gluegen.feature"/>
       <feature id="com.jogamp.jogl.feature"/>
       <feature id="gov.nasa.worldwind.feature"/>
+      <feature id="org.gdal.feature"/>
    </features>
 
    <configurations>
