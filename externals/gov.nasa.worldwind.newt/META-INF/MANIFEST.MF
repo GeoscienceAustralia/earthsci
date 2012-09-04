@@ -6,6 +6,7 @@ Bundle-Version: 1.4.0
 Bundle-ClassPath: worldwind.jar,
  worldwindx.jar
 Bundle-Vendor: NASA
+DynamicImport-Package: *
 Export-Package: com.zebraimaging,
  gov.nasa.worldwind,
  gov.nasa.worldwind.animation,

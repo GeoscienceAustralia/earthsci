@@ -3,7 +3,9 @@
       id="gov.nasa.worldwind.feature"
       label="NASA World Wind (NEWT port)"
       version="1.4.0"
-      provider-name="NASA">
+      provider-name="NASA"
+      os="linux,macosx,win32"
+      arch="x86,x86_64">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -35,7 +37,8 @@
          id="gov.nasa.worldwind.newt"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="gov.nasa.worldwind.windows.x86"
