@@ -16,6 +16,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>externals</module>
 		<module>plugins/au.gov.ga.earthsci.core</module>
 		<module>plugins/au.gov.ga.earthsci.ui</module>
 		<module>features/au.gov.ga.earthsci.application</module>
