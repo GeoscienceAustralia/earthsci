@@ -4,6 +4,6 @@ Bundle-Name: World Wind natives for Windows x86_64
 Bundle-SymbolicName: gov.nasa.worldwind.windows.x86_64
 Bundle-Version: 1.4.0
 Bundle-Vendor: NASA
-Bundle-NativeCode: WebView64.dll; osname="windows"; processor="x86-64"
+Bundle-NativeCode: WebView64.dll; osname="win32"; processor="x86-64"
 Fragment-Host: gov.nasa.worldwind.newt;bundle-version="1.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
