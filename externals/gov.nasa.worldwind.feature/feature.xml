@@ -30,7 +30,7 @@
    </requires>
 
    <plugin
-         id="gov.nasa.worldwind.macosx.universal"
+         id="gov.nasa.worldwind.macosx"
          os="macosx"
          download-size="0"
          install-size="0"

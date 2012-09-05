@@ -50,7 +50,7 @@
          fragment="true"/>
 
    <plugin
-         id="com.jogamp.jogl.macosx.universal"
+         id="com.jogamp.jogl.macosx"
          os="macosx"
          download-size="0"
          install-size="0"

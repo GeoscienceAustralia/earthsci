@@ -11,7 +11,7 @@
 	</parent>
 
 	<groupId>org.gdal</groupId>
-	<artifactId>org.gdal.macosx.universal</artifactId>
+	<artifactId>org.gdal.macosx</artifactId>
 	<version>1.7.2</version>
 	<packaging>eclipse-plugin</packaging>
 

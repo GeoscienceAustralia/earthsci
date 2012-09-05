@@ -24,7 +24,7 @@
 		<module>com.jogamp.gluegen.windows.x86_64</module>
 		<module>com.jogamp.gluegen.linux.x86</module>
 		<module>com.jogamp.gluegen.linux.x86_64</module>
-		<module>com.jogamp.gluegen.macosx.universal</module>
+		<module>com.jogamp.gluegen.macosx</module>
 		<module>com.jogamp.gluegen</module>
 		<module>com.jogamp.gluegen.feature</module>
 
@@ -32,7 +32,7 @@
 		<module>com.jogamp.jogl.windows.x86_64</module>
 		<module>com.jogamp.jogl.linux.x86</module>
 		<module>com.jogamp.jogl.linux.x86_64</module>
-		<module>com.jogamp.jogl.macosx.universal</module>
+		<module>com.jogamp.jogl.macosx</module>
 		<module>com.jogamp.jogl</module>
 		<module>com.jogamp.jogl.feature</module>
 		
@@ -40,13 +40,13 @@
 		<module>org.gdal.windows.x86_64</module>
 		<module>org.gdal.linux.x86</module>
 		<module>org.gdal.linux.x86_64</module>
-		<module>org.gdal.macosx.universal</module>
+		<module>org.gdal.macosx</module>
 		<module>org.gdal</module>
 		<module>org.gdal.feature</module>
 		
 		<module>gov.nasa.worldwind.windows.x86</module>
 		<module>gov.nasa.worldwind.windows.x86_64</module>
-		<module>gov.nasa.worldwind.macosx.universal</module>
+		<module>gov.nasa.worldwind.macosx</module>
 		<module>gov.nasa.worldwind.newt</module>
 		<module>gov.nasa.worldwind.feature</module>
 	</modules>

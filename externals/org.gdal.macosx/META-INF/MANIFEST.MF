@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GDAL natives for MacOSX
-Bundle-SymbolicName: org.gdal.macosx.universal
+Bundle-SymbolicName: org.gdal.macosx
 Bundle-Version: 1.7.2
 Bundle-Vendor: GDAL
 Bundle-NativeCode: libgdalalljni.jnilib; osname="macosx"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.jogamp.jogl.macosx.universal</name>
+	<name>com.jogamp.gluegen.macosx</name>
 	<comment></comment>
 	<projects>
 	</projects>
