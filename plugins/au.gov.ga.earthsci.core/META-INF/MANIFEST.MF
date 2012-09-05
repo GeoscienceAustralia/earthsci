@@ -7,6 +7,6 @@ Bundle-Activator: au.gov.ga.earthsci.core.Activator
 Bundle-Vendor: Geoscience Australia
 Require-Bundle: org.eclipse.core.runtime,
  com.jhlabs.filters;bundle-version="1.0.0",
- gov.nasa.worldwind.newt;bundle-version="1.4.0"
+ gov.nasa.worldwind.jogl2;bundle-version="1.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

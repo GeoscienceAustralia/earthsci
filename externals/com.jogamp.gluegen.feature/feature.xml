@@ -44,7 +44,7 @@
          fragment="true"/>
 
    <plugin
-         id="com.jogamp.gluegen.macosx.universal"
+         id="com.jogamp.gluegen.macosx"
          os="macosx"
          download-size="0"
          install-size="0"
