@@ -24,13 +24,13 @@
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="com.jhlabs.filters" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="gov.nasa.worldwind.newt" version="1.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="au.gov.ga.earthsci.core" version="1.0.0" match="greaterOrEqual"/>
       <import feature="gov.nasa.worldwind.feature" version="1.4.0"/>
       <import feature="com.jogamp.jogl.feature" version="2.0.0"/>
       <import feature="com.jogamp.gluegen.feature" version="2.0.0"/>
       <import feature="org.gdal.feature" version="1.7.2"/>
+      <import plugin="gov.nasa.worldwind.jogl2" version="1.4.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

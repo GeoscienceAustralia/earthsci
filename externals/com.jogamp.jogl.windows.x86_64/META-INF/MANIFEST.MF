@@ -4,5 +4,12 @@ Bundle-Name: JOGL Natives for Windows x86_64
 Bundle-SymbolicName: com.jogamp.jogl.windows.x86_64
 Bundle-Version: 2.0.0
 Bundle-Vendor: JOGAMP
+Bundle-NativeCode: jogl_desktop.dll;
+ jogl_mobile.dll;
+ nativewindow_awt.dll;
+ nativewindow_win32.dll;
+ newt.dll;
+ osname="win32"; processor="x86_64"
 Fragment-Host: com.jogamp.jogl;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-BundleShape: dir
