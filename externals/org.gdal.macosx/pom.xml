@@ -25,7 +25,6 @@
 					<environments>
 						<environment>
 							<os>macosx</os>
-							<ws>cocoa</ws>
 						</environment>
 					</environments>
 				</configuration>

@@ -26,7 +26,7 @@
 					<environments>
 						<environment>
 							<os>linux</os>
-							<arch>x86-64</arch>
+							<arch>x86_64</arch>
 						</environment>
 					</environments>
 				</configuration>
