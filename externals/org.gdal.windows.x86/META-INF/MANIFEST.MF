@@ -7,4 +7,5 @@ Bundle-Vendor: GDAL
 Bundle-NativeCode: gdalalljni32.dll; osname="win32"; processor="x86"
 Fragment-Host: org.gdal;bundle-version="1.7.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-BundleShape: dir
 Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=x86))

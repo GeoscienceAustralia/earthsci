@@ -7,4 +7,5 @@ Bundle-Vendor: NASA
 Bundle-NativeCode: libwebview.jnilib;osname="macosx"
 Fragment-Host: gov.nasa.worldwind.jogl2;bundle-version="1.4.0.rev709"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-BundleShape: dir
 Eclipse-PlatformFilter: (osgi.os=macosx)
