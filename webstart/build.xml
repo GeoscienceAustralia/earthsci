@@ -1,0 +1,107 @@
+<?xml version="1.0" ?>
+
+<project name="earthsci-webstart" basedir="." default="run">
+
+	<property name="product.dir" value="${basedir}/../features/au.gov.ga.earthsci.product/target" />
+	<property name="product.zip" value="au.gov.ga.earthsci.*.zip" />
+	<property name="target.dir" value="${basedir}/target" />
+
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="build.dir" value="${target.dir}/build" />
+	<property name="package.dir" value="${target.dir}/package" />
+	<property name="ant.task.jar" value="${package.dir}/jnlp.resources.jar" />
+
+	<property name="webstart.dir" value="${target.dir}/webstart" />
+	<property name="temp.dir" value="${webstart.dir}/temp" />
+	<property name="unsigned.dir" value="${webstart.dir}/unsigned" />
+	<property name="jars.dir" value="${webstart.dir}/jars" />
+
+	<property name="jnlp.file" value="${webstart.dir}/webstart.jnlp" />
+	<property name="jnlp.resources.temp.file" value="${webstart.dir}/resources.temp" />
+	<property name="jnlp.template" value="${basedir}/webstart.jnlp.template" />
+
+	<property name="keystore_file" value="${basedir}/keystore" />
+	<property name="keystore_alias" value="selfsigned" />
+	<property name="keystore_password" value="password" />
+
+	<path id="latest.file.id">
+		<last>
+			<sort>
+				<date xmlns="antlib:org.apache.tools.ant.types.resources.comparators" />
+				<resources>
+					<fileset dir="${product.dir}">
+						<include name="${product.zip}" />
+					</fileset>
+				</resources>
+			</sort>
+		</last>
+	</path>
+
+	<path id="classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="package-ant-task">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${package.dir}" />
+		<javac source="1.6" target="1.6" destdir="${build.dir}" classpathref="classpath" listfiles="no" fork="true" debug="false" includeantruntime="no">
+			<src path="${src.dir}" />
+		</javac>
+		<jar destfile="${ant.task.jar}">
+			<fileset dir="${build.dir}" />
+		</jar>
+	</target>
+
+	<target name="copy-jars">
+		<mkdir dir="${webstart.dir}" />
+		<mkdir dir="${temp.dir}" />
+		<mkdir dir="${unsigned.dir}" />
+
+		<unzip dest="${temp.dir}">
+			<path refid="latest.file.id" />
+		</unzip>
+
+		<copy todir="${unsigned.dir}">
+			<fileset dir="${temp.dir}/plugins">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+
+		<delete dir="${temp.dir}" />
+	</target>
+
+	<target name="sign-jars" depends="copy-jars">
+		<mkdir dir="${jars.dir}" />
+
+		<signjar destDir="${jars.dir}" keystore="${keystore_file}" alias="${keystore_alias}" storepass="${keystore_password}">
+			<path>
+				<fileset dir="${unsigned.dir}" includes="**/*.jar" />
+			</path>
+			<flattenmapper />
+		</signjar>
+	</target>
+
+	<target name="generate-jnlp" depends="sign-jars, package-ant-task">
+		<taskdef name="jnlpresources" classname="au.gov.ga.earthsci.ant.JnlpResources" classpath="${ant.task.jar}" />
+
+		<jnlpresources property="jnlp.resources" prefix="jars/">
+			<fileset dir="${jars.dir}">
+				<include name="*.jar" />
+			</fileset>
+		</jnlpresources>
+
+		<copy file="${jnlp.template}" tofile="${jnlp.file}" overwrite="true">
+			<filterchain>
+				<replacetokens>
+					<token key="jarresources" value="${jnlp.resources}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+	</target>
+
+	<target name="run" depends="generate-jnlp" />
+
+</project>

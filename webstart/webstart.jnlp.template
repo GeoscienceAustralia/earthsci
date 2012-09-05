@@ -38,23 +38,6 @@
 			/> -->
 	</resources>
 
-	<resources>
-		<jar href="@resources.all@" />
-	</resources>
-	<resources os="Windows" arch="x86">
-		<jar href="@resources.win32.x86@" />
-	</resources>
-	<resources os="Windows" arch="x86_64">
-		<jar href="@resources.win32.x86_64@" />
-	</resources>
-	<resources os="Mac" arch="x86_64">
-		<jar href="@resources.macosx.x86_64@" />
-	</resources>
-	<resources os="Linux" arch="x86">
-		<jar href="@resources.linux.x86@" />
-	</resources>
-	<resources os="Linux" arch="x86_64">
-		<jar href="@resources.linux.x86_64@" />
-	</resources>
+@jarresources@
 
 </jnlp>
