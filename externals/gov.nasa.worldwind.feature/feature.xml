@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="gov.nasa.worldwind.feature"
-      label="NASA World Wind (NEWT port)"
+      label="NASA World Wind (JOGL2 port)"
       version="1.4.0"
       provider-name="NASA"
       os="linux,macosx,win32"
@@ -20,7 +20,7 @@
    </license>
 
    <requires>
-      <import plugin="gov.nasa.worldwind.newt" version="1.4.0" match="greaterOrEqual"/>
+      <import plugin="gov.nasa.worldwind.jogl2" version="1.4.0.rev709" match="greaterOrEqual"/>
       <import plugin="com.jogamp.gluegen" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="com.jogamp.jogl" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.gdal" version="1.7.2" match="greaterOrEqual"/>
@@ -39,7 +39,7 @@
          unpack="false"/>
 
    <plugin
-         id="gov.nasa.worldwind.newt"
+         id="gov.nasa.worldwind.jogl2"
          download-size="0"
          install-size="0"
          version="0.0.0"

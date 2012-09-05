@@ -11,8 +11,8 @@
 	</parent>
 
 	<groupId>gov.nasa.worldwind</groupId>
-	<artifactId>gov.nasa.worldwind.newt</artifactId>
-	<version>1.4.0</version>
+	<artifactId>gov.nasa.worldwind.jogl2</artifactId>
+	<version>1.4.0.rev709</version>
 	<packaging>eclipse-plugin</packaging>
 
 </project>
