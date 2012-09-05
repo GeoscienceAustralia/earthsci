@@ -7,4 +7,4 @@ Bundle-Vendor: NASA
 Bundle-NativeCode: WebView64.dll;osname="win32";processor="x86_64"
 Fragment-Host: gov.nasa.worldwind.jogl2;bundle-version="1.4.0.rev709"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Eclipse-PlatformFilter: (&(osgi.os=win32)(osgi.arch=x86_64))
+Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=x86_64))
