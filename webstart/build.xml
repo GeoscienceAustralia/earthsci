@@ -26,6 +26,10 @@
 	<property name="keystore_alias" value="selfsigned" />
 	<property name="keystore_password" value="password" />
 
+	<target name="clean">
+		<delete dir="${target.dir}" />
+	</target>
+
 	<path id="latest.file.id">
 		<last>
 			<sort>
@@ -123,5 +127,9 @@
 	</target>
 
 	<target name="run" depends="generate-jnlp" />
+
+	<target name="ifwebstart" if="${webstart}">
+		<antcall target="run" />
+	</target>
 
 </project>
