@@ -2,9 +2,8 @@
 
 <project name="earthsci-webstart" basedir="." default="run">
 
-	<property name="product.dir"
-		value="${basedir}/../features/au.gov.ga.earthsci.product/target" />
-	<property name="product.zip" value="au.gov.ga.earthsci.*.zip" />
+	<property name="srcproduct.dir" value="${basedir}/../features/au.gov.ga.earthsci.product/target" />
+	<property name="srcproduct.zip" value="au.gov.ga.earthsci.*.zip" />
 	<property name="target.dir" value="${basedir}/target" />
 
 	<property name="src.dir" value="${basedir}/src" />
@@ -13,13 +12,14 @@
 	<property name="package.dir" value="${target.dir}/package" />
 	<property name="ant.task.jar" value="${package.dir}/jnlp.resources.jar" />
 
+	<property name="product.dir" value="${target.dir}/product" />
+	<property name="plugins.dir" value="${product.dir}/plugins" />
+	<property name="unsigned.dir" value="${target.dir}/unsigned" />
 	<property name="webstart.dir" value="${target.dir}/webstart" />
-	<property name="temp.dir" value="${webstart.dir}/temp" />
-	<property name="unsigned.dir" value="${webstart.dir}/unsigned" />
-	<property name="jars.dir" value="${webstart.dir}/jars" />
+	<property name="repacked.dir" value="${webstart.dir}/repacked" />
+	<property name="signed.dir" value="${webstart.dir}/signed" />
 
 	<property name="jnlp.file" value="${webstart.dir}/webstart.jnlp" />
-	<property name="jnlp.resources.temp.file" value="${webstart.dir}/resources.temp" />
 	<property name="jnlp.template" value="${basedir}/webstart.jnlp.template" />
 
 	<property name="keystore_file" value="${basedir}/keystore" />
@@ -31,8 +31,8 @@
 			<sort>
 				<date xmlns="antlib:org.apache.tools.ant.types.resources.comparators" />
 				<resources>
-					<fileset dir="${product.dir}">
-						<include name="${product.zip}" />
+					<fileset dir="${srcproduct.dir}">
+						<include name="${srcproduct.zip}" />
 					</fileset>
 				</resources>
 			</sort>
@@ -47,63 +47,69 @@
 
 	<target name="package-ant-task">
 		<mkdir dir="${build.dir}" />
-		<mkdir dir="${package.dir}" />
-		<javac source="1.6" target="1.6" destdir="${build.dir}"
-			classpathref="classpath" listfiles="no" fork="true" debug="false"
-			includeantruntime="no">
+		<javac source="1.6" target="1.6" destdir="${build.dir}" classpathref="classpath" listfiles="no" fork="true" debug="false" includeantruntime="no">
 			<src path="${src.dir}" />
 		</javac>
+		<mkdir dir="${package.dir}" />
 		<jar destfile="${ant.task.jar}">
 			<fileset dir="${build.dir}" />
 		</jar>
 	</target>
 
-	<target name="copy-jars">
-		<mkdir dir="${webstart.dir}" />
-		<mkdir dir="${temp.dir}" />
-		<mkdir dir="${unsigned.dir}" />
-
-		<unzip dest="${temp.dir}">
+	<target name="unzip-jars">
+		<mkdir dir="${product.dir}" />
+		<unzip dest="${product.dir}">
 			<path refid="latest.file.id" />
 		</unzip>
-
-		<copy todir="${unsigned.dir}">
-			<fileset dir="${temp.dir}/plugins">
-				<include name="*.jar" />
-			</fileset>
-		</copy>
-
-		<delete dir="${temp.dir}" />
 	</target>
 
-	<target name="sign-jars" depends="copy-jars">
-		<mkdir dir="${jars.dir}" />
+	<target name="unsign-jars" depends="package-ant-task, unzip-jars">
+		<taskdef name="unsign" classname="au.gov.ga.earthsci.ant.Unsign" classpath="${ant.task.jar}" />
+		<mkdir dir="${unsigned.dir}" />
+		<unsign todir="${unsigned.dir}">
+			<fileset dir="${plugins.dir}">
+				<include name="*.jar" />
+				<exclude name="com.ibm.icu_*" />
+			</fileset>
+		</unsign>
+	</target>
 
-		<signjar destDir="${jars.dir}" keystore="${keystore_file}"
-			alias="${keystore_alias}" storepass="${keystore_password}">
+	<target name="repack-jars" depends="unsign-jars">
+		<taskdef name="jarpack200" classname="au.gov.ga.earthsci.ant.JarPack200" classpath="${ant.task.jar}" />
+		<mkdir dir="${repacked.dir}" />
+		<jarpack200 todir="${repacked.dir}" repack="true">
+			<fileset dir="${unsigned.dir}" includes="*.jar" />
+		</jarpack200>
+	</target>
+
+	<target name="sign-jars" depends="repack-jars">
+		<mkdir dir="${signed.dir}" />
+		<signjar destDir="${signed.dir}" keystore="${keystore_file}" alias="${keystore_alias}" storepass="${keystore_password}">
 			<path>
-				<fileset dir="${unsigned.dir}" includes="**/*.jar" />
+				<fileset dir="${repacked.dir}" includes="*.jar" />
 			</path>
 			<flattenmapper />
 		</signjar>
 	</target>
 
-	<target name="generate-jnlp" depends="sign-jars, package-ant-task">
-		<taskdef name="jnlpresources" classname="au.gov.ga.earthsci.ant.JnlpResources"
-			classpath="${ant.task.jar}" />
-		<taskdef name="osgibundles" classname="au.gov.ga.earthsci.ant.OsgiBundles"
-			classpath="${ant.task.jar}" />
+	<target name="pack-jars" depends="sign-jars">
+		<jarpack200>
+			<fileset dir="${signed.dir}" includes="*.jar" />
+		</jarpack200>
+	</target>
 
-		<jnlpresources property="jnlp.resources" prefix="jars/">
-			<fileset dir="${jars.dir}">
+	<target name="generate-jnlp" depends="pack-jars">
+		<taskdef name="jnlpresources" classname="au.gov.ga.earthsci.ant.JnlpResources" classpath="${ant.task.jar}" />
+		<taskdef name="osgibundles" classname="au.gov.ga.earthsci.ant.OsgiBundles" classpath="${ant.task.jar}" />
+
+		<jnlpresources property="jnlp.resources" prefix="signed/">
+			<fileset dir="${signed.dir}" id="signed.fileset.id">
 				<include name="*.jar" />
 			</fileset>
 		</jnlpresources>
 
 		<osgibundles property="osgi.bundles">
-			<fileset dir="${jars.dir}">
-				<include name="*.jar" />
-			</fileset>
+			<fileset refid="signed.fileset.id" />
 		</osgibundles>
 
 		<copy file="${jnlp.template}" tofile="${jnlp.file}" overwrite="true">
