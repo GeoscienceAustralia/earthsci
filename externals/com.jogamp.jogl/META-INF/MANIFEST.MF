@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Jogl2.0
 Bundle-SymbolicName: com.jogamp.jogl
 Bundle-Version: 2.0.0
-Bundle-ClassPath: jogl.all.jar
+Bundle-ClassPath: jogl-all.jar
 Bundle-Vendor: JogAmp Community
 Export-Package: com.jogamp.gluegen.runtime.opengl,
  com.jogamp.graph.curve,
