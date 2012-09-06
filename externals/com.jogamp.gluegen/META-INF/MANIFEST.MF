@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Gluegen
 Bundle-SymbolicName: com.jogamp.gluegen
-Bundle-Version: 2.0
+Bundle-Version: 2.0.0.rc10
 Bundle-ClassPath: gluegen-rt.jar
 Bundle-Vendor: JogAmp Community
 Export-Package: com.jogamp.common,

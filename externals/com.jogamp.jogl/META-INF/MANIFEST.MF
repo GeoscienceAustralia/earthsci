@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jogl2.0
 Bundle-SymbolicName: com.jogamp.jogl
-Bundle-Version: 2.0.0
+Bundle-Version: 2.0.0.rc10
 Bundle-ClassPath: jogl-all.jar
 Bundle-Vendor: JogAmp Community
 Export-Package: com.jogamp.gluegen.runtime.opengl,
@@ -26,6 +26,7 @@ Export-Package: com.jogamp.gluegen.runtime.opengl,
  com.jogamp.newt.event,
  com.jogamp.newt.event.awt,
  com.jogamp.newt.opengl,
+ com.jogamp.newt.swt,
  com.jogamp.newt.util,
  com.jogamp.opengl,
  com.jogamp.opengl.swt,
