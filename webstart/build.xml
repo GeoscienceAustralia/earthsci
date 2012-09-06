@@ -61,6 +61,7 @@
 	</target>
 
 	<target name="unzip-jars">
+		<delete dir="${product.dir}" />
 		<mkdir dir="${product.dir}" />
 		<unzip dest="${product.dir}">
 			<path refid="latest.file.id" />
@@ -69,7 +70,9 @@
 
 	<target name="unsign-jars" depends="package-ant-task, unzip-jars">
 		<taskdef name="unsign" classname="au.gov.ga.earthsci.ant.Unsign" classpath="${ant.task.jar}" />
+		<taskdef name="syncdir" classname="au.gov.ga.earthsci.ant.SyncFilenames" classpath="${ant.task.jar}" />
 		<mkdir dir="${unsigned.dir}" />
+		<syncdir fromdir="${plugins.dir}" todir="${unsigned.dir}" />
 		<unsign todir="${unsigned.dir}">
 			<fileset dir="${plugins.dir}">
 				<include name="*.jar" />
@@ -81,6 +84,7 @@
 	<target name="repack-jars" depends="unsign-jars">
 		<taskdef name="jarpack200" classname="au.gov.ga.earthsci.ant.JarPack200" classpath="${ant.task.jar}" />
 		<mkdir dir="${repacked.dir}" />
+		<syncdir fromdir="${unsigned.dir}" todir="${repacked.dir}" />
 		<jarpack200 todir="${repacked.dir}" repack="true">
 			<fileset dir="${unsigned.dir}" includes="*.jar" />
 		</jarpack200>
@@ -88,6 +92,7 @@
 
 	<target name="sign-jars" depends="repack-jars">
 		<mkdir dir="${signed.dir}" />
+		<syncdir fromdir="${repacked.dir}" todir="${signed.dir}" keeppacked="true" />
 		<signjar destDir="${signed.dir}" keystore="${keystore_file}" alias="${keystore_alias}" storepass="${keystore_password}">
 			<path>
 				<fileset dir="${repacked.dir}" includes="*.jar" />
