@@ -97,7 +97,6 @@
       <feature id="org.eclipse.e4.rcp"/>
       <feature id="org.eclipse.emf.common"/>
       <feature id="org.eclipse.rcp"/>
-      <feature id="com.jogamp.gluegen.feature"/>
       <feature id="com.jogamp.jogl.feature"/>
       <feature id="gov.nasa.worldwind.feature"/>
       <feature id="org.gdal.feature"/>

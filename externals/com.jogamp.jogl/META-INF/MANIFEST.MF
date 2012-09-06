@@ -3,9 +3,21 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Jogl2.0
 Bundle-SymbolicName: com.jogamp.jogl
 Bundle-Version: 2.0.0.rc10
-Bundle-ClassPath: jogl-all.jar
+Bundle-ClassPath: jogl-all.jar,
+ gluegen-rt.jar
 Bundle-Vendor: JogAmp Community
-Export-Package: com.jogamp.gluegen.runtime.opengl,
+Export-Package: com.jogamp.common,
+ com.jogamp.common.jvm,
+ com.jogamp.common.net,
+ com.jogamp.common.net.asset,
+ com.jogamp.common.nio,
+ com.jogamp.common.os,
+ com.jogamp.common.type,
+ com.jogamp.common.util,
+ com.jogamp.common.util.cache,
+ com.jogamp.common.util.locks,
+ com.jogamp.gluegen.runtime,
+ com.jogamp.gluegen.runtime.opengl,
  com.jogamp.graph.curve,
  com.jogamp.graph.curve.opengl,
  com.jogamp.graph.curve.tess,
@@ -50,6 +62,11 @@ Export-Package: com.jogamp.gluegen.runtime.opengl,
  javax.media.opengl.glu,
  javax.media.opengl.glu.gl2,
  javax.media.opengl.glu.gl2es1,
+ jogamp.common,
+ jogamp.common.awt,
+ jogamp.common.jvm,
+ jogamp.common.os,
+ jogamp.common.util.locks,
  jogamp.graph.curve.opengl,
  jogamp.graph.curve.opengl.shader,
  jogamp.graph.curve.tess,
@@ -111,4 +128,3 @@ Export-Package: com.jogamp.gluegen.runtime.opengl,
  jogamp.opengl.windows.wgl.awt,
  jogamp.opengl.x11.glx
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: com.jogamp.gluegen;bundle-version="2.0.0"

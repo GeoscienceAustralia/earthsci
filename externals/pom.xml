@@ -19,14 +19,6 @@
 
 	<modules>
 		<module>com.jhlabs.filters</module>
-		
-		<module>com.jogamp.gluegen.windows.x86</module>
-		<module>com.jogamp.gluegen.windows.x86_64</module>
-		<module>com.jogamp.gluegen.linux.x86</module>
-		<module>com.jogamp.gluegen.linux.x86_64</module>
-		<module>com.jogamp.gluegen.macosx</module>
-		<module>com.jogamp.gluegen</module>
-		<module>com.jogamp.gluegen.feature</module>
 
 		<module>com.jogamp.jogl.windows.x86</module>
 		<module>com.jogamp.jogl.windows.x86_64</module>

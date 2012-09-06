@@ -9,6 +9,7 @@ Bundle-NativeCode: libjogl_desktop.so;
  libnativewindow_awt.so;
  libnativewindow_x11.so;
  libnewt.so;
+ libgluegen-rt.so;
  osname="linux"; processor="x86_64"
 Fragment-Host: com.jogamp.jogl;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
