@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="au.gov.ga.earthsci.application"
-      label="Application"
+      id="au.gov.ga.earthsci.feature"
+      label="Feature"
       version="1.0.0.qualifier"
       provider-name="Geoscience Australia">
 

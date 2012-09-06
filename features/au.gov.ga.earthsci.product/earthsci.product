@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-consoleLog</programArgs>
-      <vmArgs>-Dosgi.requiredJavaVersion=1.5 -Dhelp.lucene.tokenizer=standard -Xms40m -Xmx512m</vmArgs>
+      <vmArgs>-Dosgi.requiredJavaVersion=1.6 -Dhelp.lucene.tokenizer=standard -Xms40m -Xmx512m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -92,7 +92,7 @@
    </plugins>
 
    <features>
-      <feature id="au.gov.ga.earthsci.application"/>
+      <feature id="au.gov.ga.earthsci.feature"/>
       <feature id="org.eclipse.emf.ecore"/>
       <feature id="org.eclipse.e4.rcp"/>
       <feature id="org.eclipse.emf.common"/>

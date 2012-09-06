@@ -19,7 +19,7 @@
 		<module>externals</module>
 		<module>plugins/au.gov.ga.earthsci.core</module>
 		<module>plugins/au.gov.ga.earthsci.ui</module>
-		<module>features/au.gov.ga.earthsci.application</module>
+		<module>features/au.gov.ga.earthsci.feature</module>
 		<module>features/au.gov.ga.earthsci.product</module>
 		<module>webstart</module>
 	</modules>

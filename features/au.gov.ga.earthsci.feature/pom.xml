@@ -10,7 +10,7 @@
 	</parent>
 
 	<groupId>au.gov.ga.earthsci</groupId>
-	<artifactId>au.gov.ga.earthsci.application</artifactId>
+	<artifactId>au.gov.ga.earthsci.feature</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>eclipse-feature</packaging>
 
