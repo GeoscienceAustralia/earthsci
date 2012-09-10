@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>gov.nasa.worldwind.windows.x86</name>
+	<name>com.jogamp.jogl.win32.x86</name>
 	<comment></comment>
 	<projects>
 	</projects>

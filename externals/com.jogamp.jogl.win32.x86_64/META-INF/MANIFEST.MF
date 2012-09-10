@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JOGL Natives for Windows x86_64
-Bundle-SymbolicName: com.jogamp.jogl.windows.x86_64
+Bundle-SymbolicName: com.jogamp.jogl.win32.x86_64
 Bundle-Version: 2.0.0.rc10
 Bundle-Vendor: JOGAMP
 Bundle-NativeCode: jogl_desktop.dll;

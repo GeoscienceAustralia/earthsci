@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: World Wind natives for Windows x86
-Bundle-SymbolicName: gov.nasa.worldwind.windows.x86
+Bundle-SymbolicName: gov.nasa.worldwind.win32.x86
 Bundle-Version: 1.4.0
 Bundle-Vendor: NASA
 Bundle-NativeCode: WebView32.dll; osname="win32"; processor="x86"

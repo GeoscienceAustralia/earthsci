@@ -48,7 +48,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.gdal.windows.x86"
+         id="org.gdal.win32.x86"
          os="win32"
          arch="x86"
          download-size="0"
@@ -58,7 +58,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.gdal.windows.x86_64"
+         id="org.gdal.win32.x86_64"
          os="win32"
          arch="x86_64"
          download-size="0"

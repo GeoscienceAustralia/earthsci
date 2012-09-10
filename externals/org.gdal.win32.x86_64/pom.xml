@@ -10,9 +10,9 @@
 		<relativePath>../../parent-pom.xml</relativePath>
 	</parent>
 
-	<groupId>com.jogamp.jogl</groupId>
-	<artifactId>com.jogamp.jogl.windows.x86</artifactId>
-	<version>2.0.0.rc10</version>
+	<groupId>org.gdal</groupId>
+	<artifactId>org.gdal.win32.x86_64</artifactId>
+	<version>1.7.2</version>
 	<packaging>eclipse-plugin</packaging>
 
 	<build>
@@ -25,7 +25,7 @@
 					<environments>
 						<environment>
 							<os>win32</os>
-							<arch>x86</arch>
+							<arch>x86_64</arch>
 						</environment>
 					</environments>
 				</configuration>

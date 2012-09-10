@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GDAL natives for Windows x86
-Bundle-SymbolicName: org.gdal.windows.x86
+Bundle-SymbolicName: org.gdal.win32.x86
 Bundle-Version: 1.7.2
 Bundle-Vendor: GDAL
 Bundle-NativeCode: gdalalljni32.dll; osname="win32"; processor="x86"

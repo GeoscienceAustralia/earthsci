@@ -11,7 +11,7 @@
 	</parent>
 
 	<groupId>org.gdal</groupId>
-	<artifactId>org.gdal.windows.x86_64</artifactId>
+	<artifactId>org.gdal.win32.x86</artifactId>
 	<version>1.7.2</version>
 	<packaging>eclipse-plugin</packaging>
 
@@ -25,12 +25,13 @@
 					<environments>
 						<environment>
 							<os>win32</os>
-							<arch>x86_64</arch>
+							<arch>x86</arch>
 						</environment>
 					</environments>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+	
 
 </project>
