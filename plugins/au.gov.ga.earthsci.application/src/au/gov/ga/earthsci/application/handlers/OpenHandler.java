@@ -20,13 +20,12 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
-public class OpenHandler {
-
+public class OpenHandler
+{
 	@Execute
-	public void execute(
-			IEclipseContext context,
-			@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
-			throws InvocationTargetException, InterruptedException {
+	public void execute(IEclipseContext context, @Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
+			throws InvocationTargetException, InterruptedException
+	{
 		FileDialog dialog = new FileDialog(shell);
 		dialog.open();
 	}
