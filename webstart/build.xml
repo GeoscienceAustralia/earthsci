@@ -111,21 +111,21 @@
 		<taskdef name="jnlpresources" classname="au.gov.ga.earthsci.ant.JnlpResources" classpath="${ant.task.jar}" />
 		<taskdef name="osgibundles" classname="au.gov.ga.earthsci.ant.OsgiBundles" classpath="${ant.task.jar}" />
 
-		<jnlpresources property="jnlp.resources" prefix="signed/">
+		<jnlpresources property="jnlp.resources.string" prefix="signed/">
 			<fileset dir="${signed.dir}" id="signed.fileset.id">
 				<include name="*.jar" />
 			</fileset>
 		</jnlpresources>
 
-		<osgibundles property="osgi.bundles">
+		<osgibundles property="osgi.bundles.string">
 			<fileset refid="signed.fileset.id" />
 		</osgibundles>
 
 		<copy file="${jnlp.template}" tofile="${jnlp.file}" overwrite="true">
 			<filterchain>
 				<replacetokens>
-					<token key="jarresources" value="${jnlp.resources}" />
-					<token key="osgibundles" value="${osgi.bundles}" />
+					<token key="jarresources" value="${jnlp.resources.string}" />
+					<token key="osgibundles" value="${osgi.bundles.string}" />
 				</replacetokens>
 			</filterchain>
 		</copy>
