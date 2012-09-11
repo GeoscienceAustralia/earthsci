@@ -21,37 +21,23 @@
          id="org.eclipse.rcp"
          version="0.0.0"/>
 
+   <includes
+         id="com.jogamp.jogl.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="gov.nasa.worldwind.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.gdal.feature"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="com.jhlabs.filters" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="au.gov.ga.earthsci.core" version="1.0.0" match="greaterOrEqual"/>
-      <import feature="gov.nasa.worldwind.feature" version="1.4.0"/>
-      <import feature="com.jogamp.jogl.feature" version="2.0.0"/>
-      <import feature="org.gdal.feature" version="1.7.2"/>
-      <import plugin="gov.nasa.worldwind.jogl2" version="1.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.launcher"/>
    </requires>
-
-   <plugin
-         id="au.gov.ga.earthsci.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="au.gov.ga.earthsci.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.launcher"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="com.ibm.icu.base"
@@ -65,5 +51,12 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="au.gov.ga.earthsci.application"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

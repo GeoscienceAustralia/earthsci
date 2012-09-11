@@ -30,8 +30,8 @@
 
 	<resources>
 		<property name="jnlp.packEnabled" value="true" />
-		<property name="eclipse.product" value="au.gov.ga.earthsci.ui.product" />
-		<property name="eclipse.application" value="au.gov.ga.earthsci.ui.application" />
+		<property name="eclipse.product" value="au.gov.ga.earthsci.application.product" />
+		<property name="eclipse.application" value="org.eclipse.e4.ui.workbench.swt.E4Application" />
 		<property name="osgi.instance.area" value="@user.home/.earthsci" />
 		<property name="osgi.install.area" value="@user.home/.earthsci/osgi" />
 		<property name="osgi.configuration.area" value="@user.home/.earthsci" />

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_007tUPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ide.application" bindingContexts="_007tUfsMEeG36NOaHUgVKA">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_007tZ_sMEeG36NOaHUgVKA" label="au.gov.ga.earthsci.application" width="500" height="400">
+    <children xsi:type="advanced:PerspectiveStack" xmi:id="_007tb_sMEeG36NOaHUgVKA">
+      <children xsi:type="advanced:Perspective" xmi:id="_007tcPsMEeG36NOaHUgVKA">
+        <children xsi:type="basic:PartSashContainer" xmi:id="_007tcfsMEeG36NOaHUgVKA">
+          <children xsi:type="basic:PartStack" xmi:id="_007tcvsMEeG36NOaHUgVKA">
+            <children xsi:type="basic:Part" xmi:id="_AtCjwPsNEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part1" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.Part1"/>
+          </children>
+        </children>
+      </children>
+    </children>
+    <mainMenu xmi:id="_007taPsMEeG36NOaHUgVKA" elementId="menu:org.eclipse.ui.main.menu">
+      <children xsi:type="menu:Menu" xmi:id="_007tafsMEeG36NOaHUgVKA" label="File">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_007tavsMEeG36NOaHUgVKA" label="Open" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_007ta_sMEeG36NOaHUgVKA" label="Save" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/save_edit.gif" command="_007tYfsMEeG36NOaHUgVKA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_007tbPsMEeG36NOaHUgVKA" label="Quit" command="_007tWvsMEeG36NOaHUgVKA"/>
+      </children>
+      <children xsi:type="menu:Menu" xmi:id="_007tbfsMEeG36NOaHUgVKA" label="Help">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_007tbvsMEeG36NOaHUgVKA" label="About" command="_007tZPsMEeG36NOaHUgVKA"/>
+      </children>
+    </mainMenu>
+    <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA">
+      <children xsi:type="menu:ToolBar" xmi:id="_007tdPsMEeG36NOaHUgVKA" elementId="toolbar:org.eclipse.ui.main.toolbar">
+        <children xsi:type="menu:HandledToolItem" xmi:id="_007tdfsMEeG36NOaHUgVKA" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_007tdvsMEeG36NOaHUgVKA" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/save_edit.gif" command="_007tYfsMEeG36NOaHUgVKA"/>
+      </children>
+    </trimBars>
+  </children>
+  <handlers xmi:id="_007tW_sMEeG36NOaHUgVKA" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.QuitHandler" command="_007tWvsMEeG36NOaHUgVKA"/>
+  <handlers xmi:id="_007tX_sMEeG36NOaHUgVKA" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.OpenHandler" command="_007tXvsMEeG36NOaHUgVKA"/>
+  <handlers xmi:id="_007tYvsMEeG36NOaHUgVKA" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.SaveHandler" command="_007tYfsMEeG36NOaHUgVKA"/>
+  <handlers xmi:id="_007tZfsMEeG36NOaHUgVKA" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.AboutHandler" command="_007tZPsMEeG36NOaHUgVKA"/>
+  <bindingTables xmi:id="_007tXPsMEeG36NOaHUgVKA" bindingContext="_007tUfsMEeG36NOaHUgVKA">
+    <bindings xmi:id="_007tXfsMEeG36NOaHUgVKA" keySequence="M1+Q" command="_007tWvsMEeG36NOaHUgVKA"/>
+    <bindings xmi:id="_007tYPsMEeG36NOaHUgVKA" keySequence="M1+O" command="_007tXvsMEeG36NOaHUgVKA"/>
+    <bindings xmi:id="_007tY_sMEeG36NOaHUgVKA" keySequence="M1+S" command="_007tYfsMEeG36NOaHUgVKA"/>
+    <bindings xmi:id="_007tZvsMEeG36NOaHUgVKA" keySequence="M1+A" command="_007tZPsMEeG36NOaHUgVKA"/>
+  </bindingTables>
+  <rootContext xmi:id="_007tUfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
+    <children xmi:id="_007tUvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
+    <children xmi:id="_007tU_sMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
+  </rootContext>
+  <commands xmi:id="_007tWvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.exit" commandName="quitCommand"/>
+  <commands xmi:id="_007tXvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.open" commandName="openCommand"/>
+  <commands xmi:id="_007tYfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.save" commandName="saveCommand"/>
+  <commands xmi:id="_007tZPsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
+  <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
+  <addons xmi:id="_007tVfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
+  <addons xmi:id="_007tVvsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
+  <addons xmi:id="_007tV_sMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.workbench.commands.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.CommandProcessingAddon"/>
+  <addons xmi:id="_007tWPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.workbench.contexts.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.ContextProcessingAddon"/>
+  <addons xmi:id="_007tWfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.workbench.bindings.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.swt/org.eclipse.e4.ui.workbench.swt.util.BindingProcessingAddon"/>
+</application:Application>
