@@ -5,8 +5,3 @@
 	swt-simple: false;
 	swt-mru-visible: true;
 }
-
-CTabItem
-{
-	swt-show-close: true;   
-}

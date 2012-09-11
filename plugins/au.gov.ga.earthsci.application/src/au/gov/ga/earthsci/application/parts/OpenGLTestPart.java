@@ -15,7 +15,7 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.newt.swt.NewtCanvasSWT;
 import com.jogamp.opengl.util.Animator;
 
-public class Part1
+public class OpenGLTestPart
 {
 	private int rot = 0;
 

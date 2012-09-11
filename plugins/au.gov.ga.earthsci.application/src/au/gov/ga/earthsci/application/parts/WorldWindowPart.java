@@ -2,7 +2,6 @@ package au.gov.ga.earthsci.application.parts;
 
 import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.Model;
-import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 
 import java.awt.BorderLayout;
@@ -10,6 +9,7 @@ import java.awt.Frame;
 
 import javax.inject.Inject;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
@@ -18,8 +18,11 @@ import au.gov.ga.earthsci.newt.awt.NewtInputHandlerAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtAutoDrawableAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtCanvasAWT;
 
-public class Part2
+public class WorldWindowPart
 {
+	@Inject
+	private IEclipseContext context;
+
 	@Inject
 	public void init(Composite parent)
 	{
@@ -32,7 +35,6 @@ public class Part2
 		WorldWindowNewtCanvasAWT wwd = new WorldWindowNewtCanvasAWT();
 		frame.add(wwd, BorderLayout.CENTER);
 
-		Model m = (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME);
-		wwd.setModel(m);
+		wwd.setModel(context.get(Model.class));
 	}
 }
