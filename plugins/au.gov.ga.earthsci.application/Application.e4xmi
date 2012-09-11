@@ -4,8 +4,9 @@
     <children xsi:type="advanced:PerspectiveStack" xmi:id="_007tb_sMEeG36NOaHUgVKA">
       <children xsi:type="advanced:Perspective" xmi:id="_007tcPsMEeG36NOaHUgVKA">
         <children xsi:type="basic:PartSashContainer" xmi:id="_007tcfsMEeG36NOaHUgVKA">
-          <children xsi:type="basic:PartStack" xmi:id="_007tcvsMEeG36NOaHUgVKA">
-            <children xsi:type="basic:Part" xmi:id="_AtCjwPsNEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part1" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.Part1"/>
+          <children xsi:type="basic:PartStack" xmi:id="_007tcvsMEeG36NOaHUgVKA"/>
+          <children xsi:type="basic:PartStack" xmi:id="_QfsYYPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0">
+            <children xsi:type="basic:Part" xmi:id="_RALPQPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part2" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.Part2" label="World Window"/>
           </children>
         </children>
       </children>
@@ -51,4 +52,6 @@
   <addons xmi:id="_007tV_sMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.workbench.commands.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.CommandProcessingAddon"/>
   <addons xmi:id="_007tWPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.workbench.contexts.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.ContextProcessingAddon"/>
   <addons xmi:id="_007tWfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.workbench.bindings.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.swt/org.eclipse.e4.ui.workbench.swt.util.BindingProcessingAddon"/>
+  <addons xmi:id="_EMDAAPu3EeG36NOaHUgVKA" elementId="cleanupAddon" contributionURI="platform:/plugin/org.eclipse.e4.ui.workbench.addons.swt/org.eclipse.e4.ui.workbench.addons.cleanupaddon.CleanupAddon"/>
+  <addons xmi:id="_QK5iMPu4EeG36NOaHUgVKA" elementId="dragAndDropAddon" contributionURI="platform:/plugin/org.eclipse.e4.ui.workbench.addons.swt/org.eclipse.e4.ui.workbench.addons.dndaddon.DnDAddon"/>
 </application:Application>
