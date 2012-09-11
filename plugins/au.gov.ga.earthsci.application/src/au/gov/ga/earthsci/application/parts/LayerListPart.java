@@ -14,6 +14,7 @@ import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
@@ -30,10 +31,25 @@ public class LayerListPart
 		CheckboxTableViewer viewer = CheckboxTableViewer.newCheckList(parent, SWT.NONE);
 		viewer.setContentProvider(new ObservableListContentProvider());
 
+		viewer.setCheckStateProvider(new ICheckStateProvider()
+		{
+			@Override
+			public boolean isGrayed(Object element)
+			{
+				return false;
+			}
+
+			@Override
+			public boolean isChecked(Object element)
+			{
+				Layer layer = (Layer) element;
+				return layer.isEnabled();
+			}
+		});
+
 		List<Layer> layers = worldWindModel.getLayers();
 		IObservableList input = Properties.selfList(Layer.class).observe(layers);
 		viewer.setInput(input);
-		viewer.setAllChecked(true);
 
 		viewer.addCheckStateListener(new ICheckStateListener()
 		{
