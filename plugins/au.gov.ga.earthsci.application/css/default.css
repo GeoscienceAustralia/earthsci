@@ -1,0 +1,12 @@
+.MPartStack
+{
+	swt-tab-renderer: null;
+	swt-selected-tabs-background: #FFFFFF #ECE9D8 100%;
+	swt-simple: false;
+	swt-mru-visible: true;
+}
+
+CTabItem
+{
+	swt-show-close: true;   
+}
