@@ -88,7 +88,7 @@ public class TimedAnimator extends Animator
 		public PeriodTimer(long delay)
 		{
 			pauseIn(delay);
-			Thread thread = new Thread(threadGroup, this, "Animator pauser");
+			Thread thread = new Thread(threadGroup, this, "Animator pauser"); //$NON-NLS-1$
 			thread.setDaemon(true);
 			thread.start();
 		}

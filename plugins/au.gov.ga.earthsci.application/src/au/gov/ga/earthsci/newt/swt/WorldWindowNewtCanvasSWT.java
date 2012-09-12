@@ -84,7 +84,7 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 
 		// Determine whether we should request a stereo canvas
 		String stereo = System.getProperty(AVKey.STEREO_MODE);
-		if ("device".equals(stereo))
+		if ("device".equals(stereo)) //$NON-NLS-1$
 			caps.setStereo(true);
 
 		return caps;
@@ -144,7 +144,7 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 		}
 		catch (Exception e)
 		{
-			String message = Logging.getMessage("Awt.WorldWindowGLSurface.UnabletoCreateWindow");
+			String message = Logging.getMessage("Awt.WorldWindowGLSurface.UnabletoCreateWindow"); //$NON-NLS-1$
 			Logging.logger().severe(message);
 			throw new WWRuntimeException(message, e);
 		}

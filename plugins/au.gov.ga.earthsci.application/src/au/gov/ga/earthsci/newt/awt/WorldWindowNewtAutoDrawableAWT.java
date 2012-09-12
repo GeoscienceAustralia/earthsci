@@ -103,7 +103,7 @@ public class WorldWindowNewtAutoDrawableAWT extends WorldWindowGLAutoDrawable im
 	{
 		if (propertyChangeEvent == null)
 		{
-			String msg = Logging.getMessage("nullValue.PropertyChangeEventIsNull");
+			String msg = Logging.getMessage("nullValue.PropertyChangeEventIsNull"); //$NON-NLS-1$
 			Logging.logger().severe(msg);
 			throw new IllegalArgumentException(msg);
 		}
