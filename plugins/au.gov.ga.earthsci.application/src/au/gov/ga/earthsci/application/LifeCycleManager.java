@@ -16,6 +16,9 @@ public class LifeCycleManager
 {
 	@Inject
 	private IEclipseContext context;
+	
+	@Inject
+	private ProxyConfigurator proxyConfigurator;
 
 	@PostContextCreate
 	void postContextCreate()

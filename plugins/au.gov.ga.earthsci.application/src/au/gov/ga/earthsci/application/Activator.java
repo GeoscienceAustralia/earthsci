@@ -16,8 +16,6 @@ public class Activator implements BundleActivator
 	public void start(BundleContext bundleContext) throws Exception
 	{
 		Activator.context = bundleContext;
-
-		System.setProperty("java.net.useSystemProxies", "true"); //TODO make configurable!
 	}
 
 	@Override

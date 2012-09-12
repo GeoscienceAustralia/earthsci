@@ -25,5 +25,19 @@
          </property>
       </product>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="au.gov.ga.earthsci.application.preferences.pages.NetworkPreferencePage"
+            id="au.gov.ga.earthsci.application.preferences.pages.NetworkPreferencePage"
+            name="Network Connections">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="au.gov.ga.earthsci.application.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

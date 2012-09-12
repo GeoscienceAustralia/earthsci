@@ -6,6 +6,7 @@
         <children xsi:type="basic:PartSashContainer" xmi:id="_007tcfsMEeG36NOaHUgVKA" horizontal="true">
           <children xsi:type="basic:PartStack" xmi:id="_007tcvsMEeG36NOaHUgVKA">
             <children xsi:type="basic:Part" xmi:id="_zNrj8PvCEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layerlist" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.LayerListPart" label="Layers" closeable="true"/>
+            <children xsi:type="basic:Part" xmi:id="_xTsA0PvgEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layerlist2" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.LayerListPart" label="Layers 2" closeable="true"/>
           </children>
           <children xsi:type="basic:PartStack" xmi:id="_QfsYYPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0">
             <children xsi:type="basic:Part" xmi:id="_RALPQPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.worldwindow" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.WorldWindowPart" label="World Window" closeable="true"/>
@@ -22,6 +23,7 @@
       <children xsi:type="menu:Menu" xmi:id="_007tbfsMEeG36NOaHUgVKA" label="Help">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tbvsMEeG36NOaHUgVKA" label="About" command="_007tZPsMEeG36NOaHUgVKA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_y0L9gPvQEeG36NOaHUgVKA" elementId="" label="Show View" command="_pU-REPvQEeG36NOaHUgVKA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_40V18Px8EeG36NOaHUgVKA" elementId="" label="Preferences..." command="_940mAPyIEeG36NOaHUgVKA"/>
       </children>
     </mainMenu>
     <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA">
@@ -36,6 +38,7 @@
   <handlers xmi:id="_007tYvsMEeG36NOaHUgVKA" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.SaveHandler" command="_007tYfsMEeG36NOaHUgVKA"/>
   <handlers xmi:id="_007tZfsMEeG36NOaHUgVKA" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.AboutHandler" command="_007tZPsMEeG36NOaHUgVKA"/>
   <handlers xmi:id="_GJ_xEPvQEeG36NOaHUgVKA" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.ShowViewHandler" command="_pU-REPvQEeG36NOaHUgVKA"/>
+  <handlers xmi:id="_BbnXUPyJEeG36NOaHUgVKA" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.ShowPreferencesHandler" command="_940mAPyIEeG36NOaHUgVKA"/>
   <bindingTables xmi:id="_007tXPsMEeG36NOaHUgVKA" bindingContext="_007tUfsMEeG36NOaHUgVKA">
     <bindings xmi:id="_007tXfsMEeG36NOaHUgVKA" keySequence="M1+Q" command="_007tWvsMEeG36NOaHUgVKA"/>
     <bindings xmi:id="_007tYPsMEeG36NOaHUgVKA" keySequence="M1+O" command="_007tXvsMEeG36NOaHUgVKA"/>
@@ -51,12 +54,13 @@
   <commands xmi:id="_007tYfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.save" commandName="saveCommand"/>
   <commands xmi:id="_007tZPsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
   <commands xmi:id="_pU-REPvQEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.showView" commandName="showViewCommand"/>
+  <commands xmi:id="_940mAPyIEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.showPreferences" commandName="showPreferencesCommand"/>
   <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_007tVfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_007tVvsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
   <addons xmi:id="_007tV_sMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.workbench.commands.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.CommandProcessingAddon"/>
   <addons xmi:id="_007tWPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.workbench.contexts.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.ContextProcessingAddon"/>
   <addons xmi:id="_007tWfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.workbench.bindings.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.swt/org.eclipse.e4.ui.workbench.swt.util.BindingProcessingAddon"/>
-  <addons xmi:id="_EMDAAPu3EeG36NOaHUgVKA" elementId="cleanupAddon" contributionURI="platform:/plugin/org.eclipse.e4.ui.workbench.addons.swt/org.eclipse.e4.ui.workbench.addons.cleanupaddon.CleanupAddon"/>
-  <addons xmi:id="_QK5iMPu4EeG36NOaHUgVKA" elementId="dragAndDropAddon" contributionURI="platform:/plugin/org.eclipse.e4.ui.workbench.addons.swt/org.eclipse.e4.ui.workbench.addons.dndaddon.DnDAddon"/>
+  <addons xmi:id="_EMDAAPu3EeG36NOaHUgVKA" elementId="cleanupAddon" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.addons.swt/org.eclipse.e4.ui.workbench.addons.cleanupaddon.CleanupAddon"/>
+  <addons xmi:id="_QK5iMPu4EeG36NOaHUgVKA" elementId="dragAndDropAddon" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.addons.swt/org.eclipse.e4.ui.workbench.addons.dndaddon.DnDAddon"/>
 </application:Application>
