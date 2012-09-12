@@ -33,6 +33,11 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.util.SafeRunnable;
 import org.osgi.service.prefs.BackingStoreException;
 
+/*
+ * This class was copied from org.eclipse.ui.preferences.ScopedPreferenceStore,
+ * as it is no longer available in the e4 platform.
+ */
+
 /**
  * The ScopedPreferenceStore is an IPreferenceStore that uses the scopes
  * provided in org.eclipse.core.runtime.preferences.

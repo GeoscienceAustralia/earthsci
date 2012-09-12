@@ -32,7 +32,7 @@ import com.jogamp.newt.event.WindowUpdateEvent;
 
 /**
  * Helper class that processes NEWT events from a NEWT {@link Window}, converts
- * the events to AWT events, and forwards the AWT events to AWT component
+ * the events to AWT events, and forwards the AWT events to AWT input handler
  * provided in the constructor.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)

@@ -43,17 +43,14 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 
-import au.gov.ga.earthsci.newt.awt.WorldWindowNewtDrawableAWT;
-
-import com.jogamp.newt.awt.NewtCanvasAWT;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.newt.swt.NewtCanvasSWT;
 
 /**
- * {@link WorldWindow} implementation that uses a {@link NewtCanvasAWT} for
+ * {@link WorldWindow} implementation that uses a {@link NewtCanvasSWT} for
  * rendering. To use this class, the {@link AVKey#WORLD_WINDOW_CLASS_NAME}
  * configuration property must be the name of a class that implements the
- * {@link WorldWindowNewtDrawableAWT} interface.
+ * {@link WorldWindowNewtDrawableSWT} interface.
  * <p/>
  * Most of this implementation is copied from the WorldWindowGLCanvas source.
  * 

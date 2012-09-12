@@ -1,9 +1,30 @@
+/*******************************************************************************
+ * Copyright 2012 Geoscience Australia
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package au.gov.ga.earthsci.newt.swt;
 
 import javax.media.opengl.GLAutoDrawable;
 
 import com.jogamp.opengl.util.Animator;
 
+/**
+ * Animator subclass which animates for a certain period of time, and then
+ * pauses itself until the next time {@link #resume()} is called.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ */
 public class TimedAnimator extends Animator
 {
 	protected int period = 1000; //ms
@@ -49,23 +70,8 @@ public class TimedAnimator extends Animator
 	@Override
 	public synchronized boolean resume()
 	{
-		//System.out.println("RESUMING");
 		pauseAfterPeriod();
 		return super.resume();
-	}
-
-	@Override
-	public synchronized boolean pause()
-	{
-		//System.out.println("PAUSING");
-		return super.pause();
-	}
-	
-	@Override
-	protected void display()
-	{
-		super.display();
-		//System.out.println("DISPLAY!");
 	}
 
 	protected void pauseAfterPeriod()
