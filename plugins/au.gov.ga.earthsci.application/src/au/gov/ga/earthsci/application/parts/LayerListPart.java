@@ -18,7 +18,6 @@ package au.gov.ga.earthsci.application.parts;
 import gov.nasa.worldwind.Model;
 import gov.nasa.worldwind.layers.Layer;
 
-import java.beans.PropertyChangeEvent;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -62,14 +61,16 @@ public class LayerListPart
 
 		IObservableSet knownElements = contentProvider.getKnownElements();
 		final IObservableMap enableds = BeanProperties.value("enabled").observeDetail(knownElements); //$NON-NLS-1$
+		final IObservableMap opacities = BeanProperties.value("opacity").observeDetail(knownElements); //$NON-NLS-1$
 
-		ILabelProvider labelProvider = new ObservableMapLabelProvider(enableds)
+		final IObservableMap[] attributeMap = new IObservableMap[] { enableds, opacities };
+		ILabelProvider labelProvider = new ObservableMapLabelProvider(attributeMap)
 		{
 			@Override
 			public String getColumnText(Object element, int columnIndex)
 			{
 				Layer layer = (Layer) element;
-				return layer.getName();
+				return String.format("%s (%d%%)", layer.getName(), (int) (layer.getOpacity() * 100));
 			}
 		};
 		viewer.setLabelProvider(labelProvider);
@@ -101,8 +102,6 @@ public class LayerListPart
 			{
 				Layer layer = (Layer) event.getElement();
 				layer.setEnabled(event.getChecked());
-				//TODO THIS SUCKS!: but in AbstractLayer, the "Enabled" property is changed not "enabled"  
-				layer.propertyChange(new PropertyChangeEvent(layer, "enabled", !event.getChecked(), event.getChecked())); //$NON-NLS-1$
 			}
 		});
 	}
