@@ -26,6 +26,7 @@ import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 
 import au.gov.ga.earthsci.model.DataModelImpl;
 import au.gov.ga.earthsci.model.IDataModel;
+import au.gov.ga.earthsci.worldwind.WorldWindConfigurator;
 
 /**
  * Registered as the product application 'lifeCycleURI' class, which gets called
@@ -40,6 +41,9 @@ public class LifeCycleManager
 
 	@Inject
 	private ProxyConfigurator proxyConfigurator;
+
+	@Inject
+	private WorldWindConfigurator worldWindConfigurator;
 
 	@PostContextCreate
 	void postContextCreate()
