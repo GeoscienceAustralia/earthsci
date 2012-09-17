@@ -15,34 +15,25 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.layer;
 
-import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
+import au.gov.ga.earthsci.core.tree.ITreeNode;
+import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
 /**
- * Abstract implementation of the {@link ILayerTreeValue} interface.
+ * Represents a tree node value in the layer tree.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class AbstractTreeValue extends AbstractTreeNode<ILayerTreeValue> implements ILayerTreeValue
+public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChangeBean
 {
-	private String name;
+	/**
+	 * @return The name (label) of this value.
+	 */
+	String getName();
 
-	protected AbstractTreeValue()
-	{
-		super();
-		setValue(this);
-	}
-
-	@Override
-	public String getName()
-	{
-		return name;
-	}
-
-	@Override
-	public void setName(String name)
-	{
-		String oldValue = getName();
-		this.name = name;
-		firePropertyChange("name", oldValue, name); //$NON-NLS-1$
-	}
+	/**
+	 * Set the name (label) of this value.
+	 * 
+	 * @param name
+	 */
+	void setName(String name);
 }

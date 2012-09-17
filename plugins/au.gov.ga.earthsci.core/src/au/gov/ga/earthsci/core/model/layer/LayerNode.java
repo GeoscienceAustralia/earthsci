@@ -36,7 +36,7 @@ import java.util.Set;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerNode extends AbstractTreeValue implements Layer, ILayerTreeValue
+public class LayerNode extends AbstractLayerTreeNode implements Layer, ILayerTreeNode
 {
 	protected final Layer layer;
 

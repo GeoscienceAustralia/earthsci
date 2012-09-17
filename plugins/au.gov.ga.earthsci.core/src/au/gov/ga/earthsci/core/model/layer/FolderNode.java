@@ -20,6 +20,6 @@ package au.gov.ga.earthsci.core.model.layer;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FolderNode extends AbstractTreeValue
+public class FolderNode extends AbstractLayerTreeNode
 {
 }
