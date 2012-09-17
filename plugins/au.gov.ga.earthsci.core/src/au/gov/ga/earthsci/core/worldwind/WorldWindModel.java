@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.worldwind;
+package au.gov.ga.earthsci.core.worldwind;
 
 import gov.nasa.worldwind.BasicFactory;
 import gov.nasa.worldwind.BasicModel;
@@ -11,7 +11,7 @@ import gov.nasa.worldwind.layers.LayerList;
 
 import org.w3c.dom.Element;
 
-import au.gov.ga.earthsci.worldwind.layers.TreeLayerList;
+import au.gov.ga.earthsci.core.model.layer.TreeLayerList;
 
 public class WorldWindModel extends BasicModel
 {

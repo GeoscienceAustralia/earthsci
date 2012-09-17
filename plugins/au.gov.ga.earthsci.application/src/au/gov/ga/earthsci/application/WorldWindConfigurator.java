@@ -15,39 +15,29 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
-import gov.nasa.worldwind.Model;
-import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.avlist.AVKey;
 
-import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
+import org.eclipse.e4.core.di.annotations.Creatable;
 
-import au.gov.ga.earthsci.model.DataModelImpl;
-import au.gov.ga.earthsci.model.IDataModel;
+import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
+import au.gov.ga.earthsci.core.worldwind.layers.LayerFactory;
 
 /**
- * Registered as the product application 'lifeCycleURI' class, which gets called
- * by the injector at different points in the application lifecycle.
+ * Helper class which sets up the required World Wind {@link Configuration}
+ * values.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LifeCycleManager
+@Creatable
+@Singleton
+public class WorldWindConfigurator
 {
-	@Inject
-	private IEclipseContext context;
-
-	@Inject
-	private ProxyConfigurator proxyConfigurator;
-
-	@Inject
-	private WorldWindConfigurator worldWindConfigurator;
-
-	@PostContextCreate
-	void postContextCreate()
+	public WorldWindConfigurator()
 	{
-		context.set(Model.class, (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME));
-		context.set(IDataModel.class, new DataModelImpl());
+		Configuration.setValue(AVKey.LAYER_FACTORY, LayerFactory.class.getName());
+		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
 	}
 }
