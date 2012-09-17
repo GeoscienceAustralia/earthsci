@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2012 Geoscience Australia
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.avlist.AVList;
@@ -11,31 +26,32 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class LayerNode extends AbstractTreeValue implements Layer
+/**
+ * Layer tree node implementation for layers. Implements the {@link Layer}
+ * interface, and delegates all layer methods to a Layer object provided in the
+ * constructor.
+ * <p/>
+ * Also fires a property change in all setter methods to comply with the Java
+ * Bean specification.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ */
+public class LayerNode extends AbstractTreeValue implements Layer, ILayerTreeValue
 {
 	protected final Layer layer;
-
-	//////////////////
-	// Constructors //
-	//////////////////
 
 	public LayerNode(Layer layer)
 	{
 		this.layer = layer;
 	}
 
-	/////////////////////
-	// Delegate access //
-	/////////////////////
-
+	/**
+	 * @return The {@link Layer} that this node delegates to.
+	 */
 	public Layer getLayer()
 	{
 		return layer;
 	}
-
-	////////////////////////////////////
-	// Property change implementation //
-	////////////////////////////////////
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)

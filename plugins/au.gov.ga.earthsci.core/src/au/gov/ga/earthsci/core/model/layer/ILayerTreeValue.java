@@ -15,11 +15,25 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.layer;
 
+import au.gov.ga.earthsci.core.tree.ITreeNode;
+import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
+
 /**
- * Represents a Folder in the layer tree.
+ * Represents a tree node value in the layer tree.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FolderNode extends AbstractTreeValue
+public interface ILayerTreeValue extends ITreeNode<ILayerTreeValue>, IPropertyChangeBean
 {
+	/**
+	 * @return The name (label) of this value.
+	 */
+	String getName();
+
+	/**
+	 * Set the name (label) of this value.
+	 * 
+	 * @param name
+	 */
+	void setName(String name);
 }
