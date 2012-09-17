@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EarthSci Core
+Bundle-SymbolicName: au.gov.ga.earthsci.core
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Geoscience Australia
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: au.gov.ga.earthsci.core.tree,
+ au.gov.ga.earthsci.core.util,
+ au.gov.ga.earthsci.core.worldwind,
+ au.gov.ga.earthsci.core.worldwind.layers
+Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0"

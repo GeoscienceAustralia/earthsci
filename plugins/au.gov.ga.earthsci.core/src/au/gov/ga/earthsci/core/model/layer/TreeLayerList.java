@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.worldwind.layers;
+package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.layers.Layer;
@@ -31,17 +31,27 @@ public class TreeLayerList extends LayerList
 	public TreeLayerList(Layer[] layers)
 	{
 		super(layers);
+		wrapAllLayers();
 	}
 
 	public TreeLayerList(LayerList layerList)
 	{
+		this(layerList, true);
+	}
+
+	protected TreeLayerList(LayerList layerList, boolean wrap)
+	{
 		super(layerList);
+		if (wrap)
+		{
+			wrapAllLayers();
+		}
 	}
 
 	@Override
 	protected LayerList makeShallowCopy(LayerList sourceList)
 	{
-		return new TreeLayerList(sourceList);
+		return new TreeLayerList(sourceList, false);
 	}
 
 	@Override
@@ -51,13 +61,13 @@ public class TreeLayerList extends LayerList
 		if (wrapping)
 			return;
 
-		super.firePropertyChange(propertyName, oldValue, newValue);
-
 		//firePropertyChange is called with AVKey.LAYERS whenever the layer list changes
 		if (propertyName == AVKey.LAYERS)
 		{
 			wrapAllLayers();
 		}
+
+		super.firePropertyChange(propertyName, oldValue, newValue);
 	}
 
 	protected void wrapAllLayers()
@@ -66,9 +76,9 @@ public class TreeLayerList extends LayerList
 		for (int i = size() - 1; i >= 0; i--)
 		{
 			Layer layer = get(i);
-			if (!(layer instanceof LayerWrapper))
+			if (!(layer instanceof LayerNode))
 			{
-				layer = new LayerWrapper(layer);
+				layer = new LayerNode(layer);
 				set(i, layer);
 			}
 		}

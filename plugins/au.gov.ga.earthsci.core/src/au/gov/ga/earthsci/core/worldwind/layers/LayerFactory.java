@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.worldwind.layers;
+package au.gov.ga.earthsci.core.worldwind.layers;
 
+import au.gov.ga.earthsci.core.model.layer.TreeLayerList;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 

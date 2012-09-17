@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.worldwind.layers;
+package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.event.Message;
@@ -7,22 +7,19 @@ import gov.nasa.worldwind.render.DrawContext;
 
 import java.awt.Point;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class LayerWrapper implements Layer
+public class LayerNode extends AbstractTreeValue implements Layer
 {
 	protected final Layer layer;
-	protected final transient PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
 	//////////////////
 	// Constructors //
 	//////////////////
 
-	public LayerWrapper(Layer layer)
+	public LayerNode(Layer layer)
 	{
 		this.layer = layer;
 	}
@@ -39,42 +36,6 @@ public class LayerWrapper implements Layer
 	////////////////////////////////////
 	// Property change implementation //
 	////////////////////////////////////
-
-	@Override
-	public void firePropertyChange(PropertyChangeEvent propertyChangeEvent)
-	{
-		changeSupport.firePropertyChange(propertyChangeEvent);
-	}
-
-	@Override
-	public void firePropertyChange(String propertyName, Object oldValue, Object newValue)
-	{
-		changeSupport.firePropertyChange(propertyName, oldValue, newValue);
-	}
-
-	@Override
-	public void addPropertyChangeListener(PropertyChangeListener listener)
-	{
-		changeSupport.addPropertyChangeListener(listener);
-	}
-
-	@Override
-	public void removePropertyChangeListener(PropertyChangeListener listener)
-	{
-		changeSupport.removePropertyChangeListener(listener);
-	}
-
-	@Override
-	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)
-	{
-		changeSupport.addPropertyChangeListener(propertyName, listener);
-	}
-
-	@Override
-	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener)
-	{
-		changeSupport.removePropertyChangeListener(propertyName, listener);
-	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)
