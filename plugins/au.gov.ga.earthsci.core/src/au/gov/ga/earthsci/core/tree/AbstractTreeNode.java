@@ -58,8 +58,12 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	}
 
 	@Override
-	public void setParent(ITreeNode<E> parent)
+	public void setParent(ITreeNode<E> parent, int indexInParent)
 	{
+		if (parent != null && parent.getChild(indexInParent) != this)
+		{
+			throw new IllegalArgumentException("Node is not a child of the given parent"); //$NON-NLS-1$
+		}
 		ITreeNode<E> oldValue = getParent();
 		this.parent = parent;
 		firePropertyChange("parent", oldValue, parent); //$NON-NLS-1$
@@ -107,7 +111,7 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 		return recurseDepth(getParent(), 0);
 	}
 
-	private int recurseDepth(ITreeNode<?> node, int depth)
+	protected int recurseDepth(ITreeNode<?> node, int depth)
 	{
 		if (node == null)
 		{
@@ -125,6 +129,10 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	@Override
 	public void add(int index, ITreeNode<E> child)
 	{
+		if (hasParentInPathToRoot(child))
+		{
+			throw new IllegalArgumentException("Child already a parent of the node"); //$NON-NLS-1$
+		}
 		@SuppressWarnings("unchecked")
 		ITreeNode<E>[] newChildren = new ITreeNode[children.length + 1];
 		if (index < 0 || index > children.length)
@@ -141,7 +149,7 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 			System.arraycopy(children, index, newChildren, index + 1, children.length - index);
 		}
 		setChildren(newChildren);
-		child.setParent(this);
+		child.setParent(this, index);
 	}
 
 	@Override
@@ -149,6 +157,10 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	{
 		int index = child.index();
 		if (index < 0)
+		{
+			return false;
+		}
+		if (getChild(index) != child)
 		{
 			return false;
 		}
@@ -167,7 +179,7 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 		ITreeNode<E> node = children[index];
 		if (node.getParent() == this)
 		{
-			node.setParent(null);
+			node.setParent(null, -1);
 		}
 		if (index > 0)
 		{
@@ -189,5 +201,34 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 			return;
 		}
 		getParent().remove(this);
+	}
+
+	@Override
+	public ITreeNode<E>[] pathToRoot()
+	{
+		int count = depth() + 1;
+		@SuppressWarnings("unchecked")
+		ITreeNode<E>[] path = new ITreeNode[count];
+		ITreeNode<E> node = this;
+		for (int i = count - 1; i >= 0; i--)
+		{
+			path[i] = node;
+			node = node.getParent();
+		}
+		return path;
+	}
+
+	protected boolean hasParentInPathToRoot(ITreeNode<E> parent)
+	{
+		ITreeNode<E> node = this;
+		while (node != null)
+		{
+			if (node == parent)
+			{
+				return true;
+			}
+			node = node.getParent();
+		}
+		return false;
 	}
 }
