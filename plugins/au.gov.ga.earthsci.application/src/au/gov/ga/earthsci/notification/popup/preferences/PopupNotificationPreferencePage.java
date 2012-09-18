@@ -1,6 +1,8 @@
 package au.gov.ga.earthsci.notification.popup.preferences;
 
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.*;
+
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -23,13 +25,6 @@ import au.gov.ga.earthsci.notification.popup.Messages;
  */
 public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 {
-	public static final String QUALIFIER_ID = "au.gov.ga.earthsci.notification.popup.preferences"; //$NON-NLS-1$
-	public static final String ENABLE_POPUPS = "au.gov.ga.earthsci.notification.popup.preferences.enablePopups"; //$NON-NLS-1$
-	public static final String SHOW_INFO_NOTIFICATIONS = "au.gov.ga.earthsci.notification.popup.preferences.showInformationNotifications"; //$NON-NLS-1$
-	public static final String SHOW_WARNING_NOTIFICATIONS = "au.gov.ga.earthsci.notification.popup.preferences.showWarningNotifications"; //$NON-NLS-1$
-	public static final String SHOW_ERROR_NOTIFICATIONS = "au.gov.ga.earthsci.notification.popup.preferences.showErrorNotifications"; //$NON-NLS-1$
-	public static final String POPUP_DURATION = "au.gov.ga.earthsci.notification.popup.preferences.popupDuration"; //$NON-NLS-1$
-	
 	private EnableNotificationsFieldEditor enabledEditor;
 	private LabelFieldEditor notificationLabelEditor;
 	private BooleanFieldEditor showInfoEditor;
@@ -41,7 +36,7 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 	{
 		super(GRID);
 		
-		IPreferenceStore store = new ScopedPreferenceStore(ConfigurationScope.INSTANCE, QUALIFIER_ID);
+		IPreferenceStore store = new ScopedPreferenceStore(InstanceScope.INSTANCE, QUALIFIER_ID);
 		
 		setPreferenceStore(store);
 		setDescription(Messages.PopupNotificationPreferences_Description);
