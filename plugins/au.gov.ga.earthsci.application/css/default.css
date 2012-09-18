@@ -5,3 +5,20 @@
 	swt-simple: false;
 	swt-mru-visible: true;
 }
+
+.popupDialog
+{
+	background-color: #e3efff #c1d5ef;
+}
+
+.popupDialogText
+{
+	color: black;
+	font: verdana 8px bold;
+}
+
+.popupDialogTitle
+{
+	font: verdana 12px bold;
+	color: black;
+}

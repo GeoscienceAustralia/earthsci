@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.eclipse.e4.ui.services.IStylingEngine;
+import org.eclipse.e4.ui.css.swt.dom.WidgetElement;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Point;
@@ -31,9 +31,9 @@ import au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPrefe
 public class PopupNotification
 {
 	// Style ID constants
-	private static final String DIALOG_TITLE_STYLE_ID = "popupDialogTitle"; //$NON-NLS-1$
-	private static final String DIALOG_TEXT_STYLE_ID = "popupDialogText"; //$NON-NLS-1$
-	private static final String DIALOG_SHELL_STYLE_ID = "popupDialog"; //$NON-NLS-1$
+	private static final String DIALOG_TITLE_STYLE_CLASS = "popupDialogTitle"; //$NON-NLS-1$
+	private static final String DIALOG_TEXT_STYLE_CLASS = "popupDialogText"; //$NON-NLS-1$
+	private static final String DIALOG_SHELL_STYLE_CLASS = "popupDialog"; //$NON-NLS-1$
 	
 	/** How long each tick is when fading (in ms) */
 	private static final int FADE_TICK = 50;
@@ -55,10 +55,6 @@ public class PopupNotification
 	
 	/** The list of currently active popups */
 	private static List<PopupNotification> activePopups = new ArrayList<PopupNotification>();
-
-	/** The styling engine to use for applying CSS styles */
-	//@Inject
-	private static IStylingEngine styling;
 	
 	/** Preferences used to control the appearance and behaviour of the popups */
 	@Inject
@@ -99,7 +95,6 @@ public class PopupNotification
 		}
 		
 		shell = new Shell(Display.getDefault().getActiveShell(), SWT.NO_FOCUS | SWT.NO_TRIM);
-		//styling.setId(shell, DIALOG_SHELL_STYLE_ID);
 		
 		shell.setLayout(new FillLayout());
 		shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
@@ -128,10 +123,8 @@ public class PopupNotification
 		CLabel titleLabel = new CLabel(inner, SWT.NONE);
 		titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER));
 		titleLabel.setText(notification.getTitle());
-		//styling.setId(titleLabel, DIALOG_TITLE_STYLE_ID);
 
 		Label text = new Label(inner, SWT.WRAP);
-		//styling.setId(text, DIALOG_TEXT_STYLE_ID);
 		
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan = 2;
@@ -168,6 +161,12 @@ public class PopupNotification
 		
 		shell.setLocation(startX, startY);
 		shell.setAlpha(0);
+
+		WidgetElement.setCSSClass(shell, DIALOG_SHELL_STYLE_CLASS);
+		WidgetElement.setCSSClass(titleLabel, DIALOG_TITLE_STYLE_CLASS);
+		WidgetElement.setCSSClass(text, DIALOG_TEXT_STYLE_CLASS);
+		WidgetElement.getEngine(Display.getCurrent()).applyStyles(shell, true);
+		
 		shell.setVisible(true);
 
 		activePopups.add(this);
