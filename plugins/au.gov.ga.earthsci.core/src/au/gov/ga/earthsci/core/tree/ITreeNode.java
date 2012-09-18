@@ -122,4 +122,9 @@ public interface ITreeNode<E>
 	 *         node.
 	 */
 	ITreeNode<E>[] pathToRoot();
+
+	/**
+	 * @return The root node of this node.
+	 */
+	ITreeNode<E> getRoot();
 }

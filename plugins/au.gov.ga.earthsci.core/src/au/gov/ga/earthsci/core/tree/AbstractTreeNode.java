@@ -231,4 +231,15 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 		}
 		return false;
 	}
+
+	@Override
+	public ITreeNode<E> getRoot()
+	{
+		ITreeNode<E> node = this;
+		while (!node.isRoot())
+		{
+			node = node.getParent();
+		}
+		return node;
+	}
 }
