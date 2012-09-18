@@ -34,32 +34,23 @@ import au.gov.ga.earthsci.application.preferences.PreferenceConstants;
 public class ProxyConfigurator
 {
 	@Inject
-	public void useSystemProxiesChanged(
-			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.USE_SYSTEM_PROXIES) boolean useSystemProxies)
-	{
-		System.setProperty("java.net.useSystemProxies", useSystemProxies ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
-
-	@Inject
-	public void proxyHostChanged(
-			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_HOST) String proxyHost)
-	{
-		System.setProperty("http.proxyHost", proxyHost); //$NON-NLS-1$
-		System.setProperty("ftp.proxyHost", proxyHost); //$NON-NLS-1$
-	}
-
-	@Inject
-	public void proxyPortChanged(
-			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_PORT) int proxyPort)
-	{
-		System.setProperty("http.proxyPort", "" + proxyPort); //$NON-NLS-1$ //$NON-NLS-2$
-		System.setProperty("ftp.proxyPort", "" + proxyPort); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	@Inject
-	public void nonProxyHostsChanged(
+	public void configureProxy(
+			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_TYPE) String proxyType,
+			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_HOST) String proxyHost,
+			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_PORT) int proxyPort,
 			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.NON_PROXY_HOSTS) String nonProxyHosts)
 	{
+		boolean system = PreferenceConstants.PROXY_TYPE_SYSTEM.equals(proxyType);
+		boolean user = PreferenceConstants.PROXY_TYPE_USER.equals(proxyType);
+		System.setProperty("java.net.useSystemProxies", system ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+		String actualProxyHost = user ? proxyHost : ""; //$NON-NLS-1$
+		System.setProperty("http.proxyHost", actualProxyHost); //$NON-NLS-1$
+		System.setProperty("ftp.proxyHost", actualProxyHost); //$NON-NLS-1$
+
+		System.setProperty("http.proxyPort", "" + proxyPort); //$NON-NLS-1$ //$NON-NLS-2$
+		System.setProperty("ftp.proxyPort", "" + proxyPort); //$NON-NLS-1$ //$NON-NLS-2$
+
 		System.setProperty("http.nonProxyHosts", "" + nonProxyHosts); //$NON-NLS-1$ //$NON-NLS-2$
 		System.setProperty("ftp.nonProxyHosts", "" + nonProxyHosts); //$NON-NLS-1$ //$NON-NLS-2$
 	}
