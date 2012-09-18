@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.notification.INotification;
+import au.gov.ga.earthsci.notification.NotificationLevel;
 import au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences;
 
 /**
@@ -33,7 +34,12 @@ public class PopupNotification
 	// Style ID constants
 	private static final String DIALOG_TITLE_STYLE_CLASS = "popupDialogTitle"; //$NON-NLS-1$
 	private static final String DIALOG_TEXT_STYLE_CLASS = "popupDialogText"; //$NON-NLS-1$
+	private static final String DIALOG_IMAGE_STYLE_CLASS = "popupDialogImage"; //$NON-NLS-1$
 	private static final String DIALOG_SHELL_STYLE_CLASS = "popupDialog"; //$NON-NLS-1$
+	
+	private static final String DIALOG_INFORMATION_CLASS = "information"; //$NON-NLS-1$
+	private static final String DIALOG_WARNING_CLASS = "warning"; //$NON-NLS-1$
+	private static final String DIALOG_ERROR_CLASS = "error"; //$NON-NLS-1$
 	
 	/** How long each tick is when fading (in ms) */
 	private static final int FADE_TICK = 50;
@@ -94,45 +100,32 @@ public class PopupNotification
 			return;
 		}
 		
-		shell = new Shell(Display.getDefault().getActiveShell(), SWT.NO_FOCUS | SWT.NO_TRIM);
+		initialiseShell();
+
+		Composite inner = initialiseInner();
+
+		CLabel imageLabel = addImageLabel(notification,inner);
+		CLabel titleLabel = addTitleLabel(notification, inner);
+		Label textLabel = addTextLabel(notification, inner);
+
+		adjustExistingPopups();
+
+		String levelClass = notification.getLevel() == NotificationLevel.INFORMATION ? DIALOG_INFORMATION_CLASS : notification.getLevel() == NotificationLevel.WARNING ? DIALOG_WARNING_CLASS : DIALOG_ERROR_CLASS;
+		WidgetElement.setCSSClass(shell, DIALOG_SHELL_STYLE_CLASS + " " + levelClass);
+		WidgetElement.setCSSClass(titleLabel, DIALOG_TITLE_STYLE_CLASS + " " + levelClass);
+		WidgetElement.setCSSClass(imageLabel, DIALOG_IMAGE_STYLE_CLASS + " " + levelClass);
+		WidgetElement.setCSSClass(textLabel, DIALOG_TEXT_STYLE_CLASS + " " + levelClass);
+		WidgetElement.getEngine(Display.getCurrent()).applyStyles(shell, true);
 		
-		shell.setLayout(new FillLayout());
-		shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
-		shell.addListener(SWT.Dispose, new Listener()
-		{
-			@Override
-			public void handleEvent(Event event)
-			{
-				activePopups.remove(PopupNotification.this);
-		 	}
-		});
+		shell.setVisible(true);
 
-		final Composite inner = new Composite(shell, SWT.NONE);
+		activePopups.add(this);
 
-		GridLayout gl = new GridLayout(2, false);
-		gl.marginLeft = 5;
-		gl.marginTop = 0;
-		gl.marginRight = 5;
-		gl.marginBottom = 5;
-		inner.setLayout(gl);
+		fadeIn();
+	}
 
-		CLabel imgLabel = new CLabel(inner, SWT.NONE);
-		imgLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_BEGINNING));
-		//imgLabel.setImage(type.getImage());
-
-		CLabel titleLabel = new CLabel(inner, SWT.NONE);
-		titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER));
-		titleLabel.setText(notification.getTitle());
-
-		Label text = new Label(inner, SWT.WRAP);
-		
-		GridData gd = new GridData(GridData.FILL_BOTH);
-		gd.horizontalSpan = 2;
-		text.setLayoutData(gd);
-		text.setText(notification.getText());
-
-		shell.setSize(POPUP_SIZE);
-
+	private void adjustExistingPopups()
+	{
 		// move other shells up
 		if (!activePopups.isEmpty())
 		{
@@ -153,30 +146,88 @@ public class PopupNotification
 				}
 			}
 		}
+	}
 
+	private Label addTextLabel(INotification notification, Composite inner)
+	{
+		Label text = new Label(inner, SWT.WRAP);
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		gd.horizontalSpan = 2;
+		text.setLayoutData(gd);
+		text.setText(notification.getText());
+		return text;
+	}
+
+	private CLabel addTitleLabel(INotification notification, Composite inner)
+	{
+		CLabel titleLabel = new CLabel(inner, SWT.NONE);
+		titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER));
+		titleLabel.setText(notification.getTitle());
+		return titleLabel;
+	}
+
+	private CLabel addImageLabel(INotification notification, Composite inner)
+	{
+		CLabel imgLabel = new CLabel(inner, SWT.NONE);
+		imgLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_BEGINNING));
+		//imgLabel.setImage(type.getImage());
+		return imgLabel;
+	}
+
+	private void initialiseShell()
+	{
+		shell = new Shell(getRootShell(Display.getDefault().getActiveShell()), SWT.NO_FOCUS | SWT.NO_TRIM);
+		
+		shell.setLayout(new FillLayout());
+		shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
+		shell.addListener(SWT.Dispose, new Listener()
+		{
+			@Override
+			public void handleEvent(Event event)
+			{
+				activePopups.remove(PopupNotification.this);
+		 	}
+		});
+		shell.setSize(POPUP_SIZE);
+		shell.setAlpha(0);
+		
 		Rectangle clientArea = Display.getDefault().getActiveShell().getMonitor().getClientArea();
 
 		int startX = clientArea.x + clientArea.width - POPUP_SIZE.x - PADDING;
 		int startY = clientArea.y + clientArea.height - POPUP_SIZE.y - PADDING;
 		
 		shell.setLocation(startX, startY);
-		shell.setAlpha(0);
-
-		WidgetElement.setCSSClass(shell, DIALOG_SHELL_STYLE_CLASS);
-		WidgetElement.setCSSClass(titleLabel, DIALOG_TITLE_STYLE_CLASS);
-		WidgetElement.setCSSClass(text, DIALOG_TEXT_STYLE_CLASS);
-		WidgetElement.getEngine(Display.getCurrent()).applyStyles(shell, true);
-		
-		shell.setVisible(true);
-
-		activePopups.add(this);
-
-		fadeIn();
 	}
 
+	private Composite initialiseInner()
+	{
+		final Composite inner = new Composite(shell, SWT.NONE);
+		GridLayout gl = new GridLayout(2, false);
+		gl.marginLeft = 5;
+		gl.marginTop = 0;
+		gl.marginRight = 5;
+		gl.marginBottom = 5;
+		inner.setLayout(gl);
+		return inner;
+	}
+	
 	private boolean noActiveMonitorExists()
 	{
 		return Display.getDefault().getActiveShell() == null || Display.getDefault().getActiveShell().getMonitor() == null;
+	}
+	
+	/**
+	 * Helper method that finds the root shell of the current shell.
+	 * <p/>
+	 * Used in the case where the active shell is e.g. a dialog box 
+	 */
+	private static Shell getRootShell(Composite s)
+	{
+		if (s.getParent() == null)
+		{
+			return (Shell)s;
+		}
+		return getRootShell(s.getParent());
 	}
 	
 	/**
@@ -240,9 +291,9 @@ public class PopupNotification
 
 					fadeOut();
 				}
-				catch (Exception err)
+				catch (Exception e)
 				{
-					err.printStackTrace();
+					e.printStackTrace();
 				}
 			}
 
@@ -267,25 +318,22 @@ public class PopupNotification
 						return;
 					}
 
-					int cur = shell.getAlpha();
-					cur -= FADE_OUT_ALPHA_STEP;
+					int popupAlpha = shell.getAlpha();
+					popupAlpha -= FADE_OUT_ALPHA_STEP;
 
-					if (cur <= 0)
+					if (popupAlpha <= 0)
 					{
 						shell.setAlpha(0);
-						shell.dispose();
+						dispose();
 						activePopups.remove(this);
 						return;
 					}
-
-					shell.setAlpha(cur);
-
+					shell.setAlpha(popupAlpha);
 					Display.getDefault().timerExec(FADE_TICK, this);
-
 				}
-				catch (Exception err)
+				catch (Exception e)
 				{
-					err.printStackTrace();
+					e.printStackTrace();
 				}
 			}
 		};
