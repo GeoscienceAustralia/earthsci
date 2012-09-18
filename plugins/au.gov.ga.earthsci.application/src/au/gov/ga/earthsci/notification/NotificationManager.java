@@ -78,7 +78,6 @@ public class NotificationManager
 		{
 			return;
 		}
-		
 		receiversLock.writeLock().lock();
 		receivers.add(receiver);
 		receiversLock.writeLock().unlock();

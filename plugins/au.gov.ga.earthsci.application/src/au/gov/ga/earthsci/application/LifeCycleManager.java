@@ -21,11 +21,15 @@ import gov.nasa.worldwind.avlist.AVKey;
 
 import javax.inject.Inject;
 
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.InjectorFactory;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 
 import au.gov.ga.earthsci.notification.NotificationManager;
 import au.gov.ga.earthsci.notification.popup.PopupNotificationReceiver;
+import au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences;
+import au.gov.ga.earthsci.notification.popup.preferences.PopupNotificationPreferences;
 
 /**
  * Registered as the product application 'lifeCycleURI' class, which gets called
@@ -47,9 +51,12 @@ public class LifeCycleManager
 	@PostContextCreate
 	void postContextCreate()
 	{
-		context.set(Model.class, (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME));
-		context.set(NotificationManager.class, new NotificationManager());
+		InjectorFactory.getDefault().addBinding(IPopupNotificationPreferences.class).implementedBy(PopupNotificationPreferences.class);
 		
-		context.get(NotificationManager.class).registerReceiver(new PopupNotificationReceiver());
+		context.set(Model.class, (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME));
+		
+		context.set(NotificationManager.class, ContextInjectionFactory.make(NotificationManager.class, context));
+		
+		PopupNotificationReceiver.register(context);
 	}
 }
