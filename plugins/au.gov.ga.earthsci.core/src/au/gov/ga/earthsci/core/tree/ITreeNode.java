@@ -45,8 +45,9 @@ public interface ITreeNode<E>
 	 * {@link ITreeNode} implementation, when added/removing children.
 	 * 
 	 * @param parent
+	 * @param indexInParent
 	 */
-	void setParent(ITreeNode<E> parent);
+	void setParent(ITreeNode<E> parent, int indexInParent);
 
 	/**
 	 * @return Does this node have children?
@@ -115,4 +116,10 @@ public interface ITreeNode<E>
 	 * Remove this node from its parent (no-op if this node is the root).
 	 */
 	void removeFromParent();
+
+	/**
+	 * @return Array containing all nodes from the root (at index 0) to this
+	 *         node.
+	 */
+	ITreeNode<E>[] pathToRoot();
 }
