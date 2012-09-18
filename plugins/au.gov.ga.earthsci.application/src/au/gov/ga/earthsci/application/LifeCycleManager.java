@@ -26,6 +26,8 @@ import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 
 import au.gov.ga.earthsci.model.DataModelImpl;
 import au.gov.ga.earthsci.model.IDataModel;
+import au.gov.ga.earthsci.notification.NotificationManager;
+import au.gov.ga.earthsci.notification.popup.PopupNotificationReceiver;
 
 /**
  * Registered as the product application 'lifeCycleURI' class, which gets called
@@ -49,5 +51,8 @@ public class LifeCycleManager
 	{
 		context.set(Model.class, (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME));
 		context.set(IDataModel.class, new DataModelImpl());
+		context.set(NotificationManager.class, new NotificationManager());
+		
+		context.get(NotificationManager.class).registerReceiver(new PopupNotificationReceiver());
 	}
 }
