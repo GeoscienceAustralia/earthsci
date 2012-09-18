@@ -1,9 +1,32 @@
+/*******************************************************************************
+ * Copyright 2012 Geoscience Australia
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package au.gov.ga.earthsci.core.tree;
 
 import java.util.Arrays;
 
 import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
 
+/**
+ * Abstract implementation of the {@link ITreeNode} interface.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * 
+ * @param <E>
+ *            Type wrapped by this node.
+ */
 public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean implements ITreeNode<E>
 {
 	protected E value;
@@ -37,7 +60,9 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	@Override
 	public void setParent(ITreeNode<E> parent)
 	{
+		ITreeNode<E> oldValue = getParent();
 		this.parent = parent;
+		firePropertyChange("parent", oldValue, parent); //$NON-NLS-1$
 	}
 
 	@Override
@@ -50,6 +75,13 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	public ITreeNode<E>[] getChildren()
 	{
 		return children;
+	}
+
+	protected void setChildren(ITreeNode<E>[] children)
+	{
+		ITreeNode<E>[] oldValue = getChildren();
+		this.children = children;
+		firePropertyChange("children", oldValue, children); //$NON-NLS-1$
 	}
 
 	@Override
@@ -108,7 +140,7 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 		{
 			System.arraycopy(children, index, newChildren, index + 1, children.length - index);
 		}
-		children = newChildren;
+		setChildren(newChildren);
 		child.setParent(this);
 	}
 
@@ -132,13 +164,11 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 
 		@SuppressWarnings("unchecked")
 		ITreeNode<E>[] newChildren = new ITreeNode[children.length - 1];
-
 		ITreeNode<E> node = children[index];
 		if (node.getParent() == this)
 		{
 			node.setParent(null);
 		}
-
 		if (index > 0)
 		{
 			System.arraycopy(children, 0, newChildren, 0, index);
@@ -147,7 +177,7 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 		{
 			System.arraycopy(children, index + 1, newChildren, index, children.length - index - 1);
 		}
-		children = newChildren;
+		setChildren(newChildren);
 		return node;
 	}
 

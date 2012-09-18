@@ -13,18 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.model;
+package au.gov.ga.earthsci.core.model.layer;
+
+import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 
 /**
- * Example shared data model implementation, to be deleted or changed.
+ * Abstract implementation of the {@link ILayerTreeNode} interface.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class DataModelImpl implements IDataModel
+public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeNode> implements ILayerTreeNode
 {
-	@Override
-	public String getWord()
+	private String name;
+
+	protected AbstractLayerTreeNode()
 	{
-		return "Hello there from " + getClass();
+		super();
+		setValue(this);
+	}
+
+	@Override
+	public String getName()
+	{
+		return name;
+	}
+
+	@Override
+	public void setName(String name)
+	{
+		String oldValue = getName();
+		this.name = name;
+		firePropertyChange("name", oldValue, name); //$NON-NLS-1$
 	}
 }

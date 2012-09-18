@@ -13,14 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.model;
+package au.gov.ga.earthsci.core.model.layer;
+
+import au.gov.ga.earthsci.core.tree.ITreeNode;
+import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
 /**
- * Example data model interface, to be deleted or changed.
+ * Represents a tree node value in the layer tree.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IDataModel
+public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChangeBean
 {
-	String getWord();
+	/**
+	 * @return The name (label) of this value.
+	 */
+	String getName();
+
+	/**
+	 * Set the name (label) of this value.
+	 * 
+	 * @param name
+	 */
+	void setName(String name);
 }

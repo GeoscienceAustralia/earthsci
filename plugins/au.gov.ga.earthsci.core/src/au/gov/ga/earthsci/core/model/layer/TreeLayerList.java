@@ -19,6 +19,15 @@ import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 
+/**
+ * {@link LayerList} subclass which supports a hierarchical tree structure, but
+ * still can be used as the {@link LayerList} passed to the World Wind model for
+ * rendering.
+ * <p/>
+ * Each layer added to this list is wrapped in a {@link LayerNode} wrapper.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ */
 public class TreeLayerList extends LayerList
 {
 	private boolean wrapping = false;
@@ -70,6 +79,9 @@ public class TreeLayerList extends LayerList
 		super.firePropertyChange(propertyName, oldValue, newValue);
 	}
 
+	/**
+	 * Wrap all layers in this list that are not instances of {@link LayerNode}.
+	 */
 	protected void wrapAllLayers()
 	{
 		wrapping = true;
