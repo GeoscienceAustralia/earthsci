@@ -72,13 +72,19 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	@Override
 	public boolean hasChildren()
 	{
-		return children != null && children.length > 0;
+		return getChildCount() > 0;
 	}
 
 	@Override
 	public ITreeNode<E>[] getChildren()
 	{
 		return children;
+	}
+
+	@Override
+	public int getChildCount()
+	{
+		return children == null ? 0 : children.length;
 	}
 
 	protected void setChildren(ITreeNode<E>[] children)

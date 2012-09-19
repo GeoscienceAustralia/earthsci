@@ -60,6 +60,11 @@ public interface ITreeNode<E>
 	ITreeNode<E>[] getChildren();
 
 	/**
+	 * @return Number of children of this node.
+	 */
+	int getChildCount();
+
+	/**
 	 * @param index
 	 * @return This node's child at <code>index</code>.
 	 */

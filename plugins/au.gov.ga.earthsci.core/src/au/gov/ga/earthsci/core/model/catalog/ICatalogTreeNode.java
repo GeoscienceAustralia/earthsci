@@ -13,23 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer;
+package au.gov.ga.earthsci.core.model.catalog;
 
-import gov.nasa.worldwind.layers.LayerList;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
-import au.gov.ga.earthsci.core.util.INameable;
+import au.gov.ga.earthsci.core.util.INamed;
 import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
 /**
- * Represents a tree node value in the layer tree.
+ * Represents tree nodes in the Catalog tree. Implementations of this interface
+ * could be used for creating catalogs from different sources, such as XML
+ * datasets, GOCAD project files, WMS catalogs, etc.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerTreeNode<E extends ILayerTreeNode<E>> extends ITreeNode<E>, IPropertyChangeBean, INameable
+public interface ICatalogTreeNode extends ITreeNode<ICatalogTreeNode>, IPropertyChangeBean, INamed
 {
 	/**
-	 * @return A {@link LayerList} that contains all layers in the tree at and
-	 *         below this node.
+	 * @return Is this catalog node removeable from the Catalog tree? All user
+	 *         added nodes should also be removeable.
 	 */
-	LayerList getLayerList();
+	boolean isRemoveable();
+
+	/**
+	 * @return Is this catalog node's data able to be reloaded?
+	 */
+	boolean isReloadable();
+
+	/**
+	 * Reload this node's data.
+	 */
+	void reload();
 }

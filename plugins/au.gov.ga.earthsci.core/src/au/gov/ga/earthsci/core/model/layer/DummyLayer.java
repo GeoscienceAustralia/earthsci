@@ -15,21 +15,19 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.layer;
 
-import gov.nasa.worldwind.layers.LayerList;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
-import au.gov.ga.earthsci.core.util.INameable;
-import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
+import gov.nasa.worldwind.layers.AbstractLayer;
+import gov.nasa.worldwind.render.DrawContext;
 
 /**
- * Represents a tree node value in the layer tree.
+ * Layer that renders nothing, used for the storage of properties while a real
+ * layer is being loaded.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerTreeNode<E extends ILayerTreeNode<E>> extends ITreeNode<E>, IPropertyChangeBean, INameable
+public class DummyLayer extends AbstractLayer
 {
-	/**
-	 * @return A {@link LayerList} that contains all layers in the tree at and
-	 *         below this node.
-	 */
-	LayerList getLayerList();
+	@Override
+	protected void doRender(DrawContext dc)
+	{
+	}
 }

@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer;
+package au.gov.ga.earthsci.core.worldwind;
 
-import gov.nasa.worldwind.layers.LayerList;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
-import au.gov.ga.earthsci.core.util.INameable;
-import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
+import gov.nasa.worldwind.Model;
+import au.gov.ga.earthsci.core.model.layer.FolderNode;
 
 /**
- * Represents a tree node value in the layer tree.
+ * {@link Model} subinterface that supports a layer list in a tree hierarchy.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerTreeNode<E extends ILayerTreeNode<E>> extends ITreeNode<E>, IPropertyChangeBean, INameable
+public interface TreeModel extends Model
 {
 	/**
-	 * @return A {@link LayerList} that contains all layers in the tree at and
-	 *         below this node.
+	 * @return The root node of the layer list tree.
 	 */
-	LayerList getLayerList();
+	FolderNode getRootNode();
 }

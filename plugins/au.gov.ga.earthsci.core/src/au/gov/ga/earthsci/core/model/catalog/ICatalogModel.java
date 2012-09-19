@@ -13,23 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer;
-
-import gov.nasa.worldwind.layers.LayerList;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
-import au.gov.ga.earthsci.core.util.INameable;
-import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
+package au.gov.ga.earthsci.core.model.catalog;
 
 /**
- * Represents a tree node value in the layer tree.
+ * Represents the model of the available catalogs.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerTreeNode<E extends ILayerTreeNode<E>> extends ITreeNode<E>, IPropertyChangeBean, INameable
+public interface ICatalogModel
 {
-	/**
-	 * @return A {@link LayerList} that contains all layers in the tree at and
-	 *         below this node.
-	 */
-	LayerList getLayerList();
+	ICatalogTreeNode getRoot();
 }

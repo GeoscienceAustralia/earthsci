@@ -22,7 +22,10 @@ import gov.nasa.worldwind.render.DrawContext;
 
 import java.awt.Point;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -36,9 +39,14 @@ import java.util.Set;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerNode extends AbstractLayerTreeNode implements Layer, ILayerTreeNode
+public class LayerNode extends AbstractLayerTreeNode implements Layer
 {
-	protected final Layer layer;
+	protected Layer layer = new DummyLayer();
+	protected Set<String> propertiesChanged = new HashSet<String>();
+
+	public LayerNode()
+	{
+	}
 
 	public LayerNode(Layer layer)
 	{
@@ -53,10 +61,61 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, ILayerTre
 		return layer;
 	}
 
+	/**
+	 * Set the {@link Layer} that this node delegates to.
+	 * 
+	 * @param layer
+	 */
+	public void setLayer(Layer layer)
+	{
+		Layer oldValue = getLayer();
+		copyProperties(oldValue, layer);
+		this.layer = layer;
+		firePropertyChange("layer", oldValue, layer); //$NON-NLS-1$
+	}
+
+	protected void copyProperties(Layer from, Layer to)
+	{
+		if (from == to)
+			return;
+
+		for (String property : propertiesChanged)
+		{
+			try
+			{
+				PropertyDescriptor fromPropertyDescriptor = new PropertyDescriptor(property, from.getClass());
+				PropertyDescriptor toPropertyDescriptor = new PropertyDescriptor(property, to.getClass());
+				Method getter = fromPropertyDescriptor.getReadMethod();
+				Method setter = toPropertyDescriptor.getWriteMethod();
+				Object value = getter.invoke(from);
+				setter.invoke(to, value);
+			}
+			catch (Exception e)
+			{
+				//TODO
+				e.printStackTrace();
+			}
+		}
+	}
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt)
 	{
 		firePropertyChange(evt);
+	}
+
+	@Override
+	public void firePropertyChange(PropertyChangeEvent propertyChangeEvent)
+	{
+		super.firePropertyChange(propertyChangeEvent);
+		propertiesChanged.add(propertyChangeEvent.getPropertyName());
+	}
+
+	@Override
+	public void firePropertyChange(String propertyName, Object oldValue, Object newValue)
+	{
+		super.firePropertyChange(propertyName, oldValue, newValue);
+		propertiesChanged.add(propertyName);
 	}
 
 	//////////////////////
