@@ -38,6 +38,8 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
+import au.gov.ga.earthsci.core.worldwind.TreeModel;
+
 /**
  * Part which views the current layer state in the World Wind {@link Model}.
  * 
@@ -49,7 +51,7 @@ public class LayerListPart
 	private IEclipseContext context;
 
 	@Inject
-	private Model worldWindModel;
+	private TreeModel worldWindModel;
 
 	@Inject
 	public void init(Composite parent)

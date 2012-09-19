@@ -15,10 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
-import gov.nasa.worldwind.Model;
-import gov.nasa.worldwind.WorldWind;
-import gov.nasa.worldwind.avlist.AVKey;
-
 import javax.inject.Inject;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
@@ -26,6 +22,8 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.InjectorFactory;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 
+import au.gov.ga.earthsci.core.worldwind.TreeModel;
+import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
 import au.gov.ga.earthsci.notification.NotificationManager;
 import au.gov.ga.earthsci.notification.popup.PopupNotificationReceiver;
 import au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences;
@@ -51,12 +49,13 @@ public class LifeCycleManager
 	@PostContextCreate
 	void postContextCreate()
 	{
-		InjectorFactory.getDefault().addBinding(IPopupNotificationPreferences.class).implementedBy(PopupNotificationPreferences.class);
-		
-		context.set(Model.class, (Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME));
-		
+		InjectorFactory.getDefault().addBinding(IPopupNotificationPreferences.class)
+				.implementedBy(PopupNotificationPreferences.class);
+
+		context.set(TreeModel.class, new WorldWindModel());
+
 		context.set(NotificationManager.class, ContextInjectionFactory.make(NotificationManager.class, context));
-		
+
 		PopupNotificationReceiver.register(context);
 	}
 }
