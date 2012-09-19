@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EarthSci Core
-Bundle-SymbolicName: au.gov.ga.earthsci.core
+Bundle-SymbolicName: au.gov.ga.earthsci.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -10,5 +10,11 @@ Export-Package: au.gov.ga.earthsci.core.tree,
  au.gov.ga.earthsci.core.worldwind,
  au.gov.ga.earthsci.core.worldwind.layers,
  au.gov.ga.earthsci.notification
-Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0"
+Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
+ org.eclipse.e4.core.di;bundle-version="1.1.0",
+ org.eclipse.e4.core.di.extensions;bundle-version="0.11.0",
+ org.eclipse.e4.core.contexts;bundle-version="1.1.0",
+ org.eclipse.e4.core.services;bundle-version="1.0.0",
+ org.eclipse.core.runtime;bundle-version="3.8.0",
+ javax.inject;bundle-version="1.0.0"
 Import-Package: org.eclipse.osgi.util

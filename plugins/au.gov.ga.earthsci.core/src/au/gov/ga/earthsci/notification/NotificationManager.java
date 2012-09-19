@@ -8,6 +8,17 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Creatable;
+import org.eclipse.e4.core.services.log.Logger;
+
 
 /**
  * A threadsafe manager that gives access to the user notification mechanism.
@@ -17,8 +28,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
+@Creatable
+@Singleton
 public class NotificationManager
 {
+	public static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.receiver"; //$NON-NLS-1$
+	
 	private Set<INotificationReceiver> receivers;
 	private ReadWriteLock receiversLock = new ReentrantReadWriteLock();
 	
@@ -30,9 +45,44 @@ public class NotificationManager
 		}
 	});
 	
+	@Inject 
+	private Logger logger;
+	
 	public NotificationManager()
 	{
 		receivers = new LinkedHashSet<INotificationReceiver>();
+	}
+	
+	/**
+	 * Load registered notification receivers from the provided extension registry.
+	 * <p/>
+	 * This method will inject dependencies on retrieved receivers using the provided 
+	 * eclipse context, as appropriate.
+	 * 
+	 * @param registry The extension registry to search for notification receivers
+	 * @param context The context to use for dependency injection etc.
+	 */
+	@Inject
+	public void loadReceivers(IExtensionRegistry registry, IEclipseContext context)
+	{
+		IConfigurationElement[] config = registry.getConfigurationElementsFor(EXTENSION_POINT_ID);
+		try
+		{
+			for (IConfigurationElement e : config)
+			{
+				final Object o = e.createExecutableExtension("class"); //$NON-NLS-1$
+				if (o instanceof INotificationReceiver)
+				{
+					ContextInjectionFactory.inject(o, context);
+					registerReceiver((INotificationReceiver)o);
+				}
+			}
+		}
+		catch (CoreException e)
+		{
+			logger.error(e, "Exception while loading recievers"); //$NON-NLS-1$
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -74,6 +124,7 @@ public class NotificationManager
 	 */
 	public void registerReceiver(INotificationReceiver receiver)
 	{
+		System.out.println(receiver);
 		if (receiver == null)
 		{
 			return;

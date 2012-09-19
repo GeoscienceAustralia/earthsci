@@ -10,7 +10,7 @@ import au.gov.ga.earthsci.notification.NotificationLevel;
  */
 public interface IPopupNotificationPreferences
 {
-	public static final String QUALIFIER_ID = "au.gov.ga.earthsci.notification.popup.preferences"; //$NON-NLS-1$
+	public static final String QUALIFIER_ID = "au.gov.ga.earthsci.notification.popup"; //$NON-NLS-1$
 	public static final String ENABLE_POPUPS = "au.gov.ga.earthsci.notification.popup.preferences.enablePopups"; //$NON-NLS-1$
 	public static final String SHOW_INFO_NOTIFICATIONS = "au.gov.ga.earthsci.notification.popup.preferences.showInformationNotifications"; //$NON-NLS-1$
 	public static final String SHOW_WARNING_NOTIFICATIONS = "au.gov.ga.earthsci.notification.popup.preferences.showWarningNotifications"; //$NON-NLS-1$

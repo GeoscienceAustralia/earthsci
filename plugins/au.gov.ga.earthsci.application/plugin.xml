@@ -37,20 +37,11 @@
             id="au.gov.ga.earthsci.notifications"
             name="Notifications">
       </page>
-      <page
-            category="au.gov.ga.earthsci.notifications"
-            class="au.gov.ga.earthsci.notification.popup.preferences.PopupNotificationPreferencePage"
-            id="au.gov.ga.earthsci.notifications.popupnotifications"
-            name="Popup Notifications">
-      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="au.gov.ga.earthsci.application.preferences.PreferenceInitializer">
-      </initializer>
-      <initializer
-            class="au.gov.ga.earthsci.notification.popup.preferences.PreferenceInitializer">
       </initializer>
    </extension>
 

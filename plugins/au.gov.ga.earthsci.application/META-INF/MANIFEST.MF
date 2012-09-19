@@ -32,7 +32,13 @@ Require-Bundle: javax.inject;bundle-version="1.0.0",
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy
-Export-Package: au.gov.ga.earthsci.newt.awt;
+Export-Package: au.gov.ga.earthsci.application,
+ au.gov.ga.earthsci.application.handlers,
+ au.gov.ga.earthsci.application.parts,
+ au.gov.ga.earthsci.application.preferences,
+ au.gov.ga.earthsci.application.preferences.fieldeditor,
+ au.gov.ga.earthsci.application.preferences.pages,
+ au.gov.ga.earthsci.newt.awt;
   uses:="gov.nasa.worldwind,
    gov.nasa.worldwind.geom,
    gov.nasa.worldwind.event,
@@ -47,4 +53,6 @@ Export-Package: au.gov.ga.earthsci.newt.awt;
    com.jogamp.newt.event,
    gov.nasa.worldwind.awt,
    com.jogamp.newt.awt,
-   gov.nasa.worldwind.avlist"
+   gov.nasa.worldwind.avlist",
+ au.gov.ga.earthsci.newt.swt,
+ au.gov.ga.earthsci.notification.preferences

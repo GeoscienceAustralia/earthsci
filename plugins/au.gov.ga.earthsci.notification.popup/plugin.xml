@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="au.gov.ga.earthsci.notifications"
+            class="au.gov.ga.earthsci.notification.popup.preferences.PopupNotificationPreferencePage"
+            id="au.gov.ga.earthsci.notifications.popupnotifications"
+            name="Popup Notifications">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="au.gov.ga.earthsci.notification.popup.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.notification.receiver">
+      <receiver
+            class="au.gov.ga.earthsci.notification.popup.PopupNotificationReceiver">
+      </receiver>
+   </extension>
+
+</plugin>

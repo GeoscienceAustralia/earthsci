@@ -26,7 +26,12 @@ import au.gov.ga.earthsci.notification.NotificationLevel;
 import au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences;
 
 /**
+ * A popup notification widget that renders a notification in a nice fading popup.
+ * <p/>
+ * Implementation is inspired by the hexapixel tutorial available 
+ * <a href="http://hexapixel.com/2009/06/30/creating-a-notification-popup-widget">here</a>.
  * 
+ * @see http://hexapixel.com/2009/06/30/creating-a-notification-popup-widget
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class PopupNotification
@@ -71,9 +76,9 @@ public class PopupNotification
 	 * 
 	 * @param notification The notification to show
 	 */
-	public static void show(INotification notification)
+	public static void show(INotification notification, IPopupNotificationPreferences preferences)
 	{
-		PopupNotification pn = new PopupNotification();
+		PopupNotification pn = new PopupNotification(preferences);
 		pn.showPopupNotification(notification);
 	}
 
@@ -83,9 +88,9 @@ public class PopupNotification
 	/**
 	 * No-arg constructor used for dependency injection
 	 */
-	PopupNotification()
+	PopupNotification(IPopupNotificationPreferences preferences)
 	{
-		// DO NOTHING
+		this.preferences = preferences;
 	}
 	
 	/**
