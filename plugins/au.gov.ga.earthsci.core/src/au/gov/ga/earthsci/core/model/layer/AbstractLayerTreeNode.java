@@ -17,10 +17,6 @@ package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 
@@ -30,7 +26,7 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLayerTreeNode> implements
-		ILayerTreeNode<AbstractLayerTreeNode>, PropertyChangeListener
+		ILayerTreeNode<AbstractLayerTreeNode>
 {
 	private String name;
 	private LayerList layerList;
@@ -88,21 +84,15 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt)
+	protected void setChildren(ITreeNode<AbstractLayerTreeNode>[] children)
 	{
-		if ("children".equals(evt.getPropertyName())) //$NON-NLS-1$
-		{
-			if (evt.getOldValue() instanceof AbstractLayerTreeNode[]
-					&& evt.getNewValue() instanceof AbstractLayerTreeNode[])
-			{
-				AbstractLayerTreeNode[] oldChildren = (AbstractLayerTreeNode[]) evt.getOldValue();
-				AbstractLayerTreeNode[] newChildren = (AbstractLayerTreeNode[]) evt.getNewValue();
-				childrenChanged(oldChildren, newChildren);
-			}
-		}
+		ITreeNode<AbstractLayerTreeNode>[] oldChildren = getChildren();
+		super.setChildren(children);
+		childrenChanged(oldChildren, children);
 	}
 
-	protected void childrenChanged(AbstractLayerTreeNode[] oldChildren, AbstractLayerTreeNode[] newChildren)
+	protected void childrenChanged(ITreeNode<AbstractLayerTreeNode>[] oldChildren,
+			ITreeNode<AbstractLayerTreeNode>[] newChildren)
 	{
 		if (layerList != null)
 		{
