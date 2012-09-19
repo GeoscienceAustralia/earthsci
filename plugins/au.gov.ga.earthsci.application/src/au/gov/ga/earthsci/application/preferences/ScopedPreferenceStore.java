@@ -341,7 +341,7 @@ public class ScopedPreferenceStore extends EventManager implements
 				Assert
 						.isTrue(
 								false,
-								"Do not add the default to the search contexts");
+								"Do not add the default to the search contexts"); //$NON-NLS-1$
 			}
 		}
 	}
