@@ -5,8 +5,8 @@
       <children xsi:type="advanced:Perspective" xmi:id="_007tcPsMEeG36NOaHUgVKA">
         <children xsi:type="basic:PartSashContainer" xmi:id="_007tcfsMEeG36NOaHUgVKA" horizontal="true">
           <children xsi:type="basic:PartStack" xmi:id="_007tcvsMEeG36NOaHUgVKA">
-            <children xsi:type="basic:Part" xmi:id="_zNrj8PvCEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layerlist" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.LayerListPart" label="Layers" closeable="true"/>
-            <children xsi:type="basic:Part" xmi:id="_xTsA0PvgEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layerlist2" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.LayerListPart" label="Layers 2" closeable="true"/>
+            <children xsi:type="basic:Part" xmi:id="_zNrj8PvCEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layertree" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.LayerTreePart" label="Layers Tree" closeable="true"/>
+            <children xsi:type="basic:Part" xmi:id="_xTsA0PvgEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layerlist" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.LayerListPart" label="Layers List" closeable="true"/>
           </children>
           <children xsi:type="basic:PartStack" xmi:id="_QfsYYPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0">
             <children xsi:type="basic:Part" xmi:id="_RALPQPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.worldwindow" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.WorldWindowPart" label="World Window" closeable="true"/>
