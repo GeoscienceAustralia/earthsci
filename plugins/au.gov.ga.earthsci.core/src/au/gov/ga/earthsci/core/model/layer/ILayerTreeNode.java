@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.layers.LayerList;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
+import au.gov.ga.earthsci.core.util.IEnableable;
 import au.gov.ga.earthsci.core.util.INameable;
 import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
@@ -42,4 +43,12 @@ public interface ILayerTreeNode<E extends ILayerTreeNode<E>> extends ITreeNode<E
 	 * @return Are all of this node's children enabled?
 	 */
 	boolean isAllChildrenEnabled();
+
+	/**
+	 * Enable/disable this node (if {@link IEnableable}), and enable/disable all
+	 * {@link IEnableable} children.
+	 * 
+	 * @param enabled
+	 */
+	void enableChildren(boolean enabled);
 }

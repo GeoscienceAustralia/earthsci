@@ -92,6 +92,23 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 	}
 
 	@Override
+	public void enableChildren(boolean enabled)
+	{
+		if (this instanceof IEnableable)
+		{
+			IEnableable enableable = (IEnableable) this;
+			enableable.setEnabled(enabled);
+		}
+		if (hasChildren())
+		{
+			for (ITreeNode<AbstractLayerTreeNode> child : getChildren())
+			{
+				child.getValue().enableChildren(enabled);
+			}
+		}
+	}
+
+	@Override
 	public LayerList getLayerList()
 	{
 		if (layerList == null)
