@@ -61,15 +61,13 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 	@Override
 	public boolean isAnyChildrenEnabled()
 	{
-		lastAnyChildrenEnabled = anyChildrenEnabledEquals(true);
-		return lastAnyChildrenEnabled;
+		return anyChildrenEnabledEquals(true);
 	}
 
 	@Override
 	public boolean isAllChildrenEnabled()
 	{
-		lastAllChildrenEnabled = !anyChildrenEnabledEquals(false);
-		return lastAllChildrenEnabled;
+		return !anyChildrenEnabledEquals(false);
 	}
 
 	protected boolean anyChildrenEnabledEquals(boolean enabled)
@@ -166,8 +164,10 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 
 	protected void enabledChanged()
 	{
-		firePropertyChange("allChildrenEnabled", lastAllChildrenEnabled, isAllChildrenEnabled()); //$NON-NLS-1$
-		firePropertyChange("anyChildrenEnabled", lastAnyChildrenEnabled, isAnyChildrenEnabled()); //$NON-NLS-1$
+		firePropertyChange(
+				"allChildrenEnabled", lastAllChildrenEnabled, lastAllChildrenEnabled = isAllChildrenEnabled()); //$NON-NLS-1$
+		firePropertyChange(
+				"anyChildrenEnabled", lastAnyChildrenEnabled, lastAnyChildrenEnabled = isAnyChildrenEnabled()); //$NON-NLS-1$
 
 		if (!isRoot())
 		{
