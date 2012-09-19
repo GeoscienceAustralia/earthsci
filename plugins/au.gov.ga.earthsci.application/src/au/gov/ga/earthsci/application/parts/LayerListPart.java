@@ -27,7 +27,6 @@ import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.property.Properties;
-import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -47,9 +46,6 @@ import au.gov.ga.earthsci.core.worldwind.TreeModel;
  */
 public class LayerListPart
 {
-	@Inject
-	private IEclipseContext context;
-
 	@Inject
 	private TreeModel worldWindModel;
 
