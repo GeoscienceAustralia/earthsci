@@ -5,10 +5,11 @@ Bundle-SymbolicName: au.gov.ga.earthsci.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: au.gov.ga.earthsci.core.tree,
+Export-Package: au.gov.ga.earthsci.core.model.catalog,
+ au.gov.ga.earthsci.core.model.layer,
+ au.gov.ga.earthsci.core.tree,
  au.gov.ga.earthsci.core.util,
  au.gov.ga.earthsci.core.worldwind,
- au.gov.ga.earthsci.core.worldwind.layers,
  au.gov.ga.earthsci.notification
 Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
  org.eclipse.e4.core.di;bundle-version="1.1.0",

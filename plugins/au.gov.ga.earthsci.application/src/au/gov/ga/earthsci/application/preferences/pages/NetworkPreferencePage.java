@@ -16,7 +16,7 @@
 package au.gov.ga.earthsci.application.preferences.pages;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -25,6 +25,8 @@ import org.eclipse.jface.preference.StringFieldEditor;
 
 import au.gov.ga.earthsci.application.preferences.PreferenceConstants;
 import au.gov.ga.earthsci.application.preferences.ScopedPreferenceStore;
+import au.gov.ga.earthsci.application.preferences.fieldeditor.ListenableRadioGroupFieldEditor;
+import au.gov.ga.earthsci.application.preferences.fieldeditor.ListenableRadioGroupFieldEditor.ChangeListener;
 
 /**
  * {@link PreferencePage} which allows configuration of how the application
@@ -45,12 +47,38 @@ public class NetworkPreferencePage extends FieldEditorPreferencePage
 	@Override
 	public void createFieldEditors()
 	{
-		addField(new BooleanFieldEditor(PreferenceConstants.USE_SYSTEM_PROXIES, "Use &system proxies",
-				getFieldEditorParent()));
-		addField(new StringFieldEditor(PreferenceConstants.PROXY_HOST, "Proxy &host", getFieldEditorParent()));
-		addField(new IntegerFieldEditor(PreferenceConstants.PROXY_PORT, "Proxy &port", getFieldEditorParent()));
-		addField(new NonProxyHostsListEditor(PreferenceConstants.NON_PROXY_HOSTS, "&Non-proxy hosts",
-				getFieldEditorParent()));
+		ListenableRadioGroupFieldEditor proxyType =
+				new ListenableRadioGroupFieldEditor(PreferenceConstants.PROXY_TYPE, "", 1, new String[][] {
+						{ "&No proxy", PreferenceConstants.PROXY_TYPE_NONE },
+						{ "&System proxy", PreferenceConstants.PROXY_TYPE_SYSTEM },
+						{ "&User proxy:", PreferenceConstants.PROXY_TYPE_USER } }, getFieldEditorParent());
+		addField(proxyType);
+
+		final FieldEditor[] userFields =
+				new FieldEditor[] {
+						new StringFieldEditor(PreferenceConstants.PROXY_HOST, "Proxy &host", getFieldEditorParent()),
+						new IntegerFieldEditor(PreferenceConstants.PROXY_PORT, "Proxy &port", getFieldEditorParent()),
+						new NonProxyHostsListEditor(PreferenceConstants.NON_PROXY_HOSTS, "&Non-proxy hosts",
+								getFieldEditorParent()) };
+		for (FieldEditor userField : userFields)
+		{
+			addField(userField);
+		}
+
+		ChangeListener listener = new ChangeListener()
+		{
+			@Override
+			public void valueChanged(String newValue)
+			{
+				boolean enabled = PreferenceConstants.PROXY_TYPE_USER.equals(newValue);
+				for (FieldEditor customField : userFields)
+				{
+					customField.setEnabled(enabled, getFieldEditorParent());
+				}
+			}
+		};
+		proxyType.addListener(listener);
+		listener.valueChanged(proxyType.getStringValue());
 
 		//addField(new DirectoryFieldEditor(PreferenceConstants.P_PATH, "&Directory preference:", getFieldEditorParent()));
 		//addField(new BooleanFieldEditor(PreferenceConstants.P_BOOLEAN, "&An example of a boolean preference", getFieldEditorParent()));

@@ -60,6 +60,11 @@ public interface ITreeNode<E>
 	ITreeNode<E>[] getChildren();
 
 	/**
+	 * @return Number of children of this node.
+	 */
+	int getChildCount();
+
+	/**
 	 * @param index
 	 * @return This node's child at <code>index</code>.
 	 */
@@ -122,4 +127,9 @@ public interface ITreeNode<E>
 	 *         node.
 	 */
 	ITreeNode<E>[] pathToRoot();
+
+	/**
+	 * @return The root node of this node.
+	 */
+	ITreeNode<E> getRoot();
 }

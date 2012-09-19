@@ -13,29 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application;
-
-import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.avlist.AVKey;
-
-import javax.inject.Singleton;
-
-import org.eclipse.e4.core.di.annotations.Creatable;
-
-import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
+package au.gov.ga.earthsci.core.util;
 
 /**
- * Helper class which sets up the required World Wind {@link Configuration}
- * values.
+ * Represents an object with a mutable name.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@Creatable
-@Singleton
-public class WorldWindConfigurator
+public interface INameable extends INamed
 {
-	public WorldWindConfigurator()
-	{
-		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
-	}
+	/**
+	 * Set this object's name.
+	 * 
+	 * @param name
+	 */
+	void setName(String name);
 }

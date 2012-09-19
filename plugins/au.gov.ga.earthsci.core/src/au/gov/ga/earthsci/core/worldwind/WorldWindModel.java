@@ -15,18 +15,12 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.worldwind;
 
-import gov.nasa.worldwind.BasicFactory;
 import gov.nasa.worldwind.BasicModel;
-import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.layers.Layer;
-import gov.nasa.worldwind.layers.LayerList;
-
-import org.w3c.dom.Element;
-
-import au.gov.ga.earthsci.core.model.layer.TreeLayerList;
+import au.gov.ga.earthsci.core.model.layer.DefaultLayers;
+import au.gov.ga.earthsci.core.model.layer.FolderNode;
 
 /**
  * {@link BasicModel} subclass used to override specific functionality, such as
@@ -34,11 +28,27 @@ import au.gov.ga.earthsci.core.model.layer.TreeLayerList;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class WorldWindModel extends BasicModel
+public class WorldWindModel extends BasicModel implements TreeModel
 {
+	private final FolderNode rootNode;
+
 	public WorldWindModel()
 	{
-		super(createGlobe(), createLayerList());
+		this(createRootNode());
+	}
+
+	private WorldWindModel(FolderNode rootNode)
+	{
+		super(createGlobe(), rootNode.getLayerList());
+		this.rootNode = rootNode;
+	}
+
+	protected static FolderNode createRootNode()
+	{
+		FolderNode rootNode = new FolderNode();
+		rootNode.setName("root"); //$NON-NLS-1$
+		rootNode.add(DefaultLayers.getDefaultLayers());
+		return rootNode;
 	}
 
 	protected static Globe createGlobe()
@@ -46,29 +56,9 @@ public class WorldWindModel extends BasicModel
 		return (Globe) WorldWind.createConfigurationComponent(AVKey.GLOBE_CLASS_NAME);
 	}
 
-	protected static LayerList createLayerList()
+	@Override
+	public FolderNode getRootNode()
 	{
-		Element element = Configuration.getElement("./LayerList"); //$NON-NLS-1$
-		return createLayersFromElementStatic(element);
-	}
-
-	protected static LayerList createLayersFromElementStatic(Element element)
-	{
-		Object o = BasicFactory.create(AVKey.LAYER_FACTORY, element);
-
-		if (o instanceof LayerList)
-			return (LayerList) o;
-
-		if (o instanceof Layer)
-			return new TreeLayerList(new Layer[] { (Layer) o });
-
-		if (o instanceof LayerList[])
-		{
-			LayerList[] lists = (LayerList[]) o;
-			if (lists.length > 0)
-				return LayerList.collapseLists((LayerList[]) o);
-		}
-
-		return null;
+		return rootNode;
 	}
 }

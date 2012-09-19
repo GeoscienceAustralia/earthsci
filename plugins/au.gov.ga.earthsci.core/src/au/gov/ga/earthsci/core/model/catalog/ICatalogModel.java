@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.worldwind.layers;
-
-import au.gov.ga.earthsci.core.model.layer.TreeLayerList;
-import gov.nasa.worldwind.layers.Layer;
-import gov.nasa.worldwind.layers.LayerList;
+package au.gov.ga.earthsci.core.model.catalog;
 
 /**
- * Factory used for generating {@link Layer}s and {@link LayerList}s.
+ * Represents the model of the available catalogs.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerFactory extends AbstractLayerFactory
+public interface ICatalogModel
 {
-	@Override
-	protected LayerList createLayerList()
-	{
-		return new TreeLayerList();
-	}
+	ICatalogTreeNode getRoot();
 }

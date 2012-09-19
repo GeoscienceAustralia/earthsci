@@ -15,7 +15,10 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.layer;
 
+import gov.nasa.worldwind.layers.LayerList;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
+import au.gov.ga.earthsci.core.util.IEnableable;
+import au.gov.ga.earthsci.core.util.INameable;
 import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
 /**
@@ -23,17 +26,29 @@ import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChangeBean
+public interface ILayerTreeNode<E extends ILayerTreeNode<E>> extends ITreeNode<E>, IPropertyChangeBean, INameable
 {
 	/**
-	 * @return The name (label) of this value.
+	 * @return A {@link LayerList} that contains all layers in the tree at and
+	 *         below this node.
 	 */
-	String getName();
+	LayerList getLayerList();
 
 	/**
-	 * Set the name (label) of this value.
-	 * 
-	 * @param name
+	 * @return Are any of this node's children enabled?
 	 */
-	void setName(String name);
+	boolean isAnyChildrenEnabled();
+
+	/**
+	 * @return Are all of this node's children enabled?
+	 */
+	boolean isAllChildrenEnabled();
+
+	/**
+	 * Enable/disable this node (if {@link IEnableable}), and enable/disable all
+	 * {@link IEnableable} children.
+	 * 
+	 * @param enabled
+	 */
+	void enableChildren(boolean enabled);
 }

@@ -16,7 +16,6 @@
 package au.gov.ga.earthsci.application.parts;
 
 import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.Model;
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 
@@ -25,11 +24,11 @@ import java.awt.Frame;
 
 import javax.inject.Inject;
 
-import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
 
+import au.gov.ga.earthsci.core.worldwind.TreeModel;
 import au.gov.ga.earthsci.newt.awt.NewtInputHandlerAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtAutoDrawableAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtCanvasAWT;
@@ -42,7 +41,7 @@ import au.gov.ga.earthsci.newt.awt.WorldWindowNewtCanvasAWT;
 public class WorldWindowPart
 {
 	@Inject
-	private IEclipseContext context;
+	private TreeModel model;
 
 	@Inject
 	public void init(Composite parent)
@@ -56,6 +55,6 @@ public class WorldWindowPart
 		WorldWindowNewtCanvasAWT wwd = new WorldWindowNewtCanvasAWT();
 		frame.add(wwd, BorderLayout.CENTER);
 
-		wwd.setModel(context.get(Model.class));
+		wwd.setModel(model);
 	}
 }

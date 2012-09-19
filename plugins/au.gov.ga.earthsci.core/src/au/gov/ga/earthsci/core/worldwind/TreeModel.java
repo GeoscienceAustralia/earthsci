@@ -13,29 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application;
+package au.gov.ga.earthsci.core.worldwind;
 
-import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.avlist.AVKey;
-
-import javax.inject.Singleton;
-
-import org.eclipse.e4.core.di.annotations.Creatable;
-
-import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
+import gov.nasa.worldwind.Model;
+import au.gov.ga.earthsci.core.model.layer.FolderNode;
 
 /**
- * Helper class which sets up the required World Wind {@link Configuration}
- * values.
+ * {@link Model} subinterface that supports a layer list in a tree hierarchy.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@Creatable
-@Singleton
-public class WorldWindConfigurator
+public interface TreeModel extends Model
 {
-	public WorldWindConfigurator()
-	{
-		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
-	}
+	/**
+	 * @return The root node of the layer list tree.
+	 */
+	FolderNode getRootNode();
 }

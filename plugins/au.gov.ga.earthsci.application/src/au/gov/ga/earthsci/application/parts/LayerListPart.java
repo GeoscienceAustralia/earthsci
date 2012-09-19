@@ -27,7 +27,6 @@ import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.property.Properties;
-import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -38,6 +37,8 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
+import au.gov.ga.earthsci.core.worldwind.TreeModel;
+
 /**
  * Part which views the current layer state in the World Wind {@link Model}.
  * 
@@ -46,10 +47,7 @@ import org.eclipse.swt.widgets.Composite;
 public class LayerListPart
 {
 	@Inject
-	private IEclipseContext context;
-
-	@Inject
-	private Model worldWindModel;
+	private TreeModel worldWindModel;
 
 	@Inject
 	public void init(Composite parent)

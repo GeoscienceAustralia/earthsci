@@ -30,7 +30,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
 	public void initializeDefaultPreferences()
 	{
 		IPreferenceStore store = new ScopedPreferenceStore(DefaultScope.INSTANCE, PreferenceConstants.QUALIFIER_ID);
-		store.setDefault(PreferenceConstants.USE_SYSTEM_PROXIES, true);
+		store.setDefault(PreferenceConstants.PROXY_TYPE, PreferenceConstants.PROXY_TYPE_SYSTEM);
 		store.setDefault(PreferenceConstants.PROXY_HOST, ""); //$NON-NLS-1$
 		store.setDefault(PreferenceConstants.PROXY_PORT, 80);
 		store.setDefault(PreferenceConstants.NON_PROXY_HOSTS, "localhost"); //$NON-NLS-1$
