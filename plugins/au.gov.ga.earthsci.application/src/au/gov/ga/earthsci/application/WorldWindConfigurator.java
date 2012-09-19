@@ -23,7 +23,6 @@ import javax.inject.Singleton;
 import org.eclipse.e4.core.di.annotations.Creatable;
 
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
-import au.gov.ga.earthsci.core.worldwind.layers.LayerFactory;
 
 /**
  * Helper class which sets up the required World Wind {@link Configuration}
@@ -37,7 +36,6 @@ public class WorldWindConfigurator
 {
 	public WorldWindConfigurator()
 	{
-		Configuration.setValue(AVKey.LAYER_FACTORY, LayerFactory.class.getName());
 		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
 	}
 }
