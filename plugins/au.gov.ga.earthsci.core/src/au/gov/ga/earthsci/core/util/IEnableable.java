@@ -13,33 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer;
-
-import gov.nasa.worldwind.layers.LayerList;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
-import au.gov.ga.earthsci.core.util.INameable;
-import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
+package au.gov.ga.earthsci.core.util;
 
 /**
- * Represents a tree node value in the layer tree.
+ * Represents an object that can be enabled/disabled.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerTreeNode<E extends ILayerTreeNode<E>> extends ITreeNode<E>, IPropertyChangeBean, INameable
+public interface IEnableable
 {
 	/**
-	 * @return A {@link LayerList} that contains all layers in the tree at and
-	 *         below this node.
+	 * @return Is this object enabled?
 	 */
-	LayerList getLayerList();
+	boolean isEnabled();
 
 	/**
-	 * @return Are any of this node's children enabled?
+	 * Enable/disable this object.
+	 * 
+	 * @param enabled
 	 */
-	boolean isAnyChildrenEnabled();
-
-	/**
-	 * @return Are all of this node's children enabled?
-	 */
-	boolean isAllChildrenEnabled();
+	void setEnabled(boolean enabled);
 }

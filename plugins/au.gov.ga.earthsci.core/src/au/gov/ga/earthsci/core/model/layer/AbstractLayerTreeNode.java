@@ -17,8 +17,13 @@ package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
+import au.gov.ga.earthsci.core.util.IEnableable;
 
 /**
  * Abstract implementation of the {@link ILayerTreeNode} interface.
@@ -30,11 +35,13 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 {
 	private String name;
 	private LayerList layerList;
+	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
 
 	protected AbstractLayerTreeNode()
 	{
 		super();
 		setValue(this);
+		addPropertyChangeListener("enabled", new EnabledChangeListener()); //$NON-NLS-1$
 	}
 
 	@Override
@@ -49,6 +56,39 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 		String oldValue = getName();
 		this.name = name;
 		firePropertyChange("name", oldValue, name); //$NON-NLS-1$
+	}
+
+	@Override
+	public boolean isAnyChildrenEnabled()
+	{
+		lastAnyChildrenEnabled = anyChildrenEnabledEquals(true);
+		return lastAnyChildrenEnabled;
+	}
+
+	@Override
+	public boolean isAllChildrenEnabled()
+	{
+		lastAllChildrenEnabled = !anyChildrenEnabledEquals(false);
+		return lastAllChildrenEnabled;
+	}
+
+	protected boolean anyChildrenEnabledEquals(boolean enabled)
+	{
+		if (this instanceof IEnableable)
+		{
+			IEnableable enableable = (IEnableable) this;
+			if (enableable.isEnabled() == enabled)
+				return true;
+		}
+		if (hasChildren())
+		{
+			for (ITreeNode<AbstractLayerTreeNode> child : getChildren())
+			{
+				if (child.getValue().anyChildrenEnabledEquals(enabled))
+					return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -104,6 +144,27 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 		{
 			//recurse up to the root node
 			getParent().getValue().childrenChanged(oldChildren, newChildren);
+		}
+	}
+
+	protected void enabledChanged()
+	{
+		firePropertyChange("allChildrenEnabled", lastAllChildrenEnabled, isAllChildrenEnabled()); //$NON-NLS-1$
+		firePropertyChange("anyChildrenEnabled", lastAnyChildrenEnabled, isAnyChildrenEnabled()); //$NON-NLS-1$
+
+		if (!isRoot())
+		{
+			//recurse up to the root node
+			getParent().getValue().enabledChanged();
+		}
+	}
+
+	protected class EnabledChangeListener implements PropertyChangeListener
+	{
+		@Override
+		public void propertyChange(PropertyChangeEvent evt)
+		{
+			enabledChanged();
 		}
 	}
 }

@@ -29,6 +29,8 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import au.gov.ga.earthsci.core.util.IEnableable;
+
 /**
  * Layer tree node implementation for layers. Implements the {@link Layer}
  * interface, and delegates all layer methods to a Layer object provided in the
@@ -39,7 +41,7 @@ import java.util.Set;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerNode extends AbstractLayerTreeNode implements Layer
+public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableable
 {
 	protected Layer layer = new DummyLayer();
 	protected Set<String> propertiesChanged = new HashSet<String>();
