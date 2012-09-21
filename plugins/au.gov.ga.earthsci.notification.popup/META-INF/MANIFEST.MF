@@ -24,7 +24,10 @@ Require-Bundle: au.gov.ga.earthsci.core;bundle-version="1.0.0",
  org.eclipse.e4.core.di.extensions;bundle-version="0.11.0",
  org.eclipse.e4.core.contexts;bundle-version="1.1.0",
  org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.help.ui;bundle-version="3.5.200",
+ org.eclipse.help.webapp;bundle-version="3.6.100",
+ org.eclipse.help
 Bundle-ActivationPolicy: lazy
 Export-Package: au.gov.ga.earthsci.notification.popup,
  au.gov.ga.earthsci.notification.popup.preferences,
