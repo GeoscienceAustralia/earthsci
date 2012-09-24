@@ -262,6 +262,10 @@ public class Persister
 			nameElement.setAttribute(NULL_ATTRIBUTE, Boolean.TRUE.toString());
 			return;
 		}
+
+		IPersistantAdapter<?> persistantAdapter = getAdapter(value.getClass(), adapter);
+		boolean isExportable = AnnotationUtil.getAnnotation(value.getClass(), Exportable.class) != null;
+
 		//if the value type isn't the same as the type specified by the field/method, and
 		//it isn't a boxed version, then save the type as an attribute on the element
 		boolean classNameSaved = false;
@@ -270,7 +274,7 @@ public class Persister
 			boolean boxed =
 					baseType != null && baseType.isPrimitive()
 							&& Util.primitiveClassToBoxed(baseType).equals(value.getClass());
-			if (!boxed)
+			if (!boxed && !(persistantAdapter == null && isExportable))
 			{
 				nameElement.setAttribute(CLASS_NAME_ATTRIBUTE, value.getClass().getCanonicalName());
 				classNameSaved = true;
@@ -307,7 +311,6 @@ public class Persister
 			return;
 		}
 
-		IPersistantAdapter<?> persistantAdapter = getAdapter(value.getClass(), adapter);
 		if (persistantAdapter != null)
 		{
 			//if there's a IPersistantAdapter for this object's type, use it to create the XML
@@ -315,7 +318,7 @@ public class Persister
 			IPersistantAdapter<Object> objectAdapter = (IPersistantAdapter<Object>) persistantAdapter;
 			objectAdapter.toXML(value, nameElement, context);
 		}
-		else if (AnnotationUtil.getAnnotation(value.getClass(), Exportable.class) != null)
+		else if (isExportable)
 		{
 			//if the object is itself exportable, recurse
 			save(value, nameElement, context);
@@ -354,20 +357,7 @@ public class Persister
 			throw new NullPointerException("Element cannot be null"); //$NON-NLS-1$
 		}
 
-		String elementName = element.getTagName();
-		Class<?> c = nameToExportable.get(elementName);
-		if (c == null)
-		{
-			try
-			{
-				c = Class.forName(elementName);
-			}
-			catch (ClassNotFoundException e)
-			{
-				throw new IllegalArgumentException("Could not determine class for element tag name: " + elementName); //$NON-NLS-1$
-			}
-		}
-
+		Class<?> c = getExportableType(element);
 		assertIsExportable(c);
 		Constructor<?> constructor = null;
 		try
@@ -533,7 +523,15 @@ public class Persister
 
 		if (type == null)
 		{
-			throw new NullPointerException("Unpersist type is null"); //$NON-NLS-1$
+			Element firstChild = element == null ? null : XmlUtil.getFirstChildElement(element);
+			if (firstChild == null)
+			{
+				throw new NullPointerException("Unpersist type is null"); //$NON-NLS-1$
+			}
+
+			//if the type isn't defined, assume the first child element is exportable
+			type = getExportableType(firstChild);
+			assertIsExportable(type);
 		}
 
 		//handle array/collection types
@@ -875,6 +873,24 @@ public class Persister
 			}
 		}
 		return persistantAdapter;
+	}
+
+	protected Class<?> getExportableType(Element element)
+	{
+		String elementName = element.getTagName();
+		Class<?> c = nameToExportable.get(elementName);
+		if (c == null)
+		{
+			try
+			{
+				c = Class.forName(elementName);
+			}
+			catch (ClassNotFoundException e)
+			{
+				throw new IllegalArgumentException("Could not determine class for element tag name: " + elementName); //$NON-NLS-1$
+			}
+		}
+		return c;
 	}
 
 	/**
