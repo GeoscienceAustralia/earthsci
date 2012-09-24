@@ -25,6 +25,9 @@ import org.eclipse.e4.core.services.log.Logger;
  * <p/>
  * The manager maintains a list of {@link INotificationReceiver}s which can register to receive user notifications.
  * The manager invokes each of these handlers when a new user notification is received.  
+ * <p/>
+ * Plugins can provide additional {@link INotificationReceiver} implementations using the {@value #EXTENSION_POINT_ID} extension point.
+ * These can be discovered at runtime and registered with the manager via the {@link #loadReceivers(IExtensionRegistry, IEclipseContext)} method. 
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -65,6 +68,8 @@ public class NotificationManager
 	@Inject
 	public void loadReceivers(IExtensionRegistry registry, IEclipseContext context)
 	{
+		logger.info("Registering notification recievers"); //$NON-NLS-1$
+		
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(EXTENSION_POINT_ID);
 		try
 		{
@@ -124,11 +129,12 @@ public class NotificationManager
 	 */
 	public void registerReceiver(INotificationReceiver receiver)
 	{
-		System.out.println(receiver);
 		if (receiver == null)
 		{
 			return;
 		}
+		logger.debug("Registered notification receiver: {0}", receiver.getClass()); //$NON-NLS-1$
+
 		receiversLock.writeLock().lock();
 		receivers.add(receiver);
 		receiversLock.writeLock().unlock();
@@ -145,6 +151,8 @@ public class NotificationManager
 		{
 			return;
 		}
+		
+		logger.debug("Removed notification receiver {0}", receiver.getClass()); //$NON-NLS-1$
 		
 		receiversLock.writeLock().lock();
 		receivers.remove(receiver);

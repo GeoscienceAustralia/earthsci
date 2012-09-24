@@ -33,7 +33,7 @@
             name="Network Connections">
       </page>
       <page
-            class="au.gov.ga.earthsci.notification.preferences.NotificationPreferences"
+            class="au.gov.ga.earthsci.notification.preferences.NotificationPreferencesPage"
             id="au.gov.ga.earthsci.notifications"
             name="Notifications">
       </page>

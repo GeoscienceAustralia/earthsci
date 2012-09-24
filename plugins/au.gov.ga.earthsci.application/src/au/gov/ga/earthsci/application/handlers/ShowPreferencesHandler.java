@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.application.handlers;
 
 import java.lang.reflect.InvocationTargetException;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferenceManager;
@@ -44,6 +46,15 @@ public class ShowPreferencesHandler
 	@Inject
 	protected IExtensionRegistry registry;
 
+	@Inject
+	private Logger logger;
+	
+	@PostConstruct
+	public void postInitialise(IEclipseContext context)
+	{
+		PreferenceUtil.setLogger(logger);
+	}
+	
 	@Execute
 	public void execute(IEclipseContext context, @Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 			throws InvocationTargetException, InterruptedException

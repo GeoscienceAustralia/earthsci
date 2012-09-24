@@ -21,6 +21,8 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tbPsMEeG36NOaHUgVKA" label="Quit" command="_007tWvsMEeG36NOaHUgVKA"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_007tbfsMEeG36NOaHUgVKA" label="Help">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_ogLhQALaEeK4hsezy7qCSg" elementId="au.gov.ga.earthsci.displayHelp" label="Help Contents" tooltip="Display the application help" command="_t3D6kAODEeK17JdaarPZug"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_45q4MALaEeK4hsezy7qCSg" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tbvsMEeG36NOaHUgVKA" label="About" command="_007tZPsMEeG36NOaHUgVKA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_y0L9gPvQEeG36NOaHUgVKA" elementId="" label="Show View" command="_pU-REPvQEeG36NOaHUgVKA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_40V18Px8EeG36NOaHUgVKA" elementId="" label="Preferences..." command="_940mAPyIEeG36NOaHUgVKA"/>
@@ -39,11 +41,13 @@
   <handlers xmi:id="_007tZfsMEeG36NOaHUgVKA" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.AboutHandler" command="_007tZPsMEeG36NOaHUgVKA"/>
   <handlers xmi:id="_GJ_xEPvQEeG36NOaHUgVKA" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.ShowViewHandler" command="_pU-REPvQEeG36NOaHUgVKA"/>
   <handlers xmi:id="_BbnXUPyJEeG36NOaHUgVKA" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.ShowPreferencesHandler" command="_940mAPyIEeG36NOaHUgVKA"/>
+  <handlers xmi:id="_KQJ3EAOEEeK17JdaarPZug" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.HelpHandler" command="_t3D6kAODEeK17JdaarPZug"/>
   <bindingTables xmi:id="_007tXPsMEeG36NOaHUgVKA" bindingContext="_007tUfsMEeG36NOaHUgVKA">
     <bindings xmi:id="_007tXfsMEeG36NOaHUgVKA" keySequence="M1+Q" command="_007tWvsMEeG36NOaHUgVKA"/>
     <bindings xmi:id="_007tYPsMEeG36NOaHUgVKA" keySequence="M1+O" command="_007tXvsMEeG36NOaHUgVKA"/>
     <bindings xmi:id="_007tY_sMEeG36NOaHUgVKA" keySequence="M1+S" command="_007tYfsMEeG36NOaHUgVKA"/>
     <bindings xmi:id="_007tZvsMEeG36NOaHUgVKA" keySequence="M1+A" command="_007tZPsMEeG36NOaHUgVKA"/>
+    <bindings xmi:id="_fpbdkAOLEeK17JdaarPZug" keySequence="F1" command="_t3D6kAODEeK17JdaarPZug"/>
   </bindingTables>
   <rootContext xmi:id="_007tUfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_007tUvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
@@ -55,6 +59,7 @@
   <commands xmi:id="_007tZPsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
   <commands xmi:id="_pU-REPvQEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.showView" commandName="showViewCommand"/>
   <commands xmi:id="_940mAPyIEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.showPreferences" commandName="showPreferencesCommand"/>
+  <commands xmi:id="_t3D6kAODEeK17JdaarPZug" elementId="org.eclipse.ui.help.helpContents" commandName="showHelpCommand" description="Launch the help system"/>
   <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_007tVfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_007tVvsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

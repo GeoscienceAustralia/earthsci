@@ -15,11 +15,19 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.preferences;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.inject.Inject;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.services.contributions.IContributionFactory;
+import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.preference.PreferenceManager;
@@ -43,6 +51,17 @@ public class PreferenceUtil
 	private static final String ATTR_CLASS = "class"; //$NON-NLS-1$
 	private static final String ATTR_NAME = "name"; //$NON-NLS-1$
 
+	// Some plugins from v3 provide preferences that break the system. This is a
+	// hack to fix that. Add the ID of blacklist plugins here.
+	private static final Set<String> BLACKLIST_PREFERENCES = new HashSet<String>();
+	static
+	{
+		BLACKLIST_PREFERENCES.add("org.eclipse.help.ui"); //$NON-NLS-1$
+	}
+	
+	@Inject
+	public static Logger logger;
+	
 	/**
 	 * Create a {@link PreferenceManager} instance which contains all the
 	 * {@link PreferencePage}s listed in the legacy plugin.xml. These are all
@@ -59,77 +78,146 @@ public class PreferenceUtil
 	 */
 	public static PreferenceManager createLegacyPreferenceManager(IEclipseContext context, IExtensionRegistry registry)
 	{
+		List<IConfigurationElement> preferenceElements = findPreferenceElementsFromRegistry(registry);
+		
 		PreferenceManager pm = new PreferenceManager();
-		IContributionFactory factory = context.get(IContributionFactory.class);
+		
+		populatePreferenceManager(pm, context, preferenceElements);
+		
+		return pm;
+	}
 
-		for (IConfigurationElement elmt : registry
-				.getConfigurationElementsFor(PreferenceConstants.PAGES_EXTENSION_POINT))
+	/**
+	 * Populate the provided preference manager with nodes from the provided list of preference elements.
+	 * 
+	 * @param pm The preference manager to populate
+	 * @param preferenceElements The list of preference elements from which to populate the manager
+	 * @param context The current eclipse context for DI etc.
+	 */
+	private static void populatePreferenceManager(PreferenceManager pm, IEclipseContext context, List<IConfigurationElement> preferenceElements)
+	{
+		// Add nodes in 3 phases:
+		// 1. Add all root nodes (no category specified)
+		// 2. Progressively add child nodes to build up the node tree, breadth first
+		// 3. Add remaining (orphan) child nodes, along with a warning
+		
+		// Add root nodes
+		int maxPathLength = 0;
+		List<IConfigurationElement> remainingElements = new ArrayList<IConfigurationElement>();
+		for (IConfigurationElement elmt : preferenceElements)
 		{
+			if (isEmpty(elmt.getAttribute(ATTR_CATEGORY)))
+			{
+				IPreferenceNode node = createPreferenceNode(elmt, context);
+				if (node == null)
+				{
+					continue;
+				}
+				pm.addToRoot(node);
+			}
+			else
+			{
+				int categoryPathLength = elmt.getAttribute(ATTR_CATEGORY).split("\\\\").length; //$NON-NLS-1$
+				maxPathLength = Math.max(maxPathLength, categoryPathLength);
+				remainingElements.add(elmt);
+			}
+		}
+		
+		// Add child nodes
+		preferenceElements = remainingElements;
+		for (int i = 0; i < maxPathLength; i++)
+		{
+			remainingElements = new ArrayList<IConfigurationElement>();
+			for (IConfigurationElement elmt : preferenceElements)
+			{
+				IPreferenceNode parent = findNode(pm, elmt.getAttribute(ATTR_CATEGORY));
+				if (parent != null)
+				{
+					IPreferenceNode node = createPreferenceNode(elmt, context);
+					parent.add(node);
+				}
+				else
+				{
+					remainingElements.add(elmt);
+				}
+			}
+			preferenceElements = remainingElements;
+		}
+		
+		// Finally, add any nodes that are parent-less, along with a warning
+		for (IConfigurationElement elmt : preferenceElements)
+		{
+			logger.warn("Preference page {0} expected category {1} but none was found.", elmt.getAttribute(ATTR_ID), elmt.getAttribute(ATTR_CATEGORY)); //$NON-NLS-1$
+			IPreferenceNode node = createPreferenceNode(elmt, context);
+			if (node == null)
+			{
+				continue;
+			}
+			pm.addToRoot(node);
+		}
+	}
+
+	private static List<IConfigurationElement> findPreferenceElementsFromRegistry(IExtensionRegistry registry)
+	{
+		List<IConfigurationElement> elements = new ArrayList<IConfigurationElement>();
+		for (IConfigurationElement elmt : registry.getConfigurationElementsFor(PreferenceConstants.PAGES_EXTENSION_POINT))
+		{
+			if (BLACKLIST_PREFERENCES.contains(elmt.getContributor().getName()))
+			{
+				logger.info("Ignoring preferences from element {0}", elmt.getContributor().getName()); //$NON-NLS-1$
+				continue;
+			}
 			if (!elmt.getName().equals(ELMT_PAGE))
 			{
-				//logger.warn("unexpected element: {0}", elmt.getName());
+				logger.warn("Unexpected element: {0}", elmt.getName()); //$NON-NLS-1$
 				continue;
 			}
 			else if (isEmpty(elmt.getAttribute(ATTR_ID)) || isEmpty(elmt.getAttribute(ATTR_NAME)))
 			{
-				//logger.warn("missing id and/or name: {0}", elmt.getNamespaceIdentifier());
+				logger.warn("Missing id and/or name: {0}", elmt.getNamespaceIdentifier()); //$NON-NLS-1$
 				continue;
 			}
-			PreferenceNode pn = null;
-			if (elmt.getAttribute(ATTR_CLASS) != null)
-			{
-				IPreferencePage page = null;
-				try
-				{
-					String prefPageURI = getClassURI(elmt.getNamespaceIdentifier(), elmt.getAttribute(ATTR_CLASS));
-					Object object = factory.create(prefPageURI, context);
-					if (!(object instanceof IPreferencePage))
-					{
-						//logger.error("Expected instance of IPreferencePage: {0}", elmt.getAttribute(ATTR_CLASS));
-						continue;
-					}
-					page = (IPreferencePage) object;
-				}
-				catch (ClassNotFoundException e)
-				{
-					//logger.error(e);
-					e.printStackTrace();
-					continue;
-				}
-				ContextInjectionFactory.inject(page, context);
-				if ((page.getTitle() == null || page.getTitle().isEmpty()) && elmt.getAttribute(ATTR_NAME) != null)
-				{
-					page.setTitle(elmt.getAttribute(ATTR_NAME));
-				}
-				pn = new PreferenceNode(elmt.getAttribute(ATTR_ID), page);
-			}
-			else
-			{
-				pn =
-						new PreferenceNode(elmt.getAttribute(ATTR_ID), new EmptyPreferencePage(
-								elmt.getAttribute(ATTR_NAME)));
-			}
-			if (isEmpty(elmt.getAttribute(ATTR_CATEGORY)))
-			{
-				pm.addToRoot(pn);
-			}
-			else
-			{
-				IPreferenceNode parent = findNode(pm, elmt.getAttribute(ATTR_CATEGORY));
-				if (parent == null)
-				{
-					pm.addToRoot(pn);
-				}
-				else
-				{
-					parent.add(pn);
-				}
-			}
+			
+			elements.add(elmt);
 		}
-
-		return pm;
+		return elements;
 	}
 
+	private static IPreferenceNode createPreferenceNode(IConfigurationElement elmt, IEclipseContext context)
+	{
+		if (elmt.getAttribute(ATTR_CLASS) != null)
+		{
+			IPreferencePage page = null;
+			try
+			{
+				String prefPageURI = getClassURI(elmt.getNamespaceIdentifier(), elmt.getAttribute(ATTR_CLASS));
+				Object object = context.get(IContributionFactory.class).create(prefPageURI, context);
+				if (!(object instanceof IPreferencePage))
+				{
+					logger.error("Expected instance of IPreferencePage: {0}", elmt.getAttribute(ATTR_CLASS)); //$NON-NLS-1$
+					return null;
+				}
+				page = (IPreferencePage) object;
+			}
+			catch (Exception e)
+			{
+				logger.error(e);
+				return null;
+			}
+			
+			ContextInjectionFactory.inject(page, context);
+			if ((page.getTitle() == null || page.getTitle().isEmpty()) && elmt.getAttribute(ATTR_NAME) != null)
+			{
+				page.setTitle(elmt.getAttribute(ATTR_NAME));
+			}
+			return new PreferenceNode(elmt.getAttribute(ATTR_ID), page);
+		}
+		else
+		{
+			return new PreferenceNode(elmt.getAttribute(ATTR_ID), new EmptyPreferencePage(elmt.getAttribute(ATTR_NAME)));
+		}
+	}
+	
 	private static IPreferenceNode findNode(PreferenceManager pm, String categoryId)
 	{
 		for (Object o : pm.getElements(PreferenceManager.POST_ORDER))
@@ -157,6 +245,11 @@ public class PreferenceUtil
 		return value == null || value.trim().isEmpty();
 	}
 
+	/**
+	 * A simple {@link PreferencePage} that is blank except for a title
+	 * <p/>
+	 * Used to provide a stub page
+	 */
 	private static class EmptyPreferencePage extends PreferencePage
 	{
 		public EmptyPreferencePage(String title)
@@ -170,5 +263,10 @@ public class PreferenceUtil
 		{
 			return new Label(parent, SWT.NONE);
 		}
+	}
+	
+	public static void setLogger(Logger logger)
+	{
+		PreferenceUtil.logger = logger;
 	}
 }
