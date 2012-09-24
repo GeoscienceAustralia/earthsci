@@ -58,8 +58,6 @@ public class Persister
 		}
 
 		assertIsExportable(o.getClass());
-		Exportable exportable = getAnnotation(o.getClass(), Exportable.class);
-
 		String elementName = exportableToName.get(o.getClass());
 		if (Util.isEmpty(elementName))
 		{
