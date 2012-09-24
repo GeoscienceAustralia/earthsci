@@ -104,8 +104,6 @@ public class HelpHandler
 	@Execute
 	public void execute(IEclipseContext context, @Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 	{
-		logger.info("HELP ME!!");
-		
 		if (pluggableHelpUI == null)
 		{
 			initializePluggableHelpUI();
