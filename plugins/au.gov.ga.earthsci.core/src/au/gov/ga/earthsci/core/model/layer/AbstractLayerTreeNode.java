@@ -126,7 +126,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 		}
 	}
 
-	protected void addNodesToLayerList(AbstractLayerTreeNode node)
+	private void addNodesToLayerList(AbstractLayerTreeNode node)
 	{
 		if (node instanceof Layer)
 		{
