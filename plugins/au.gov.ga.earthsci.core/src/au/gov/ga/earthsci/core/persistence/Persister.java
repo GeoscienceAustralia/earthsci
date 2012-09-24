@@ -579,7 +579,7 @@ public class Persister
 		IPersistantAdapter<?> persistantAdapter = adapters.get(type);
 		if (persistantAdapter == null && adapter != null)
 		{
-			Class<? extends IPersistantAdapter<?>> adapterClass = adapter.adapter();
+			Class<? extends IPersistantAdapter<?>> adapterClass = adapter.value();
 			if (adapterClass != null)
 			{
 				try
@@ -617,7 +617,7 @@ public class Persister
 	{
 		if (!StringInstantiable.isInstantiable(type))
 		{
-			throw new IllegalArgumentException("Type is not string instantiable: " + type); //$NON-NLS-1$
+			throw new IllegalArgumentException("Cannot persist type: " + type); //$NON-NLS-1$
 		}
 	}
 

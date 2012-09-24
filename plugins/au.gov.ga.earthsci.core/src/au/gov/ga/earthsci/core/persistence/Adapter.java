@@ -13,5 +13,5 @@ public @interface Adapter
 	 * Points to the class that converts an XML element to a value type or vice
 	 * versa. See {@link IPersistantAdapter} for more details.
 	 */
-	Class<? extends IPersistantAdapter<?>> adapter();
+	Class<? extends IPersistantAdapter<?>> value();
 }
