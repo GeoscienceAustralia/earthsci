@@ -70,7 +70,7 @@ public class XmlUtil
 	}
 
 	/**
-	 * Get the index-th child node of parent that implements/subclasses the
+	 * Get the index'th child node of parent that implements/subclasses the
 	 * given type.
 	 * 
 	 * @param index
@@ -79,7 +79,7 @@ public class XmlUtil
 	 *            Parent to search
 	 * @param nodeType
 	 *            Type of child to search for
-	 * @return index-th child of parent that conforms to the given nodeType
+	 * @return index'th child of parent that conforms to the given nodeType
 	 */
 	public static <N extends Node> N getNthChildImplementing(int index, Node parent, Class<N> nodeType)
 	{
@@ -147,7 +147,7 @@ public class XmlUtil
 	}
 
 	/**
-	 * Return the index-th child element of parent that has the given element
+	 * Return the index'th child element of parent that has the given element
 	 * tag name.
 	 * 
 	 * @param index
@@ -156,7 +156,7 @@ public class XmlUtil
 	 *            Element tag name to search for
 	 * @param parent
 	 *            Parent to search
-	 * @return index-th child element of parent that has the given name
+	 * @return index'th child element of parent that has the given name
 	 */
 	public static Element getChildElementByTagName(int index, String name, Element parent)
 	{
