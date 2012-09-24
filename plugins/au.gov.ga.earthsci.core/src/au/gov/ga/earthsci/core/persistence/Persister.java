@@ -193,9 +193,14 @@ public class Persister
 				for (int i = 0; i < Array.getLength(value); i++)
 				{
 					Object arrayElement = Array.get(value, i);
-					boolean saveElementClassName =
-							arrayElement != null
-									&& !arrayElement.getClass().equals(value.getClass().getComponentType());
+					boolean saveElementClassName = false;
+					if (arrayElement != null)
+					{
+						Class<?> componentType = value.getClass().getComponentType();
+						saveElementClassName =
+								!(componentType.equals(arrayElement.getClass()) || (componentType.isPrimitive() && Util
+										.primitiveClassToBoxed(componentType).equals(arrayElement.getClass())));
+					}
 					persist(arrayElement, arrayElementName, nameElement, context, persistant, adapter,
 							saveElementClassName);
 				}
