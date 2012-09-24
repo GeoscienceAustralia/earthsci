@@ -11,5 +11,4 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface Exportable
 {
-	String name() default "";
 }

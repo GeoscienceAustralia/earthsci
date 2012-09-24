@@ -30,18 +30,6 @@ public class Persister
 	private final Map<Class<?>, String> exportableToName = new HashMap<Class<?>, String>();
 	private final Map<Class<?>, IPersistantAdapter<?>> adapters = new HashMap<Class<?>, IPersistantAdapter<?>>();
 
-	public void registerNamedExportable(Class<?> type)
-	{
-		assertIsExportable(type);
-		Exportable exportable = getAnnotation(type, Exportable.class);
-		if (Util.isEmpty(exportable.name()))
-		{
-			throw new IllegalArgumentException(type + " does not define a name"); //$NON-NLS-1$
-		}
-		nameToExportable.put(exportable.name(), type);
-		exportableToName.put(type, exportable.name());
-	}
-
 	public void registerNamedExportable(String name, Class<?> type)
 	{
 		assertIsExportable(type);
@@ -73,10 +61,6 @@ public class Persister
 		Exportable exportable = getAnnotation(o.getClass(), Exportable.class);
 
 		String elementName = exportableToName.get(o.getClass());
-		if (Util.isEmpty(elementName))
-		{
-			elementName = exportable.name();
-		}
 		if (Util.isEmpty(elementName))
 		{
 			elementName = o.getClass().getCanonicalName();
@@ -312,16 +296,13 @@ public class Persister
 
 			Adapter adapter = getAnnotation(method, Adapter.class);
 			Object value = unpersist(parent, name, type, context, persistant, adapter);
-			if (value != null)
+			try
 			{
-				try
-				{
-					setter.invoke(o, value);
-				}
-				catch (Exception e)
-				{
-					throw new IllegalStateException(e);
-				}
+				setter.invoke(o, value);
+			}
+			catch (Exception e)
+			{
+				throw new IllegalStateException(e);
 			}
 		}
 	}
@@ -341,16 +322,13 @@ public class Persister
 
 			Adapter adapter = getAnnotation(field, Adapter.class);
 			Object value = unpersist(parent, name, type, context, persistant, adapter);
-			if (value != null)
+			try
 			{
-				try
-				{
-					field.set(o, value);
-				}
-				catch (Exception e)
-				{
-					throw new IllegalStateException(e);
-				}
+				field.set(o, value);
+			}
+			catch (Exception e)
+			{
+				throw new IllegalStateException(e);
 			}
 		}
 	}
@@ -471,24 +449,12 @@ public class Persister
 			else if (getAnnotation(type, Exportable.class) != null)
 			{
 				//if the type is exportable, recurse
-				return load(element, context);
+				Element child = getFirstNodeImplementing(element, Element.class);
+				return load(child, context);
 			}
 			else
 			{
-				Text text = null;
-				NodeList children = element.getChildNodes();
-				if (children != null)
-				{
-					for (int i = 0; i < children.getLength(); i++)
-					{
-						Node node = children.item(i);
-						if (node instanceof Text)
-						{
-							text = (Text) node;
-							break;
-						}
-					}
-				}
+				Text text = getFirstNodeImplementing(element, Text.class);
 				assertIsStringInstantiable(type);
 				String stringValue = text.getData();
 				return StringInstantiable.newInstance(stringValue, type);
@@ -693,5 +659,24 @@ public class Persister
 	protected static <T extends Annotation> T getAnnotation(Field field, Class<T> annotationClass)
 	{
 		return field.getAnnotation(annotationClass);
+	}
+
+	protected static <N extends Node> N getFirstNodeImplementing(Node parent, Class<N> nodeType)
+	{
+		NodeList children = parent.getChildNodes();
+		if (children != null)
+		{
+			for (int i = 0; i < children.getLength(); i++)
+			{
+				Node node = children.item(i);
+				if (nodeType.isAssignableFrom(node.getClass()))
+				{
+					@SuppressWarnings("unchecked")
+					N n = (N) node;
+					return n;
+				}
+			}
+		}
+		return null;
 	}
 }
