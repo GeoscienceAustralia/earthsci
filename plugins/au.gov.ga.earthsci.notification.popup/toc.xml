@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="Popup Notifications" topic="html/overview.html">
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Popup Notifications" topic="html/toc.html">
+   <topic label="Overview" href="html/overview.html">
+   </topic>
+   <topic label="Preferences" href="html/preferences.html">
+   </topic>
 </toc>

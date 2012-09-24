@@ -10,10 +10,10 @@ import au.gov.ga.earthsci.notification.Messages;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class NotificationPreferences extends FieldEditorPreferencePage
+public class NotificationPreferencesPage extends FieldEditorPreferencePage
 {
 
-	public NotificationPreferences()
+	public NotificationPreferencesPage()
 	{
 		super(FLAT);
 		noDefaultAndApplyButton();

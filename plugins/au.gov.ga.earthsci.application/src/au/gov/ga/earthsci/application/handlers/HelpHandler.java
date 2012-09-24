@@ -36,10 +36,14 @@ public class HelpHandler
 	
 	private AbstractHelpUI pluggableHelpUI;
 	
+	static
+	{
+		BaseHelpSystem.setMode(BaseHelpSystem.MODE_INFOCENTER);
+	}
+	
 	public void initializePluggableHelpUI()
 	{
 		logger.info("Initialising help UI"); //$NON-NLS-1$
-		BaseHelpSystem.setMode(BaseHelpSystem.MODE_INFOCENTER);
 		BusyIndicator.showWhile(Display.getCurrent(), new Runnable()
 		{
 			@Override
