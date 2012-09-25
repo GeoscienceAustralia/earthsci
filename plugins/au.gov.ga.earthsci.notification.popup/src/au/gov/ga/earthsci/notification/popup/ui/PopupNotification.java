@@ -1,14 +1,23 @@
 package au.gov.ga.earthsci.notification.popup.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
+import org.eclipse.e4.core.services.log.Logger;
+import org.eclipse.e4.ui.css.core.engine.CSSEngine;
 import org.eclipse.e4.ui.css.swt.dom.WidgetElement;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseTrackAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
@@ -18,11 +27,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 import au.gov.ga.earthsci.notification.INotification;
+import au.gov.ga.earthsci.notification.INotificationAction;
 import au.gov.ga.earthsci.notification.NotificationLevel;
+import au.gov.ga.earthsci.notification.popup.Messages;
 import au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences;
 
 /**
@@ -36,10 +49,14 @@ import au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPrefe
  */
 public class PopupNotification
 {
+	private static final int NUM_COLUMNS = 3;
+	private static final String POPUPS_CSS = "/css/popups.css"; //$NON-NLS-1$
+
 	// Style ID constants
 	private static final String DIALOG_TITLE_STYLE_CLASS = "popupDialogTitle"; //$NON-NLS-1$
 	private static final String DIALOG_TEXT_STYLE_CLASS = "popupDialogText"; //$NON-NLS-1$
 	private static final String DIALOG_IMAGE_STYLE_CLASS = "popupDialogImage"; //$NON-NLS-1$
+	private static final String DIALOG_LINK_STYLE_CLASS = "popupDialogLink"; //$NON-NLS-1$
 	private static final String DIALOG_SHELL_STYLE_CLASS = "popupDialog"; //$NON-NLS-1$
 	
 	private static final String DIALOG_INFORMATION_CLASS = "information"; //$NON-NLS-1$
@@ -71,6 +88,12 @@ public class PopupNotification
 	@Inject
 	private static IPopupNotificationPreferences preferences;
 	
+	@Inject
+	private static Logger logger;
+	
+	/** Whether the plugin-specifc CSS has been loaded */
+	private static AtomicBoolean cssLoaded = new AtomicBoolean(false);
+	
 	/**
 	 * Show the given notification as a popup using the current popup preferences and styling 
 	 * 
@@ -90,7 +113,7 @@ public class PopupNotification
 	 */
 	PopupNotification(IPopupNotificationPreferences preferences)
 	{
-		this.preferences = preferences;
+		PopupNotification.preferences = preferences;
 	}
 	
 	/**
@@ -105,22 +128,19 @@ public class PopupNotification
 			return;
 		}
 		
-		initialiseShell();
+		initialiseShell(notification);
 
-		Composite inner = initialiseInner();
+		Composite inner = initialiseInner(notification);
 
-		CLabel imageLabel = addImageLabel(notification,inner);
-		CLabel titleLabel = addTitleLabel(notification, inner);
-		Label textLabel = addTextLabel(notification, inner);
-
+		addLevelImage(notification,inner);
+		addTitleLabel(notification, inner);
+		addCloseButton(notification, inner);
+		addTextLabel(notification, inner);
+		addActionLinks(notification, inner);
+		
 		adjustExistingPopups();
-
-		String levelClass = notification.getLevel() == NotificationLevel.INFORMATION ? DIALOG_INFORMATION_CLASS : notification.getLevel() == NotificationLevel.WARNING ? DIALOG_WARNING_CLASS : DIALOG_ERROR_CLASS;
-		WidgetElement.setCSSClass(shell, DIALOG_SHELL_STYLE_CLASS + " " + levelClass);
-		WidgetElement.setCSSClass(titleLabel, DIALOG_TITLE_STYLE_CLASS + " " + levelClass);
-		WidgetElement.setCSSClass(imageLabel, DIALOG_IMAGE_STYLE_CLASS + " " + levelClass);
-		WidgetElement.setCSSClass(textLabel, DIALOG_TEXT_STYLE_CLASS + " " + levelClass);
-		WidgetElement.getEngine(Display.getCurrent()).applyStyles(shell, true);
+		
+		applyCSSStyling();
 		
 		shell.setVisible(true);
 
@@ -129,6 +149,9 @@ public class PopupNotification
 		fadeIn();
 	}
 
+	/**
+	 * Move existing popups up the screen to make way for the new popup
+	 */
 	private void adjustExistingPopups()
 	{
 		// move other shells up
@@ -142,8 +165,7 @@ public class PopupNotification
 				int newY = currentLocation.y - POPUP_SIZE.y;
 				if (newY < 0)
 				{
-					activePopups.remove(popup);
-					popup.dispose();
+					popup.close();
 				}
 				else
 				{
@@ -153,33 +175,124 @@ public class PopupNotification
 		}
 	}
 
+	/**
+	 * Add the notification text to the dialog
+	 */
 	private Label addTextLabel(INotification notification, Composite inner)
 	{
 		Label text = new Label(inner, SWT.WRAP);
 		GridData gd = new GridData(GridData.FILL_BOTH);
-		gd.horizontalSpan = 2;
+		gd.horizontalSpan = NUM_COLUMNS;
 		text.setLayoutData(gd);
 		text.setText(notification.getText());
+		
+		setCSSClass(text, DIALOG_TEXT_STYLE_CLASS, notification.getLevel());
+		
 		return text;
 	}
 
+	/**
+	 * Add the notification title to the dialog
+	 */
 	private CLabel addTitleLabel(INotification notification, Composite inner)
 	{
 		CLabel titleLabel = new CLabel(inner, SWT.NONE);
 		titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER));
 		titleLabel.setText(notification.getTitle());
+		
+		setCSSClass(titleLabel, DIALOG_TITLE_STYLE_CLASS, notification.getLevel());
+		
 		return titleLabel;
 	}
 
-	private CLabel addImageLabel(INotification notification, Composite inner)
+	private Label addCloseButton(INotification notification, Composite inner)
 	{
-		CLabel imgLabel = new CLabel(inner, SWT.NONE);
-		imgLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_BEGINNING));
-		//imgLabel.setImage(type.getImage());
-		return imgLabel;
+		final Label imageLabel = new Label(inner, SWT.FLAT);
+		imageLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_END));
+		imageLabel.setImage(Icons.getCloseIcon());
+		imageLabel.setToolTipText(Messages.PopupNotification_CloseTooltip);
+		imageLabel.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseDown(MouseEvent e)
+			{
+				close();
+			}
+		});
+		imageLabel.addMouseTrackListener(new MouseTrackAdapter()
+		{
+			@Override
+			public void mouseEnter(MouseEvent e)
+			{
+				imageLabel.setImage(Icons.getCloseHoverIcon());
+			}
+			
+			@Override
+			public void mouseExit(MouseEvent e)
+			{
+				imageLabel.setImage(Icons.getCloseIcon());
+			}
+		});
+		return imageLabel;
+	}
+	
+	/**
+	 * Add an image representing the notification level
+	 */
+	private CLabel addLevelImage(INotification notification, Composite inner)
+	{
+		CLabel imageLabel = new CLabel(inner, SWT.NONE);
+		imageLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_BEGINNING));
+		imageLabel.setImage(Icons.getIcon(notification.getLevel()));
+		setCSSClass(imageLabel, DIALOG_IMAGE_STYLE_CLASS, notification.getLevel());
+		
+		return imageLabel;
 	}
 
-	private void initialiseShell()
+	/**
+	 * Add a link for each notification action present on the notification
+	 */
+	private List<Link> addActionLinks(INotification notification, Composite inner)
+	{
+		List<Link> result = new ArrayList<Link>();
+		
+		for (final INotificationAction action : notification.getActions())
+		{
+			Link link = new Link(inner, SWT.NONE);
+
+			GridData gd = new GridData(GridData.FILL_BOTH);
+			gd.horizontalSpan = NUM_COLUMNS;
+			link.setLayoutData(gd);
+			
+			link.setToolTipText(action.getTooltip());
+			link.setText("- <a>" + action.getText() + "</a>"); //$NON-NLS-1$ //$NON-NLS-2$
+			link.addSelectionListener(new SelectionListener()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent e)
+				{
+					action.run();
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent e)
+				{
+					action.run();
+				}
+			});
+			
+			setCSSClass(link, DIALOG_LINK_STYLE_CLASS, notification.getLevel());
+			
+			result.add(link);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Create the shell that will be used to display the dialog
+	 */
+	private void initialiseShell(INotification notification)
 	{
 		shell = new Shell(getRootShell(Display.getDefault().getActiveShell()), SWT.NO_FOCUS | SWT.NO_TRIM);
 		
@@ -204,18 +317,66 @@ public class PopupNotification
 		shell.setLocation(startX, startY);
 	}
 
-	private Composite initialiseInner()
+	/**
+	 * Initialise the grid that will hold the dialog components
+	 */
+	private Composite initialiseInner(INotification notification)
 	{
 		final Composite inner = new Composite(shell, SWT.NONE);
-		GridLayout gl = new GridLayout(2, false);
+		GridLayout gl = new GridLayout(NUM_COLUMNS, false);
 		gl.marginLeft = 5;
 		gl.marginTop = 0;
 		gl.marginRight = 5;
 		gl.marginBottom = 5;
 		inner.setLayout(gl);
+		
+		setCSSClass(inner, DIALOG_SHELL_STYLE_CLASS, notification.getLevel());
+		
 		return inner;
 	}
 	
+	/**
+	 * Setup the CSS class attribute for the provided widget, adding the appropriate level class
+	 */
+	private void setCSSClass(Widget widget, String mainClass, NotificationLevel notificationLevel)
+	{
+		WidgetElement.setCSSClass(widget, mainClass + " " + getLevelClass(notificationLevel)); //$NON-NLS-1$
+	}
+	
+	/**
+	 * @return The CSS class to use for the provided notification level
+	 */
+	private String getLevelClass(NotificationLevel level)
+	{
+		return level == NotificationLevel.INFORMATION ? DIALOG_INFORMATION_CLASS : level == NotificationLevel.WARNING ? DIALOG_WARNING_CLASS : DIALOG_ERROR_CLASS;
+	}
+	
+	/**
+	 * Apply the styling to the shell and all of its children
+	 */
+	private void applyCSSStyling()
+	{
+		CSSEngine cssEngine = WidgetElement.getEngine(Display.getCurrent());
+		
+		if (!cssLoaded.get())
+		{
+			try
+			{
+				cssEngine.parseStyleSheet(getClass().getResourceAsStream(POPUPS_CSS));
+			}
+			catch (IOException e)
+			{
+				logger.error(e, "Exception occurred while loading popup notification CSS"); //$NON-NLS-1$
+			}
+			cssLoaded.set(true);
+		}
+		
+		cssEngine.applyStyles(shell, true);
+	}
+	
+	/**
+	 * @return <code>true</code> if there is no active shell or monitor in the current display hierachy
+	 */
 	private boolean noActiveMonitorExists()
 	{
 		return Display.getDefault().getActiveShell() == null || Display.getDefault().getActiveShell().getMonitor() == null;
@@ -329,8 +490,7 @@ public class PopupNotification
 					if (popupAlpha <= 0)
 					{
 						shell.setAlpha(0);
-						dispose();
-						activePopups.remove(this);
+						close();
 						return;
 					}
 					shell.setAlpha(popupAlpha);
@@ -343,6 +503,15 @@ public class PopupNotification
 			}
 		};
 		Display.getDefault().timerExec(FADE_TICK, run);
+	}
+	
+	/**
+	 * Close the popup
+	 */
+	public void close()
+	{
+		dispose();
+		activePopups.remove(this);
 	}
 	
 	/**

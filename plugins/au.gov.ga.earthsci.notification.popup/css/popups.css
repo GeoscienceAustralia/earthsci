@@ -1,0 +1,31 @@
+.popupDialog
+{
+	background-color: #e3efff #c1d5ef;
+}
+
+.popupDialog.information
+{
+	background-color: #e5f9e8 #c3e1c8;
+}
+
+.popupDialog.warning
+{
+	background-color: #e1f4f4 #b0cccc;
+}
+
+.popupDialog.error
+{
+	background-color: #ffebea #ffdddd;
+}
+
+.popupDialogText
+{
+	color: black;
+	font: verdana 8px bold;
+}
+
+.popupDialogTitle
+{
+	font: verdana 12px bold;
+	color: black;
+}

@@ -6,34 +6,3 @@
 	swt-mru-visible: true;
 }
 
-.popupDialog
-{
-	background-color: #e3efff #c1d5ef;
-}
-
-.popupDialog.information
-{
-	background-color: #99ee99 #55ee55;
-}
-
-.popupDialog.warning
-{
-	background-color: #eeee99 #eeee55;
-}
-
-.popupDialog.error
-{
-	background-color: #ee9999 #ee5555;
-}
-
-.popupDialogText
-{
-	color: black;
-	font: verdana 8px bold;
-}
-
-.popupDialogTitle
-{
-	font: verdana 12px bold;
-	color: black;
-}

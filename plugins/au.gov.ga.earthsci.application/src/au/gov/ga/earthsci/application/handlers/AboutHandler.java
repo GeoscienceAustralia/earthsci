@@ -23,6 +23,7 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import au.gov.ga.earthsci.notification.INotificationAction;
 import au.gov.ga.earthsci.notification.Notification;
 import au.gov.ga.earthsci.notification.NotificationLevel;
 import au.gov.ga.earthsci.notification.NotificationManager;
@@ -40,7 +41,26 @@ public class AboutHandler
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 	{
-		notifications.notify(new Notification(NotificationLevel.INFORMATION, "About launched", "You opened the About dialog"));
+		notifications.notify(new Notification(NotificationLevel.WARNING, "About launched", "You opened the About dialog ssssssssss sssssssssssss sssssssssssss sssssssss ssssssssss", new INotificationAction()
+		{
+			@Override
+			public void run()
+			{
+				System.out.println("I WAS CLICKED!");
+			}
+			
+			@Override
+			public String getTooltip()
+			{
+				return "This is a test action";
+			}
+			
+			@Override
+			public String getText()
+			{
+				return "Click me";
+			} 
+		}));
 		MessageDialog.openInformation(shell, "About", "e4 Application example.");
 		
 	}
