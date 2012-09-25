@@ -15,9 +15,22 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.util;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -218,5 +231,39 @@ public class XmlUtil
 			}
 		}
 		return elements.toArray(new Element[elements.size()]);
+	}
+
+	/**
+	 * Save the given document to an output stream. Output is nicely formatted,
+	 * with child elements indented by 4 spaces.
+	 * 
+	 * @param doc
+	 *            Document to save
+	 * @param outputStream
+	 *            OutputStream to save to
+	 * @throws TransformerException
+	 * @throws IOException
+	 */
+	public static void saveDocumentToFormattedStream(Document doc, OutputStream outputStream)
+			throws TransformerException, IOException
+	{
+		Source source = new DOMSource(doc);
+		Result result = new StreamResult(outputStream);
+		Transformer transformer = createTransformer();
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+		transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
+		transformer.transform(source, result);
+		outputStream.close();
+	}
+
+	/**
+	 * Create a new {@link Transformer}.
+	 * 
+	 * @throws TransformerConfigurationException
+	 */
+	public static Transformer createTransformer() throws TransformerConfigurationException
+	{
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		return transformerFactory.newTransformer();
 	}
 }
