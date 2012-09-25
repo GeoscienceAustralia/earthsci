@@ -42,7 +42,7 @@ import au.gov.ga.earthsci.core.util.XmlUtil;
 public class PersisterTest
 {
 	@Test
-	public void testArray()
+	public void testArray() throws PersistanceException
 	{
 		ExportableWithArray array = new ExportableWithArray();
 		array.setArray(new double[] { 1, 3, 5, 7, 9, 38742.5463 });
@@ -50,7 +50,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testCollection()
+	public void testCollection() throws PersistanceException
 	{
 		ExportableWithCollection collection = new ExportableWithCollection();
 		List<Integer> list = new ArrayList<Integer>();
@@ -62,7 +62,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testDoubleArray()
+	public void testDoubleArray() throws PersistanceException
 	{
 		ExportableWithDoubleArray doubleArray = new ExportableWithDoubleArray();
 		doubleArray.setCollectionArray(new ExportableWithCollection[3][5]);
@@ -70,7 +70,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testAttribute()
+	public void testAttribute() throws PersistanceException
 	{
 		ExportableWithAttribute attribute = new ExportableWithAttribute();
 		attribute.setAttribute(5);
@@ -78,7 +78,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testAdapter()
+	public void testAdapter() throws PersistanceException
 	{
 		ExportableWithAdapter adapter = new ExportableWithAdapter();
 		Adaptable adaptable = new Adaptable();
@@ -88,7 +88,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testMethods()
+	public void testMethods() throws PersistanceException
 	{
 		ExportableWithMethods methods = new ExportableWithMethods();
 		methods.setField(5);
@@ -98,7 +98,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testNamedExportable()
+	public void testNamedExportable() throws PersistanceException
 	{
 		ExportableWithMethods methods = new ExportableWithMethods();
 		methods.setField(5);
@@ -110,7 +110,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testExportableObject()
+	public void testExportableObject() throws PersistanceException
 	{
 		ExportableWithObject object = new ExportableWithObject();
 		ExportableWithAttribute attribute = new ExportableWithAttribute();
@@ -120,7 +120,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testNull()
+	public void testNull() throws PersistanceException
 	{
 		ExportableWithNull nul = new ExportableWithNull();
 		nul.setString(null);
@@ -128,38 +128,39 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testNamedPersistant()
+	public void testNamedPersistant() throws PersistanceException
 	{
 		ExportableWithNamedPersistant named = new ExportableWithNamedPersistant();
 		named.setField(3254235);
 		performTest(named, "testNamedPersistant.xml");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testNonExportable()
+	@Test(expected = PersistanceException.class)
+	public void testNonExportable() throws PersistanceException
 	{
 		performTest(new ArrayList<Integer>(), "testNonExportable.xml");
 	}
 
-	protected void performTest(Object o, String expectedResourceName)
+	protected void performTest(Object o, String expectedResourceName) throws PersistanceException
 	{
 		performTest(o, new Persister(), expectedResourceName);
 	}
 
 	protected void performTest(Object saved, Persister persister, String expectedResourceName)
+			throws PersistanceException
 	{
-		DocumentBuilder documentBuilder = WWXML.createDocumentBuilder(false);
-		Document document = documentBuilder.newDocument();
-		Element element = document.createElement("root");
-		document.appendChild(element);
-		persister.save(saved, element, null);
-
-		Element child = XmlUtil.getFirstChildElement(element);
-		Object loaded = persister.load(child, null);
-		Assert.assertEquals(saved, loaded);
-
 		try
 		{
+			DocumentBuilder documentBuilder = WWXML.createDocumentBuilder(false);
+			Document document = documentBuilder.newDocument();
+			Element element = document.createElement("root");
+			document.appendChild(element);
+			persister.save(saved, element, null);
+
+			Element child = XmlUtil.getFirstChildElement(element);
+			Object loaded = persister.load(child, null);
+			Assert.assertEquals(saved, loaded);
+
 			InputStream is = this.getClass().getResourceAsStream(expectedResourceName);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			copyLarge(is, baos);
@@ -176,6 +177,10 @@ public class PersisterTest
 			actual = actual.replace("\r\n", "\n").replace("\r", "\n");
 
 			Assert.assertEquals(expected, actual);
+		}
+		catch (PersistanceException e)
+		{
+			throw e;
 		}
 		catch (Exception e)
 		{
