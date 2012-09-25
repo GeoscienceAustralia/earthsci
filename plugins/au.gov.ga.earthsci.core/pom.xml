@@ -7,20 +7,12 @@
 		<groupId>au.gov.ga.earthsci</groupId>
 		<artifactId>earthsci-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>./parent-pom.xml</relativePath>
+		<relativePath>../../parent-pom.xml</relativePath>
 	</parent>
 
 	<groupId>au.gov.ga.earthsci</groupId>
-	<artifactId>earthsci-master</artifactId>
+	<artifactId>au.gov.ga.earthsci.core</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
-
-	<modules>
-		<module>externals</module>
-		<module>plugins</module>
-		<module>features/au.gov.ga.earthsci.feature</module>
-		<module>features/au.gov.ga.earthsci.product</module>
-		<module>webstart</module>
-	</modules>
+	<packaging>eclipse-plugin</packaging>
 
 </project>
