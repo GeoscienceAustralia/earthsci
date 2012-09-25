@@ -253,7 +253,6 @@ public class XmlUtil
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
 		transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
 		transformer.transform(source, result);
-		outputStream.close();
 	}
 
 	/**
