@@ -254,7 +254,13 @@ public class PopupNotification
 	 */
 	private List<Link> addActionLinks(INotification notification, Composite inner)
 	{
+		
 		List<Link> result = new ArrayList<Link>();
+		
+		if (notification.getActions() == null || notification.getActions().length == 0)
+		{
+			return result;
+		}
 		
 		for (final INotificationAction action : notification.getActions())
 		{

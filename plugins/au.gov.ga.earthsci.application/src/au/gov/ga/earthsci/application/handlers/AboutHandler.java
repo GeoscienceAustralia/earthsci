@@ -61,6 +61,28 @@ public class AboutHandler
 				return "Click me";
 			} 
 		}));
+		
+		NotificationManager.sendNotification(new Notification(NotificationLevel.ERROR, "Another one!", "You opened the About dialog ssssssssss sssssssssssss sssssssssssss sssssssss ssssssssss", new INotificationAction()
+		{
+			@Override
+			public void run()
+			{
+				NotificationManager.sendNotification(new Notification(NotificationLevel.INFORMATION, "Wow!", "This came from inside a notification!"));
+			}
+			
+			@Override
+			public String getTooltip()
+			{
+				return "This is a test action";
+			}
+			
+			@Override
+			public String getText()
+			{
+				return "Click me";
+			} 
+		}));
+		
 		MessageDialog.openInformation(shell, "About", "e4 Application example.");
 		
 	}

@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -48,8 +49,19 @@ public class NotificationManager
 		}
 	});
 	
+	private static NotificationManager INSTANCE;
+	
 	@Inject 
 	private Logger logger;
+	
+	@PostConstruct
+	void finalise()
+	{
+		if (INSTANCE == null)
+		{
+			INSTANCE = this;
+		}
+	}
 	
 	public NotificationManager()
 	{
@@ -88,6 +100,18 @@ public class NotificationManager
 			logger.error(e, "Exception while loading recievers"); //$NON-NLS-1$
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Send the provided notification to all registered receivers
+	 * 
+	 * @param notification The notification to send.
+	 * 
+	 * @see #notify(INotification)
+	 */
+	public static void sendNotification(INotification notification)
+	{
+		INSTANCE.notify(notification);
 	}
 	
 	/**
@@ -157,5 +181,10 @@ public class NotificationManager
 		receiversLock.writeLock().lock();
 		receivers.remove(receiver);
 		receiversLock.writeLock().unlock();
+	}
+	
+	public void setLogger(Logger logger)
+	{
+		this.logger = logger;
 	}
 }
