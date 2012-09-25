@@ -8,6 +8,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.notification.popup.messages"; //$NON-NLS-1$
+	public static String PopupNotification_CloseTooltip;
 	public static String PopupNotificationPreferences_Description;
 	public static String PopupNotificationPreferences_DurationLabel;
 	public static String PopupNotificationPreferences_EnablePopupsLabel;
