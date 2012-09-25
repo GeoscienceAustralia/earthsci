@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <au.gov.ga.earthsci.core.persistence.ExportableWithObject>
+        <exportableObject>
+            <au.gov.ga.earthsci.core.persistence.ExportableWithAttribute attribute="3465"/>
+        </exportableObject>
+    </au.gov.ga.earthsci.core.persistence.ExportableWithObject>
+</root>
