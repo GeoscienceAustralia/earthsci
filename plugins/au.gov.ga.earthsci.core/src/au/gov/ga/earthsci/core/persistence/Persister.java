@@ -44,7 +44,6 @@ import au.gov.ga.earthsci.core.util.XmlUtil;
  */
 public class Persister
 {
-	protected final static String COLLECTION_ELEMENT = "collection"; //$NON-NLS-1$
 	protected final static String TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
 	protected final static String NULL_ATTRIBUTE = "null"; //$NON-NLS-1$
 	protected final static String DEFAULT_ARRAY_ELEMENT_NAME = "element"; //$NON-NLS-1$
