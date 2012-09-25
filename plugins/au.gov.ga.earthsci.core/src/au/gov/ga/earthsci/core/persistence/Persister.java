@@ -45,7 +45,7 @@ import au.gov.ga.earthsci.core.util.XmlUtil;
 public class Persister
 {
 	protected final static String COLLECTION_ELEMENT = "collection"; //$NON-NLS-1$
-	protected final static String CLASS_NAME_ATTRIBUTE = "className"; //$NON-NLS-1$
+	protected final static String TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
 	protected final static String NULL_ATTRIBUTE = "null"; //$NON-NLS-1$
 	protected final static String DEFAULT_ARRAY_ELEMENT_NAME = "element"; //$NON-NLS-1$
 
@@ -148,15 +148,7 @@ public class Persister
 		}
 
 		assertIsExportable(o.getClass());
-		String elementName = exportableToName.get(o.getClass());
-		if (Util.isEmpty(elementName))
-		{
-			elementName = o.getClass().getCanonicalName();
-		}
-		if (Util.isEmpty(elementName))
-		{
-			throw new IllegalArgumentException("Could not determine element name for object: " + o); //$NON-NLS-1$
-		}
+		String elementName = getNameFromType(o.getClass());
 
 		Element element = parent.getOwnerDocument().createElement(elementName);
 		parent.appendChild(element);
@@ -276,7 +268,7 @@ public class Persister
 							&& Util.primitiveClassToBoxed(baseType).equals(value.getClass());
 			if (!boxed && !(persistantAdapter == null && isExportable))
 			{
-				nameElement.setAttribute(CLASS_NAME_ATTRIBUTE, value.getClass().getCanonicalName());
+				nameElement.setAttribute(TYPE_ATTRIBUTE, getNameFromType(value.getClass()));
 				classNameSaved = true;
 			}
 		}
@@ -357,7 +349,7 @@ public class Persister
 			throw new NullPointerException("Element cannot be null"); //$NON-NLS-1$
 		}
 
-		Class<?> c = getExportableType(element);
+		Class<?> c = getTypeFromName(element.getTagName());
 		assertIsExportable(c);
 		Constructor<?> constructor = null;
 		try
@@ -493,7 +485,7 @@ public class Persister
 			}
 
 			//the className attribute can override the type (to support subclasses)
-			String classNameAttribute = element.getAttribute(CLASS_NAME_ATTRIBUTE);
+			String classNameAttribute = element.getAttribute(TYPE_ATTRIBUTE);
 			if (!Util.isEmpty(classNameAttribute))
 			{
 				//for each [] at the end of the class name, increment the array depth
@@ -504,14 +496,7 @@ public class Persister
 					arrayDepth++;
 				}
 				//load the class from the name
-				try
-				{
-					type = Class.forName(classNameAttribute);
-				}
-				catch (ClassNotFoundException e)
-				{
-					throw new IllegalStateException("Unknown class name: " + classNameAttribute); //$NON-NLS-1$
-				}
+				type = getTypeFromName(classNameAttribute);
 				//make the type an array type with the correct depth
 				while (arrayDepth > 0)
 				{
@@ -530,7 +515,7 @@ public class Persister
 			}
 
 			//if the type isn't defined, assume the first child element is exportable
-			type = getExportableType(firstChild);
+			type = getTypeFromName(firstChild.getTagName());
 			assertIsExportable(type);
 		}
 
@@ -563,7 +548,7 @@ public class Persister
 			else
 			{
 				//instantiate the collection impementation
-				String collectionClassName = element.getAttribute(CLASS_NAME_ATTRIBUTE);
+				String collectionClassName = element.getAttribute(TYPE_ATTRIBUTE);
 				if (Util.isEmpty(collectionClassName))
 				{
 					throw new IllegalStateException("Collection class not specified"); //$NON-NLS-1$
@@ -571,9 +556,10 @@ public class Persister
 				Collection<Object> collection;
 				try
 				{
+					Class<?> collectionType = getTypeFromName(collectionClassName);
+					Constructor<?> constructor = collectionType.getConstructor();
 					@SuppressWarnings("unchecked")
-					Collection<Object> objectCollection =
-							(Collection<Object>) Class.forName(collectionClassName).newInstance();
+					Collection<Object> objectCollection = (Collection<Object>) constructor.newInstance();
 					collection = objectCollection;
 				}
 				catch (Exception e)
@@ -875,22 +861,58 @@ public class Persister
 		return persistantAdapter;
 	}
 
-	protected Class<?> getExportableType(Element element)
+	/**
+	 * Calculate the type for the given name. If the name has been registered
+	 * using {@link #registerNamedExportable(Class, String)}, that type is
+	 * returned. Otherwise {@link Class#forName(String)} is used.
+	 * 
+	 * @param name
+	 *            Name to calculate type for
+	 * @return Type for name
+	 */
+	protected Class<?> getTypeFromName(String name)
 	{
-		String elementName = element.getTagName();
-		Class<?> c = nameToExportable.get(elementName);
+		Class<?> c = nameToExportable.get(name);
 		if (c == null)
 		{
 			try
 			{
-				c = Class.forName(elementName);
+				c = Class.forName(name);
 			}
 			catch (ClassNotFoundException e)
 			{
-				throw new IllegalArgumentException("Could not determine class for element tag name: " + elementName); //$NON-NLS-1$
+				throw new IllegalArgumentException("Could not determine type for name: " + name); //$NON-NLS-1$
 			}
 		}
 		return c;
+	}
+
+	/**
+	 * Calculate the name for the given type. If the type is marked as
+	 * {@link Exportable} and a named exportable has been registered using
+	 * {@link #registerNamedExportable(Class, String)}, that name is returned.
+	 * Otherwise the canonical class name is returned.
+	 * 
+	 * @param type
+	 *            Type to calculate name for
+	 * @return Name of type
+	 */
+	protected String getNameFromType(Class<?> type)
+	{
+		String name = exportableToName.get(type);
+		if (Util.isEmpty(name))
+		{
+			if (type.isArray())
+			{
+				return getNameFromType(type.getComponentType()) + "[]"; //$NON-NLS-1$
+			}
+			name = type.getCanonicalName();
+		}
+		if (Util.isEmpty(name))
+		{
+			throw new IllegalArgumentException("Could not determine name for type: " + type); //$NON-NLS-1$
+		}
+		return name;
 	}
 
 	/**
