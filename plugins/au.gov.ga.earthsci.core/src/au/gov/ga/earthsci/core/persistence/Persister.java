@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -874,6 +875,10 @@ public class Persister
 		Class<?> c = nameToExportable.get(name);
 		if (c == null)
 		{
+			c = PrimitiveNames.nameToPrimitive.get(name);
+		}
+		if (c == null)
+		{
 			try
 			{
 				c = Class.forName(name);
@@ -899,6 +904,10 @@ public class Persister
 	protected String getNameFromType(Class<?> type)
 	{
 		String name = exportableToName.get(type);
+		if (Util.isEmpty(name))
+		{
+			name = PrimitiveNames.primitiveToName.get(type);
+		}
 		if (Util.isEmpty(name))
 		{
 			//we want the component type of an array to still use the exportable name, so recurse if array
@@ -946,6 +955,41 @@ public class Persister
 		if (!StringInstantiable.isInstantiable(type))
 		{
 			throw new IllegalArgumentException("Cannot persist type: " + type); //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * Helper class used to map primitive and boxed classes to simple names, and
+	 * vice-versa.
+	 */
+	protected static class PrimitiveNames
+	{
+		public final static Map<Class<?>, String> primitiveToName;
+		public final static Map<String, Class<?>> nameToPrimitive;
+
+		static
+		{
+			Map<Class<?>, String> ptn = new HashMap<Class<?>, String>();
+			Map<String, Class<?>> ntp = new HashMap<String, Class<?>>();
+			add(int.class, Integer.class, ptn, ntp);
+			add(short.class, Short.class, ptn, ntp);
+			add(long.class, Long.class, ptn, ntp);
+			add(char.class, Character.class, ptn, ntp);
+			add(byte.class, Byte.class, ptn, ntp);
+			add(float.class, Float.class, ptn, ntp);
+			add(double.class, Double.class, ptn, ntp);
+			add(boolean.class, Boolean.class, ptn, ntp);
+			primitiveToName = Collections.unmodifiableMap(ptn);
+			nameToPrimitive = Collections.unmodifiableMap(ntp);
+		}
+
+		private static void add(Class<?> primitive, Class<?> boxed, Map<Class<?>, String> primitiveToName,
+				Map<String, Class<?>> nameToPrimitive)
+		{
+			String name = primitive.getCanonicalName();
+			primitiveToName.put(primitive, name);
+			primitiveToName.put(boxed, name);
+			nameToPrimitive.put(name, boxed);
 		}
 	}
 }
