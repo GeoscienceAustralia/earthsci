@@ -23,7 +23,9 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -52,6 +54,7 @@ public class Persister
 	protected final Map<String, Class<?>> nameToExportable = new HashMap<String, Class<?>>();
 	protected final Map<Class<?>, String> exportableToName = new HashMap<Class<?>, String>();
 	protected final Map<Class<?>, IPersistantAdapter<?>> adapters = new HashMap<Class<?>, IPersistantAdapter<?>>();
+	protected final Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
 
 	/**
 	 * Register a name for a given {@link Exportable} type. This name is used
@@ -136,6 +139,32 @@ public class Persister
 	public void unregisterAdapter(Class<?> type)
 	{
 		adapters.remove(type);
+	}
+
+	/**
+	 * Register a {@link ClassLoader} that can be used for resolving classes
+	 * from class names. This is required if the caller resides in a different
+	 * plugin, which means this plugin's classloader doesn't have access to the
+	 * caller plugin's classes.
+	 * 
+	 * @param classLoader
+	 *            ClassLoader to register
+	 */
+	public void registerClassLoader(ClassLoader classLoader)
+	{
+		classLoaders.add(classLoader);
+	}
+
+	/**
+	 * Unregister a registered {@link ClassLoader}.
+	 * 
+	 * @param classLoader
+	 *            ClassLoader to unregister
+	 * @see #registerClassLoader(ClassLoader)
+	 */
+	public void unregisterClassLoader(ClassLoader classLoader)
+	{
+		classLoaders.remove(classLoader);
 	}
 
 	/**
@@ -900,22 +929,33 @@ public class Persister
 	protected Class<?> getTypeFromName(String name) throws PersistanceException
 	{
 		Class<?> c = nameToExportable.get(name);
-		if (c == null)
+		if (c != null)
 		{
-			c = PrimitiveNames.nameToPrimitive.get(name);
+			return c;
 		}
-		if (c == null)
+		c = PrimitiveNames.nameToPrimitive.get(name);
+		if (c != null)
+		{
+			return c;
+		}
+		try
+		{
+			return getClass().getClassLoader().loadClass(name);
+		}
+		catch (ClassNotFoundException e)
+		{
+		}
+		for (ClassLoader classLoader : classLoaders)
 		{
 			try
 			{
-				c = Class.forName(name);
+				return classLoader.loadClass(name);
 			}
 			catch (ClassNotFoundException e)
 			{
-				throw new PersistanceException("Could not determine type for name: " + name); //$NON-NLS-1$
 			}
 		}
-		return c;
+		throw new PersistanceException("Could not determine type for name: " + name); //$NON-NLS-1$
 	}
 
 	/**

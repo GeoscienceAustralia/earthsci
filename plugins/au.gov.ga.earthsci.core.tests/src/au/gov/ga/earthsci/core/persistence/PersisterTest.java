@@ -149,6 +149,8 @@ public class PersisterTest
 	protected void performTest(Object saved, Persister persister, String expectedResourceName)
 			throws PersistanceException
 	{
+		persister.registerClassLoader(getClass().getClassLoader());
+
 		try
 		{
 			DocumentBuilder documentBuilder = WWXML.createDocumentBuilder(false);
