@@ -901,11 +901,8 @@ public class Persister
 		String name = exportableToName.get(type);
 		if (Util.isEmpty(name))
 		{
-			if (type.isArray())
-			{
-				return getNameFromType(type.getComponentType()) + "[]"; //$NON-NLS-1$
-			}
-			name = type.getCanonicalName();
+			//we want the component type of an array to still use the exportable name, so recurse if array
+			name = type.isArray() ? (getNameFromType(type.getComponentType()) + "[]") : type.getCanonicalName(); //$NON-NLS-1$
 		}
 		if (Util.isEmpty(name))
 		{
