@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <exportableWithMethods>
+        <setterMethod>15.0</setterMethod>
+        <method>10.0</method>
+        <field>5</field>
+    </exportableWithMethods>
+</root>

@@ -7,6 +7,7 @@ Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: au.gov.ga.earthsci.core.model.catalog,
  au.gov.ga.earthsci.core.model.layer,
+ au.gov.ga.earthsci.core.persistence,
  au.gov.ga.earthsci.core.tree,
  au.gov.ga.earthsci.core.util,
  au.gov.ga.earthsci.core.worldwind,

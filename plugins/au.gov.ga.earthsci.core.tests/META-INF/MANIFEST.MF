@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EarthSci Core Tests
+Bundle-SymbolicName: au.gov.ga.earthsci.core.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Geoscience Australia
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: au.gov.ga.earthsci.core;bundle-version="1.0.0",
+ org.junit4;bundle-version="4.8.1",
+ gov.nasa.worldwind.jogl2;bundle-version="1.4.0"

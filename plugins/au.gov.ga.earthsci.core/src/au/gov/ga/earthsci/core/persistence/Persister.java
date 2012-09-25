@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +45,7 @@ import au.gov.ga.earthsci.core.util.XmlUtil;
  */
 public class Persister
 {
-	protected final static String COLLECTION_ELEMENT = "collection"; //$NON-NLS-1$
-	protected final static String CLASS_NAME_ATTRIBUTE = "className"; //$NON-NLS-1$
+	protected final static String TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
 	protected final static String NULL_ATTRIBUTE = "null"; //$NON-NLS-1$
 	protected final static String DEFAULT_ARRAY_ELEMENT_NAME = "element"; //$NON-NLS-1$
 
@@ -148,15 +148,7 @@ public class Persister
 		}
 
 		assertIsExportable(o.getClass());
-		String elementName = exportableToName.get(o.getClass());
-		if (Util.isEmpty(elementName))
-		{
-			elementName = o.getClass().getCanonicalName();
-		}
-		if (Util.isEmpty(elementName))
-		{
-			throw new IllegalArgumentException("Could not determine element name for object: " + o); //$NON-NLS-1$
-		}
+		String elementName = getNameFromType(o.getClass());
 
 		Element element = parent.getOwnerDocument().createElement(elementName);
 		parent.appendChild(element);
@@ -262,6 +254,10 @@ public class Persister
 			nameElement.setAttribute(NULL_ATTRIBUTE, Boolean.TRUE.toString());
 			return;
 		}
+
+		IPersistantAdapter<?> persistantAdapter = getAdapter(value.getClass(), adapter);
+		boolean isExportable = AnnotationUtil.getAnnotation(value.getClass(), Exportable.class) != null;
+
 		//if the value type isn't the same as the type specified by the field/method, and
 		//it isn't a boxed version, then save the type as an attribute on the element
 		boolean classNameSaved = false;
@@ -270,9 +266,9 @@ public class Persister
 			boolean boxed =
 					baseType != null && baseType.isPrimitive()
 							&& Util.primitiveClassToBoxed(baseType).equals(value.getClass());
-			if (!boxed)
+			if (!boxed && !(persistantAdapter == null && isExportable))
 			{
-				nameElement.setAttribute(CLASS_NAME_ATTRIBUTE, value.getClass().getCanonicalName());
+				nameElement.setAttribute(TYPE_ATTRIBUTE, getNameFromType(value.getClass()));
 				classNameSaved = true;
 			}
 		}
@@ -307,7 +303,6 @@ public class Persister
 			return;
 		}
 
-		IPersistantAdapter<?> persistantAdapter = getAdapter(value.getClass(), adapter);
 		if (persistantAdapter != null)
 		{
 			//if there's a IPersistantAdapter for this object's type, use it to create the XML
@@ -315,7 +310,7 @@ public class Persister
 			IPersistantAdapter<Object> objectAdapter = (IPersistantAdapter<Object>) persistantAdapter;
 			objectAdapter.toXML(value, nameElement, context);
 		}
-		else if (AnnotationUtil.getAnnotation(value.getClass(), Exportable.class) != null)
+		else if (isExportable)
 		{
 			//if the object is itself exportable, recurse
 			save(value, nameElement, context);
@@ -354,20 +349,7 @@ public class Persister
 			throw new NullPointerException("Element cannot be null"); //$NON-NLS-1$
 		}
 
-		String elementName = element.getTagName();
-		Class<?> c = nameToExportable.get(elementName);
-		if (c == null)
-		{
-			try
-			{
-				c = Class.forName(elementName);
-			}
-			catch (ClassNotFoundException e)
-			{
-				throw new IllegalArgumentException("Could not determine class for element tag name: " + elementName); //$NON-NLS-1$
-			}
-		}
-
+		Class<?> c = getTypeFromName(element.getTagName());
 		assertIsExportable(c);
 		Constructor<?> constructor = null;
 		try
@@ -503,7 +485,7 @@ public class Persister
 			}
 
 			//the className attribute can override the type (to support subclasses)
-			String classNameAttribute = element.getAttribute(CLASS_NAME_ATTRIBUTE);
+			String classNameAttribute = element.getAttribute(TYPE_ATTRIBUTE);
 			if (!Util.isEmpty(classNameAttribute))
 			{
 				//for each [] at the end of the class name, increment the array depth
@@ -514,14 +496,7 @@ public class Persister
 					arrayDepth++;
 				}
 				//load the class from the name
-				try
-				{
-					type = Class.forName(classNameAttribute);
-				}
-				catch (ClassNotFoundException e)
-				{
-					throw new IllegalStateException("Unknown class name: " + classNameAttribute); //$NON-NLS-1$
-				}
+				type = getTypeFromName(classNameAttribute);
 				//make the type an array type with the correct depth
 				while (arrayDepth > 0)
 				{
@@ -533,7 +508,15 @@ public class Persister
 
 		if (type == null)
 		{
-			throw new NullPointerException("Unpersist type is null"); //$NON-NLS-1$
+			Element firstChild = element == null ? null : XmlUtil.getFirstChildElement(element);
+			if (firstChild == null)
+			{
+				throw new NullPointerException("Unpersist type is null"); //$NON-NLS-1$
+			}
+
+			//if the type isn't defined, assume the first child element is exportable
+			type = getTypeFromName(firstChild.getTagName());
+			assertIsExportable(type);
 		}
 
 		//handle array/collection types
@@ -565,7 +548,7 @@ public class Persister
 			else
 			{
 				//instantiate the collection impementation
-				String collectionClassName = element.getAttribute(CLASS_NAME_ATTRIBUTE);
+				String collectionClassName = element.getAttribute(TYPE_ATTRIBUTE);
 				if (Util.isEmpty(collectionClassName))
 				{
 					throw new IllegalStateException("Collection class not specified"); //$NON-NLS-1$
@@ -573,9 +556,10 @@ public class Persister
 				Collection<Object> collection;
 				try
 				{
+					Class<?> collectionType = getTypeFromName(collectionClassName);
+					Constructor<?> constructor = collectionType.getConstructor();
 					@SuppressWarnings("unchecked")
-					Collection<Object> objectCollection =
-							(Collection<Object>) Class.forName(collectionClassName).newInstance();
+					Collection<Object> objectCollection = (Collection<Object>) constructor.newInstance();
 					collection = objectCollection;
 				}
 				catch (Exception e)
@@ -878,6 +862,65 @@ public class Persister
 	}
 
 	/**
+	 * Calculate the type for the given name. If the name has been registered
+	 * using {@link #registerNamedExportable(Class, String)}, that type is
+	 * returned. Otherwise {@link Class#forName(String)} is used.
+	 * 
+	 * @param name
+	 *            Name to calculate type for
+	 * @return Type for name
+	 */
+	protected Class<?> getTypeFromName(String name)
+	{
+		Class<?> c = nameToExportable.get(name);
+		if (c == null)
+		{
+			c = PrimitiveNames.nameToPrimitive.get(name);
+		}
+		if (c == null)
+		{
+			try
+			{
+				c = Class.forName(name);
+			}
+			catch (ClassNotFoundException e)
+			{
+				throw new IllegalArgumentException("Could not determine type for name: " + name); //$NON-NLS-1$
+			}
+		}
+		return c;
+	}
+
+	/**
+	 * Calculate the name for the given type. If the type is marked as
+	 * {@link Exportable} and a named exportable has been registered using
+	 * {@link #registerNamedExportable(Class, String)}, that name is returned.
+	 * Otherwise the canonical class name is returned.
+	 * 
+	 * @param type
+	 *            Type to calculate name for
+	 * @return Name of type
+	 */
+	protected String getNameFromType(Class<?> type)
+	{
+		String name = exportableToName.get(type);
+		if (Util.isEmpty(name))
+		{
+			name = PrimitiveNames.primitiveToName.get(type);
+		}
+		if (Util.isEmpty(name))
+		{
+			//we want the component type of an array to still use the exportable name, so recurse if array
+			name = type.isArray() ? (getNameFromType(type.getComponentType()) + "[]") : type.getCanonicalName(); //$NON-NLS-1$
+		}
+		if (Util.isEmpty(name))
+		{
+			throw new IllegalArgumentException("Could not determine name for type: " + type); //$NON-NLS-1$
+		}
+		return name;
+	}
+
+	/**
 	 * Throws an {@link IllegalArgumentException} if the given type is not
 	 * {@link Exportable} (or doesn't have a default constructor).
 	 * 
@@ -912,6 +955,41 @@ public class Persister
 		if (!StringInstantiable.isInstantiable(type))
 		{
 			throw new IllegalArgumentException("Cannot persist type: " + type); //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * Helper class used to map primitive and boxed classes to simple names, and
+	 * vice-versa.
+	 */
+	protected static class PrimitiveNames
+	{
+		public final static Map<Class<?>, String> primitiveToName;
+		public final static Map<String, Class<?>> nameToPrimitive;
+
+		static
+		{
+			Map<Class<?>, String> ptn = new HashMap<Class<?>, String>();
+			Map<String, Class<?>> ntp = new HashMap<String, Class<?>>();
+			add(int.class, Integer.class, ptn, ntp);
+			add(short.class, Short.class, ptn, ntp);
+			add(long.class, Long.class, ptn, ntp);
+			add(char.class, Character.class, ptn, ntp);
+			add(byte.class, Byte.class, ptn, ntp);
+			add(float.class, Float.class, ptn, ntp);
+			add(double.class, Double.class, ptn, ntp);
+			add(boolean.class, Boolean.class, ptn, ntp);
+			primitiveToName = Collections.unmodifiableMap(ptn);
+			nameToPrimitive = Collections.unmodifiableMap(ntp);
+		}
+
+		private static void add(Class<?> primitive, Class<?> boxed, Map<Class<?>, String> primitiveToName,
+				Map<String, Class<?>> nameToPrimitive)
+		{
+			String name = primitive.getCanonicalName();
+			primitiveToName.put(primitive, name);
+			primitiveToName.put(boxed, name);
+			nameToPrimitive.put(name, boxed);
 		}
 	}
 }

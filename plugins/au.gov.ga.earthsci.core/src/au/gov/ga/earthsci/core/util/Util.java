@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Utility class containing general helper methods.
@@ -27,6 +28,7 @@ import java.util.Map;
 public class Util
 {
 	private final static Map<Class<?>, Class<?>> primitiveToBoxed;
+	private final static Map<Class<?>, Class<?>> boxedToPrimitive;
 	static
 	{
 		Map<Class<?>, Class<?>> ptb = new HashMap<Class<?>, Class<?>>();
@@ -39,22 +41,38 @@ public class Util
 		ptb.put(float.class, Float.class);
 		ptb.put(short.class, Short.class);
 		primitiveToBoxed = Collections.unmodifiableMap(ptb);
+		Map<Class<?>, Class<?>> btp = new HashMap<Class<?>, Class<?>>();
+		for (Entry<Class<?>, Class<?>> entry : ptb.entrySet())
+		{
+			btp.put(entry.getValue(), entry.getKey());
+		}
+		boxedToPrimitive = Collections.unmodifiableMap(btp);
 	}
 
 	/**
 	 * Convert the given primitive class (int.class, long.class, etc) to its
-	 * boxed version (Integer.class, Long.class, etc).
+	 * boxed version (Integer.class, Long.class, etc). Returns null if the given
+	 * class is not a primitive class.
 	 * 
 	 * @param primitiveClass
-	 * @return Boxed version of the given primitive class.
+	 * @return Boxed version of the given primitive class
 	 */
 	public static Class<?> primitiveClassToBoxed(Class<?> primitiveClass)
 	{
-		if (!primitiveClass.isPrimitive())
-		{
-			throw new IllegalArgumentException("Class is not a primitive"); //$NON-NLS-1$
-		}
 		return primitiveToBoxed.get(primitiveClass);
+	}
+
+	/**
+	 * Convert the given boxed class (Integer.class, Long.class, etc) to its
+	 * primitive version (int.class, long.class, etc). Returns null if the given
+	 * class is not a boxed class.
+	 * 
+	 * @param boxedClass
+	 * @return Primitive version of the given boxed class, or null
+	 */
+	public static Class<?> boxedClassToPrimitive(Class<?> boxedClass)
+	{
+		return boxedToPrimitive.get(boxedClass);
 	}
 
 	/**
