@@ -19,6 +19,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
@@ -599,14 +600,22 @@ public class Persister
 			{
 				//instantiate the collection impementation
 				String collectionClassName = element.getAttribute(TYPE_ATTRIBUTE);
+				Class<?> collectionType;
 				if (Util.isEmpty(collectionClassName))
 				{
-					throw new PersistanceException("Collection class not specified"); //$NON-NLS-1$
+					if (Modifier.isAbstract(type.getModifiers()) || type.isInterface())
+					{
+						throw new PersistanceException("Collection class not specified"); //$NON-NLS-1$
+					}
+					collectionType = type;
+				}
+				else
+				{
+					collectionType = getTypeFromName(collectionClassName);
 				}
 				Collection<Object> collection;
 				try
 				{
-					Class<?> collectionType = getTypeFromName(collectionClassName);
 					Constructor<?> constructor = collectionType.getConstructor();
 					@SuppressWarnings("unchecked")
 					Collection<Object> objectCollection = (Collection<Object>) constructor.newInstance();
@@ -639,16 +648,23 @@ public class Persister
 				IPersistantAdapter<Object> objectAdapter = (IPersistantAdapter<Object>) persistantAdapter;
 				return objectAdapter.fromXML(element, context);
 			}
-			else if (AnnotationUtil.getAnnotation(type, Exportable.class) != null)
-			{
-				//if the type is exportable, recurse
-				Element child = XmlUtil.getFirstChildElement(element);
-				return load(child, context);
-			}
 			else
 			{
-				Text text = XmlUtil.getFirstChildText(element);
-				stringValue = text.getData();
+				Element child = XmlUtil.getFirstChildElement(element);
+				if (child != null)
+				{
+					//assume, if there's a child element, the type is exportable: recurse
+					return load(child, context);
+				}
+				else
+				{
+					Text text = XmlUtil.getFirstChildText(element);
+					if (text == null)
+					{
+						throw new PersistanceException("No text child found"); //$NON-NLS-1$
+					}
+					stringValue = text.getData();
+				}
 			}
 		}
 		else if (attribute != null)
@@ -1000,7 +1016,7 @@ public class Persister
 	{
 		if (AnnotationUtil.getAnnotation(type, Exportable.class) == null)
 		{
-			throw new PersistanceException(type + " is not marked " + Exportable.class); //$NON-NLS-1$
+			throw new PersistanceException(type + " is not marked " + Exportable.class.getSimpleName()); //$NON-NLS-1$
 		}
 		try
 		{
