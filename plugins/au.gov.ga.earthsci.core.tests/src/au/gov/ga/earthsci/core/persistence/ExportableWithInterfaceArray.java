@@ -20,7 +20,7 @@ import java.util.Arrays;
 @Exportable
 public class ExportableWithInterfaceArray
 {
-	@Persistant
+	@Persistent
 	private NonExportableInterface[] array = new NonExportableInterface[] { new ExportableInterfaceImpementation(),
 			new ExportableInterfaceImpementation() };
 

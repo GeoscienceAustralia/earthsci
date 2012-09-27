@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
 @Exportable
 public class ExportableWithAdapter
 {
-	@Persistant
+	@Persistent
 	@Adapter(AdaptableAdapter.class)
 	private Adaptable adaptable;
 
@@ -65,7 +65,7 @@ public class ExportableWithAdapter
 		}
 	}
 
-	public static class AdaptableAdapter implements IPersistantAdapter<Adaptable>
+	public static class AdaptableAdapter implements IPersistentAdapter<Adaptable>
 	{
 		@Override
 		public void toXML(Adaptable object, Element element, URI context)

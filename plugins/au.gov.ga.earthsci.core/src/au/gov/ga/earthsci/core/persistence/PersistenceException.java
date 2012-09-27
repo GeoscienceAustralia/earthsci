@@ -21,24 +21,24 @@ package au.gov.ga.earthsci.core.persistence;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class PersistanceException extends Exception
+public class PersistenceException extends Exception
 {
-	public PersistanceException()
+	public PersistenceException()
 	{
 		super();
 	}
 
-	public PersistanceException(String message, Throwable cause)
+	public PersistenceException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}
 
-	public PersistanceException(String message)
+	public PersistenceException(String message)
 	{
 		super(message);
 	}
 
-	public PersistanceException(Throwable cause)
+	public PersistenceException(Throwable cause)
 	{
 		super(cause);
 	}

@@ -18,7 +18,7 @@ package au.gov.ga.earthsci.core.persistence;
 @Exportable
 public class ExportableWithNamedPersistant
 {
-	@Persistant(name = "namedField")
+	@Persistent(name = "namedField")
 	private int field;
 
 	public int getField()

@@ -42,7 +42,7 @@ import au.gov.ga.earthsci.core.util.XmlUtil;
 public class PersisterTest
 {
 	@Test
-	public void testArray() throws PersistanceException
+	public void testArray() throws PersistenceException
 	{
 		ExportableWithArray array = new ExportableWithArray();
 		array.setArray(new double[] { 1, 3, 5, 7, 9, 38742.5463 });
@@ -50,7 +50,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testCollection() throws PersistanceException
+	public void testCollection() throws PersistenceException
 	{
 		ExportableWithCollection collection = new ExportableWithCollection();
 		List<Integer> list = new ArrayList<Integer>();
@@ -62,7 +62,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testArrayList() throws PersistanceException
+	public void testArrayList() throws PersistenceException
 	{
 		ExportableWithArrayList arrayList = new ExportableWithArrayList();
 		ArrayList<Integer> list = new ArrayList<Integer>();
@@ -74,7 +74,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testDoubleArray() throws PersistanceException
+	public void testDoubleArray() throws PersistenceException
 	{
 		ExportableWithDoubleArray doubleArray = new ExportableWithDoubleArray();
 		doubleArray.setCollectionArray(new ExportableWithCollection[3][5]);
@@ -82,7 +82,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testAttribute() throws PersistanceException
+	public void testAttribute() throws PersistenceException
 	{
 		ExportableWithAttribute attribute = new ExportableWithAttribute();
 		attribute.setAttribute(5);
@@ -90,7 +90,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testAdapter() throws PersistanceException
+	public void testAdapter() throws PersistenceException
 	{
 		ExportableWithAdapter adapter = new ExportableWithAdapter();
 		Adaptable adaptable = new Adaptable();
@@ -100,7 +100,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testMethods() throws PersistanceException
+	public void testMethods() throws PersistenceException
 	{
 		ExportableWithMethods methods = new ExportableWithMethods();
 		methods.setField(5);
@@ -110,7 +110,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testNamedExportable() throws PersistanceException
+	public void testNamedExportable() throws PersistenceException
 	{
 		ExportableWithMethods methods = new ExportableWithMethods();
 		methods.setField(5);
@@ -122,7 +122,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testExportableObject() throws PersistanceException
+	public void testExportableObject() throws PersistenceException
 	{
 		ExportableWithObject object = new ExportableWithObject();
 		ExportableWithAttribute attribute = new ExportableWithAttribute();
@@ -132,7 +132,7 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testNull() throws PersistanceException
+	public void testNull() throws PersistenceException
 	{
 		ExportableWithNull nul = new ExportableWithNull();
 		nul.setString(null);
@@ -140,33 +140,33 @@ public class PersisterTest
 	}
 
 	@Test
-	public void testNamedPersistant() throws PersistanceException
+	public void testNamedPersistant() throws PersistenceException
 	{
 		ExportableWithNamedPersistant named = new ExportableWithNamedPersistant();
 		named.setField(3254235);
 		performTest(named, "testNamedPersistant.xml");
 	}
 
-	@Test(expected = PersistanceException.class)
-	public void testNonExportable() throws PersistanceException
+	@Test(expected = PersistenceException.class)
+	public void testNonExportable() throws PersistenceException
 	{
 		performTest(new ArrayList<Integer>(), "testNonExportable.xml");
 	}
 
 	@Test
-	public void testInterfaceArray() throws PersistanceException
+	public void testInterfaceArray() throws PersistenceException
 	{
 		ExportableWithInterfaceArray array = new ExportableWithInterfaceArray();
 		performTest(array, "testInterfaceArray.xml");
 	}
 
-	protected void performTest(Object o, String expectedResourceName) throws PersistanceException
+	protected void performTest(Object o, String expectedResourceName) throws PersistenceException
 	{
 		performTest(o, new Persister(), expectedResourceName);
 	}
 
 	protected void performTest(Object saved, Persister persister, String expectedResourceName)
-			throws PersistanceException
+			throws PersistenceException
 	{
 		persister.registerClassLoader(getClass().getClassLoader());
 
@@ -213,7 +213,7 @@ public class PersisterTest
 
 			Assert.assertEquals(expected, actual);
 		}
-		catch (PersistanceException e)
+		catch (PersistenceException e)
 		{
 			throw e;
 		}

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 @Exportable
 public class ExportableWithArrayList
 {
-	@Persistant
+	@Persistent
 	private ArrayList<Integer> arrayList = new ArrayList<Integer>();
 
 	public ArrayList<Integer> getArrayList()

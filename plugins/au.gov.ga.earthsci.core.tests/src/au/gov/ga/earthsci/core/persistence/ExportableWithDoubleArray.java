@@ -20,7 +20,7 @@ import java.util.Arrays;
 @Exportable
 public class ExportableWithDoubleArray
 {
-	@Persistant
+	@Persistent
 	private ExportableWithCollection[][] collectionArray;
 
 	public ExportableWithCollection[][] getCollectionArray()

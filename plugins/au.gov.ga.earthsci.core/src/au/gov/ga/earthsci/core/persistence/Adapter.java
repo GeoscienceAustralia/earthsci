@@ -21,10 +21,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that allows specification of an {@link IPersistantAdapter} used
+ * Annotation that allows specification of an {@link IPersistentAdapter} used
  * for persisting objects.
  * 
- * @see Persistant
+ * @see Persistent
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -34,7 +34,7 @@ public @interface Adapter
 {
 	/**
 	 * Points to the class that converts an XML element to a value type or vice
-	 * versa. See {@link IPersistantAdapter} for more details.
+	 * versa. See {@link IPersistentAdapter} for more details.
 	 */
-	Class<? extends IPersistantAdapter<?>> value();
+	Class<? extends IPersistentAdapter<?>> value();
 }

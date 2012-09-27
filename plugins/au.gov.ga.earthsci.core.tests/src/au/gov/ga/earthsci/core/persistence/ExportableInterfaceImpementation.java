@@ -5,7 +5,7 @@ public class ExportableInterfaceImpementation implements NonExportableInterface
 {
 	private String name = "name value";
 
-	@Persistant
+	@Persistent
 	@Override
 	public String getName()
 	{

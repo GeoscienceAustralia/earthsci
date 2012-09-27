@@ -18,7 +18,7 @@ package au.gov.ga.earthsci.core.persistence;
 @Exportable
 public class ExportableWithObject
 {
-	@Persistant
+	@Persistent
 	private ExportableWithAttribute exportableObject;
 
 	public ExportableWithAttribute getExportableObject()
