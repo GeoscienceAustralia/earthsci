@@ -62,6 +62,18 @@ public class PersisterTest
 	}
 
 	@Test
+	public void testArrayList() throws PersistanceException
+	{
+		ExportableWithArrayList arrayList = new ExportableWithArrayList();
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		list.add(5);
+		list.add(7);
+		list.add(435);
+		arrayList.setArrayList(list);
+		performTest(arrayList, "testArrayList.xml");
+	}
+
+	@Test
 	public void testDoubleArray() throws PersistanceException
 	{
 		ExportableWithDoubleArray doubleArray = new ExportableWithDoubleArray();
@@ -141,6 +153,13 @@ public class PersisterTest
 		performTest(new ArrayList<Integer>(), "testNonExportable.xml");
 	}
 
+	@Test
+	public void testInterfaceArray() throws PersistanceException
+	{
+		ExportableWithInterfaceArray array = new ExportableWithInterfaceArray();
+		performTest(array, "testInterfaceArray.xml");
+	}
+
 	protected void performTest(Object o, String expectedResourceName) throws PersistanceException
 	{
 		performTest(o, new Persister(), expectedResourceName);
@@ -158,6 +177,20 @@ public class PersisterTest
 			Element element = document.createElement("root");
 			document.appendChild(element);
 			persister.save(saved, element, null);
+
+			/*try
+			{
+				File output =
+						new File("src/" + getClass().getPackage().getName().replace('.', '/') + "/"
+								+ expectedResourceName);
+				FileOutputStream os = new FileOutputStream(output);
+				XmlUtil.saveDocumentToFormattedStream(document, os);
+				os.close();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}*/
 
 			Element child = XmlUtil.getFirstChildElement(element);
 			Object loaded = persister.load(child, null);
@@ -188,18 +221,6 @@ public class PersisterTest
 		{
 			throw new RuntimeException(e);
 		}
-
-		/*try
-		{
-			File output = new File(expectedResourceName);
-			FileOutputStream os = new FileOutputStream(output);
-			XmlUtil.saveDocumentToFormattedStream(document, os);
-			os.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}*/
 	}
 
 	protected static long copyLarge(InputStream input, OutputStream output) throws IOException
