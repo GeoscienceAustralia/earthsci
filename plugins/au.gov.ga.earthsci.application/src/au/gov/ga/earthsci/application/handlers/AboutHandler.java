@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.notification.INotificationAction;
 import au.gov.ga.earthsci.notification.Notification;
+import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.NotificationLevel;
 import au.gov.ga.earthsci.notification.NotificationManager;
 
@@ -41,12 +42,13 @@ public class AboutHandler
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 	{
-		notifications.notify(new Notification(NotificationLevel.WARNING, "About launched", "You opened the About dialog ssssssssss sssssssssssss sssssssssssss sssssssss ssssssssss", new INotificationAction()
+		notifications.notify(Notification.create(NotificationLevel.WARNING, "About launched", "You opened the About dialog!")
+		.withAction(new INotificationAction()
 		{
 			@Override
 			public void run()
 			{
-				System.out.println("I WAS CLICKED!");
+				System.out.println(NotificationCategory.FILE_IO.getLabel());
 			}
 			
 			@Override
@@ -60,28 +62,7 @@ public class AboutHandler
 			{
 				return "Click me";
 			} 
-		}));
-		
-		NotificationManager.sendNotification(new Notification(NotificationLevel.ERROR, "Another one!", "You opened the About dialog ssssssssss sssssssssssss sssssssssssss sssssssss ssssssssss", new INotificationAction()
-		{
-			@Override
-			public void run()
-			{
-				NotificationManager.sendNotification(new Notification(NotificationLevel.INFORMATION, "Wow!", "This came from inside a notification!"));
-			}
-			
-			@Override
-			public String getTooltip()
-			{
-				return "This is a test action";
-			}
-			
-			@Override
-			public String getText()
-			{
-				return "Click me";
-			} 
-		}));
+		}).inCategory(NotificationCategory.FILE_IO).build());
 		
 		MessageDialog.openInformation(shell, "About", "e4 Application example.");
 		

@@ -16,6 +16,11 @@ public interface INotification
 	NotificationLevel getLevel();
 	
 	/**
+	 * @return The category this notification falls in
+	 */
+	NotificationCategory getCategory();
+	
+	/**
 	 * @return The ID of this notification (unique within an execution of the application)
 	 */
 	long getId();
