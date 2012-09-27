@@ -484,7 +484,7 @@ public class Persister
 				Object value = unpersist(0, element, name, type, context, persistant, adapter);
 				setter.invoke(o, value);
 			}
-			catch (MissingPersistantException e)
+			catch (MissingPersistentException e)
 			{
 				if (!isIgnoreMissing())
 				{
@@ -529,7 +529,7 @@ public class Persister
 				Object value = unpersist(0, element, name, type, context, persistant, adapter);
 				field.set(o, value);
 			}
-			catch (MissingPersistantException e)
+			catch (MissingPersistentException e)
 			{
 				if (!isIgnoreMissing())
 				{
@@ -732,7 +732,7 @@ public class Persister
 		}
 
 		//if we get here, there's no element/attribute for the given Persistant
-		throw new MissingPersistantException("Could not unpersist Persistable: " + name); //$NON-NLS-1$
+		throw new MissingPersistentException("Could not unpersist Persistable: " + name); //$NON-NLS-1$
 	}
 
 	/**
@@ -1136,9 +1136,9 @@ public class Persister
 	 * Internally used exception that is thrown when an expected
 	 * {@link Persistent} element is missing.
 	 */
-	protected static class MissingPersistantException extends PersistenceException
+	protected static class MissingPersistentException extends PersistenceException
 	{
-		public MissingPersistantException(String message)
+		public MissingPersistentException(String message)
 		{
 			super(message);
 		}
