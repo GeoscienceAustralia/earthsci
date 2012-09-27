@@ -57,6 +57,36 @@ public class Persister
 	protected final Map<Class<?>, IPersistantAdapter<?>> adapters = new HashMap<Class<?>, IPersistantAdapter<?>>();
 	protected final Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
 
+	protected boolean ignoreMissing = false;
+
+	/**
+	 * @return Should this {@link Persister} ignore missing XML
+	 *         elements/attributes during unpersisting?
+	 * @see #setIgnoreMissing(boolean)
+	 */
+	public boolean isIgnoreMissing()
+	{
+		return ignoreMissing;
+	}
+
+	/**
+	 * Sets if this {@link Persister} should ignore missing XML
+	 * elements/attributes for fields/methods marked as {@link Persistant} in
+	 * the {@link Exportable}s that it loads.
+	 * <p/>
+	 * The default behaviour is, if a field/method is marked persistant, and an
+	 * XML node does not exist in the XML for that {@link Exportable}, a
+	 * {@link PersistanceException} is thrown. However, if
+	 * {@link #isIgnoreMissing()} is true, this is ignored and the method/field
+	 * is not called/set.
+	 * 
+	 * @param ignoreMissing
+	 */
+	public void setIgnoreMissing(boolean ignoreMissing)
+	{
+		this.ignoreMissing = ignoreMissing;
+	}
+
 	/**
 	 * Register a name for a given {@link Exportable} type. This name is used
 	 * for the top level XML element name (instead of the canonical class name)
@@ -449,10 +479,21 @@ public class Persister
 			Method setter = getSetter(o.getClass(), name, type, persistant);
 
 			Adapter adapter = AnnotationUtil.getAnnotation(method, Adapter.class);
-			Object value = unpersist(0, element, name, type, context, persistant, adapter);
 			try
 			{
+				Object value = unpersist(0, element, name, type, context, persistant, adapter);
 				setter.invoke(o, value);
+			}
+			catch (MissingPersistantException e)
+			{
+				if (!isIgnoreMissing())
+				{
+					throw e;
+				}
+			}
+			catch (PersistanceException e)
+			{
+				throw e;
 			}
 			catch (Exception e)
 			{
@@ -483,10 +524,21 @@ public class Persister
 			Class<?> type = field.getType();
 
 			Adapter adapter = AnnotationUtil.getAnnotation(field, Adapter.class);
-			Object value = unpersist(0, element, name, type, context, persistant, adapter);
 			try
 			{
+				Object value = unpersist(0, element, name, type, context, persistant, adapter);
 				field.set(o, value);
+			}
+			catch (MissingPersistantException e)
+			{
+				if (!isIgnoreMissing())
+				{
+					throw e;
+				}
+			}
+			catch (PersistanceException e)
+			{
+				throw e;
 			}
 			catch (Exception e)
 			{
@@ -679,7 +731,8 @@ public class Persister
 			return StringInstantiable.newInstance(stringValue, type);
 		}
 
-		throw new PersistanceException("Could not unpersist Persistable: " + name); //$NON-NLS-1$
+		//if we get here, there's no element/attribute for the given Persistant
+		throw new MissingPersistantException("Could not unpersist Persistable: " + name); //$NON-NLS-1$
 	}
 
 	/**
@@ -1076,6 +1129,18 @@ public class Persister
 			primitiveToName.put(primitive, name);
 			primitiveToName.put(boxed, name);
 			nameToPrimitive.put(name, boxed);
+		}
+	}
+
+	/**
+	 * Internally used exception that is thrown when an expected
+	 * {@link Persistant} element is missing.
+	 */
+	protected static class MissingPersistantException extends PersistanceException
+	{
+		public MissingPersistantException(String message)
+		{
+			super(message);
 		}
 	}
 }
