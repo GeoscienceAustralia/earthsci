@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
+import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 
 import au.gov.ga.earthsci.core.worldwind.TreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
@@ -43,10 +44,17 @@ public class LifeCycleManager
 
 	@Inject
 	private NotificationManager notificationManager;
-	
+
 	@PostContextCreate
 	void postContextCreate()
 	{
 		context.set(TreeModel.class, new WorldWindModel());
+	}
+
+	@PreSave
+	void preSave()
+	{
+		WorldWindModel model = (WorldWindModel) context.get(TreeModel.class);
+		model.saveLayers();
 	}
 }

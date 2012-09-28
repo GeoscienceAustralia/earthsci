@@ -21,6 +21,7 @@ import gov.nasa.worldwind.layers.LayerList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.IEnableable;
@@ -44,6 +45,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 		addPropertyChangeListener("enabled", new EnabledChangeListener()); //$NON-NLS-1$
 	}
 
+	@Persistent(attribute = true)
 	@Override
 	public String getName()
 	{
@@ -56,6 +58,13 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 		String oldValue = getName();
 		this.name = name;
 		firePropertyChange("name", oldValue, name); //$NON-NLS-1$
+	}
+
+	@Persistent
+	@Override
+	public ITreeNode<AbstractLayerTreeNode>[] getChildren()
+	{
+		return super.getChildren();
 	}
 
 	@Override

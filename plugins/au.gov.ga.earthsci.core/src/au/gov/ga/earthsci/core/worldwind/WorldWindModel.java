@@ -19,8 +19,13 @@ import gov.nasa.worldwind.BasicModel;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.globes.Globe;
-import au.gov.ga.earthsci.core.model.layer.DefaultLayers;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
+import au.gov.ga.earthsci.core.model.layer.LayerPersister;
+import au.gov.ga.earthsci.core.model.layer.uri.DefaultLayers;
 
 /**
  * {@link BasicModel} subclass used to override specific functionality, such as
@@ -31,6 +36,8 @@ import au.gov.ga.earthsci.core.model.layer.FolderNode;
 public class WorldWindModel extends BasicModel implements TreeModel
 {
 	private final FolderNode rootNode;
+	@Deprecated
+	private static final File layerFile = new File("c:/temp/layers.xml");
 
 	public WorldWindModel()
 	{
@@ -47,7 +54,7 @@ public class WorldWindModel extends BasicModel implements TreeModel
 	{
 		FolderNode rootNode = new FolderNode();
 		rootNode.setName("root"); //$NON-NLS-1$
-		rootNode.add(DefaultLayers.getDefaultLayers());
+		loadRootNode(rootNode);
 		return rootNode;
 	}
 
@@ -60,5 +67,52 @@ public class WorldWindModel extends BasicModel implements TreeModel
 	public FolderNode getRootNode()
 	{
 		return rootNode;
+	}
+
+	@Deprecated
+	public void saveLayers()
+	{
+		saveRootNode(rootNode);
+	}
+
+	protected static void loadRootNode(FolderNode rootNode)
+	{
+		FolderNode loadedNode = null;
+		try
+		{
+			loadedNode = LayerPersister.loadLayers(layerFile);
+		}
+		catch (FileNotFoundException e)
+		{
+			//ignore
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace(); //TODO
+		}
+		if (loadedNode == null)
+		{
+			FolderNode folder = DefaultLayers.getLayers();
+			rootNode.add(folder);
+		}
+		else
+		{
+			for (int i = 0; i < loadedNode.getChildCount(); i++)
+			{
+				rootNode.add(loadedNode.getChild(i));
+			}
+		}
+	}
+
+	protected static void saveRootNode(FolderNode rootNode)
+	{
+		try
+		{
+			LayerPersister.saveLayers(rootNode, layerFile);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace(); //TODO
+		}
 	}
 }
