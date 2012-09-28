@@ -33,7 +33,7 @@ import au.gov.ga.earthsci.core.util.StringInstantiable;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })
 @Inherited
-public @interface Persistant
+public @interface Persistent
 {
 	/**
 	 * Name to use for the XML element (or attribute) when persisting this

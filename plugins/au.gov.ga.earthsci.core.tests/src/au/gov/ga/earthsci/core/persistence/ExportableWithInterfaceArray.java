@@ -18,17 +18,18 @@ package au.gov.ga.earthsci.core.persistence;
 import java.util.Arrays;
 
 @Exportable
-public class ExportableWithArray
+public class ExportableWithInterfaceArray
 {
 	@Persistent
-	private double[] array;
+	private NonExportableInterface[] array = new NonExportableInterface[] { new ExportableInterfaceImpementation(),
+			new ExportableInterfaceImpementation() };
 
-	public double[] getArray()
+	public NonExportableInterface[] getArray()
 	{
 		return array;
 	}
 
-	public void setArray(double[] array)
+	public void setArray(NonExportableInterface[] array)
 	{
 		this.array = array;
 	}
@@ -36,7 +37,7 @@ public class ExportableWithArray
 	@Override
 	public boolean equals(Object obj)
 	{
-		ExportableWithArray ewa = (ExportableWithArray) obj;
-		return Arrays.equals(ewa.array, array);
+		ExportableWithInterfaceArray ewc = (ExportableWithInterfaceArray) obj;
+		return Arrays.equals(ewc.array, array);
 	}
 }

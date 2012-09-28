@@ -13,30 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.persistence;
+package au.gov.ga.earthsci.core.model.layer.uri.handler;
 
-import java.util.Arrays;
+import gov.nasa.worldwind.layers.Layer;
 
-@Exportable
-public class ExportableWithArray
+import java.net.URI;
+
+/**
+ * Represents a handler that can create a {@link Layer} from a {@link URI}.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ */
+public interface ILayerURIHandler
 {
-	@Persistent
-	private double[] array;
+	/**
+	 * @return URI scheme supported by this handler
+	 */
+	String getSupportedScheme();
 
-	public double[] getArray()
-	{
-		return array;
-	}
-
-	public void setArray(double[] array)
-	{
-		this.array = array;
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		ExportableWithArray ewa = (ExportableWithArray) obj;
-		return Arrays.equals(ewa.array, array);
-	}
+	/**
+	 * Create a {@link Layer} from the given {@link URI}.
+	 * 
+	 * @param uri
+	 *            URI to create the Layer from
+	 * @return A Layer created from the given uri
+	 * @throws LayerURIHandlerException
+	 *             when Layer creation fails
+	 */
+	Layer createLayer(URI uri) throws LayerURIHandlerException;
 }

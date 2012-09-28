@@ -13,33 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.persistence;
+package au.gov.ga.earthsci.core.model.layer.uri.handler;
 
 /**
- * An exception thrown when an error occurs during persistance (loading or
- * saving objects from XML).
+ * {@link ILayerURIHandler} implementation which handles file:// URIs, loading
+ * the file as a Layer using the configured WW layer factory.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class PersistanceException extends Exception
+public class FileURIHandler extends AbstractURLURIHandler
 {
-	public PersistanceException()
-	{
-		super();
-	}
+	private static final String SCHEME = "file"; //$NON-NLS-1$
 
-	public PersistanceException(String message, Throwable cause)
+	@Override
+	public String getSupportedScheme()
 	{
-		super(message, cause);
-	}
-
-	public PersistanceException(String message)
-	{
-		super(message);
-	}
-
-	public PersistanceException(Throwable cause)
-	{
-		super(cause);
+		return SCHEME;
 	}
 }

@@ -21,14 +21,18 @@ import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.render.DrawContext;
 
 import java.awt.Point;
+import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import au.gov.ga.earthsci.core.model.layer.uri.URILayerFactory;
+import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.util.IEnableable;
 
 /**
@@ -43,16 +47,41 @@ import au.gov.ga.earthsci.core.util.IEnableable;
  */
 public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableable
 {
+	protected URI layerURI;
 	protected Layer layer = new DummyLayer();
 	protected Set<String> propertiesChanged = new HashSet<String>();
 
-	public LayerNode()
+	/**
+	 * @return The layer {@link URI} that uniquely defines how to create this
+	 *         layer
+	 */
+	@Persistent
+	public URI getLayerURI()
 	{
+		return layerURI;
 	}
 
-	public LayerNode(Layer layer)
+	/**
+	 * Set the layer {@link URI} that uniquely defines the how to create this
+	 * layer.
+	 * 
+	 * @param layerURI
+	 */
+	public void setLayerURI(URI layerURI)
 	{
-		this.layer = layer;
+		URI oldValue = getLayerURI();
+		this.layerURI = layerURI;
+		firePropertyChange("layerURI", oldValue, layerURI); //$NON-NLS-1$
+
+		//TODO
+		try
+		{
+			setLayer(URILayerFactory.createLayer(layerURI));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -76,6 +105,15 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 		firePropertyChange("layer", oldValue, layer); //$NON-NLS-1$
 	}
 
+	/**
+	 * Copy the changed properties between layers, by calling the getters of the
+	 * from layer and the setters on the to layer.
+	 * 
+	 * @param from
+	 *            Layer to get property values from
+	 * @param to
+	 *            Layer to set property values on
+	 */
 	protected void copyProperties(Layer from, Layer to)
 	{
 		if (from == to)
@@ -91,6 +129,10 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 				Method setter = toPropertyDescriptor.getWriteMethod();
 				Object value = getter.invoke(from);
 				setter.invoke(to, value);
+			}
+			catch (IntrospectionException e)
+			{
+				//ignore (invalid property name)
 			}
 			catch (Exception e)
 			{
@@ -142,6 +184,7 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 		return layer.setValue(key, value);
 	}
 
+	@Persistent(attribute = true)
 	@Override
 	public boolean isEnabled()
 	{
@@ -182,6 +225,7 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 		return layer.getRestorableState();
 	}
 
+	@Persistent(attribute = true)
 	@Override
 	public double getOpacity()
 	{

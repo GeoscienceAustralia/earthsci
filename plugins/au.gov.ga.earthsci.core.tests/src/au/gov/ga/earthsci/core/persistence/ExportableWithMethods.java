@@ -18,7 +18,7 @@ package au.gov.ga.earthsci.core.persistence;
 @Exportable
 public class ExportableWithMethods
 {
-	@Persistant
+	@Persistent
 	private int field;
 
 	private double method;
@@ -34,7 +34,7 @@ public class ExportableWithMethods
 		this.field = field;
 	}
 
-	@Persistant
+	@Persistent
 	public double getMethod()
 	{
 		return method;
@@ -45,7 +45,7 @@ public class ExportableWithMethods
 		this.method = method;
 	}
 
-	@Persistant(setter = "setSetterMethodOther")
+	@Persistent(setter = "setSetterMethodOther")
 	public float getSetterMethod()
 	{
 		return setterMethod;

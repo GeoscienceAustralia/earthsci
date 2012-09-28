@@ -21,7 +21,7 @@ import java.util.Collection;
 @Exportable
 public class ExportableWithCollection
 {
-	@Persistant
+	@Persistent
 	private Collection<Integer> collection = new ArrayList<Integer>();
 
 	public Collection<Integer> getCollection()

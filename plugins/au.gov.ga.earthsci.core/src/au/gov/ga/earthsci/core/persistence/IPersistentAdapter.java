@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * @param <E>
  *            Type that this adapter supports.
  */
-public interface IPersistantAdapter<E>
+public interface IPersistentAdapter<E>
 {
 	/**
 	 * Convert the given object to XML. The developer can set attributes

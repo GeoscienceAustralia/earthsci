@@ -13,28 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.persistence;
+package au.gov.ga.earthsci.core.model.layer.uri.handler;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import gov.nasa.worldwind.layers.Layer;
+
+import java.net.URI;
 
 /**
- * Annotation that allows specification of an {@link IPersistentAdapter} used
- * for persisting objects.
- * 
- * @see Persistent
+ * {@link ILayerURIHandler} implementation that handles the class:// URI scheme,
+ * which uses the URI's authority part as a class name, then instantiates the
+ * class as a new Layer.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.TYPE })
-public @interface Adapter
+public class ClassURIHandler extends AbstractURIHandler
 {
-	/**
-	 * Points to the class that converts an XML element to a value type or vice
-	 * versa. See {@link IPersistentAdapter} for more details.
-	 */
-	Class<? extends IPersistentAdapter<?>> value();
+	private static final String SCHEME = "class"; //$NON-NLS-1$
+
+	@Override
+	public String getSupportedScheme()
+	{
+		return SCHEME;
+	}
+
+	@Override
+	public Layer createLayerFromURI(URI uri) throws LayerURIHandlerException
+	{
+		try
+		{
+			@SuppressWarnings("unchecked")
+			Class<? extends Layer> c = (Class<? extends Layer>) Class.forName(uri.getAuthority());
+			return c.newInstance();
+		}
+		catch (Exception e)
+		{
+			throw new LayerURIHandlerException(e);
+		}
+	}
 }

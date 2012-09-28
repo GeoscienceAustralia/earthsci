@@ -18,7 +18,7 @@ package au.gov.ga.earthsci.core.persistence;
 @Exportable
 public class ExportableWithNull
 {
-	@Persistant
+	@Persistent
 	private String string = null;
 
 	public String getString()

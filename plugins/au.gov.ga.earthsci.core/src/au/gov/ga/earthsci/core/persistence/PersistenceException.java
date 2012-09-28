@@ -15,28 +15,31 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.persistence;
 
-import java.util.Arrays;
-
-@Exportable
-public class ExportableWithArray
+/**
+ * An exception thrown when an error occurs during persistance (loading or
+ * saving objects from XML).
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ */
+public class PersistenceException extends Exception
 {
-	@Persistent
-	private double[] array;
-
-	public double[] getArray()
+	public PersistenceException()
 	{
-		return array;
+		super();
 	}
 
-	public void setArray(double[] array)
+	public PersistenceException(String message, Throwable cause)
 	{
-		this.array = array;
+		super(message, cause);
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	public PersistenceException(String message)
 	{
-		ExportableWithArray ewa = (ExportableWithArray) obj;
-		return Arrays.equals(ewa.array, array);
+		super(message);
+	}
+
+	public PersistenceException(Throwable cause)
+	{
+		super(cause);
 	}
 }

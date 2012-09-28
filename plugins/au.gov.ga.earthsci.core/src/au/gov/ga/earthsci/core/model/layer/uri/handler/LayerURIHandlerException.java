@@ -13,30 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.persistence;
+package au.gov.ga.earthsci.core.model.layer.uri.handler;
 
-import java.util.Arrays;
-
-@Exportable
-public class ExportableWithArray
+/**
+ * An {@link Exception} subclass thrown by {@link ILayerURIHandler}
+ * implementations to indicate failures.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ */
+public class LayerURIHandlerException extends Exception
 {
-	@Persistent
-	private double[] array;
-
-	public double[] getArray()
+	public LayerURIHandlerException()
 	{
-		return array;
+		super();
 	}
 
-	public void setArray(double[] array)
+	public LayerURIHandlerException(String message, Throwable cause)
 	{
-		this.array = array;
+		super(message, cause);
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	public LayerURIHandlerException(String message)
 	{
-		ExportableWithArray ewa = (ExportableWithArray) obj;
-		return Arrays.equals(ewa.array, array);
+		super(message);
+	}
+
+	public LayerURIHandlerException(Throwable cause)
+	{
+		super(cause);
 	}
 }

@@ -19,6 +19,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,7 +41,7 @@ import au.gov.ga.earthsci.core.util.XmlUtil;
  * Persists annotated {@link Exportable} types.
  * 
  * @see Exportable
- * @see Persistant
+ * @see Persistent
  * @see Adapter
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
@@ -53,8 +54,38 @@ public class Persister
 
 	protected final Map<String, Class<?>> nameToExportable = new HashMap<String, Class<?>>();
 	protected final Map<Class<?>, String> exportableToName = new HashMap<Class<?>, String>();
-	protected final Map<Class<?>, IPersistantAdapter<?>> adapters = new HashMap<Class<?>, IPersistantAdapter<?>>();
+	protected final Map<Class<?>, IPersistentAdapter<?>> adapters = new HashMap<Class<?>, IPersistentAdapter<?>>();
 	protected final Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
+
+	protected boolean ignoreMissing = false;
+
+	/**
+	 * @return Should this {@link Persister} ignore missing XML
+	 *         elements/attributes during unpersisting?
+	 * @see #setIgnoreMissing(boolean)
+	 */
+	public boolean isIgnoreMissing()
+	{
+		return ignoreMissing;
+	}
+
+	/**
+	 * Sets if this {@link Persister} should ignore missing XML
+	 * elements/attributes for fields/methods marked as {@link Persistent} in
+	 * the {@link Exportable}s that it loads.
+	 * <p/>
+	 * The default behaviour is, if a field/method is marked persistant, and an
+	 * XML node does not exist in the XML for that {@link Exportable}, a
+	 * {@link PersistenceException} is thrown. However, if
+	 * {@link #isIgnoreMissing()} is true, this is ignored and the method/field
+	 * is not called/set.
+	 * 
+	 * @param ignoreMissing
+	 */
+	public void setIgnoreMissing(boolean ignoreMissing)
+	{
+		this.ignoreMissing = ignoreMissing;
+	}
 
 	/**
 	 * Register a name for a given {@link Exportable} type. This name is used
@@ -72,7 +103,7 @@ public class Persister
 		{
 			assertIsExportable(type);
 		}
-		catch (PersistanceException e)
+		catch (PersistenceException e)
 		{
 			throw new IllegalArgumentException(e);
 		}
@@ -115,7 +146,7 @@ public class Persister
 	}
 
 	/**
-	 * Register an {@link IPersistantAdapter} to use when persisting objects of
+	 * Register an {@link IPersistentAdapter} to use when persisting objects of
 	 * the given type. This overrides any {@link Adapter} annotations for
 	 * fields/methods of this type.
 	 * 
@@ -124,17 +155,17 @@ public class Persister
 	 * @param adapter
 	 *            Adapter used for persisting type objects
 	 */
-	public <E> void registerAdapter(Class<E> type, IPersistantAdapter<E> adapter)
+	public <E> void registerAdapter(Class<E> type, IPersistentAdapter<E> adapter)
 	{
 		adapters.put(type, adapter);
 	}
 
 	/**
-	 * Unregister the {@link IPersistantAdapter} registered for the given type.
+	 * Unregister the {@link IPersistentAdapter} registered for the given type.
 	 * 
 	 * @param type
-	 *            Type of {@link IPersistantAdapter} to unregister
-	 * @see #registerAdapter(Class, IPersistantAdapter)
+	 *            Type of {@link IPersistentAdapter} to unregister
+	 * @see #registerAdapter(Class, IPersistentAdapter)
 	 */
 	public void unregisterAdapter(Class<?> type)
 	{
@@ -175,10 +206,10 @@ public class Persister
 	 * @param parent
 	 *            XML element to save inside
 	 * @param context
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 *             If an error occurs during persistance of the object
 	 */
-	public void save(Object o, Element parent, URI context) throws PersistanceException
+	public void save(Object o, Element parent, URI context) throws PersistenceException
 	{
 		if (o == null)
 		{
@@ -200,22 +231,22 @@ public class Persister
 	}
 
 	/**
-	 * Persist the {@link Persistant} methods of the given object.
+	 * Persist the {@link Persistent} methods of the given object.
 	 * 
 	 * @param o
 	 *            Object whose method values should be persisted
 	 * @param element
 	 *            XML element to save inside
 	 * @param context
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
-	protected void persistMethods(Object o, Element element, URI context) throws PersistanceException
+	protected void persistMethods(Object o, Element element, URI context) throws PersistenceException
 	{
-		Method[] methods = AnnotationUtil.getAnnotatedMethods(o.getClass(), Persistant.class);
+		Method[] methods = AnnotationUtil.getAnnotatedMethods(o.getClass(), Persistent.class);
 		for (Method method : methods)
 		{
 			method.setAccessible(true);
-			Persistant persistant = AnnotationUtil.getAnnotation(method, Persistant.class);
+			Persistent persistant = AnnotationUtil.getAnnotation(method, Persistent.class);
 			String name = checkAndGetPersistantName(method, persistant);
 			Object value;
 			try
@@ -224,7 +255,7 @@ public class Persister
 			}
 			catch (Exception e)
 			{
-				throw new PersistanceException(e);
+				throw new PersistenceException(e);
 			}
 
 			Adapter adapter = AnnotationUtil.getAnnotation(method, Adapter.class);
@@ -233,22 +264,22 @@ public class Persister
 	}
 
 	/**
-	 * Persist the {@link Persistant} fields of the given object.
+	 * Persist the {@link Persistent} fields of the given object.
 	 * 
 	 * @param o
 	 *            Object whose fields should be persisted
 	 * @param element
 	 *            XML element to save inside
 	 * @param context
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
-	protected void persistFields(Object o, Element element, URI context) throws PersistanceException
+	protected void persistFields(Object o, Element element, URI context) throws PersistenceException
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedFields(o.getClass(), Persistant.class);
+		Field[] fields = AnnotationUtil.getAnnotatedFields(o.getClass(), Persistent.class);
 		for (Field field : fields)
 		{
 			field.setAccessible(true);
-			Persistant persistant = AnnotationUtil.getAnnotation(field, Persistant.class);
+			Persistent persistant = AnnotationUtil.getAnnotation(field, Persistent.class);
 			String name = checkAndGetPersistantName(field, persistant);
 			Object value;
 			try
@@ -257,7 +288,7 @@ public class Persister
 			}
 			catch (Exception e)
 			{
-				throw new PersistanceException(e);
+				throw new PersistenceException(e);
 			}
 
 			Adapter adapter = AnnotationUtil.getAnnotation(field, Adapter.class);
@@ -282,13 +313,13 @@ public class Persister
 	 *            XML element to save inside
 	 * @param context
 	 * @param persistant
-	 *            Field/method's {@link Persistant} annotation
+	 *            Field/method's {@link Persistent} annotation
 	 * @param adapter
 	 *            Field/method's {@link Adapter} annotation
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
 	protected void persist(Object value, Class<?> baseType, String name, Element element, URI context,
-			Persistant persistant, Adapter adapter) throws PersistanceException
+			Persistent persistant, Adapter adapter) throws PersistenceException
 	{
 		Element nameElement = element.getOwnerDocument().createElement(name);
 		element.appendChild(nameElement);
@@ -300,7 +331,7 @@ public class Persister
 			return;
 		}
 
-		IPersistantAdapter<?> persistantAdapter = getAdapter(value.getClass(), adapter);
+		IPersistentAdapter<?> persistantAdapter = getAdapter(value.getClass(), adapter);
 		boolean isExportable = AnnotationUtil.getAnnotation(value.getClass(), Exportable.class) != null;
 
 		//if the value type isn't the same as the type specified by the field/method, and
@@ -323,7 +354,7 @@ public class Persister
 		{
 			if (persistant.attribute())
 			{
-				throw new PersistanceException("Array or collection Persistant cannot be an attribute"); //$NON-NLS-1$
+				throw new PersistenceException("Array or collection Persistant cannot be an attribute"); //$NON-NLS-1$
 			}
 
 			String arrayElementName = getArrayElementName(persistant);
@@ -352,7 +383,7 @@ public class Persister
 		{
 			//if there's a IPersistantAdapter for this object's type, use it to create the XML
 			@SuppressWarnings("unchecked")
-			IPersistantAdapter<Object> objectAdapter = (IPersistantAdapter<Object>) persistantAdapter;
+			IPersistentAdapter<Object> objectAdapter = (IPersistentAdapter<Object>) persistantAdapter;
 			objectAdapter.toXML(value, nameElement, context);
 		}
 		else if (isExportable)
@@ -386,10 +417,10 @@ public class Persister
 	 *            Element to load from
 	 * @param context
 	 * @return New object loaded from XML
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 *             If an error occurs during persistance of the object
 	 */
-	public Object load(Element element, URI context) throws PersistanceException
+	public Object load(Element element, URI context) throws PersistenceException
 	{
 		if (element == null)
 		{
@@ -426,7 +457,7 @@ public class Persister
 	}
 
 	/**
-	 * Unpersist the {@link Persistant} methods on the given object from an XML
+	 * Unpersist the {@link Persistent} methods on the given object from an XML
 	 * element.
 	 * 
 	 * @param o
@@ -434,34 +465,45 @@ public class Persister
 	 * @param element
 	 *            XML element to unpersist
 	 * @param context
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
-	protected void unpersistMethods(Object o, Element element, URI context) throws PersistanceException
+	protected void unpersistMethods(Object o, Element element, URI context) throws PersistenceException
 	{
-		Method[] methods = AnnotationUtil.getAnnotatedMethods(o.getClass(), Persistant.class);
+		Method[] methods = AnnotationUtil.getAnnotatedMethods(o.getClass(), Persistent.class);
 		for (Method method : methods)
 		{
 			method.setAccessible(true);
-			Persistant persistant = AnnotationUtil.getAnnotation(method, Persistant.class);
+			Persistent persistant = AnnotationUtil.getAnnotation(method, Persistent.class);
 			String name = checkAndGetPersistantName(method, persistant);
 			Class<?> type = method.getReturnType();
 			Method setter = getSetter(o.getClass(), name, type, persistant);
 
 			Adapter adapter = AnnotationUtil.getAnnotation(method, Adapter.class);
-			Object value = unpersist(0, element, name, type, context, persistant, adapter);
 			try
 			{
+				Object value = unpersist(0, element, name, type, context, persistant, adapter);
 				setter.invoke(o, value);
+			}
+			catch (MissingPersistentException e)
+			{
+				if (!isIgnoreMissing())
+				{
+					throw e;
+				}
+			}
+			catch (PersistenceException e)
+			{
+				throw e;
 			}
 			catch (Exception e)
 			{
-				throw new PersistanceException(e);
+				throw new PersistenceException(e);
 			}
 		}
 	}
 
 	/**
-	 * Unpersist the {@link Persistant} fields for the given object from an XML
+	 * Unpersist the {@link Persistent} fields for the given object from an XML
 	 * element.
 	 * 
 	 * @param o
@@ -469,27 +511,38 @@ public class Persister
 	 * @param element
 	 *            XML element to unpersist
 	 * @param context
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
-	protected void unpersistFields(Object o, Element element, URI context) throws PersistanceException
+	protected void unpersistFields(Object o, Element element, URI context) throws PersistenceException
 	{
-		Field[] fields = AnnotationUtil.getAnnotatedFields(o.getClass(), Persistant.class);
+		Field[] fields = AnnotationUtil.getAnnotatedFields(o.getClass(), Persistent.class);
 		for (Field field : fields)
 		{
 			field.setAccessible(true);
-			Persistant persistant = AnnotationUtil.getAnnotation(field, Persistant.class);
+			Persistent persistant = AnnotationUtil.getAnnotation(field, Persistent.class);
 			String name = checkAndGetPersistantName(field, persistant);
 			Class<?> type = field.getType();
 
 			Adapter adapter = AnnotationUtil.getAnnotation(field, Adapter.class);
-			Object value = unpersist(0, element, name, type, context, persistant, adapter);
 			try
 			{
+				Object value = unpersist(0, element, name, type, context, persistant, adapter);
 				field.set(o, value);
+			}
+			catch (MissingPersistentException e)
+			{
+				if (!isIgnoreMissing())
+				{
+					throw e;
+				}
+			}
+			catch (PersistenceException e)
+			{
+				throw e;
 			}
 			catch (Exception e)
 			{
-				throw new PersistanceException(e);
+				throw new PersistenceException(e);
 			}
 		}
 	}
@@ -512,14 +565,14 @@ public class Persister
 	 *            attribute which specifies the type)
 	 * @param context
 	 * @param persistant
-	 *            Field/method's {@link Persistant} annotation
+	 *            Field/method's {@link Persistent} annotation
 	 * @param adapter
 	 *            Field/method's {@link Adapter} annotation
 	 * @return New object loaded from XML
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
 	protected Object unpersist(int index, Element parent, String name, Class<?> type, URI context,
-			Persistant persistant, Adapter adapter) throws PersistanceException
+			Persistent persistant, Adapter adapter) throws PersistenceException
 	{
 		//get the index'th named element of parent
 		Element element = XmlUtil.getChildElementByTagName(index, name, parent);
@@ -561,7 +614,7 @@ public class Persister
 			Element firstChild = element == null ? null : XmlUtil.getFirstChildElement(element);
 			if (firstChild == null)
 			{
-				throw new PersistanceException("Unpersist type is null"); //$NON-NLS-1$
+				throw new PersistenceException("Unpersist type is null"); //$NON-NLS-1$
 			}
 
 			//if the type isn't defined, assume the first child element is exportable
@@ -574,7 +627,7 @@ public class Persister
 		{
 			if (element == null)
 			{
-				throw new PersistanceException("Could not find element for name: " + name); //$NON-NLS-1$
+				throw new PersistenceException("Could not find element for name: " + name); //$NON-NLS-1$
 			}
 
 			//calculate the array length from the number of child elements
@@ -599,14 +652,22 @@ public class Persister
 			{
 				//instantiate the collection impementation
 				String collectionClassName = element.getAttribute(TYPE_ATTRIBUTE);
+				Class<?> collectionType;
 				if (Util.isEmpty(collectionClassName))
 				{
-					throw new PersistanceException("Collection class not specified"); //$NON-NLS-1$
+					if (Modifier.isAbstract(type.getModifiers()) || type.isInterface())
+					{
+						throw new PersistenceException("Collection class not specified"); //$NON-NLS-1$
+					}
+					collectionType = type;
+				}
+				else
+				{
+					collectionType = getTypeFromName(collectionClassName);
 				}
 				Collection<Object> collection;
 				try
 				{
-					Class<?> collectionType = getTypeFromName(collectionClassName);
 					Constructor<?> constructor = collectionType.getConstructor();
 					@SuppressWarnings("unchecked")
 					Collection<Object> objectCollection = (Collection<Object>) constructor.newInstance();
@@ -614,7 +675,7 @@ public class Persister
 				}
 				catch (Exception e)
 				{
-					throw new PersistanceException("Error instantiating collection", e); //$NON-NLS-1$
+					throw new PersistenceException("Error instantiating collection", e); //$NON-NLS-1$
 				}
 				//unpersist the collection's elements
 				for (int i = 0; i < length; i++)
@@ -629,26 +690,33 @@ public class Persister
 		}
 
 		String stringValue = null;
-		IPersistantAdapter<?> persistantAdapter = getAdapter(type, adapter);
+		IPersistentAdapter<?> persistantAdapter = getAdapter(type, adapter);
 		if (element != null)
 		{
 			if (persistantAdapter != null)
 			{
 				//if there's a IPersistantAdapter for this object's type, use it to load the XML
 				@SuppressWarnings("unchecked")
-				IPersistantAdapter<Object> objectAdapter = (IPersistantAdapter<Object>) persistantAdapter;
+				IPersistentAdapter<Object> objectAdapter = (IPersistentAdapter<Object>) persistantAdapter;
 				return objectAdapter.fromXML(element, context);
-			}
-			else if (AnnotationUtil.getAnnotation(type, Exportable.class) != null)
-			{
-				//if the type is exportable, recurse
-				Element child = XmlUtil.getFirstChildElement(element);
-				return load(child, context);
 			}
 			else
 			{
-				Text text = XmlUtil.getFirstChildText(element);
-				stringValue = text.getData();
+				Element child = XmlUtil.getFirstChildElement(element);
+				if (child != null)
+				{
+					//assume, if there's a child element, the type is exportable: recurse
+					return load(child, context);
+				}
+				else
+				{
+					Text text = XmlUtil.getFirstChildText(element);
+					if (text == null)
+					{
+						throw new PersistenceException("No text child found"); //$NON-NLS-1$
+					}
+					stringValue = text.getData();
+				}
 			}
 		}
 		else if (attribute != null)
@@ -663,7 +731,8 @@ public class Persister
 			return StringInstantiable.newInstance(stringValue, type);
 		}
 
-		throw new PersistanceException("Could not unpersist Persistable: " + name); //$NON-NLS-1$
+		//if we get here, there's no element/attribute for the given Persistant
+		throw new MissingPersistentException("Could not unpersist Persistable: " + name); //$NON-NLS-1$
 	}
 
 	/**
@@ -673,19 +742,19 @@ public class Persister
 	 * @param method
 	 *            Method that will be persisted
 	 * @param persistant
-	 *            Method's {@link Persistant} annotation
+	 *            Method's {@link Persistent} annotation
 	 * @return Element/attribute name for the given method
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
-	protected String checkAndGetPersistantName(Method method, Persistant persistant) throws PersistanceException
+	protected String checkAndGetPersistantName(Method method, Persistent persistant) throws PersistenceException
 	{
 		if (method.getParameterTypes().length > 0)
 		{
-			throw new PersistanceException("Cannot persist parameterized methods: " + method); //$NON-NLS-1$
+			throw new PersistenceException("Cannot persist parameterized methods: " + method); //$NON-NLS-1$
 		}
 		if (void.class.equals(method.getReturnType()))
 		{
-			throw new PersistanceException("Cannot persist methods with no return type: " + method); //$NON-NLS-1$
+			throw new PersistenceException("Cannot persist methods with no return type: " + method); //$NON-NLS-1$
 		}
 		String name = persistant.name();
 		if (Util.isEmpty(name))
@@ -694,7 +763,7 @@ public class Persister
 		}
 		if (Util.isEmpty(name))
 		{
-			throw new PersistanceException("Could not determine name for method: " + method); //$NON-NLS-1$
+			throw new PersistenceException("Could not determine name for method: " + method); //$NON-NLS-1$
 		}
 		return name;
 	}
@@ -705,11 +774,11 @@ public class Persister
 	 * @param field
 	 *            Field that will be persisted
 	 * @param persistant
-	 *            Field's {@link Persistant} annotation
+	 *            Field's {@link Persistent} annotation
 	 * @return Element/attribute name for the given field
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
-	protected String checkAndGetPersistantName(Field field, Persistant persistant) throws PersistanceException
+	protected String checkAndGetPersistantName(Field field, Persistent persistant) throws PersistenceException
 	{
 		String name = persistant.name();
 		if (Util.isEmpty(name))
@@ -718,7 +787,7 @@ public class Persister
 		}
 		if (Util.isEmpty(name))
 		{
-			throw new PersistanceException("Could not determine name for field: " + field); //$NON-NLS-1$
+			throw new PersistenceException("Could not determine name for field: " + field); //$NON-NLS-1$
 		}
 		return name;
 	}
@@ -748,23 +817,23 @@ public class Persister
 
 	/**
 	 * Find the setter method in the class for the given property name. If the
-	 * {@link Persistant} annotation defines the setter property, then return
+	 * {@link Persistent} annotation defines the setter property, then return
 	 * the method with that name.
 	 * 
 	 * @param c
 	 *            Class in which to find the setter method
 	 * @param name
 	 *            Name of the property to find a setter for (ignored the
-	 *            {@link Persistant} annotation defines the setter)
+	 *            {@link Persistent} annotation defines the setter)
 	 * @param parameterType
 	 *            Type that the setter method should have a single parameter for
 	 * @param persistant
-	 *            {@link Persistant} annotation for the corresponding getter
+	 *            {@link Persistent} annotation for the corresponding getter
 	 * @return
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
-	protected Method getSetter(Class<?> c, String name, Class<?> parameterType, Persistant persistant)
-			throws PersistanceException
+	protected Method getSetter(Class<?> c, String name, Class<?> parameterType, Persistent persistant)
+			throws PersistenceException
 	{
 		if (!Util.isEmpty(persistant.setter()))
 		{
@@ -774,14 +843,14 @@ public class Persister
 			}
 			catch (NoSuchMethodException e)
 			{
-				throw new PersistanceException("Cannot find matching Persistant setter: " + persistant.setter() //$NON-NLS-1$
+				throw new PersistenceException("Cannot find matching Persistant setter: " + persistant.setter() //$NON-NLS-1$
 						+ " in class " + c); //$NON-NLS-1$
 			}
 		}
 
 		if (Util.isEmpty(name))
 		{
-			throw new PersistanceException("Persistant setter name is empty"); //$NON-NLS-1$
+			throw new PersistenceException("Persistant setter name is empty"); //$NON-NLS-1$
 		}
 
 		//first find a method with the property name and a 'set' prefix (ie if property = name, setter = setName)
@@ -803,7 +872,7 @@ public class Persister
 		{
 		}
 
-		throw new PersistanceException("Cannot find matching Persistant setter: " + setName + " in class " + c); //$NON-NLS-1$ //$NON-NLS-2$
+		throw new PersistenceException("Cannot find matching Persistant setter: " + setName + " in class " + c); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -862,14 +931,14 @@ public class Persister
 
 	/**
 	 * Calculate the XML element name to use for array elements. If the
-	 * {@link Persistant} attribute defines an element name, return that,
+	 * {@link Persistent} attribute defines an element name, return that,
 	 * otherwise return the default.
 	 * 
 	 * @param persistant
-	 *            {@link Persistant} annotation that may define the element name
+	 *            {@link Persistent} annotation that may define the element name
 	 * @return The XML element name to use for array elements
 	 */
-	protected String getArrayElementName(Persistant persistant)
+	protected String getArrayElementName(Persistent persistant)
 	{
 		String arrayElementName = persistant.elementName();
 		if (Util.isEmpty(arrayElementName))
@@ -880,9 +949,9 @@ public class Persister
 	}
 
 	/**
-	 * Get the {@link IPersistantAdapter} used to persist the given type to XML.
+	 * Get the {@link IPersistentAdapter} used to persist the given type to XML.
 	 * If the type already has a registered adapter (from
-	 * {@link #registerAdapter(Class, IPersistantAdapter)}), return that;
+	 * {@link #registerAdapter(Class, IPersistentAdapter)}), return that;
 	 * otherwise, if the {@link Adapter} annotation is non-null, instantiate and
 	 * return an object of the class defined in the annotation.
 	 * 
@@ -890,26 +959,26 @@ public class Persister
 	 *            Type for which to get an adapter for
 	 * @param adapter
 	 *            Adapter annotation
-	 * @return {@link IPersistantAdapter} used to persist the given type
-	 * @throws PersistanceException
+	 * @return {@link IPersistentAdapter} used to persist the given type
+	 * @throws PersistenceException
 	 */
-	protected IPersistantAdapter<?> getAdapter(Class<?> type, Adapter adapter) throws PersistanceException
+	protected IPersistentAdapter<?> getAdapter(Class<?> type, Adapter adapter) throws PersistenceException
 	{
-		IPersistantAdapter<?> persistantAdapter = adapters.get(type);
+		IPersistentAdapter<?> persistantAdapter = adapters.get(type);
 		if (persistantAdapter == null && adapter != null)
 		{
-			Class<? extends IPersistantAdapter<?>> adapterClass = adapter.value();
+			Class<? extends IPersistentAdapter<?>> adapterClass = adapter.value();
 			if (adapterClass != null)
 			{
 				try
 				{
-					Constructor<? extends IPersistantAdapter<?>> constructor = adapterClass.getConstructor();
+					Constructor<? extends IPersistentAdapter<?>> constructor = adapterClass.getConstructor();
 					constructor.setAccessible(true);
 					persistantAdapter = constructor.newInstance();
 				}
 				catch (Exception e)
 				{
-					throw new PersistanceException("Error instantiating adapter class: " + adapterClass, e); //$NON-NLS-1$
+					throw new PersistenceException("Error instantiating adapter class: " + adapterClass, e); //$NON-NLS-1$
 				}
 			}
 		}
@@ -924,9 +993,9 @@ public class Persister
 	 * @param name
 	 *            Name to calculate type for
 	 * @return Type for name
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
-	protected Class<?> getTypeFromName(String name) throws PersistanceException
+	protected Class<?> getTypeFromName(String name) throws PersistenceException
 	{
 		Class<?> c = nameToExportable.get(name);
 		if (c != null)
@@ -955,7 +1024,7 @@ public class Persister
 			{
 			}
 		}
-		throw new PersistanceException("Could not determine type for name: " + name); //$NON-NLS-1$
+		throw new PersistenceException("Could not determine type for name: " + name); //$NON-NLS-1$
 	}
 
 	/**
@@ -967,9 +1036,9 @@ public class Persister
 	 * @param type
 	 *            Type to calculate name for
 	 * @return Name of type
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
-	protected String getNameFromType(Class<?> type) throws PersistanceException
+	protected String getNameFromType(Class<?> type) throws PersistenceException
 	{
 		String name = exportableToName.get(type);
 		if (Util.isEmpty(name))
@@ -983,7 +1052,7 @@ public class Persister
 		}
 		if (Util.isEmpty(name))
 		{
-			throw new PersistanceException("Could not determine name for type: " + type); //$NON-NLS-1$
+			throw new PersistenceException("Could not determine name for type: " + type); //$NON-NLS-1$
 		}
 		return name;
 	}
@@ -994,13 +1063,13 @@ public class Persister
 	 * 
 	 * @param type
 	 *            Type to test
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
-	protected void assertIsExportable(Class<?> type) throws PersistanceException
+	protected void assertIsExportable(Class<?> type) throws PersistenceException
 	{
 		if (AnnotationUtil.getAnnotation(type, Exportable.class) == null)
 		{
-			throw new PersistanceException(type + " is not marked " + Exportable.class); //$NON-NLS-1$
+			throw new PersistenceException(type + " is not marked " + Exportable.class.getSimpleName()); //$NON-NLS-1$
 		}
 		try
 		{
@@ -1008,7 +1077,7 @@ public class Persister
 		}
 		catch (NoSuchMethodException e)
 		{
-			throw new PersistanceException(type + " does not have a default constructor"); //$NON-NLS-1$
+			throw new PersistenceException(type + " does not have a default constructor"); //$NON-NLS-1$
 		}
 	}
 
@@ -1018,13 +1087,13 @@ public class Persister
 	 * 
 	 * @param type
 	 *            Type to test
-	 * @throws PersistanceException
+	 * @throws PersistenceException
 	 */
-	protected void assertIsStringInstantiable(Class<?> type) throws PersistanceException
+	protected void assertIsStringInstantiable(Class<?> type) throws PersistenceException
 	{
 		if (!StringInstantiable.isInstantiable(type))
 		{
-			throw new PersistanceException("Cannot persist type: " + type); //$NON-NLS-1$
+			throw new PersistenceException("Cannot persist type: " + type); //$NON-NLS-1$
 		}
 	}
 
@@ -1060,6 +1129,18 @@ public class Persister
 			primitiveToName.put(primitive, name);
 			primitiveToName.put(boxed, name);
 			nameToPrimitive.put(name, boxed);
+		}
+	}
+
+	/**
+	 * Internally used exception that is thrown when an expected
+	 * {@link Persistent} element is missing.
+	 */
+	protected static class MissingPersistentException extends PersistenceException
+	{
+		public MissingPersistentException(String message)
+		{
+			super(message);
 		}
 	}
 }

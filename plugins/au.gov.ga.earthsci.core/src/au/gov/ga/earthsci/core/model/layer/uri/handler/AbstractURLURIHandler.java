@@ -13,30 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.persistence;
+package au.gov.ga.earthsci.core.model.layer.uri.handler;
 
-import java.util.Arrays;
+import gov.nasa.worldwind.layers.Layer;
 
-@Exportable
-public class ExportableWithArray
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+
+/**
+ * Abstract {@link ILayerURIHandler} implementation for URIs that are actually
+ * URLs (file, http, etc).
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ */
+public abstract class AbstractURLURIHandler extends AbstractInputStreamURIHandler
 {
-	@Persistent
-	private double[] array;
-
-	public double[] getArray()
-	{
-		return array;
-	}
-
-	public void setArray(double[] array)
-	{
-		this.array = array;
-	}
-
 	@Override
-	public boolean equals(Object obj)
+	public Layer createLayerFromURI(URI uri) throws LayerURIHandlerException
 	{
-		ExportableWithArray ewa = (ExportableWithArray) obj;
-		return Arrays.equals(ewa.array, array);
+		InputStream is;
+		try
+		{
+			URL url = uri.toURL();
+			is = url.openStream();
+		}
+		catch (Exception e)
+		{
+			throw new LayerURIHandlerException(e);
+		}
+		return createLayer(is, uri);
 	}
 }

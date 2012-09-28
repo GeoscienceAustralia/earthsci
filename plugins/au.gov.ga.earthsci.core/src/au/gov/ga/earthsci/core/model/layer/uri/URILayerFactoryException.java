@@ -13,30 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.persistence;
+package au.gov.ga.earthsci.core.model.layer.uri;
 
-import java.util.Arrays;
-
-@Exportable
-public class ExportableWithArray
+/**
+ * {@link Exception} subclass thrown by the {@link URILayerFactory} when Layer
+ * creation fails.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ */
+public class URILayerFactoryException extends Exception
 {
-	@Persistent
-	private double[] array;
-
-	public double[] getArray()
+	public URILayerFactoryException()
 	{
-		return array;
+		super();
 	}
 
-	public void setArray(double[] array)
+	public URILayerFactoryException(String message, Throwable cause)
 	{
-		this.array = array;
+		super(message, cause);
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	public URILayerFactoryException(String message)
 	{
-		ExportableWithArray ewa = (ExportableWithArray) obj;
-		return Arrays.equals(ewa.array, array);
+		super(message);
+	}
+
+	public URILayerFactoryException(Throwable cause)
+	{
+		super(cause);
 	}
 }
