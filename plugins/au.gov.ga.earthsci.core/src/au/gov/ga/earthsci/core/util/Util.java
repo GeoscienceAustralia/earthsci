@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -138,5 +140,75 @@ public class Util
 	public static boolean isEmpty(String s)
 	{
 		return s == null || s.length() == 0;
+	}
+
+	/**
+	 * Returns a blank string if the given string is null, otherwise returns the
+	 * string.
+	 * 
+	 * @param s
+	 * @return Blank string if <code>s</code> is null, otherwise <code>s</code>
+	 */
+	public static String blankNullString(String s)
+	{
+		return s == null ? "" : s; //$NON-NLS-1$
+	}
+
+	/**
+	 * Call the given named property's setter on the object with an Object
+	 * represented by the propertyValue string. The property's setter's
+	 * parameter count must be 1, and the parameter class must be
+	 * {@link StringInstantiable#isInstantiable(Class)}.
+	 * 
+	 * @param o
+	 *            Object on which to call the setter
+	 * @param propertyName
+	 *            Name of the property to set
+	 * @param propertyValue
+	 *            {@link StringInstantiable} representation of the property
+	 *            value
+	 * @return True if the setter method was found and invoked without error,
+	 *         false otherwise
+	 * @throws InvocationTargetException
+	 *             If an exception was raised while invoking the setter
+	 */
+	public static boolean setPropertyOn(Object o, String propertyName, String propertyValue)
+			throws InvocationTargetException
+	{
+		if (isEmpty(propertyName))
+		{
+			throw new IllegalArgumentException("Property name is empty"); //$NON-NLS-1$
+		}
+
+		String methodName = "set" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1); //$NON-NLS-1$
+		Method[] methods = o.getClass().getMethods();
+		for (Method method : methods)
+		{
+			if (method.getName().equals(methodName) && method.getParameterTypes().length == 1)
+			{
+				Class<?> type = method.getParameterTypes()[0];
+				if (StringInstantiable.isInstantiable(type))
+				{
+					Object value = StringInstantiable.newInstance(propertyValue, type);
+					if (value != null)
+					{
+						try
+						{
+							method.invoke(o, value);
+							return true;
+						}
+						catch (InvocationTargetException e)
+						{
+							throw e;
+						}
+						catch (Exception e)
+						{
+						}
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 }
