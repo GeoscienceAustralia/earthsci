@@ -1,6 +1,6 @@
 package au.gov.ga.earthsci.notification.popup.preferences;
 
-import au.gov.ga.earthsci.notification.NotificationLevel;
+import au.gov.ga.earthsci.notification.INotification;
 
 /**
  * An interface that gives access to the preferences that control 
@@ -16,6 +16,7 @@ public interface IPopupNotificationPreferences
 	public static final String SHOW_WARNING_NOTIFICATIONS = "au.gov.ga.earthsci.notification.popup.preferences.showWarningNotifications"; //$NON-NLS-1$
 	public static final String SHOW_ERROR_NOTIFICATIONS = "au.gov.ga.earthsci.notification.popup.preferences.showErrorNotifications"; //$NON-NLS-1$
 	public static final String POPUP_DURATION = "au.gov.ga.earthsci.notification.popup.preferences.popupDuration"; //$NON-NLS-1$
+	public static final String CATEGORY_FILTER = "au.gov.ga.earthsci.notification.popup.preferences.categoryFilter"; //$NON-NLS-1$
 	
 	
 	/**
@@ -24,9 +25,9 @@ public interface IPopupNotificationPreferences
 	boolean isEnabled();
 	
 	/**
-	 * @return Whether popup notifications are enabled for the provided notification level
+	 * @return Whether the current preferences should allow the provided notification to be shown
 	 */
-	boolean isEnabledFor(NotificationLevel level);
+	boolean shouldShow(INotification notification);
 	
 	/**
 	 * @return How long the popup should be displayed for (in ms) 

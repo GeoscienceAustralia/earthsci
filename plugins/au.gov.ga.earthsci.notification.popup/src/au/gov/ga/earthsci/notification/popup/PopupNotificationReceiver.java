@@ -28,7 +28,7 @@ public class PopupNotificationReceiver implements INotificationReceiver
 	@Override
 	public void handle(final INotification notification, NotificationManager manager)
 	{
-		if (!preferences.isEnabledFor(notification.getLevel()))
+		if (!preferences.shouldShow(notification))
 		{
 			return;
 		}

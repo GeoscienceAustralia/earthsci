@@ -2,19 +2,31 @@ package au.gov.ga.earthsci.notification.popup.preferences;
 
 import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.*;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 
 import au.gov.ga.earthsci.application.preferences.ScopedPreferenceStore;
 import au.gov.ga.earthsci.application.preferences.fieldeditor.LabelFieldEditor;
+import au.gov.ga.earthsci.application.preferences.fieldeditor.MultiSelectTableListFieldEditor;
+import au.gov.ga.earthsci.application.preferences.fieldeditor.MultiSelectTableListFieldEditor.IItemSerializer;
+import au.gov.ga.earthsci.application.preferences.fieldeditor.MultiSelectTableListFieldEditor.ITableItemCreator;
 import au.gov.ga.earthsci.application.preferences.fieldeditor.SpacerFieldEditor;
+import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.popup.Messages;
 
 /**
@@ -31,6 +43,8 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 	private BooleanFieldEditor showWarningEditor;
 	private BooleanFieldEditor showErrorEditor;
 	private IntegerFieldEditor showDurationEditor;
+	private LabelFieldEditor categoryFilterLabelEditor;
+	private MultiSelectTableListFieldEditor<NotificationCategory> categoryFilterEditor;
 	
 	public PopupNotificationPreferencePage()
 	{
@@ -66,6 +80,45 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 		showDurationEditor = new IntegerFieldEditor(POPUP_DURATION, Messages.PopupNotificationPreferences_DurationLabel, getFieldEditorParent(), 5);
 		showDurationEditor.setValidRange(100, 10000);
 		addField(showDurationEditor);
+		
+		addField(new SpacerFieldEditor(getFieldEditorParent()));
+		
+		categoryFilterLabelEditor = new LabelFieldEditor("Notification categories:", getFieldEditorParent());
+		addField(categoryFilterLabelEditor);
+		
+		ITableItemCreator<NotificationCategory> categoryItemCreator = new ITableItemCreator<NotificationCategory>() {
+			@Override
+			public TableItem createTableItem(Table parent, NotificationCategory object)
+			{
+				TableItem item = new TableItem(parent, SWT.NONE);
+				item.setText(object.getLabel());
+				return item;
+			}
+		};
+		
+		IItemSerializer<NotificationCategory> categoryItemSerialiser = new IItemSerializer<NotificationCategory>()
+		{
+			@Override
+			public String asString(NotificationCategory object)
+			{
+				return object.getId();
+			}
+
+			@Override
+			public NotificationCategory fromString(String string)
+			{
+				return NotificationCategory.get(string);
+			}
+		};
+		
+		categoryFilterEditor = new MultiSelectTableListFieldEditor<NotificationCategory>(CATEGORY_FILTER,
+																						 new ArrayList<NotificationCategory>(NotificationCategory.getRegisteredCategories()),
+																						 new String[] {Messages.PopupNotificationPreferencePage_NotificationCategoryColumnLabel},
+																						 categoryItemCreator,
+																						 categoryItemSerialiser,
+																						 getFieldEditorParent());
+		
+		addField(categoryFilterEditor);
 	}
 	
 	private void updateEnableFields(boolean enable)
@@ -75,11 +128,21 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 			return;
 		}
 		
-		notificationLabelEditor.setEnabled(enable, getFieldEditorParent());
-		showInfoEditor.setEnabled(enable, getFieldEditorParent());
-		showWarningEditor.setEnabled(enable, getFieldEditorParent());
-		showErrorEditor.setEnabled(enable, getFieldEditorParent());
-		showDurationEditor.setEnabled(enable, getFieldEditorParent());
+		try
+		{
+			for (Field f : getClass().getDeclaredFields())
+			{
+				if (FieldEditor.class.isAssignableFrom(f.getType()) && !(f.getName().equals("enabledEditor"))) //$NON-NLS-1$
+				{
+					Method method = f.getType().getMethod("setEnabled", boolean.class, Composite.class); //$NON-NLS-1$
+					method.invoke(f.get(this), enable, getFieldEditorParent());
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**

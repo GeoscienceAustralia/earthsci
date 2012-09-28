@@ -6,6 +6,8 @@ import javax.inject.Singleton;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.e4.core.di.extensions.Preference;
 
+import au.gov.ga.earthsci.notification.INotification;
+import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.NotificationLevel;
 
 /**
@@ -46,7 +48,23 @@ public class PopupNotificationPreferences implements IPopupNotificationPreferenc
 	}
 
 	@Override
-	public boolean isEnabledFor(NotificationLevel level)
+	public boolean shouldShow(INotification notification)
+	{
+		if (!enabled || notification == null)
+		{
+			return false;
+		}
+		
+		if (!enabledFor(notification.getLevel()))
+		{
+			return false;
+		}
+		
+		return enabledFor(notification.getCategory());
+		
+	}
+	
+	private boolean enabledFor(NotificationLevel level)
 	{
 		switch (level)
 		{
@@ -64,6 +82,11 @@ public class PopupNotificationPreferences implements IPopupNotificationPreferenc
 			}
 		}
 		return false;
+	}
+	
+	private boolean enabledFor(NotificationCategory category)
+	{
+		return true;
 	}
 
 	@Override

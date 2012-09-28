@@ -4,6 +4,11 @@ import static au.gov.ga.earthsci.notification.Messages.NotificationCategory_Down
 import static au.gov.ga.earthsci.notification.Messages.NotificationCategory_General;
 import static au.gov.ga.earthsci.notification.Messages.NotificationCategory_IO;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -18,7 +23,7 @@ import java.util.HashMap;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class NotificationCategory
+public class NotificationCategory implements Serializable
 {
 	public static final NotificationCategory FILE_IO;
 	public static final NotificationCategory DOWNLOAD;
@@ -62,6 +67,14 @@ public class NotificationCategory
 		NotificationCategory category = new NotificationCategory(id, label);
 		categories.put(id, category);
 		return category;
+	}
+	
+	/**
+	 * @return The (unordered) collection of registered notification categories
+	 */
+	public static Collection<NotificationCategory> getRegisteredCategories()
+	{
+		return categories.values();
 	}
 	
 	private String id;
@@ -125,5 +138,25 @@ public class NotificationCategory
 	public int hashCode()
 	{
 		return id.hashCode();
+	}
+	
+	// Store id and labels during serialisation
+	private void writeObject(ObjectOutputStream out) throws IOException
+	{
+		out.writeUTF(id);
+		out.writeUTF(label);
+	}
+	
+	// Re-inflate from stored fields
+	private void readObject(ObjectInputStream in) throws IOException
+	{
+		id = in.readUTF();
+		label = in.readUTF();
+	}
+	
+	// Override to return singleton instances for unique IDs
+	private Object readResolve()
+	{
+		return NotificationCategory.registerCategory(id, label);
 	}
 }
