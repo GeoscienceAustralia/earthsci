@@ -21,6 +21,7 @@ import gov.nasa.worldwind.layers.LayerList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
@@ -31,6 +32,7 @@ import au.gov.ga.earthsci.core.util.IEnableable;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
+@Exportable
 public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLayerTreeNode> implements
 		ILayerTreeNode<AbstractLayerTreeNode>
 {
