@@ -8,7 +8,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -56,20 +55,16 @@ public class NotificationManager
 	private static NotificationManager INSTANCE;
 	
 	@Inject 
-	private Logger logger;
+	private static Logger logger;
 	
-	@PostConstruct
-	void finalise()
-	{
-		if (INSTANCE == null)
-		{
-			INSTANCE = this;
-		}
-	}
-	
-	public NotificationManager()
+	/**
+	 * Constructor for DI creation only. To obtain instances of the {@link NotificationManager},
+	 * use {@link #get()}.
+	 */
+	NotificationManager()
 	{
 		receivers = new LinkedHashSet<INotificationReceiver>();
+		INSTANCE = this;
 	}
 	
 	/**
@@ -82,9 +77,12 @@ public class NotificationManager
 	 * @param context The context to use for dependency injection etc.
 	 */
 	@Inject
-	public void loadReceivers(IExtensionRegistry registry, IEclipseContext context)
+	public static void loadReceivers(IExtensionRegistry registry, IEclipseContext context)
 	{
-		logger.info("Registering notification receivers"); //$NON-NLS-1$
+		if (logger != null)
+		{
+			logger.info("Registering notification receivers"); //$NON-NLS-1$
+		}
 		
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(NOTIFICATION_RECEIVER_EXTENSION_POINT_ID);
 		try
@@ -95,13 +93,16 @@ public class NotificationManager
 				if (o instanceof INotificationReceiver)
 				{
 					ContextInjectionFactory.inject(o, context);
-					registerReceiver((INotificationReceiver)o);
+					INSTANCE.registerReceiver((INotificationReceiver)o);
 				}
 			}
 		}
 		catch (CoreException e)
 		{
-			logger.error(e, "Exception while loading receivers"); //$NON-NLS-1$
+			if (logger != null)
+			{
+				logger.error(e, "Exception while loading receivers"); //$NON-NLS-1$
+			}
 		}
 	}
 	
@@ -116,9 +117,12 @@ public class NotificationManager
 	 * @param context The context to use for dependency injection etc.
 	 */
 	@Inject
-	public void registerNotificationCategories(IExtensionRegistry registry, IEclipseContext context)
+	public static void registerNotificationCategories(IExtensionRegistry registry, IEclipseContext context)
 	{
-		logger.info("Registering notification categories"); //$NON-NLS-1$
+		if (logger != null)
+		{
+			logger.info("Registering notification categories"); //$NON-NLS-1$
+		}
 		
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID);
 		try
@@ -135,7 +139,10 @@ public class NotificationManager
 		}
 		catch (CoreException e)
 		{
-			logger.error(e, "Exception while registering categories"); //$NON-NLS-1$
+			if (logger != null)
+			{
+				logger.error(e, "Exception while registering categories"); //$NON-NLS-1$
+			}
 		}
 	}
 	
@@ -148,7 +155,19 @@ public class NotificationManager
 	 */
 	public static void sendNotification(INotification notification)
 	{
-		INSTANCE.notify(notification);
+		get().notify(notification);
+	}
+	
+	/**
+	 * @return A singleton instance of the {@link NotificationManager}
+	 */
+	public static NotificationManager get()
+	{
+		if (INSTANCE == null)
+		{
+			new NotificationManager();
+		}
+		return INSTANCE;
 	}
 	
 	/**
@@ -194,7 +213,10 @@ public class NotificationManager
 		{
 			return;
 		}
-		logger.debug("Registered notification receiver: {0}", receiver.getClass()); //$NON-NLS-1$
+		if (logger != null)
+		{
+			logger.debug("Registered notification receiver: {0}", receiver.getClass()); //$NON-NLS-1$
+		}
 
 		receiversLock.writeLock().lock();
 		receivers.add(receiver);
@@ -213,15 +235,28 @@ public class NotificationManager
 			return;
 		}
 		
-		logger.debug("Removed notification receiver {0}", receiver.getClass()); //$NON-NLS-1$
+		if (logger != null)
+		{
+			logger.debug("Removed notification receiver {0}", receiver.getClass()); //$NON-NLS-1$
+		}
 		
 		receiversLock.writeLock().lock();
 		receivers.remove(receiver);
 		receiversLock.writeLock().unlock();
 	}
 	
-	public void setLogger(Logger logger)
+	/**
+	 * Remove all registered receivers from this manager 
+	 */
+	public void removeAllRecievers()
 	{
-		this.logger = logger;
+		receiversLock.writeLock().lock();
+		receivers.clear();
+		receiversLock.writeLock().unlock();
+	}
+	
+	public static void setLogger(Logger logger)
+	{
+		NotificationManager.logger = logger;
 	}
 }
