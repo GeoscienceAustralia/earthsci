@@ -41,6 +41,10 @@ public class PopupNotificationPreferences implements IPopupNotificationPreferenc
 	@Preference(nodePath=QUALIFIER_ID, value=POPUP_DURATION)
 	private int displayDuration;
 	
+	@Inject
+	@Preference(nodePath=QUALIFIER_ID, value=CATEGORY_FILTER)
+	private String enabledCategories;
+	
 	@Override
 	public boolean isEnabled()
 	{
@@ -86,7 +90,7 @@ public class PopupNotificationPreferences implements IPopupNotificationPreferenc
 	
 	private boolean enabledFor(NotificationCategory category)
 	{
-		return true;
+		return enabledCategories == null || enabledCategories.isEmpty() || enabledCategories.contains(category.getId());
 	}
 
 	@Override
