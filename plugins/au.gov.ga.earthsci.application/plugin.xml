@@ -44,5 +44,11 @@
             class="au.gov.ga.earthsci.application.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="au.gov.ga.earthsci.notification.receiver">
+      <receiver
+            class="au.gov.ga.earthsci.notification.dialog.DialogNotificationReceiver">
+      </receiver>
+   </extension>
 
 </plugin>

@@ -42,7 +42,7 @@ public class AboutHandler
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 	{
-		notifications.notify(Notification.create(NotificationLevel.WARNING, "About launched", "You opened the About dialog!")
+		notifications.notify(Notification.create(NotificationLevel.ERROR, "About launched", "You opened the About dialog!")
 		.withAction(new INotificationAction()
 		{
 			@Override
@@ -62,7 +62,28 @@ public class AboutHandler
 			{
 				return "Click me";
 			} 
-		}).inCategory(NotificationCategory.FILE_IO).build());
+		}).inCategory(NotificationCategory.FILE_IO)
+		.requiringAcknowledgement(new INotificationAction()
+		{
+			
+			@Override
+			public void run()
+			{
+				System.out.println("Alrighty then!");
+			}
+			
+			@Override
+			public String getTooltip()
+			{
+				return "This is a tooltip";
+			}
+			
+			@Override
+			public String getText()
+			{
+				return "Action!";
+			}
+		}).build());
 		
 		MessageDialog.openInformation(shell, "About", "e4 Application example.");
 		
