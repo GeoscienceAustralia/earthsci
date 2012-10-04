@@ -93,6 +93,7 @@ public class NotificationManager
 				if (o instanceof INotificationReceiver)
 				{
 					ContextInjectionFactory.inject(o, context);
+					context.set(e.getAttribute("class"), o);
 					INSTANCE.registerReceiver((INotificationReceiver)o);
 				}
 			}
