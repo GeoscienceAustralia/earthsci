@@ -1,15 +1,13 @@
 package au.gov.ga.earthsci.notification;
 
-import static au.gov.ga.earthsci.notification.Messages.NotificationCategory_Download;
-import static au.gov.ga.earthsci.notification.Messages.NotificationCategory_General;
-import static au.gov.ga.earthsci.notification.Messages.NotificationCategory_IO;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
+
+import au.gov.ga.earthsci.core.util.message.MessageSourceAccessor;
 
 /**
  * A class that represents a categorisation of notifications.
@@ -19,7 +17,9 @@ import java.util.HashMap;
  * Categories are singletons with a unique ID, and additional categories can
  * be registered by plugins.
  * <p/>
- * Categories can be registered using a globally unique ID string, along with a human-readable label for use in preferences etc.
+ * Categories can be registered using a globally unique ID string, along with a human-readable label for use in preferences etc. This label
+ * can be looked up from message bundles using the {@link MessageSourceAccessor} mechanism. In this case the category ID will be used to resolve
+ * the label. This requires that contributing plugins have registered the appropriate message bundles with {@link MessageSourceAccessor#addBundle(String)}.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -33,13 +33,15 @@ public class NotificationCategory implements Serializable
 	private static HashMap<String, NotificationCategory> categories = new HashMap<String, NotificationCategory>();
 	static
 	{
-		FILE_IO = registerCategory("au.gov.ga.earthsci.notification.category.io", NotificationCategory_IO); //$NON-NLS-1$
-		DOWNLOAD = registerCategory("au.gov.ga.earthsci.notification.category.download",  NotificationCategory_Download); //$NON-NLS-1$
-		GENERAL = registerCategory("au.gov.ga.earthsci.notification.category.general", NotificationCategory_General); //$NON-NLS-1$
+		MessageSourceAccessor.addBundle("au.gov.ga.earthsci.notification.messages"); //$NON-NLS-1$
+		
+		FILE_IO = registerCategory("au.gov.ga.earthsci.notification.category.io"); //$NON-NLS-1$
+		DOWNLOAD = registerCategory("au.gov.ga.earthsci.notification.category.download"); //$NON-NLS-1$
+		GENERAL = registerCategory("au.gov.ga.earthsci.notification.category.general"); //$NON-NLS-1$
 	}
 	
 	/**
-	 * @return Whether the provided ID is a valid category ID
+	 * @return Whether the provided ID is a valid category ID. The label will be looked up through the {@link MessageSourceAccessor} mechanism.
 	 */
 	public static boolean isValid(String id)
 	{
@@ -70,6 +72,21 @@ public class NotificationCategory implements Serializable
 	}
 	
 	/**
+	 * @return Register a category with the given ID and label
+	 */
+	public static NotificationCategory registerCategory(String id)
+	{
+		if (categories.containsKey(id))
+		{
+			return categories.get(id);
+		}
+		
+		NotificationCategory category = new NotificationCategory(id);
+		categories.put(id, category);
+		return category;
+	}
+	
+	/**
 	 * @return The (unordered) collection of registered notification categories
 	 */
 	public static Collection<NotificationCategory> getRegisteredCategories()
@@ -93,7 +110,7 @@ public class NotificationCategory implements Serializable
 			throw new IllegalArgumentException("A category with ID " + id + " already exists");  //$NON-NLS-1$//$NON-NLS-2$
 		}
 		this.id = id;
-		this.label = id;
+		this.label = MessageSourceAccessor.getMessage(id);
 	}
 	
 	/**
