@@ -49,6 +49,9 @@
       <receiver
             class="au.gov.ga.earthsci.notification.dialog.DialogNotificationReceiver">
       </receiver>
+      <receiver
+            class="au.gov.ga.earthsci.notification.view.NotificationViewReceiver">
+      </receiver>
    </extension>
 
 </plugin>

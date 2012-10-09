@@ -42,7 +42,7 @@ public class AboutHandler
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 	{
-		notifications.notify(Notification.create(NotificationLevel.ERROR, "About launched", "You opened the About dialog!")
+		notifications.notify(Notification.create(NotificationLevel.ERROR, "About launched", "You opened the About dialog sssssssssssssssssss sssssssssss ssssss ssss s sssssssssssssssss!")
 		.withAction(new INotificationAction()
 		{
 			@Override

@@ -10,6 +10,7 @@ Export-Package: au.gov.ga.earthsci.core.model.catalog,
  au.gov.ga.earthsci.core.persistence,
  au.gov.ga.earthsci.core.tree,
  au.gov.ga.earthsci.core.util,
+ au.gov.ga.earthsci.core.util.message,
  au.gov.ga.earthsci.core.worldwind,
  au.gov.ga.earthsci.notification
 Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
