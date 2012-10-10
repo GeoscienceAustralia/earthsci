@@ -50,6 +50,7 @@ import au.gov.ga.earthsci.notification.NotificationLevel;
  */
 public class NotificationView
 {
+	
 	/**
 	 * A simple enumeration of possible groupings for content in the {@link NotificationView}
 	 */
@@ -75,8 +76,6 @@ public class NotificationView
 	private static final int CREATED_COLUMN_INDEX = 3;
 	private static final int ACKNOWLEDGED_COLUMN_INDEX = 4;
 	
-	private int sortColumn = CREATED_COLUMN_INDEX;
-	
 	private static final int ASCENDING = 1;
 	private static final int DESCENDING = -1;
 	
@@ -94,17 +93,6 @@ public class NotificationView
 	
 	private int acknowledgedOrder = DESCENDING;
 	private TreeColumn acknowledgedColumn;
-	
-	/**
-	 * Refresh the view upon receiving a new (given) notification
-	 * <p/>
-	 * This is intended to be only executed from the associated receiver.
-	 */
-	void refresh(INotification n)
-	{
-		// TODO: Just add the given notification to the correct place in the tree
-		reloadNotificationTree();
-	}
 	
 	/**
 	 * Initialise this view with the given parent component
@@ -342,7 +330,6 @@ public class NotificationView
 	}
 	
 	private void setColumnSorting(int index, int order) {
-		sortColumn = index;
 		tree.setSortColumn(tree.getColumn(index));
 		tree.setSortDirection(order == ASCENDING ? SWT.UP : SWT.DOWN);
 	}
@@ -384,15 +371,7 @@ public class NotificationView
 						}
 						g.children.add(n);
 					}
-					Collections.sort(root, new Comparator<Object>()
-					{
-						@Override
-						public int compare(Object o1, Object o2)
-						{
-							return NotificationLevel.SEVERITY_DESCENDING.compare((NotificationLevel)((Group)o1).grouping, 
-																				 (NotificationLevel)((Group)o2).grouping);
-						}
-					});
+					Collections.sort(root, levelGroupComparator);
 				}
 				else if (groupBy == Grouping.CATEGORY)
 				{
@@ -408,14 +387,7 @@ public class NotificationView
 						}
 						g.children.add(n);
 					}
-					Collections.sort(root, new Comparator<Object>()
-					{
-						@Override
-						public int compare(Object o1, Object o2)
-						{
-							return String.CASE_INSENSITIVE_ORDER.compare(((Group)o1).label, ((Group)o2).label); 
-						}
-					});
+					Collections.sort(root, categoryGroupComparator);
 				}
 			}
 		};
@@ -443,6 +415,76 @@ public class NotificationView
 			}
 		});
 	}
+	
+	/**
+	 * Refresh the view upon receiving a new (given) notification
+	 * <p/>
+	 * This is intended to be only executed from the associated receiver.
+	 */
+	void refresh(INotification n)
+	{
+		// Insert the new notification into the correct place in the tree model
+		switch (groupBy)
+		{
+			case NONE:
+			{
+				root.add(n);
+				break;
+			}
+			case LEVEL:
+			{
+				Group targetGroup = null;
+				for (int i = 0; i < root.size(); i++)
+				{
+					Group g = (Group)root.get(i);
+					if (g.grouping.equals(n.getLevel()))
+					{
+						targetGroup = g;
+						break;
+					}
+				}
+				if (targetGroup == null)
+				{
+					targetGroup = new Group(n.getLevel(), n.getLevel().getLabel());
+					root.add(targetGroup);
+					Collections.sort(root, levelGroupComparator);
+				}
+				targetGroup.children.add(n);
+				break;
+			}
+			case CATEGORY:
+			{
+				Group targetGroup = null;
+				for (int i = 0; i < root.size(); i++)
+				{
+					Group g = (Group)root.get(i);
+					if (g.grouping.equals(n.getCategory()))
+					{
+						targetGroup = g;
+						break;
+					}
+				}
+				if (targetGroup == null)
+				{
+					targetGroup = new Group(n.getCategory(), n.getCategory().getLabel());
+					root.add(targetGroup);
+					Collections.sort(root, categoryGroupComparator);
+				}
+				targetGroup.children.add(n);
+				break;
+			}
+		}
+		
+		// Refresh the tree
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run()
+			{
+				filteredTree.getViewer().refresh();
+			}
+		});
+	}
+	
 	
 	/**
 	 * Refresh the tree view on the appropriate display thread
@@ -507,6 +549,27 @@ public class NotificationView
 			this.grouping = grouping;
 		}
 	}
+	
+	/** A comparator for ordering level groups in the view */
+	private static final Comparator<Object> levelGroupComparator = new Comparator<Object>()
+	{
+		@Override
+		public int compare(Object o1, Object o2)
+		{
+			return NotificationLevel.SEVERITY_DESCENDING.compare((NotificationLevel)((Group)o1).grouping, 
+																 (NotificationLevel)((Group)o2).grouping);
+		}
+	};
+	
+	/** A comparator for ordering category groups in the view */
+	private static final Comparator<Object> categoryGroupComparator = new Comparator<Object>()
+	{
+		@Override
+		public int compare(Object o1, Object o2)
+		{
+			return String.CASE_INSENSITIVE_ORDER.compare(((Group)o1).label, ((Group)o2).label); 
+		}
+	};
 	
 	/**
 	 * A label provider that renders appropriate labels for the notification tree
