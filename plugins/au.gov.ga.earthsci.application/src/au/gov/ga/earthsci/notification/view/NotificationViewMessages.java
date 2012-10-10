@@ -13,6 +13,8 @@ public class NotificationViewMessages extends NLS
 	public static String NotificationView_CategoryColumnLabel;
 	public static String NotificationView_CreateColumnLabel;
 	public static String NotificationView_DescriptionColumnLabel;
+	public static String NotificationView_FilterTextBoxLabel;
+	public static String NotificationView_ProgressDescription;
 	public static String NotificationView_SearchLabel;
 	public static String NotificationView_TitleColumnLabel;
 	static

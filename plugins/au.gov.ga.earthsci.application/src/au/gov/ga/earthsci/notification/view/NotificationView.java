@@ -24,7 +24,10 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -56,11 +59,11 @@ public class NotificationView
 		LEVEL,
 		CATEGORY
 	}
+	private Grouping groupBy = Grouping.NONE;
 	
 	private static ImageRegistry imageRegistry;
-	private NotificationViewReceiver receiver;
 	
-	private Grouping groupBy = Grouping.NONE;
+	private NotificationViewReceiver receiver;
 	
 	private Tree tree;
 	private FilteredTree filteredTree;
@@ -72,10 +75,24 @@ public class NotificationView
 	private static final int CREATED_COLUMN_INDEX = 3;
 	private static final int ACKNOWLEDGED_COLUMN_INDEX = 4;
 	
+	private int sortColumn = CREATED_COLUMN_INDEX;
+	
+	private static final int ASCENDING = 1;
+	private static final int DESCENDING = -1;
+	
+	private int titleOrder = ASCENDING;
 	private TreeColumn titleColumn;
+	
+	private int descriptionOrder = ASCENDING;
 	private TreeColumn descriptionColumn;
+	
+	private int categoryOrder = ASCENDING;
 	private TreeColumn categoryColumn;
+	
+	private int createdOrder = DESCENDING;
 	private TreeColumn createdColumn;
+	
+	private int acknowledgedOrder = DESCENDING;
 	private TreeColumn acknowledgedColumn;
 	
 	/**
@@ -169,7 +186,7 @@ public class NotificationView
 			gd.horizontalIndent = 1;
 		}
 		filteredTree.setLayoutData(new GridData(GridData.FILL_BOTH));
-		filteredTree.setInitialText("Type filter text");
+		filteredTree.setInitialText(NotificationViewMessages.NotificationView_FilterTextBoxLabel);
 		tree = filteredTree.getViewer().getTree();
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
@@ -192,10 +209,128 @@ public class NotificationView
 		int[] widths = {300, 300, 100, 100, 100};
 
 		titleColumn = createTreeColumn(titles[TITLE_COLUMN_INDEX], widths[TITLE_COLUMN_INDEX]);
+		titleColumn.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				titleOrder *= -1;
+				filteredTree.getViewer().setComparator(new ViewerComparator() {
+					@Override
+					public int compare(Viewer viewer, Object e1, Object e2)
+					{
+						if (!(e1 instanceof INotification) || !(e2 instanceof INotification))
+						{
+							return 0;
+						}
+						return String.CASE_INSENSITIVE_ORDER.compare(((INotification)e1).getTitle(), ((INotification)e2).getTitle()) * titleOrder;
+					}
+				});
+				setColumnSorting(TITLE_COLUMN_INDEX, titleOrder);
+			}
+		});
+		
 		descriptionColumn = createTreeColumn(titles[DESCRIPTION_COLUMN_INDEX], widths[DESCRIPTION_COLUMN_INDEX]);
+		descriptionColumn.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				descriptionOrder *= -1;
+				filteredTree.getViewer().setComparator(new ViewerComparator() {
+					@Override
+					public int compare(Viewer viewer, Object e1, Object e2)
+					{
+						if (!(e1 instanceof INotification) || !(e2 instanceof INotification))
+						{
+							return 0;
+						}
+						return String.CASE_INSENSITIVE_ORDER.compare(((INotification)e1).getText(), ((INotification)e2).getText()) * descriptionOrder;
+					}
+				});
+				setColumnSorting(DESCRIPTION_COLUMN_INDEX, descriptionOrder);
+			}
+		});
+		
 		categoryColumn = createTreeColumn(titles[CATEGORY_COLUMN_INDEX], widths[CATEGORY_COLUMN_INDEX]);
+		categoryColumn.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				categoryOrder *= -1;
+				filteredTree.getViewer().setComparator(new ViewerComparator() {
+					@Override
+					public int compare(Viewer viewer, Object e1, Object e2)
+					{
+						if (!(e1 instanceof INotification) || !(e2 instanceof INotification))
+						{
+							return 0;
+						}
+						return String.CASE_INSENSITIVE_ORDER.compare(((INotification)e1).getCategory().getLabel(), ((INotification)e2).getCategory().getLabel()) * categoryOrder;
+					}
+				});
+				setColumnSorting(CATEGORY_COLUMN_INDEX, categoryOrder);
+			}
+		});
+		
 		createdColumn = createTreeColumn(titles[CREATED_COLUMN_INDEX], widths[CREATED_COLUMN_INDEX]);
+		createdColumn.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				createdOrder *= -1;
+				filteredTree.getViewer().setComparator(new ViewerComparator() {
+					@Override
+					public int compare(Viewer viewer, Object e1, Object e2)
+					{
+						if (!(e1 instanceof INotification) || !(e2 instanceof INotification))
+						{
+							return 0;
+						}
+						return ((INotification)e1).getCreationTimestamp().compareTo(((INotification)e2).getCreationTimestamp()) * createdOrder;
+					}
+				});
+				setColumnSorting(CREATED_COLUMN_INDEX, createdOrder);
+			}
+		});
+		
 		acknowledgedColumn = createTreeColumn(titles[ACKNOWLEDGED_COLUMN_INDEX], widths[ACKNOWLEDGED_COLUMN_INDEX]);
+		acknowledgedColumn.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				acknowledgedOrder *= -1;
+				filteredTree.getViewer().setComparator(new ViewerComparator() {
+					@Override
+					public int compare(Viewer viewer, Object e1, Object e2)
+					{
+						if (!(e1 instanceof INotification) || !(e2 instanceof INotification))
+						{
+							return 0;
+						}
+						INotification n1 = (INotification)e1;
+						INotification n2 = (INotification)e2;
+						if (n1.getAcknowledgementTimestamp() == null && n2.getAcknowledgementTimestamp() == null)
+						{
+							return 0;
+						}
+						if (n1.getAcknowledgementTimestamp() == null && n2.getAcknowledgementTimestamp() != null)
+						{
+							return ASCENDING;
+						}
+						if (n1.getAcknowledgementTimestamp() != null && n2.getAcknowledgementTimestamp() == null)
+						{
+							return DESCENDING;
+						}
+						return n1.getAcknowledgementTimestamp().compareTo(n2.getAcknowledgementTimestamp()) * acknowledgedOrder;
+					}
+				});
+				setColumnSorting(ACKNOWLEDGED_COLUMN_INDEX, acknowledgedOrder);
+			}
+		});
 	}
 
 	private TreeColumn createTreeColumn(String title, int width)
@@ -204,6 +339,12 @@ public class NotificationView
 		c.setText(title);
 		c.setWidth(width);
 		return c;
+	}
+	
+	private void setColumnSorting(int index, int order) {
+		sortColumn = index;
+		tree.setSortColumn(tree.getColumn(index));
+		tree.setSortDirection(order == ASCENDING ? SWT.UP : SWT.DOWN);
 	}
 	
 	/**
@@ -220,7 +361,7 @@ public class NotificationView
 		final IRunnableWithProgress op = new IRunnableWithProgress() {
 			@Override
 			public void run(IProgressMonitor monitor) {
-				monitor.beginTask("Building notification view...", IProgressMonitor.UNKNOWN);
+				monitor.beginTask(NotificationViewMessages.NotificationView_ProgressDescription, IProgressMonitor.UNKNOWN);
 				
 				root.clear();
 				

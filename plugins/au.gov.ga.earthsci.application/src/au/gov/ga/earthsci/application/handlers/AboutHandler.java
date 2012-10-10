@@ -39,10 +39,18 @@ public class AboutHandler
 	@Inject
 	private NotificationManager notifications;
 	
+	private int count = 0;
+	
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 	{
-		notifications.notify(Notification.create(NotificationLevel.ERROR, "About launched", "You opened the About dialog sssssssssssssssssss sssssssssss ssssss ssss s sssssssssssssssss!")
+		count++;
+		String title = count + " About launched";
+		
+		NotificationLevel level = NotificationLevel.values()[count%3];
+		NotificationCategory category = (NotificationCategory)NotificationCategory.getRegisteredCategories().toArray()[count%3];
+		
+		notifications.notify(Notification.create(level, title, count + "You opened the About dialog sssssssssssssssssss sssssssssss ssssss ssss s sssssssssssssssss!")
 		.withAction(new INotificationAction()
 		{
 			@Override
@@ -62,7 +70,7 @@ public class AboutHandler
 			{
 				return "Click me";
 			} 
-		}).inCategory(NotificationCategory.FILE_IO)
+		}).inCategory(category)
 		.requiringAcknowledgement(new INotificationAction()
 		{
 			

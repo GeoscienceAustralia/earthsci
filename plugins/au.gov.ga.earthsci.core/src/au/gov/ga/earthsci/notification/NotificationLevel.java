@@ -46,7 +46,7 @@ public enum NotificationLevel
 		@Override
 		public int compare(NotificationLevel o1, NotificationLevel o2)
 		{
-			return o1.severity - o2.severity;
+			return o2.severity - o1.severity;
 		}
 	};
 }
