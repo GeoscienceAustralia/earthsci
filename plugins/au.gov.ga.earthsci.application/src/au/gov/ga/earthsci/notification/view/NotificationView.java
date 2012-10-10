@@ -47,14 +47,20 @@ import au.gov.ga.earthsci.notification.NotificationLevel;
  */
 public class NotificationView
 {
-	private static final int GROUP_BY_NONE = 0;
-	private static final int GROUP_BY_LEVEL = 1;
-	private static final int GROUP_BY_CATEGORY = 2;
+	/**
+	 * A simple enumeration of possible groupings for content in the {@link NotificationView}
+	 */
+	public enum Grouping
+	{
+		NONE,
+		LEVEL,
+		CATEGORY
+	}
 	
 	private static ImageRegistry imageRegistry;
 	private NotificationViewReceiver receiver;
 	
-	private int groupBy = GROUP_BY_CATEGORY;
+	private Grouping groupBy = Grouping.NONE;
 	
 	private Tree tree;
 	private FilteredTree filteredTree;
@@ -83,6 +89,9 @@ public class NotificationView
 		reloadNotificationTree();
 	}
 	
+	/**
+	 * Initialise this view with the given parent component
+	 */
 	@Inject
 	public void init(Composite parent)
 	{
@@ -92,6 +101,49 @@ public class NotificationView
 		createViewer(parent);
 	}
 
+	/**
+	 * Set the handler to use when receiving user menu events to control grouping in this view
+	 */
+	@Inject
+	public void setNotificationViewGroupByHandler(NotificationViewGroupByHandler handler)
+	{
+		handler.setView(this);
+	}
+	
+	/**
+	 * Set the receiver that this view should listen to for notifications 
+	 */
+	@Inject
+	public void setReceiver(NotificationViewReceiver receiver)
+	{
+		this.receiver = receiver;
+		this.receiver.setView(this);
+		
+		// The order of dependency injection is indeterminate here, so init
+		// may be called before/after the receiver is set
+		if (filteredTree != null)
+		{
+			reloadNotificationTree();
+		}
+	}
+	
+	/**
+	 * Set the grouping to use for this view.
+	 * <p/>
+	 * Note that this will usually cause the view to reload all historic notifications
+	 * from the attached receiver.
+	 */
+	public void setGrouping(Grouping g)
+	{
+		if (g == groupBy)
+		{
+			return;
+		}
+		
+		this.groupBy = g;
+		reloadNotificationTree();
+	}
+	
 	private void createViewer(Composite parent)
 	{
 		PatternFilter filter = new PatternFilter() {
@@ -154,26 +206,17 @@ public class NotificationView
 		return c;
 	}
 	
-	@Inject
-	public void setReceiver(NotificationViewReceiver receiver)
-	{
-		this.receiver = receiver;
-		this.receiver.setView(this);
-		
-		// The order of dependency injection is indeterminate here, so init
-		// may be called before/after the receiver is set
-		if (filteredTree != null)
-		{
-			reloadNotificationTree();
-		}
-	}
-	
 	/**
 	 * Re-build the notification tree from the notification list on the attached receiver
 	 * using the current grouping/filtering settings.
 	 */
 	private void reloadNotificationTree()
 	{
+		if (receiver == null)
+		{
+			return;
+		}
+		
 		final IRunnableWithProgress op = new IRunnableWithProgress() {
 			@Override
 			public void run(IProgressMonitor monitor) {
@@ -182,11 +225,11 @@ public class NotificationView
 				root.clear();
 				
 				// Build a flat list - easy!
-				if (groupBy == GROUP_BY_NONE)
+				if (groupBy == Grouping.NONE)
 				{
 					root.addAll(receiver.getNotifications());
 				}
-				else if (groupBy == GROUP_BY_LEVEL)
+				else if (groupBy == Grouping.LEVEL)
 				{
 					Map<NotificationLevel, Group> groups = new EnumMap<NotificationLevel, Group>(NotificationLevel.class);
 					for (INotification n : receiver.getNotifications())
@@ -210,7 +253,7 @@ public class NotificationView
 						}
 					});
 				}
-				else if (groupBy == GROUP_BY_CATEGORY)
+				else if (groupBy == Grouping.CATEGORY)
 				{
 					Map<NotificationCategory, Group> groups = new HashMap<NotificationCategory, Group>();
 					for (INotification n : receiver.getNotifications())
@@ -417,7 +460,7 @@ public class NotificationView
 			{
 				return view.root;
 			}
-			if (element instanceof INotification && view.groupBy == GROUP_BY_NONE)
+			if (element instanceof INotification && view.groupBy == Grouping.NONE)
 			{
 				return view.root;
 			}
@@ -425,11 +468,11 @@ public class NotificationView
 			INotification n = (INotification) element;
 			for (Object o : view.root)
 			{
-				if (view.groupBy == GROUP_BY_LEVEL && ((Group)o).grouping.equals(n.getLevel()))
+				if (view.groupBy == Grouping.LEVEL && ((Group)o).grouping.equals(n.getLevel()))
 				{
 					return o;
 				}
-				if (view.groupBy == GROUP_BY_CATEGORY && ((Group)o).grouping.equals(n.getCategory()))
+				if (view.groupBy == Grouping.CATEGORY && ((Group)o).grouping.equals(n.getCategory()))
 				{
 					return o;
 				}

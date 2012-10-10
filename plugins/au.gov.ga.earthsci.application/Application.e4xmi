@@ -12,7 +12,17 @@
               <children xsi:type="basic:Part" xmi:id="_RALPQPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.worldwindow" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.WorldWindowPart" label="World Window" closeable="true"/>
             </children>
             <children xsi:type="basic:PartStack" xmi:id="_0HDfgA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partstack.0">
-              <children xsi:type="basic:Part" xmi:id="_IsdaEA0kEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.part.notificationview" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.notification.view.NotificationView" label="Notifications" closeable="true"/>
+              <children xsi:type="basic:Part" xmi:id="_IsdaEA0kEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.notification.view.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.notification.view.NotificationView" label="Notifications" closeable="true">
+                <handlers xmi:id="_SJbQ4BJgEeK3duY8thOvyA" elementId="au.gov.ga.earthsci.notification.view.groupby" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.notification.view.NotificationViewGroupByHandler" command="_cQRlEBJgEeK3duY8thOvyA"/>
+                <menus xmi:id="_uibuEBHBEeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.application.menu.0" label="">
+                  <tags>ViewMenu</tags>
+                  <children xsi:type="menu:Menu" xmi:id="_E1kp4BHLEeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.notification.view.NotificationView.group" label="Group by">
+                    <children xsi:type="menu:HandledMenuItem" xmi:id="_wPyC4BHQEeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.notification.view.NotificationView.group.none" label="None" selected="true" type="Radio" command="_cQRlEBJgEeK3duY8thOvyA"/>
+                    <children xsi:type="menu:HandledMenuItem" xmi:id="_NT3dIBHREeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.notification.view.NotificationView.group.level" label="Level" type="Radio" command="_cQRlEBJgEeK3duY8thOvyA"/>
+                    <children xsi:type="menu:HandledMenuItem" xmi:id="_Rx-AIBHREeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.notification.view.NotificationView.group.category" label="Category" type="Radio" command="_cQRlEBJgEeK3duY8thOvyA"/>
+                  </children>
+                </menus>
+              </children>
               <children xsi:type="basic:Part" xmi:id="_xTsA0PvgEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layerlist" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.LayerListPart" label="Layers List" closeable="true"/>
             </children>
           </children>
@@ -65,6 +75,7 @@
   <commands xmi:id="_pU-REPvQEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.showView" commandName="showViewCommand"/>
   <commands xmi:id="_940mAPyIEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.showPreferences" commandName="showPreferencesCommand"/>
   <commands xmi:id="_t3D6kAODEeK17JdaarPZug" elementId="org.eclipse.ui.help.helpContents" commandName="showHelpCommand" description="Launch the help system"/>
+  <commands xmi:id="_cQRlEBJgEeK3duY8thOvyA" elementId="au.gov.ga.earthsci.notification.view.groupby" commandName="notificationViewGroupByCommand" description="Controls grouping for the notification view"/>
   <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_007tVfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_007tVvsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
