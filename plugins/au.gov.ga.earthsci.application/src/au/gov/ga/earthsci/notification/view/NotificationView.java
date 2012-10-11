@@ -13,6 +13,10 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.model.application.ui.menu.MMenu;
+import org.eclipse.e4.ui.model.application.ui.menu.MMenuElement;
+import org.eclipse.e4.ui.model.application.ui.menu.MMenuItem;
 import org.eclipse.e4.ui.workbench.swt.internal.copy.FilteredTree;
 import org.eclipse.e4.ui.workbench.swt.internal.copy.PatternFilter;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -51,6 +55,17 @@ import au.gov.ga.earthsci.notification.NotificationLevel;
 public class NotificationView
 {
 	
+	private static final int TITLE_COLUMN_INDEX = 0;
+	private static final int DESCRIPTION_COLUMN_INDEX = 1;
+	private static final int CATEGORY_COLUMN_INDEX = 2;
+	private static final int CREATED_COLUMN_INDEX = 3;
+	private static final int ACKNOWLEDGED_COLUMN_INDEX = 4;
+	
+	private static final int ASCENDING = 1;
+	private static final int DESCENDING = -1;
+	
+	private static ImageRegistry imageRegistry;
+	
 	/**
 	 * A simple enumeration of possible groupings for content in the {@link NotificationView}
 	 */
@@ -62,23 +77,13 @@ public class NotificationView
 	}
 	private Grouping groupBy = Grouping.NONE;
 	
-	private static ImageRegistry imageRegistry;
-	
 	private NotificationViewReceiver receiver;
 	
 	private Tree tree;
 	private FilteredTree filteredTree;
 	private List<Object> root = new ArrayList<Object>();
 	
-	private static final int TITLE_COLUMN_INDEX = 0;
-	private static final int DESCRIPTION_COLUMN_INDEX = 1;
-	private static final int CATEGORY_COLUMN_INDEX = 2;
-	private static final int CREATED_COLUMN_INDEX = 3;
-	private static final int ACKNOWLEDGED_COLUMN_INDEX = 4;
-	
-	private static final int ASCENDING = 1;
-	private static final int DESCENDING = -1;
-	
+	// Table columns
 	private int titleOrder = ASCENDING;
 	private TreeColumn titleColumn;
 	
@@ -98,12 +103,13 @@ public class NotificationView
 	 * Initialise this view with the given parent component
 	 */
 	@Inject
-	public void init(Composite parent)
+	public void init(Composite parent, MPart part)
 	{
 		GridLayout layout = new GridLayout(1, false);
 		parent.setLayout(layout);
 		
 		createViewer(parent);
+		initialiseCorrectGrouping(part);
 	}
 
 	/**
@@ -168,7 +174,7 @@ public class NotificationView
 		
 		filteredTree = new FilteredTree(parent, SWT.FULL_SELECTION, filter, true);
 		if (filteredTree.getFilterControl() != null) {
-			Composite filterComposite = filteredTree.getFilterControl().getParent(); // FilteredTree new look lays filter Text on additional composite
+			Composite filterComposite = filteredTree.getFilterControl().getParent();
 			GridData gd = (GridData) filterComposite.getLayoutData();
 			gd.verticalIndent = 2;
 			gd.horizontalIndent = 1;
@@ -517,6 +523,38 @@ public class NotificationView
 	}
 	
 	/**
+	 * Initialise the grouping as per the persisted menu selection on startup
+	 */
+	private void initialiseCorrectGrouping(MPart part)
+	{
+		// Find the active grouping
+		String selectedId = null;
+		for (MMenu menu : part.getMenus())
+		{
+			if (menu.getTags().contains("ViewMenu")) //$NON-NLS-1$
+			{
+				for (MMenuElement element : menu.getChildren())
+				{
+					if (!element.getElementId().equals("au.gov.ga.earthsci.notification.view.NotificationView.group")) //$NON-NLS-1$
+					{
+						continue;
+					}
+					for (MMenuElement child : ((MMenu)element).getChildren())
+					{
+						if (((MMenuItem) child).isSelected())
+						{
+							selectedId = child.getElementId();
+						}
+					}
+				}
+			}
+		}
+		
+		Grouping grouping = NotificationViewGroupByHandler.getGroupingForMenuItemId(selectedId);
+		setGrouping(grouping);
+	}
+	
+	/**
 	 * @return the imageRegistry
 	 */
 	public static ImageRegistry getImageRegistry()
@@ -611,6 +649,9 @@ public class NotificationView
 		}
 	}
 	
+	/**
+	 * An {@link ITreeContentProvider} that understands grouping within the notification view 
+	 */
 	private static class NotificationViewContentProvider implements ITreeContentProvider
 	{
 		private final NotificationView view;

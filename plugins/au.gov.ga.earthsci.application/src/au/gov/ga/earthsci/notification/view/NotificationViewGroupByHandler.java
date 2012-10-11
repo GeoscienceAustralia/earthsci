@@ -34,6 +34,11 @@ public class NotificationViewGroupByHandler
 		idToGrouping.put(GROUP_BY_CATEGORY_MENU_ID, Grouping.CATEGORY);
 	}
 	
+	public static Grouping getGroupingForMenuItemId(String id)
+	{
+		return idToGrouping.get(id);
+	}
+	
 	private NotificationView view;
 
 	public void setView(NotificationView view)
@@ -48,7 +53,7 @@ public class NotificationViewGroupByHandler
 		{
 			return;
 		}
-		view.setGrouping(idToGrouping.get(item.getElementId()));
+		view.setGrouping(getGroupingForMenuItemId(item.getElementId()));
 	}
 
 }
