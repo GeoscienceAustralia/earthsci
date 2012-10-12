@@ -5,9 +5,15 @@
 
 The vision for `EarthSci` is to take the best features of the [GA World Wind Suite](https://github.com/ga-m3dv/ga-worldwind-suite) (Geological model support, WMS/WFS support, tiled data preparation, keyframe animation etc.) and combine them with the best features of the Eclipse platform (modular plugin architecture, in-built help, native windowing, model-based UI) to create a flexible platform with powerful science visualisation features. As development progresses more and more features will be added.
 
----
-**Important:**  `EarthSci RCP` is still in pre-alpha development and is not intended for use in any production environment. Development is ongoing - stay tuned! For a production-ready platform, consider the [GA World Wind Suite](https://github.com/ga-m3dv/ga-worldwind-suite).
----
+- - -
+**Important:** 
+
+`EarthSci RCP` is still in pre-alpha development and is not intended for use in any production environment. 
+
+Development is ongoing - stay tuned! Feel free to help out and shape the direction of the platform.
+
+For a production-ready platform, consider the [GA World Wind Suite](https://github.com/ga-m3dv/ga-worldwind-suite).
+- - -
 
 ## Project Structure ##
 
@@ -23,7 +29,7 @@ The overall project structure is as follows:
 ### Plugins ###
 
 <table>
-	<thead><tr><td>Plugin</td><td>Description</td></tr></thead>
+	<thead><tr><td><b>Plugin</b></td><td><b>Description</b></td></tr></thead>
 	<tbody>
 		<tr><td>au.gov.ga.earthsci.core</td><td>The core, non-UI components of the EarthSci platform</td></tr>
 		<tr><td>au.gov.ga.earthsci.core.tests</td><td>Tests for the core plugin</td></tr>
@@ -35,7 +41,7 @@ The overall project structure is as follows:
 ### Features ###
 
 <table>
-	<thead><tr><td>Feature</td><td>Description</td></tr></thead>
+	<thead><tr><td><b>Feature</b></td><td><b>Description</b></td></tr></thead>
 	<tbody>
 		<tr><td>au.gov.ga.earthsci.feature</td><td>The core feature of the EarthSci platform</td></tr>
 		<tr><td>au.gov.ga.earthsci.product</td><td>The product feature of the EarthSci platform</td></tr>
