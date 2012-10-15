@@ -5,6 +5,8 @@
 
 The vision for `EarthSci` is to take the best features of the [GA World Wind Suite](https://github.com/ga-m3dv/ga-worldwind-suite) (Geological model support, WMS/WFS support, tiled data preparation, keyframe animation etc.) and combine them with the best features of the Eclipse platform (modular plugin architecture, in-built help, native windowing, model-based UI) to create a flexible platform with powerful science visualisation features. As development progresses more and more features will be added.
 
+# For more information on the project, see the [Wiki](https://github.com/ga-m3dv/ga-earthsci-rcp/wiki) #
+
 - - -
 **Important:** 
 
