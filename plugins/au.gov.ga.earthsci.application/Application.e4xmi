@@ -24,6 +24,7 @@
                 </menus>
               </children>
               <children xsi:type="basic:Part" xmi:id="_xTsA0PvgEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layerlist" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.LayerListPart" label="Layers List" closeable="true"/>
+              <children xsi:type="basic:Part" xmi:id="_3rRB4BgDEeKQJ6pSqihtuA" elementId="au.gov.ga.earthsci.application.part.0" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.progress.view.ProgressView" label="Progress" closeable="true"/>
             </children>
           </children>
         </children>

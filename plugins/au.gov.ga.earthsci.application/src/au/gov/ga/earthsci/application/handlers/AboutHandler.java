@@ -18,6 +18,10 @@ package au.gov.ga.earthsci.application.handlers;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -94,6 +98,33 @@ public class AboutHandler
 		}).build());
 		
 		MessageDialog.openInformation(shell, "About", "e4 Application example.");
+		
+		Job dummyJob = new Job("Test Job " + count)
+		{
+			
+			@Override
+			protected IStatus run(IProgressMonitor monitor)
+			{
+				monitor.beginTask("Some work", 10);
+				for (int i = 0; i < 10; i++)
+				{
+					monitor.worked(1);
+					try
+					{
+						monitor.subTask("Some work..." + i);
+						Thread.sleep(1000);
+					}
+					catch (InterruptedException e)
+					{
+						
+					}
+				}
+				monitor.done();
+				
+				return Status.OK_STATUS;
+			}
+		};
+		dummyJob.schedule();
 		
 	}
 }
