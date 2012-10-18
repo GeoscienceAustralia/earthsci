@@ -15,7 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.catalog;
 
-import au.gov.ga.earthsci.core.tree.ITreeNode;
+import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
 import au.gov.ga.earthsci.core.util.INamed;
 import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
@@ -26,7 +26,7 @@ import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ICatalogTreeNode extends ITreeNode<ICatalogTreeNode>, IPropertyChangeBean, INamed
+public interface ICatalogTreeNode extends ILazyTreeNode<ICatalogTreeNode>, IPropertyChangeBean, INamed
 {
 	/**
 	 * @return Is this catalog node removeable from the Catalog tree? All user

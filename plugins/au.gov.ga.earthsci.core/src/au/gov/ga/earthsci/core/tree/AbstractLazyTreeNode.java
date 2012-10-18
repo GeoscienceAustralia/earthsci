@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 /**
@@ -17,17 +16,18 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implements ILazyTreeNode<E>
 {
 
-	private AtomicReference<Job> lastLoadJob;
+	private AtomicReference<LazyTreeJob> lastLoadJob = new AtomicReference<LazyTreeJob>(null);
 	private AtomicBoolean loaded = new AtomicBoolean(false);
 	
 	@Override
-	public final Job load()
+	public final LazyTreeJob load()
 	{
+		System.out.println("Load called");
 		if (lastLoadJob.get() == null)
 		{
-			Job loadJob = new Job(getName()) {
+			LazyTreeJob loadJob = new LazyTreeJob(this) {
 				@Override
-				protected IStatus run(IProgressMonitor monitor)
+				protected IStatus doRun(IProgressMonitor monitor)
 				{
 					return doLoad(monitor);
 				}
@@ -45,6 +45,7 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 			
 			if (lastLoadJob.compareAndSet(null, loadJob))
 			{
+				System.out.println("Scheduling job");
 				loadJob.schedule();
 			}
 			
@@ -67,4 +68,20 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 		return loaded.get();
 	}
 
+	@Override
+	public int getChildCount()
+	{
+		if (isLoaded())
+		{
+			return super.getChildCount();
+		}
+		return 1;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getName() + " (" + depth() + ", " + index() + ")";
+	}
+	
 }

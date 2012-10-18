@@ -17,7 +17,7 @@ public interface ILazyTreeNode<E> extends ITreeNode<E>, INamed
 	 * <p/>
 	 * Loading will be performed in the returned {@link Job}, which takes the name of the node
 	 */
-	Job load();
+	LazyTreeJob load();
 	
 	/**
 	 * @return Whether this node's children have been loaded 

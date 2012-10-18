@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.tree;
 
-import java.util.Arrays;
-
 import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
 
 /**
@@ -107,8 +105,17 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 		{
 			return -1;
 		}
-		int index = Arrays.binarySearch(getParent().getChildren(), this);
-		return index < 0 ? -1 : index;
+		
+		int i = 0;
+		for (ITreeNode<E> sibling : getParent().getChildren())
+		{
+			if (sibling == this)
+			{
+				return i;
+			}
+			i++;
+		}
+		return -1;
 	}
 
 	@Override
@@ -178,7 +185,9 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	public ITreeNode<E> remove(int index)
 	{
 		if (index < 0 || index >= children.length)
+		{
 			throw new IndexOutOfBoundsException();
+		}
 
 		@SuppressWarnings("unchecked")
 		ITreeNode<E>[] newChildren = new ITreeNode[children.length - 1];
