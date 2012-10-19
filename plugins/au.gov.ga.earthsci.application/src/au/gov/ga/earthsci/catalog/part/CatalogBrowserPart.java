@@ -123,7 +123,7 @@ public class CatalogBrowserPart
 		}
 
 		@Override
-		public void reload()
+		public LazyTreeJob reload()
 		{
 			// TODO Auto-generated method stub
 			

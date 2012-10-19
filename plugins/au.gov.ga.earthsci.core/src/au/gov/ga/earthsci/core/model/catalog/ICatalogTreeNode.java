@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.core.model.catalog;
 
 import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
+import au.gov.ga.earthsci.core.tree.LazyTreeJob;
 import au.gov.ga.earthsci.core.util.INamed;
 import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
@@ -42,5 +43,5 @@ public interface ICatalogTreeNode extends ILazyTreeNode<ICatalogTreeNode>, IProp
 	/**
 	 * Reload this node's data.
 	 */
-	void reload();
+	LazyTreeJob reload();
 }
