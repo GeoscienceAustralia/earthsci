@@ -13,14 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.worldwind.viewer.panels.dataset;
+package au.gov.ga.earthsci.core.model.catalog.dataset;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.w3c.dom.Element;
-
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 
 /**
  * Helper class that reads {@link IDataset}s from XML files.
@@ -29,7 +23,7 @@ import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
  */
 public class DatasetReader
 {
-	public static IDataset read(Object source, URL context) throws MalformedURLException
+	/*public static IDataset read(Object source, URL context) throws MalformedURLException
 	{
 		//top level dataset (DatasetList) doesn't have a name, and is not shown in the tree
 		IDataset root = new Dataset(null, null, null, true);
@@ -111,5 +105,5 @@ public class DatasetReader
 		boolean enabled = XMLUtil.getBoolean(element, "@enabled", true);
 		ILayerDefinition layer = new LayerDefinition(name, url, info, icon, base, def, enabled);
 		parent.addChild(layer);
-	}
+	}*/
 }

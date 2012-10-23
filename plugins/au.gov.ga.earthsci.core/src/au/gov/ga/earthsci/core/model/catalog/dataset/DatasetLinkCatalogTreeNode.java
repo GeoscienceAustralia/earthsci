@@ -4,6 +4,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 
@@ -28,16 +29,17 @@ public class DatasetLinkCatalogTreeNode extends DatasetCatalogTreeNode
 	@Override
 	public boolean isLoaded()
 	{
-		// TODO Auto-generated method stub
+		// TODO
 		return super.isLoaded();
 	}
 	
 	@Override
 	protected IStatus doLoad(IProgressMonitor monitor)
 	{
+		// TODO
 		monitor.beginTask("Downloading link " + linkURL.toExternalForm(), IProgressMonitor.UNKNOWN);
 		
-		
+		return Status.OK_STATUS;
 	}
 	
 	
