@@ -7,10 +7,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 /**
- * An abstract implementation of {@link ILazyTreeNode} that provides threadsafe
+ * An abstract implementation of {@link ILazyTreeNode} that provides background loading via the {@link Job} API.
+ * <p/>
+ * Subclasses should implement {@link #doLoad(IProgressMonitor)} to perform the actual loading of children, and progress should
+ * be reported to the provided {@link IProgressMonitor}.
+ * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implements ILazyTreeNode<E>
@@ -22,7 +27,6 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 	@Override
 	public final LazyTreeJob load()
 	{
-		System.out.println("Load called");
 		if (lastLoadJob.get() == null)
 		{
 			LazyTreeJob loadJob = new LazyTreeJob(this) {
@@ -45,7 +49,6 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 			
 			if (lastLoadJob.compareAndSet(null, loadJob))
 			{
-				System.out.println("Scheduling job");
 				loadJob.schedule();
 			}
 			
@@ -56,7 +59,9 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 	}
 
 	/**
-	 * Perform loading of child nodes here
+	 * Perform loading of child nodes here.
+	 * <p/>
+	 * Progress should be reported to the provided {@link IProgressMonitor} as appropriate.
 	 * 
 	 * @param monitor The monitor to use for reporting load progress
 	 */
@@ -78,6 +83,7 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 		return 1;
 	}
 	
+	@SuppressWarnings("nls")
 	@Override
 	public String toString()
 	{

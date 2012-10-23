@@ -15,8 +15,11 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.util;
 
+import gov.nasa.worldwind.util.WWXML;
+
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -264,5 +267,49 @@ public class XmlUtil
 	{
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		return transformerFactory.newTransformer();
+	}
+	
+	/**
+	 * Open the XML document referenced in the given source
+	 * <p/>
+	 * Supports:
+	 * <ul>
+	 * 	<li> {@link Document}
+	 *  <li> {@link URI} (for supported protocols - see {@link URI#toURL()})
+	 *  <li> and all formats supported by {@link WWXML#openDocument(Object)}
+	 * </ul>
+	 */
+	public static Document openDocument(Object source)
+	{
+		if (source == null)
+		{
+			return null;
+		}
+		
+		if (source instanceof Document)
+		{
+			return (Document)source;
+		}
+		
+		if (source instanceof URI)
+		{
+			try
+			{
+				return WWXML.openDocument(((URI)source).toURL());
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
+		}
+		
+		try
+		{
+			return WWXML.openDocument(source);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 	}
 }

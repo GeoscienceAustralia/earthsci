@@ -15,6 +15,7 @@ import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.tree.AbstractLazyTreeNode;
 import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
+import au.gov.ga.earthsci.core.tree.LazyTreeJob;
 
 /**
  * A part that renders a tree-view of the current {@link ICatalogModel} and allows
@@ -126,7 +127,7 @@ public class CatalogBrowserPart
 		public LazyTreeJob reload()
 		{
 			// TODO Auto-generated method stub
-			
+			return null;
 		}
 		
 	}
