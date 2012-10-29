@@ -9,6 +9,8 @@
 
 	<properties>
 		<tycho-version>0.15.0</tycho-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<sonar.language>java</sonar.language>
 	</properties>
 
 	<repositories>

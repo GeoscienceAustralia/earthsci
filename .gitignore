@@ -4,3 +4,4 @@ target/
 *.log
 .DS_Store
 Thumbs.db
+*.pmd
