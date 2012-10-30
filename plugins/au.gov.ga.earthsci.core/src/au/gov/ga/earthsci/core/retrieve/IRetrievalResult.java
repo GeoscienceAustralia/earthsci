@@ -76,4 +76,11 @@ public interface IRetrievalResult
 	 * @return Any exception associated with this result.
 	 */
 	Exception getException();
+
+	/**
+	 * Return a user friendly (human readable) error message in the case of an unsuccessful result.
+	 * 
+	 * @return A user friendly message to describe any problems with the result
+	 */
+	String getMessage();
 }

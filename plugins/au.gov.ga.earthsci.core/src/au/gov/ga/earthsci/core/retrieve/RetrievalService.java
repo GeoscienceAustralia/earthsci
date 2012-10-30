@@ -16,8 +16,10 @@
 package au.gov.ga.earthsci.core.retrieve;
 
 import java.net.URL;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.inject.Inject;
 
@@ -50,8 +52,8 @@ public class RetrievalService implements IRetrievalService
 	@Inject
 	private IURLResourceCache cache;
 	
-	private Set<IRetriever> retrievers;
-	private ReadWriteLock retrieversLock;
+	private Set<IRetriever> retrievers = new LinkedHashSet<IRetriever>();
+	private ReadWriteLock retrieversLock = new ReentrantReadWriteLock();
 	
 	/**
 	 * Register a retriever on this service instance.
@@ -86,45 +88,60 @@ public class RetrievalService implements IRetrievalService
 	public RetrievalJob retrieve(final URL url, RetrievalMode mode, final boolean forceRefresh)
 	{
 		
-		final IRetriever retriever = findRetrieverFor(url);
+		if (url == null)
+		{
+			return null;
+		}
+		
+		// Determine the correct URL to use (cached or live)
+		final URL retrievalUrl;
+		final boolean fromCache;
+		if (cachingEnabled() && !forceRefresh)
+		{
+			URL cachedUrl = cache.getResource(url);
+			if (cachedUrl != null)
+			{
+				retrievalUrl = cachedUrl;
+				fromCache = true;
+			}
+			else
+			{
+				retrievalUrl = url;
+				fromCache = false;
+			}
+		}
+		else
+		{
+			retrievalUrl = url;
+			fromCache = false;
+		}
+		
+		// Find the correct retriever for the url
+		final IRetriever retriever = findRetrieverFor(retrievalUrl);
 		if (retriever == null)
 		{
 			return null;
 		}
 		
-		final RetrievalJob job = new RetrievalJob(url)
+		// Run the retrieval job
+		final RetrievalJob job = new RetrievalJob(retrievalUrl)
 		{
 			@Override
 			protected IStatus run(IProgressMonitor monitor)
 			{
-				monitor.beginTask(NLS.bind(Messages.RetrievalService_TaskName, url.toExternalForm()), IProgressMonitor.UNKNOWN);
+				monitor.beginTask(NLS.bind(Messages.RetrievalService_TaskName, retrievalUrl.toExternalForm()), IProgressMonitor.UNKNOWN);
 
 				IRetrievalMonitor retrievalMonitor = new RetrievalMonitor(monitor, this);
 				
 				IRetrievalResult result;
-				if (cachingEnabled() && !forceRefresh)
+				result = retriever.retrieve(retrievalUrl, retrievalMonitor);
+				if (fromCache)
 				{
-					URL cachedUrl = cache.getResource(url);
-					if (cachedUrl == null)
-					{
-						result = retriever.retrieve(cachedUrl, retrievalMonitor);
-						markFromCache(cachedUrl);
-					}
-					else
-					{
-						result = retriever.retrieve(url, retrievalMonitor);
-						
-						cache.putResource(url, result.getAsInputStream());
-					}
+					markFromCache(retrievalUrl);
 				}
-				else
+				else if (cachingEnabled())
 				{
-					result = retriever.retrieve(url, retrievalMonitor);
-					
-					if (cachingEnabled())
-					{
-						cache.putResource(url, result.getAsInputStream());
-					}
+					cache.putResource(retrievalUrl, result.getAsInputStream());
 				}
 				
 				setRetrievalResult(result);
@@ -133,10 +150,7 @@ public class RetrievalService implements IRetrievalService
 				return Status.OK_STATUS;
 			}
 
-			private boolean cachingEnabled()
-			{
-				return preferences.isCachingEnabled() && cache != null;
-			}
+			
 		};
 		job.setPriority(mode == RetrievalMode.IMMEDIATE ? Job.INTERACTIVE : Job.SHORT);
 		job.schedule();
@@ -154,6 +168,11 @@ public class RetrievalService implements IRetrievalService
 		}
 		
 		return job;
+	}
+	
+	private boolean cachingEnabled()
+	{
+		return preferences != null && preferences.isCachingEnabled() && cache != null;
 	}
 	
 	private IRetriever findRetrieverFor(URL url)

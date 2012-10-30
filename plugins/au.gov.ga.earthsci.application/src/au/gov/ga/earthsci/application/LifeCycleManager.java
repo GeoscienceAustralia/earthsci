@@ -17,10 +17,14 @@ package au.gov.ga.earthsci.application;
 
 import javax.inject.Inject;
 
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 
+import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
+import au.gov.ga.earthsci.core.retrieve.RetrievalService;
+import au.gov.ga.earthsci.core.retrieve.retriever.HTTPRetriever;
 import au.gov.ga.earthsci.core.worldwind.TreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
 import au.gov.ga.earthsci.notification.NotificationManager;
@@ -49,6 +53,14 @@ public class LifeCycleManager
 	void postContextCreate()
 	{
 		context.set(TreeModel.class, new WorldWindModel());
+		
+		// TODO: Remove and use extension points to initialise
+		HTTPRetriever httpRetriever = new HTTPRetriever();
+		ContextInjectionFactory.inject(httpRetriever, context);
+		
+		RetrievalService retrievalService = new RetrievalService();
+		retrievalService.registerRetriever(httpRetriever);
+		context.set(IRetrievalService.class, retrievalService);
 	}
 
 	@PreSave

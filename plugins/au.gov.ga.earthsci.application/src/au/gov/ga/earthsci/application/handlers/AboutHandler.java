@@ -15,18 +15,25 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.handlers;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
+import au.gov.ga.earthsci.core.retrieve.RetrievalJob;
 import au.gov.ga.earthsci.notification.INotificationAction;
 import au.gov.ga.earthsci.notification.Notification;
 import au.gov.ga.earthsci.notification.NotificationCategory;
@@ -42,6 +49,9 @@ public class AboutHandler
 {
 	@Inject
 	private NotificationManager notifications;
+	
+	@Inject
+	private IRetrievalService retrievalService;
 	
 	private int count = 0;
 	
@@ -125,6 +135,36 @@ public class AboutHandler
 			}
 		};
 		dummyJob.schedule();
+	
+		try
+		{
+			final RetrievalJob retrievalJob = retrievalService.retrieve(new URL("http://www.google.com")); //$NON-NLS-1$
+			retrievalJob.addJobChangeListener(new JobChangeAdapter()
+			{
+				@Override
+				public void done(IJobChangeEvent event)
+				{
+					System.out.println("Retrieval done: " + event.getResult().getMessage() + ", " + retrievalJob.getRetrievalResult().isSuccessful());
+					if (!retrievalJob.getRetrievalResult().isSuccessful())
+					{
+						System.out.println(retrievalJob.getRetrievalResult().getMessage());
+					}
+					if (retrievalJob.getRetrievalResult().getException() != null)
+					{
+						retrievalJob.getRetrievalResult().getException().printStackTrace();
+					}
+					if (retrievalJob.getRetrievalResult().isSuccessful())
+					{
+						System.out.println(retrievalJob.getRetrievalResult().getAsString());
+					}
+				}
+			});
+			System.out.println("Im asynchronous!");
+		}
+		catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+		}
 		
 	}
 }
