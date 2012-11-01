@@ -18,8 +18,7 @@ package au.gov.ga.earthsci.core.retrieve.retriever;
 import org.eclipse.osgi.util.NLS;
 
 /**
- * @author u09145
- *
+ * Message bundle constants for the <code>retriever</code> package.
  */
 public class Messages extends NLS
 {
