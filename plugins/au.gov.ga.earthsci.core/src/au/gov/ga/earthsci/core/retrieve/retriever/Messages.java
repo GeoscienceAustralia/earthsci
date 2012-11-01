@@ -24,6 +24,8 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.retrieve.retriever.messages"; //$NON-NLS-1$
+	public static String AbstractRetriever_GenericInvalidConnectionMessage;
+	public static String FileRetriever_FileNotFoundMessage;
 	public static String HTTPRetriever_ServerErrorMessage;
 	static
 	{

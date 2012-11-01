@@ -15,21 +15,12 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve.retriever;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
+import java.net.URLConnection;
 
-import javax.inject.Inject;
-
-import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.osgi.util.NLS;
 
-import au.gov.ga.earthsci.core.retrieve.ByteBufferRetrievalResult;
-import au.gov.ga.earthsci.core.retrieve.IRetrievalMonitor;
-import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetriever;
 
 /**
@@ -37,14 +28,11 @@ import au.gov.ga.earthsci.core.retrieve.IRetriever;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class HTTPRetriever implements IRetriever
+public class HTTPRetriever extends AbstractRetriever implements IRetriever
 {
 
-	private static final String HTTP_PROTOCOL = "http"; //$NON-NLS-1$
-	private static final String HTTPS_PROTOCOL = "https"; //$NON-NLS-1$
-	
-	@Inject
-	private Logger logger;
+	public static final String HTTP_PROTOCOL = "http"; //$NON-NLS-1$
+	public static final String HTTPS_PROTOCOL = "https"; //$NON-NLS-1$
 	
 	@Override
 	public boolean supports(URL url)
@@ -58,162 +46,39 @@ public class HTTPRetriever implements IRetriever
 				HTTPS_PROTOCOL.equalsIgnoreCase(url.getProtocol()); 
 	}
 
+	
 	@Override
-	public IRetrievalResult retrieve(URL url, IRetrievalMonitor monitor)
+	protected boolean validateConnection(URLConnection connection) throws Exception
 	{
-		if (!supports(url))
+		HttpURLConnection httpConnection = (HttpURLConnection) connection;
+		if (httpConnection.getResponseCode() != HttpURLConnection.HTTP_OK)
 		{
-			throw new IllegalArgumentException(getClass() + " does not support the URL: " + url); //$NON-NLS-1$
+			return false;
+			
 		}
-		
-		monitor.notifyStarted();
-
-		HttpURLConnection connection = null;
-		try
+		return true;
+	}
+	
+	@Override
+	protected String getMessageForInvalidConnection(URLConnection connection) throws Exception
+	{
+		HttpURLConnection httpConnection = (HttpURLConnection) connection;
+		return NLS.bind(Messages.HTTPRetriever_ServerErrorMessage, new Object[] {httpConnection.getResponseCode(), httpConnection.getResponseMessage(), connection.getURL()});
+	}
+	
+	@Override
+	protected String getMessageForRetrievalException(URLConnection connection, Exception e)
+	{
+		return e.getLocalizedMessage();
+	}
+	
+	@Override
+	protected void doCleanup(URLConnection connection)
+	{
+		if (connection != null)
 		{
-			monitor.notifyConnecting();
-			connection = openConnection(url);
-			if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
-			{
-				throw new IOException("Server responded with error " + connection.getResponseCode() + " '" + connection.getResponseMessage() + "' for URL " + url); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			}
-			
-			connection.connect();
-			monitor.notifyConnected();
-			
-			monitor.notifyReading();
-			ByteBuffer buffer = readFromConnection(connection);
-			
-			monitor.notifyCompleted(true);
-			
-			return new ByteBufferRetrievalResult(buffer);
-		}
-		catch (Exception e)
-		{
-			if (logger != null)
-			{
-				logger.debug(e, "Exception during retrieval of resource at URL " + url); //$NON-NLS-1$
-			}
-			
-			monitor.notifyCompleted(false);
-			
-			try
-			{
-				if (connection == null || connection.getResponseCode() == HttpURLConnection.HTTP_OK)
-				{
-					return new ByteBufferRetrievalResult(e);
-				}
-				else
-				{
-					return new ByteBufferRetrievalResult(e, NLS.bind(Messages.HTTPRetriever_ServerErrorMessage, 
-																	 new Object[] {connection.getResponseCode(), connection.getResponseMessage(), url}));
-				}
-			}
-			catch (Exception e2)
-			{
-				return new ByteBufferRetrievalResult(e);
-			}
-		}
-		finally
-		{
-			if (connection != null)
-			{
-				connection.disconnect();
-			}
+			((HttpURLConnection)connection).disconnect();
 		}
 	}
 	
-	private HttpURLConnection openConnection(URL url) throws Exception
-	{
-		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-		return  connection;
-	}
-	
-	private ByteBuffer readFromConnection(HttpURLConnection connection) throws Exception
-	{
-		 if (connection.getContentLength() < 1)
-        {
-            return readFromConnectionWithUnknownContentLength(connection);
-        }
-		else
-		{
-			return readFromConnectionWithKnownContentLength(connection);
-		}
-	}
-
-	private ByteBuffer readFromConnectionWithKnownContentLength(HttpURLConnection connection) throws IOException
-	{
-		ReadableByteChannel channel = Channels.newChannel(connection.getInputStream());
-        ByteBuffer buffer = ByteBuffer.allocate(connection.getContentLength());
-
-        int numBytesRead = 0;
-        while (!Thread.currentThread().isInterrupted() && numBytesRead >= 0 && numBytesRead < buffer.limit())
-        {
-            int count = channel.read(buffer);
-            if (count > 0)
-            {
-                numBytesRead += count;
-            }
-            if (count < 0)
-			{
-				throw new IllegalStateException("Premature end of stream from server. Expected " + connection.getContentLength() + " bytes but got " + numBytesRead); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-        }
-
-        if (buffer != null)
-		{
-			buffer.flip();
-		}
-
-        return buffer;
-	}
-	
-	private ByteBuffer readFromConnectionWithUnknownContentLength(HttpURLConnection connection) throws Exception
-	{
-		final int pageSize = (int) Math.ceil(Math.pow(2, 15));
-
-        ReadableByteChannel channel = Channels.newChannel(connection.getInputStream());
-        ByteBuffer buffer = ByteBuffer.allocate(pageSize);
-
-        int totalRead = 0;
-        while (!Thread.currentThread().isInterrupted())
-        {
-        	int read = channel.read(buffer);
-            if (read <= 0)
-            {
-            	break;
-            }
-            
-            totalRead += read;
-            
-            // Expand the buffer if we haven't reached the end of the stream
-            if (read > 0 && !buffer.hasRemaining())
-            {
-                ByteBuffer biggerBuffer = ByteBuffer.allocate(buffer.limit() + pageSize);
-                biggerBuffer.put((ByteBuffer) buffer.rewind());
-                buffer = biggerBuffer;
-            }
-        }
-
-        if (buffer != null)
-		{
-			buffer.flip();
-			buffer.limit(totalRead);
-			
-			// Trim the buffer to correct size
-			if (totalRead < buffer.capacity())
-			{
-				ByteBuffer correctBuffer = ByteBuffer.allocate(totalRead);
-				correctBuffer.put((ByteBuffer)buffer.rewind());
-				buffer = correctBuffer;
-			}
-		}
-
-        return buffer;
-	}
-	
-	public void setLogger(Logger logger)
-	{
-		this.logger = logger;
-	}
 }

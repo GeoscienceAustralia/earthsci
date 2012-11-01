@@ -191,7 +191,7 @@ public class HTTPRetrieverTest
 		
 		assertNotNull(result);
 		assertFalse(result.isSuccessful());
-		assertNotNull(result.getException());
+		assertNull(result.getException());
 		assertNotNull(result.getMessage());
 		assertEquals(null, result.getAsString());
 	}
@@ -219,7 +219,7 @@ public class HTTPRetrieverTest
 		
 		assertNotNull(result);
 		assertFalse(result.isSuccessful());
-		assertNotNull(result.getException());
+		assertNull(result.getException());
 		assertNotNull(result.getMessage());
 		assertEquals(null, result.getAsString());
 	}
