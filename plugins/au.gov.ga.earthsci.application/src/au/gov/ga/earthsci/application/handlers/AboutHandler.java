@@ -138,7 +138,7 @@ public class AboutHandler
 	
 		try
 		{
-			final RetrievalJob retrievalJob = retrievalService.retrieve(new URL("http://www.google.com")); //$NON-NLS-1$
+			final RetrievalJob retrievalJob = retrievalService.retrieve(new URL("http://www.ga.gov.au")); //$NON-NLS-1$
 			retrievalJob.addJobChangeListener(new JobChangeAdapter()
 			{
 				@Override

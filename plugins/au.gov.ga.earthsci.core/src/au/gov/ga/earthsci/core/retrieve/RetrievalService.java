@@ -21,12 +21,21 @@ import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Creatable;
+import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.osgi.util.NLS;
 
@@ -40,20 +49,66 @@ import au.gov.ga.earthsci.core.retrieve.preferences.IRetrievalServicePreferences
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
+@Singleton
+@Creatable
 public class RetrievalService implements IRetrievalService
 {
 
+	public static final String RETRIEVER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.core.retrieve.retriever"; //$NON-NLS-1$
+	public static final String RETRIEVER_EXTENSION_POINT_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
+	
 	@Inject
 	private Logger logger;
 	
 	@Inject
+	@Optional
 	private IRetrievalServicePreferences preferences;
 	
 	@Inject
+	@Optional
 	private IURLResourceCache cache;
 	
 	private Set<IRetriever> retrievers = new LinkedHashSet<IRetriever>();
 	private ReadWriteLock retrieversLock = new ReentrantReadWriteLock();
+	
+	/**
+	 * Load registered {@link IRetriever}s from the provided extension registry.
+	 * <p/>
+	 * This method will inject dependencies on loaded classes using the provided 
+	 * eclipse context, as appropriate.
+	 * 
+	 * @param registry The extension registry to search for {@link IRetriever}s
+	 * @param context The context to use for dependency injection etc.
+	 */
+	@PostConstruct
+	public void loadRetrievers(IExtensionRegistry registry, IEclipseContext context)
+	{
+		if (logger != null)
+		{
+			logger.info("Registering retrieval service retrievers"); //$NON-NLS-1$
+		}
+		IConfigurationElement[] config = registry.getConfigurationElementsFor(RETRIEVER_EXTENSION_POINT_ID);
+		try
+		{
+			for (IConfigurationElement e : config)
+			{
+				final Object o = e.createExecutableExtension(RETRIEVER_EXTENSION_POINT_CLASS_ATTRIBUTE);
+				if (o instanceof IRetriever)
+				{
+					ContextInjectionFactory.inject(o, context);
+					context.set(e.getAttribute(RETRIEVER_EXTENSION_POINT_CLASS_ATTRIBUTE), o);
+					registerRetriever((IRetriever)o);
+				}
+			}
+		}
+		catch (CoreException e)
+		{
+			if (logger != null)
+			{
+				logger.error(e, "Exception while loading retrievers"); //$NON-NLS-1$
+			}
+		}
+	}
 	
 	/**
 	 * Register a retriever on this service instance.
@@ -149,8 +204,6 @@ public class RetrievalService implements IRetrievalService
 				monitor.done();
 				return Status.OK_STATUS;
 			}
-
-			
 		};
 		job.setPriority(mode == RetrievalMode.IMMEDIATE ? Job.INTERACTIVE : Job.SHORT);
 		job.schedule();
