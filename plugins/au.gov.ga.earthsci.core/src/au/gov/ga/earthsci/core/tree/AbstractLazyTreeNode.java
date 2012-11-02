@@ -37,22 +37,21 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 				}
 			};
 			
-			// Remove the last load job when loading is complete
-			loadJob.addJobChangeListener(new JobChangeAdapter() {
-				@Override
-				public void done(IJobChangeEvent event)
-				{
-					loaded.set(event.getResult() == Status.OK_STATUS);
-					lastLoadJob.set(null);
-				}
-			});
-			
 			if (lastLoadJob.compareAndSet(null, loadJob))
 			{
+				// Remove the last load job when loading is complete
+				loadJob.addJobChangeListener(new JobChangeAdapter() {
+					@Override
+					public void done(IJobChangeEvent event)
+					{
+						loaded.set(event.getResult() == Status.OK_STATUS);
+						lastLoadJob.set(null);
+					}
+				});
+				
 				loadJob.schedule();
+				return loadJob;
 			}
-			
-			return loadJob;
 		}
 		
 		return lastLoadJob.get();

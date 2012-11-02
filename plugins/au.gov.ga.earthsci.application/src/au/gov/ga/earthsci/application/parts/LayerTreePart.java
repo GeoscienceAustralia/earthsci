@@ -19,12 +19,12 @@ import org.eclipse.swt.widgets.Composite;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
-import au.gov.ga.earthsci.core.worldwind.TreeModel;
+import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 public class LayerTreePart
 {
 	@Inject
-	private TreeModel model;
+	private ITreeModel model;
 
 	private CheckboxTreeViewer viewer;
 

@@ -23,8 +23,8 @@ import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalService;
-import au.gov.ga.earthsci.core.retrieve.RetrievalServiceAccessor;
-import au.gov.ga.earthsci.core.worldwind.TreeModel;
+import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
+import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
 import au.gov.ga.earthsci.notification.NotificationManager;
 
@@ -50,20 +50,20 @@ public class LifeCycleManager
 
 	@Inject
 	private RetrievalService retrievalService;
-	
+
+	@Inject
+	private WorldWindModel worldWindModel;
+
 	@PostContextCreate
 	void postContextCreate()
 	{
-		context.set(TreeModel.class, new WorldWindModel());
+		context.set(ITreeModel.class, worldWindModel);
 		context.set(IRetrievalService.class, retrievalService);
-		
-		RetrievalServiceAccessor.set(retrievalService);
+		RetrievalServiceFactory.setServiceInstance(retrievalService);
 	}
 
 	@PreSave
 	void preSave()
 	{
-		WorldWindModel model = (WorldWindModel) context.get(TreeModel.class);
-		model.saveLayers();
 	}
 }

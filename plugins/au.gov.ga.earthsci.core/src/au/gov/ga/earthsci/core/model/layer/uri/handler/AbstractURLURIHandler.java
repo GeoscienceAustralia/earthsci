@@ -21,6 +21,13 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
+import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
+import au.gov.ga.earthsci.core.retrieve.RetrievalJob;
+import au.gov.ga.earthsci.core.retrieve.RetrievalMode;
+import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
+
 /**
  * Abstract {@link ILayerURIHandler} implementation for URIs that are actually
  * URLs (file, http, etc).
@@ -30,17 +37,25 @@ import java.net.URL;
 public abstract class AbstractURLURIHandler extends AbstractInputStreamURIHandler
 {
 	@Override
-	public Layer createLayerFromURI(URI uri) throws LayerURIHandlerException
+	public Layer createLayerFromURI(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
 	{
+		monitor.beginTask("Loading layer from URL", IProgressMonitor.UNKNOWN);
 		InputStream is;
 		try
 		{
 			URL url = uri.toURL();
-			is = url.openStream();
+			RetrievalJob job =
+					RetrievalServiceFactory.getServiceInstance().retrieve(url, RetrievalMode.IMMEDIATE, false);
+			IRetrievalResult result = job.getRetrievalResult();
+			is = result.getAsInputStream();
 		}
 		catch (Exception e)
 		{
 			throw new LayerURIHandlerException(e);
+		}
+		finally
+		{
+			monitor.done();
 		}
 		return createLayer(is, uri);
 	}

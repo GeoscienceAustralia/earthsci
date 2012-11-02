@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import au.gov.ga.earthsci.core.model.layer.uri.URILayerFactory;
+import au.gov.ga.earthsci.core.model.layer.uri.URILayerLoadJob;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.util.IEnableable;
 
@@ -73,15 +73,8 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 		this.layerURI = layerURI;
 		firePropertyChange("layerURI", oldValue, layerURI); //$NON-NLS-1$
 
-		//TODO
-		try
-		{
-			setLayer(URILayerFactory.createLayer(layerURI));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		URILayerLoadJob job = new URILayerLoadJob(this);
+		job.schedule();
 	}
 
 	/**
