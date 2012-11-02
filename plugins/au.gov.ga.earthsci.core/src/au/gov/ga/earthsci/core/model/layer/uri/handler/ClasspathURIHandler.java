@@ -20,6 +20,8 @@ import gov.nasa.worldwind.layers.Layer;
 import java.io.InputStream;
 import java.net.URI;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import au.gov.ga.earthsci.core.util.Util;
 
 /**
@@ -41,8 +43,9 @@ public class ClasspathURIHandler extends AbstractInputStreamURIHandler
 	}
 
 	@Override
-	public Layer createLayerFromURI(URI uri) throws LayerURIHandlerException
+	public Layer createLayerFromURI(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
 	{
+		monitor.beginTask("Loading layer from classpath", IProgressMonitor.UNKNOWN);
 		InputStream is;
 		try
 		{
@@ -61,6 +64,10 @@ public class ClasspathURIHandler extends AbstractInputStreamURIHandler
 		catch (Exception e)
 		{
 			throw new LayerURIHandlerException(e);
+		}
+		finally
+		{
+			monitor.done();
 		}
 		return createLayer(is, uri);
 	}

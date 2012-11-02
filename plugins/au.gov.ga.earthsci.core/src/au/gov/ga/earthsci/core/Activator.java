@@ -13,20 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.worldwind;
+package au.gov.ga.earthsci.core;
 
-import gov.nasa.worldwind.Model;
-import au.gov.ga.earthsci.core.model.layer.FolderNode;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
- * {@link Model} subinterface that supports a layer list in a tree hierarchy.
- * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * 
  */
-public interface TreeModel extends Model
+public class Activator implements BundleActivator
 {
-	/**
-	 * @return The root node of the layer list tree.
-	 */
-	FolderNode getRootNode();
+	private static BundleContext bundleContext;
+
+	@Override
+	public void start(BundleContext context) throws Exception
+	{
+		bundleContext = context;
+	}
+
+	@Override
+	public void stop(BundleContext context) throws Exception
+	{
+		bundleContext = null;
+	}
+
+	static BundleContext getContext()
+	{
+		return bundleContext;
+	}
+
+	public static String getBundleName()
+	{
+		return bundleContext.getBundle().getSymbolicName();
+	}
 }

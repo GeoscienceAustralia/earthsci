@@ -13,36 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer.uri.handler;
-
-import gov.nasa.worldwind.layers.Layer;
-
-import java.net.URI;
-
-import org.eclipse.core.runtime.IProgressMonitor;
+package au.gov.ga.earthsci.core.retrieve;
 
 /**
- * Represents a handler that can create a {@link Layer} from a {@link URI}.
+ * Factory class that provides access to an {@link IRetrievalService} instance.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerURIHandler
+public class RetrievalServiceFactory
 {
-	/**
-	 * @return URI scheme supported by this handler
-	 */
-	String getSupportedScheme();
+	private static IRetrievalService instance;
 
-	/**
-	 * Create a {@link Layer} from the given {@link URI}.
-	 * 
-	 * @param uri
-	 *            URI to create the Layer from
-	 * @param monitor
-	 *            {@link IProgressMonitor} to report layer load progress to
-	 * @return A Layer created from the given uri
-	 * @throws LayerURIHandlerException
-	 *             when Layer creation fails
-	 */
-	Layer createLayer(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException;
+	public static IRetrievalService getServiceInstance()
+	{
+		return instance;
+	}
+
+	public static void setServiceInstance(IRetrievalService instance)
+	{
+		RetrievalServiceFactory.instance = instance;
+	}
 }

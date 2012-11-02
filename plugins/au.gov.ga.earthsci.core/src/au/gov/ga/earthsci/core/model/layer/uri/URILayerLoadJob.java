@@ -13,48 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer.uri.handler;
+package au.gov.ga.earthsci.core.model.layer.uri;
 
 import gov.nasa.worldwind.layers.Layer;
 
 import java.net.URI;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+
+import au.gov.ga.earthsci.core.Activator;
+import au.gov.ga.earthsci.core.model.layer.LayerNode;
 
 /**
- * {@link ILayerURIHandler} implementation that handles the class:// URI scheme,
- * which uses the URI's authority part as a class name, then instantiates the
- * class as a new Layer.
+ * Job used for creating a {@link Layer} from a {@link LayerNode}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ClassURIHandler extends AbstractURIHandler
+public class URILayerLoadJob extends Job
 {
-	private static final String SCHEME = "class"; //$NON-NLS-1$
+	private final LayerNode layerNode;
+	private Layer layer;
 
-	@Override
-	public String getSupportedScheme()
+	public URILayerLoadJob(LayerNode layerNode)
 	{
-		return SCHEME;
+		super(layerNode.getName());
+		this.layerNode = layerNode;
 	}
 
 	@Override
-	public Layer createLayerFromURI(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
+	protected IStatus run(IProgressMonitor monitor)
 	{
-		monitor.beginTask("Loading layer class", 0);
+		URI uri = layerNode.getLayerURI();
 		try
 		{
-			@SuppressWarnings("unchecked")
-			Class<? extends Layer> c = (Class<? extends Layer>) Class.forName(uri.getAuthority());
-			return c.newInstance();
+			layer = URILayerFactory.createLayer(uri, monitor);
+			layerNode.setLayer(layer);
 		}
-		catch (Exception e)
+		catch (URILayerFactoryException e)
 		{
-			throw new LayerURIHandlerException(e);
+			return new Status(Status.ERROR, Activator.getBundleName(), e.getLocalizedMessage(), e);
 		}
-		finally
-		{
-			monitor.done();
-		}
+		return Status.OK_STATUS;
+	}
+
+	public Layer getLayer()
+	{
+		return layer;
 	}
 }

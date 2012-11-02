@@ -23,9 +23,16 @@ import gov.nasa.worldwind.globes.Globe;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.eclipse.e4.core.di.annotations.Creatable;
+
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.LayerPersister;
 import au.gov.ga.earthsci.core.model.layer.uri.DefaultLayers;
+import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 
 /**
  * {@link BasicModel} subclass used to override specific functionality, such as
@@ -33,12 +40,15 @@ import au.gov.ga.earthsci.core.model.layer.uri.DefaultLayers;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class WorldWindModel extends BasicModel implements TreeModel
+@Creatable
+@Singleton
+public class WorldWindModel extends BasicModel implements ITreeModel
 {
 	private final FolderNode rootNode;
-	@Deprecated
-	private static final File layerFile = new File("c:/temp/layers.xml");
+	private static final String layerFilename = "layers.xml"; //$NON-NLS-1$
+	private static final File layerFile = ConfigurationUtil.getWorkspaceFile(layerFilename);
 
+	@Inject
 	public WorldWindModel()
 	{
 		this(createRootNode());
@@ -69,7 +79,7 @@ public class WorldWindModel extends BasicModel implements TreeModel
 		return rootNode;
 	}
 
-	@Deprecated
+	@PreDestroy
 	public void saveLayers()
 	{
 		saveRootNode(rootNode);

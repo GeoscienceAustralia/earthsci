@@ -22,6 +22,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import au.gov.ga.earthsci.core.util.QueryString;
 import au.gov.ga.earthsci.core.util.Util;
 
@@ -39,10 +41,12 @@ public abstract class AbstractURIHandler implements ILayerURIHandler
 	 * 
 	 * @param uri
 	 *            URI to create the layer from
+	 * @param monitor
+	 *            {@link IProgressMonitor} to report progress to
 	 * @return New Layer created form the URI
 	 * @throws LayerURIHandlerException
 	 */
-	protected abstract Layer createLayerFromURI(URI uri) throws LayerURIHandlerException;
+	protected abstract Layer createLayerFromURI(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException;
 
 	/**
 	 * Should the query string be used to extract and set properties on the
@@ -58,13 +62,13 @@ public abstract class AbstractURIHandler implements ILayerURIHandler
 	}
 
 	@Override
-	public Layer createLayer(URI uri) throws LayerURIHandlerException
+	public Layer createLayer(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
 	{
 		if (!getSupportedScheme().equalsIgnoreCase(uri.getScheme()))
 		{
 			throw new LayerURIHandlerException("Invalid URI scheme: " + uri); //$NON-NLS-1$
 		}
-		Layer layer = createLayerFromURI(uri);
+		Layer layer = createLayerFromURI(uri, monitor);
 		if (shouldSetProperties())
 		{
 			setPropertiesFromQuery(layer, uri);

@@ -21,6 +21,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import au.gov.ga.earthsci.core.model.layer.uri.handler.ClassURIHandler;
 import au.gov.ga.earthsci.core.model.layer.uri.handler.ClasspathURIHandler;
 import au.gov.ga.earthsci.core.model.layer.uri.handler.FileURIHandler;
@@ -51,7 +53,7 @@ public class URILayerFactory
 	 */
 	public static void registerLayerURIHandler(ILayerURIHandler handler)
 	{
-		handlers.put(handler.getSupportedScheme(), handler);
+		handlers.put(handler.getSupportedScheme().toLowerCase(), handler);
 	}
 
 	/**
@@ -62,7 +64,7 @@ public class URILayerFactory
 	 */
 	public static void unregisterLayerURIHandler(ILayerURIHandler handler)
 	{
-		handlers.remove(handler.getSupportedScheme());
+		handlers.remove(handler.getSupportedScheme().toLowerCase());
 	}
 
 	/**
@@ -71,16 +73,19 @@ public class URILayerFactory
 	 * 
 	 * @param uri
 	 *            URI to create the layer from
+	 * @param monitor
+	 *            {@link IProgressMonitor} used to report layer creation
+	 *            progress
 	 * @return Layer created from the URI
 	 * @throws URILayerFactoryException
 	 */
-	public static Layer createLayer(URI uri) throws URILayerFactoryException
+	public static Layer createLayer(URI uri, IProgressMonitor monitor) throws URILayerFactoryException
 	{
 		if (uri.getScheme() == null)
 		{
 			throw new URILayerFactoryException("URI scheme is blank"); //$NON-NLS-1$
 		}
-		ILayerURIHandler handler = handlers.get(uri.getScheme());
+		ILayerURIHandler handler = handlers.get(uri.getScheme().toLowerCase());
 		if (handler == null)
 		{
 			throw new URILayerFactoryException(
@@ -88,7 +93,7 @@ public class URILayerFactory
 		}
 		try
 		{
-			return handler.createLayer(uri);
+			return handler.createLayer(uri, monitor);
 		}
 		catch (LayerURIHandlerException e)
 		{

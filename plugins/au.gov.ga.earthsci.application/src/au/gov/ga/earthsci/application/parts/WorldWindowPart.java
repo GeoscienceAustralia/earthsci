@@ -28,7 +28,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
 
-import au.gov.ga.earthsci.core.worldwind.TreeModel;
+import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.newt.awt.NewtInputHandlerAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtAutoDrawableAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtCanvasAWT;
@@ -41,7 +41,7 @@ import au.gov.ga.earthsci.newt.awt.WorldWindowNewtCanvasAWT;
 public class WorldWindowPart
 {
 	@Inject
-	private TreeModel model;
+	private ITreeModel model;
 
 	@Inject
 	public void init(Composite parent)

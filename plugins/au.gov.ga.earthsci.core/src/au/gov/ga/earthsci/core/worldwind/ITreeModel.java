@@ -13,36 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer.uri.handler;
+package au.gov.ga.earthsci.core.worldwind;
 
-import gov.nasa.worldwind.layers.Layer;
-
-import java.net.URI;
-
-import org.eclipse.core.runtime.IProgressMonitor;
+import gov.nasa.worldwind.Model;
+import au.gov.ga.earthsci.core.model.layer.FolderNode;
 
 /**
- * Represents a handler that can create a {@link Layer} from a {@link URI}.
+ * {@link Model} subinterface that supports a layer list in a tree hierarchy.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerURIHandler
+public interface ITreeModel extends Model
 {
 	/**
-	 * @return URI scheme supported by this handler
+	 * @return The root node of the layer list tree.
 	 */
-	String getSupportedScheme();
-
-	/**
-	 * Create a {@link Layer} from the given {@link URI}.
-	 * 
-	 * @param uri
-	 *            URI to create the Layer from
-	 * @param monitor
-	 *            {@link IProgressMonitor} to report layer load progress to
-	 * @return A Layer created from the given uri
-	 * @throws LayerURIHandlerException
-	 *             when Layer creation fails
-	 */
-	Layer createLayer(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException;
+	FolderNode getRootNode();
 }
