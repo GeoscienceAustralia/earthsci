@@ -14,15 +14,17 @@ import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 {
 
-	private String name;
-	private URL infoURL;
-	private URL iconURL;
-
-	public DatasetCatalogTreeNode(String name, URL infoURL, URL iconURL)
+	private final String name;
+	private final URL infoURL;
+	private final URL iconURL;
+	private final boolean base;
+	
+	public DatasetCatalogTreeNode(String name, URL infoURL, URL iconURL, boolean base)
 	{
 		this.name = name;
 		this.infoURL = infoURL;
 		this.iconURL = iconURL;
+		this.base = base;
 	}
 
 	@Override
@@ -59,4 +61,9 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 		return infoURL;
 	}
 
+	public boolean isBase()
+	{
+		return base;
+	}
+	
 }

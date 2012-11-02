@@ -15,95 +15,157 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.catalog.dataset;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.w3c.dom.Element;
+
+import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.core.util.XmlUtil;
+
 
 /**
- * Helper class that reads {@link IDataset}s from XML files.
+ * Helper class that reads legacy dataset.xml structures from a provided source.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class DatasetReader
 {
-	/*public static IDataset read(Object source, URL context) throws MalformedURLException
+	private static final String NAME_ATTRIBUTE = "@name"; //$NON-NLS-1$
+	private static final String INFO_ATTRIBUTE = "@info"; //$NON-NLS-1$
+	private static final String ICON_ATTRIBUTE = "@icon"; //$NON-NLS-1$
+	private static final String URL_ATTRIBUTE = "@url"; //$NON-NLS-1$
+	private static final String BASE_ATTRIBUTE = "@base"; //$NON-NLS-1$
+	private static final String DEFAULT_ATTRIBUTE = "@default"; //$NON-NLS-1$
+	private static final String ENABLED_ATTRIBUTE = "@enabled"; //$NON-NLS-1$
+	
+	private static final String DATASET_NODE_NAME = "Dataset"; //$NON-NLS-1$
+	private static final String LINK_NODE_NAME = "Link"; //$NON-NLS-1$
+	private static final String LAYER_NODE_NAME = "Layer"; //$NON-NLS-1$
+	
+	private static final String VALID_NODES_XPATH = DATASET_NODE_NAME + "|" + LINK_NODE_NAME + "|" + LAYER_NODE_NAME;  //$NON-NLS-1$//$NON-NLS-2$
+	private static final String DATASET_LIST_XPATH = "//DatasetList"; //$NON-NLS-1$
+	
+	/**
+	 * Read a dataset file from the given source and return the root node of the dataset
+	 * tree defined by the provided source.
+	 * <p/>
+	 * Note that {@code link} nodes will not be expanded - they will be returned as {@link DatasetLinkCatalogTreeNode}s which can be lazy-expanded.
+	 * 
+	 * @param source The source to read the dataset structure from. See {@link XmlUtil#getElementFromSource(Object)} for supported sources.
+	 * @param context The context URL to use when resolving relative paths. May be <code>null</code>.
+	 * 
+	 * @return The root node of the dataset tree structure defined in the given source.
+	 * 
+	 * @throws MalformedURLException
+	 */
+	public static ICatalogTreeNode read(Object source, URL context) throws MalformedURLException
 	{
 		//top level dataset (DatasetList) doesn't have a name, and is not shown in the tree
-		IDataset root = new Dataset(null, null, null, true);
+		ICatalogTreeNode root = new DatasetCatalogTreeNode(null, null, null, true);
 
-		Element elem = XMLUtil.getElementFromSource(source);
-		if (elem != null)
+		Element rootElement = XmlUtil.getElementFromSource(source);
+		if (rootElement == null)
 		{
-			Element[] elements = XMLUtil.getElements(elem, "//DatasetList", null);
-			if (elements != null)
+			return root;
+		}
+		
+		// Special case
+		if (context == null && source instanceof URL)
+		{
+			context = (URL)source;
+		}
+		
+		Element[] elements = XmlUtil.getElements(rootElement, DATASET_LIST_XPATH, null);
+		if (elements != null)
+		{
+			for (Element element : elements)
 			{
-				for (Element element : elements)
-				{
-					addRelevant(element, root, context);
-				}
+				addChildren(element, root, context);
 			}
 		}
-
+		
 		return root;
 	}
 
-	private static void addRelevant(Element element, IDataset parent, URL context) throws MalformedURLException
+	private static void addChildren(Element element, ICatalogTreeNode parent, URL context) throws MalformedURLException
 	{
-		Element[] elements = XMLUtil.getElements(element, "Dataset|Link|Layer", null);
-		if (elements != null)
+		Element[] elements = XmlUtil.getElements(element, VALID_NODES_XPATH, null);
+		if (elements == null)
 		{
-			for (Element e : elements)
+			return;
+		}
+		
+		for (Element e : elements)
+		{
+			if (isDatasetNode(e))
 			{
-				if (e.getNodeName().equals("Dataset"))
-				{
-					IDataset dataset = addDataset(e, parent, context);
-					addRelevant(e, dataset, context);
-				}
-				else if (e.getNodeName().equals("Link"))
-				{
-					addLink(e, parent, context);
-				}
-				else if (e.getNodeName().equals("Layer"))
-				{
-					addLayer(e, parent, context);
-				}
+				ICatalogTreeNode dataset = addDataset(e, parent, context);
+				addChildren(e, dataset, context);
+			}
+			else if (isLinkNode(e))
+			{
+				addLink(e, parent, context);
+			}
+			else if (isLayerNode(e))
+			{
+				addLayer(e, parent, context);
 			}
 		}
 	}
 
-	private static IDataset addDataset(Element element, ICatalogTreeNode parent, URL context) throws MalformedURLException
+	private static boolean isLayerNode(Element e)
 	{
-		String name = XMLUtil.getText(element, "@name");
-		URL info = XMLUtil.getURL(element, "@info", context);
-		URL icon = XMLUtil.getURL(element, "@icon", context);
+		return e.getNodeName().equalsIgnoreCase(LAYER_NODE_NAME);
+	}
+
+	private static boolean isLinkNode(Element e)
+	{
+		return e.getNodeName().equalsIgnoreCase(LINK_NODE_NAME);
+	}
+
+	private static boolean isDatasetNode(Element e)
+	{
+		return e.getNodeName().equalsIgnoreCase(DATASET_NODE_NAME);
+	}
+
+	private static ICatalogTreeNode addDataset(Element element, ICatalogTreeNode parent, URL context) throws MalformedURLException
+	{
+		String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
+		URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
+		URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
+		boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
 		
-		//boolean base = XMLUtil.getBoolean(element, "@base", false);
-		
-		ICatalogTreeNode dataset = new DatasetCatalogTreeNode(name, info, icon);
+		ICatalogTreeNode dataset = new DatasetCatalogTreeNode(name, info, icon, base);
 		parent.add(dataset);
+		
 		return dataset;
 	}
 
 	private static void addLink(Element element, ICatalogTreeNode parent, URL context) throws MalformedURLException
 	{
-		String name = XMLUtil.getText(element, "@name");
-		URL info = XMLUtil.getURL(element, "@info", context);
-		URL icon = XMLUtil.getURL(element, "@icon", context);
-		URL url = XMLUtil.getURL(element, "@url", context);
+		String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
+		URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
+		URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
+		URL url = XmlUtil.getURL(element, URL_ATTRIBUTE, context);
+		boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
 		
-		//boolean base = XMLUtil.getBoolean(element, "@base", false);
-		
-		ICatalogTreeNode dataset = new LazyDataset(name, url, info, icon, base);
-		parent.addChild(dataset);
+		ICatalogTreeNode link = new DatasetLinkCatalogTreeNode(name, url, info, icon, base);
+		parent.add(link);
 	}
 
 	private static void addLayer(Element element, ICatalogTreeNode parent, URL context) throws MalformedURLException
 	{
-		String name = XMLUtil.getText(element, "@name");
-		URL info = XMLUtil.getURL(element, "@info", context);
-		URL icon = XMLUtil.getURL(element, "@icon", context);
-		URL url = XMLUtil.getURL(element, "@url", context);
-		boolean base = XMLUtil.getBoolean(element, "@base", false);
-		boolean def = XMLUtil.getBoolean(element, "@default", false);
-		boolean enabled = XMLUtil.getBoolean(element, "@enabled", true);
-		ILayerDefinition layer = new LayerDefinition(name, url, info, icon, base, def, enabled);
-		parent.addChild(layer);
-	}*/
+		String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
+		URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
+		URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
+		URL url = XmlUtil.getURL(element, URL_ATTRIBUTE, context);
+		
+		boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
+		boolean def = XmlUtil.getBoolean(element, DEFAULT_ATTRIBUTE, false);
+		boolean enabled = XmlUtil.getBoolean(element, ENABLED_ATTRIBUTE, true);
+		
+		DatasetLayerCatalogTreeNode layer = new DatasetLayerCatalogTreeNode(name, url, info, icon, base, def, enabled);
+		parent.add(layer);
+	}
 }

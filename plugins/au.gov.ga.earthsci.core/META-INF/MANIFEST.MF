@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: au.gov.ga.earthsci.core.model.catalog,
+ au.gov.ga.earthsci.core.model.catalog.dataset,
  au.gov.ga.earthsci.core.model.layer,
  au.gov.ga.earthsci.core.persistence,
  au.gov.ga.earthsci.core.retrieve,

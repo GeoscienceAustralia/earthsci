@@ -18,10 +18,10 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>au.gov.ga.earthsci.application</module>
 		<module>au.gov.ga.earthsci.core</module>
 		<module>au.gov.ga.earthsci.core.tests</module>
 		<module>au.gov.ga.earthsci.notification.popup</module>
+		<module>au.gov.ga.earthsci.application</module>
 	</modules>
 
 </project>

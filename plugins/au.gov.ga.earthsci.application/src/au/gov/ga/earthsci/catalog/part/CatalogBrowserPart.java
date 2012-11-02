@@ -1,5 +1,7 @@
 package au.gov.ga.earthsci.catalog.part;
 
+import java.io.File;
+
 import javax.annotation.PostConstruct;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -13,6 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.core.model.catalog.dataset.DatasetReader;
 import au.gov.ga.earthsci.core.tree.AbstractLazyTreeNode;
 import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
 import au.gov.ga.earthsci.core.tree.LazyTreeJob;
@@ -45,11 +48,26 @@ public class CatalogBrowserPart
 	{
 		model = new ICatalogModel()
 		{
-			DummyNode root = new DummyNode();
+			ICatalogTreeNode root;
 			
 			@Override
 			public ICatalogTreeNode getRoot()
 			{
+				if (root != null)
+				{
+					return root;
+				}
+				
+				File f = new File("V:/projects/data/12-6205 - IGC Common Earth Model/Viewer - Full version/data/Dataset/dataset.xml");
+				try
+				{
+					root = DatasetReader.read(f, f.toURL());
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+				
 				return root;
 			}
 		};

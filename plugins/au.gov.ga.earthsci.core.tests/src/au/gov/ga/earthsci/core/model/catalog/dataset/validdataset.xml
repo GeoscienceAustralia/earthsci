@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatasetList>
+	<Layer name="layer 0" url="./layer0.xml" info="./info0.html" icon="./icon0.png"/>
+	<Dataset name="dataset 1" info="./info1.html" icon="./icon1.png">
+		<Link name="link 1.1" url="./link1-1.xml" info="http://somewhere.com/info1-1.html" icon="file:/somewhere/icon1-1.png"/>
+		<Layer name="layer 1.2" url="./layer1-2.xml"/>
+		<Dataset name="dataset 1.3">
+			<Layer name="layer 1.3.1" url="./layer1-3-1.xml"/>
+			<Link name="link 1.3.2" url="./link1-3-2.xml"/>
+		</Dataset>
+	</Dataset>
+</DatasetList>

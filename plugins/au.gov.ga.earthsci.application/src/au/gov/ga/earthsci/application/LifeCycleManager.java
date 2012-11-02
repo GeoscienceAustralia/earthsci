@@ -23,6 +23,7 @@ import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalService;
+import au.gov.ga.earthsci.core.retrieve.RetrievalServiceAccessor;
 import au.gov.ga.earthsci.core.worldwind.TreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
 import au.gov.ga.earthsci.notification.NotificationManager;
@@ -55,6 +56,8 @@ public class LifeCycleManager
 	{
 		context.set(TreeModel.class, new WorldWindModel());
 		context.set(IRetrievalService.class, retrievalService);
+		
+		RetrievalServiceAccessor.set(retrievalService);
 	}
 
 	@PreSave

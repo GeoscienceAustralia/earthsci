@@ -19,7 +19,9 @@ import gov.nasa.worldwind.util.WWXML;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -311,5 +314,210 @@ public class XmlUtil
 		{
 			return null;
 		}
+	}
+	
+	/**
+	 * @return The XML element from a generic source. If the source is an
+	 *         {@link Element}, will return the provided source. Otherwise, will
+	 *         attempt to open the source as an XML {@link Document} and will
+	 *         return the document element.
+	 * 
+	 * @see {@link WWXML#openDocument(Object)}
+	 */
+	public static Element getElementFromSource(Object source)
+	{
+		if (source == null)
+		{
+			return null;
+		}
+		if (source instanceof Element)
+		{
+			return (Element) source;
+		}
+		else if (source instanceof Document)
+		{
+			return ((Document) source).getDocumentElement();
+		}
+		else
+		{
+			Document document = openDocument(source);
+			if (document != null)
+			{
+				return document.getDocumentElement();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Return the text at the given path relative to the given context.
+	 * 
+	 * @param context The element from which the path is relative to
+	 * @param path The path to the text value to return
+	 * 
+	 * @return the text at the given path relative to the given context, or <code>null</code> if none is found
+	 */
+	public static String getText(Element context, String path)
+	{
+		return WWXML.getText(context, path);
+	}
+	
+	/**
+	 * Return the text at the given path relative to the given context, returning the provided default if
+	 * none is found.
+	 * 
+	 * @param context The element from which the path is relative to
+	 * @param path The path to the text value to return
+	 * @param def The default value to return if none is found
+	 * 
+	 * @return the text at the given path relative to the given context, or the provided default if
+	 * none is found.
+	 */
+	public static String getText(Element context, String path, String def)
+	{
+		return getText(context, path, def, null);
+	}
+
+	/**
+	 * Return the text at the given path relative to the given context, returning the provided default if none is found.
+	 * 
+	 * @param context The element from which the path is relative to
+	 * @param path The path to the text value to return
+	 * @param def The default value to return if none is found
+	 * @param xpath An {@link XPath} instance that can be reused across calls
+	 * 
+	 * @return the text at the given path relative to the given context, or the provided default if
+	 * none is found.
+	 */
+	public static String getText(Element context, String path, String def, XPath xpath)
+	{
+		String s = WWXML.getText(context, path, xpath);
+		if (s == null)
+		{
+			return def;
+		}
+		return s;
+	}
+
+	public static boolean getBoolean(Element context, String path, boolean def)
+	{
+		return getBoolean(context, path, def, null);
+	}
+
+	public static boolean getBoolean(Element context, String path, boolean def, XPath xpath)
+	{
+		Boolean b = WWXML.getBoolean(context, path, xpath);
+		if (b == null)
+		{
+			return def;
+		}
+		return b;
+	}
+
+	public static double getDouble(Element context, String path, double def)
+	{
+		return getDouble(context, path, def, null);
+	}
+
+	public static double getDouble(Element context, String path, double def, XPath xpath)
+	{
+		Double d = WWXML.getDouble(context, path, xpath);
+		if (d == null)
+		{
+			return def;
+		}
+		return d;
+	}
+
+	public static int getInteger(Element context, String path, int def)
+	{
+		return getInteger(context, path, def, null);
+	}
+
+	public static int getInteger(Element context, String path, int def, XPath xpath)
+	{
+		Integer i = WWXML.getInteger(context, path, xpath);
+		if (i == null)
+		{
+			return def;
+		}
+		return i;
+	}
+
+	public static long getLong(Element context, String path, long def)
+	{
+		return getLong(context, path, def, null);
+	}
+
+	public static long getLong(Element context, String path, long def, XPath xpath)
+	{
+		Long i = WWXML.getLong(context, path, xpath);
+		if (i == null)
+		{
+			return def;
+		}
+		return i;
+	}
+	
+	/**
+	 * Return a URL created from the text identified at the given path relative to the provided XML element.
+	 *  
+	 * @param element The XML element the path is relative to
+	 * @param path The xpath expression identifying the text to use to generate the URL
+	 * @param context The URL context to use for construction of relative URLs
+	 * 
+	 * @return URL created from the text identified at the given path
+	 * 
+	 * @throws MalformedURLException If the identified text cannot be converted to a valid URL
+	 */
+	public static URL getURL(Element element, String path, URL context) throws MalformedURLException
+	{
+		String text = getText(element, path);
+		return textToURL(text, context);
+	}
+
+	/**
+	 * Return a URL created from the text identified at the given path relative to the provided XML element.
+	 *  
+	 * @param element The XML element the path is relative to
+	 * @param path The xpath expression identifying the text to use to generate the URL
+	 * @param context The URL context to use for construction of relative URLs
+	 * @param xpath An {@link XPath} instance that can be reused between calls
+	 * 
+	 * @return URL created from the text identified at the given path
+	 * 
+	 * @throws MalformedURLException If the identified text cannot be converted to a valid URL
+	 */
+	public static URL getURL(Element element, String path, URL context, XPath xpath) throws MalformedURLException
+	{
+		String text = WWXML.getText(element, path, xpath);
+		return textToURL(text, context);
+	}
+
+	protected static URL textToURL(String text, URL context) throws MalformedURLException
+	{
+		if (text == null || text.length() == 0)
+		{
+			return null;
+		}
+		if (context == null)
+		{
+			return new URL(text);
+		}
+		return new URL(context, text);
+	}
+	
+	/**
+	 * Returns all elements identified by the given XPath expression relative to the provided element.
+	 * 
+	 * @param context The element from which the xpath expression is relative
+	 * @param path The xpath expression to use for locating elements
+	 * @param xpath An {@link XPath} instance that can be reused between calls
+	 * 
+	 * @return All elements identified by the given XPath expression, or the empty array if none are found.
+	 */
+	public static Element[] getElements(Element context, String path, XPath xpath)
+	{
+		return WWXML.getElements(context, path, xpath);
 	}
 }
