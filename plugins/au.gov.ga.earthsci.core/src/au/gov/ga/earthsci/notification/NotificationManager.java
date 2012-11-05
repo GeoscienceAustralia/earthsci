@@ -40,6 +40,7 @@ public class NotificationManager
 {
 	public static final String NOTIFICATION_RECEIVER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.receiver"; //$NON-NLS-1$
 	public static final String NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.categoryProvider"; //$NON-NLS-1$
+	public static final String NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 	
 	private Set<INotificationReceiver> receivers;
 	private ReadWriteLock receiversLock = new ReentrantReadWriteLock();
@@ -89,11 +90,11 @@ public class NotificationManager
 		{
 			for (IConfigurationElement e : config)
 			{
-				final Object o = e.createExecutableExtension("class"); //$NON-NLS-1$
+				final Object o = e.createExecutableExtension(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE); 
 				if (o instanceof INotificationReceiver)
 				{
 					ContextInjectionFactory.inject(o, context);
-					context.set(e.getAttribute("class"), o);
+					context.set(e.getAttribute(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE), o);
 					INSTANCE.registerReceiver((INotificationReceiver)o);
 				}
 			}
@@ -130,7 +131,7 @@ public class NotificationManager
 		{
 			for (IConfigurationElement e : config)
 			{
-				final Object o = e.createExecutableExtension("class"); //$NON-NLS-1$
+				final Object o = e.createExecutableExtension(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE); 
 				if (o instanceof INotificationCategoryProvider)
 				{
 					ContextInjectionFactory.inject(o, context);
@@ -220,8 +221,14 @@ public class NotificationManager
 		}
 
 		receiversLock.writeLock().lock();
-		receivers.add(receiver);
-		receiversLock.writeLock().unlock();
+		try
+		{
+			receivers.add(receiver);
+		}
+		finally
+		{
+			receiversLock.writeLock().unlock();
+		}
 	}
 	
 	/**
@@ -242,8 +249,14 @@ public class NotificationManager
 		}
 		
 		receiversLock.writeLock().lock();
-		receivers.remove(receiver);
-		receiversLock.writeLock().unlock();
+		try
+		{
+			receivers.remove(receiver);
+		}
+		finally
+		{
+			receiversLock.writeLock().unlock();
+		}
 	}
 	
 	/**
@@ -252,8 +265,14 @@ public class NotificationManager
 	public void removeAllRecievers()
 	{
 		receiversLock.writeLock().lock();
-		receivers.clear();
-		receiversLock.writeLock().unlock();
+		try
+		{
+			receivers.clear();
+		}
+		finally
+		{
+			receiversLock.writeLock().unlock();
+		}
 	}
 	
 	public static void setLogger(Logger logger)

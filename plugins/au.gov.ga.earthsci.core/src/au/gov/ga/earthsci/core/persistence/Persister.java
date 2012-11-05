@@ -48,16 +48,16 @@ import au.gov.ga.earthsci.core.util.XmlUtil;
  */
 public class Persister
 {
-	protected final static String TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
-	protected final static String NULL_ATTRIBUTE = "null"; //$NON-NLS-1$
-	protected final static String DEFAULT_ARRAY_ELEMENT_NAME = "element"; //$NON-NLS-1$
+	protected static final String TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
+	protected static final String NULL_ATTRIBUTE = "null"; //$NON-NLS-1$
+	protected static final String DEFAULT_ARRAY_ELEMENT_NAME = "element"; //$NON-NLS-1$
 
-	protected final Map<String, Class<?>> nameToExportable = new HashMap<String, Class<?>>();
-	protected final Map<Class<?>, String> exportableToName = new HashMap<Class<?>, String>();
-	protected final Map<Class<?>, IPersistentAdapter<?>> adapters = new HashMap<Class<?>, IPersistentAdapter<?>>();
-	protected final Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
+	private final Map<String, Class<?>> nameToExportable = new HashMap<String, Class<?>>();
+	private final Map<Class<?>, String> exportableToName = new HashMap<Class<?>, String>();
+	private final Map<Class<?>, IPersistentAdapter<?>> adapters = new HashMap<Class<?>, IPersistentAdapter<?>>();
+	private final Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
 
-	protected boolean ignoreMissing = false;
+	private boolean ignoreMissing = false;
 
 	/**
 	 * @return Should this {@link Persister} ignore missing XML
@@ -582,7 +582,7 @@ public class Persister
 		{
 			//if the null attribute is set, return null
 			String nullAttribute = element.getAttribute(NULL_ATTRIBUTE);
-			if (new Boolean(nullAttribute))
+			if (Boolean.valueOf(nullAttribute))
 			{
 				return null;
 			}
@@ -844,7 +844,7 @@ public class Persister
 			catch (NoSuchMethodException e)
 			{
 				throw new PersistenceException("Cannot find matching Persistant setter: " + persistant.setter() //$NON-NLS-1$
-						+ " in class " + c); //$NON-NLS-1$
+						+ " in class " + c, e); //$NON-NLS-1$
 			}
 		}
 
@@ -1002,7 +1002,7 @@ public class Persister
 		{
 			return c;
 		}
-		c = PrimitiveNames.nameToPrimitive.get(name);
+		c = PrimitiveNames.NAME_TO_PRIMITIVE.get(name);
 		if (c != null)
 		{
 			return c;
@@ -1043,7 +1043,7 @@ public class Persister
 		String name = exportableToName.get(type);
 		if (Util.isEmpty(name))
 		{
-			name = PrimitiveNames.primitiveToName.get(type);
+			name = PrimitiveNames.PRIMITIVE_TO_NAME.get(type);
 		}
 		if (Util.isEmpty(name))
 		{
@@ -1103,8 +1103,8 @@ public class Persister
 	 */
 	protected static class PrimitiveNames
 	{
-		public final static Map<Class<?>, String> primitiveToName;
-		public final static Map<String, Class<?>> nameToPrimitive;
+		public static final Map<Class<?>, String> PRIMITIVE_TO_NAME;
+		public static final Map<String, Class<?>> NAME_TO_PRIMITIVE;
 
 		static
 		{
@@ -1118,8 +1118,8 @@ public class Persister
 			add(float.class, Float.class, ptn, ntp);
 			add(double.class, Double.class, ptn, ntp);
 			add(boolean.class, Boolean.class, ptn, ntp);
-			primitiveToName = Collections.unmodifiableMap(ptn);
-			nameToPrimitive = Collections.unmodifiableMap(ntp);
+			PRIMITIVE_TO_NAME = Collections.unmodifiableMap(ptn);
+			NAME_TO_PRIMITIVE = Collections.unmodifiableMap(ntp);
 		}
 
 		private static void add(Class<?> primitive, Class<?> boxed, Map<Class<?>, String> primitiveToName,

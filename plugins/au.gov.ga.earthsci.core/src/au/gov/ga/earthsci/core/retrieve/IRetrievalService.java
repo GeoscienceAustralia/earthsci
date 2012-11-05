@@ -48,7 +48,7 @@ public interface IRetrievalService
 	 *  
 	 * @return The job used to retrieve the resource, or <code>null</code> if the provided URL is unsupported.
 	 */
-	public RetrievalJob retrieve(URL url);
+	RetrievalJob retrieve(URL url);
 	
 	/**
 	 * Retrieve a resource from the provided URL. This flavour allows more control over how the retrieval is performed.
@@ -59,5 +59,5 @@ public interface IRetrievalService
 	 * 
 	 * @return The job used to retrieve the resource, or <code>null</code> if the provided URL is unsupported.
 	 */
-	public RetrievalJob retrieve(URL url, RetrievalMode mode, boolean forceRefresh);
+	RetrievalJob retrieve(URL url, RetrievalMode mode, boolean forceRefresh);
 }

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.tree;
 
+import java.util.Arrays;
+
 import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
 
 /**
@@ -88,7 +90,7 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	protected void setChildren(ITreeNode<E>[] children)
 	{
 		ITreeNode<E>[] oldValue = getChildren();
-		this.children = children;
+		this.children = children == null ? null : Arrays.copyOf(children, children.length);
 		firePropertyChange("children", oldValue, children); //$NON-NLS-1$
 	}
 

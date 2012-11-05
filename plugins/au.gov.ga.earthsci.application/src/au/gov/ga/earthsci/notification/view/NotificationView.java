@@ -561,10 +561,12 @@ public class NotificationView
 	{
 		if (imageRegistry == null)
 		{
-			imageRegistry = new ImageRegistry();
+			ImageRegistry imageRegistry = new ImageRegistry();
 			imageRegistry.put(NotificationLevel.INFORMATION.name(), ImageDescriptor.createFromURL(NotificationView.class.getResource("/icons/information.gif"))); //$NON-NLS-1$
 			imageRegistry.put(NotificationLevel.WARNING.name(), ImageDescriptor.createFromURL(NotificationView.class.getResource("/icons/warning.gif"))); //$NON-NLS-1$
 			imageRegistry.put(NotificationLevel.ERROR.name(), ImageDescriptor.createFromURL(NotificationView.class.getResource("/icons/error.gif"))); //$NON-NLS-1$
+			
+			NotificationView.imageRegistry = imageRegistry;
 		}
 		return imageRegistry;
 	}
@@ -614,7 +616,7 @@ public class NotificationView
 	 */
 	private static class NotificationViewTreeLabelProvider extends LabelProvider implements ITableLabelProvider
 	{
-		private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm:ss"); //$NON-NLS-1$
+		private static final String DATE_FORMAT = "dd MMM yyyy HH:mm:ss"; //$NON-NLS-1$
 		
 		@Override
 		public Image getColumnImage(Object element, int columnIndex)
@@ -637,8 +639,8 @@ public class NotificationView
 					case TITLE_COLUMN_INDEX: return n.getTitle();
 					case DESCRIPTION_COLUMN_INDEX: return n.getText();
 					case CATEGORY_COLUMN_INDEX: return n.getCategory().getLabel();
-					case CREATED_COLUMN_INDEX: return sdf.format(n.getCreationTimestamp());
-					case ACKNOWLEDGED_COLUMN_INDEX: return n.isAcknowledged() ? sdf.format(n.getAcknowledgementTimestamp()) : ""; //$NON-NLS-1$
+					case CREATED_COLUMN_INDEX: return new SimpleDateFormat(DATE_FORMAT).format(n.getCreationTimestamp());
+					case ACKNOWLEDGED_COLUMN_INDEX: return n.isAcknowledged() ? new SimpleDateFormat(DATE_FORMAT).format(n.getAcknowledgementTimestamp()) : ""; //$NON-NLS-1$
 				}
 			}
 			if (element instanceof Group && columnIndex == 0)

@@ -128,13 +128,13 @@ public class PopupNotification
 			return;
 		}
 		
-		initialiseShell(notification);
+		initialiseShell();
 
 		Composite inner = initialiseInner(notification);
 
 		addLevelImage(notification,inner);
 		addTitleLabel(notification, inner);
-		addCloseButton(notification, inner);
+		addCloseButton(inner);
 		addTextLabel(notification, inner);
 		addActionLinks(notification, inner);
 		
@@ -205,7 +205,7 @@ public class PopupNotification
 		return titleLabel;
 	}
 
-	private Label addCloseButton(INotification notification, Composite inner)
+	private Label addCloseButton(Composite inner)
 	{
 		final Label imageLabel = new Label(inner, SWT.FLAT);
 		imageLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_END));
@@ -298,7 +298,7 @@ public class PopupNotification
 	/**
 	 * Create the shell that will be used to display the dialog
 	 */
-	private void initialiseShell(INotification notification)
+	private void initialiseShell()
 	{
 		shell = new Shell(getRootShell(Display.getDefault().getActiveShell()), SWT.NO_FOCUS | SWT.NO_TRIM);
 		
@@ -433,9 +433,9 @@ public class PopupNotification
 					shell.setAlpha(popupAlpha);
 					Display.getDefault().timerExec(FADE_TICK, this);
 				}
-				catch (Exception err)
+				catch (Exception e)
 				{
-					err.printStackTrace();
+					logger.error(e);
 				}
 			}
 
@@ -465,7 +465,7 @@ public class PopupNotification
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					logger.error(e);
 				}
 			}
 
@@ -504,7 +504,7 @@ public class PopupNotification
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					logger.error(e);
 				}
 			}
 		};

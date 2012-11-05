@@ -29,8 +29,10 @@ import au.gov.ga.earthsci.core.util.XmlUtil;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class DatasetReader
+final public class DatasetReader
 {
+	private DatasetReader() {}
+	
 	private static final String NAME_ATTRIBUTE = "@name"; //$NON-NLS-1$
 	private static final String INFO_ATTRIBUTE = "@info"; //$NON-NLS-1$
 	private static final String ICON_ATTRIBUTE = "@icon"; //$NON-NLS-1$
@@ -59,38 +61,39 @@ public class DatasetReader
 	 * 
 	 * @throws MalformedURLException
 	 */
-	public static ICatalogTreeNode read(Object source, URL context) throws MalformedURLException
+	public static ICatalogTreeNode read(final Object source, final URL context) throws MalformedURLException
 	{
 		//top level dataset (DatasetList) doesn't have a name, and is not shown in the tree
-		ICatalogTreeNode root = new DatasetCatalogTreeNode(null, null, null, true);
+		final ICatalogTreeNode root = new DatasetCatalogTreeNode(null, null, null, true);
 
-		Element rootElement = XmlUtil.getElementFromSource(source);
+		final Element rootElement = XmlUtil.getElementFromSource(source);
 		if (rootElement == null)
 		{
 			return root;
 		}
 		
 		// Special case
+		URL theContext = context;
 		if (context == null && source instanceof URL)
 		{
-			context = (URL)source;
+			theContext = (URL)source;
 		}
 		
-		Element[] elements = XmlUtil.getElements(rootElement, DATASET_LIST_XPATH, null);
+		final Element[] elements = XmlUtil.getElements(rootElement, DATASET_LIST_XPATH, null);
 		if (elements != null)
 		{
 			for (Element element : elements)
 			{
-				addChildren(element, root, context);
+				addChildren(element, root, theContext);
 			}
 		}
 		
 		return root;
 	}
 
-	private static void addChildren(Element element, ICatalogTreeNode parent, URL context) throws MalformedURLException
+	private static void addChildren(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException
 	{
-		Element[] elements = XmlUtil.getElements(element, VALID_NODES_XPATH, null);
+		final Element[] elements = XmlUtil.getElements(element, VALID_NODES_XPATH, null);
 		if (elements == null)
 		{
 			return;
@@ -100,7 +103,7 @@ public class DatasetReader
 		{
 			if (isDatasetNode(e))
 			{
-				ICatalogTreeNode dataset = addDataset(e, parent, context);
+				final ICatalogTreeNode dataset = addDataset(e, parent, context);
 				addChildren(e, dataset, context);
 			}
 			else if (isLinkNode(e))
@@ -114,58 +117,58 @@ public class DatasetReader
 		}
 	}
 
-	private static boolean isLayerNode(Element e)
+	private static boolean isLayerNode(final Element element)
 	{
-		return e.getNodeName().equalsIgnoreCase(LAYER_NODE_NAME);
+		return element.getNodeName().equalsIgnoreCase(LAYER_NODE_NAME);
 	}
 
-	private static boolean isLinkNode(Element e)
+	private static boolean isLinkNode(final Element element)
 	{
-		return e.getNodeName().equalsIgnoreCase(LINK_NODE_NAME);
+		return element.getNodeName().equalsIgnoreCase(LINK_NODE_NAME);
 	}
 
-	private static boolean isDatasetNode(Element e)
+	private static boolean isDatasetNode(final Element element)
 	{
-		return e.getNodeName().equalsIgnoreCase(DATASET_NODE_NAME);
+		return element.getNodeName().equalsIgnoreCase(DATASET_NODE_NAME);
 	}
 
-	private static ICatalogTreeNode addDataset(Element element, ICatalogTreeNode parent, URL context) throws MalformedURLException
+	private static ICatalogTreeNode addDataset(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException
 	{
-		String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
-		URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
-		URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
-		boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
+		final String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
+		final URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
+		final URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
+		final boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
 		
-		ICatalogTreeNode dataset = new DatasetCatalogTreeNode(name, info, icon, base);
+		final ICatalogTreeNode dataset = new DatasetCatalogTreeNode(name, info, icon, base);
 		parent.add(dataset);
 		
 		return dataset;
 	}
 
-	private static void addLink(Element element, ICatalogTreeNode parent, URL context) throws MalformedURLException
+	private static void addLink(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException
 	{
-		String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
-		URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
-		URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
-		URL url = XmlUtil.getURL(element, URL_ATTRIBUTE, context);
-		boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
+		final String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
+		final URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
+		final URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
+		final URL url = XmlUtil.getURL(element, URL_ATTRIBUTE, context);
+		final boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
 		
-		ICatalogTreeNode link = new DatasetLinkCatalogTreeNode(name, url, info, icon, base);
+		final ICatalogTreeNode link = new DatasetLinkCatalogTreeNode(name, url, info, icon, base);
 		parent.add(link);
 	}
 
-	private static void addLayer(Element element, ICatalogTreeNode parent, URL context) throws MalformedURLException
+	private static void addLayer(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException
 	{
-		String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
-		URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
-		URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
-		URL url = XmlUtil.getURL(element, URL_ATTRIBUTE, context);
+		final String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
+		final URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
+		final URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
+		final URL url = XmlUtil.getURL(element, URL_ATTRIBUTE, context);
 		
-		boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
-		boolean def = XmlUtil.getBoolean(element, DEFAULT_ATTRIBUTE, false);
-		boolean enabled = XmlUtil.getBoolean(element, ENABLED_ATTRIBUTE, true);
+		final boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
+		final boolean def = XmlUtil.getBoolean(element, DEFAULT_ATTRIBUTE, false);
+		final boolean enabled = XmlUtil.getBoolean(element, ENABLED_ATTRIBUTE, true);
 		
-		DatasetLayerCatalogTreeNode layer = new DatasetLayerCatalogTreeNode(name, url, info, icon, base, def, enabled);
+		final DatasetLayerCatalogTreeNode layer = new DatasetLayerCatalogTreeNode(name, url, info, icon, base, def, enabled);
 		parent.add(layer);
 	}
 }

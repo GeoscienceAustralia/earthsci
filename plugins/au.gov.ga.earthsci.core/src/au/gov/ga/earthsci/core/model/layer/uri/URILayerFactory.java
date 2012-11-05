@@ -34,9 +34,11 @@ import au.gov.ga.earthsci.core.model.layer.uri.handler.LayerURIHandlerException;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class URILayerFactory
+final public class URILayerFactory
 {
-	private final static Map<String, ILayerURIHandler> handlers = new HashMap<String, ILayerURIHandler>();
+	private URILayerFactory() {}
+	
+	private static final Map<String, ILayerURIHandler> HANDLERS = new HashMap<String, ILayerURIHandler>();
 
 	static
 	{
@@ -51,9 +53,9 @@ public class URILayerFactory
 	 * 
 	 * @param handler
 	 */
-	public static void registerLayerURIHandler(ILayerURIHandler handler)
+	public static void registerLayerURIHandler(final ILayerURIHandler handler)
 	{
-		handlers.put(handler.getSupportedScheme().toLowerCase(), handler);
+		HANDLERS.put(handler.getSupportedScheme().toLowerCase(), handler);
 	}
 
 	/**
@@ -62,9 +64,9 @@ public class URILayerFactory
 	 * @param handler
 	 * @see #registerLayerURIHandler(ILayerURIHandler)
 	 */
-	public static void unregisterLayerURIHandler(ILayerURIHandler handler)
+	public static void unregisterLayerURIHandler(final ILayerURIHandler handler)
 	{
-		handlers.remove(handler.getSupportedScheme().toLowerCase());
+		HANDLERS.remove(handler.getSupportedScheme().toLowerCase());
 	}
 
 	/**
@@ -79,13 +81,13 @@ public class URILayerFactory
 	 * @return Layer created from the URI
 	 * @throws URILayerFactoryException
 	 */
-	public static Layer createLayer(URI uri, IProgressMonitor monitor) throws URILayerFactoryException
+	public static Layer createLayer(final URI uri, final IProgressMonitor monitor) throws URILayerFactoryException
 	{
 		if (uri.getScheme() == null)
 		{
 			throw new URILayerFactoryException("URI scheme is blank"); //$NON-NLS-1$
 		}
-		ILayerURIHandler handler = handlers.get(uri.getScheme().toLowerCase());
+		final ILayerURIHandler handler = HANDLERS.get(uri.getScheme().toLowerCase());
 		if (handler == null)
 		{
 			throw new URILayerFactoryException(

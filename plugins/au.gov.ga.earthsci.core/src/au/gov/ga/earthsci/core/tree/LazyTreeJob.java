@@ -31,10 +31,11 @@ public abstract class LazyTreeJob extends Job
 	public LazyTreeJob(ILazyTreeNode<?> node)
 	{
 		super(node.getName());
+		this.node = node;
 	}
 
 	@Override
-	final protected IStatus run(final IProgressMonitor monitor)
+	protected final IStatus run(final IProgressMonitor monitor)
 	{
 		DelegatingProgressMonitor delegatingMonitor = new DelegatingProgressMonitor();
 		delegatingMonitor.addMonitors(additionalMonitors);
@@ -54,7 +55,7 @@ public abstract class LazyTreeJob extends Job
 		return doRun(delegatingMonitor);
 	}
 	
-	abstract protected IStatus doRun(IProgressMonitor monitor);
+	protected abstract IStatus doRun(IProgressMonitor monitor);
 	
 	/**
 	 * @return The node that spawned this job

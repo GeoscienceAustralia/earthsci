@@ -10,7 +10,15 @@
 	<properties>
 		<tycho-version>0.15.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
 		<sonar.language>java</sonar.language>
+		<sonar.exclusions>**/*Messages.java,**/Activator.java</sonar.exclusions>
+		<sonar.test.exclusions>**/*.tests/**/*.java</sonar.test.exclusions>
+		<sonar.skippedModules>
+			au.gov.ga.earthsci.core.tests,
+			earthsci-externals,
+			earthsci-features
+		</sonar.skippedModules>
 	</properties>
 
 	<repositories>

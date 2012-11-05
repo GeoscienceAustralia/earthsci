@@ -98,6 +98,7 @@ public abstract class RetrievalJob extends Job
 	public RetrievalJob(URL resourceURL)
 	{
 		super(NLS.bind(Messages.RetrievalJob_JobName, resourceURL.toExternalForm()));
+		this.sourceURL = resourceURL;
 	}
 	
 	/**

@@ -13,6 +13,7 @@
 package au.gov.ga.earthsci.application.preferences;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.core.runtime.Assert;
@@ -224,16 +225,15 @@ public class ScopedPreferenceStore extends EventManager implements
 		if (obj instanceof String) {
 			return defaults.get(key, STRING_DEFAULT_DEFAULT);
 		} else if (obj instanceof Integer) {
-			return new Integer(defaults.getInt(key, INT_DEFAULT_DEFAULT));
+			return Integer.valueOf(defaults.getInt(key, INT_DEFAULT_DEFAULT));
 		} else if (obj instanceof Double) {
-			return new Double(defaults.getDouble(key, DOUBLE_DEFAULT_DEFAULT));
+			return Double.valueOf(defaults.getDouble(key, DOUBLE_DEFAULT_DEFAULT));
 		} else if (obj instanceof Float) {
-			return new Float(defaults.getFloat(key, FLOAT_DEFAULT_DEFAULT));
+			return Float.valueOf(defaults.getFloat(key, FLOAT_DEFAULT_DEFAULT));
 		} else if (obj instanceof Long) {
-			return new Long(defaults.getLong(key, LONG_DEFAULT_DEFAULT));
+			return Long.valueOf(defaults.getLong(key, LONG_DEFAULT_DEFAULT));
 		} else if (obj instanceof Boolean) {
-			return defaults.getBoolean(key, BOOLEAN_DEFAULT_DEFAULT) ? Boolean.TRUE
-					: Boolean.FALSE;
+			return Boolean.valueOf(defaults.getBoolean(key, BOOLEAN_DEFAULT_DEFAULT));
 		} else {
 			return null;
 		}
@@ -329,11 +329,13 @@ public class ScopedPreferenceStore extends EventManager implements
 	 *            <code>null</code>
 	 */
 	public void setSearchContexts(IScopeContext[] scopes) {
-		this.searchContexts = scopes;
 		if (scopes == null) {
+			this.searchContexts = null;
 			return;
 		}
 
+		this.searchContexts = Arrays.copyOf(scopes, scopes.length);
+		
 		// Assert that the default was not included (we automatically add it to
 		// the end)
 		for (int i = 0; i < scopes.length; i++) {
@@ -696,7 +698,7 @@ public class ScopedPreferenceStore extends EventManager implements
 			// removing a non-existing preference is a no-op so call the Core
 			// API directly
 			getStorePreferences().remove(name);
-			if (oldValue != defaultValue){
+			if (!oldValue.equals(defaultValue)){
 				dirty = true;
 				firePropertyChangeEvent(name, oldValue, defaultValue);
 			}
@@ -780,8 +782,7 @@ public class ScopedPreferenceStore extends EventManager implements
 				getStorePreferences().putInt(name, value);
 			}
 			dirty = true;
-			firePropertyChangeEvent(name, new Integer(oldValue), new Integer(
-					value));
+			firePropertyChangeEvent(name, oldValue, value);
 		} finally {
 			silentRunning = false;// Restart listening to preferences
 		}
@@ -807,7 +808,7 @@ public class ScopedPreferenceStore extends EventManager implements
 				getStorePreferences().putLong(name, value);
 			}
 			dirty = true;
-			firePropertyChangeEvent(name, new Long(oldValue), new Long(value));
+			firePropertyChangeEvent(name, oldValue, value);
 		} finally {
 			silentRunning = false;// Restart listening to preferences
 		}

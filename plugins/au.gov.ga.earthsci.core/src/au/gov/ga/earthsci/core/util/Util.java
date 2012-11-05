@@ -29,8 +29,10 @@ import java.util.Map.Entry;
  */
 public class Util
 {
-	private final static Map<Class<?>, Class<?>> primitiveToBoxed;
-	private final static Map<Class<?>, Class<?>> boxedToPrimitive;
+	private Util() {}
+	
+	private static final Map<Class<?>, Class<?>> primitiveToBoxed;
+	private static final Map<Class<?>, Class<?>> boxedToPrimitive;
 	static
 	{
 		Map<Class<?>, Class<?>> ptb = new HashMap<Class<?>, Class<?>>();
@@ -118,9 +120,13 @@ public class Util
 	public static String concatInts(int[] array, String separator)
 	{
 		if (array == null || array.length == 0)
+		 {
 			return ""; //$NON-NLS-1$
+		}
 		if (separator == null)
+		 {
 			separator = ""; //$NON-NLS-1$
+		}
 		StringBuilder sb = new StringBuilder();
 		for (int i : array)
 		{

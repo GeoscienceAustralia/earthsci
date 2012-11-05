@@ -27,10 +27,10 @@ import java.util.Collection;
 public class Validate
 {
 
-	private static final String DEFAULT_NOT_NULL_MSG = "Value cannot be null";
-	private static final String DEFAULT_NOT_EMPTY_MSG = "Value cannot be empty";
-	private static final String DEFAULT_IS_TRUE_MSG = "Value is false when expected true";
-	private static final String DEFAULT_NOT_BLANK_MSG = "Value cannot be blank";
+	private static final String DEFAULT_NOT_NULL_MSG = "Value cannot be null"; //$NON-NLS-1$
+	private static final String DEFAULT_NOT_EMPTY_MSG = "Value cannot be empty"; //$NON-NLS-1$
+	private static final String DEFAULT_IS_TRUE_MSG = "Value is false when expected true"; //$NON-NLS-1$
+	private static final String DEFAULT_NOT_BLANK_MSG = "Value cannot be blank"; //$NON-NLS-1$
 
 
 	/**
@@ -101,7 +101,7 @@ public class Validate
 	 */
 	public static void notBlank(String string, String msg)
 	{
-		if (string == null || string.trim() == "")
+		if (string == null || string.trim().equals("")) //$NON-NLS-1$
 		{
 			throw new IllegalArgumentException(msg == null ? DEFAULT_NOT_BLANK_MSG : msg);
 		}

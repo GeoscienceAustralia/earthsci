@@ -76,7 +76,7 @@ public class Notification implements INotification
 		this.category = category;
 		this.title = title;
 		this.text = text;
-		this.actions = actions;
+		this.actions = actions == null ? null : Arrays.copyOf(actions, actions.length);
 		this.requiresAcknowledgement = requiresAcknowledgement;
 		this.acknowledgementAction = acknowledgementAction;
 		

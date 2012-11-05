@@ -1,5 +1,6 @@
 package au.gov.ga.earthsci.application.preferences.fieldeditor;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -106,7 +107,7 @@ public class MultiSelectTableListFieldEditor<E> extends FieldEditor
 		setPreferenceName(keyName);
 
 		this.backingList = backingList;
-		this.columnNames = columnNames;
+		this.columnNames = columnNames == null ? null : Arrays.copyOf(columnNames, columnNames.length);
 		this.tableItemCreator = tableItemCreator == null ? DEFAULT_TABLE_ITEM_CREATOR : tableItemCreator;
 		this.itemSerialiser = itemSerializer;
 
