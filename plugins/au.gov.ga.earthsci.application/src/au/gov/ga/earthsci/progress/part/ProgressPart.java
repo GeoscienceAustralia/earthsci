@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.progress.view;
+package au.gov.ga.earthsci.progress.part;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,28 +28,28 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * A simple progress view inspired by the legacy Eclipse 3.x <code>DetailedProgressView</code>
+ * A simple progress part inspired by the legacy Eclipse 3.x <code>DetailedProgressView</code>
  * <p/>
  * Used to show the progress of currently running jobs.
  * <p/>
- * This view also injects an {@link ProgressProvider} onto the current {@link IJobManager} to capture progress information.
+ * This part also injects an {@link ProgressProvider} onto the current {@link IJobManager} to capture progress information.
  * Other plugins should not override this provider.
  * <hr/>
- * <b>Important:</b> This view should be replaced with the inbuilt one when it becomes available
+ * <b>Important:</b> This part should be replaced with the inbuilt one when it becomes available
  * in the Eclipse 4.x release train.
  * <hr/>
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class ProgressView
+public class ProgressPart
 {
 
 	private static final Map<Integer, String> JOB_STATE_LABEL = new HashMap<Integer, String>();
 	static
 	{
-		JOB_STATE_LABEL.put(Job.WAITING, ProgressViewMessages.ProgressView_WaitingStatusLabel);
-		JOB_STATE_LABEL.put(Job.SLEEPING, ProgressViewMessages.ProgressView_SleepingStatusLabel);
-		JOB_STATE_LABEL.put(Job.RUNNING, ProgressViewMessages.ProgressView_RunningStatusLabel);
+		JOB_STATE_LABEL.put(Job.WAITING, Messages.ProgressPart_WaitingStatusLabel);
+		JOB_STATE_LABEL.put(Job.SLEEPING, Messages.ProgressPart_SleepingStatusLabel);
+		JOB_STATE_LABEL.put(Job.RUNNING, Messages.ProgressPart_RunningStatusLabel);
 	}
 	
 	@Inject
@@ -100,7 +100,7 @@ public class ProgressView
 			@Override
 			public void scheduled(IJobChangeEvent event)
 			{
-				JobInfo jobInfo = new JobInfo(event.getJob(), ProgressView.this);
+				JobInfo jobInfo = new JobInfo(event.getJob(), ProgressPart.this);
 				
 				jobList.add(jobInfo);
 				asyncRefresh();
@@ -126,7 +126,7 @@ public class ProgressView
 				JobInfo jobInfo = findInfoForJob(job);
 				if (jobInfo == null)
 				{
-					jobInfo = new JobInfo(job, ProgressView.this);
+					jobInfo = new JobInfo(job, ProgressPart.this);
 					
 					jobList.add(jobInfo);
 					asyncRefresh();
@@ -152,7 +152,7 @@ public class ProgressView
 	private void createColumns()
 	{
 		TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
-		column.getColumn().setText(ProgressViewMessages.ProgressView_JobNameColumnLabel);
+		column.getColumn().setText(Messages.ProgressPart_JobNameColumnLabel);
 		column.getColumn().setWidth(500);
 		
 		column.setLabelProvider(new ColumnLabelProvider() {
@@ -164,7 +164,7 @@ public class ProgressView
 		});
 		
 		column = new TableViewerColumn(viewer, SWT.NONE);
-		column.getColumn().setText(ProgressViewMessages.ProgressView_JobStateColumnLabel);
+		column.getColumn().setText(Messages.ProgressPart_JobStateColumnLabel);
 		column.getColumn().setWidth(100);
 		
 		column.setLabelProvider(new ColumnLabelProvider() {
@@ -176,7 +176,7 @@ public class ProgressView
 		});
 		
 		column = new TableViewerColumn(viewer, SWT.NONE);
-		column.getColumn().setText(ProgressViewMessages.ProgressView_JobProgressColumnLabel);
+		column.getColumn().setText(Messages.ProgressPart_JobProgressColumnLabel);
 		column.getColumn().setWidth(100);
 		
 		column.setLabelProvider(new ColumnLabelProvider() {
@@ -188,7 +188,7 @@ public class ProgressView
 		});
 		
 		column = new TableViewerColumn(viewer, SWT.NONE);
-		column.getColumn().setText(ProgressViewMessages.ProgressView_JobTaskColumnLabel);
+		column.getColumn().setText(Messages.ProgressPart_JobTaskColumnLabel);
 		column.getColumn().setWidth(500);
 		
 		column.setLabelProvider(new ColumnLabelProvider() {
@@ -224,7 +224,7 @@ public class ProgressView
 	
 	private static class JobInfo extends NullProgressMonitor
 	{
-		ProgressView view;
+		ProgressPart view;
 		
 		String currentTask;
 		int totalWork;
@@ -232,7 +232,7 @@ public class ProgressView
 		
 		Job job;
 		
-		public JobInfo(Job job, final ProgressView view)
+		public JobInfo(Job job, final ProgressPart view)
 		{
 			this.view = view;
 			this.job = job;
@@ -256,7 +256,7 @@ public class ProgressView
 		{
 			if (totalWork == IProgressMonitor.UNKNOWN)
 			{
-				return ProgressViewMessages.ProgressView_UnknownProgress;
+				return Messages.ProgressPart_UnknownProgress;
 			}
 			return (int)(work * 100d / totalWork) + "%"; //$NON-NLS-1$
 		}
