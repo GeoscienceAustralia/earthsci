@@ -32,7 +32,9 @@ public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 	private final boolean def;
 	private final boolean enabled;
 	
-	public DatasetLayerCatalogTreeNode(String name, URL url, URL infoURL, URL iconURL, boolean base, boolean def, boolean enabled)
+	public DatasetLayerCatalogTreeNode(final String name, final URL url, 
+									  final URL infoURL, final URL iconURL, 
+									  final boolean base, final boolean def, final boolean enabled)
 	{
 		super(name, infoURL, iconURL, base);
 		

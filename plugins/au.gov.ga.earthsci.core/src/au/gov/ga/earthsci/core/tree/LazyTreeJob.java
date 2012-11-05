@@ -23,12 +23,12 @@ public abstract class LazyTreeJob extends Job
 
 	private DelegatingProgressMonitor monitor;
 	
-	private Set<IProgressMonitor> additionalMonitors = new LinkedHashSet<IProgressMonitor>();
-	private ReadWriteLock monitorsLock = new ReentrantReadWriteLock();
+	final private Set<IProgressMonitor> additionalMonitors = new LinkedHashSet<IProgressMonitor>();
+	final private ReadWriteLock monitorsLock = new ReentrantReadWriteLock();
 	
-	private ILazyTreeNode<?> node;
+	final private ILazyTreeNode<?> node;
 	
-	public LazyTreeJob(ILazyTreeNode<?> node)
+	public LazyTreeJob(final ILazyTreeNode<?> node)
 	{
 		super(node.getName());
 		this.node = node;
@@ -37,7 +37,7 @@ public abstract class LazyTreeJob extends Job
 	@Override
 	protected final IStatus run(final IProgressMonitor monitor)
 	{
-		DelegatingProgressMonitor delegatingMonitor = new DelegatingProgressMonitor();
+		final DelegatingProgressMonitor delegatingMonitor = new DelegatingProgressMonitor();
 		delegatingMonitor.addMonitors(additionalMonitors);
 		delegatingMonitor.addMonitor(monitor);
 		
@@ -68,7 +68,7 @@ public abstract class LazyTreeJob extends Job
 	/**
 	 * Add an additional monitor delegate
 	 */
-	public void addMonitor(IProgressMonitor monitor)
+	public void addMonitor(final IProgressMonitor monitor)
 	{
 		monitorsLock.writeLock().lock();
 		try
@@ -89,7 +89,7 @@ public abstract class LazyTreeJob extends Job
 	/**
 	 * Remove an additional monitor delegate
 	 */
-	public void removeMonitor(IProgressMonitor monitor)
+	public void removeMonitor(final IProgressMonitor monitor)
 	{
 		monitorsLock.writeLock().lock();
 		try

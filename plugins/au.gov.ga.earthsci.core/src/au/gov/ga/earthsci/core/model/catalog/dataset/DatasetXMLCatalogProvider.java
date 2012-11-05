@@ -19,14 +19,14 @@ public class DatasetXMLCatalogProvider implements ICatalogProvider
 	private static final String DATASET_ROOT_ELEMENT = "datasetlist"; //$NON-NLS-1$
 
 	@Override
-	public boolean supports(URI source)
+	public boolean supports(final URI source)
 	{
 		if (source == null)
 		{
 			return false;
 		}
 		
-		Document datasetDocument = XmlUtil.openDocument(source);
+		final Document datasetDocument = XmlUtil.openDocument(source);
 		if (datasetDocument != null && datasetDocument.getDocumentElement().getNodeName().equalsIgnoreCase(DATASET_ROOT_ELEMENT))
 		{
 			return true;
@@ -36,7 +36,7 @@ public class DatasetXMLCatalogProvider implements ICatalogProvider
 	}
 
 	@Override
-	public ICatalogTreeNode loadCatalog(URI source)
+	public ICatalogTreeNode loadCatalog(final URI source)
 	{
 		// TODO Auto-generated method stub
 		return null;

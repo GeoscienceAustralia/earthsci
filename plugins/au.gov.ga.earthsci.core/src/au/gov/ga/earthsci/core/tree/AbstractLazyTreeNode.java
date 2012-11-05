@@ -20,20 +20,29 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
  */
 public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implements ILazyTreeNode<E>
 {
-
-	private AtomicReference<LazyTreeJob> lastLoadJob = new AtomicReference<LazyTreeJob>(null);
-	private AtomicBoolean loaded = new AtomicBoolean(false);
+	private static final String UNKNOWN_PLUGIN_ID = "unknown"; //$NON-NLS-1$
+	
+	final private AtomicReference<LazyTreeJob> lastLoadJob = new AtomicReference<LazyTreeJob>(null);
+	final private AtomicBoolean loaded = new AtomicBoolean(false);
+	final private AtomicReference<IStatus> status = new AtomicReference<IStatus>(null);
 	
 	@Override
 	public final LazyTreeJob load()
 	{
 		if (lastLoadJob.get() == null)
 		{
-			LazyTreeJob loadJob = new LazyTreeJob(this) {
+			final LazyTreeJob loadJob = new LazyTreeJob(this) {
 				@Override
 				protected IStatus doRun(IProgressMonitor monitor)
 				{
-					return doLoad(monitor);
+					try
+					{
+						return doLoad(monitor);
+					}
+					catch (Exception e)
+					{
+						return createErrorStatus(Messages.AbstractLazyTreeNode_UnkownExceptionDuringLoadMessage, e);
+					}
 				}
 			};
 			
@@ -42,9 +51,10 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 				// Remove the last load job when loading is complete
 				loadJob.addJobChangeListener(new JobChangeAdapter() {
 					@Override
-					public void done(IJobChangeEvent event)
+					public void done(final IJobChangeEvent event)
 					{
-						loaded.set(event.getResult() == Status.OK_STATUS);
+						setLoaded(event.getResult().getCode() != Status.CANCEL);
+						status.set(event.getResult());
 						lastLoadJob.set(null);
 					}
 				});
@@ -72,6 +82,23 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 		return loaded.get();
 	}
 
+	protected final void setLoaded(boolean loaded)
+	{
+		this.loaded.set(loaded);
+	}
+	
+	@Override
+	public IStatus getStatus()
+	{
+		return status.get();
+	}
+	
+	@Override
+	public boolean hasError()
+	{
+		return isLoaded() && getStatus() != null && getStatus().getCode() == IStatus.ERROR;
+	}
+	
 	@Override
 	public int getChildCount()
 	{
@@ -87,6 +114,15 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 	public String toString()
 	{
 		return getName() + " (" + depth() + ", " + index() + ")";
+	}
+	
+	/**
+	 * Return a new {@link IStatus} instance representing an ERROR state with the
+	 * given message and (optional) exception
+	 */
+	protected IStatus createErrorStatus(String message, Throwable error)
+	{
+		return new Status(Status.ERROR, UNKNOWN_PLUGIN_ID, Status.ERROR, message, error);
 	}
 	
 }

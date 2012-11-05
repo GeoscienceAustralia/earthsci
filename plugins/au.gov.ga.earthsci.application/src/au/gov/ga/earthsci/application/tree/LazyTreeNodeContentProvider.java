@@ -28,27 +28,8 @@ import au.gov.ga.earthsci.core.tree.LazyTreeJob;
 public class LazyTreeNodeContentProvider implements ITreeContentProvider
 {
 	
-	/** A dummy node to indicate loading of children is occuring */
-	private static final ILazyTreeNode<String> DEFAULT_PENDING_NODE = new AbstractLazyTreeNode<String>()
-	{
+	private static final ILazyTreeNode<String> DEFAULT_PENDING_NODE = new SimpleLazyTreeLeafNode("Loading...");
 
-		@Override
-		public boolean isLoaded() {return true; };
-		
-		@Override
-		public String getName()
-		{
-			return "Loading...";
-		}
-
-		@Override
-		protected IStatus doLoad(IProgressMonitor monitor)
-		{
-			return Status.OK_STATUS;
-		}
-		
-	}; 
-	
 	private Object loadingNode = DEFAULT_PENDING_NODE;
 	
 	private TreeViewer viewer;
@@ -103,6 +84,10 @@ public class LazyTreeNodeContentProvider implements ITreeContentProvider
 	{
 		if (parent.isLoaded())
 		{
+			if (parent.hasError())
+			{
+				return new Object[] {new SimpleLazyTreeLeafNode(parent.getStatus().getMessage())};
+			}
 			return parent.getChildren();
 		}
 		
@@ -111,22 +96,16 @@ public class LazyTreeNodeContentProvider implements ITreeContentProvider
 			@Override
 			public void done(IJobChangeEvent event)
 			{
-				if (event.getResult() == Status.OK_STATUS)
-				{
-					Display.getDefault().asyncExec(new Runnable() {
-						@Override
-						public void run()
-						{
-							viewer.refresh(parent);
-						}
-					});
-				}
-				else
-				{
-					// TODO
-				}
+				Display.getDefault().asyncExec(new Runnable() {
+					@Override
+					public void run()
+					{
+						viewer.refresh(parent);
+					}
+				});
 			}
 		});
+		
 		return new Object[] {loadingNode};
 	}
 
@@ -153,6 +132,33 @@ public class LazyTreeNodeContentProvider implements ITreeContentProvider
 	public void setLoadingNode(Object element)
 	{
 		loadingNode = element;
+	}
+	
+	private static class SimpleLazyTreeLeafNode extends AbstractLazyTreeNode<String>
+	{
+
+		private String name;
+		
+		public SimpleLazyTreeLeafNode(String name)
+		{
+			this.name = name;
+		}
+
+		@Override
+		public String getName()
+		{
+			return name;
+		}
+
+		@Override
+		public boolean isLoaded() {return true; };
+		
+		@Override
+		protected IStatus doLoad(IProgressMonitor monitor)
+		{
+			return Status.OK_STATUS;
+		}
+		
 	}
 	
 }
