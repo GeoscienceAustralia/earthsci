@@ -41,6 +41,12 @@ public interface ITreeNode<E>
 	ITreeNode<E> getParent();
 
 	/**
+	 * @return True if this element has the given parent somewhere in it's path
+	 *         to root.
+	 */
+	boolean hasParentInPathToRoot(ITreeNode<?> parent);
+
+	/**
 	 * Set the parent of this node. Should only be called by the
 	 * {@link ITreeNode} implementation, when added/removing children.
 	 * 
