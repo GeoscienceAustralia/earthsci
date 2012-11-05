@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.notification.view;
+package au.gov.ga.earthsci.notification.part;
 
 import org.eclipse.osgi.util.NLS;
 
@@ -6,9 +6,9 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class NotificationViewMessages extends NLS
+public class Messages extends NLS
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.notification.view.notificationViewMessages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.notification.part.messages"; //$NON-NLS-1$
 	public static String NotificationView_AcknowledgedColumnLabel;
 	public static String NotificationView_CategoryColumnLabel;
 	public static String NotificationView_CreateColumnLabel;
@@ -20,10 +20,10 @@ public class NotificationViewMessages extends NLS
 	static
 	{
 		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, NotificationViewMessages.class);
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private NotificationViewMessages()
+	private Messages()
 	{
 	}
 }
