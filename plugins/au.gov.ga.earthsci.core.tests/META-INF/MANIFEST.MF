@@ -5,10 +5,10 @@ Bundle-SymbolicName: au.gov.ga.earthsci.core.tests
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: au.gov.ga.earthsci.core;bundle-version="1.0.0",
+Require-Bundle: org.hamcrest;bundle-version="1.3.0",
+ au.gov.ga.earthsci.core;bundle-version="1.0.0",
  org.junit4;bundle-version="4.8.1",
  gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
- org.hamcrest;bundle-version="1.3.0",
  org.jmock;bundle-version="2.5.1"
 Eclipse-RegisterBuddy: au.gov.ga.earthsci.core
 Bundle-ClassPath: lib/hamcrest-core-1.1.jar,
