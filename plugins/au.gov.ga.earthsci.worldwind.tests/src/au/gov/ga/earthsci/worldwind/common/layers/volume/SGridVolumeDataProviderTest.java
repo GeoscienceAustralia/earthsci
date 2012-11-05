@@ -40,9 +40,9 @@ import au.gov.ga.earthsci.worldwind.test.util.TestUtils;
  */
 public class SGridVolumeDataProviderTest
 {
-	private static final URL ASCII_FILE = SGridVolumeDataProviderTest.class.getClassLoader().getResource("au/gov/ga/worldwind/common/layers/model/gocad/sgrid/test_sgrid_ascii.sg");
-	private static final URL ASCII_ZIP_FILE = SGridVolumeDataProviderTest.class.getClassLoader().getResource("au/gov/ga/worldwind/common/layers/model/gocad/sgrid/test_sgrid_ascii.zip");
-	private static final URL BINARY_FILE = SGridVolumeDataProviderTest.class.getClassLoader().getResource("au/gov/ga/worldwind/common/layers/model/gocad/sgrid/test_sgrid_binary.sg");
+	private static final URL ASCII_FILE = SGridVolumeDataProviderTest.class.getClassLoader().getResource("au/gov/ga/earthsci/worldwind/common/layers/model/gocad/sgrid/test_sgrid_ascii.sg");
+	private static final URL ASCII_ZIP_FILE = SGridVolumeDataProviderTest.class.getClassLoader().getResource("au/gov/ga/earthsci/worldwind/common/layers/model/gocad/sgrid/test_sgrid_ascii.zip");
+	private static final URL BINARY_FILE = SGridVolumeDataProviderTest.class.getClassLoader().getResource("au/gov/ga/earthsci/worldwind/common/layers/model/gocad/sgrid/test_sgrid_binary.sg");
 
 	private Mockery mockContext;
 	private SGridVolumeDataProvider classUnderTest;

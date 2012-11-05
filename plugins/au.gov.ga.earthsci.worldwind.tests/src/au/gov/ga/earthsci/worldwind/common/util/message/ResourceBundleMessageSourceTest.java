@@ -1,6 +1,6 @@
 package au.gov.ga.earthsci.worldwind.common.util.message;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -13,8 +13,8 @@ import org.junit.Test;
 public class ResourceBundleMessageSourceTest
 {
 
-	private ResourceBundleMessageSource classToBeTested = new ResourceBundleMessageSource("au.gov.ga.worldwind.common.util.message.testMessages1",
-																						  "au.gov.ga.worldwind.common.util.message.testMessages2");
+	private ResourceBundleMessageSource classToBeTested = new ResourceBundleMessageSource(this.getClass().getPackage().getName() + ".testMessages1",
+																							this.getClass().getPackage().getName() + ".testMessages2");
 	
 	/**
 	 * Tests the {@link ResourceBundleMessageSource#getMessage(String, String, Object...)} method with
