@@ -1,0 +1,889 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE WMT_MS_Capabilities SYSTEM "http://schemas.opengis.net/wms/1.1.1/capabilities_1_1_1.dtd" >
+<WMT_MS_Capabilities version="1.1.1">
+<Service>
+  <Name>OGC:WMS</Name>
+  <Title>Web Map Service - GeoWebCache</Title>
+  <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://maps.e-atlas.org.au/maps/gwc/service/wms?SERVICE=WMS&amp;"/>
+</Service>
+<Capability>
+  <Request>
+    <GetCapabilities>
+      <Format>application/vnd.ogc.wms_xml</Format>
+      <DCPType>
+        <HTTP>
+          <Get>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://maps.e-atlas.org.au/maps/gwc/service/wms?SERVICE=WMS&amp;"/>
+          </Get>
+        </HTTP>
+      </DCPType>
+    </GetCapabilities>
+    <GetMap>
+      <Format>image/jpeg</Format>
+      <Format>image/png</Format>
+      <Format>application/vnd.google-earth.kml+xml</Format>
+      <Format>image/png8</Format>
+      <Format>image/gif</Format>
+      <DCPType>
+        <HTTP>
+          <Get>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://maps.e-atlas.org.au/maps/gwc/service/wms?SERVICE=WMS&amp;"/>
+          </Get>
+        </HTTP>
+      </DCPType>
+    </GetMap>
+    <GetFeatureInfo>
+      <Format>text/plain</Format>
+      <Format>text/html</Format>
+      <Format>application/vnd.ogc.gml</Format>
+      <DCPType>
+        <HTTP>
+        <Get>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://maps.e-atlas.org.au/maps/gwc/service/wms?SERVICE=WMS&amp;"/>
+        </Get>
+        </HTTP>
+      </DCPType>
+    </GetFeatureInfo>
+    <DescribeLayer>
+      <Format>application/vnd.ogc.wms_xml</Format>
+      <DCPType>
+        <HTTP>
+        <Get>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://maps.e-atlas.org.au/maps/gwc/service/wms?SERVICE=WMS&amp;"/>
+        </Get>
+        </HTTP>
+      </DCPType>
+    </DescribeLayer>
+    <GetLegendGraphic>
+      <Format>image/png</Format>
+      <Format>image/jpeg</Format>
+      <Format>image/gif</Format>
+      <DCPType>
+        <HTTP>
+        <Get>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://maps.e-atlas.org.au/maps/gwc/service/wms?SERVICE=WMS&amp;"/>
+        </Get>
+        </HTTP>
+      </DCPType>
+    </GetLegendGraphic>
+  </Request>
+  <Exception>
+    <Format>application/vnd.ogc.se_xml</Format>
+  </Exception>
+  <Layer>
+    <Title>GeoWebCache WMS</Title>
+    <Abstract>Note that not all GeoWebCache instances provide a full WMS service.</Abstract>
+    <LatLonBoundingBox minx="-180.0" miny="-90.0" maxx="180.0" maxy="90.0"/>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_GBR-dryreef</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_GBR-dryreef</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-valley</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-valley</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-terrace</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-terrace</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:World_NED_10m-cities</Name>
+      <Title>ea:World_NED_10m-cities</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="-180.0" miny="-90.0" maxx="180.0" maxy="90.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="-2.003750834E7" miny="-2.003750834E7" maxx="2.003750834E7" maxy="2.003750834E7"/>
+      <BoundingBox SRS="EPSG:4326" minx="-180.0" miny="-90.0" maxx="180.0" maxy="90.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>GBR_JCU_Bathymetry-3DGBR_Steps-0-5000m</Name>
+      <Title>GBR_JCU_Bathymetry-3DGBR_Steps-0-5000m</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_Bathymetry-3DGBR_Ocean-Hillshade-v1.0</Name>
+      <Title>ea:GBR_JCU_Bathymetry-3DGBR_Ocean-Hillshade-v1.0</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_GBRMPA_GBR-features</Name>
+      <Title>ea:GBR_GBRMPA_GBR-features</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>draft:WT_WTMA_WTMaps-2008_Geology</Name>
+      <Title>draft:WT_WTMA_WTMaps-2008_Geology</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-2504688.5425000004" maxx="1.7532819797500003E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Car-amblyns</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Car-amblyns</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_N-abund</Name>
+      <Title>ea:GBR_AIMS_BRUVS_N-abund</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_AFMA_Fisheries-extent_Rock-lobster</Name>
+      <Title>ts:TS_AFMA_Fisheries-extent_Rock-lobster</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Let-minis</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Let-minis</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Abund</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Abund</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:QLD_JCU_Flood-plumes-2011_2011-01-13-Fitz-BM</Name>
+      <Title>ea:QLD_JCU_Flood-plumes-2011_2011-01-13-Fitz-BM</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_AFMA_Fisheries-extent_Prawn-fishery-closures</Name>
+      <Title>ts:TS_AFMA_Fisheries-extent_Prawn-fishery-closures</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_Bathymetry-3DGBR_TVU</Name>
+      <Title>ea:GBR_JCU_Bathymetry-3DGBR_TVU</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:AU_GA_Coast100k-2004</Name>
+      <Title>ea:AU_GA_Coast100k-2004</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="90.0" miny="-90.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.0018754169999998E7" miny="-1.001875417E7" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="90.0" miny="-90.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Rich</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Rich</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_GBRMPA_Designated-shipping-areas</Name>
+      <Title>ea:GBR_GBRMPA_Designated-shipping-areas</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_GBRMPA_Plans-of-management_Hinchinbrook</Name>
+      <Title>ea:GBR_GBRMPA_Plans-of-management_Hinchinbrook</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-2504688.5425000004" maxx="1.7532819797500003E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_AFMA_Fisheries-extent_Prawn</Name>
+      <Title>ts:TS_AFMA_Fisheries-extent_Prawn</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-abyssalplain</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-abyssalplain</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_GBRMPA_Plans-of-management_Cairns</Name>
+      <Title>ea:GBR_GBRMPA_Plans-of-management_Cairns</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-2504688.5425000004" maxx="1.7532819797500003E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>World_NE2-coast-cities-reefs_Baselayer</Name>
+      <Title>World_NE2-coast-cities-reefs_Baselayer</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="-180.0" miny="-90.0" maxx="180.0" maxy="90.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="-2.003750834E7" miny="-2.003750834E7" maxx="2.003750834E7" maxy="2.003750834E7"/>
+      <BoundingBox SRS="EPSG:4326" minx="-180.0" miny="-90.0" maxx="180.0" maxy="90.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>GBR_JCU_Bathymetry-3DGBR_Steps-0-200m</Name>
+      <Title>GBR_JCU_Bathymetry-3DGBR_Steps-0-200m</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:QLD_JCU_Flood-plumes-2011_2011-01-07-Fitz-BM</Name>
+      <Title>ea:QLD_JCU_Flood-plumes-2011_2011-01-07-Fitz-BM</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_B-abund</Name>
+      <Title>ea:GBR_AIMS_BRUVS_B-abund</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Cho-venus</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Cho-venus</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_Bathymetry-3DGBR_Hillshade-lr</Name>
+      <Title>ea:GBR_JCU_Bathymetry-3DGBR_Hillshade-lr</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-seamount</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-seamount</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_GBRMPA_Plans-of-management_Whitsundays</Name>
+      <Title>ea:GBR_GBRMPA_Plans-of-management_Whitsundays</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="146.25" miny="-22.5" maxx="151.875" maxy="-16.875"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.6280475526250001E7" miny="-2504688.5425000004" maxx="1.6906647661875E7" maxy="-1878516.4068749994"/>
+      <BoundingBox SRS="EPSG:4326" minx="146.25" miny="-22.5" maxx="151.875" maxy="-16.875"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-knoll</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-knoll</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-rise</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-rise</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_Bathymetry-3DGBR</Name>
+      <Title>ea:GBR_JCU_Bathymetry-3DGBR</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:QLD_JCU_Flood-plumes-2011_2010-12-31-Fitz-BM</Name>
+      <Title>ea:QLD_JCU_Flood-plumes-2011_2010-12-31-Fitz-BM</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="146.25" miny="-33.75" maxx="157.5" maxy="-22.5"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.6280475526250001E7" miny="-3757032.8137500007" maxx="1.7532819797500003E7" maxy="-2504688.5425000004"/>
+      <BoundingBox SRS="EPSG:4326" minx="146.25" miny="-33.75" maxx="157.5" maxy="-22.5"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:QLD_JCU_Flood-plumes-2011_2011-01-11-Fitz-BM-Terra</Name>
+      <Title>ea:QLD_JCU_Flood-plumes-2011_2011-01-11-Fitz-BM-Terra</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-cay</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-cay</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_AFMA_Fisheries-extent_Trochus-shell</Name>
+      <Title>ts:TS_AFMA_Fisheries-extent_Trochus-shell</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Lut-malaic</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Lut-malaic</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_CSIRO_Reefs-Islands_Reefs</Name>
+      <Title>ts:TS_CSIRO_Reefs-Islands_Reefs</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:QLD_DERM_QLUMP-land-use-2005</Name>
+      <Title>ea:QLD_DERM_QLUMP-land-use-2005</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Lut-seba</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Lut-seba</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_AFMA_Fisheries-extent_Turtle</Name>
+      <Title>ts:TS_AFMA_Fisheries-extent_Turtle</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_GBRMPA_GBR-dry-reef</Name>
+      <Title>ea:GBR_GBRMPA_GBR-dry-reef</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:QLD_DEEDI_Coastal-wetlands</Name>
+      <Title>ea:QLD_DEEDI_Coastal-wetlands</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_AFMA_Fisheries-extent_Crab</Name>
+      <Title>ts:TS_AFMA_Fisheries-extent_Crab</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:QLD_JCU_Flood-plumes-2011_2011-01-13-Bris</Name>
+      <Title>ea:QLD_JCU_Flood-plumes-2011_2011-01-13-Bris</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="146.25" miny="-33.75" maxx="157.5" maxy="-22.5"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.6280475526250001E7" miny="-3757032.8137500007" maxx="1.7532819797500003E7" maxy="-2504688.5425000004"/>
+      <BoundingBox SRS="EPSG:4326" minx="146.25" miny="-33.75" maxx="157.5" maxy="-22.5"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_JCU_Dugong-rel-density</Name>
+      <Title>ts:TS_JCU_Dugong-rel-density</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:World_NED_10m-countries</Name>
+      <Title>ea:World_NED_10m-countries</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="-180.0" miny="-90.0" maxx="180.0" maxy="90.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="-2.003750834E7" miny="-2.003750834E7" maxx="2.003750834E7" maxy="2.003750834E7"/>
+      <BoundingBox SRS="EPSG:4326" minx="-180.0" miny="-90.0" maxx="180.0" maxy="90.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_QLD-GBRWHA-CSCZ</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_QLD-GBRWHA-CSCZ</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Gym-audl</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Gym-audl</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_AFMA_Fisheries-extent_Sea-cucumber</Name>
+      <Title>ts:TS_AFMA_Fisheries-extent_Sea-cucumber</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-ridge</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-ridge</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_Bathymetry-3DGBR_Hillshade</Name>
+      <Title>ea:GBR_JCU_Bathymetry-3DGBR_Hillshade</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-dryreef</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-dryreef</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_MMP-sites-2010</Name>
+      <Title>ea:GBR_MMP-sites-2010</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>draft:WT_WTMA_WTMaps-2008_Vegetation</Name>
+      <Title>draft:WT_WTMA_WTMaps-2008_Vegetation</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-2504688.5425000004" maxx="1.7532819797500003E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-reef</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-reef</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_AFMA_Fisheries-extent_finfish</Name>
+      <Title>ts:TS_AFMA_Fisheries-extent_finfish</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:World_NED_NE2</Name>
+      <Title>ea:World_NED_NE2</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="-180.0" miny="-90.0" maxx="180.0" maxy="90.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="-2.003750834E7" miny="-2.003750834E7" maxx="2.003750834E7" maxy="2.003750834E7"/>
+      <BoundingBox SRS="EPSG:4326" minx="-180.0" miny="-90.0" maxx="180.0" maxy="90.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-trough</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-trough</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-2504688.5425000004" maxx="1.7532819797500003E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_TSRA_Imagery_Thursday-050</Name>
+      <Title>ts:TS_TSRA_Imagery_Thursday-050</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="142.03125" miny="-10.8984375" maxx="142.3828125" maxy="-10.546875"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5810846424531247E7" miny="-1213208.5127734393" maxx="1.584998218300781E7" maxy="-1174072.7542968765"/>
+      <BoundingBox SRS="EPSG:4326" minx="142.03125" miny="-10.8984375" maxx="142.3828125" maxy="-10.546875"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-plateau</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-plateau</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:AU_GA_River-basins-1997</Name>
+      <Title>ea:AU_GA_River-basins-1997</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="90.0" miny="-90.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.0018754169999998E7" miny="-1.001875417E7" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="90.0" miny="-90.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>GBR_JCU_Bathymetry-3DGBR_Land-and-sea</Name>
+      <Title>GBR_JCU_Bathymetry-3DGBR_Land-and-sea</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_GBR-features</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_GBR-features</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Lut-erytpt</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Lut-erytpt</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_AFMA_Fisheries-extent_Pearl-shell</Name>
+      <Title>ts:TS_AFMA_Fisheries-extent_Pearl-shell</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:QLD_JCU_Flood-plumes-2011_2011-01-18-Bris</Name>
+      <Title>ea:QLD_JCU_Flood-plumes-2011_2011-01-18-Bris</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="146.25" miny="-33.75" maxx="157.5" maxy="-22.5"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.6280475526250001E7" miny="-3757032.8137500007" maxx="1.7532819797500003E7" maxy="-2504688.5425000004"/>
+      <BoundingBox SRS="EPSG:4326" minx="146.25" miny="-33.75" maxx="157.5" maxy="-22.5"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-bank</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-bank</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_CSIRO_Reefs-Islands_Islands</Name>
+      <Title>ts:TS_CSIRO_Reefs-Islands_Islands</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_AFMA_Fisheries-extent_Dugong</Name>
+      <Title>ts:TS_AFMA_Fisheries-extent_Dugong</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5654303390624996E7" miny="-1252344.2712499984" maxx="1.6280475526250001E7" maxy="-626172.135625001"/>
+      <BoundingBox SRS="EPSG:4326" minx="140.625" miny="-11.25" maxx="146.25" maxy="-5.625"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_GA_Gulf-of-Papua-bathymetry-100m-2008_Hillshade</Name>
+      <Title>ts:TS_GA_Gulf-of-Papua-bathymetry-100m-2008_Hillshade</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-2504688.5425000004" maxx="1.7532819797500003E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_GBRMPA_GBRMP-boundary</Name>
+      <Title>ea:GBR_GBRMPA_GBRMP-boundary</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:QLD_JCU_Flood-plumes-2011_2011-01-04-Fitz-BM</Name>
+      <Title>ea:QLD_JCU_Flood-plumes-2011_2011-01-04-Fitz-BM</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Ple-leopus</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Ple-leopus</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Prize-fish</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Prize-fish</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:QLD_DEEDI_Coastal-wetlands_Study-regions</Name>
+      <Title>ea:QLD_DEEDI_Coastal-wetlands_Study-regions</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-canyon</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-canyon</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-slope</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-slope</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_WQ-summary</Name>
+      <Title>ea:GBR_AIMS_WQ-summary</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>GBR_JCU_Bathymetry-3DGBR_Sea-only</Name>
+      <Title>GBR_JCU_Bathymetry-3DGBR_Sea-only</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_GBRWHA-outer</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_GBRWHA-outer</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_GBRMPA_Zoning-2003</Name>
+      <Title>ea:GBR_GBRMPA_Zoning-2003</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ts:TS_GA_Gulf-of-Papua-bathymetry-100m-2008</Name>
+      <Title>ts:TS_GA_Gulf-of-Papua-bathymetry-100m-2008</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-2504688.5425000004" maxx="1.7532819797500003E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_GBR-shelf</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_GBR-shelf</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_JCU_3DGBR-geomorph_Coralsea-basin</Name>
+      <Title>ea:GBR_JCU_3DGBR-geomorph_Coralsea-basin</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:QLD_JCU_Flood-plumes-2011_2011-01-03-Bris</Name>
+      <Title>ea:QLD_JCU_Flood-plumes-2011_2011-01-03-Bris</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="146.25" miny="-33.75" maxx="157.5" maxy="-22.5"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.6280475526250001E7" miny="-3757032.8137500007" maxx="1.7532819797500003E7" maxy="-2504688.5425000004"/>
+      <BoundingBox SRS="EPSG:4326" minx="146.25" miny="-33.75" maxx="157.5" maxy="-22.5"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_GBRMPA_Plans-of-management_Regions</Name>
+      <Title>ea:GBR_GBRMPA_Plans-of-management_Regions</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-2504688.5425000004" maxx="1.7532819797500003E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-22.5" maxx="157.5" maxy="0.0"/>
+    </Layer>
+    <Layer queryable="1">
+      <Name>ea:GBR_AIMS_BRUVS_Aba-stelus</Name>
+      <Title>ea:GBR_AIMS_BRUVS_Aba-stelus</Title>
+      <SRS>EPSG:900913</SRS>
+      <SRS>EPSG:4326</SRS>
+      <LatLonBoundingBox minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:900913" minx="1.5028131254999999E7" miny="-5009377.085000001" maxx="2.003750834E7" maxy="0.0"/>
+      <BoundingBox SRS="EPSG:4326" minx="135.0" miny="-45.0" maxx="180.0" maxy="0.0"/>
+    </Layer>
+  </Layer>
+</Capability>
+</WMT_MS_Capabilities>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Layer version="1" layerType="PointLayer">
+	<DisplayName>PointLayerWithAttributes</DisplayName>
+	<PointType>Icon</PointType>
+	<URL>testpoints.zip</URL>
+	<DataFormat>Shapefile</DataFormat>
+	<DataCacheName>GA/TEST/testpoints.zip</DataCacheName>
+	<Styles>
+		<Style name="default" default="true">
+			<Property name="Highlighted" value="false"/>
+			<Property name="AlwaysOnTop" value="false"/>
+		</Style>
+	</Styles>
+	<Attributes>
+		<Attribute name="NAME">
+			<Text value="Name: %v%" placeholder="%v%"/>
+		</Attribute>
+	</Attributes>
+</Layer>

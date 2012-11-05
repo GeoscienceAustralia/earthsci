@@ -1,0 +1,78 @@
+GOCAD Voxet 1 
+HEADER {
+name:test2
+last_selected_folder:Sections
+*axis*grid:false
+painted:off
+*painted*variable:layer
+*regions*painted_grid:layer
+*regions*region_test1*solid*color:gold
+*regions*region_test1*visible:true
+regions_section:true
+regions_volume:true
+*regions*points:false
+*regions*transparency:false
+regions:on
+connectivity:false
+sections:3 1 1 0 2 1 0 3 0 0
+*layer*cube*window:1 0 1 1 1 2 2 2
+*regions*one*solid*color:sienna
+*regions*one*visible:off
+*regions*two*solid*color:light_steel_blue
+*regions*three*solid*color:orchid
+*regions*four*solid*color:wheat
+*regions*four*visible:off
+*regions*five*solid*color:orange_red
+*regions*five*visible:off
+ascii:off
+}
+GOCAD_ORIGINAL_COORDINATE_SYSTEM
+NAME Default
+AXIS_NAME "X" "Y" "Z"
+AXIS_UNIT "m" "m" "m"
+ZPOSITIVE Elevation
+END_ORIGINAL_COORDINATE_SYSTEM
+AXIS_O -1731127.25 -1355693 0 
+AXIS_U 3273195.25 0 0 
+AXIS_V 0 -3179377 0 
+AXIS_W 0 0 -100000 
+AXIS_MIN 0 0 0 
+AXIS_MAX 1 1 1 
+AXIS_N 5 5 5 
+AXIS_NAME "axis-1" "axis-2" "axis-3"
+AXIS_UNIT " number" " number" " number" 
+AXIS_TYPE even even even
+
+FLAGS_ARRAY_LENGTH 125 
+FLAGS_BIT_LENGTH 12 
+FLAGS_ESIZE 2 
+FLAGS_OFFSET 0 
+FLAGS_FILE test_voxet_5_5_5__flags@@
+
+REGION one 6 
+REGION two 7 
+REGION three 8 
+REGION four 9 
+REGION five 10 
+
+
+
+PROPERTY 1 "layer"
+PROPERTY_CLASS 1 "rr"
+PROPERTY_CLASS_HEADER 1 "rr" {
+low_clip:1
+high_clip:5
+pclip:99
+}
+PROPERTY_SUBCLASS 1 QUANTITY Float
+PROP_ORIGINAL_UNIT 1 none
+PROP_UNIT 1 none
+PROP_NO_DATA_VALUE 1 -99999
+PROP_SAMPLE_STATS 1 125 3 2.01613 1 5
+PROP_ESIZE 1 4
+PROP_ETYPE 1  IEEE
+PROP_PAINTED_FLAG_BIT_POS 1  11 
+PROP_FORMAT 1 RAW
+PROP_OFFSET 1 0
+PROP_FILE 1 test_voxet_5_5_5__layer@@
+END

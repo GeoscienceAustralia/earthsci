@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Worldwind
+Bundle-SymbolicName: au.gov.ga.earthsci.worldwind
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: au.gov.ga.earthsci.worldwind.Activator
+Bundle-Vendor: Geoscience Australia
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
+ com.jogamp.jogl;bundle-version="2.0.0",
+ org.gdal;bundle-version="1.7.2",
+ com.jhlabs.filters;bundle-version="1.0.0"
