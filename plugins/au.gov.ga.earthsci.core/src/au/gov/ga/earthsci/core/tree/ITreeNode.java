@@ -135,6 +135,12 @@ public interface ITreeNode<E>
 	ITreeNode<E>[] pathToRoot();
 
 	/**
+	 * @return Array containing the index of each node from the root to this
+	 *         node (not including the root).
+	 */
+	int[] indicesToRoot();
+
+	/**
 	 * @return The root node of this node.
 	 */
 	ITreeNode<E> getRoot();

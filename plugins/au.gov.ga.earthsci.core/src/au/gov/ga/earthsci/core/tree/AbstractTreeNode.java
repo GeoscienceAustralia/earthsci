@@ -249,6 +249,20 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	}
 
 	@Override
+	public int[] indicesToRoot()
+	{
+		int count = depth();
+		int[] indices = new int[count];
+		ITreeNode<E> node = this;
+		for (int i = count - 1; i >= 0; i--)
+		{
+			indices[i] = node.index();
+			node = node.getParent();
+		}
+		return indices;
+	}
+
+	@Override
 	public boolean hasParentInPathToRoot(ITreeNode<?> parent)
 	{
 		ITreeNode<E> node = this;
