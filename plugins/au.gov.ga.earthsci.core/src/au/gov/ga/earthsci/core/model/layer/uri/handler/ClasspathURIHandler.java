@@ -37,9 +37,9 @@ public class ClasspathURIHandler extends AbstractInputStreamURIHandler
 	private static final String SCHEME = "classpath"; //$NON-NLS-1$
 
 	@Override
-	public String getSupportedScheme()
+	public boolean isSchemeSupported(String scheme)
 	{
-		return SCHEME;
+		return SCHEME.equalsIgnoreCase(scheme);
 	}
 
 	@Override

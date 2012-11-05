@@ -18,8 +18,8 @@ package au.gov.ga.earthsci.core.model.layer.uri;
 import gov.nasa.worldwind.layers.Layer;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -36,7 +36,7 @@ import au.gov.ga.earthsci.core.model.layer.uri.handler.LayerURIHandlerException;
  */
 public class URILayerFactory
 {
-	private final static Map<String, ILayerURIHandler> handlers = new HashMap<String, ILayerURIHandler>();
+	private final static List<ILayerURIHandler> handlers = new ArrayList<ILayerURIHandler>();
 
 	static
 	{
@@ -53,7 +53,7 @@ public class URILayerFactory
 	 */
 	public static void registerLayerURIHandler(ILayerURIHandler handler)
 	{
-		handlers.put(handler.getSupportedScheme().toLowerCase(), handler);
+		handlers.add(handler);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class URILayerFactory
 	 */
 	public static void unregisterLayerURIHandler(ILayerURIHandler handler)
 	{
-		handlers.remove(handler.getSupportedScheme().toLowerCase());
+		handlers.remove(handler);
 	}
 
 	/**
@@ -85,19 +85,20 @@ public class URILayerFactory
 		{
 			throw new URILayerFactoryException("URI scheme is blank"); //$NON-NLS-1$
 		}
-		ILayerURIHandler handler = handlers.get(uri.getScheme().toLowerCase());
-		if (handler == null)
+		for (ILayerURIHandler handler : handlers)
 		{
-			throw new URILayerFactoryException(
-					"Don't know how to create layer from URI with scheme: " + uri.getScheme()); //$NON-NLS-1$
+			if (handler.isSchemeSupported(uri.getScheme()))
+			{
+				try
+				{
+					return handler.createLayer(uri, monitor);
+				}
+				catch (LayerURIHandlerException e)
+				{
+					throw new URILayerFactoryException(e);
+				}
+			}
 		}
-		try
-		{
-			return handler.createLayer(uri, monitor);
-		}
-		catch (LayerURIHandlerException e)
-		{
-			throw new URILayerFactoryException(e);
-		}
+		throw new URILayerFactoryException("Don't know how to create layer from URI with scheme: " + uri.getScheme()); //$NON-NLS-1$
 	}
 }
