@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Layer version="1" layerType="SphereLayer">
+	<DisplayName>Inner Core</DisplayName>
+	<Radius>1210000</Radius>
+	<Color red="150" green="0" blue="150"/>
+	<Slices>100</Slices>
+	<Stacks>150</Stacks>
+</Layer>

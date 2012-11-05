@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Layer version="1" layerType="BoreholeLayer">
+
+	<DisplayName>Borehole Layer</DisplayName>
+	<Legend></Legend>
+
+	<URL>boreholes.zip</URL>
+	<DataFormat>Shapefile</DataFormat>
+
+	<LastUpdate></LastUpdate>
+	<DataCacheName>GA/Boreholes.zip</DataCacheName>
+	
+	<UniqueBoreholeIdentifier>HOLE_ID</UniqueBoreholeIdentifier>
+	<SampleDepthAttributes from="FROM" to="TO" />
+	<MinimumDistance>1e4</MinimumDistance>
+
+	<BoreholeStyles>
+		<Style name="borehole" default="true">
+			<Property name="Material" value="128,128,128" />
+			<Property name="ShapeType" value="gov.nasa.worldwind.render.markers.Sphere" />
+			<Property name="MinMarkerSize" value="0.5" />
+		</Style>
+	</BoreholeStyles>
+
+	<BoreholeAttributes>
+		<Attribute name="HOLE_ID">
+			<Text value="&lt;p&gt; &lt;b&gt;%value%&lt;/b&gt; &lt;/p&gt;" placeholder="%value%" />
+		</Attribute>
+	</BoreholeAttributes>
+	
+	<SampleStyles>
+		<Style name="style1" default="true">
+			<Property name="Color" value="255,255,255" />
+		</Style>
+		<Style name="style2">
+			<Property name="Color" value="255,127,127" />
+		</Style>
+	</SampleStyles>
+	
+	<SampleAttributes>
+	
+		<Attribute name="STYLE">
+			<Case value="STYLE1" style="style1" />
+			<Case value="STYLE2" style="style2" />
+			
+			<Text value="Style: %v%" placeholder="%v%" />
+		</Attribute>
+		
+		<Attribute name="NAME">
+			<Text value="Name: %v%" placeholder="%v%" />
+		</Attribute>
+		
+	</SampleAttributes>
+
+</Layer>

@@ -1,0 +1,37 @@
+GOCAD SGrid 1 
+HEADER {
+name:testsg
+painted:on
+*painted*variable:layer
+volume:false
+ascii:on
+double_precision_binary:off
+}
+GOCAD_ORIGINAL_COORDINATE_SYSTEM
+NAME Default
+AXIS_NAME "X" "Y" "Z"
+AXIS_UNIT "m" "m" "m"
+ZPOSITIVE Elevation
+END_ORIGINAL_COORDINATE_SYSTEM
+AXIS_N 6 6 6 
+PROP_ALIGNMENT CELLS
+ASCII_DATA_FILE test_sgrid_ascii__ascii@@
+FLAGS_OFFSET 0 
+FLAGS_FILE test_sgrid_ascii__flags@@
+
+
+PROPERTY 1 "layer"
+PROPERTY_CLASS 1 "rr"
+PROPERTY_CLASS_HEADER 1 "rr" {
+low_clip:1
+high_clip:5
+pclip:99
+name:rr
+}
+PROPERTY_SUBCLASS 1 QUANTITY Float
+PROP_ORIGINAL_UNIT 1 none
+PROP_UNIT 1 none
+PROP_NO_DATA_VALUE 1 -99999
+PROP_SAMPLE_STATS 1 125 3 2.01613 1 5
+PROP_ESIZE 1 4
+END

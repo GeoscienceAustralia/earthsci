@@ -29,9 +29,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public interface ILayerURIHandler
 {
 	/**
-	 * @return URI scheme supported by this handler
+	 * @return True if the given URI scheme is supported by this handler.
 	 */
-	String getSupportedScheme();
+	boolean isSchemeSupported(String scheme);
 
 	/**
 	 * Create a {@link Layer} from the given {@link URI}.

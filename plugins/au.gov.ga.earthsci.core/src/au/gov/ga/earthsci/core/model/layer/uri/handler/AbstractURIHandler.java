@@ -64,7 +64,7 @@ public abstract class AbstractURIHandler implements ILayerURIHandler
 	@Override
 	public Layer createLayer(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
 	{
-		if (!getSupportedScheme().equalsIgnoreCase(uri.getScheme()))
+		if (!isSchemeSupported(uri.getScheme()))
 		{
 			throw new LayerURIHandlerException("Invalid URI scheme: " + uri); //$NON-NLS-1$
 		}

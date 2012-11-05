@@ -1,0 +1,336 @@
+<?xml version="1.0" ?>
+<rss version="2.0" xmlns:georss="http://www.georss.org/georss">
+	<channel>
+		<title>Earthquakes in the last 7 days (Geoscience Australia)</title>
+		<link>http://www.ga.gov.au/earthquake/</link>
+		<description>Information about earthquakes that occurred in the last 7
+			days. Please read the disclaimer on Earthquakes @ GA for detail about
+			the limitations of the data provided through this service.</description>
+		<copyright>Copyright (C) Commonwealth of Australia 2011. See the
+			copyright statement on Earthquakes @ GA for details.</copyright>
+		<managingEditor>earthquakes@ga.gov.au</managingEditor>
+		<pubDate>16 May 2011 23:33:42 </pubDate>
+		<ttl>5</ttl>
+		<image>
+			<url>http://www.ga.gov.au/build/img/logo.gif</url>
+			<title>Earthquakes @ GA</title>
+			<link>http://www.ga.gov.au/earthquake</link>
+		</image>
+		<item>
+			<title>Magnitude 5.3, Loyalty Islands, Indonesia.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3044320&amp;orid=419517&amp;sta=EIDS</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 16 May 2011 19:18:28 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 17 May 2011 05:18:28 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 60.0 &lt;br&gt;</description>
+			<georss:point>-20.491 168.402</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.4, Loyalty Islands, New Hebrides Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3044295&amp;orid=419492&amp;sta=ARMA</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 16 May 2011 19:14:10 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 17 May 2011 05:14:10 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 35.0 &lt;br&gt;</description>
+			<georss:point>-20.491 168.402</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.1, Irian Jaya Region, Indonesia.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3044065&amp;orid=419304&amp;sta=KDU</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 16 May 2011 02:35:23 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 16 May 2011 12:35:23 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 30.0 &lt;br&gt;</description>
+			<georss:point>-2.954 136.516</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.3, Solomon Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3043982&amp;orid=419223&amp;sta=RABL</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 15 May 2011 23:25:11 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 16 May 2011 09:25:11 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 60.0 &lt;br&gt;</description>
+			<georss:point>-7.012 155.191</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 6.5, Solomon Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3043909&amp;orid=419149&amp;sta=RABL</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 15 May 2011 18:37:10 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 16 May 2011 04:37:10 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 35.0 &lt;br&gt;</description>
+			<georss:point>-6.078 154.643</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.6, Irian Jaya, Indonesia.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3043309&amp;orid=418934&amp;sta=KDU</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 15 May 2011 06:47:04 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 15 May 2011 16:47:04 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 80.0 &lt;br&gt;</description>
+			<georss:point>-3.202 139.662</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.0, Banda Sea.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3043275&amp;orid=418900&amp;sta=KDU</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 15 May 2011 06:29:13 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 15 May 2011 16:29:13 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 146.0 &lt;br&gt;</description>
+			<georss:point>-7.22 129.035</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.1, Loyalty Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3042512&amp;orid=418621&amp;sta=ARMA</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 14 May 2011 07:06:08 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 14 May 2011 17:06:08 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 84.0 &lt;br&gt;</description>
+			<georss:point>-20.218 168.493</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.2, Flores Region, Indonesia.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3042261&amp;orid=418552&amp;sta=MTN</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 14 May 2011 01:42:13 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 14 May 2011 11:42:13 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 15.0 &lt;br&gt;</description>
+			<georss:point>-8.277 123.524</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 6.2, Near the east coast of Honshu, Japan.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3041952&amp;orid=418429&amp;sta=N/A</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 13 May 2011 23:35:51 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 14 May 2011 09:35:51 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 33.0 &lt;br&gt;</description>
+			<georss:point>37.2 141.9</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 3.3, W of Moolboolaman, QLD.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3043072&amp;orid=418852&amp;sta=EIDS</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 13 May 2011 23:25:54 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 14 May 2011 09:25:54 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 0.0 &lt;br&gt;</description>
+			<georss:point>-24.988 151.646</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.3, South of Java, Indonesia, Sunda Arc.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3041610&amp;orid=418294&amp;sta=XMI</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 13 May 2011 21:43:23 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 14 May 2011 07:43:23 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 20.0 &lt;br&gt;</description>
+			<georss:point>-9.862 107.834</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.4, Santa Cruz Islands, New Hebrides Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3041357&amp;orid=418199&amp;sta=RABL</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 13 May 2011 15:55:50 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 14 May 2011 01:55:50 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 44.0 &lt;br&gt;</description>
+			<georss:point>-11.558 165.337</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.4, South of Mariana Islands, Caroline Islands to
+				Guam.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3040653&amp;orid=418007&amp;sta=COEN</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 12 May 2011 22:22:08 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 13 May 2011 08:22:08 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 12.0 &lt;br&gt;</description>
+			<georss:point>12.366 144.062</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.1, Fiji Islands Region.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3039326&amp;orid=417763&amp;sta=NIUE</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 12 May 2011 12:29:23 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 12 May 2011 22:29:23 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 567.0 &lt;br&gt;</description>
+			<georss:point>-19.686 -177.872</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.1, New Britain Region.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3038717&amp;orid=417275&amp;sta=RABL</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 11 May 2011 15:33:11 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 12 May 2011 01:33:11 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 71.0 &lt;br&gt;</description>
+			<georss:point>-6.636 147.998</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.2, Eastern Papua New Guinea.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3038681&amp;orid=417239&amp;sta=RABL</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 11 May 2011 15:21:29 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 12 May 2011 01:21:29 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 81.0 &lt;br&gt;</description>
+			<georss:point>-6.688 147.98</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.4, Loyalty Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3038475&amp;orid=417122&amp;sta=NFK</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 11 May 2011 09:43:34 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 11 May 2011 19:43:34 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 66.0 &lt;br&gt;</description>
+			<georss:point>-20.369 168.341</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.1, Loyalty Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3038434&amp;orid=417081&amp;sta=NFK</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 11 May 2011 09:21:41 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 11 May 2011 19:21:41 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 78.0 &lt;br&gt;</description>
+			<georss:point>-20.454 168.4</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.3, Vanuatu Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3038401&amp;orid=417060&amp;sta=NFK</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 11 May 2011 09:16:30 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 11 May 2011 19:16:30 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 78.0 &lt;br&gt;</description>
+			<georss:point>-20.218 168.33</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 6.0, Loyalty Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3038294&amp;orid=416970&amp;sta=NFK</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 11 May 2011 08:19:40 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 11 May 2011 18:19:40 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 64.0 &lt;br&gt;</description>
+			<georss:point>-20.318 168.436</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.1, Fiji Islands Region.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3037993&amp;orid=416655&amp;sta=NIUE</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 11 May 2011 00:48:05 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 11 May 2011 10:48:05 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 334.0 &lt;br&gt;</description>
+			<georss:point>-18.87 -176.239</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.4, Jilin-Heilongjiang Border Region, China.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3037800&amp;orid=416455&amp;sta=N/A</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 10 May 2011 15:26:05 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 11 May 2011 01:26:05 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 544.0 &lt;br&gt;</description>
+			<georss:point>43.293 130.932</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 1.5, SW of Quairading, WA.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3038199&amp;orid=2151741&amp;sta=null</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 10 May 2011 13:36:46 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 10 May 2011 23:36:46 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 2.0 &lt;br&gt;</description>
+			<georss:point>-32.125 117.186</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 1.6, SW of Quairading, WA.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3038184&amp;orid=2151740&amp;sta=null</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 10 May 2011 13:29:21 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 10 May 2011 23:29:21 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 0.0 &lt;br&gt;</description>
+			<georss:point>-32.121 117.185</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.3, Loyalty Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3037563&amp;orid=416304&amp;sta=EIDS</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 10 May 2011 12:00:34 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 10 May 2011 22:00:34 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 50.0 &lt;br&gt;</description>
+			<georss:point>-20.021 168.441</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.2, Loyalty Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3037538&amp;orid=416279&amp;sta=LHI</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 10 May 2011 11:32:02 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 10 May 2011 21:32:02 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 174.0 &lt;br&gt;</description>
+			<georss:point>-21.624 169.521</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.2, Loyalty Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3037471&amp;orid=416221&amp;sta=NFK</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 10 May 2011 10:44:14 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 10 May 2011 20:44:14 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 64.0 &lt;br&gt;</description>
+			<georss:point>-20.329 168.428</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.2, Loyalty Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3037443&amp;orid=416193&amp;sta=NFK</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 10 May 2011 10:37:17 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 10 May 2011 20:37:17 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 49.0 &lt;br&gt;</description>
+			<georss:point>-20.338 168.345</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.7, Loyalty Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3037381&amp;orid=416131&amp;sta=NFK</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 10 May 2011 10:24:24 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 10 May 2011 20:24:24 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 60.0 &lt;br&gt;</description>
+			<georss:point>-20.371 168.389</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 7.1, Loyalty Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3037171&amp;orid=415938&amp;sta=NFK</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 10 May 2011 08:55:14 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 10 May 2011 18:55:14 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 52.0 &lt;br&gt;</description>
+			<georss:point>-20.291 168.314</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.1, Vanuatu Islands.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3036945&amp;orid=415737&amp;sta=EIDS</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 09 May 2011 22:02:28 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 10 May 2011 08:02:28 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 223.0 &lt;br&gt;</description>
+			<georss:point>-19.196 169.03</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 5.4, Mindanao, Philippines.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3036824&amp;orid=415634&amp;sta=MTN</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 09 May 2011 19:13:27 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 10 May 2011 05:13:27 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 41.0 &lt;br&gt;</description>
+			<georss:point>5.47 126.647</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 6.2, West of Macquarie Island.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3036759&amp;orid=415569&amp;sta=MCQ</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 09 May 2011 18:54:45 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 10 May 2011 04:54:45 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 36.0 &lt;br&gt;</description>
+			<georss:point>-56.89 147.789</georss:point>
+		</item>
+		<item>
+			<title>Magnitude 3.5, Off Kalbarri, WA.</title>
+			<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3036660&amp;orid=415480&amp;sta=MORW</link>
+			<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;
+				UTC: 09 May 2011 08:18:10 (UTC)&lt;br&gt;Canberra, Sydney,
+				Melbourne: 09 May 2011 18:18:10 &lt;br&gt;&lt;strong&gt; Depth
+				&lt;/strong&gt;: 10.0 &lt;br&gt;</description>
+			<georss:point>-27.25 112.972</georss:point>
+		</item>
+	</channel>
+</rss>

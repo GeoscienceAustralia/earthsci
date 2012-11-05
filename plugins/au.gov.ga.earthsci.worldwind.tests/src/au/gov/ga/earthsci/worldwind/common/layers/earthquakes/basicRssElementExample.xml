@@ -1,0 +1,6 @@
+<item xmlns:georss="http://www.georss.org/georss">
+	<title>Magnitude 5.3, Vanuatu Islands.</title>
+	<link>http://www.ga.gov.au/earthquakes/getQuakeDetails.do?quakeId=3038401&amp;orid=417060&amp;sta=NFK</link>
+	<description>&lt;strong&gt; Date and time &lt;/strong&gt; &lt;br&gt;	UTC: 11 May 2011 09:16:30  (UTC)&lt;br&gt;Canberra, Sydney, Melbourne: 11 May 2011 19:16:30  &lt;br&gt;&lt;strong&gt; Depth &lt;/strong&gt;: 78.0 &lt;br&gt;</description>
+	<georss:point>-20.218 168.33</georss:point>
+</item>

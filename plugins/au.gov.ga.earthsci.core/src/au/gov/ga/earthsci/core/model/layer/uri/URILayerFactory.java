@@ -18,8 +18,8 @@ package au.gov.ga.earthsci.core.model.layer.uri;
 import gov.nasa.worldwind.layers.Layer;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -34,11 +34,9 @@ import au.gov.ga.earthsci.core.model.layer.uri.handler.LayerURIHandlerException;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-final public class URILayerFactory
+public class URILayerFactory
 {
-	private URILayerFactory() {}
-	
-	private static final Map<String, ILayerURIHandler> HANDLERS = new HashMap<String, ILayerURIHandler>();
+	private final static List<ILayerURIHandler> handlers = new ArrayList<ILayerURIHandler>();
 
 	static
 	{
@@ -53,9 +51,9 @@ final public class URILayerFactory
 	 * 
 	 * @param handler
 	 */
-	public static void registerLayerURIHandler(final ILayerURIHandler handler)
+	public static void registerLayerURIHandler(ILayerURIHandler handler)
 	{
-		HANDLERS.put(handler.getSupportedScheme().toLowerCase(), handler);
+		handlers.add(handler);
 	}
 
 	/**
@@ -64,9 +62,9 @@ final public class URILayerFactory
 	 * @param handler
 	 * @see #registerLayerURIHandler(ILayerURIHandler)
 	 */
-	public static void unregisterLayerURIHandler(final ILayerURIHandler handler)
+	public static void unregisterLayerURIHandler(ILayerURIHandler handler)
 	{
-		HANDLERS.remove(handler.getSupportedScheme().toLowerCase());
+		handlers.remove(handler);
 	}
 
 	/**
@@ -81,25 +79,26 @@ final public class URILayerFactory
 	 * @return Layer created from the URI
 	 * @throws URILayerFactoryException
 	 */
-	public static Layer createLayer(final URI uri, final IProgressMonitor monitor) throws URILayerFactoryException
+	public static Layer createLayer(URI uri, IProgressMonitor monitor) throws URILayerFactoryException
 	{
 		if (uri.getScheme() == null)
 		{
 			throw new URILayerFactoryException("URI scheme is blank"); //$NON-NLS-1$
 		}
-		final ILayerURIHandler handler = HANDLERS.get(uri.getScheme().toLowerCase());
-		if (handler == null)
+		for (ILayerURIHandler handler : handlers)
 		{
-			throw new URILayerFactoryException(
-					"Don't know how to create layer from URI with scheme: " + uri.getScheme()); //$NON-NLS-1$
+			if (handler.isSchemeSupported(uri.getScheme()))
+			{
+				try
+				{
+					return handler.createLayer(uri, monitor);
+				}
+				catch (LayerURIHandlerException e)
+				{
+					throw new URILayerFactoryException(e);
+				}
+			}
 		}
-		try
-		{
-			return handler.createLayer(uri, monitor);
-		}
-		catch (LayerURIHandlerException e)
-		{
-			throw new URILayerFactoryException(e);
-		}
+		throw new URILayerFactoryException("Don't know how to create layer from URI with scheme: " + uri.getScheme()); //$NON-NLS-1$
 	}
 }

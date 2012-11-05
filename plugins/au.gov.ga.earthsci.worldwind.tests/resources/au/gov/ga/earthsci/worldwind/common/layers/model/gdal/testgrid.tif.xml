@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Layer version="1" layerType="ModelLayer">
+
+	<DisplayName>testgrid</DisplayName>
+
+	<URL>testgrid.tif</URL>
+	<DataFormat>GDAL</DataFormat>
+
+	<DataCacheName>GA/test/testgrid.tif</DataCacheName>
+	
+	<MaxVariance>0</MaxVariance>
+	
+	<ColorMap percentages="true" interpolateHue="true">
+		<Entry value="0" red="255" green="0" blue="0"/>
+		<Entry value="0.5" red="0" green="255" blue="255"/>
+		<Entry value="1" red="0" green="0" blue="255"/>
+	</ColorMap>
+	
+</Layer>

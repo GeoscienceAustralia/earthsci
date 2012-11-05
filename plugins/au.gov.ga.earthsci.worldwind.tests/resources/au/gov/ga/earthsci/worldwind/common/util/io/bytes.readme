@@ -1,0 +1,7 @@
+==================
+bytes.out 
+==================
+Contains 100 32bit (4-byte) floating point values starting at 0.0 with an increment of 0.3.
+
+ByteOrder: Little Endian
+Format: IEEE 32bit
