@@ -19,6 +19,7 @@ import gov.nasa.worldwind.util.WWXML;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -74,6 +75,18 @@ public class XmlUtil
 	}
 
 	/**
+	 * Get all children {@link Element}s of parent.
+	 * 
+	 * @param parent
+	 *            Parent to search
+	 * @return Array of {@link Element} children of parent
+	 */
+	public static Element[] getElements(Node parent)
+	{
+		return getChildrenImplementing(parent, Element.class);
+	}
+
+	/**
 	 * Get the first child node of parent that implements/subclasses the given
 	 * type.
 	 * 
@@ -126,6 +139,50 @@ public class XmlUtil
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Get all child nodes of parent that implement/subclass the given type.
+	 * 
+	 * @param parent
+	 *            Parent to search
+	 * @param nodeType
+	 *            Type of child to search for
+	 * @return Array of children of parent that conform to the given nodeType
+	 */
+	public static <N extends Node> N[] getChildrenImplementing(Node parent, Class<N> nodeType)
+	{
+		if (parent == null)
+		{
+			return null;
+		}
+		NodeList children = parent.getChildNodes();
+		if (children == null)
+		{
+			return null;
+		}
+		int count = 0;
+		for (int i = 0; i < children.getLength(); i++)
+		{
+			Node node = children.item(i);
+			if (nodeType.isAssignableFrom(node.getClass()))
+			{
+				count++;
+			}
+		}
+		@SuppressWarnings("unchecked")
+		N[] array = (N[]) Array.newInstance(nodeType, count);
+		for (int i = 0, pos = 0; i < children.getLength(); i++)
+		{
+			Node node = children.item(i);
+			if (nodeType.isAssignableFrom(node.getClass()))
+			{
+				@SuppressWarnings("unchecked")
+				N n = (N) node;
+				Array.set(array, pos++, n);
+			}
+		}
+		return array;
 	}
 
 	/**
@@ -271,15 +328,15 @@ public class XmlUtil
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		return transformerFactory.newTransformer();
 	}
-	
+
 	/**
 	 * Open the XML document referenced in the given source
 	 * <p/>
 	 * Supports:
 	 * <ul>
-	 * 	<li> {@link Document}
-	 *  <li> {@link URI} (for supported protocols - see {@link URI#toURL()})
-	 *  <li> and all formats supported by {@link WWXML#openDocument(Object)}
+	 * <li> {@link Document}
+	 * <li> {@link URI} (for supported protocols - see {@link URI#toURL()})
+	 * <li>and all formats supported by {@link WWXML#openDocument(Object)}
 	 * </ul>
 	 */
 	public static Document openDocument(Object source)
@@ -288,24 +345,24 @@ public class XmlUtil
 		{
 			return null;
 		}
-		
+
 		if (source instanceof Document)
 		{
-			return (Document)source;
+			return (Document) source;
 		}
-		
+
 		if (source instanceof URI)
 		{
 			try
 			{
-				return WWXML.openDocument(((URI)source).toURL());
+				return WWXML.openDocument(((URI) source).toURL());
 			}
 			catch (Exception e)
 			{
 				return null;
 			}
 		}
-		
+
 		try
 		{
 			return WWXML.openDocument(source);
@@ -315,7 +372,7 @@ public class XmlUtil
 			return null;
 		}
 	}
-	
+
 	/**
 	 * @return The XML element from a generic source. If the source is an
 	 *         {@link Element}, will return the provided source. Otherwise, will
@@ -348,30 +405,36 @@ public class XmlUtil
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Return the text at the given path relative to the given context.
 	 * 
-	 * @param context The element from which the path is relative to
-	 * @param path The path to the text value to return
+	 * @param context
+	 *            The element from which the path is relative to
+	 * @param path
+	 *            The path to the text value to return
 	 * 
-	 * @return the text at the given path relative to the given context, or <code>null</code> if none is found
+	 * @return the text at the given path relative to the given context, or
+	 *         <code>null</code> if none is found
 	 */
 	public static String getText(Element context, String path)
 	{
 		return WWXML.getText(context, path);
 	}
-	
+
 	/**
-	 * Return the text at the given path relative to the given context, returning the provided default if
-	 * none is found.
+	 * Return the text at the given path relative to the given context,
+	 * returning the provided default if none is found.
 	 * 
-	 * @param context The element from which the path is relative to
-	 * @param path The path to the text value to return
-	 * @param def The default value to return if none is found
+	 * @param context
+	 *            The element from which the path is relative to
+	 * @param path
+	 *            The path to the text value to return
+	 * @param def
+	 *            The default value to return if none is found
 	 * 
-	 * @return the text at the given path relative to the given context, or the provided default if
-	 * none is found.
+	 * @return the text at the given path relative to the given context, or the
+	 *         provided default if none is found.
 	 */
 	public static String getText(Element context, String path, String def)
 	{
@@ -379,15 +442,20 @@ public class XmlUtil
 	}
 
 	/**
-	 * Return the text at the given path relative to the given context, returning the provided default if none is found.
+	 * Return the text at the given path relative to the given context,
+	 * returning the provided default if none is found.
 	 * 
-	 * @param context The element from which the path is relative to
-	 * @param path The path to the text value to return
-	 * @param def The default value to return if none is found
-	 * @param xpath An {@link XPath} instance that can be reused across calls
+	 * @param context
+	 *            The element from which the path is relative to
+	 * @param path
+	 *            The path to the text value to return
+	 * @param def
+	 *            The default value to return if none is found
+	 * @param xpath
+	 *            An {@link XPath} instance that can be reused across calls
 	 * 
-	 * @return the text at the given path relative to the given context, or the provided default if
-	 * none is found.
+	 * @return the text at the given path relative to the given context, or the
+	 *         provided default if none is found.
 	 */
 	public static String getText(Element context, String path, String def, XPath xpath)
 	{
@@ -458,17 +526,23 @@ public class XmlUtil
 		}
 		return i;
 	}
-	
+
 	/**
-	 * Return a URL created from the text identified at the given path relative to the provided XML element.
-	 *  
-	 * @param element The XML element the path is relative to
-	 * @param path The xpath expression identifying the text to use to generate the URL
-	 * @param context The URL context to use for construction of relative URLs
+	 * Return a URL created from the text identified at the given path relative
+	 * to the provided XML element.
+	 * 
+	 * @param element
+	 *            The XML element the path is relative to
+	 * @param path
+	 *            The xpath expression identifying the text to use to generate
+	 *            the URL
+	 * @param context
+	 *            The URL context to use for construction of relative URLs
 	 * 
 	 * @return URL created from the text identified at the given path
 	 * 
-	 * @throws MalformedURLException If the identified text cannot be converted to a valid URL
+	 * @throws MalformedURLException
+	 *             If the identified text cannot be converted to a valid URL
 	 */
 	public static URL getURL(Element element, String path, URL context) throws MalformedURLException
 	{
@@ -477,16 +551,23 @@ public class XmlUtil
 	}
 
 	/**
-	 * Return a URL created from the text identified at the given path relative to the provided XML element.
-	 *  
-	 * @param element The XML element the path is relative to
-	 * @param path The xpath expression identifying the text to use to generate the URL
-	 * @param context The URL context to use for construction of relative URLs
-	 * @param xpath An {@link XPath} instance that can be reused between calls
+	 * Return a URL created from the text identified at the given path relative
+	 * to the provided XML element.
+	 * 
+	 * @param element
+	 *            The XML element the path is relative to
+	 * @param path
+	 *            The xpath expression identifying the text to use to generate
+	 *            the URL
+	 * @param context
+	 *            The URL context to use for construction of relative URLs
+	 * @param xpath
+	 *            An {@link XPath} instance that can be reused between calls
 	 * 
 	 * @return URL created from the text identified at the given path
 	 * 
-	 * @throws MalformedURLException If the identified text cannot be converted to a valid URL
+	 * @throws MalformedURLException
+	 *             If the identified text cannot be converted to a valid URL
 	 */
 	public static URL getURL(Element element, String path, URL context, XPath xpath) throws MalformedURLException
 	{
@@ -506,15 +587,20 @@ public class XmlUtil
 		}
 		return new URL(context, text);
 	}
-	
+
 	/**
-	 * Returns all elements identified by the given XPath expression relative to the provided element.
+	 * Returns all elements identified by the given XPath expression relative to
+	 * the provided element.
 	 * 
-	 * @param context The element from which the xpath expression is relative
-	 * @param path The xpath expression to use for locating elements
-	 * @param xpath An {@link XPath} instance that can be reused between calls
+	 * @param context
+	 *            The element from which the xpath expression is relative
+	 * @param path
+	 *            The xpath expression to use for locating elements
+	 * @param xpath
+	 *            An {@link XPath} instance that can be reused between calls
 	 * 
-	 * @return All elements identified by the given XPath expression, or the empty array if none are found.
+	 * @return All elements identified by the given XPath expression, or the
+	 *         empty array if none are found.
 	 */
 	public static Element[] getElements(Element context, String path, XPath xpath)
 	{
