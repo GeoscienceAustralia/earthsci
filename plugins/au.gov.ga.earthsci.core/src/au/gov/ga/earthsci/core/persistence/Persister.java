@@ -1007,6 +1007,7 @@ public class Persister
 		{
 			return c;
 		}
+		name = name.replace('-', '$');
 		try
 		{
 			return getClass().getClassLoader().loadClass(name);
@@ -1048,7 +1049,23 @@ public class Persister
 		if (Util.isEmpty(name))
 		{
 			//we want the component type of an array to still use the exportable name, so recurse if array
-			name = type.isArray() ? (getNameFromType(type.getComponentType()) + "[]") : type.getCanonicalName(); //$NON-NLS-1$
+			if (type.isLocalClass() || type.isAnonymousClass())
+			{
+				throw new PersistenceException("Local and anonymous classes cannot be persisted: " + type); //$NON-NLS-1$
+			}
+			if (type.isMemberClass() && !Modifier.isStatic(type.getModifiers()))
+			{
+				throw new PersistenceException("Non-static member classes cannot be persisted: " + type); //$NON-NLS-1$
+			}
+			if (type.isArray())
+			{
+				name = getNameFromType(type.getComponentType()) + "[]"; //$NON-NLS-1$
+			}
+			else
+			{
+				name = type.getName().replace('$', '-');
+
+			}
 		}
 		if (Util.isEmpty(name))
 		{
