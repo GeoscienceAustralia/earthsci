@@ -5,7 +5,12 @@
       <children xsi:type="advanced:Perspective" xmi:id="_007tcPsMEeG36NOaHUgVKA">
         <children xsi:type="basic:PartSashContainer" xmi:id="_007tcfsMEeG36NOaHUgVKA" horizontal="true">
           <children xsi:type="basic:PartStack" xmi:id="_007tcvsMEeG36NOaHUgVKA">
-            <children xsi:type="basic:Part" xmi:id="_zNrj8PvCEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layertree" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.LayerTreePart" label="Layers Tree" closeable="true"/>
+            <children xsi:type="basic:Part" xmi:id="_zNrj8PvCEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layertree" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.LayerTreePart" label="Layers Tree" closeable="true">
+              <handlers xmi:id="_2YptUCfDEeKGOtKz07iBzg" elementId="" command="_09bh8CfCEeKGOtKz07iBzg"/>
+              <handlers xmi:id="_63f3MCfDEeKGOtKz07iBzg" elementId="" command="_1NhMYCfCEeKGOtKz07iBzg"/>
+              <handlers xmi:id="_7_n84CfDEeKGOtKz07iBzg" elementId="" command="_1dBA8CfCEeKGOtKz07iBzg"/>
+              <handlers xmi:id="_AHhmYCfEEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.DeleteHandler" command="_7dKlgCfCEeKGOtKz07iBzg"/>
+            </children>
             <children xsi:type="basic:Part" xmi:id="_rlFg4BjMEeKlbolCp2yOsg" elementId="au.gov.ga.earthsci.application.catalog.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.catalog.part.CatalogBrowserPart" label="Catalog" closeable="true"/>
           </children>
           <children xsi:type="basic:PartSashContainer" xmi:id="_y24REA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partsashcontainer.0">
@@ -65,17 +70,31 @@
     <bindings xmi:id="_007tY_sMEeG36NOaHUgVKA" keySequence="M1+S" command="_007tYfsMEeG36NOaHUgVKA"/>
     <bindings xmi:id="_007tZvsMEeG36NOaHUgVKA" keySequence="M1+A" command="_007tZPsMEeG36NOaHUgVKA"/>
     <bindings xmi:id="_fpbdkAOLEeK17JdaarPZug" keySequence="F1" command="_t3D6kAODEeK17JdaarPZug"/>
+    <bindings xmi:id="_s4zkMCfCEeKGOtKz07iBzg" keySequence="M1+C" command="_1NhMYCfCEeKGOtKz07iBzg"/>
+    <bindings xmi:id="_tZcMECfCEeKGOtKz07iBzg" keySequence="M1+X" command="_09bh8CfCEeKGOtKz07iBzg"/>
+    <bindings xmi:id="_tqRdYCfCEeKGOtKz07iBzg" keySequence="M1+V" command="_1dBA8CfCEeKGOtKz07iBzg"/>
+    <bindings xmi:id="_X7SL8CfDEeKGOtKz07iBzg" keySequence="M1+P" command="_940mAPyIEeG36NOaHUgVKA"/>
+    <bindings xmi:id="_Ya3q8CfDEeKGOtKz07iBzg" keySequence="M1+Z" command="_O1ivcCfDEeKGOtKz07iBzg"/>
+    <bindings xmi:id="_Y5kZICfDEeKGOtKz07iBzg" keySequence="M1+Y" command="_RYtPwCfDEeKGOtKz07iBzg"/>
+    <bindings xmi:id="_G-EAYCfEEeKGOtKz07iBzg" keySequence="DEL" command="_7dKlgCfCEeKGOtKz07iBzg"/>
   </bindingTables>
   <rootContext xmi:id="_007tUfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_007tUvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
     <children xmi:id="_007tU_sMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
   </rootContext>
-  <commands xmi:id="_007tWvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.exit" commandName="quitCommand"/>
+  <commands xmi:id="_007tWvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.exit" commandName="exitCommand"/>
   <commands xmi:id="_007tXvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.open" commandName="openCommand"/>
   <commands xmi:id="_007tYfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.save" commandName="saveCommand"/>
   <commands xmi:id="_007tZPsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
+  <commands xmi:id="_O1ivcCfDEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.undo" commandName="undoCommand"/>
+  <commands xmi:id="_RYtPwCfDEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.redo" commandName="redoCommand"/>
+  <commands xmi:id="_09bh8CfCEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.cut" commandName="cutCommand"/>
+  <commands xmi:id="_1NhMYCfCEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.copy" commandName="copyCommand"/>
+  <commands xmi:id="_1dBA8CfCEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.paste" commandName="pasteCommand"/>
+  <commands xmi:id="_7dKlgCfCEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.delete" commandName="deleteCommand"/>
+  <commands xmi:id="_9TLr8CfCEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.selectAll" commandName="selectAllCommand"/>
+  <commands xmi:id="_940mAPyIEeG36NOaHUgVKA" elementId="org.eclipse.ui.window.preferences" commandName="preferencesCommand"/>
   <commands xmi:id="_pU-REPvQEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.showView" commandName="showViewCommand"/>
-  <commands xmi:id="_940mAPyIEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.showPreferences" commandName="showPreferencesCommand"/>
   <commands xmi:id="_t3D6kAODEeK17JdaarPZug" elementId="org.eclipse.ui.help.helpContents" commandName="showHelpCommand" description="Launch the help system"/>
   <commands xmi:id="_cQRlEBJgEeK3duY8thOvyA" elementId="au.gov.ga.earthsci.notification.part.groupby" commandName="notificationViewGroupByCommand" description="Controls grouping for the notification view"/>
   <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
