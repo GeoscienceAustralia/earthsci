@@ -15,11 +15,18 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Singleton;
+
+import org.eclipse.e4.core.di.annotations.Creatable;
+
 /**
  * Factory class that provides access to an {@link IRetrievalService} instance.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
+@Creatable
+@Singleton
 public class RetrievalServiceFactory
 {
 	private static IRetrievalService instance;
@@ -29,7 +36,8 @@ public class RetrievalServiceFactory
 		return instance;
 	}
 
-	static void setServiceInstance(IRetrievalService instance)
+	@PostConstruct
+	public void setup(IRetrievalService instance)
 	{
 		RetrievalServiceFactory.instance = instance;
 	}

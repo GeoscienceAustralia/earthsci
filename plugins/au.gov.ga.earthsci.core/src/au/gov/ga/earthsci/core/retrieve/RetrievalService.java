@@ -83,7 +83,7 @@ public class RetrievalService implements IRetrievalService
 	@PostConstruct
 	public void loadRetrievers(IExtensionRegistry registry, IEclipseContext context)
 	{
-		RetrievalServiceFactory.setServiceInstance(this);
+		context.set(IRetrievalService.class, this);
 		if (logger != null)
 		{
 			logger.info("Registering retrieval service retrievers"); //$NON-NLS-1$
