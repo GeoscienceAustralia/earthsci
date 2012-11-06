@@ -17,10 +17,14 @@ package au.gov.ga.earthsci.core.model.layer.uri.handler;
 
 import gov.nasa.worldwind.BasicFactory;
 import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.avlist.AVList;
+import gov.nasa.worldwind.avlist.AVListImpl;
 import gov.nasa.worldwind.layers.Layer;
 
 import java.io.InputStream;
 import java.net.URI;
+
+import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
  * Abstract {@link ILayerURIHandler} implementation that uses the configured
@@ -46,7 +50,16 @@ public abstract class AbstractInputStreamURIHandler extends AbstractURIHandler
 		Object o;
 		try
 		{
-			o = BasicFactory.create(AVKey.LAYER_FACTORY, is);
+			AVList params = new AVListImpl();
+			try
+			{
+				params.setValue(AVKeyMore.CONTEXT_URL, uri.toURL());
+			}
+			catch (Exception e)
+			{
+				//ignore
+			}
+			o = BasicFactory.create(AVKey.LAYER_FACTORY, is, params);
 		}
 		catch (Exception e)
 		{
