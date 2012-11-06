@@ -1,12 +1,17 @@
 package au.gov.ga.earthsci.application.parts.layer;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.property.list.IListProperty;
 import org.eclipse.core.databinding.property.list.MultiListProperty;
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.ui.di.Focus;
+import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -14,9 +19,11 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
@@ -28,12 +35,16 @@ public class LayerTreePart
 	@Inject
 	private ITreeModel model;
 
+	@Inject
+	private IEclipseContext context;
+
 	private CheckboxTreeViewer viewer;
 
-	@Inject
-	public void init(Composite parent)
+	@PostConstruct
+	public void init(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell, Composite parent)
 	{
 		viewer = new CheckboxTreeViewer(parent);
+		context.set(TreeViewer.class, viewer);
 
 		IListProperty childrenProperty = new MultiListProperty(new IListProperty[] { BeanProperties.list("children") }); //$NON-NLS-1$
 
@@ -124,5 +135,22 @@ public class LayerTreePart
 		Transfer[] transfers = new Transfer[] { LayerTransfer.getInstance() };
 		viewer.addDragSupport(ops, transfers, new LayerTreeDragSourceListener(viewer));
 		viewer.addDropSupport(ops, transfers, new LayerTreeDropAdapter(viewer, model));
+
+		//add copy and paste support
+		//Clipboard clipboard = new Clipboard(shell.getDisplay());
+		
+		//MPart part;
+		//part.getToolbar().
+
+		//IActionBars bars = getViewSite().getActionBars();
+		//bars.setGlobalActionHandler(ActionFactory.CUT.getId(), new CutGadgetAction(viewer, clipboard));
+		//bars.setGlobalActionHandler(ActionFactory.COPY.getId(), new CopyGadgetAction(viewer, clipboard));
+		//bars.setGlobalActionHandler(ActionFactory.PASTE.getId(), new PasteTreeGadgetAction(viewer, clipboard));
+	}
+
+	@Focus
+	private void setFocus()
+	{
+		viewer.getTree().setFocus();
 	}
 }
