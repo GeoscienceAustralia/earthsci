@@ -49,7 +49,9 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 {
 	protected URI layerURI;
 	protected Layer layer = new DummyLayer();
-	protected Set<String> propertiesChanged = new HashSet<String>();
+	private Set<String> propertiesChanged = new HashSet<String>();
+	private boolean copyingProperties = false;
+	private final Object layerSemaphore = new Object();
 
 	/**
 	 * @return The layer {@link URI} that uniquely defines how to create this
@@ -92,9 +94,13 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	 */
 	public void setLayer(Layer layer)
 	{
-		Layer oldValue = getLayer();
-		copyProperties(oldValue, layer);
-		this.layer = layer;
+		Layer oldValue;
+		synchronized (layerSemaphore)
+		{
+			oldValue = getLayer();
+			copyProperties(oldValue, layer);
+			this.layer = layer;
+		}
 		firePropertyChange("layer", oldValue, layer); //$NON-NLS-1$
 	}
 
@@ -107,31 +113,36 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	 * @param to
 	 *            Layer to set property values on
 	 */
-	protected void copyProperties(Layer from, Layer to)
+	private void copyProperties(Layer from, Layer to)
 	{
 		if (from == to)
 			return;
 
-		for (String property : propertiesChanged)
+		synchronized (propertiesChanged)
 		{
-			try
+			copyingProperties = true;
+			for (String property : propertiesChanged)
 			{
-				PropertyDescriptor fromPropertyDescriptor = new PropertyDescriptor(property, from.getClass());
-				PropertyDescriptor toPropertyDescriptor = new PropertyDescriptor(property, to.getClass());
-				Method getter = fromPropertyDescriptor.getReadMethod();
-				Method setter = toPropertyDescriptor.getWriteMethod();
-				Object value = getter.invoke(from);
-				setter.invoke(to, value);
+				try
+				{
+					PropertyDescriptor fromPropertyDescriptor = new PropertyDescriptor(property, from.getClass());
+					PropertyDescriptor toPropertyDescriptor = new PropertyDescriptor(property, to.getClass());
+					Method getter = fromPropertyDescriptor.getReadMethod();
+					Method setter = toPropertyDescriptor.getWriteMethod();
+					Object value = getter.invoke(from);
+					setter.invoke(to, value);
+				}
+				catch (IntrospectionException e)
+				{
+					//ignore (invalid property name)
+				}
+				catch (Exception e)
+				{
+					//TODO
+					e.printStackTrace();
+				}
 			}
-			catch (IntrospectionException e)
-			{
-				//ignore (invalid property name)
-			}
-			catch (Exception e)
-			{
-				//TODO
-				e.printStackTrace();
-			}
+			copyingProperties = false;
 		}
 	}
 
@@ -145,14 +156,26 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	public void firePropertyChange(PropertyChangeEvent propertyChangeEvent)
 	{
 		super.firePropertyChange(propertyChangeEvent);
-		propertiesChanged.add(propertyChangeEvent.getPropertyName());
+		synchronized (propertiesChanged)
+		{
+			if (!copyingProperties)
+			{
+				propertiesChanged.add(propertyChangeEvent.getPropertyName());
+			}
+		}
 	}
 
 	@Override
 	public void firePropertyChange(String propertyName, Object oldValue, Object newValue)
 	{
 		super.firePropertyChange(propertyName, oldValue, newValue);
-		propertiesChanged.add(propertyName);
+		synchronized (propertiesChanged)
+		{
+			if (!copyingProperties)
+			{
+				propertiesChanged.add(propertyName);
+			}
+		}
 	}
 
 	//////////////////////
