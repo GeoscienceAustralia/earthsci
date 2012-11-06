@@ -5,7 +5,7 @@
       <children xsi:type="advanced:Perspective" xmi:id="_007tcPsMEeG36NOaHUgVKA">
         <children xsi:type="basic:PartSashContainer" xmi:id="_007tcfsMEeG36NOaHUgVKA" horizontal="true">
           <children xsi:type="basic:PartStack" xmi:id="_007tcvsMEeG36NOaHUgVKA">
-            <children xsi:type="basic:Part" xmi:id="_zNrj8PvCEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layertree" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.LayerTreePart" label="Layers Tree" closeable="true"/>
+            <children xsi:type="basic:Part" xmi:id="_zNrj8PvCEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layertree" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.LayerTreePart" label="Layers Tree" closeable="true"/>
             <children xsi:type="basic:Part" xmi:id="_rlFg4BjMEeKlbolCp2yOsg" elementId="au.gov.ga.earthsci.application.catalog.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.catalog.part.CatalogBrowserPart" label="Catalog" closeable="true"/>
           </children>
           <children xsi:type="basic:PartSashContainer" xmi:id="_y24REA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partsashcontainer.0">
@@ -24,7 +24,7 @@
                   </children>
                 </menus>
               </children>
-              <children xsi:type="basic:Part" xmi:id="_xTsA0PvgEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layerlist" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.LayerListPart" label="Layers List" closeable="true"/>
+              <children xsi:type="basic:Part" xmi:id="_xTsA0PvgEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layerlist" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.LayerListPart" label="Layers List" closeable="true"/>
               <children xsi:type="basic:Part" xmi:id="_3rRB4BgDEeKQJ6pSqihtuA" elementId="au.gov.ga.earthsci.application.part.0" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.progress.view.ProgressView" label="Progress" closeable="true"/>
             </children>
           </children>

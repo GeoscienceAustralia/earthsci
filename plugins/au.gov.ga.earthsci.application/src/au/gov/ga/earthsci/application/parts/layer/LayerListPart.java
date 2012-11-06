@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts;
+package au.gov.ga.earthsci.application.parts.layer;
 
 import gov.nasa.worldwind.Model;
 import gov.nasa.worldwind.layers.Layer;

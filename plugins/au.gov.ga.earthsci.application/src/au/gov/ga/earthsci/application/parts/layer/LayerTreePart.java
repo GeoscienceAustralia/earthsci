@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.application.parts;
+package au.gov.ga.earthsci.application.parts.layer;
 
 import javax.inject.Inject;
 
@@ -14,6 +14,8 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
@@ -54,7 +56,7 @@ public class LayerTreePart
 			@Override
 			public String getColumnText(Object element, int columnIndex)
 			{
-				ILayerTreeNode<?> layerTreeNode = (ILayerTreeNode<?>) element;
+				ILayerTreeNode layerTreeNode = (ILayerTreeNode) element;
 				String label;
 				if (element instanceof LayerNode)
 				{
@@ -83,9 +85,9 @@ public class LayerTreePart
 			@Override
 			public boolean isGrayed(Object element)
 			{
-				if (element instanceof ILayerTreeNode<?>)
+				if (element instanceof ILayerTreeNode)
 				{
-					ILayerTreeNode<?> node = (ILayerTreeNode<?>) element;
+					ILayerTreeNode node = (ILayerTreeNode) element;
 					return !node.isAllChildrenEnabled();
 				}
 				return false;
@@ -94,9 +96,9 @@ public class LayerTreePart
 			@Override
 			public boolean isChecked(Object element)
 			{
-				if (element instanceof ILayerTreeNode<?>)
+				if (element instanceof ILayerTreeNode)
 				{
-					ILayerTreeNode<?> node = (ILayerTreeNode<?>) element;
+					ILayerTreeNode node = (ILayerTreeNode) element;
 					return node.isAnyChildrenEnabled();
 				}
 				return false;
@@ -109,12 +111,18 @@ public class LayerTreePart
 			public void checkStateChanged(CheckStateChangedEvent event)
 			{
 				Object element = event.getElement();
-				if (element instanceof ILayerTreeNode<?>)
+				if (element instanceof ILayerTreeNode)
 				{
-					ILayerTreeNode<?> node = (ILayerTreeNode<?>) element;
+					ILayerTreeNode node = (ILayerTreeNode) element;
 					node.enableChildren(event.getChecked());
 				}
 			}
 		});
+
+		//add drag and drop support
+		int ops = DND.DROP_COPY | DND.DROP_MOVE;
+		Transfer[] transfers = new Transfer[] { LayerTransfer.getInstance() };
+		viewer.addDragSupport(ops, transfers, new LayerTreeDragSourceListener(viewer));
+		viewer.addDropSupport(ops, transfers, new LayerTreeDropAdapter(viewer, model));
 	}
 }
