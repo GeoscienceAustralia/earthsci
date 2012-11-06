@@ -166,6 +166,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 			fillLayerList();
 			//TODO should we implement a (more efficient?) modification of the list according to changed children?
 		}
+		fireAnyAllChildrenEnabledChanged();
 		if (!isRoot())
 		{
 			//recurse up to the root node
@@ -176,16 +177,20 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	@Override
 	public void enabledChanged()
 	{
-		firePropertyChange(
-				"allChildrenEnabled", lastAllChildrenEnabled, lastAllChildrenEnabled = isAllChildrenEnabled()); //$NON-NLS-1$
-		firePropertyChange(
-				"anyChildrenEnabled", lastAnyChildrenEnabled, lastAnyChildrenEnabled = isAnyChildrenEnabled()); //$NON-NLS-1$
-
+		fireAnyAllChildrenEnabledChanged();
 		if (!isRoot())
 		{
 			//recurse up to the root node
 			getParent().getValue().enabledChanged();
 		}
+	}
+
+	private void fireAnyAllChildrenEnabledChanged()
+	{
+		firePropertyChange(
+				"allChildrenEnabled", lastAllChildrenEnabled, lastAllChildrenEnabled = isAllChildrenEnabled()); //$NON-NLS-1$
+		firePropertyChange(
+				"anyChildrenEnabled", lastAnyChildrenEnabled, lastAnyChildrenEnabled = isAnyChildrenEnabled()); //$NON-NLS-1$
 	}
 
 	protected class EnabledChangeListener implements PropertyChangeListener
