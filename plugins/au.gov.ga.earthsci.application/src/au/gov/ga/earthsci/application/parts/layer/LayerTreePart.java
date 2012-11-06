@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
@@ -39,12 +40,16 @@ public class LayerTreePart
 	private IEclipseContext context;
 
 	private CheckboxTreeViewer viewer;
+	private Clipboard clipboard;
 
 	@PostConstruct
 	public void init(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell, Composite parent)
 	{
 		viewer = new CheckboxTreeViewer(parent);
 		context.set(TreeViewer.class, viewer);
+
+		clipboard = new Clipboard(shell.getDisplay());
+		context.set(Clipboard.class, clipboard);
 
 		IListProperty childrenProperty = new MultiListProperty(new IListProperty[] { BeanProperties.list("children") }); //$NON-NLS-1$
 
@@ -135,17 +140,6 @@ public class LayerTreePart
 		Transfer[] transfers = new Transfer[] { LayerTransfer.getInstance() };
 		viewer.addDragSupport(ops, transfers, new LayerTreeDragSourceListener(viewer));
 		viewer.addDropSupport(ops, transfers, new LayerTreeDropAdapter(viewer, model));
-
-		//add copy and paste support
-		//Clipboard clipboard = new Clipboard(shell.getDisplay());
-		
-		//MPart part;
-		//part.getToolbar().
-
-		//IActionBars bars = getViewSite().getActionBars();
-		//bars.setGlobalActionHandler(ActionFactory.CUT.getId(), new CutGadgetAction(viewer, clipboard));
-		//bars.setGlobalActionHandler(ActionFactory.COPY.getId(), new CopyGadgetAction(viewer, clipboard));
-		//bars.setGlobalActionHandler(ActionFactory.PASTE.getId(), new PasteTreeGadgetAction(viewer, clipboard));
 	}
 
 	@Focus
