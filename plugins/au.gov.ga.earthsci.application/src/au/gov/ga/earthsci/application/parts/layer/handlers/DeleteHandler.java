@@ -17,14 +17,11 @@ package au.gov.ga.earthsci.application.parts.layer.handlers;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
  * Handles delete commands for the layer tree.
@@ -33,9 +30,6 @@ import au.gov.ga.earthsci.core.worldwind.ITreeModel;
  */
 public class DeleteHandler
 {
-	@Inject
-	private ITreeModel model;
-
 	@Execute
 	public void execute(TreeViewer viewer)
 	{
