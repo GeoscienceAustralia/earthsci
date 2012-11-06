@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -137,9 +138,10 @@ public class LayerTreePart
 
 		//add drag and drop support
 		int ops = DND.DROP_COPY | DND.DROP_MOVE;
-		Transfer[] transfers = new Transfer[] { LayerTransfer.getInstance() };
-		viewer.addDragSupport(ops, transfers, new LayerTreeDragSourceListener(viewer));
-		viewer.addDropSupport(ops, transfers, new LayerTreeDropAdapter(viewer, model));
+		viewer.addDragSupport(ops, new Transfer[] { LayerTransfer.getInstance() }, new LayerTreeDragSourceListener(
+				viewer));
+		viewer.addDropSupport(ops, new Transfer[] { LayerTransfer.getInstance(), FileTransfer.getInstance() },
+				new LayerTreeDropAdapter(viewer, model));
 	}
 
 	@Focus

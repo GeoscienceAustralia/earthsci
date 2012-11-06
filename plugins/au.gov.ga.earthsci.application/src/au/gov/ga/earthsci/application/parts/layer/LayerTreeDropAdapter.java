@@ -15,14 +15,18 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer;
 
+import java.io.File;
+
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
 import au.gov.ga.earthsci.application.parts.layer.LayerTransferData.TransferredLayer;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
@@ -46,8 +50,6 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 		if (d == null)
 			return false;
 
-		LayerTransferData data = (LayerTransferData) d;
-
 		int index;
 		ILayerTreeNode target = (ILayerTreeNode) getCurrentTarget();
 		if (target == null)
@@ -69,25 +71,49 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 			}
 		}
 
-		//cannot drop a gadget onto itself or a child
-		TransferredLayer[] toDrop = data.getLayers();
-		if (getCurrentOperation() == DND.DROP_MOVE)
+		if (LayerTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType))
 		{
-			for (TransferredLayer drop : toDrop)
+			LayerTransferData data = (LayerTransferData) d;
+
+			//cannot drop a gadget onto itself or a child
+			TransferredLayer[] toDrop = data.getLayers();
+			if (getCurrentOperation() == DND.DROP_MOVE)
 			{
-				if (!validDropTarget(target, drop))
-					return false;
+				for (TransferredLayer drop : toDrop)
+				{
+					if (!validDropTarget(target, drop))
+						return false;
+				}
+			}
+			for (int i = toDrop.length - 1; i >= 0; i--)
+			{
+				TransferredLayer layer = toDrop[i];
+				ILayerTreeNode node = layer.getNode();
+				target.add(index, node);
+				getViewer().add(target, node);
+				getViewer().reveal(node);
+			}
+			return true;
+		}
+		else if (FileTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType))
+		{
+			String[] filenames = (String[]) d;
+			for (String filename : filenames)
+			{
+				File file = new File(filename);
+				if (file.isFile())
+				{
+					LayerNode node = new LayerNode();
+					node.setName(file.getName());
+					node.setEnabled(true);
+					node.setLayerURI(file.toURI());
+					target.add(index, node);
+					getViewer().add(target, node);
+					getViewer().reveal(node);
+				}
 			}
 		}
-		for (int i = toDrop.length - 1; i >= 0; i--)
-		{
-			TransferredLayer layer = toDrop[i];
-			ILayerTreeNode node = layer.getNode();
-			target.add(index, node);
-			getViewer().add(target, node);
-			getViewer().reveal(node);
-		}
-		return true;
+		return false;
 	}
 
 	protected boolean validDropTarget(ILayerTreeNode target, TransferredLayer drop)
@@ -107,6 +133,6 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 	@Override
 	public boolean validateDrop(Object target, int op, TransferData type)
 	{
-		return LayerTransfer.getInstance().isSupportedType(type);
+		return LayerTransfer.getInstance().isSupportedType(type) || FileTransfer.getInstance().isSupportedType(type);
 	}
 }
