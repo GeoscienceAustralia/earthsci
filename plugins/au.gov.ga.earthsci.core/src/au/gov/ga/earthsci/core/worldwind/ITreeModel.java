@@ -16,7 +16,7 @@
 package au.gov.ga.earthsci.core.worldwind;
 
 import gov.nasa.worldwind.Model;
-import au.gov.ga.earthsci.core.model.layer.FolderNode;
+import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 
 /**
  * {@link Model} subinterface that supports a layer list in a tree hierarchy.
@@ -28,5 +28,5 @@ public interface ITreeModel extends Model
 	/**
 	 * @return The root node of the layer list tree.
 	 */
-	FolderNode getRootNode();
+	ILayerTreeNode getRootNode();
 }

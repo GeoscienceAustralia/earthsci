@@ -30,6 +30,7 @@ import javax.inject.Singleton;
 import org.eclipse.e4.core.di.annotations.Creatable;
 
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
+import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerPersister;
 import au.gov.ga.earthsci.core.model.layer.uri.DefaultLayers;
 import au.gov.ga.earthsci.core.util.ConfigurationUtil;
@@ -44,7 +45,7 @@ import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 @Singleton
 public class WorldWindModel extends BasicModel implements ITreeModel
 {
-	private final FolderNode rootNode;
+	private final ILayerTreeNode rootNode;
 	private static final String layerFilename = "layers.xml"; //$NON-NLS-1$
 	private static final File layerFile = ConfigurationUtil.getWorkspaceFile(layerFilename);
 
@@ -74,7 +75,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 	}
 
 	@Override
-	public FolderNode getRootNode()
+	public ILayerTreeNode getRootNode()
 	{
 		return rootNode;
 	}
@@ -85,9 +86,9 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		saveRootNode(rootNode);
 	}
 
-	protected static void loadRootNode(FolderNode rootNode)
+	protected static void loadRootNode(ILayerTreeNode rootNode)
 	{
-		FolderNode loadedNode = null;
+		ILayerTreeNode loadedNode = null;
 		try
 		{
 			loadedNode = LayerPersister.loadLayers(layerFile);
@@ -114,7 +115,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		}
 	}
 
-	protected static void saveRootNode(FolderNode rootNode)
+	protected static void saveRootNode(ILayerTreeNode rootNode)
 	{
 		try
 		{

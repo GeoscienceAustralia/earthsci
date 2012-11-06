@@ -33,8 +33,7 @@ import au.gov.ga.earthsci.core.util.IEnableable;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 @Exportable
-public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLayerTreeNode> implements
-		ILayerTreeNode<AbstractLayerTreeNode>
+public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeNode> implements ILayerTreeNode
 {
 	private String name;
 	private LayerList layerList;
@@ -64,7 +63,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 
 	@Persistent
 	@Override
-	public ITreeNode<AbstractLayerTreeNode>[] getChildren()
+	public ITreeNode<ILayerTreeNode>[] getChildren()
 	{
 		return super.getChildren();
 	}
@@ -81,7 +80,8 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 		return !anyChildrenEnabledEquals(false);
 	}
 
-	protected boolean anyChildrenEnabledEquals(boolean enabled)
+	@Override
+	public boolean anyChildrenEnabledEquals(boolean enabled)
 	{
 		if (this instanceof IEnableable)
 		{
@@ -91,7 +91,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 		}
 		if (hasChildren())
 		{
-			for (ITreeNode<AbstractLayerTreeNode> child : getChildren())
+			for (ITreeNode<ILayerTreeNode> child : getChildren())
 			{
 				if (child.getValue().anyChildrenEnabledEquals(enabled))
 					return true;
@@ -110,7 +110,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 		}
 		if (hasChildren())
 		{
-			for (ITreeNode<AbstractLayerTreeNode> child : getChildren())
+			for (ITreeNode<ILayerTreeNode> child : getChildren())
 			{
 				child.getValue().enableChildren(enabled);
 			}
@@ -137,28 +137,28 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 		}
 	}
 
-	private void addNodesToLayerList(AbstractLayerTreeNode node)
+	private void addNodesToLayerList(ILayerTreeNode node)
 	{
 		if (node instanceof Layer)
 		{
 			layerList.add((Layer) node);
 		}
-		for (ITreeNode<AbstractLayerTreeNode> child : node.getChildren())
+		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
 		{
 			addNodesToLayerList(child.getValue());
 		}
 	}
 
 	@Override
-	protected void setChildren(ITreeNode<AbstractLayerTreeNode>[] children)
+	protected void setChildren(ITreeNode<ILayerTreeNode>[] children)
 	{
-		ITreeNode<AbstractLayerTreeNode>[] oldChildren = getChildren();
+		ITreeNode<ILayerTreeNode>[] oldChildren = getChildren();
 		super.setChildren(children);
 		childrenChanged(oldChildren, children);
 	}
 
-	protected void childrenChanged(ITreeNode<AbstractLayerTreeNode>[] oldChildren,
-			ITreeNode<AbstractLayerTreeNode>[] newChildren)
+	@Override
+	public void childrenChanged(ITreeNode<ILayerTreeNode>[] oldChildren, ITreeNode<ILayerTreeNode>[] newChildren)
 	{
 		if (layerList != null)
 		{
@@ -173,7 +173,8 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<AbstractLay
 		}
 	}
 
-	protected void enabledChanged()
+	@Override
+	public void enabledChanged()
 	{
 		firePropertyChange(
 				"allChildrenEnabled", lastAllChildrenEnabled, lastAllChildrenEnabled = isAllChildrenEnabled()); //$NON-NLS-1$

@@ -23,6 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
@@ -64,7 +66,7 @@ public class LayerPersister
 	 * @throws TransformerException
 	 * @throws PersistenceException
 	 */
-	public static void saveLayers(FolderNode rootNode, File file) throws IOException, TransformerException,
+	public static void saveLayers(ILayerTreeNode rootNode, File file) throws IOException, TransformerException,
 			PersistenceException
 	{
 		FileOutputStream os = null;
@@ -94,7 +96,7 @@ public class LayerPersister
 	 * @throws IOException
 	 * @throws PersistenceException
 	 */
-	public static void saveLayers(FolderNode rootNode, OutputStream os) throws TransformerException, IOException,
+	public static void saveLayers(ILayerTreeNode rootNode, OutputStream os) throws TransformerException, IOException,
 			PersistenceException
 	{
 		DocumentBuilder documentBuilder = WWXML.createDocumentBuilder(false);
@@ -102,6 +104,31 @@ public class LayerPersister
 		Element element = document.createElement("Layers"); //$NON-NLS-1$
 		document.appendChild(element);
 		saveLayers(rootNode, element);
+		XmlUtil.saveDocumentToFormattedStream(document, os);
+	}
+
+	/**
+	 * Save the given layers (and children) to an OutputStream.
+	 * 
+	 * @param array
+	 *            Array of layers to save
+	 * @param os
+	 *            OutputStream to save to
+	 * @throws TransformerException
+	 * @throws IOException
+	 * @throws PersistenceException
+	 */
+	public static void saveLayerArray(ILayerTreeNode[] array, OutputStream os) throws TransformerException,
+			IOException, PersistenceException
+	{
+		DocumentBuilder documentBuilder = WWXML.createDocumentBuilder(false);
+		Document document = documentBuilder.newDocument();
+		Element element = document.createElement("Layers"); //$NON-NLS-1$
+		document.appendChild(element);
+		for (ILayerTreeNode n : array)
+		{
+			saveLayers(n, element);
+		}
 		XmlUtil.saveDocumentToFormattedStream(document, os);
 	}
 
@@ -115,7 +142,7 @@ public class LayerPersister
 	 *            Parent element to save under
 	 * @throws PersistenceException
 	 */
-	public static void saveLayers(FolderNode rootNode, Element element) throws PersistenceException
+	public static void saveLayers(ILayerTreeNode rootNode, Element element) throws PersistenceException
 	{
 		persister.save(rootNode, element, null);
 	}
@@ -130,7 +157,7 @@ public class LayerPersister
 	 * @throws IOException
 	 * @throws PersistenceException
 	 */
-	public static FolderNode loadLayers(File file) throws SAXException, IOException, PersistenceException
+	public static ILayerTreeNode loadLayers(File file) throws SAXException, IOException, PersistenceException
 	{
 		FileInputStream is = null;
 		try
@@ -157,12 +184,36 @@ public class LayerPersister
 	 * @throws IOException
 	 * @throws PersistenceException
 	 */
-	public static FolderNode loadLayers(InputStream is) throws SAXException, IOException, PersistenceException
+	public static ILayerTreeNode loadLayers(InputStream is) throws SAXException, IOException, PersistenceException
 	{
 		Document document = WWXML.createDocumentBuilder(false).parse(is);
 		Element parent = document.getDocumentElement();
 		Element element = XmlUtil.getFirstChildElement(parent);
 		return loadLayers(element);
+	}
+
+	/**
+	 * Load an array of layers (and children) from an InputStream.
+	 * 
+	 * @param is
+	 *            InputStream to load from
+	 * @return Array of layer nodes loaded from the InputStream
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws PersistenceException
+	 */
+	public static ILayerTreeNode[] loadLayerArray(InputStream is) throws SAXException, IOException,
+			PersistenceException
+	{
+		Document document = WWXML.createDocumentBuilder(false).parse(is);
+		Element parent = document.getDocumentElement();
+		Element[] elements = XmlUtil.getElements(parent);
+		List<ILayerTreeNode> layers = new ArrayList<ILayerTreeNode>(elements.length);
+		for (Element element : elements)
+		{
+			layers.add(loadLayers(element));
+		}
+		return layers.toArray(new ILayerTreeNode[layers.size()]);
 	}
 
 	/**
@@ -174,8 +225,8 @@ public class LayerPersister
 	 * @return Root node of the layer tree loaded from the XML element
 	 * @throws PersistenceException
 	 */
-	public static FolderNode loadLayers(Element element) throws PersistenceException
+	public static ILayerTreeNode loadLayers(Element element) throws PersistenceException
 	{
-		return (FolderNode) persister.load(element, null);
+		return (ILayerTreeNode) persister.load(element, null);
 	}
 }

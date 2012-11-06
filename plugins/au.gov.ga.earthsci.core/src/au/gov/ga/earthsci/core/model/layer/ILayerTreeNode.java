@@ -26,7 +26,7 @@ import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerTreeNode<E extends ILayerTreeNode<E>> extends ITreeNode<E>, IPropertyChangeBean, INameable
+public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChangeBean, INameable
 {
 	/**
 	 * @return A {@link LayerList} that contains all layers in the tree at and
@@ -51,4 +51,21 @@ public interface ILayerTreeNode<E extends ILayerTreeNode<E>> extends ITreeNode<E
 	 * @param enabled
 	 */
 	void enableChildren(boolean enabled);
+
+	/**
+	 * 
+	 */
+	void enabledChanged();
+
+	/**
+	 * @param oldChildren
+	 * @param newChildren
+	 */
+	void childrenChanged(ITreeNode<ILayerTreeNode>[] oldChildren, ITreeNode<ILayerTreeNode>[] newChildren);
+
+	/**
+	 * @param enabled
+	 * @return
+	 */
+	boolean anyChildrenEnabledEquals(boolean enabled);
 }
