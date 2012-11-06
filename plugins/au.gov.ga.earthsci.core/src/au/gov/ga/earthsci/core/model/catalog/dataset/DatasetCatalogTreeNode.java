@@ -25,6 +25,8 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 		this.infoURL = infoURL;
 		this.iconURL = iconURL;
 		this.base = base;
+		
+		setLoaded(true);
 	}
 
 	@Override
@@ -45,12 +47,6 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 		return name;
 	}
 
-	@Override
-	public boolean isLoaded()
-	{
-		return true;
-	}
-	
 	public URL getIconURL()
 	{
 		return iconURL;

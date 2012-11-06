@@ -28,5 +28,4 @@ public abstract class AbstractCatalogTreeNode extends AbstractLazyTreeNode<ICata
 		return load();
 	}
 
-
 }

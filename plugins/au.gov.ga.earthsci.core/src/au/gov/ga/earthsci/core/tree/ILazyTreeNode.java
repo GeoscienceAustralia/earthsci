@@ -1,5 +1,6 @@
 package au.gov.ga.earthsci.core.tree;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 
 import au.gov.ga.earthsci.core.util.INamed;
@@ -23,4 +24,14 @@ public interface ILazyTreeNode<E> extends ITreeNode<E>, INamed
 	 * @return Whether this node's children have been loaded 
 	 */
 	boolean isLoaded();
+	
+	/**
+	 * @return Whether an error has occurred while loading this node's children
+	 */
+	boolean hasError();
+	
+	/**
+	 * @return The status associated with the last load of this node's children
+	 */
+	IStatus getStatus();
 }

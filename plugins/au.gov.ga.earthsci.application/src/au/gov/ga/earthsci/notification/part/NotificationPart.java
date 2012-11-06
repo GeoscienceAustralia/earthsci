@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.notification.view;
+package au.gov.ga.earthsci.notification.part;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
@@ -47,12 +47,12 @@ import au.gov.ga.earthsci.notification.NotificationLevel;
 /**
  * A view that displays a filtered and/or grouped table of historic {@link INotification}s
  * <p/>
- * The model for this view is maintained by an injected {@link NotificationViewReceiver} instance, which
- * can be changed at any time using the {@link #setReceiver(NotificationViewReceiver)} method
+ * The model for this view is maintained by an injected {@link NotificationPartReceiver} instance, which
+ * can be changed at any time using the {@link #setReceiver(NotificationPartReceiver)} method
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class NotificationView
+public class NotificationPart
 {
 	
 	private static final int TITLE_COLUMN_INDEX = 0;
@@ -67,7 +67,7 @@ public class NotificationView
 	private static ImageRegistry imageRegistry;
 	
 	/**
-	 * A simple enumeration of possible groupings for content in the {@link NotificationView}
+	 * A simple enumeration of possible groupings for content in the {@link NotificationPart}
 	 */
 	public enum Grouping
 	{
@@ -77,7 +77,7 @@ public class NotificationView
 	}
 	private Grouping groupBy = Grouping.NONE;
 	
-	private NotificationViewReceiver receiver;
+	private NotificationPartReceiver receiver;
 	
 	private Tree tree;
 	private FilteredTree filteredTree;
@@ -116,7 +116,7 @@ public class NotificationView
 	 * Set the handler to use when receiving user menu events to control grouping in this view
 	 */
 	@Inject
-	public void setNotificationViewGroupByHandler(NotificationViewGroupByHandler handler)
+	public void setNotificationViewGroupByHandler(NotificationPartGroupByHandler handler)
 	{
 		handler.setView(this);
 	}
@@ -125,7 +125,7 @@ public class NotificationView
 	 * Set the receiver that this view should listen to for notifications 
 	 */
 	@Inject
-	public void setReceiver(NotificationViewReceiver receiver)
+	public void setReceiver(NotificationPartReceiver receiver)
 	{
 		this.receiver = receiver;
 		this.receiver.setView(this);
@@ -180,7 +180,7 @@ public class NotificationView
 			gd.horizontalIndent = 1;
 		}
 		filteredTree.setLayoutData(new GridData(GridData.FILL_BOTH));
-		filteredTree.setInitialText(NotificationViewMessages.NotificationView_FilterTextBoxLabel);
+		filteredTree.setInitialText(Messages.NotificationView_FilterTextBoxLabel);
 		tree = filteredTree.getViewer().getTree();
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
@@ -194,11 +194,11 @@ public class NotificationView
 
 	private void createColumns(Tree tree)
 	{
-		String[] titles = { NotificationViewMessages.NotificationView_TitleColumnLabel, 
-							NotificationViewMessages.NotificationView_DescriptionColumnLabel, 
-							NotificationViewMessages.NotificationView_CategoryColumnLabel, 
-							NotificationViewMessages.NotificationView_CreateColumnLabel, 
-							NotificationViewMessages.NotificationView_AcknowledgedColumnLabel };
+		String[] titles = { Messages.NotificationView_TitleColumnLabel, 
+							Messages.NotificationView_DescriptionColumnLabel, 
+							Messages.NotificationView_CategoryColumnLabel, 
+							Messages.NotificationView_CreateColumnLabel, 
+							Messages.NotificationView_AcknowledgedColumnLabel };
 		
 		int[] widths = {300, 300, 100, 100, 100};
 
@@ -354,7 +354,7 @@ public class NotificationView
 		final IRunnableWithProgress op = new IRunnableWithProgress() {
 			@Override
 			public void run(IProgressMonitor monitor) {
-				monitor.beginTask(NotificationViewMessages.NotificationView_ProgressDescription, IProgressMonitor.UNKNOWN);
+				monitor.beginTask(Messages.NotificationView_ProgressDescription, IProgressMonitor.UNKNOWN);
 				
 				root.clear();
 				
@@ -535,7 +535,7 @@ public class NotificationView
 			{
 				for (MMenuElement element : menu.getChildren())
 				{
-					if (!element.getElementId().equals("au.gov.ga.earthsci.notification.view.NotificationView.group")) //$NON-NLS-1$
+					if (!element.getElementId().equals("au.gov.ga.earthsci.notification.part.NotificationPart.group")) //$NON-NLS-1$
 					{
 						continue;
 					}
@@ -550,7 +550,7 @@ public class NotificationView
 			}
 		}
 		
-		Grouping grouping = NotificationViewGroupByHandler.getGroupingForMenuItemId(selectedId);
+		Grouping grouping = NotificationPartGroupByHandler.getGroupingForMenuItemId(selectedId);
 		setGrouping(grouping);
 	}
 	
@@ -562,11 +562,11 @@ public class NotificationView
 		if (imageRegistry == null)
 		{
 			ImageRegistry imageRegistry = new ImageRegistry();
-			imageRegistry.put(NotificationLevel.INFORMATION.name(), ImageDescriptor.createFromURL(NotificationView.class.getResource("/icons/information.gif"))); //$NON-NLS-1$
-			imageRegistry.put(NotificationLevel.WARNING.name(), ImageDescriptor.createFromURL(NotificationView.class.getResource("/icons/warning.gif"))); //$NON-NLS-1$
-			imageRegistry.put(NotificationLevel.ERROR.name(), ImageDescriptor.createFromURL(NotificationView.class.getResource("/icons/error.gif"))); //$NON-NLS-1$
+			imageRegistry.put(NotificationLevel.INFORMATION.name(), ImageDescriptor.createFromURL(NotificationPart.class.getResource("/icons/information.gif"))); //$NON-NLS-1$
+			imageRegistry.put(NotificationLevel.WARNING.name(), ImageDescriptor.createFromURL(NotificationPart.class.getResource("/icons/warning.gif"))); //$NON-NLS-1$
+			imageRegistry.put(NotificationLevel.ERROR.name(), ImageDescriptor.createFromURL(NotificationPart.class.getResource("/icons/error.gif"))); //$NON-NLS-1$
 			
-			NotificationView.imageRegistry = imageRegistry;
+			NotificationPart.imageRegistry = imageRegistry;
 		}
 		return imageRegistry;
 	}
@@ -656,9 +656,9 @@ public class NotificationView
 	 */
 	private static class NotificationViewContentProvider implements ITreeContentProvider
 	{
-		private final NotificationView view;
+		private final NotificationPart view;
 		
-		public NotificationViewContentProvider(NotificationView view)
+		public NotificationViewContentProvider(NotificationPart view)
 		{
 			this.view = view;
 		}

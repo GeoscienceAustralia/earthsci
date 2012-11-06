@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.retrieve;
+package au.gov.ga.earthsci.core.tree;
 
-import java.util.concurrent.atomic.AtomicReference;
+import org.eclipse.osgi.util.NLS;
 
 /**
- * Provides thread-safe static access to the current {@link IRetrievalService} instance
- * 
- * @author James Navin (james.navin@ga.gov.au)
+ * @author u09145
+ *
  */
-public class RetrievalServiceAccessor
+public class Messages extends NLS
 {
-	private static AtomicReference<IRetrievalService> instance = new AtomicReference<IRetrievalService>(null);
-	
-	public static IRetrievalService get()
+	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.tree.messages"; //$NON-NLS-1$
+	public static String AbstractLazyTreeNode_UnkownExceptionDuringLoadMessage;
+	static
 	{
-		return instance.get();
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
-	
-	public static void set(IRetrievalService service)
+
+	private Messages()
 	{
-		instance.set(service);
 	}
-	
 }
