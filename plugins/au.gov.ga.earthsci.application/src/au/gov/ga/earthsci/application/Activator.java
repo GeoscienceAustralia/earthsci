@@ -43,4 +43,9 @@ public class Activator implements BundleActivator
 	{
 		Activator.context = null;
 	}
+	
+	public static String getBundleName()
+	{
+		return context.getBundle().getSymbolicName();
+	}
 }
