@@ -13,45 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core;
+package au.gov.ga.earthsci.core.model.layer;
 
-import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.avlist.AVList;
+import gov.nasa.worldwind.layers.Layer;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-
-import au.gov.ga.earthsci.core.model.layer.LayerFactory;
+import org.w3c.dom.Element;
 
 /**
- * Plugin's activator.
+ * Factory for creating {@link Layer}s from XML.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class Activator implements BundleActivator
+public class LayerFactory extends au.gov.ga.earthsci.worldwind.common.layers.LayerFactory
 {
-	private static BundleContext bundleContext;
-
 	@Override
-	public void start(BundleContext context) throws Exception
+	protected Layer createFromLayerDocument(Element domElement, AVList params)
 	{
-		bundleContext = context;
-		Configuration.setValue(AVKey.LAYER_FACTORY, LayerFactory.class.getName());
-	}
+		//TODO add extendable mechanism that allows creation of layers from layer documents
+		//(add the ability to define XML->layer translators via an Eclipse extension point)
 
-	@Override
-	public void stop(BundleContext context) throws Exception
-	{
-		bundleContext = null;
-	}
-
-	static BundleContext getContext()
-	{
-		return bundleContext;
-	}
-
-	public static String getBundleName()
-	{
-		return bundleContext.getBundle().getSymbolicName();
+		return super.createFromLayerDocument(domElement, params);
 	}
 }
