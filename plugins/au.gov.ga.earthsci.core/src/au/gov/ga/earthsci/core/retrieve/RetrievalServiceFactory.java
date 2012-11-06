@@ -29,7 +29,7 @@ public class RetrievalServiceFactory
 		return instance;
 	}
 
-	public static void setServiceInstance(IRetrievalService instance)
+	static void setServiceInstance(IRetrievalService instance)
 	{
 		RetrievalServiceFactory.instance = instance;
 	}
