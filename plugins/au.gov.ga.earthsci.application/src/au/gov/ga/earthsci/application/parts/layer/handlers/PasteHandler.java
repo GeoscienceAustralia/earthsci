@@ -15,17 +15,21 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer.handlers;
 
+import java.io.File;
+
 import javax.inject.Inject;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.FileTransfer;
 
 import au.gov.ga.earthsci.application.parts.layer.LayerTransfer;
 import au.gov.ga.earthsci.application.parts.layer.LayerTransferData;
 import au.gov.ga.earthsci.application.parts.layer.LayerTransferData.TransferredLayer;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
@@ -47,12 +51,34 @@ public class PasteHandler
 			target = model.getRootNode();
 
 		LayerTransferData data = (LayerTransferData) clipboard.getContents(LayerTransfer.getInstance());
-		for (TransferredLayer layer : data.getLayers())
+		if (data != null)
 		{
-			ILayerTreeNode node = layer.getNode();
-			target.add(node);
-			viewer.add(target, node);
-			viewer.reveal(node);
+			for (TransferredLayer layer : data.getLayers())
+			{
+				ILayerTreeNode node = layer.getNode();
+				target.add(node);
+				viewer.add(target, node);
+				viewer.reveal(node);
+			}
+		}
+
+		String[] filenames = (String[]) clipboard.getContents(FileTransfer.getInstance());
+		if (filenames != null)
+		{
+			for (String filename : filenames)
+			{
+				File file = new File(filename);
+				if (file.isFile())
+				{
+					LayerNode node = new LayerNode();
+					node.setName(file.getName());
+					node.setEnabled(true);
+					node.setLayerURI(file.toURI());
+					target.add(node);
+					viewer.add(target, node);
+					viewer.reveal(node);
+				}
+			}
 		}
 	}
 }
