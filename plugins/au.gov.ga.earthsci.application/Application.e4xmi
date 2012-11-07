@@ -10,6 +10,9 @@
               <handlers xmi:id="_63f3MCfDEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.CopyHandler" command="_1NhMYCfCEeKGOtKz07iBzg"/>
               <handlers xmi:id="_7_n84CfDEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.PasteHandler" command="_1dBA8CfCEeKGOtKz07iBzg"/>
               <handlers xmi:id="_AHhmYCfEEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.DeleteHandler" command="_7dKlgCfCEeKGOtKz07iBzg"/>
+              <toolbar xmi:id="_ZzktwCiIEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.toolbar.0">
+                <children xsi:type="menu:ToolControl" xmi:id="_bdOMICiIEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.LayerOpacityToolControl"/>
+              </toolbar>
             </children>
             <children xsi:type="basic:Part" xmi:id="_rlFg4BjMEeKlbolCp2yOsg" elementId="au.gov.ga.earthsci.application.catalog.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.catalog.part.CatalogBrowserPart" label="Catalog" closeable="true"/>
           </children>
