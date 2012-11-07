@@ -59,6 +59,7 @@ public class LayerOpacityToolControl
 		scale.setMaximum(100);
 		scale.setSelection(100);
 		scale.setLocation(0, (height - size.y) / 2);
+		scale.setToolTipText("Set opacity of the selected layer(s)");
 
 		viewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
