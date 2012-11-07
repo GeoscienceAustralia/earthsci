@@ -28,6 +28,18 @@ import java.util.LinkedList;
  * Reflection bug-fix for <a
  * href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6454631"
  * >http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6454631</a>.
+ * <p/>
+ * How this fix works: The {@link #clearGlobalFocusOwner()} method ends up
+ * calling the static method markClearGlobalFocusOwner().
+ * markClearGlobalFocusOwner() checks the heavyweightRequests field for any
+ * objects. If it is not empty, the current focused window is retrieved from
+ * that. Otherwise it is retrieved from the peer. Retrieving it from the peer
+ * when the thread holds a lock on heavyweightRequests can sometimes cause a
+ * deadlock. So the fix is to ensure that the current focused window is never
+ * retrieved while holding a lock on heavyweightRequests, by passing the current
+ * focused window wrapped in a HeavyweightFocusRequest. This can be done by
+ * adding a new HeavyweightFocusRequest to the heavyweightRequests list, via
+ * reflection.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -39,7 +51,7 @@ public class KeyboardFocusManagerFix extends DefaultKeyboardFocusManager
 		{
 			//if JRE is made by Sun/Oracle and is Java 1.6 or less, install the fix
 			//(the bug was fixed in Java 1.7)
-			
+
 			String version = System.getProperty("java.version"); //$NON-NLS-1$
 			String vendor = System.getProperty("java.vendor"); //$NON-NLS-1$
 			vendor = vendor.toLowerCase();
