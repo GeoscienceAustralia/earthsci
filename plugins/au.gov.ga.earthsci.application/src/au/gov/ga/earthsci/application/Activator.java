@@ -18,6 +18,8 @@ package au.gov.ga.earthsci.application;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import au.gov.ga.earthsci.application.util.KeyboardFocusManagerFix;
+
 /**
  * Application bundle activator.
  * 
@@ -36,6 +38,7 @@ public class Activator implements BundleActivator
 	public void start(BundleContext bundleContext) throws Exception
 	{
 		Activator.context = bundleContext;
+		KeyboardFocusManagerFix.initialize();
 	}
 
 	@Override
