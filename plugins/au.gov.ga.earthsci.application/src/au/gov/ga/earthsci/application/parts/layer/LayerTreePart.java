@@ -12,6 +12,7 @@ import org.eclipse.core.databinding.property.list.MultiListProperty;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -20,6 +21,7 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -44,9 +46,9 @@ public class LayerTreePart
 	private Clipboard clipboard;
 
 	@PostConstruct
-	public void init(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell, Composite parent)
+	public void init(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell, Composite parent, EMenuService menuService)
 	{
-		viewer = new CheckboxTreeViewer(parent);
+		viewer = new CheckboxTreeViewer(parent, SWT.MULTI);
 		context.set(TreeViewer.class, viewer);
 
 		clipboard = new Clipboard(shell.getDisplay());
@@ -61,13 +63,14 @@ public class LayerTreePart
 		IObservableSet knownElements = contentProvider.getKnownElements();
 		final IObservableMap enableds = BeanProperties.value("enabled").observeDetail(knownElements); //$NON-NLS-1$
 		final IObservableMap opacities = BeanProperties.value("opacity").observeDetail(knownElements); //$NON-NLS-1$
+		final IObservableMap names = BeanProperties.value("name").observeDetail(knownElements); //$NON-NLS-1$
 		final IObservableMap anyChildrenEnableds =
 				BeanProperties.value("anyChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
 		final IObservableMap allChildrenEnableds =
 				BeanProperties.value("allChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
 
 		final IObservableMap[] attributeMap =
-				new IObservableMap[] { enableds, opacities, anyChildrenEnableds, allChildrenEnableds };
+				new IObservableMap[] { enableds, opacities, names, anyChildrenEnableds, allChildrenEnableds };
 		ILabelProvider labelProvider = new ObservableMapLabelProvider(attributeMap)
 		{
 			@Override
@@ -78,7 +81,7 @@ public class LayerTreePart
 				if (element instanceof LayerNode)
 				{
 					LayerNode layer = (LayerNode) element;
-					label = layerTreeNode.getName(); 
+					label = layerTreeNode.getName();
 					if (layer.getOpacity() < 1)
 					{
 						label += String.format(" (%d%%)", (int) (layer.getOpacity() * 100));
@@ -146,6 +149,9 @@ public class LayerTreePart
 				viewer));
 		viewer.addDropSupport(ops, new Transfer[] { LayerTransfer.getInstance(), FileTransfer.getInstance() },
 				new LayerTreeDropAdapter(viewer, model));
+
+		//add context menu
+		menuService.registerContextMenu(viewer.getTree(), "au.gov.ga.earthsci.application.layertree.popupmenu"); //$NON-NLS-1$
 	}
 
 	@Focus
