@@ -18,9 +18,13 @@ package au.gov.ga.earthsci.core;
 import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.avlist.AVKey;
 
+import org.eclipse.core.runtime.RegistryFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.core.model.catalog.CatalogFactory;
 import au.gov.ga.earthsci.core.model.layer.LayerFactory;
 
 /**
@@ -32,11 +36,17 @@ public class Activator implements BundleActivator
 {
 	private static BundleContext bundleContext;
 
+	private static Logger logger = LoggerFactory.getLogger(Activator.class);
+	
 	@Override
 	public void start(BundleContext context) throws Exception
 	{
+		logger.error("A TEST LOG!");
+		
 		bundleContext = context;
 		Configuration.setValue(AVKey.LAYER_FACTORY, LayerFactory.class.getName());
+		
+		CatalogFactory.loadProvidersFromRegistry(RegistryFactory.getRegistry());
 	}
 
 	@Override
