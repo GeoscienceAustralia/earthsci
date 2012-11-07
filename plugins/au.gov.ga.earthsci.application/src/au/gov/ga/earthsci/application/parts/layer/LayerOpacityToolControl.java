@@ -52,7 +52,7 @@ public class LayerOpacityToolControl
 		Composite child = new Composite(parent, SWT.NONE);
 		child.setSize(child.computeSize(width, SWT.DEFAULT));
 
-		final Scale scale = new Scale(child, SWT.HORIZONTAL | SWT.CENTER);
+		final Scale scale = new Scale(child, SWT.HORIZONTAL);
 		Point size = scale.computeSize(width, SWT.DEFAULT);
 		scale.setSize(size);
 		scale.setMinimum(0);
