@@ -10,6 +10,10 @@
               <handlers xmi:id="_63f3MCfDEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.CopyHandler" command="_1NhMYCfCEeKGOtKz07iBzg"/>
               <handlers xmi:id="_7_n84CfDEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.PasteHandler" command="_1dBA8CfCEeKGOtKz07iBzg"/>
               <handlers xmi:id="_AHhmYCfEEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.DeleteHandler" command="_7dKlgCfCEeKGOtKz07iBzg"/>
+              <handlers xmi:id="_2SyUkCkxEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.RenameHandler" command="_KVOo0CkqEeKGOtKz07iBzg"/>
+              <menus xsi:type="menu:PopupMenu" xmi:id="_a1zKECkoEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu" label="Layer Menu">
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_h6f74CkoEeKGOtKz07iBzg" elementId="" label="Rename" command="_KVOo0CkqEeKGOtKz07iBzg"/>
+              </menus>
               <toolbar xmi:id="_ZzktwCiIEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.toolbar.0">
                 <children xsi:type="menu:ToolControl" xmi:id="_bdOMICiIEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.LayerOpacityToolControl"/>
               </toolbar>
@@ -84,6 +88,7 @@
     <bindings xmi:id="_Ya3q8CfDEeKGOtKz07iBzg" keySequence="M1+Z" command="_O1ivcCfDEeKGOtKz07iBzg"/>
     <bindings xmi:id="_Y5kZICfDEeKGOtKz07iBzg" keySequence="M1+Y" command="_RYtPwCfDEeKGOtKz07iBzg"/>
     <bindings xmi:id="_G-EAYCfEEeKGOtKz07iBzg" keySequence="DEL" command="_7dKlgCfCEeKGOtKz07iBzg"/>
+    <bindings xmi:id="_ZbtfwCkqEeKGOtKz07iBzg" keySequence="F2" command="_KVOo0CkqEeKGOtKz07iBzg"/>
   </bindingTables>
   <rootContext xmi:id="_007tUfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_007tUvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
@@ -100,6 +105,7 @@
   <commands xmi:id="_1dBA8CfCEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.paste" commandName="pasteCommand"/>
   <commands xmi:id="_7dKlgCfCEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.delete" commandName="deleteCommand"/>
   <commands xmi:id="_9TLr8CfCEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.selectAll" commandName="selectAllCommand"/>
+  <commands xmi:id="_KVOo0CkqEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.rename" commandName="renameCommand"/>
   <commands xmi:id="_940mAPyIEeG36NOaHUgVKA" elementId="org.eclipse.ui.window.preferences" commandName="preferencesCommand"/>
   <commands xmi:id="_pU-REPvQEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.showView" commandName="showViewCommand"/>
   <commands xmi:id="_t3D6kAODEeK17JdaarPZug" elementId="org.eclipse.ui.help.helpContents" commandName="showHelpCommand" description="Launch the help system"/>
