@@ -78,7 +78,11 @@ public class LayerTreePart
 				if (element instanceof LayerNode)
 				{
 					LayerNode layer = (LayerNode) element;
-					label = String.format("%s (%d%%)", layerTreeNode.getName(), (int) (layer.getOpacity() * 100));
+					label = layerTreeNode.getName(); 
+					if (layer.getOpacity() < 1)
+					{
+						label += String.format(" (%d%%)", (int) (layer.getOpacity() * 100));
+					}
 				}
 				else if (element instanceof FolderNode)
 				{
