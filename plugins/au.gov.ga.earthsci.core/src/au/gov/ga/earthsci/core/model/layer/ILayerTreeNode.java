@@ -16,6 +16,9 @@
 package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.layers.LayerList;
+
+import java.net.URL;
+
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.IEnableable;
 import au.gov.ga.earthsci.core.util.ILabelable;
@@ -46,6 +49,16 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	boolean isAllChildrenEnabled();
 
 	/**
+	 * Does the enabled state of any children of this node equal the given
+	 * value?
+	 * 
+	 * @param enabled
+	 *            Value to test
+	 * @return True if any children's enabled equals the given value.
+	 */
+	boolean anyChildrenEnabledEquals(boolean enabled);
+
+	/**
 	 * Enable/disable this node (if {@link IEnableable}), and enable/disable all
 	 * {@link IEnableable} children.
 	 * 
@@ -54,19 +67,27 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	void enableChildren(boolean enabled);
 
 	/**
-	 * 
+	 * Notify property listeners that this node's enable state has changed.
+	 * Should only be called internally.
 	 */
 	void enabledChanged();
 
 	/**
+	 * Notify property listeners that this node's children have changed. Should
+	 * only be called internally.
+	 * 
 	 * @param oldChildren
 	 * @param newChildren
 	 */
 	void childrenChanged(ITreeNode<ILayerTreeNode>[] oldChildren, ITreeNode<ILayerTreeNode>[] newChildren);
 
 	/**
-	 * @param enabled
-	 * @return
+	 * @return The URL pointing to this layer's information page.
 	 */
-	boolean anyChildrenEnabledEquals(boolean enabled);
+	URL getInfoURL();
+
+	/**
+	 * @return The URL pointing to this layer's legend.
+	 */
+	URL getLegendURL();
 }
