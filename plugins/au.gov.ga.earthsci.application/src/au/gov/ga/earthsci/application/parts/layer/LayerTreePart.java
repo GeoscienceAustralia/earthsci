@@ -19,6 +19,7 @@ import org.eclipse.core.databinding.property.list.MultiListProperty;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
@@ -27,7 +28,9 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
@@ -62,6 +65,9 @@ public class LayerTreePart
 
 	@Inject
 	private IEclipseContext context;
+
+	@Inject
+	private ESelectionService selectionService;
 
 	private CheckboxTreeViewer viewer;
 	private Clipboard clipboard;
@@ -162,6 +168,16 @@ public class LayerTreePart
 					ILayerTreeNode node = (ILayerTreeNode) element;
 					node.enableChildren(event.getChecked());
 				}
+			}
+		});
+
+		viewer.addSelectionChangedListener(new ISelectionChangedListener()
+		{
+			@Override
+			public void selectionChanged(SelectionChangedEvent event)
+			{
+				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+				selectionService.setSelection(selection.getFirstElement());
 			}
 		});
 
