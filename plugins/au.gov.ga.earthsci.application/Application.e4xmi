@@ -13,6 +13,10 @@
               <handlers xmi:id="_2SyUkCkxEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.RenameHandler" command="_KVOo0CkqEeKGOtKz07iBzg"/>
               <menus xsi:type="menu:PopupMenu" xmi:id="_a1zKECkoEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu" label="Layer Menu">
                 <children xsi:type="menu:HandledMenuItem" xmi:id="_h6f74CkoEeKGOtKz07iBzg" elementId="" label="Rename" command="_KVOo0CkqEeKGOtKz07iBzg"/>
+                <children xsi:type="menu:MenuSeparator" xmi:id="_FCIyACk_EeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_FykJYCk_EeKGOtKz07iBzg" elementId="" label="Cut" command="_09bh8CfCEeKGOtKz07iBzg"/>
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_GPBb4Ck_EeKGOtKz07iBzg" elementId="" label="Copy" command="_1NhMYCfCEeKGOtKz07iBzg"/>
+                <children xsi:type="menu:HandledMenuItem" xmi:id="_GlFLcCk_EeKGOtKz07iBzg" elementId="" label="Paste" command="_1dBA8CfCEeKGOtKz07iBzg"/>
               </menus>
               <toolbar xmi:id="_ZzktwCiIEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.toolbar.0">
                 <children xsi:type="menu:ToolControl" xmi:id="_bdOMICiIEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.LayerOpacityToolControl"/>
@@ -25,6 +29,7 @@
               <children xsi:type="basic:Part" xmi:id="_RALPQPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.worldwindow" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.WorldWindowPart" label="World Window" closeable="true"/>
             </children>
             <children xsi:type="basic:PartStack" xmi:id="_0HDfgA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partstack.0">
+              <children xsi:type="basic:Part" xmi:id="_OVvf0ClJEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.part.0" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.info.InfoPart" label="Information" closeable="true"/>
               <children xsi:type="basic:Part" xmi:id="_IsdaEA0kEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.notification.part.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.notification.part.NotificationPart" label="Notifications" closeable="true">
                 <handlers xmi:id="_SJbQ4BJgEeK3duY8thOvyA" elementId="au.gov.ga.earthsci.notification.part.groupby" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.notification.part.NotificationPartGroupByHandler" command="_cQRlEBJgEeK3duY8thOvyA"/>
                 <menus xmi:id="_uibuEBHBEeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.application.menu.0" label="">
