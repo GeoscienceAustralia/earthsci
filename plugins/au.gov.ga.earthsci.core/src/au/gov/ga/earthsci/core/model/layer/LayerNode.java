@@ -94,6 +94,7 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	 */
 	public void setLayer(Layer layer)
 	{
+		setName(layer.getName());
 		Layer oldValue;
 		synchronized (layerSemaphore)
 		{

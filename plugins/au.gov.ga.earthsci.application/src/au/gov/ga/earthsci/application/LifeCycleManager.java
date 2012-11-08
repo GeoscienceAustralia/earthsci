@@ -18,7 +18,6 @@ package au.gov.ga.earthsci.application;
 import javax.inject.Inject;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.core.services.log.ILoggerProvider;
 import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
@@ -27,6 +26,7 @@ import au.gov.ga.earthsci.core.retrieve.RetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
+import au.gov.ga.earthsci.core.worldwind.WorldWindView;
 import au.gov.ga.earthsci.logging.SLF4JE4LoggerBridge;
 import au.gov.ga.earthsci.notification.NotificationManager;
 
@@ -52,7 +52,7 @@ public class LifeCycleManager
 
 	@Inject
 	private RetrievalService retrievalService;
-	
+
 	@Inject
 	private RetrievalServiceFactory retrievalServiceFactory;
 
@@ -60,11 +60,8 @@ public class LifeCycleManager
 	private WorldWindModel worldWindModel;
 
 	@Inject
-	private Logger logger;
-	
-	@Inject
-	private ILoggerProvider provider;
-	
+	private WorldWindView worldWindView;
+
 	@Inject
 	public LifeCycleManager(IEclipseContext context)
 	{
@@ -80,6 +77,8 @@ public class LifeCycleManager
 	void postContextCreate()
 	{
 		context.set(ITreeModel.class, worldWindModel);
+		context.set(WorldWindModel.class, worldWindModel);
+		context.set(WorldWindView.class, worldWindView);
 	}
 
 	@PreSave

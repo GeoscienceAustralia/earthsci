@@ -13,42 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application;
+package au.gov.ga.earthsci.core.worldwind;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import gov.nasa.worldwind.View;
 
-import au.gov.ga.earthsci.application.util.KeyboardFocusManagerFix;
+import javax.inject.Singleton;
+
+import org.eclipse.e4.core.di.annotations.Creatable;
+
+import au.gov.ga.earthsci.worldwind.common.view.stereo.StereoOrbitView;
 
 /**
- * Application bundle activator.
+ * {@link View} used by the application.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class Activator implements BundleActivator
+@Creatable
+@Singleton
+public class WorldWindView extends StereoOrbitView
 {
-	private static BundleContext context;
-
-	static BundleContext getContext()
-	{
-		return context;
-	}
-
-	@Override
-	public void start(BundleContext bundleContext) throws Exception
-	{
-		Activator.context = bundleContext;
-		KeyboardFocusManagerFix.initialize();
-	}
-
-	@Override
-	public void stop(BundleContext bundleContext) throws Exception
-	{
-		Activator.context = null;
-	}
-	
-	public static String getBundleName()
-	{
-		return context.getBundle().getSymbolicName();
-	}
+	//TODO implement subsurface, free spin, view pitch leniency, zoom out limits, animator support, etc
 }
