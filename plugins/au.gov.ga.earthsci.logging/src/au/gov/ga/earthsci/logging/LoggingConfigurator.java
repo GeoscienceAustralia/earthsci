@@ -15,6 +15,11 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.logging;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.services.log.ILoggerProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.log.LogService;
@@ -28,6 +33,9 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * A class used to bootstrap the configuration of logging.
+ * <p/>
+ * Searches the current workspace for a {@value #LOGBACK_XML} configuration file. If it doesn't find one,
+ * it will use a default configuration that outputs to the console. 
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -59,9 +67,11 @@ public class LoggingConfigurator
 		configurator.setContext(loggerContext);
 		
 		loggerContext.reset();
+		
 		try
 		{
-			configurator.doConfigure(LoggingConfigurator.class.getResourceAsStream(LOGBACK_XML));
+			InputStream configurationStream = getConfiguration();
+			configurator.doConfigure(configurationStream);
 		}
 		catch (JoranException e)
 		{
@@ -69,6 +79,23 @@ public class LoggingConfigurator
 		}
 		
 		StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+	}
+
+	private static InputStream getConfiguration()
+	{
+		// Look in the current workspace for a logback XML
+		try
+		{
+			URL workspaceConfig = Platform.getConfigurationLocation().getDataArea(LOGBACK_XML);
+			return workspaceConfig.openStream();
+		}
+		catch (IOException e)
+		{
+
+		}
+		
+		// Fallback to the default configuration
+		return LoggingConfigurator.class.getResourceAsStream(LOGBACK_XML);
 	}
 	
 	/**
