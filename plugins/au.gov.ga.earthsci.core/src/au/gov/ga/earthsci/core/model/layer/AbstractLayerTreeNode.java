@@ -20,6 +20,7 @@ import gov.nasa.worldwind.layers.LayerList;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URL;
 
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
@@ -39,6 +40,8 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private LayerList layerList;
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
 	private String label;
+	private URL infoURL;
+	private URL legendURL;
 
 	protected AbstractLayerTreeNode()
 	{
@@ -72,6 +75,12 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	@Override
 	public void setLabel(String label)
 	{
+		if (getName() != null && getName().equals(label))
+		{
+			setLabel(null);
+			return;
+		}
+
 		String oldValue = getLabel();
 		this.label = label;
 		firePropertyChange("label", oldValue, label); //$NON-NLS-1$
@@ -81,6 +90,30 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	public String getLabelOrName()
 	{
 		return getLabel() == null ? getName() : getLabel();
+	}
+
+	@Persistent
+	@Override
+	public URL getInfoURL()
+	{
+		return infoURL;
+	}
+
+	public void setInfoURL(URL infoURL)
+	{
+		this.infoURL = infoURL;
+	}
+
+	@Persistent
+	@Override
+	public URL getLegendURL()
+	{
+		return legendURL;
+	}
+
+	public void setLegendURL(URL legendURL)
+	{
+		this.legendURL = legendURL;
 	}
 
 	@Persistent
