@@ -18,6 +18,8 @@ package au.gov.ga.earthsci.logging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.services.log.ILoggerProvider;
@@ -86,7 +88,15 @@ public class LoggingConfigurator
 
 	private static void configureJULBridge(LoggerContext loggerContext)
 	{
-		// Used to propagate level changes to j.u.l loggers
+		// Remove existing handlers
+		java.util.logging.Logger rootLogger = LogManager.getLogManager().getLogger(""); //$NON-NLS-1$
+		Handler[] handlers = rootLogger.getHandlers();
+		for (int i = 0; i < handlers.length; i++)
+		{
+			rootLogger.removeHandler(handlers[i]);
+		}
+		
+		// Install the bridge
 		loggerContext.addListener(new LevelChangePropagator());
 		SLF4JBridgeHandler.install();
 	}
