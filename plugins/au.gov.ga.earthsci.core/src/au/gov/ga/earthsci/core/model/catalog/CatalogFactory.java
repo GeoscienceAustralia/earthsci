@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.inject.Inject;
-
-import org.eclipse.e4.core.services.log.Logger;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A factory class that uses registered {@link ICatalogProvider}s to 
@@ -19,11 +21,35 @@ import org.eclipse.e4.core.services.log.Logger;
 public class CatalogFactory
 {
 
-	@Inject
-	private static Logger logger;
+	public static final String CATALOG_PROVIDER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.core.model.catalog.provider"; //$NON-NLS-1$
+	public static final String CATALOG_PROVIDER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
+	
+	private static final Logger logger = LoggerFactory.getLogger(CatalogFactory.class);
 	
 	private static final List<ICatalogProvider> registeredProviders = new ArrayList<ICatalogProvider>();
 	private static final ReadWriteLock registeredProvidersLock = new ReentrantReadWriteLock();
+	
+	public static void loadProvidersFromRegistry(IExtensionRegistry registry)
+	{
+		logger.info("Registering catalog providers"); //$NON-NLS-1$
+		
+		IConfigurationElement[] config = registry.getConfigurationElementsFor(CATALOG_PROVIDER_EXTENSION_POINT_ID);
+		try
+		{
+			for (IConfigurationElement e : config)
+			{
+				final Object o = e.createExecutableExtension(CATALOG_PROVIDER_CLASS_ATTRIBUTE); 
+				if (o instanceof ICatalogProvider)
+				{
+					registerProvider((ICatalogProvider)o);
+				}
+			}
+		}
+		catch (CoreException e)
+		{
+			logger.error("Exception while loading providers", e); //$NON-NLS-1$
+		}
+	}
 	
 	/**
 	 * Returns the {@link ICatalogProvider} to use for loading a catalog from the provided source.
@@ -91,7 +117,7 @@ public class CatalogFactory
 		}
 		catch (Exception e)
 		{
-			logger.debug(e, "Unable to load catalog from source " + source + " with provider " + provider.getClass());  //$NON-NLS-1$//$NON-NLS-2$
+			logger.debug("Unable to load catalog from source " + source + " with provider " + provider.getClass(), e);  //$NON-NLS-1$//$NON-NLS-2$
 			return null;
 		}
 	}
@@ -117,6 +143,8 @@ public class CatalogFactory
 		{
 			registeredProvidersLock.writeLock().unlock();
 		}
+		
+		logger.debug("Registeried catalog provider: {}", p); //$NON-NLS-1$
 	}
 	
 }

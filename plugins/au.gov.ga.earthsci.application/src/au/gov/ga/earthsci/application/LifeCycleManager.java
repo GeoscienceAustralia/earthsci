@@ -18,6 +18,7 @@ package au.gov.ga.earthsci.application;
 import javax.inject.Inject;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 
@@ -26,6 +27,7 @@ import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindView;
+import au.gov.ga.earthsci.logging.SLF4JE4LoggerBridge;
 import au.gov.ga.earthsci.notification.NotificationManager;
 
 /**
@@ -36,7 +38,7 @@ import au.gov.ga.earthsci.notification.NotificationManager;
  */
 public class LifeCycleManager
 {
-	@Inject
+	//@Inject
 	private IEclipseContext context;
 
 	@Inject
@@ -60,6 +62,17 @@ public class LifeCycleManager
 	@Inject
 	private WorldWindView worldWindView;
 
+	@Inject
+	public LifeCycleManager(IEclipseContext context)
+	{
+		this.context = context;
+		
+		// Override the workbench logger with the one provided by the logging plugin
+		// Done in constructor to ensure logger is present before other dependencies are resolved
+		// TODO: I don't like this hack
+		context.set(Logger.class, new SLF4JE4LoggerBridge());
+	}
+	
 	@PostContextCreate
 	void postContextCreate()
 	{

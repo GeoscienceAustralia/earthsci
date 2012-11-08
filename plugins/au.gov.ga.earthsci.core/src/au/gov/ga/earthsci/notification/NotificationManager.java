@@ -17,7 +17,8 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
-import org.eclipse.e4.core.services.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -55,8 +56,7 @@ public class NotificationManager
 	
 	private static NotificationManager INSTANCE;
 	
-	@Inject 
-	private static Logger logger;
+	private static final Logger logger = LoggerFactory.getLogger(NotificationManager.class);
 	
 	/**
 	 * Constructor for DI creation only. To obtain instances of the {@link NotificationManager},
@@ -80,10 +80,7 @@ public class NotificationManager
 	@Inject
 	public static void loadReceivers(IExtensionRegistry registry, IEclipseContext context)
 	{
-		if (logger != null)
-		{
-			logger.info("Registering notification receivers"); //$NON-NLS-1$
-		}
+		logger.info("Registering notification receivers"); //$NON-NLS-1$
 		
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(NOTIFICATION_RECEIVER_EXTENSION_POINT_ID);
 		try
@@ -101,10 +98,7 @@ public class NotificationManager
 		}
 		catch (CoreException e)
 		{
-			if (logger != null)
-			{
-				logger.error(e, "Exception while loading receivers"); //$NON-NLS-1$
-			}
+			logger.error("Exception while loading receivers", e); //$NON-NLS-1$
 		}
 	}
 	
@@ -121,10 +115,7 @@ public class NotificationManager
 	@Inject
 	public static void registerNotificationCategories(IExtensionRegistry registry, IEclipseContext context)
 	{
-		if (logger != null)
-		{
-			logger.info("Registering notification categories"); //$NON-NLS-1$
-		}
+		logger.info("Registering notification categories"); //$NON-NLS-1$
 		
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID);
 		try
@@ -141,10 +132,7 @@ public class NotificationManager
 		}
 		catch (CoreException e)
 		{
-			if (logger != null)
-			{
-				logger.error(e, "Exception while registering categories"); //$NON-NLS-1$
-			}
+			logger.error("Exception while registering categories", e); //$NON-NLS-1$
 		}
 	}
 	
@@ -215,10 +203,7 @@ public class NotificationManager
 		{
 			return;
 		}
-		if (logger != null)
-		{
-			logger.debug("Registered notification receiver: {0}", receiver.getClass()); //$NON-NLS-1$
-		}
+		logger.debug("Registered notification receiver: {}", receiver.getClass()); //$NON-NLS-1$
 
 		receiversLock.writeLock().lock();
 		try
@@ -243,10 +228,7 @@ public class NotificationManager
 			return;
 		}
 		
-		if (logger != null)
-		{
-			logger.debug("Removed notification receiver {0}", receiver.getClass()); //$NON-NLS-1$
-		}
+		logger.debug("Removed notification receiver {0}", receiver.getClass()); //$NON-NLS-1$
 		
 		receiversLock.writeLock().lock();
 		try
@@ -273,10 +255,5 @@ public class NotificationManager
 		{
 			receiversLock.writeLock().unlock();
 		}
-	}
-	
-	public static void setLogger(Logger logger)
-	{
-		NotificationManager.logger = logger;
 	}
 }
