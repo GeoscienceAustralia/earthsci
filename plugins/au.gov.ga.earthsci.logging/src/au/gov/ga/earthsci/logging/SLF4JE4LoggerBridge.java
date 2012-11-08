@@ -15,6 +15,11 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.logging;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.e4.core.services.log.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +29,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
+@Creatable
+@Singleton
 public class SLF4JE4LoggerBridge extends Logger
 {
 
@@ -36,9 +43,11 @@ public class SLF4JE4LoggerBridge extends Logger
 		logger = LoggerFactory.getLogger(name == null ? DEFAULT_NAME : name);
 	}
 	
-	public SLF4JE4LoggerBridge()
+	@Inject
+	public SLF4JE4LoggerBridge(IEclipseContext context)
 	{
 		this(DEFAULT_NAME);
+		context.set(Logger.class, this);
 	}
 	
 	public SLF4JE4LoggerBridge(Class<?> clazz)
