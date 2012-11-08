@@ -67,7 +67,7 @@ public class RenameHandler
 			return;
 
 		createTextEditor();
-		textEditor.setText(layerNode.getName());
+		textEditor.setText(layerNode.getLabelOrName());
 
 		showTextEditor();
 	}
@@ -188,8 +188,8 @@ public class RenameHandler
 			return;
 
 		saving = true;
-		final String newName = textEditor.getText();
-		layerNode.setName(newName);
+		final String newLabel = textEditor.getText();
+		layerNode.setLabel(newLabel);
 		disposeTextWidget();
 		saving = false;
 	}

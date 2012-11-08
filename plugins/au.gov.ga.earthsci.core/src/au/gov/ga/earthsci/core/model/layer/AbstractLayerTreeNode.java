@@ -38,6 +38,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private String name;
 	private LayerList layerList;
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
+	private String label;
 
 	protected AbstractLayerTreeNode()
 	{
@@ -59,6 +60,27 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		String oldValue = getName();
 		this.name = name;
 		firePropertyChange("name", oldValue, name); //$NON-NLS-1$
+	}
+
+	@Override
+	@Persistent(attribute = true)
+	public String getLabel()
+	{
+		return label;
+	}
+
+	@Override
+	public void setLabel(String label)
+	{
+		String oldValue = getLabel();
+		this.label = label;
+		firePropertyChange("label", oldValue, label); //$NON-NLS-1$
+	}
+
+	@Override
+	public String getLabelOrName()
+	{
+		return getLabel() == null ? getName() : getLabel();
 	}
 
 	@Persistent

@@ -18,6 +18,7 @@ package au.gov.ga.earthsci.core.model.layer;
 import gov.nasa.worldwind.layers.LayerList;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.IEnableable;
+import au.gov.ga.earthsci.core.util.ILabelable;
 import au.gov.ga.earthsci.core.util.INameable;
 import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
@@ -26,7 +27,7 @@ import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChangeBean, INameable
+public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChangeBean, ILabelable, INameable
 {
 	/**
 	 * @return A {@link LayerList} that contains all layers in the tree at and

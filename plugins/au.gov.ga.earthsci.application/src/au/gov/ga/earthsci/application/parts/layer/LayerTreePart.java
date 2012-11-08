@@ -64,13 +64,14 @@ public class LayerTreePart
 		final IObservableMap enableds = BeanProperties.value("enabled").observeDetail(knownElements); //$NON-NLS-1$
 		final IObservableMap opacities = BeanProperties.value("opacity").observeDetail(knownElements); //$NON-NLS-1$
 		final IObservableMap names = BeanProperties.value("name").observeDetail(knownElements); //$NON-NLS-1$
+		final IObservableMap labels = BeanProperties.value("label").observeDetail(knownElements); //$NON-NLS-1$
 		final IObservableMap anyChildrenEnableds =
 				BeanProperties.value("anyChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
 		final IObservableMap allChildrenEnableds =
 				BeanProperties.value("allChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
 
 		final IObservableMap[] attributeMap =
-				new IObservableMap[] { enableds, opacities, names, anyChildrenEnableds, allChildrenEnableds };
+				new IObservableMap[] { enableds, opacities, names, labels, anyChildrenEnableds, allChildrenEnableds };
 		ILabelProvider labelProvider = new ObservableMapLabelProvider(attributeMap)
 		{
 			@Override
@@ -81,7 +82,7 @@ public class LayerTreePart
 				if (element instanceof LayerNode)
 				{
 					LayerNode layer = (LayerNode) element;
-					label = layerTreeNode.getName();
+					label = layerTreeNode.getLabelOrName();
 					if (layer.getOpacity() < 1)
 					{
 						label += String.format(" (%d%%)", (int) (layer.getOpacity() * 100));
