@@ -38,6 +38,7 @@ import org.junit.Test;
 
 import au.gov.ga.earthsci.worldwind.common.layers.model.ModelLayer;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShape;
+import au.gov.ga.earthsci.worldwind.test.util.TestUtils;
 
 /**
  * Unit tests for the {@link GDALRasterModelProvider}
@@ -156,7 +157,7 @@ public class GDALRasterModelProviderTest
 	{
 		try
 		{
-			URL url = getClass().getResource("testgrid.tif");
+			URL url = TestUtils.resolveFileURL(getClass().getResource("testgrid.tif"));
 			classUnderTest.doLoadData(url, null);
 			fail("Expected IllegalArgumentException");
 		}
@@ -293,7 +294,7 @@ public class GDALRasterModelProviderTest
 	
 	private URL setupTestWithRaster(RasterProperties raster)
 	{
-		URL url = getClass().getResource(raster.name);
+		URL url = TestUtils.resolveFileURL(getClass().getResource(raster.name));
 
 		matcher = new FastShapeMatcher();
 		mockContext.checking(new Expectations()
