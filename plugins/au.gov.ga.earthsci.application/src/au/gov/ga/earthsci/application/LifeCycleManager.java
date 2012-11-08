@@ -25,6 +25,7 @@ import au.gov.ga.earthsci.core.retrieve.RetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
+import au.gov.ga.earthsci.core.worldwind.WorldWindView;
 import au.gov.ga.earthsci.notification.NotificationManager;
 
 /**
@@ -49,17 +50,22 @@ public class LifeCycleManager
 
 	@Inject
 	private RetrievalService retrievalService;
-	
+
 	@Inject
 	private RetrievalServiceFactory retrievalServiceFactory;
 
 	@Inject
 	private WorldWindModel worldWindModel;
 
+	@Inject
+	private WorldWindView worldWindView;
+
 	@PostContextCreate
 	void postContextCreate()
 	{
 		context.set(ITreeModel.class, worldWindModel);
+		context.set(WorldWindModel.class, worldWindModel);
+		context.set(WorldWindView.class, worldWindView);
 	}
 
 	@PreSave
