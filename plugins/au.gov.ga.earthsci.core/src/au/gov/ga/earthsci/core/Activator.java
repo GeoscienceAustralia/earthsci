@@ -36,13 +36,12 @@ public class Activator implements BundleActivator
 {
 	private static BundleContext bundleContext;
 
-	private static Logger logger = LoggerFactory.getLogger(Activator.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = LoggerFactory.getLogger(Activator.class);
 	
 	@Override
 	public void start(BundleContext context) throws Exception
 	{
-		logger.error("A TEST LOG!");
-		
 		bundleContext = context;
 		Configuration.setValue(AVKey.LAYER_FACTORY, LayerFactory.class.getName());
 		

@@ -25,9 +25,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.log.LogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.jul.LevelChangePropagator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -65,8 +67,9 @@ public class LoggingConfigurator
 		JoranConfigurator configurator = new JoranConfigurator();
 		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 		configurator.setContext(loggerContext);
-		
 		loggerContext.reset();
+		
+		configureJULBridge(loggerContext);
 		
 		try
 		{
@@ -79,6 +82,13 @@ public class LoggingConfigurator
 		}
 		
 		StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+	}
+
+	private static void configureJULBridge(LoggerContext loggerContext)
+	{
+		// Used to propagate level changes to j.u.l loggers
+		loggerContext.addListener(new LevelChangePropagator());
+		SLF4JBridgeHandler.install();
 	}
 
 	private static InputStream getConfiguration()

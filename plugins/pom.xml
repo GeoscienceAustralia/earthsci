@@ -18,6 +18,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>au.gov.ga.earthsci.logging</module>
 		<module>au.gov.ga.earthsci.core</module>
 		<module>au.gov.ga.earthsci.core.tests</module>
 		<module>au.gov.ga.earthsci.worldwind</module>

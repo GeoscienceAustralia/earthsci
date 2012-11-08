@@ -4,6 +4,7 @@
    <extension-point id="au.gov.ga.earthsci.notification.receiver" name="Notification Receiver" schema="schema/au.gov.ga.earthsci.notification.receiver.exsd"/>
    <extension-point id="au.gov.ga.earthsci.notification.categoryProvider" name="Notification Category Provider" schema="schema/au.gov.ga.earthsci.notification.categoryProvider.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.retrieve.retriever" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retriever.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.model.catalog.provider" name="Catalog Provider" schema="schema/au.gov.ga.earthsci.core.model.catalog.provider.exsd"/>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retriever">
       <retriever
@@ -12,6 +13,12 @@
       <retriever
             class="au.gov.ga.earthsci.core.retrieve.retriever.FileRetriever">
       </retriever>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.core.model.catalog.provider">
+      <provider
+            class="au.gov.ga.earthsci.core.model.catalog.dataset.DatasetXMLCatalogProvider">
+      </provider>
    </extension>
 
 </plugin>
