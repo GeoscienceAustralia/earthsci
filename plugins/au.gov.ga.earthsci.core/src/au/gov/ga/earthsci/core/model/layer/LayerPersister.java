@@ -51,6 +51,7 @@ public class LayerPersister
 	{
 		persister = new Persister();
 		persister.setIgnoreMissing(true);
+		persister.setIgnoreNulls(true);
 		persister.registerNamedExportable(FolderNode.class, "Folder"); //$NON-NLS-1$
 		persister.registerNamedExportable(LayerNode.class, "Layer"); //$NON-NLS-1$
 	}
