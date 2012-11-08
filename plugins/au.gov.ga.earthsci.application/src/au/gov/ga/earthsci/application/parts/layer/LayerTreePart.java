@@ -1,5 +1,12 @@
 package au.gov.ga.earthsci.application.parts.layer;
 
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Sector;
+import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
+import gov.nasa.worldwind.view.orbit.OrbitView;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,12 +27,19 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
@@ -33,11 +47,18 @@ import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
+import au.gov.ga.earthsci.core.worldwind.WorldWindView;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
+import au.gov.ga.earthsci.worldwind.common.util.FlyToSectorAnimator;
+import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 public class LayerTreePart
 {
 	@Inject
 	private ITreeModel model;
+
+	@Inject
+	private WorldWindView view;
 
 	@Inject
 	private IEclipseContext context;
@@ -85,7 +106,7 @@ public class LayerTreePart
 					label = layerTreeNode.getLabelOrName();
 					if (layer.getOpacity() < 1)
 					{
-						label += String.format(" (%d%%)", (int) (layer.getOpacity() * 100));
+						label += String.format(" (%d%%)", (int) (layer.getOpacity() * 100)); //$NON-NLS-1$
 					}
 				}
 				else if (element instanceof FolderNode)
@@ -144,6 +165,37 @@ public class LayerTreePart
 			}
 		});
 
+		viewer.getTree().addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseDoubleClick(MouseEvent e)
+			{
+				ViewerCell cell = viewer.getCell(new Point(e.x, e.y));
+				if (cell == null)
+					return;
+
+				ILayerTreeNode layer = (ILayerTreeNode) cell.getElement();
+				flyToLayer(layer);
+			}
+		});
+
+		viewer.getTree().addTraverseListener(new TraverseListener()
+		{
+			@Override
+			public void keyTraversed(TraverseEvent e)
+			{
+				if (e.detail == SWT.TRAVERSE_RETURN)
+				{
+					IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+					if (selection.size() == 1)
+					{
+						ILayerTreeNode layer = (ILayerTreeNode) selection.getFirstElement();
+						flyToLayer(layer);
+					}
+				}
+			}
+		});
+
 		//add drag and drop support
 		int ops = DND.DROP_COPY | DND.DROP_MOVE;
 		viewer.addDragSupport(ops, new Transfer[] { LayerTransfer.getInstance() }, new LayerTreeDragSourceListener(
@@ -159,5 +211,55 @@ public class LayerTreePart
 	private void setFocus()
 	{
 		viewer.getTree().setFocus();
+	}
+
+	public void flyToLayer(ILayerTreeNode layer)
+	{
+		//first check if the tree node is pointing to a KML feature; if so, goto the feature 
+		/*if (layer instanceof TreeNodeLayerNode)
+		{
+			TreeNode treeNode = ((TreeNodeLayerNode) layer).getTreeNode();
+			if (treeNode instanceof KMLFeatureTreeNode)
+			{
+				KMLAbstractFeature feature = ((KMLFeatureTreeNode) treeNode).getFeature();
+
+				KMLViewController viewController = CustomKMLViewControllerFactory.create(wwd);
+				if (viewController != null)
+				{
+					viewController.goTo(feature);
+					wwd.redraw();
+					return;
+				}
+			}
+		}*/
+
+		Sector sector = Bounded.Reader.getSector(layer);
+		if (sector == null || !(view instanceof OrbitView))
+		{
+			return;
+		}
+
+		OrbitView orbitView = view;
+		Position center = orbitView.getCenterPosition();
+		Position newCenter;
+		if (sector.contains(center) && sector.getDeltaLatDegrees() > 90 && sector.getDeltaLonDegrees() > 90)
+		{
+			newCenter = center;
+		}
+		else
+		{
+			newCenter = new Position(sector.getCentroid(), 0);
+		}
+
+		LatLon endVisibleDelta = new LatLon(sector.getDeltaLat(), sector.getDeltaLon());
+		long lengthMillis = Util.getScaledLengthMillis(1, center, newCenter);
+
+		FlyToOrbitViewAnimator animator =
+				FlyToSectorAnimator.createFlyToSectorAnimator(orbitView, center, newCenter, orbitView.getHeading(),
+						orbitView.getPitch(), orbitView.getZoom(), endVisibleDelta, lengthMillis);
+		orbitView.stopAnimations();
+		orbitView.stopMovement();
+		orbitView.addAnimator(animator);
+		orbitView.firePropertyChange(AVKey.VIEW, null, orbitView);
 	}
 }
