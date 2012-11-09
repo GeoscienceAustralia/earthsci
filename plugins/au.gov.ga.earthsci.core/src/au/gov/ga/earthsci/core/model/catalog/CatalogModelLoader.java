@@ -13,28 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.catalog.dataset;
-
-import org.eclipse.osgi.util.NLS;
+package au.gov.ga.earthsci.core.model.catalog;
 
 /**
- * Message constants for the dataset package
+ * A threadsafe factory class used to load the {@link ICatalogModel}
+ * 
+ * @author James Navin (jame.navin@ga.gov.au)
  */
-public class Messages extends NLS
+public class CatalogModelLoader
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.model.catalog.dataset.messages"; //$NON-NLS-1$
-	public static String DatasetLinkCatalogTreeNode_DownloadingLinkMessage;
-	public static String DatasetLinkCatalogTreeNode_GenericLinkDownloadFailedMessage;
-	public static String DatasetLinkCatalogTreeNode_NoRetrievalServiceMessage;
-	public static String DatasetLinkCatalogTreeNode_NoRetrieverFoundMessage;
-	public static String DatasetReader_DefaultRootNodeName;
-	static
-	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
 
-	private Messages()
+	private CatalogModelLoader() {}
+	
+	private static ICatalogModel loadedModel;
+	
+	/**
+	 * Load the persisted catalog model, if one exists, or initialise
+	 * a new instance.
+	 * 
+	 * @return The catalog model to use
+	 */
+	public synchronized static ICatalogModel loadCatalogModel()
 	{
+		if (loadedModel != null)
+		{
+			return loadedModel;
+		}
+		
+		// TODO: Load from persisted model
+		CatalogModel model = new CatalogModel();
+		loadedModel = model;
+		return model;
 	}
+	
 }

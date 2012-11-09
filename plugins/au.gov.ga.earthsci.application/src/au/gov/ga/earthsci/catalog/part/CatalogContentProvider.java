@@ -14,15 +14,15 @@ import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
 public class CatalogContentProvider extends LazyTreeNodeContentProvider
 {
 
-	public CatalogContentProvider(TreeViewer viewer)
+	public CatalogContentProvider(final TreeViewer viewer)
 	{
 		super(viewer);
 	}
 	
 	@Override
-	public Object[] getElements(Object inputElement)
+	public Object[] getElements(final Object inputElement)
 	{
-		return new Object[] {((ICatalogModel)inputElement).getRoot()};
+		return ((ICatalogModel)inputElement).getTopLevelCatalogs();
 	}
 
 }

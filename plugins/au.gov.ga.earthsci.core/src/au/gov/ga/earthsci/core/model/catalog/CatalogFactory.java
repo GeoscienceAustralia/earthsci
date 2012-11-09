@@ -77,9 +77,12 @@ public class CatalogFactory
 			{
 				if (provider.supports(source))
 				{
+					logger.trace("Found catalog provider {} for source {}", provider, source); //$NON-NLS-1$
 					return provider;
 				}
 			}
+			
+			logger.trace("No catalog provider found for source {}", source); //$NON-NLS-1$
 			return null;
 		}
 		finally
@@ -100,6 +103,8 @@ public class CatalogFactory
 	 */
 	public static ICatalogTreeNode loadCatalog(URI source)
 	{
+		logger.trace("Attempting to load catalog from source {}", source); //$NON-NLS-1$
+		
 		if (source == null)
 		{
 			return null;
@@ -144,7 +149,7 @@ public class CatalogFactory
 			registeredProvidersLock.writeLock().unlock();
 		}
 		
-		logger.debug("Registeried catalog provider: {}", p); //$NON-NLS-1$
+		logger.debug("Registered catalog provider: {}", p); //$NON-NLS-1$
 	}
 	
 }

@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.catalog.dataset;
+package au.gov.ga.earthsci.application.tree;
 
 import org.eclipse.osgi.util.NLS;
 
 /**
- * Message constants for the dataset package
+ * Message bundle for tree components
  */
 public class Messages extends NLS
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.model.catalog.dataset.messages"; //$NON-NLS-1$
-	public static String DatasetLinkCatalogTreeNode_DownloadingLinkMessage;
-	public static String DatasetLinkCatalogTreeNode_GenericLinkDownloadFailedMessage;
-	public static String DatasetLinkCatalogTreeNode_NoRetrievalServiceMessage;
-	public static String DatasetLinkCatalogTreeNode_NoRetrieverFoundMessage;
-	public static String DatasetReader_DefaultRootNodeName;
+	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.application.tree.messages"; //$NON-NLS-1$
+	public static String LazyTreeNodeContentProvider_LoadingMessage;
 	static
 	{
 		// initialize resource bundle

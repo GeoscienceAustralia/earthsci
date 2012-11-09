@@ -3,7 +3,6 @@ package au.gov.ga.earthsci.notification.popup;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.swt.widgets.Display;
 
 import au.gov.ga.earthsci.notification.INotification;
@@ -23,7 +22,7 @@ import au.gov.ga.earthsci.notification.popup.ui.PopupNotification;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-@Creatable
+//@Creatable
 @Singleton
 public class PopupNotificationReceiver implements INotificationReceiver
 {

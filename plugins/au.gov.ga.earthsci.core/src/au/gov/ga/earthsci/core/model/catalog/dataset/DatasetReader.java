@@ -15,7 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.catalog.dataset;
 
+import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import org.w3c.dom.Element;
@@ -64,7 +66,7 @@ final public class DatasetReader
 	public static ICatalogTreeNode read(final Object source, final URL context) throws MalformedURLException
 	{
 		//top level dataset (DatasetList) doesn't have a name, and is not shown in the tree
-		final ICatalogTreeNode root = new DatasetCatalogTreeNode(null, null, null, true);
+		final ICatalogTreeNode root = new DatasetCatalogTreeNode(getRootNodeName(source), null, null, true);
 
 		final Element rootElement = XmlUtil.getElementFromSource(source);
 		if (rootElement == null)
@@ -91,6 +93,23 @@ final public class DatasetReader
 		return root;
 	}
 
+	private static String getRootNodeName(Object source)
+	{
+		if (source instanceof File)
+		{
+			return ((File)source).getAbsolutePath(); 
+		}
+		if (source instanceof URI)
+		{
+			return ((URI)source).toASCIIString(); 
+		}
+		if (source instanceof URL)
+		{
+			return ((URL)source).toExternalForm();
+		}
+		return Messages.DatasetReader_DefaultRootNodeName;
+	}
+	
 	private static void addChildren(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException
 	{
 		final Element[] elements = XmlUtil.getElements(element, VALID_NODES_XPATH, null);

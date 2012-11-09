@@ -28,7 +28,7 @@ import au.gov.ga.earthsci.core.tree.LazyTreeJob;
 public class LazyTreeNodeContentProvider implements ITreeContentProvider
 {
 	
-	private static final ILazyTreeNode<String> DEFAULT_PENDING_NODE = new SimpleLazyTreeLeafNode("Loading...");
+	private static final ILazyTreeNode<String> DEFAULT_PENDING_NODE = new SimpleLazyTreeLeafNode(Messages.LazyTreeNodeContentProvider_LoadingMessage);
 
 	private Object loadingNode = DEFAULT_PENDING_NODE;
 	

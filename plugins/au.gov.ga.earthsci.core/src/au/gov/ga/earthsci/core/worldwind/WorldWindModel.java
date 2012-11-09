@@ -27,8 +27,6 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.eclipse.e4.core.di.annotations.Creatable;
-
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerPersister;
@@ -41,7 +39,6 @@ import au.gov.ga.earthsci.core.util.ConfigurationUtil;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@Creatable
 @Singleton
 public class WorldWindModel extends BasicModel implements ITreeModel
 {
