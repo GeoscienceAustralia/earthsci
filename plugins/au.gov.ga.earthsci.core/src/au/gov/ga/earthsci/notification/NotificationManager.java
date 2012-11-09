@@ -16,7 +16,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.core.di.annotations.Creatable;
+import org.eclipse.e4.core.internal.contexts.osgi.EclipseContextOSGi;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-@Creatable
+//@Creatable
 @Singleton
 public class NotificationManager
 {
@@ -43,7 +44,7 @@ public class NotificationManager
 	public static final String NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.categoryProvider"; //$NON-NLS-1$
 	public static final String NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 	
-	private Set<INotificationReceiver> receivers;
+	private Set<INotificationReceiver> receivers = new LinkedHashSet<INotificationReceiver>();
 	private ReadWriteLock receiversLock = new ReentrantReadWriteLock();
 	
 	private ExecutorService notifier = Executors.newSingleThreadExecutor(new ThreadFactory(){
@@ -54,19 +55,12 @@ public class NotificationManager
 		}
 	});
 	
-	private static NotificationManager INSTANCE;
+	private static final NotificationManager INSTANCE = new NotificationManager();
 	
 	private static final Logger logger = LoggerFactory.getLogger(NotificationManager.class);
 	
-	/**
-	 * Constructor for DI creation only. To obtain instances of the {@link NotificationManager},
-	 * use {@link #get()}.
-	 */
-	NotificationManager()
-	{
-		receivers = new LinkedHashSet<INotificationReceiver>();
-		INSTANCE = this;
-	}
+	/** Singleton access via {@link #get()} */
+	private NotificationManager() {}
 	
 	/**
 	 * Load registered notification receivers from the provided extension registry.
@@ -78,7 +72,7 @@ public class NotificationManager
 	 * @param context The context to use for dependency injection etc.
 	 */
 	@Inject
-	public static void loadReceivers(IExtensionRegistry registry, IEclipseContext context)
+	public static void loadReceivers(IExtensionRegistry registry, BundleContext context)
 	{
 		logger.info("Registering notification receivers"); //$NON-NLS-1$
 		
@@ -90,8 +84,8 @@ public class NotificationManager
 				final Object o = e.createExecutableExtension(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE); 
 				if (o instanceof INotificationReceiver)
 				{
-					ContextInjectionFactory.inject(o, context);
-					context.set(e.getAttribute(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE), o);
+					ContextInjectionFactory.inject(o, new EclipseContextOSGi(context));
+					context.registerService(e.getAttribute(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE), o, null);
 					INSTANCE.registerReceiver((INotificationReceiver)o);
 				}
 			}
