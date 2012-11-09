@@ -54,6 +54,17 @@ public class CatalogModel implements ICatalogModel
 		root.add(catalog);
 	}
 	
+	@Override
+	public void addTopLevelCatalog(int index, ICatalogTreeNode catalog)
+	{
+		if (catalog == null)
+		{
+			return;
+		}
+		
+		root.add(index, catalog);
+	}
+	
 	private static class RootNode extends AbstractCatalogTreeNode
 	{
 		@Override
@@ -71,7 +82,7 @@ public class CatalogModel implements ICatalogModel
 		@Override
 		public String getName()
 		{
-			return "ROOT";
+			return "ROOT"; //$NON-NLS-1$
 		}
 		
 		@Override
@@ -79,8 +90,6 @@ public class CatalogModel implements ICatalogModel
 		{
 			return true;
 		}
-		
-		
 	}
 	
 }

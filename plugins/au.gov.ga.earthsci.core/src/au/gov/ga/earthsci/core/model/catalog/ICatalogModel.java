@@ -53,4 +53,13 @@ public interface ICatalogModel
 	 * @param catalog The root node of the catalog tree to add to this model.
 	 */
 	void addTopLevelCatalog(ICatalogTreeNode catalog);
+	
+	/**
+	 * Add the provided catalog tree node at the given index. If index is out of bounds, insertion will
+	 * occur at the start/end of the child list as appropriate.
+	 * 
+	 * @param index The index at which to insert the catalog
+	 * @param catalog The catalog to insert
+	 */
+	void addTopLevelCatalog(int index, ICatalogTreeNode catalog);
 }

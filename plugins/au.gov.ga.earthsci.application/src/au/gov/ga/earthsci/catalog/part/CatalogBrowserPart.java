@@ -1,7 +1,5 @@
 package au.gov.ga.earthsci.catalog.part;
 
-import java.io.File;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -9,9 +7,11 @@ import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 
-import au.gov.ga.earthsci.core.model.catalog.CatalogFactory;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
 import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
 
@@ -32,18 +32,9 @@ public class CatalogBrowserPart
 	@PostConstruct
 	public void init(Composite parent, MPart part)
 	{
-		
-		initTree();
 		initViewer(parent);
-		
 	}
 	
-	@Deprecated
-	private void initTree()
-	{
-		model.addTopLevelCatalog(CatalogFactory.loadCatalog(new File("V:/projects/data/12-6205 - IGC Common Earth Model/Viewer - Full version/data/Dataset/dataset.xml").toURI()));
-	}
-
 	private void initViewer(Composite parent)
 	{
 		viewer = new TreeViewer(parent, SWT.VIRTUAL);
@@ -58,5 +49,7 @@ public class CatalogBrowserPart
 		viewer.setSorter(null);
 		viewer.setInput(model);
 		viewer.getTree().setItemCount(1);
+		
+		viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance()}, new CatalogTreeDropAdapter(viewer, model));
 	}
 }
