@@ -23,11 +23,8 @@ import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 
 import au.gov.ga.earthsci.core.retrieve.RetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
-import au.gov.ga.earthsci.core.worldwind.ITreeModel;
-import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindView;
 import au.gov.ga.earthsci.logging.SLF4JE4LoggerBridge;
-import au.gov.ga.earthsci.notification.NotificationManager;
 
 /**
  * Registered as the product application 'lifeCycleURI' class, which gets called
@@ -50,16 +47,10 @@ public class LifeCycleManager
 	private WorldWindConfigurator worldWindConfigurator;
 
 	@Inject
-	private NotificationManager notificationManager;
-
-	@Inject
 	private RetrievalService retrievalService;
 
 	@Inject
 	private RetrievalServiceFactory retrievalServiceFactory;
-
-	@Inject
-	private WorldWindModel worldWindModel;
 
 	@Inject
 	private WorldWindView worldWindView;
@@ -67,8 +58,6 @@ public class LifeCycleManager
 	@PostContextCreate
 	void postContextCreate()
 	{
-		context.set(ITreeModel.class, worldWindModel);
-		context.set(WorldWindModel.class, worldWindModel);
 		context.set(WorldWindView.class, worldWindView);
 	}
 
