@@ -41,7 +41,7 @@ public class ConfigurationUtil
 	{
 		try
 		{
-			return Platform.getConfigurationLocation().getDataArea(subpath);
+			return new URL(Platform.getConfigurationLocation().getDataArea(subpath).toString().replace(" ", "%20")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		catch (IOException e)
 		{
@@ -81,7 +81,7 @@ public class ConfigurationUtil
 	{
 		try
 		{
-			return Platform.getUserLocation().getDataArea(subpath);
+			return new URL(Platform.getUserLocation().getDataArea(subpath).toString().replace(" ", "%20")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		catch (IOException e)
 		{

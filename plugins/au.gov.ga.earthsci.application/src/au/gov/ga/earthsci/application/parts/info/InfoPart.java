@@ -15,15 +15,20 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.info;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 
+import au.gov.ga.earthsci.application.parts.info.handlers.LinkHandler;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
@@ -36,6 +41,8 @@ import au.gov.ga.earthsci.core.model.layer.LayerNode;
 public class InfoPart
 {
 	private Browser browser;
+	private ILayerTreeNode layer;
+	private boolean link;
 
 	@Inject
 	public void init(Composite parent)
@@ -43,8 +50,41 @@ public class InfoPart
 		browser = new Browser(parent, SWT.NONE);
 	}
 
+	@PostConstruct
+	private void postConstruct(IEclipseContext context, MPart part)
+	{
+		context.set(InfoPart.class, this);
+		link = LinkHandler.isLink(part);
+	}
+
+	@PreDestroy
+	private void preDestroy(IEclipseContext context)
+	{
+		context.remove(InfoPart.class);
+	}
+
+	public boolean isLink()
+	{
+		return link;
+	}
+
+	public void setLink(boolean link)
+	{
+		this.link = link;
+		selectLayer(layer);
+	}
+
 	@Inject
-	public void selectLayer(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
+	private void selectLayer(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
+	{
+		this.layer = layer;
+		if (isLink())
+		{
+			showInfo(layer);
+		}
+	}
+
+	public void showInfo(ILayerTreeNode layer)
 	{
 		if (layer != null)
 		{
@@ -100,4 +140,6 @@ public class InfoPart
 			sb.append("<br />"); //$NON-NLS-1$
 		}
 	}
+
+
 }

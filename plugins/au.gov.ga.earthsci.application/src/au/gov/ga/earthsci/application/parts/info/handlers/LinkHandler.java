@@ -15,9 +15,15 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.info.handlers;
 
+import javax.annotation.PostConstruct;
+
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.model.application.ui.menu.MToolBar;
+import org.eclipse.e4.ui.model.application.ui.menu.MToolBarElement;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolItem;
+
+import au.gov.ga.earthsci.application.parts.info.InfoPart;
 
 /**
  * Link command handler for the info part.
@@ -26,9 +32,43 @@ import org.eclipse.e4.ui.model.application.ui.menu.MToolItem;
  */
 public class LinkHandler
 {
-	@Execute
-	public void execute(MPart part, MToolItem item)
+	private static final String TOOL_ITEM_ID = "au.gov.ga.earthsci.application.info.toolitems.link"; //$NON-NLS-1$
+	private static final String PERSISTED_STATE_KEY = "au.gov.ga.earthsci.application.info.toolitems.link.persist"; //$NON-NLS-1$
+
+	@PostConstruct
+	public void init(MPart part)
 	{
-		//item.setSelected(!item.isSelected());
+		MToolBar toolbar = part.getToolbar();
+		for (MToolBarElement element : toolbar.getChildren())
+		{
+			if (TOOL_ITEM_ID.equals(element.getElementId()))
+			{
+				MToolItem item = (MToolItem) element;
+				item.setSelected(isLink(part));
+				break;
+			}
+		}
+	}
+
+	@Execute
+	public void execute(MPart part, MToolItem item, InfoPart info)
+	{
+		setLink(part, item.isSelected());
+		info.setLink(item.isSelected());
+	}
+
+	public static boolean isLink(MPart part)
+	{
+		String l = part.getPersistedState().get(PERSISTED_STATE_KEY);
+		if (l == null)
+		{
+			return true;
+		}
+		return Boolean.parseBoolean(l);
+	}
+
+	public static void setLink(MPart part, boolean link)
+	{
+		part.getPersistedState().put(PERSISTED_STATE_KEY, String.valueOf(link));
 	}
 }
