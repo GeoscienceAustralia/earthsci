@@ -32,7 +32,7 @@
               <children xsi:type="basic:Part" xmi:id="_OVvf0ClJEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.part.0" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.info.InfoPart" label="Information" closeable="true">
                 <handlers xmi:id="_-VQfsCoBEeKSQfx7uoupxA" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.info.handlers.LinkHandler" command="_21JkQCoBEeKSQfx7uoupxA"/>
                 <toolbar xmi:id="_akd5sCn9EeKSQfx7uoupxA" elementId="au.gov.ga.earthsci.application.toolbar.0">
-                  <children xsi:type="menu:HandledToolItem" xmi:id="_bsJTcCn9EeKSQfx7uoupxA" elementId="" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/synced.gif" tooltip="Link with Layers" type="Check" command="_21JkQCoBEeKSQfx7uoupxA"/>
+                  <children xsi:type="menu:HandledToolItem" xmi:id="_bsJTcCn9EeKSQfx7uoupxA" elementId="au.gov.ga.earthsci.application.info.toolitems.link" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/synced.gif" tooltip="Link with Layers" type="Check" command="_21JkQCoBEeKSQfx7uoupxA"/>
                 </toolbar>
               </children>
               <children xsi:type="basic:Part" xmi:id="_IsdaEA0kEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.notification.part.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.notification.part.NotificationPart" label="Notifications" closeable="true">
