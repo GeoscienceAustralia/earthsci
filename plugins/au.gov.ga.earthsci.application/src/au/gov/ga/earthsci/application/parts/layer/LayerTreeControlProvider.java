@@ -17,12 +17,20 @@ package au.gov.ga.earthsci.application.parts.layer;
 
 import java.net.URL;
 
-import org.eclipse.jface.viewers.TreeViewer;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.eclipse.e4.core.di.annotations.Creatable;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.e4.ui.workbench.modeling.EPartService;
+import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ControlEditor;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowLayout;
@@ -31,7 +39,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 
+import au.gov.ga.earthsci.application.parts.info.InfoPart;
 import au.gov.ga.earthsci.application.util.IControlProvider;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 
@@ -41,18 +51,23 @@ import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
+@Creatable
 public class LayerTreeControlProvider implements IControlProvider
 {
-	private final TreeViewer viewer;
+	private Color background;
 
 	private final Image informationImage;
 	private final Image informationWhiteImage;
 	private final Image legendImage;
 	private final Image legendWhiteImage;
 
-	public LayerTreeControlProvider(Display display, TreeViewer viewer)
+	@Inject
+	private EPartService partService;
+
+	@Inject
+	public LayerTreeControlProvider(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 	{
-		this.viewer = viewer;
+		Display display = shell.getDisplay();
 		informationImage = new Image(display, getClass().getResourceAsStream("/icons/information.gif")); //$NON-NLS-1$
 		informationWhiteImage = new Image(display, getClass().getResourceAsStream("/icons/information_white.gif")); //$NON-NLS-1$
 		legendImage = new Image(display, getClass().getResourceAsStream("/icons/legend.gif")); //$NON-NLS-1$
@@ -67,12 +82,23 @@ public class LayerTreeControlProvider implements IControlProvider
 		legendWhiteImage.dispose();
 	}
 
-	private void createURLClickableLabel(Composite parent, final URL url, final Image image, final Image hoverImage)
+	public Color getBackground()
+	{
+		return background;
+	}
+
+	public void setBackground(Color background)
+	{
+		this.background = background;
+	}
+
+	private void createURLClickableLabel(Composite parent, final ILayerTreeNode layerNode, final URL url,
+			final Image image, final Image hoverImage)
 	{
 		if (url != null)
 		{
 			final Label label = new Label(parent, SWT.NONE);
-			label.setBackground(viewer.getTree().getBackground());
+			label.setBackground(getBackground());
 			label.setImage(image);
 
 			label.addMouseTrackListener(new MouseTrackAdapter()
@@ -90,12 +116,19 @@ public class LayerTreeControlProvider implements IControlProvider
 				}
 			});
 
+
 			label.addMouseListener(new MouseAdapter()
 			{
 				@Override
 				public void mouseUp(MouseEvent e)
 				{
-					System.out.println(url);
+					MPart part = partService.showPart(InfoPart.PART_ID, PartState.VISIBLE);
+					if (part == null)
+					{
+						//TODO
+					}
+					part.getContext().modify(InfoPart.INPUT_NAME, layerNode);
+					part.getContext().declareModifiable(InfoPart.INPUT_NAME);
 				}
 			});
 		}
@@ -109,7 +142,7 @@ public class LayerTreeControlProvider implements IControlProvider
 		editor.horizontalAlignment = SWT.RIGHT;
 
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setBackground(viewer.getTree().getBackground());
+		composite.setBackground(getBackground());
 		RowLayout layout = new RowLayout(SWT.HORIZONTAL);
 		layout.marginBottom = layout.marginLeft = layout.marginRight = layout.marginTop = 0;
 		composite.setLayout(layout);
@@ -117,8 +150,8 @@ public class LayerTreeControlProvider implements IControlProvider
 		if (element instanceof ILayerTreeNode)
 		{
 			ILayerTreeNode node = (ILayerTreeNode) element;
-			createURLClickableLabel(composite, node.getInfoURL(), informationWhiteImage, informationImage);
-			createURLClickableLabel(composite, node.getLegendURL(), legendWhiteImage, legendImage);
+			createURLClickableLabel(composite, node, node.getInfoURL(), informationWhiteImage, informationImage);
+			createURLClickableLabel(composite, node, node.getLegendURL(), legendWhiteImage, legendImage);
 		}
 
 		return composite;

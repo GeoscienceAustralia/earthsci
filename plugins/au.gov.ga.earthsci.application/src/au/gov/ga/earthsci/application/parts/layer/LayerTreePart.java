@@ -65,14 +65,17 @@ public class LayerTreePart
 	@Inject
 	private ESelectionService selectionService;
 
-	private ControlCheckboxTreeViewer viewer;
+	@Inject
 	private LayerTreeControlProvider controlProvider;
+
+	private ControlCheckboxTreeViewer viewer;
 	private Clipboard clipboard;
 
 	@PostConstruct
 	public void init(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell, Composite parent, EMenuService menuService)
 	{
 		viewer = new ControlCheckboxTreeViewer(parent, SWT.MULTI);
+		controlProvider.setBackground(viewer.getTree().getBackground());
 		context.set(TreeViewer.class, viewer);
 
 		clipboard = new Clipboard(shell.getDisplay());
@@ -99,7 +102,6 @@ public class LayerTreePart
 		final IObservableMap[] attributeMap =
 				new IObservableMap[] { enableds, opacities, names, labels, anyChildrenEnableds, allChildrenEnableds };
 
-		controlProvider = new LayerTreeControlProvider(shell.getDisplay(), viewer);
 		viewer.setControlProvider(controlProvider);
 		viewer.setLabelProvider(new LayerTreeLabelProvider(attributeMap));
 		viewer.setCheckStateProvider(new LayerTreeCheckStateProvider());
