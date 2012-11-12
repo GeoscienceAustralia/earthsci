@@ -113,6 +113,11 @@ public interface ITreeNode<E>
 	 * @return True if the child was found and removed, false otherwise.
 	 */
 	boolean remove(ITreeNode<E> child);
+	
+	/**
+	 * Remove all children from this node
+	 */
+	void removeAll();
 
 	/**
 	 * Remove the child at the specified index.

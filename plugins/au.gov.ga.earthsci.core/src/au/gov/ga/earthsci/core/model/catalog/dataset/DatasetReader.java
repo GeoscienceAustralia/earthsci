@@ -18,11 +18,13 @@ package au.gov.ga.earthsci.core.model.catalog.dataset;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.core.util.XmlUtil;
 
 
@@ -63,15 +65,13 @@ final public class DatasetReader
 	 * 
 	 * @throws MalformedURLException
 	 */
-	public static ICatalogTreeNode read(final Object source, final URL context) throws MalformedURLException
+	public static ICatalogTreeNode read(final Object source, final URL context) throws MalformedURLException, URISyntaxException
 	{
-		//top level dataset (DatasetList) doesn't have a name, and is not shown in the tree
-		final ICatalogTreeNode root = new DatasetCatalogTreeNode(getRootNodeName(source), null, null, true);
 
 		final Element rootElement = XmlUtil.getElementFromSource(source);
 		if (rootElement == null)
 		{
-			return root;
+			return new DatasetCatalogTreeNode(null, getRootNodeName(source), null, null, true);
 		}
 		
 		// Special case
@@ -81,6 +81,8 @@ final public class DatasetReader
 			theContext = (URL)source;
 		}
 		
+		final ICatalogTreeNode root = new DatasetCatalogTreeNode(theContext.toURI(), getRootNodeName(source), null, null, true);
+				
 		final Element[] elements = XmlUtil.getElements(rootElement, DATASET_LIST_XPATH, null);
 		if (elements != null)
 		{
@@ -110,7 +112,7 @@ final public class DatasetReader
 		return Messages.DatasetReader_DefaultRootNodeName;
 	}
 	
-	private static void addChildren(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException
+	private static void addChildren(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException, URISyntaxException
 	{
 		final Element[] elements = XmlUtil.getElements(element, VALID_NODES_XPATH, null);
 		if (elements == null)
@@ -151,20 +153,22 @@ final public class DatasetReader
 		return element.getNodeName().equalsIgnoreCase(DATASET_NODE_NAME);
 	}
 
-	private static ICatalogTreeNode addDataset(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException
+	private static ICatalogTreeNode addDataset(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException, URISyntaxException
 	{
 		final String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
 		final URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
 		final URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
 		final boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
 		
-		final ICatalogTreeNode dataset = new DatasetCatalogTreeNode(name, info, icon, base);
+		URI nodeURI = buildChildURI(parent.getURI(), UTF8URLEncoder.encode(name));
+		
+		final ICatalogTreeNode dataset = new DatasetCatalogTreeNode(nodeURI, name, info, icon, base);
 		parent.add(dataset);
 		
 		return dataset;
 	}
 
-	private static void addLink(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException
+	private static void addLink(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException, URISyntaxException
 	{
 		final String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
 		final URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
@@ -172,11 +176,13 @@ final public class DatasetReader
 		final URL url = XmlUtil.getURL(element, URL_ATTRIBUTE, context);
 		final boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
 		
-		final ICatalogTreeNode link = new DatasetLinkCatalogTreeNode(name, url, info, icon, base);
+		URI nodeURI = buildChildURI(parent.getURI(), url.toExternalForm());
+		
+		final ICatalogTreeNode link = new DatasetLinkCatalogTreeNode(nodeURI, name, url, info, icon, base);
 		parent.add(link);
 	}
 
-	private static void addLayer(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException
+	private static void addLayer(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException, URISyntaxException
 	{
 		final String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
 		final URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
@@ -187,7 +193,14 @@ final public class DatasetReader
 		final boolean def = XmlUtil.getBoolean(element, DEFAULT_ATTRIBUTE, false);
 		final boolean enabled = XmlUtil.getBoolean(element, ENABLED_ATTRIBUTE, true);
 		
-		final DatasetLayerCatalogTreeNode layer = new DatasetLayerCatalogTreeNode(name, url, info, icon, base, def, enabled);
+		URI nodeURI = buildChildURI(parent.getURI(), url.toExternalForm());
+		
+		final DatasetLayerCatalogTreeNode layer = new DatasetLayerCatalogTreeNode(nodeURI, name, url, info, icon, base, def, enabled);
 		parent.add(layer);
+	}
+	
+	private static URI buildChildURI(URI parentURI, String childPath) throws URISyntaxException
+	{
+		return new URI(parentURI.toASCIIString() + "/" + childPath); //$NON-NLS-1$
 	}
 }

@@ -152,4 +152,47 @@ public class CatalogFactory
 		logger.debug("Registered catalog provider: {}", p); //$NON-NLS-1$
 	}
 	
+	/**
+	 * Remove the provided {@link ICatalogProvider} from this factory
+	 * 
+	 * @param p The catalog provider to remove
+	 */
+	public static void removeProvider(ICatalogProvider p)
+	{
+		if (p == null)
+		{
+			return;
+		}
+		
+		registeredProvidersLock.writeLock().lock();
+		try
+		{
+			registeredProviders.remove(p);
+		}
+		finally
+		{
+			registeredProvidersLock.writeLock().unlock();
+		}
+		
+		logger.debug("Removed catalog provider: {}", p); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Reset this factory and remove all registered providers
+	 */
+	public static void reset()
+	{
+		registeredProvidersLock.writeLock().lock();
+		try
+		{
+			registeredProviders.clear();
+		}
+		finally
+		{
+			registeredProvidersLock.writeLock().unlock();
+		}
+		
+		logger.debug("Removed catalog all providers"); //$NON-NLS-1$
+	}
+	
 }

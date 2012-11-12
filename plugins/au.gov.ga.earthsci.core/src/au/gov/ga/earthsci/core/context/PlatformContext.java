@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.context;
 
+import au.gov.ga.earthsci.core.model.catalog.CatalogPersister;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
 
@@ -66,6 +67,7 @@ public class PlatformContext implements IPlatformContext
 			return;
 		}
 
+		CatalogPersister.saveToWorkspace(catalogModel);
 		wwModel.saveLayers();
 	}
 }

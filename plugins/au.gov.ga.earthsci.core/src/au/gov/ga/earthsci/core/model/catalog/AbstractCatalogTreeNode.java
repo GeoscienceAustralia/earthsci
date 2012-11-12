@@ -1,5 +1,7 @@
 package au.gov.ga.earthsci.core.model.catalog;
 
+import java.net.URI;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -14,6 +16,14 @@ import au.gov.ga.earthsci.core.tree.LazyTreeJob;
  */
 public abstract class AbstractCatalogTreeNode extends AbstractLazyTreeNode<ICatalogTreeNode> implements ICatalogTreeNode
 {
+
+	private URI nodeURI;
+	private String label;
+	
+	public AbstractCatalogTreeNode(URI nodeURI)
+	{
+		this.nodeURI = nodeURI;
+	}
 	
 	@Override
 	protected IStatus doLoad(IProgressMonitor monitor)
@@ -27,5 +37,28 @@ public abstract class AbstractCatalogTreeNode extends AbstractLazyTreeNode<ICata
 	{
 		return load();
 	}
+	
+	@Override
+	public String getLabel()
+	{
+		return label;
+	}
+	
+	@Override
+	public void setLabel(String label)
+	{
+		this.label = label;
+	}
+	
+	@Override
+	public String getLabelOrName()
+	{
+		return getLabel() == null ? getName() : getLabel();
+	}
 
+	@Override
+	public URI getURI()
+	{
+		return nodeURI;
+	}
 }

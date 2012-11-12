@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Display;
 import au.gov.ga.earthsci.core.tree.AbstractLazyTreeNode;
 import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
 import au.gov.ga.earthsci.core.tree.LazyTreeJob;
+import au.gov.ga.earthsci.core.util.ILabeled;
 
 /**
  * An implementation of {@link ILazyTreeContentProvider} that provides content from
@@ -134,7 +135,7 @@ public class LazyTreeNodeContentProvider implements ITreeContentProvider
 		loadingNode = element;
 	}
 	
-	private static class SimpleLazyTreeLeafNode extends AbstractLazyTreeNode<String>
+	private static class SimpleLazyTreeLeafNode extends AbstractLazyTreeNode<String> implements ILabeled
 	{
 
 		private String name;
@@ -150,6 +151,18 @@ public class LazyTreeNodeContentProvider implements ITreeContentProvider
 			return name;
 		}
 
+		@Override
+		public String getLabel()
+		{
+			return name;
+		}
+		
+		@Override
+		public String getLabelOrName()
+		{
+			return name;
+		}
+		
 		@Override
 		public boolean isLoaded() {return true; };
 		

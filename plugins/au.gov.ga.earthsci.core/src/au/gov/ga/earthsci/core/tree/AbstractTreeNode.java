@@ -224,6 +224,23 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	}
 
 	@Override
+	public void removeAll()
+	{
+		@SuppressWarnings("unchecked")
+		ITreeNode<E>[] newChildren = new ITreeNode[0];
+		
+		for (ITreeNode<E> child : children)
+		{
+			if (child.getParent() == this)
+			{
+				child.setParent(null, -1);
+			}
+		}
+		
+		setChildren(newChildren);
+	}
+	
+	@Override
 	public void removeFromParent()
 	{
 		if (isRoot())

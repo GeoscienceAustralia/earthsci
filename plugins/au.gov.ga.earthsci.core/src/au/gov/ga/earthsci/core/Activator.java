@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import au.gov.ga.earthsci.core.context.IPlatformContext;
 import au.gov.ga.earthsci.core.context.PlatformContext;
 import au.gov.ga.earthsci.core.model.catalog.CatalogFactory;
-import au.gov.ga.earthsci.core.model.catalog.CatalogModelLoader;
+import au.gov.ga.earthsci.core.model.catalog.CatalogPersister;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
 import au.gov.ga.earthsci.core.model.layer.LayerFactory;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
@@ -105,7 +105,7 @@ public class Activator implements BundleActivator
 	
 	private void initialisePlatformContext()
 	{
-		ICatalogModel catalogModel = CatalogModelLoader.loadCatalogModel();
+		ICatalogModel catalogModel = CatalogPersister.loadFromWorkspace();
 		WorldWindModel wwModel = new WorldWindModel();
 		
 		PlatformContext platformContext = new PlatformContext(catalogModel, wwModel);
