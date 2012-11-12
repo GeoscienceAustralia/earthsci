@@ -132,6 +132,22 @@ public class ControlCheckboxTreeViewer extends CheckboxTreeViewer
 		}
 	}
 
+	public void setControlVisibleForItem(Item item, boolean visible)
+	{
+		if (controlProvider != null && item != null)
+		{
+			ControlItem controlItem = controls.get(item);
+			if (controlItem != null)
+			{
+				controlItem.composite.setVisible(visible);
+				if (visible)
+				{
+					controlItem.editor.layout();
+				}
+			}
+		}
+	}
+
 	/**
 	 * Helper class which stores required objects for each tree item.
 	 */
@@ -150,6 +166,7 @@ public class ControlCheckboxTreeViewer extends CheckboxTreeViewer
 			this.item = item;
 			this.editor = new CustomTreeEditor(tree, this);
 			this.composite = new BoundedComposite(tree, SWT.NONE);
+			this.composite.setBackground(tree.getBackground());
 			this.control =
 					controlProvider == null ? null : controlProvider.getControl(composite, element, item, editor);
 			editor.setEditor(composite, item);
