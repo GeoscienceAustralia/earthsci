@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.util;
+package au.gov.ga.earthsci.viewers;
 
 import org.eclipse.swt.custom.ControlEditor;
 import org.eclipse.swt.graphics.Rectangle;
@@ -22,7 +22,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 
 /**
- * Used to provide custom controls for items (ie items in a table or tree).
+ * Used to provide custom controls to a {@link IControlViewer} for items (ie
+ * items in a table or tree).
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */

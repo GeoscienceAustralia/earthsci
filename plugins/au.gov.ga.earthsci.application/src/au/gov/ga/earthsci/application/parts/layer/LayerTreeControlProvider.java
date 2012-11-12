@@ -42,8 +42,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.application.parts.info.InfoPart;
-import au.gov.ga.earthsci.application.util.IControlProvider;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.viewers.IControlProvider;
 
 /**
  * {@link IControlProvider} implementation for the layer tree. Must be disposed

@@ -32,9 +32,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-import au.gov.ga.earthsci.application.util.ControlCheckboxTreeViewer;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
+import au.gov.ga.earthsci.viewers.IControlViewer;
 
 /**
  * Handles rename commands for the layer tree.
@@ -46,7 +46,7 @@ public class RenameHandler
 	@Inject
 	private ITreeModel model;
 
-	private ControlCheckboxTreeViewer viewer;
+	private IControlViewer controlViewer;
 	private Tree tree;
 	private TreeEditor treeEditor;
 	private ILayerTreeNode layerNode;
@@ -58,7 +58,10 @@ public class RenameHandler
 	@Execute
 	public void execute(TreeViewer viewer)
 	{
-		this.viewer = (ControlCheckboxTreeViewer) viewer;
+		if (viewer instanceof IControlViewer)
+		{
+			this.controlViewer = (IControlViewer) viewer;
+		}
 		tree = viewer.getTree();
 		treeEditor = new TreeEditor(tree);
 
@@ -172,7 +175,14 @@ public class RenameHandler
 		textEditor.selectAll();
 		textEditor.setFocus();
 
-		viewer.setControlVisibleForItem(treeItem, false);
+		if (controlViewer != null)
+		{
+			Composite control = controlViewer.getControlForItem(treeItem);
+			if (control != null)
+			{
+				control.setVisible(false);
+			}
+		}
 	}
 
 	private void disposeTextWidget()
@@ -188,7 +198,14 @@ public class RenameHandler
 			treeEditor = null;
 		}
 
-		viewer.setControlVisibleForItem(treeItem, true);
+		if (controlViewer != null)
+		{
+			Composite control = controlViewer.getControlForItem(treeItem);
+			if (control != null)
+			{
+				control.setVisible(true);
+			}
+		}
 	}
 
 	private void saveChangesAndDispose()
