@@ -23,8 +23,10 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Concrete implementation of {@link ControlViewerHelper} for a
+ * {@link TreeViewer}. Uses {@link TreeEditor} as the editor type.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class ControlTreeViewerHelper extends ControlViewerHelper<TreeEditor>
 {
