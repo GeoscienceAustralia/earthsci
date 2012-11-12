@@ -40,9 +40,15 @@ import au.gov.ga.earthsci.core.model.layer.LayerNode;
  */
 public class InfoPart
 {
+	public static final String PART_ID = "au.gov.ga.earthsci.application.part.information"; //$NON-NLS-1$
+	public static final String INPUT_NAME = PART_ID + ".input"; //$NON-NLS-1$
+
 	private Browser browser;
-	private ILayerTreeNode layer;
+	private ILayerTreeNode selectedLayer;
 	private boolean link;
+
+	@Inject
+	private IEclipseContext context;
 
 	@Inject
 	public void init(Composite parent)
@@ -71,15 +77,29 @@ public class InfoPart
 	public void setLink(boolean link)
 	{
 		this.link = link;
-		selectLayer(layer);
+		selectLayer(selectedLayer);
 	}
 
 	@Inject
 	private void selectLayer(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
-		this.layer = layer;
+		System.out.println("SELECTION CHANGED TO " + layer);
+
+		this.selectedLayer = layer;
 		if (isLink())
 		{
+			context.modify(INPUT_NAME, layer);
+			context.declareModifiable(INPUT_NAME);
+		}
+	}
+
+	@Inject
+	@Optional
+	private void setPartInput(@Named(INPUT_NAME) Object partInput)
+	{
+		if (partInput instanceof ILayerTreeNode)
+		{
+			ILayerTreeNode layer = (ILayerTreeNode) partInput;
 			showInfo(layer);
 		}
 	}
@@ -140,6 +160,4 @@ public class InfoPart
 			sb.append("<br />"); //$NON-NLS-1$
 		}
 	}
-
-
 }

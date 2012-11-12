@@ -256,4 +256,10 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 			enabledChanged();
 		}
 	}
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " {" + getLabelOrName() + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+	}
 }

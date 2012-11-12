@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+import au.gov.ga.earthsci.application.util.ControlCheckboxTreeViewer;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
@@ -45,9 +46,11 @@ public class RenameHandler
 	@Inject
 	private ITreeModel model;
 
+	private ControlCheckboxTreeViewer viewer;
 	private Tree tree;
 	private TreeEditor treeEditor;
 	private ILayerTreeNode layerNode;
+	private TreeItem treeItem;
 	private Text textEditor;
 	private Composite textEditorParent;
 	private boolean saving = false;
@@ -55,6 +58,7 @@ public class RenameHandler
 	@Execute
 	public void execute(TreeViewer viewer)
 	{
+		this.viewer = (ControlCheckboxTreeViewer) viewer;
 		tree = viewer.getTree();
 		treeEditor = new TreeEditor(tree);
 
@@ -84,9 +88,10 @@ public class RenameHandler
 
 		textEditorParent = new Composite(tree, SWT.NONE);
 		TreeItem[] selectedItems = tree.getSelection();
+		treeItem = selectedItems[0];
 		treeEditor.horizontalAlignment = SWT.LEFT;
 		treeEditor.grabHorizontal = true;
-		treeEditor.setEditor(textEditorParent, selectedItems[0]);
+		treeEditor.setEditor(textEditorParent, treeItem);
 
 		textEditorParent.setVisible(false);
 		final int inset = 1;
@@ -128,9 +133,6 @@ public class RenameHandler
 			@Override
 			public void handleEvent(Event event)
 			{
-
-				// Workaround for Bug 20214 due to extra
-				// traverse events
 				switch (event.detail)
 				{
 				case SWT.TRAVERSE_ESCAPE:
@@ -169,6 +171,8 @@ public class RenameHandler
 		textEditorParent.redraw();
 		textEditor.selectAll();
 		textEditor.setFocus();
+
+		viewer.setControlVisibleForItem(treeItem, false);
 	}
 
 	private void disposeTextWidget()
@@ -177,9 +181,14 @@ public class RenameHandler
 		{
 			textEditorParent.dispose();
 			textEditorParent = null;
+			textEditor.dispose();
 			textEditor = null;
 			treeEditor.setEditor(null, null);
+			treeEditor.dispose();
+			treeEditor = null;
 		}
+
+		viewer.setControlVisibleForItem(treeItem, true);
 	}
 
 	private void saveChangesAndDispose()
