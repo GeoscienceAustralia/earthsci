@@ -15,8 +15,11 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.catalog;
 
+import java.net.URI;
+
 import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
 import au.gov.ga.earthsci.core.tree.LazyTreeJob;
+import au.gov.ga.earthsci.core.util.ILabelable;
 import au.gov.ga.earthsci.core.util.INamed;
 import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
@@ -27,7 +30,7 @@ import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ICatalogTreeNode extends ILazyTreeNode<ICatalogTreeNode>, IPropertyChangeBean, INamed
+public interface ICatalogTreeNode extends ILazyTreeNode<ICatalogTreeNode>, IPropertyChangeBean, INamed, ILabelable
 {
 	/**
 	 * @return Is this catalog node removeable from the Catalog tree? All user
@@ -44,4 +47,9 @@ public interface ICatalogTreeNode extends ILazyTreeNode<ICatalogTreeNode>, IProp
 	 * Reload this node's data.
 	 */
 	LazyTreeJob reload();
+	
+	/**
+	 * @return A URI that uniquely identifies this node in a catalog model. One should be able to re-create the node from this URI.
+	 */
+	URI getURI();
 }

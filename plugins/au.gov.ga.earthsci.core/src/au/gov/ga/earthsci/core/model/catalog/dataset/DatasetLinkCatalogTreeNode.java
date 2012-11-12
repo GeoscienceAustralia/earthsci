@@ -1,5 +1,6 @@
 package au.gov.ga.earthsci.core.model.catalog.dataset;
 
+import java.net.URI;
 import java.net.URL;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,10 +28,12 @@ public class DatasetLinkCatalogTreeNode extends DatasetCatalogTreeNode
 	
 	private final URL linkURL;
 
-	public DatasetLinkCatalogTreeNode(String name, URL linkURL, URL infoURL, URL iconURL, boolean base)
+	public DatasetLinkCatalogTreeNode(URI nodeURI, String name, URL linkURL, URL infoURL, URL iconURL, boolean base)
 	{
-		super(name, infoURL, iconURL, base);
+		super(nodeURI, name, infoURL, iconURL, base);
+		
 		this.linkURL = linkURL;
+		
 		setLoaded(false);
 	}
 

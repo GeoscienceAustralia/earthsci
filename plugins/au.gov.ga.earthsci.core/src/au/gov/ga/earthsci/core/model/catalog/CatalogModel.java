@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.catalog;
 
+
 /**
  * Default implementation of the {@link ICatalogModel} interface
  * 
@@ -43,6 +44,14 @@ public class CatalogModel implements ICatalogModel
 		return result;
 	}
 
+	public void setTopLevelCatalogs(ICatalogTreeNode[] nodes)
+	{
+		for (ICatalogTreeNode node : nodes)
+		{
+			root.add(node);
+		}
+	}
+	
 	@Override
 	public void addTopLevelCatalog(final ICatalogTreeNode catalog)
 	{
@@ -67,6 +76,11 @@ public class CatalogModel implements ICatalogModel
 	
 	private static class RootNode extends AbstractCatalogTreeNode
 	{
+		public RootNode()
+		{
+			super(null);
+		}
+
 		@Override
 		public boolean isRemoveable()
 		{

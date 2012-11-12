@@ -1,5 +1,6 @@
 package au.gov.ga.earthsci.core.model.catalog.dataset;
 
+import java.net.URI;
 import java.net.URL;
 
 import au.gov.ga.earthsci.core.model.catalog.AbstractCatalogTreeNode;
@@ -14,13 +15,29 @@ import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 {
 
-	private final String name;
-	private final URL infoURL;
-	private final URL iconURL;
-	private final boolean base;
+	/** The name to use for this node */
+	private String name;
 	
-	public DatasetCatalogTreeNode(String name, URL infoURL, URL iconURL, boolean base)
+	/** The info URL (if applicable) for this node */
+	private URL infoURL;
+	
+	/** The icon URL (if applicable) for this node */
+	private URL iconURL;
+	
+	private boolean base;
+	
+	/**
+	 * 
+	 */
+	private DatasetCatalogTreeNode()
 	{
+		super(null);
+	}
+	
+	public DatasetCatalogTreeNode(final URI nodeURI, final String name, final URL infoURL, final URL iconURL, final boolean base)
+	{
+		super(nodeURI);
+		
 		this.name = name;
 		this.infoURL = infoURL;
 		this.iconURL = iconURL;

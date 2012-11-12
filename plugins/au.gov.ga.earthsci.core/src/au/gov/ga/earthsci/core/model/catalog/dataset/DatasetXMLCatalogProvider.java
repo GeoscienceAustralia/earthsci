@@ -1,6 +1,5 @@
 package au.gov.ga.earthsci.core.model.catalog.dataset;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
@@ -45,7 +44,7 @@ public class DatasetXMLCatalogProvider implements ICatalogProvider
 			URL sourceURL = source.toURL();
 			return DatasetReader.read(sourceURL, sourceURL);
 		}
-		catch (MalformedURLException e)
+		catch (Exception e)
 		{
 			throw new IllegalArgumentException("Unable to load dataset XML catalog from source " + source, e); //$NON-NLS-1$
 		}

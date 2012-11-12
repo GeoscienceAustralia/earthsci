@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.catalog.dataset;
 
+import java.net.URI;
 import java.net.URL;
 
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
@@ -32,11 +33,11 @@ public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 	private final boolean def;
 	private final boolean enabled;
 	
-	public DatasetLayerCatalogTreeNode(final String name, final URL url, 
+	public DatasetLayerCatalogTreeNode(final URI nodeURI, final String name, final URL url, 
 									  final URL infoURL, final URL iconURL, 
 									  final boolean base, final boolean def, final boolean enabled)
 	{
-		super(name, infoURL, iconURL, base);
+		super(nodeURI, name, infoURL, iconURL, base);
 		
 		this.layerUrl = url;
 		this.def = def;

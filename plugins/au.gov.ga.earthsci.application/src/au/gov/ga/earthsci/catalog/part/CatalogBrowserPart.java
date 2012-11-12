@@ -13,7 +13,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
-import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
+import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 
 /**
  * A part that renders a tree-view of the current {@link ICatalogModel} and allows
@@ -43,7 +43,7 @@ public class CatalogBrowserPart
 			@Override
 			public String getText(Object element)
 			{
-				return ((ILazyTreeNode<?>)element).getName();
+				return ((ICatalogTreeNode)element).getLabelOrName();
 			}
 		});
 		viewer.setSorter(null);
