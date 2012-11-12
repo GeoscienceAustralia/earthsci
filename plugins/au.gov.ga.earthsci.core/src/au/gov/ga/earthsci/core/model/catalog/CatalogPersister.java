@@ -28,6 +28,8 @@ import java.net.URI;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -36,6 +38,7 @@ import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.persistence.Persister;
+import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 import au.gov.ga.earthsci.core.util.XmlUtil;
 import au.gov.ga.earthsci.worldwind.common.util.Validate;
 
@@ -48,9 +51,13 @@ public class CatalogPersister
 {
 	private CatalogPersister() {}
 
+	private static final Logger logger = LoggerFactory.getLogger(CatalogPersister.class);
+	
 	private static final String ROOT_NODE_NAME = "catalogModel"; //$NON-NLS-1$
 	private static final String MODEL_ELEMENT_NAME = "model"; //$NON-NLS-1$
 	private static final String CATALOG_NODE_ELEMENT_NAME = "catalog"; //$NON-NLS-1$
+	
+	private static final String DEFAULT_WORKSPACE_CATALOG_FILENAME = "catalogs.xml"; //$NON-NLS-1$
 	
 	private static final Persister persister;
 	static
@@ -61,6 +68,32 @@ public class CatalogPersister
 		
 		persister.registerNamedExportable(CatalogModelDTO.class, MODEL_ELEMENT_NAME);
 		persister.registerNamedExportable(CatalogNodeDTO.class, CATALOG_NODE_ELEMENT_NAME);
+	}
+	
+	/**
+	 * Save the provided catalog model to the current workspace using the default name
+	 * 
+	 * @param model The model to save
+	 * 
+	 * @throws IOException If there is a problem writing to the output file
+	 * @throws TransformerException If there is a problem formatting the XML output
+	 * @throws PersistenceException  If there is a problem persisting the model tree
+	 */
+	public static void saveToWorkspace(ICatalogModel model)
+	{
+		if (model == null)
+		{
+			return;
+		}
+		
+		try
+		{
+			saveCatalogModel(model, ConfigurationUtil.getWorkspaceFile(DEFAULT_WORKSPACE_CATALOG_FILENAME));
+		}
+		catch (Exception e)
+		{
+			logger.error("Unable to save catalog model to workspace", e);
+		}
 	}
 	
 	/**
@@ -144,6 +177,36 @@ public class CatalogPersister
 		Validate.notNull(parentElement, "A parent element is required"); //$NON-NLS-1$
 		
 		persister.save(new CatalogModelDTO(model), parentElement, null);
+	}
+	
+	/**
+	 * Load the catalog model from the current workspace, if it is available, or return a new empty model.
+	 * 
+	 * @return The loaded catalog model
+	 * 
+	 * @throws IllegalArgumentException If the provided source file is <code>null</code>
+	 * @throws SAXException If there is a problem parsing the XML document
+	 * @throws IOException If there is a problem reading from the source file
+	 * @throws PersistenceException If there is a problem recreating the model tree from the persistence mechanism
+	 */
+	public static ICatalogModel loadFromWorkspace()
+	{
+		File workspaceFile = ConfigurationUtil.getWorkspaceFile(DEFAULT_WORKSPACE_CATALOG_FILENAME);
+		if (!workspaceFile.exists())
+		{
+			logger.debug("No catalog model file found in workspace. Creating new model."); //$NON-NLS-1$
+			return new CatalogModel();
+		}
+		try
+		{
+			return loadCatalogModel(ConfigurationUtil.getWorkspaceFile(DEFAULT_WORKSPACE_CATALOG_FILENAME));
+		}
+		catch (Exception e)
+		{
+			logger.debug("Unable to load catalog model from workspace", e);
+			return new CatalogModel();
+		}
+		
 	}
 	
 	/**
