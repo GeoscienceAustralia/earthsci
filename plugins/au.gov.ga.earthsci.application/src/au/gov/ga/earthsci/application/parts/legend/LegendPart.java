@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.legend;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -87,8 +88,21 @@ public class LegendPart
 		return "<html><body>No legend defined.</body></html>";
 	}
 
-	public static MPart showPart(EPartService partService, EModelService modelService, MWindow window)
+	public static MPart showPart(EPartService partService, EModelService modelService, MWindow window, String reuseTag)
 	{
+		//find a part to reuse if possible
+		if (reuseTag != null)
+		{
+			List<MPart> reuse =
+					modelService.findElements(window, PART_ID, MPart.class, Arrays.asList(new String[] { reuseTag }));
+			if (!reuse.isEmpty())
+			{
+				MPart part = reuse.get(0);
+				partService.showPart(part, PartState.VISIBLE);
+				return part;
+			}
+		}
+
 		//first find the stack to add the part to
 		MPartStack stack = null;
 
@@ -138,6 +152,10 @@ public class LegendPart
 
 		//create the part from the PartDescriptor
 		MPart part = partService.createPart(PART_ID);
+		if (reuseTag != null)
+		{
+			part.getTags().add(reuseTag);
+		}
 		//add it to the stack
 		stack.getChildren().add(part);
 		//show the part

@@ -44,6 +44,7 @@ import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.application.parts.info.InfoPart;
 import au.gov.ga.earthsci.application.parts.legend.LegendPart;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.viewers.IControlProvider;
 
 /**
@@ -109,7 +110,12 @@ public class LayerTreeControlProvider implements IControlProvider
 					}
 					else
 					{
-						part = LegendPart.showPart(partService, modelService, window);
+						String tag = url.toString();
+						if (layerNode instanceof LayerNode)
+						{
+							tag += "|" + ((LayerNode) layerNode).getLayerURI().toString(); //$NON-NLS-1$
+						}
+						part = LegendPart.showPart(partService, modelService, window, tag);
 					}
 					if (part == null)
 					{
