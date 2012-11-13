@@ -18,7 +18,10 @@ package au.gov.ga.earthsci.application.parts.layer;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -42,9 +45,12 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
 public class LayerOpacityToolControl
 {
 	private boolean settingScale = false;
+	private Scale scale;
+	private TreeViewer viewer;
+	private boolean connected = false;
 
 	@PostConstruct
-	public void createControls(Composite parent, final TreeViewer viewer)
+	public void createControls(Composite parent, IEclipseContext context)
 	{
 		int width = 80;
 		int height = 21;
@@ -52,7 +58,7 @@ public class LayerOpacityToolControl
 		Composite child = new Composite(parent, SWT.NONE);
 		child.setSize(child.computeSize(width, SWT.DEFAULT));
 
-		final Scale scale = new Scale(child, SWT.HORIZONTAL);
+		scale = new Scale(child, SWT.HORIZONTAL);
 		Point size = scale.computeSize(width, SWT.DEFAULT);
 		scale.setSize(size);
 		scale.setMinimum(0);
@@ -60,40 +66,61 @@ public class LayerOpacityToolControl
 		scale.setSelection(100);
 		scale.setLocation(0, (height - size.y) / 2);
 		scale.setToolTipText("Set opacity of the selected layer(s)");
+		scale.setEnabled(false);
 
-		viewer.addSelectionChangedListener(new ISelectionChangedListener()
-		{
-			@Override
-			public void selectionChanged(SelectionChangedEvent event)
-			{
-				settingScale = true;
-				double opacity = scale.getSelection() / 100d;
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				List<?> selectionList = selection.toList();
-				ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
-				Double o = getMinOpacity(nodes, null);
-				opacity = o == null ? opacity : o;
-				scale.setSelection((int) (opacity * 100d));
-				settingScale = false;
-			}
-		});
+		connectViewerToScale();
+	}
 
-		scale.addSelectionListener(new SelectionAdapter()
+	@Inject
+	@Optional
+	private void setViewer(TreeViewer viewer)
+	{
+		this.viewer = viewer;
+		connectViewerToScale();
+	}
+
+	private void connectViewerToScale()
+	{
+		if (!connected && viewer != null && scale != null)
 		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
+			connected = true;
+
+			viewer.addSelectionChangedListener(new ISelectionChangedListener()
 			{
-				if (settingScale)
+				@Override
+				public void selectionChanged(SelectionChangedEvent event)
 				{
-					return;
+					settingScale = true;
+					double opacity = scale.getSelection() / 100d;
+					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+					List<?> selectionList = selection.toList();
+					ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
+					Double o = getMinOpacity(nodes, null);
+					opacity = o == null ? opacity : o;
+					scale.setSelection((int) (opacity * 100d));
+					settingScale = false;
 				}
-				double opacity = scale.getSelection() / 100d;
-				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-				List<?> selectionList = selection.toList();
-				ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
-				setOpacity(nodes, opacity);
-			}
-		});
+			});
+
+			scale.addSelectionListener(new SelectionAdapter()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent e)
+				{
+					if (settingScale)
+					{
+						return;
+					}
+					double opacity = scale.getSelection() / 100d;
+					IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+					List<?> selectionList = selection.toList();
+					ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
+					setOpacity(nodes, opacity);
+				}
+			});
+
+			scale.setEnabled(true);
+		}
 	}
 
 	private Double getMinOpacity(ITreeNode<ILayerTreeNode>[] nodes, Double opacity)

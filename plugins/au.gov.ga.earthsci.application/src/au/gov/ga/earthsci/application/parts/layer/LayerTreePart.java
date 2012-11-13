@@ -75,7 +75,6 @@ public class LayerTreePart
 	public void init(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell, Composite parent, EMenuService menuService)
 	{
 		viewer = new ControlCheckboxTreeViewer(parent, SWT.MULTI);
-		controlProvider.setBackground(viewer.getTree().getBackground());
 		context.set(TreeViewer.class, viewer);
 
 		clipboard = new Clipboard(shell.getDisplay());
@@ -178,7 +177,8 @@ public class LayerTreePart
 	@PreDestroy
 	private void packup()
 	{
-		controlProvider.dispose();
+		context.remove(TreeViewer.class);
+		context.remove(Clipboard.class);
 	}
 
 	@Focus

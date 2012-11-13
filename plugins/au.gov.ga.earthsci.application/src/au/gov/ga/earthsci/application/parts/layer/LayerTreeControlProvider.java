@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.application.parts.layer;
 
 import java.net.URL;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -30,7 +31,6 @@ import org.eclipse.swt.custom.ControlEditor;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowLayout;
@@ -54,8 +54,6 @@ import au.gov.ga.earthsci.viewers.IControlProvider;
 @Creatable
 public class LayerTreeControlProvider implements IControlProvider
 {
-	private Color background;
-
 	private final Image informationImage;
 	private final Image informationWhiteImage;
 	private final Image legendImage;
@@ -74,6 +72,7 @@ public class LayerTreeControlProvider implements IControlProvider
 		legendWhiteImage = new Image(display, getClass().getResourceAsStream("/icons/legend_white.gif")); //$NON-NLS-1$
 	}
 
+	@PreDestroy
 	public void dispose()
 	{
 		informationImage.dispose();
@@ -82,23 +81,13 @@ public class LayerTreeControlProvider implements IControlProvider
 		legendWhiteImage.dispose();
 	}
 
-	public Color getBackground()
-	{
-		return background;
-	}
-
-	public void setBackground(Color background)
-	{
-		this.background = background;
-	}
-
 	private void createURLClickableLabel(Composite parent, final ILayerTreeNode layerNode, final URL url,
 			final Image image, final Image hoverImage)
 	{
 		if (url != null)
 		{
 			final Label label = new Label(parent, SWT.NONE);
-			label.setBackground(getBackground());
+			label.setBackground(parent.getBackground());
 			label.setImage(image);
 
 			label.addMouseTrackListener(new MouseTrackAdapter()
@@ -142,7 +131,7 @@ public class LayerTreeControlProvider implements IControlProvider
 		editor.horizontalAlignment = SWT.RIGHT;
 
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setBackground(getBackground());
+		composite.setBackground(parent.getBackground());
 		RowLayout layout = new RowLayout(SWT.HORIZONTAL);
 		layout.marginBottom = layout.marginLeft = layout.marginRight = layout.marginTop = 0;
 		composite.setLayout(layout);
