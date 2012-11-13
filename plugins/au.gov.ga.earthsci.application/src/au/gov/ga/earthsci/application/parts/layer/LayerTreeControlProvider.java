@@ -19,11 +19,9 @@ import java.net.URL;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
-import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
 import org.eclipse.swt.SWT;
@@ -36,10 +34,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.application.parts.info.InfoPart;
@@ -55,31 +51,13 @@ import au.gov.ga.earthsci.viewers.IControlProvider;
 @Creatable
 public class LayerTreeControlProvider implements IControlProvider
 {
-	private final Image informationImage;
-	private final Image informationWhiteImage;
-	private final Image legendImage;
-	private final Image legendWhiteImage;
-
 	@Inject
 	private EPartService partService;
 
-	@Inject
-	public LayerTreeControlProvider(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
-	{
-		Display display = shell.getDisplay();
-		informationImage = new Image(display, getClass().getResourceAsStream("/icons/information.gif")); //$NON-NLS-1$
-		informationWhiteImage = new Image(display, getClass().getResourceAsStream("/icons/information_white.gif")); //$NON-NLS-1$
-		legendImage = new Image(display, getClass().getResourceAsStream("/icons/legend.gif")); //$NON-NLS-1$
-		legendWhiteImage = new Image(display, getClass().getResourceAsStream("/icons/legend_white.gif")); //$NON-NLS-1$
-	}
 
 	@PreDestroy
 	public void dispose()
 	{
-		informationImage.dispose();
-		informationWhiteImage.dispose();
-		legendImage.dispose();
-		legendWhiteImage.dispose();
 	}
 
 	private void createURLClickableLabel(Composite parent, final ILayerTreeNode layerNode, final URL url,

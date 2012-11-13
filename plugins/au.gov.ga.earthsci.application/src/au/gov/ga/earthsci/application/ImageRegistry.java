@@ -21,7 +21,9 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
- * The plugin image registry 
+ * The plugin image registry.
+ * <p/>
+ * Provides convenient access to the reusable icon and image elements in the application.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  *
@@ -37,13 +39,20 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_INFORMATION_WHITE = "icon.information.white"; //$NON-NLS-1$
 	public static final String ICON_LEGEND = "icon.legend"; //$NON-NLS-1$
 	public static final String ICON_LEGEND_WHITE = "icon.legend.white"; //$NON-NLS-1$
+	public static final String ICON_ERROR = "icon.error"; //$NON-NLS-1$
+	public static final String ICON_WARNING = "icon.warning"; //$NON-NLS-1$
 	
 	private ImageRegistry()
 	{
 		put(ICON_INFORMATION, ImageDescriptor.createFromURL(getClass().getResource("/icons/information.gif"))); //$NON-NLS-1$
 		put(ICON_INFORMATION_WHITE, ImageDescriptor.createFromURL(getClass().getResource("/icons/information_white.gif"))); //$NON-NLS-1$
+		
 		put(ICON_LEGEND, ImageDescriptor.createFromURL(getClass().getResource("/icons/legend.gif"))); //$NON-NLS-1$
 		put(ICON_LEGEND_WHITE, ImageDescriptor.createFromURL(getClass().getResource("/icons/legend_white.gif"))); //$NON-NLS-1$
+		
+		put(ICON_ERROR, ImageDescriptor.createFromURL(getClass().getResource("/icons/error.gif"))); //$NON-NLS-1$
+		
+		put(ICON_WARNING, ImageDescriptor.createFromURL(getClass().getResource("/icons/warning.gif"))); //$NON-NLS-1$
 	}
 
 	public static ImageRegistry getInstance()
