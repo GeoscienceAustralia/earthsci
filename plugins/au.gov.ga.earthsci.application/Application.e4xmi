@@ -40,7 +40,7 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_40V18Px8EeG36NOaHUgVKA" elementId="" label="Preferences..." command="_940mAPyIEeG36NOaHUgVKA"/>
       </children>
     </mainMenu>
-    <sharedElements xsi:type="basic:Part" xmi:id="_zNrj8PvCEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layertree" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.LayerTreePart" label="Layers Tree" closeable="true">
+    <sharedElements xsi:type="basic:Part" xmi:id="_zNrj8PvCEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.layertree" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.LayerTreePart" label="Layers" closeable="true">
       <handlers xmi:id="_2YptUCfDEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.CutHandler" command="_09bh8CfCEeKGOtKz07iBzg"/>
       <handlers xmi:id="_63f3MCfDEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.CopyHandler" command="_1NhMYCfCEeKGOtKz07iBzg"/>
       <handlers xmi:id="_7_n84CfDEeKGOtKz07iBzg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.PasteHandler" command="_1dBA8CfCEeKGOtKz07iBzg"/>
@@ -64,7 +64,7 @@
       </toolbar>
     </sharedElements>
     <sharedElements xsi:type="basic:Part" xmi:id="_3rRB4BgDEeKQJ6pSqihtuA" elementId="au.gov.ga.earthsci.application.part.progress" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.progress.part.ProgressPart" label="Progress" closeable="true"/>
-    <sharedElements xsi:type="basic:Part" xmi:id="_RALPQPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.worldwindow" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.WorldWindowPart" label="World Window" closeable="true"/>
+    <sharedElements xsi:type="basic:Part" xmi:id="_RALPQPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.part.worldwindow" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.WorldWindowPart" label="Globe" closeable="true"/>
     <sharedElements xsi:type="basic:Part" xmi:id="_IsdaEA0kEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.notification.part.notifications" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.notification.part.NotificationPart" label="Notifications" closeable="true">
       <handlers xmi:id="_SJbQ4BJgEeK3duY8thOvyA" elementId="au.gov.ga.earthsci.notification.part.groupby" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.notification.part.NotificationPartGroupByHandler" command="_cQRlEBJgEeK3duY8thOvyA"/>
       <menus xmi:id="_uibuEBHBEeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.application.menu.0" label="">
@@ -77,6 +77,7 @@
       </menus>
     </sharedElements>
     <sharedElements xsi:type="basic:Part" xmi:id="_rlFg4BjMEeKlbolCp2yOsg" elementId="au.gov.ga.earthsci.application.catalog.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.catalog.part.CatalogBrowserPart" label="Catalog" closeable="true"/>
+    <sharedElements xsi:type="basic:Part" xmi:id="_RmbeQC1LEeK0vtabFDqVSw" elementId="au.gov.ga.earthsci.application.part.legend" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.legend.LegendPart" label="Legend" closeable="true"/>
     <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.windowtrim">
       <children xsi:type="menu:ToolBar" xmi:id="_007tdPsMEeG36NOaHUgVKA" elementId="toolbar:org.eclipse.ui.main.toolbar">
         <children xsi:type="menu:HandledToolItem" xmi:id="_007tdfsMEeG36NOaHUgVKA" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>
@@ -110,6 +111,7 @@
     <children xmi:id="_007tUvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
     <children xmi:id="_007tU_sMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
   </rootContext>
+  <descriptors xmi:id="_OzkNsC1OEeK0vtabFDqVSw" elementId="au.gov.ga.earthsci.application.part.legend" label="Legend" allowMultiple="true" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.legend.LegendPart"/>
   <commands xmi:id="_007tWvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.exit" commandName="exitCommand"/>
   <commands xmi:id="_007tXvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.open" commandName="openCommand"/>
   <commands xmi:id="_007tYfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.save" commandName="saveCommand"/>
