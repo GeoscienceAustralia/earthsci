@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.application.parts.info.InfoPart;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.viewers.IControlProvider;
@@ -150,8 +151,8 @@ public class LayerTreeControlProvider implements IControlProvider
 		if (element instanceof ILayerTreeNode)
 		{
 			ILayerTreeNode node = (ILayerTreeNode) element;
-			createURLClickableLabel(composite, node, node.getInfoURL(), informationWhiteImage, informationImage);
-			createURLClickableLabel(composite, node, node.getLegendURL(), legendWhiteImage, legendImage);
+			createURLClickableLabel(composite, node, node.getInfoURL(), ImageRegistry.getInstance().get(ImageRegistry.ICON_INFORMATION_WHITE), ImageRegistry.getInstance().get(ImageRegistry.ICON_INFORMATION));
+			createURLClickableLabel(composite, node, node.getLegendURL(), ImageRegistry.getInstance().get(ImageRegistry.ICON_LEGEND_WHITE), ImageRegistry.getInstance().get(ImageRegistry.ICON_LEGEND));
 		}
 
 		return composite;
