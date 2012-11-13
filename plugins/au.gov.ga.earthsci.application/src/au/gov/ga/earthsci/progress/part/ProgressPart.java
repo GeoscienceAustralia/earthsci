@@ -206,7 +206,10 @@ public class ProgressPart
 			@Override
 			public void run()
 			{
-				viewer.refresh();
+				if (!viewer.getTable().isDisposed())
+				{
+					viewer.refresh();
+				}
 			}
 		});
 	}
@@ -217,7 +220,10 @@ public class ProgressPart
 			@Override
 			public void run()
 			{
-				viewer.update(job, null);
+				if (!viewer.getTable().isDisposed())
+				{
+					viewer.update(job, null);
+				}
 			}
 		});
 	}

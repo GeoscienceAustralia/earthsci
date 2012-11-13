@@ -176,7 +176,7 @@ public abstract class ControlViewerHelper<T extends ControlEditor> implements IC
 		{
 			if (control != null)
 			{
-				control.dispose();
+				controlProvider.disposeControl(control, element, item);
 			}
 			composite.dispose();
 			editor.dispose();

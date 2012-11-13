@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_007tUPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ide.application" bindingContexts="_007tUfsMEeG36NOaHUgVKA">
-  <children xsi:type="basic:TrimmedWindow" xmi:id="_007tZ_sMEeG36NOaHUgVKA" label="au.gov.ga.earthsci.application" width="1024" height="768">
-    <children xsi:type="advanced:PerspectiveStack" xmi:id="_007tb_sMEeG36NOaHUgVKA">
-      <children xsi:type="advanced:Perspective" xmi:id="_007tcPsMEeG36NOaHUgVKA">
-        <children xsi:type="basic:PartSashContainer" xmi:id="_007tcfsMEeG36NOaHUgVKA" horizontal="true">
-          <children xsi:type="basic:PartStack" xmi:id="_007tcvsMEeG36NOaHUgVKA" containerData="30">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_007tZ_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.window" label="au.gov.ga.earthsci.application" width="1024" height="768">
+    <children xsi:type="advanced:PerspectiveStack" xmi:id="_007tb_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.perspectivestack">
+      <children xsi:type="advanced:Perspective" xmi:id="_007tcPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.perspective.standard">
+        <children xsi:type="basic:PartSashContainer" xmi:id="_007tcfsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partsashcontainer.0" horizontal="true">
+          <children xsi:type="basic:PartStack" xmi:id="_007tcvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0.0" containerData="30">
             <children xsi:type="advanced:Placeholder" xmi:id="_YAxvgC0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.part.layertree" ref="_zNrj8PvCEeG36NOaHUgVKA"/>
             <children xsi:type="advanced:Placeholder" xmi:id="_YmoOkC0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.catalog.part" ref="_rlFg4BjMEeKlbolCp2yOsg"/>
           </children>
-          <children xsi:type="basic:PartSashContainer" xmi:id="_y24REA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partsashcontainer.0" containerData="70">
-            <children xsi:type="basic:PartStack" xmi:id="_QfsYYPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0" containerData="70">
+          <children xsi:type="basic:PartSashContainer" xmi:id="_y24REA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partsashcontainer.0.0" containerData="70">
+            <children xsi:type="basic:PartStack" xmi:id="_QfsYYPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0.0.0" containerData="70">
               <children xsi:type="advanced:Placeholder" xmi:id="_ZB5OQC0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.part.worldwindow" ref="_RALPQPu2EeG36NOaHUgVKA"/>
             </children>
-            <children xsi:type="basic:PartStack" xmi:id="_0HDfgA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partstack.0" containerData="30">
+            <children xsi:type="basic:PartStack" xmi:id="_0HDfgA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partstack.0.0.1" containerData="30">
               <children xsi:type="advanced:Placeholder" xmi:id="_m5rS4C0eEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.notification.part.part" ref="_IsdaEA0kEeK8pN67ikK9mw"/>
               <children xsi:type="advanced:Placeholder" xmi:id="_ZW508C0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.part.progress" ref="_3rRB4BgDEeKQJ6pSqihtuA"/>
               <children xsi:type="advanced:Placeholder" xmi:id="_ZprnAC0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.part.information" ref="_OVvf0ClJEeKGOtKz07iBzg"/>
@@ -21,18 +21,18 @@
         </children>
       </children>
     </children>
-    <mainMenu xmi:id="_007taPsMEeG36NOaHUgVKA" elementId="menu:org.eclipse.ui.main.menu">
-      <children xsi:type="menu:Menu" xmi:id="_007tafsMEeG36NOaHUgVKA" label="File">
+    <mainMenu xmi:id="_007taPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu">
+      <children xsi:type="menu:Menu" xmi:id="_007tafsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.file" label="File">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tavsMEeG36NOaHUgVKA" label="Open" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007ta_sMEeG36NOaHUgVKA" label="Save" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/save_edit.gif" command="_007tYfsMEeG36NOaHUgVKA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tbPsMEeG36NOaHUgVKA" label="Quit" command="_007tWvsMEeG36NOaHUgVKA"/>
       </children>
-      <children xsi:type="menu:Menu" xmi:id="_4tZvcCfJEeKGOtKz07iBzg" elementId="" label="Edit">
+      <children xsi:type="menu:Menu" xmi:id="_4tZvcCfJEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.menu.edit" label="Edit">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_71h-ACfJEeKGOtKz07iBzg" elementId="" label="Cut" command="_09bh8CfCEeKGOtKz07iBzg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_8QpMsCfJEeKGOtKz07iBzg" elementId="" label="Copy" command="_1NhMYCfCEeKGOtKz07iBzg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_8fjLYCfJEeKGOtKz07iBzg" elementId="" label="Paste" command="_1dBA8CfCEeKGOtKz07iBzg"/>
       </children>
-      <children xsi:type="menu:Menu" xmi:id="_007tbfsMEeG36NOaHUgVKA" label="Help">
+      <children xsi:type="menu:Menu" xmi:id="_007tbfsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.help" label="Help">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_ogLhQALaEeK4hsezy7qCSg" elementId="au.gov.ga.earthsci.displayHelp" label="Help Contents" tooltip="Display the application help" command="_t3D6kAODEeK17JdaarPZug"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_45q4MALaEeK4hsezy7qCSg" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tbvsMEeG36NOaHUgVKA" label="About" command="_007tZPsMEeG36NOaHUgVKA"/>
@@ -77,7 +77,7 @@
       </menus>
     </sharedElements>
     <sharedElements xsi:type="basic:Part" xmi:id="_rlFg4BjMEeKlbolCp2yOsg" elementId="au.gov.ga.earthsci.application.catalog.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.catalog.part.CatalogBrowserPart" label="Catalog" closeable="true"/>
-    <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA">
+    <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.windowtrim">
       <children xsi:type="menu:ToolBar" xmi:id="_007tdPsMEeG36NOaHUgVKA" elementId="toolbar:org.eclipse.ui.main.toolbar">
         <children xsi:type="menu:HandledToolItem" xmi:id="_007tdfsMEeG36NOaHUgVKA" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>
         <children xsi:type="menu:HandledToolItem" xmi:id="_007tdvsMEeG36NOaHUgVKA" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/save_edit.gif" command="_007tYfsMEeG36NOaHUgVKA"/>
