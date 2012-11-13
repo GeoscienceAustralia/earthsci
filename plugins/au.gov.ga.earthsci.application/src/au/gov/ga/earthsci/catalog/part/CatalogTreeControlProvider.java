@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.util.ILabeled;
 import au.gov.ga.earthsci.viewers.IControlProvider;
@@ -64,7 +65,12 @@ public class CatalogTreeControlProvider extends LabelProvider implements IContro
 		{
 			return null;
 		}
-		return getProvider((ICatalogTreeNode)element).getIcon((ICatalogTreeNode)element);
+		Image icon = getProvider((ICatalogTreeNode)element).getIcon((ICatalogTreeNode)element);
+		if (icon == null)
+		{
+			icon = DEFAULT_PROVIDER.getIcon((ICatalogTreeNode)element);
+		}
+		return icon;
 	}
 	
 	
@@ -110,6 +116,13 @@ public class CatalogTreeControlProvider extends LabelProvider implements IContro
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public void disposeControl(Control control, Object element, Item item)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void setBackgroundColor(Color backgroundColor)
@@ -169,7 +182,15 @@ public class CatalogTreeControlProvider extends LabelProvider implements IContro
 		@Override
 		public Image getIcon(ICatalogTreeNode node)
 		{
-			return null;
+			if (node.getParent() == null || node.getParent().getParent() == null)
+			{
+				return ImageRegistry.getInstance().get(ImageRegistry.ICON_REPOSITORY);
+			}
+			if (node.hasChildren())
+			{
+				return ImageRegistry.getInstance().get(ImageRegistry.ICON_FOLDER);
+			}
+			return ImageRegistry.getInstance().get(ImageRegistry.ICON_LAYER_NODE);
 		}
 		
 		@Override

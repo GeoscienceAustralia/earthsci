@@ -41,6 +41,9 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_LEGEND_WHITE = "icon.legend.white"; //$NON-NLS-1$
 	public static final String ICON_ERROR = "icon.error"; //$NON-NLS-1$
 	public static final String ICON_WARNING = "icon.warning"; //$NON-NLS-1$
+	public static final String ICON_REPOSITORY = "icon.repo"; //$NON-NLS-1$
+	public static final String ICON_FOLDER = "icon.folder"; //$NON-NLS-1$
+	public static final String ICON_LAYER_NODE = "icon.layer_node"; //$NON-NLS-1$
 	
 	private ImageRegistry()
 	{
@@ -53,6 +56,12 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 		put(ICON_ERROR, ImageDescriptor.createFromURL(getClass().getResource("/icons/error.gif"))); //$NON-NLS-1$
 		
 		put(ICON_WARNING, ImageDescriptor.createFromURL(getClass().getResource("/icons/warning.gif"))); //$NON-NLS-1$
+		
+		put(ICON_REPOSITORY, ImageDescriptor.createFromURL(getClass().getResource("/icons/repo.gif"))); //$NON-NLS-1$
+		
+		put(ICON_FOLDER, ImageDescriptor.createFromURL(getClass().getResource("/icons/folder.gif"))); //$NON-NLS-1$
+		
+		put(ICON_LAYER_NODE, ImageDescriptor.createFromURL(getClass().getResource("/icons/file_obj.gif"))); //$NON-NLS-1$
 	}
 
 	public static ImageRegistry getInstance()
