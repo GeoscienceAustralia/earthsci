@@ -103,11 +103,11 @@ final public class DatasetReader
 		}
 		if (source instanceof URI)
 		{
-			return ((URI)source).toASCIIString(); 
+			return UTF8URLEncoder.decode(((URI)source).toASCIIString()); 
 		}
 		if (source instanceof URL)
 		{
-			return ((URL)source).toExternalForm();
+			return UTF8URLEncoder.decode(((URL)source).toExternalForm());
 		}
 		return Messages.DatasetReader_DefaultRootNodeName;
 	}

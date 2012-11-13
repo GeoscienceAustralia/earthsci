@@ -4,8 +4,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -13,7 +11,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
-import au.gov.ga.earthsci.core.util.ILabeled;
+import au.gov.ga.earthsci.viewers.ControlTreeViewer;
 
 /**
  * A part that renders a tree-view of the current {@link ICatalogModel} and allows
@@ -24,10 +22,13 @@ import au.gov.ga.earthsci.core.util.ILabeled;
 public class CatalogBrowserPart
 {
 
-	private TreeViewer viewer;
+	private ControlTreeViewer viewer;
 	
 	@Inject
 	private ICatalogModel model;
+	
+	@Inject
+	private CatalogTreeControlProvider controlProvider;
 	
 	@PostConstruct
 	public void init(Composite parent, MPart part)
@@ -37,15 +38,10 @@ public class CatalogBrowserPart
 	
 	private void initViewer(Composite parent)
 	{
-		viewer = new TreeViewer(parent, SWT.VIRTUAL);
+		viewer = new ControlTreeViewer(parent, SWT.VIRTUAL);
 		viewer.setContentProvider(new CatalogContentProvider(viewer));
-		viewer.setLabelProvider(new LabelProvider() {
-			@Override
-			public String getText(Object element)
-			{
-				return ((ILabeled)element).getLabelOrName();
-			}
-		});
+		viewer.setControlProvider(controlProvider);
+		viewer.setLabelProvider(controlProvider);
 		viewer.setSorter(null);
 		viewer.setInput(model);
 		viewer.getTree().setItemCount(1);

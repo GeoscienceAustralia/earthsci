@@ -17,10 +17,12 @@ package au.gov.ga.earthsci.application;
 
 import javax.inject.Inject;
 
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 
+import au.gov.ga.earthsci.catalog.part.CatalogTreeControlProvider;
 import au.gov.ga.earthsci.core.retrieve.RetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 import au.gov.ga.earthsci.core.worldwind.WorldWindView;
@@ -54,6 +56,12 @@ public class LifeCycleManager
 
 	@Inject
 	private WorldWindView worldWindView;
+	
+	@Inject
+	private void initialiseExtensions(IExtensionRegistry registry)
+	{
+		CatalogTreeControlProvider.loadProviders(registry);
+	}
 
 	@PostContextCreate
 	void postContextCreate()

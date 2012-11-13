@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
+   <extension-point id="catalogNodeControlProvider" name="Catalog Node Control Provider" schema="schema/au.gov.ga.earthsci.catalog.CatalogNodeControlProvider.exsd"/>
 
    <extension
          id="product"
@@ -52,6 +53,12 @@
       <receiver
             class="au.gov.ga.earthsci.notification.part.NotificationPartReceiver">
       </receiver>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.application.catalogNodeControlProvider">
+      <provider
+            class="au.gov.ga.earthsci.catalog.part.DatasetCatalogTreeNodeControlProvider">
+      </provider>
    </extension>
 
 </plugin>
