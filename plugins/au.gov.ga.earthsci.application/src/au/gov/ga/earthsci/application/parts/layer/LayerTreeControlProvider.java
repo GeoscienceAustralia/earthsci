@@ -169,4 +169,10 @@ public class LayerTreeControlProvider implements IControlProvider
 		bounds.x += bounds.width;
 		return bounds;
 	}
+
+	@Override
+	public void disposeControl(Control control, Object element, Item item)
+	{
+		control.dispose();
+	}
 }

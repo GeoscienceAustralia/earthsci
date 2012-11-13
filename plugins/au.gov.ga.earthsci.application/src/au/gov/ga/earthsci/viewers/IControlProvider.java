@@ -81,4 +81,16 @@ public interface IControlProvider
 	 * @return Overridden bounds, or null to use the default
 	 */
 	Rectangle overrideBounds(Rectangle bounds, Control control, Object element, Item item);
+
+	/**
+	 * Dispose the given control. It is no longer needed by the Viewer. The
+	 * implementation can choose not to dispose if it wants to reuse the
+	 * control.
+	 * 
+	 * @param control
+	 *            Control to dispose
+	 * @param item
+	 *            Viewer item that the control was associated with
+	 */
+	void disposeControl(Control control, Object element, Item item);
 }
