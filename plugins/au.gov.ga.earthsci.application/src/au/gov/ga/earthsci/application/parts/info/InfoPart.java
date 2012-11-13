@@ -83,8 +83,6 @@ public class InfoPart
 	@Inject
 	private void selectLayer(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
-		System.out.println("SELECTION CHANGED TO " + layer);
-
 		this.selectedLayer = layer;
 		if (isLink())
 		{
@@ -95,13 +93,9 @@ public class InfoPart
 
 	@Inject
 	@Optional
-	private void setPartInput(@Named(INPUT_NAME) Object partInput)
+	private void setPartInput(@Named(INPUT_NAME) ILayerTreeNode layer)
 	{
-		if (partInput instanceof ILayerTreeNode)
-		{
-			ILayerTreeNode layer = (ILayerTreeNode) partInput;
-			showInfo(layer);
-		}
+		showInfo(layer);
 	}
 
 	public void showInfo(ILayerTreeNode layer)

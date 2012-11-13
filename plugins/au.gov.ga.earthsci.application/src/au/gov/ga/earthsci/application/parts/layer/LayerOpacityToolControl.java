@@ -20,7 +20,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -50,8 +49,11 @@ public class LayerOpacityToolControl
 	private boolean connected = false;
 
 	@PostConstruct
-	public void createControls(Composite parent, IEclipseContext context)
+	public void createControls(Composite parent)
 	{
+		//TODO BUG: for some reason, after the layer part is closed and reopened, the
+		//injected context is "anonymous", and doesn't contain the TreeViewer
+		
 		int width = 80;
 		int height = 21;
 
