@@ -20,6 +20,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Tree;
 
+import au.gov.ga.earthsci.application.ImageRegistry;
+
 /**
  * A {@link TreeViewer} that implements {@link IControlViewer}
  * 
@@ -32,16 +34,21 @@ public class ControlTreeViewer extends TreeViewer implements IControlViewer
 	public ControlTreeViewer(Composite parent, int style)
 	{
 		super(parent, style);
+		
+		// XXX: This is a workaround to reduce the flicker that occurs when tree item controls are redrawn 
+		getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
 	}
 
 	public ControlTreeViewer(Composite parent)
 	{
 		super(parent);
+		getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
 	}
 
 	public ControlTreeViewer(Tree tree)
 	{
 		super(tree);
+		getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
 	}
 
 	@Override
