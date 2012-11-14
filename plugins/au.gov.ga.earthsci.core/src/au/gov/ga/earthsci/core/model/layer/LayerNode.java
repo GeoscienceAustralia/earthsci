@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.layer;
 
+import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.event.Message;
 import gov.nasa.worldwind.layers.Layer;
@@ -26,6 +27,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -34,6 +36,7 @@ import java.util.Set;
 import au.gov.ga.earthsci.core.model.layer.uri.URILayerLoadJob;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.util.IEnableable;
+import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
  * Layer tree node implementation for layers. Implements the {@link Layer}
@@ -94,7 +97,24 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	 */
 	public void setLayer(Layer layer)
 	{
+		//set the values from the layer on this node
 		setName(layer.getName());
+
+		//get the legend url if it exists (set by the LayerFactory)
+		URL legendURL = (URL) layer.getValue(AVKeyMore.LEGEND_URL);
+		if (legendURL == null)
+		{
+			AVList constructionParameters = (AVList) layer.getValue(AVKey.CONSTRUCTION_PARAMETERS);
+			if (constructionParameters != null)
+			{
+				legendURL = (URL) constructionParameters.getValue(AVKeyMore.LEGEND_URL);
+			}
+		}
+		if (legendURL != null)
+		{
+			setLegendURL(legendURL);
+		}
+
 		Layer oldValue;
 		synchronized (layerSemaphore)
 		{

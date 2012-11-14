@@ -18,7 +18,12 @@ package au.gov.ga.earthsci.core.model.layer;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.layers.Layer;
 
+import java.net.URL;
+
 import org.w3c.dom.Element;
+
+import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
+import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
 /**
  * Factory for creating {@link Layer}s from XML.
@@ -32,6 +37,18 @@ public class LayerFactory extends au.gov.ga.earthsci.worldwind.common.layers.Lay
 	{
 		//TODO add extendable mechanism that allows creation of layers from layer documents
 		//(add the ability to define XML->layer translators via an Eclipse extension point)
+
+		try
+		{
+			URL context = (URL) params.getValue(AVKeyMore.CONTEXT_URL);
+			URL legend = XMLUtil.getURL(domElement, "Legend", context); //$NON-NLS-1$
+			params.setValue(AVKeyMore.LEGEND_URL, legend);
+		}
+		catch (Exception e)
+		{
+			//TODO
+			e.printStackTrace();
+		}
 
 		return super.createFromLayerDocument(domElement, params);
 	}
