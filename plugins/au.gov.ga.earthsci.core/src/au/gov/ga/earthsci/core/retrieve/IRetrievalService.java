@@ -36,7 +36,7 @@ import java.net.URL;
 public interface IRetrievalService
 {
 	/**
-	 * Retrieve a resource identified by the provided URL.
+	 * Create a job to retrieve a resource identified by the provided URL.
 	 * Any caching provided by implementing classes will be used.
 	 * <p/>
 	 * The returned job is NOT scheduled, the user must schedule it manually. If the service is
@@ -52,7 +52,8 @@ public interface IRetrievalService
 	RetrievalJob retrieve(URL url);
 	
 	/**
-	 * Retrieve a resource from the provided URL. This flavour allows more control over how the retrieval is performed.
+	 * Create a job to retrieve a resource from the provided URL. This flavour allows more control over how
+	 * the retrieval is performed.
 	 * <p/>
 	 * The returned job is NOT scheduled, the user must schedule it manually.
 	 * 
