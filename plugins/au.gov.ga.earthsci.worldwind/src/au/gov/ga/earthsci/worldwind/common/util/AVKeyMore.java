@@ -26,6 +26,7 @@ import gov.nasa.worldwind.avlist.AVKey;
 public interface AVKeyMore extends AVKey
 {
 	final static String CONTEXT_URL = "au.gov.ga.worldwind.AVKeyMore.ContextURL";
+	final static String LEGEND_URL = "au.gov.ga.worldwind.AVKeyMore.LegendURL";
 	final static String DELEGATE_KIT = "au.gov.ga.worldwind.AVKeyMore.DelegateKit";
 	final static String DOWNLOADER_CONNECT_TIMEOUT = "au.gov.ga.worldwind.AVKeyMore.DownloaderConnectTimeout";
 	final static String DOWNLOADER_READ_TIMEOUT = "au.gov.ga.worldwind.AVKeyMore.DownloaderReadTimeout";

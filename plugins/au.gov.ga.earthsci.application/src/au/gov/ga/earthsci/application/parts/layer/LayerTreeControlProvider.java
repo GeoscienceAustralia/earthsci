@@ -21,7 +21,10 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
+import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.model.application.ui.basic.MWindow;
+import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
 import org.eclipse.swt.SWT;
@@ -39,7 +42,9 @@ import org.eclipse.swt.widgets.Label;
 
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.application.parts.info.InfoPart;
+import au.gov.ga.earthsci.application.parts.legend.LegendPart;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.viewers.IControlProvider;
 
 /**
@@ -54,6 +59,14 @@ public class LayerTreeControlProvider implements IControlProvider
 	@Inject
 	private EPartService partService;
 
+	@Inject
+	private EModelService modelService;
+
+	@Inject
+	private MApplication application;
+
+	@Inject
+	private MWindow window;
 
 	@PreDestroy
 	public void dispose()
@@ -61,7 +74,7 @@ public class LayerTreeControlProvider implements IControlProvider
 	}
 
 	private void createURLClickableLabel(Composite parent, final ILayerTreeNode layerNode, final URL url,
-			final Image image, final Image hoverImage)
+			final Image image, final Image hoverImage, final boolean info)
 	{
 		if (url != null)
 		{
@@ -90,13 +103,29 @@ public class LayerTreeControlProvider implements IControlProvider
 				@Override
 				public void mouseUp(MouseEvent e)
 				{
-					MPart part = partService.showPart(InfoPart.PART_ID, PartState.VISIBLE);
+					MPart part;
+					if (info)
+					{
+						part = partService.showPart(InfoPart.PART_ID, PartState.VISIBLE);
+					}
+					else
+					{
+						String tag = url.toString();
+						if (layerNode instanceof LayerNode)
+						{
+							tag += "|" + ((LayerNode) layerNode).getLayerURI().toString(); //$NON-NLS-1$
+						}
+						String label = "Legend" + ": " + layerNode.getLabelOrName(); //$NON-NLS-2$
+						part = LegendPart.showPart(partService, modelService, window, tag, label);
+					}
 					if (part == null)
 					{
 						//TODO
 					}
-					part.getContext().modify(InfoPart.INPUT_NAME, layerNode);
-					part.getContext().declareModifiable(InfoPart.INPUT_NAME);
+
+					String inputName = info ? InfoPart.INPUT_NAME : LegendPart.INPUT_NAME;
+					part.getContext().modify(inputName, layerNode);
+					part.getContext().declareModifiable(inputName);
 				}
 			});
 		}
@@ -118,8 +147,12 @@ public class LayerTreeControlProvider implements IControlProvider
 		if (element instanceof ILayerTreeNode)
 		{
 			ILayerTreeNode node = (ILayerTreeNode) element;
-			createURLClickableLabel(composite, node, node.getInfoURL(), ImageRegistry.getInstance().get(ImageRegistry.ICON_INFORMATION_WHITE), ImageRegistry.getInstance().get(ImageRegistry.ICON_INFORMATION));
-			createURLClickableLabel(composite, node, node.getLegendURL(), ImageRegistry.getInstance().get(ImageRegistry.ICON_LEGEND_WHITE), ImageRegistry.getInstance().get(ImageRegistry.ICON_LEGEND));
+			createURLClickableLabel(composite, node, node.getInfoURL(),
+					ImageRegistry.getInstance().get(ImageRegistry.ICON_INFORMATION_WHITE), ImageRegistry.getInstance()
+							.get(ImageRegistry.ICON_INFORMATION), true);
+			createURLClickableLabel(composite, node, node.getLegendURL(),
+					ImageRegistry.getInstance().get(ImageRegistry.ICON_LEGEND_WHITE),
+					ImageRegistry.getInstance().get(ImageRegistry.ICON_LEGEND), false);
 		}
 
 		return composite;
