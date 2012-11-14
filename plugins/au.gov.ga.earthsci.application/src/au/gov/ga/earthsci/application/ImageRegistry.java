@@ -15,26 +15,33 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
-import javax.inject.Singleton;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The plugin image registry.
  * <p/>
- * Provides convenient access to the reusable icon and image elements in the application.
+ * Provides convenient access to the reusable icon and image elements in the
+ * application.
  * 
  * @author James Navin (james.navin@ga.gov.au)
- *
  */
-@Creatable
-@Singleton
 public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 {
+	private final static ImageRegistry INSTANCE = new ImageRegistry();
 
-	private static final ImageRegistry INSTANCE = new ImageRegistry();
-	
+	private static final Logger logger = LoggerFactory.getLogger(ImageRegistry.class);
+
 	public static final String ICON_INFORMATION = "icon.information"; //$NON-NLS-1$
 	public static final String ICON_INFORMATION_WHITE = "icon.information.white"; //$NON-NLS-1$
 	public static final String ICON_LEGEND = "icon.legend"; //$NON-NLS-1$
@@ -47,33 +54,91 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_ADD = "icon.add"; //$NON-NLS-1$
 	public static final String ICON_REMOVE = "icon.remove"; //$NON-NLS-1$
 	public static final String ICON_TRANSPARENT = "icon.transparent"; //$NON-NLS-1$
+	public static final String ICON_LOADING = "icon.loading"; //$NON-NLS-1$
 	
-	private ImageRegistry()
-	{
-		put(ICON_INFORMATION, ImageDescriptor.createFromURL(getClass().getResource("/icons/information.gif"))); //$NON-NLS-1$
-		put(ICON_INFORMATION_WHITE, ImageDescriptor.createFromURL(getClass().getResource("/icons/information_white.gif"))); //$NON-NLS-1$
-		
-		put(ICON_LEGEND, ImageDescriptor.createFromURL(getClass().getResource("/icons/legend.gif"))); //$NON-NLS-1$
-		put(ICON_LEGEND_WHITE, ImageDescriptor.createFromURL(getClass().getResource("/icons/legend_white.gif"))); //$NON-NLS-1$
-		
-		put(ICON_ERROR, ImageDescriptor.createFromURL(getClass().getResource("/icons/error.gif"))); //$NON-NLS-1$
-		
-		put(ICON_WARNING, ImageDescriptor.createFromURL(getClass().getResource("/icons/warning.gif"))); //$NON-NLS-1$
-		
-		put(ICON_REPOSITORY, ImageDescriptor.createFromURL(getClass().getResource("/icons/repo.gif"))); //$NON-NLS-1$
-		
-		put(ICON_FOLDER, ImageDescriptor.createFromURL(getClass().getResource("/icons/folder.gif"))); //$NON-NLS-1$
-		
-		put(ICON_LAYER_NODE, ImageDescriptor.createFromURL(getClass().getResource("/icons/file_obj.gif"))); //$NON-NLS-1$
-		
-		put(ICON_ADD, ImageDescriptor.createFromURL(getClass().getResource("/icons/add.gif"))); //$NON-NLS-1$
-		put(ICON_REMOVE, ImageDescriptor.createFromURL(getClass().getResource("/icons/remove.gif"))); //$NON-NLS-1$
-
-		put(ICON_TRANSPARENT, ImageDescriptor.createFromURL(getClass().getResource("/icons/transparent.gif"))); //$NON-NLS-1$
-	}
-
 	public static ImageRegistry getInstance()
 	{
 		return INSTANCE;
+	}
+
+	private ImageRegistry()
+	{
+		putResource(ICON_INFORMATION, "/icons/information.gif"); //$NON-NLS-1$
+		putResource(ICON_INFORMATION_WHITE, "/icons/information_white.gif"); //$NON-NLS-1$
+
+		putResource(ICON_LEGEND, "/icons/legend.gif"); //$NON-NLS-1$
+		putResource(ICON_LEGEND_WHITE, "/icons/legend_white.gif"); //$NON-NLS-1$
+
+		putResource(ICON_ERROR, "/icons/error.gif"); //$NON-NLS-1$
+
+		putResource(ICON_WARNING, "/icons/warning.gif"); //$NON-NLS-1$
+
+		putResource(ICON_REPOSITORY, "/icons/repo.gif"); //$NON-NLS-1$
+
+		putResource(ICON_FOLDER, "/icons/folder.gif"); //$NON-NLS-1$
+
+		putResource(ICON_LAYER_NODE, "/icons/file_obj.gif"); //$NON-NLS-1$
+
+		putResource(ICON_ADD, "/icons/add.gif"); //$NON-NLS-1$
+		putResource(ICON_REMOVE, "/icons/remove.gif"); //$NON-NLS-1$
+
+		putResource(ICON_TRANSPARENT, "/icons/transparent.gif"); //$NON-NLS-1$
+
+		putAnimatedResource(ICON_LOADING, "/icons/loading.gif"); //$NON-NLS-1$
+	}
+
+	protected void putResource(String key, String resourceName)
+	{
+		put(key, ImageDescriptor.createFromURL(getClass().getResource(resourceName)));
+	}
+
+	protected void putAnimatedResource(String key, String resourceName)
+	{
+		putAnimated(key, getClass().getResource(resourceName));
+	}
+
+	public void putAnimated(String key, URL url)
+	{
+		try
+		{
+			Image[] images = loadAnimated(url);
+			for (int i = 0; i < images.length; i++)
+			{
+				String frameKey = key + "." + i; //$NON-NLS-1$
+				put(frameKey, images[i]);
+			}
+		}
+		catch (IOException e)
+		{
+			logger.error("Error loading animated image", e); //$NON-NLS-1$
+		}
+	}
+
+	public Image[] getAnimated(String key)
+	{
+		List<Image> images = new ArrayList<Image>();
+		for (int i = 0;; i++)
+		{
+			String frameKey = key + "." + i; //$NON-NLS-1$
+			Image image = get(frameKey);
+			if (image == null)
+				break;
+			images.add(image);
+		}
+		return images.toArray(new Image[images.size()]);
+	}
+
+	private Image[] loadAnimated(URL url) throws IOException
+	{
+		Display display = Display.getDefault();
+		ImageLoader imageLoader = new ImageLoader();
+		imageLoader.load(url.openStream());
+		Image[] images = new Image[imageLoader.data.length];
+		for (int i = 0; i < imageLoader.data.length; ++i)
+		{
+			ImageData nextFrameData = imageLoader.data[i];
+			images[i] = new Image(display, nextFrameData);
+		}
+		return images;
 	}
 }
