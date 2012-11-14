@@ -115,7 +115,8 @@ public class LayerTreeControlProvider implements IControlProvider
 						{
 							tag += "|" + ((LayerNode) layerNode).getLayerURI().toString(); //$NON-NLS-1$
 						}
-						part = LegendPart.showPart(partService, modelService, window, tag);
+						String label = "Legend" + ": " + layerNode.getLabelOrName(); //$NON-NLS-2$
+						part = LegendPart.showPart(partService, modelService, window, tag, label);
 					}
 					if (part == null)
 					{

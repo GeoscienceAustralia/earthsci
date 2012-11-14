@@ -88,8 +88,11 @@ public class LegendPart
 		return "<html><body>No legend defined.</body></html>";
 	}
 
-	public static MPart showPart(EPartService partService, EModelService modelService, MWindow window, String reuseTag)
+	public static MPart showPart(EPartService partService, EModelService modelService, MWindow window, String reuseTag,
+			String label)
 	{
+		MPart part = null;
+
 		//find a part to reuse if possible
 		if (reuseTag != null)
 		{
@@ -97,70 +100,73 @@ public class LegendPart
 					modelService.findElements(window, PART_ID, MPart.class, Arrays.asList(new String[] { reuseTag }));
 			if (!reuse.isEmpty())
 			{
-				MPart part = reuse.get(0);
-				partService.showPart(part, PartState.VISIBLE);
-				return part;
+				part = reuse.get(0);
 			}
 		}
 
-		//first find the stack to add the part to
-		MPartStack stack = null;
-
-		//find other legend parts to put this part next to
-		List<MPart> siblings = modelService.findElements(window, PART_ID, MPart.class, null);
-
-		//use this opportunity to clean up old legend parts
-		for (MPart sibling : siblings)
+		if (part == null)
 		{
-			//legend parts are not reused, so remove them if they are not ToBeRendered
-			if (!sibling.isToBeRendered() && sibling.getParent() != null)
+			//create the part from the PartDescriptor
+			part = partService.createPart(PART_ID);
+			if (reuseTag != null)
 			{
-				sibling.getParent().getChildren().remove(sibling);
+				part.getTags().add(reuseTag);
 			}
-		}
 
-		//select a stack next to one of the siblings
-		for (MPart sibling : siblings)
-		{
-			if (sibling.isToBeRendered())
+			//first find the stack to add the part to
+			MPartStack stack = null;
+
+			//find other legend parts to put this part next to
+			List<MPart> siblings = modelService.findElements(window, PART_ID, MPart.class, null);
+
+			//use this opportunity to clean up old legend parts
+			for (MPart sibling : siblings)
 			{
-				Object parent = sibling.getParent();
-				if (parent instanceof MPartStack)
+				//legend parts are not reused, so remove them if they are not ToBeRendered
+				if (!sibling.isToBeRendered() && sibling.getParent() != null)
 				{
-					stack = (MPartStack) parent;
-					if (getFirstWindowParent(sibling) != window)
+					sibling.getParent().getChildren().remove(sibling);
+				}
+			}
+
+			//select a stack next to one of the siblings
+			for (MPart sibling : siblings)
+			{
+				if (sibling.isToBeRendered())
+				{
+					Object parent = sibling.getParent();
+					if (parent instanceof MPartStack)
 					{
-						//prefer an external window if possible
-						break;
+						stack = (MPartStack) parent;
+						if (getFirstWindowParent(sibling) != window)
+						{
+							//prefer an external window if possible
+							break;
+						}
 					}
 				}
 			}
+
+			//if no stack was found with a sibling, create a new one in a new window
+			if (stack == null)
+			{
+				MWindow newWindow = MBasicFactory.INSTANCE.createWindow();
+				newWindow.setElementId(WINDOW_ID);
+				newWindow.setWidth(300); //TODO fix arbitrary constants
+				newWindow.setHeight(250);
+				window.getWindows().add(newWindow);
+				stack = MBasicFactory.INSTANCE.createPartStack();
+				stack.setElementId(STACK_ID);
+				newWindow.getChildren().add(stack);
+			}
+
+			//add it to the stack
+			stack.getChildren().add(part);
 		}
 
-		//if no stack was found with a sibling, create a new one in a new window
-		if (stack == null)
-		{
-			MWindow newWindow = MBasicFactory.INSTANCE.createWindow();
-			newWindow.setElementId(WINDOW_ID);
-			newWindow.setWidth(300); //TODO fix arbitrary constants
-			newWindow.setHeight(250);
-			window.getWindows().add(newWindow);
-			stack = MBasicFactory.INSTANCE.createPartStack();
-			stack.setElementId(STACK_ID);
-			newWindow.getChildren().add(stack);
-		}
-
-		//create the part from the PartDescriptor
-		MPart part = partService.createPart(PART_ID);
-		if (reuseTag != null)
-		{
-			part.getTags().add(reuseTag);
-		}
-		//add it to the stack
-		stack.getChildren().add(part);
-		//show the part
+		//show and return the part
+		part.setLabel(label);
 		partService.showPart(part, PartState.VISIBLE);
-
 		return part;
 	}
 
