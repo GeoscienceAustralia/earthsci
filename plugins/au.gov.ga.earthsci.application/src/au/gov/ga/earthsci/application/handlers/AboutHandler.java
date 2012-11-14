@@ -159,6 +159,7 @@ public class AboutHandler
 					}
 				}
 			});
+			retrievalJob.schedule();
 			System.out.println("Im asynchronous!");
 		}
 		catch (MalformedURLException e)

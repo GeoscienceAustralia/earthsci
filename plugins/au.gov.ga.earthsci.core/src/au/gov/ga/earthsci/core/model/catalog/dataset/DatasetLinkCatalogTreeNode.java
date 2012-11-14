@@ -52,6 +52,7 @@ public class DatasetLinkCatalogTreeNode extends DatasetCatalogTreeNode
 			}
 			
 			RetrievalJob retrievalJob = retrievalService.retrieve(linkURL);
+			retrievalJob.schedule();
 
 			IRetrievalResult retrievalResult = retrievalJob.waitAndGetRetrievalResult();
 			if (retrievalResult == null)

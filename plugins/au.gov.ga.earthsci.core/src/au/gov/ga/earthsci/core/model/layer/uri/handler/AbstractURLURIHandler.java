@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.RetrievalJob;
-import au.gov.ga.earthsci.core.retrieve.RetrievalMode;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 
 /**
@@ -44,9 +43,9 @@ public abstract class AbstractURLURIHandler extends AbstractInputStreamURIHandle
 		try
 		{
 			URL url = uri.toURL();
-			RetrievalJob job =
-					RetrievalServiceFactory.getServiceInstance().retrieve(url, RetrievalMode.IMMEDIATE, false);
-			IRetrievalResult result = job.getRetrievalResult();
+			RetrievalJob job = RetrievalServiceFactory.getServiceInstance().retrieve(url, false);
+			job.schedule();
+			IRetrievalResult result = job.waitAndGetRetrievalResult();
 			is = result.getAsInputStream();
 		}
 		catch (Exception e)

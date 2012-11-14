@@ -22,7 +22,7 @@ import java.net.URL;
  * provided URLs.
  * <p/>
  * Service implementations should yield a {@link RetrievalJob} that performs the actual resource
- * retrieval.
+ * retrieval. This job should not be scheduled, but scheduling is left up to the user.
  * <p/>
  * The basic {@link #retrieve(URL)} method performs background, non-blocking retrieval and takes advantage
  * of any caching provided by implementations. If more control is required by clients, other forms of the method
@@ -36,13 +36,14 @@ import java.net.URL;
 public interface IRetrievalService
 {
 	/**
-	 * Retrieve a resource identified by the provided URL. Retrieval will be performed in the background, and
-	 * any caching provided by implementing classes will be used.
+	 * Retrieve a resource identified by the provided URL.
+	 * Any caching provided by implementing classes will be used.
 	 * <p/>
-	 * If the service is unable to handle the specified URL, <code>null</code> will be returned.
+	 * The returned job is NOT scheduled, the user must schedule it manually. If the service is
+	 * unable to handle the specified URL, <code>null</code> will be returned.
 	 * <p/>
 	 * Equivalent to:
-	 * <pre>retrieve(url, RetrievalMode.BACKGROUND, false);</pre>
+	 * <pre>retrieve(url, false);</pre>
 	 * 
 	 * @param url The URL of the resource to retrieve.
 	 *  
@@ -52,12 +53,13 @@ public interface IRetrievalService
 	
 	/**
 	 * Retrieve a resource from the provided URL. This flavour allows more control over how the retrieval is performed.
+	 * <p/>
+	 * The returned job is NOT scheduled, the user must schedule it manually.
 	 * 
 	 * @param url The URL of the resource to retrieve 
-	 * @param mode The mode to use when retrieving the URL. If {@link RetrievalMode#IMMEDIATE}, this method will block until retrieval is completed.
 	 * @param forceRefresh Whether or not to force a refresh of any caching provided by implementations.
 	 * 
 	 * @return The job used to retrieve the resource, or <code>null</code> if the provided URL is unsupported.
 	 */
-	RetrievalJob retrieve(URL url, RetrievalMode mode, boolean forceRefresh);
+	RetrievalJob retrieve(URL url, boolean forceRefresh);
 }

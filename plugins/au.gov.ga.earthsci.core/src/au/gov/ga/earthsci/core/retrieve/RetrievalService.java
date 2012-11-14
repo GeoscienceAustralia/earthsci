@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
@@ -137,11 +136,11 @@ public class RetrievalService implements IRetrievalService
 	@Override
 	public RetrievalJob retrieve(URL url)
 	{
-		return retrieve(url, RetrievalMode.BACKGROUND, false);
+		return retrieve(url, false);
 	}
 
 	@Override
-	public RetrievalJob retrieve(final URL url, RetrievalMode mode, final boolean forceRefresh)
+	public RetrievalJob retrieve(final URL url, final boolean forceRefresh)
 	{
 		
 		if (url == null)
@@ -179,8 +178,8 @@ public class RetrievalService implements IRetrievalService
 			return null;
 		}
 		
-		// Run the retrieval job
-		final RetrievalJob job = new RetrievalJob(retrievalUrl)
+		// Create the retrieval job
+		return new RetrievalJob(retrievalUrl)
 		{
 			@Override
 			protected IStatus run(IProgressMonitor monitor)
@@ -206,22 +205,6 @@ public class RetrievalService implements IRetrievalService
 				return Status.OK_STATUS;
 			}
 		};
-		job.setPriority(mode == RetrievalMode.IMMEDIATE ? Job.INTERACTIVE : Job.SHORT);
-		job.schedule();
-		
-		if (mode == RetrievalMode.IMMEDIATE)
-		{
-			try
-			{
-				job.join();
-			}
-			catch (InterruptedException e)
-			{
-				logger.debug(e, "Thread interrupted while waiting for job completion"); //$NON-NLS-1$
-			}
-		}
-		
-		return job;
 	}
 	
 	private boolean cachingEnabled()
