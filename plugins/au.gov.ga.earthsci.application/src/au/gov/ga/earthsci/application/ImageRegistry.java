@@ -44,6 +44,7 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_REPOSITORY = "icon.repo"; //$NON-NLS-1$
 	public static final String ICON_FOLDER = "icon.folder"; //$NON-NLS-1$
 	public static final String ICON_LAYER_NODE = "icon.layer_node"; //$NON-NLS-1$
+	public static final String ICON_TRANSPARENT = "icon.transparent"; //$NON-NLS-1$
 	
 	private ImageRegistry()
 	{
@@ -62,6 +63,8 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 		put(ICON_FOLDER, ImageDescriptor.createFromURL(getClass().getResource("/icons/folder.gif"))); //$NON-NLS-1$
 		
 		put(ICON_LAYER_NODE, ImageDescriptor.createFromURL(getClass().getResource("/icons/file_obj.gif"))); //$NON-NLS-1$
+		
+		put(ICON_TRANSPARENT, ImageDescriptor.createFromURL(getClass().getResource("/icons/transparent.gif"))); //$NON-NLS-1$
 	}
 
 	public static ImageRegistry getInstance()
