@@ -75,6 +75,8 @@ public class LayerTreePart
 	@Inject
 	private LayerTreeControlProvider controlProvider;
 
+	private LayerTreeLabelProvider labelProvider;
+
 	private ControlCheckboxTreeViewer viewer;
 	private Clipboard clipboard;
 
@@ -108,9 +110,10 @@ public class LayerTreePart
 
 		final IObservableMap[] attributeMap =
 				new IObservableMap[] { enableds, opacities, names, labels, anyChildrenEnableds, allChildrenEnableds };
+		labelProvider = new LayerTreeLabelProvider(attributeMap);
 
+		viewer.setLabelProvider(labelProvider);
 		viewer.setControlProvider(controlProvider);
-		viewer.setLabelProvider(new LayerTreeLabelProvider(attributeMap));
 		viewer.setCheckStateProvider(new LayerTreeCheckStateProvider());
 
 		viewer.setInput(model.getRootNode());
@@ -204,6 +207,7 @@ public class LayerTreePart
 	{
 		context.remove(TreeViewer.class);
 		context.remove(Clipboard.class);
+		labelProvider.dispose();
 	}
 
 	@Focus
@@ -211,7 +215,7 @@ public class LayerTreePart
 	{
 		viewer.getTree().setFocus();
 	}
-	
+
 	private ILayerTreeNode[] getExpandedNodes()
 	{
 		List<ILayerTreeNode> list = new ArrayList<ILayerTreeNode>();
