@@ -25,6 +25,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.eclipse.core.internal.jobs.JobStatus;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -44,7 +45,8 @@ import au.gov.ga.earthsci.core.retrieve.preferences.IRetrievalServicePreferences
 /**
  * A default base implementation of the {@link IRetrievalResult} interface.
  * <p/>
- * Provides a mechanism to register {@link IRetriever}s to perform the task of retrieving from specific URL types.
+ * Provides a mechanism to register {@link IRetriever}s to perform the task of
+ * retrieving from specific URL types.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -55,29 +57,31 @@ public class RetrievalService implements IRetrievalService
 
 	public static final String RETRIEVER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.core.retrieve.retriever"; //$NON-NLS-1$
 	public static final String RETRIEVER_EXTENSION_POINT_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
-	
+
 	@Inject
 	private Logger logger;
-	
+
 	@Inject
 	@Optional
 	private IRetrievalServicePreferences preferences;
-	
+
 	@Inject
 	@Optional
 	private IURLResourceCache cache;
-	
+
 	private Set<IRetriever> retrievers = new LinkedHashSet<IRetriever>();
 	private ReadWriteLock retrieversLock = new ReentrantReadWriteLock();
-	
+
 	/**
 	 * Load registered {@link IRetriever}s from the provided extension registry.
 	 * <p/>
-	 * This method will inject dependencies on loaded classes using the provided 
+	 * This method will inject dependencies on loaded classes using the provided
 	 * eclipse context, as appropriate.
 	 * 
-	 * @param registry The extension registry to search for {@link IRetriever}s
-	 * @param context The context to use for dependency injection etc.
+	 * @param registry
+	 *            The extension registry to search for {@link IRetriever}s
+	 * @param context
+	 *            The context to use for dependency injection etc.
 	 */
 	@PostConstruct
 	public void loadRetrievers(IExtensionRegistry registry, IEclipseContext context)
@@ -97,7 +101,7 @@ public class RetrievalService implements IRetrievalService
 				{
 					ContextInjectionFactory.inject(o, context);
 					context.set(e.getAttribute(RETRIEVER_EXTENSION_POINT_CLASS_ATTRIBUTE), o);
-					registerRetriever((IRetriever)o);
+					registerRetriever((IRetriever) o);
 				}
 			}
 		}
@@ -109,11 +113,12 @@ public class RetrievalService implements IRetrievalService
 			}
 		}
 	}
-	
+
 	/**
 	 * Register a retriever on this service instance.
 	 * 
-	 * @param retriever The retriever to register
+	 * @param retriever
+	 *            The retriever to register
 	 */
 	public void registerRetriever(IRetriever retriever)
 	{
@@ -121,7 +126,7 @@ public class RetrievalService implements IRetrievalService
 		{
 			return;
 		}
-		
+
 		retrieversLock.writeLock().lock();
 		try
 		{
@@ -142,12 +147,12 @@ public class RetrievalService implements IRetrievalService
 	@Override
 	public RetrievalJob retrieve(final URL url, final boolean forceRefresh)
 	{
-		
+
 		if (url == null)
 		{
 			return null;
 		}
-		
+
 		// Determine the correct URL to use (cached or live)
 		final URL retrievalUrl;
 		final boolean fromCache;
@@ -170,55 +175,58 @@ public class RetrievalService implements IRetrievalService
 			retrievalUrl = url;
 			fromCache = false;
 		}
-		
+
 		// Find the correct retriever for the url
 		final IRetriever retriever = findRetrieverFor(retrievalUrl);
 		if (retriever == null)
 		{
 			return null;
 		}
-		
+
 		// Create the retrieval job
 		return new RetrievalJob(retrievalUrl)
 		{
 			@Override
 			protected IStatus run(IProgressMonitor monitor)
 			{
-				monitor.beginTask(NLS.bind(Messages.RetrievalService_TaskName, retrievalUrl.toExternalForm()), IProgressMonitor.UNKNOWN);
+				monitor.beginTask(NLS.bind(Messages.RetrievalService_TaskName, retrievalUrl.toExternalForm()),
+						IProgressMonitor.UNKNOWN);
 
 				IRetrievalMonitor retrievalMonitor = new RetrievalMonitor(monitor, this);
-				
-				IRetrievalResult result;
-				result = retriever.retrieve(retrievalUrl, retrievalMonitor);
+
+				IRetrievalResult result = retriever.retrieve(retrievalUrl, retrievalMonitor);
 				if (fromCache)
 				{
 					markFromCache(retrievalUrl);
 				}
-				else if (cachingEnabled())
+				else if (cachingEnabled() && result.hasData())
 				{
 					cache.putResource(retrievalUrl, result.getAsInputStream());
 				}
-				
+
 				setRetrievalResult(result);
-				
+
 				monitor.done();
-				return Status.OK_STATUS;
+				//TODO this is pretty horrible, rethink this whole function
+				//does !hasData() really mean an error?
+				//the result should have a status associated that is returned
+				return result.hasData() ? Status.OK_STATUS : new JobStatus(IStatus.ERROR, this, result.getMessage());
 			}
 		};
 	}
-	
+
 	private boolean cachingEnabled()
 	{
 		return preferences != null && preferences.isCachingEnabled() && cache != null;
 	}
-	
+
 	private IRetriever findRetrieverFor(URL url)
 	{
 		if (url == null)
 		{
 			return null;
 		}
-		
+
 		retrieversLock.readLock().lock();
 		try
 		{
@@ -236,10 +244,10 @@ public class RetrievalService implements IRetrievalService
 			retrieversLock.readLock().unlock();
 		}
 	}
-	
+
 	public void setLogger(Logger l)
 	{
 		this.logger = l;
 	}
-	
+
 }
