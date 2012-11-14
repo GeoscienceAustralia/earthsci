@@ -62,6 +62,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 	{
 		FolderNode rootNode = new FolderNode();
 		rootNode.setName("root"); //$NON-NLS-1$
+		rootNode.setExpanded(true);
 		loadRootNode(rootNode);
 		return rootNode;
 	}

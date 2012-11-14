@@ -42,6 +42,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private String label;
 	private URL infoURL;
 	private URL legendURL;
+	private boolean expanded;
 
 	protected AbstractLayerTreeNode()
 	{
@@ -261,5 +262,20 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	public String toString()
 	{
 		return getClass().getSimpleName() + " {" + getLabelOrName() + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
+	@Persistent
+	@Override
+	public boolean isExpanded()
+	{
+		return expanded;
+	}
+
+	@Override
+	public void setExpanded(boolean expanded)
+	{
+		boolean oldValue = isExpanded();
+		this.expanded = expanded;
+		firePropertyChange("expanded", oldValue, label); //$NON-NLS-1$
 	}
 }
