@@ -7,6 +7,9 @@ import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -27,7 +30,9 @@ import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
@@ -43,7 +48,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
+import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindView;
 import au.gov.ga.earthsci.viewers.ControlCheckboxTreeViewer;
@@ -75,6 +82,7 @@ public class LayerTreePart
 	public void init(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell, Composite parent, EMenuService menuService)
 	{
 		viewer = new ControlCheckboxTreeViewer(parent, SWT.MULTI);
+		viewer.getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
 		context.set(TreeViewer.class, viewer);
 
 		clipboard = new Clipboard(shell.getDisplay());
@@ -106,7 +114,7 @@ public class LayerTreePart
 		viewer.setCheckStateProvider(new LayerTreeCheckStateProvider());
 
 		viewer.setInput(model.getRootNode());
-		viewer.expandAll(); //TODO save expanded state, and restore
+		viewer.setExpandedElements(getExpandedNodes());
 
 		viewer.addCheckStateListener(new ICheckStateListener()
 		{
@@ -129,6 +137,23 @@ public class LayerTreePart
 			{
 				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 				selectionService.setSelection(selection.getFirstElement());
+			}
+		});
+
+		viewer.addTreeListener(new ITreeViewerListener()
+		{
+			@Override
+			public void treeExpanded(TreeExpansionEvent event)
+			{
+				ILayerTreeNode layerNode = (ILayerTreeNode) event.getElement();
+				layerNode.setExpanded(true);
+			}
+
+			@Override
+			public void treeCollapsed(TreeExpansionEvent event)
+			{
+				ILayerTreeNode layerNode = (ILayerTreeNode) event.getElement();
+				layerNode.setExpanded(false);
 			}
 		});
 
@@ -185,6 +210,25 @@ public class LayerTreePart
 	private void setFocus()
 	{
 		viewer.getTree().setFocus();
+	}
+	
+	private ILayerTreeNode[] getExpandedNodes()
+	{
+		List<ILayerTreeNode> list = new ArrayList<ILayerTreeNode>();
+		addExpandedChildrenToList(model.getRootNode(), list);
+		return list.toArray(new ILayerTreeNode[list.size()]);
+	}
+
+	private void addExpandedChildrenToList(ILayerTreeNode parent, List<ILayerTreeNode> list)
+	{
+		if (parent.isExpanded())
+		{
+			list.add(parent);
+		}
+		for (ITreeNode<ILayerTreeNode> child : parent.getChildren())
+		{
+			addExpandedChildrenToList(child.getValue(), list);
+		}
 	}
 
 	public void flyToLayer(ILayerTreeNode layer)

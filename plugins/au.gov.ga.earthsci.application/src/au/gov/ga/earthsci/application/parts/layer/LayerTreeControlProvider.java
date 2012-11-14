@@ -118,10 +118,6 @@ public class LayerTreeControlProvider implements IControlProvider
 						String label = "Legend" + ": " + layerNode.getLabelOrName(); //$NON-NLS-2$
 						part = LegendPart.showPart(partService, modelService, window, tag, label);
 					}
-					if (part == null)
-					{
-						//TODO
-					}
 
 					String inputName = info ? InfoPart.INPUT_NAME : LegendPart.INPUT_NAME;
 					part.getContext().modify(inputName, layerNode);

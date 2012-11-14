@@ -90,4 +90,17 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	 * @return The URL pointing to this layer's legend.
 	 */
 	URL getLegendURL();
+
+	/**
+	 * @return Is this tree node expanded?
+	 */
+	boolean isExpanded();
+
+	/**
+	 * Mark this tree node as expanded.
+	 * 
+	 * @param expanded
+	 *            Expanded state
+	 */
+	void setExpanded(boolean expanded);
 }
