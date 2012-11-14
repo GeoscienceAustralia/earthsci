@@ -92,6 +92,11 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	URL getLegendURL();
 
 	/**
+	 * @return The URL pointing to this layer's icon.
+	 */
+	URL getIconURL();
+
+	/**
 	 * @return Is this tree node expanded?
 	 */
 	boolean isExpanded();

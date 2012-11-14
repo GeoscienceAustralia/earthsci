@@ -42,6 +42,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private String label;
 	private URL infoURL;
 	private URL legendURL;
+	private URL iconURL;
 	private boolean expanded;
 
 	protected AbstractLayerTreeNode()
@@ -115,6 +116,18 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	public void setLegendURL(URL legendURL)
 	{
 		this.legendURL = legendURL;
+	}
+
+	@Persistent
+	@Override
+	public URL getIconURL()
+	{
+		return iconURL;
+	}
+
+	public void setIconURL(URL iconURL)
+	{
+		this.iconURL = iconURL;
 	}
 
 	@Persistent
