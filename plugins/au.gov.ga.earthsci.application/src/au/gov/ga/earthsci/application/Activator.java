@@ -15,13 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.e4.core.di.InjectorFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import au.gov.ga.earthsci.application.util.KeyboardFocusManagerFix;
-import au.gov.ga.earthsci.catalog.part.CatalogTreeControlProvider;
+import au.gov.ga.earthsci.catalog.part.CatalogBrowserController;
+import au.gov.ga.earthsci.catalog.part.ICatalogBrowserController;
 
 /**
  * Application bundle activator.
@@ -42,15 +42,7 @@ public class Activator implements BundleActivator
 	{
 		Activator.context = bundleContext;
 		KeyboardFocusManagerFix.initialize();
-		
-		//loadExtensions(context);
-	}
-
-	private void loadExtensions(BundleContext context)
-	{
-		IExtensionRegistry registry = RegistryFactory.getRegistry();
-		
-		CatalogTreeControlProvider.loadProviders(registry);
+		InjectorFactory.getDefault().addBinding(ICatalogBrowserController.class).implementedBy(CatalogBrowserController.class);
 	}
 
 	@Override

@@ -21,18 +21,17 @@ import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.inject.Inject;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.e4.core.di.annotations.Creatable;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
+import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.custom.ControlEditor;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,13 +46,15 @@ import au.gov.ga.earthsci.viewers.IControlProvider;
  * @author James Navin (james.navin@ga.gov.au)
  */
 @Creatable
-public class CatalogTreeControlProvider extends LabelProvider implements IControlProvider
+public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDecorator
 {
-	private static final Logger logger = LoggerFactory.getLogger(CatalogTreeControlProvider.class);
+	private static final Logger logger = LoggerFactory.getLogger(CatalogTreeLabelProvider.class);
 	
-	private Color backgroundColor;
+	private final org.eclipse.jface.resource.ImageRegistry decoratedImages = new org.eclipse.jface.resource.ImageRegistry();
 	
-	public CatalogTreeControlProvider()
+	private ICatalogBrowserController controller;
+	
+	public CatalogTreeLabelProvider()
 	{
 		
 	}
@@ -65,10 +66,12 @@ public class CatalogTreeControlProvider extends LabelProvider implements IContro
 		{
 			return null;
 		}
-		Image icon = getProvider((ICatalogTreeNode)element).getIcon((ICatalogTreeNode)element);
+		ICatalogTreeNode node = (ICatalogTreeNode)element;
+		
+		Image icon = getProvider(node).getIcon(node);
 		if (icon == null)
 		{
-			icon = DEFAULT_PROVIDER.getIcon((ICatalogTreeNode)element);
+			icon = DEFAULT_PROVIDER.getIcon(node);
 		}
 		return icon;
 	}
@@ -84,55 +87,8 @@ public class CatalogTreeControlProvider extends LabelProvider implements IContro
 				return ((ILabeled)element).getLabelOrName();
 			}
 		}
-		return getProvider((ICatalogTreeNode)element).getLabel((ICatalogTreeNode)element);
-	}
-	
-	@Override
-	public Control getControl(Composite parent, Object element, Item item, ControlEditor editor)
-	{
-		if (!(element instanceof ICatalogTreeNode))
-		{
-			return null;
-		}
-		
 		ICatalogTreeNode node = (ICatalogTreeNode)element;
-		ICatalogTreeNodeControlProvider provider = getProvider(node);
-		if (provider == null)
-		{
-			return null;
-		}
-		
-		return null;
-	}
-
-	@Override
-	public boolean updateControl(Control control, Object element, Item item, ControlEditor editor)
-	{
-		return true;
-	}
-
-	@Override
-	public Rectangle overrideBounds(Rectangle bounds, Control control, Object element, Item item)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public void disposeControl(Control control, Object element, Item item)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setBackgroundColor(Color backgroundColor)
-	{
-		this.backgroundColor = backgroundColor;
-	}
-
-	public Color getBackgroundColor()
-	{
-		return backgroundColor;
+		return getProvider(node).getLabel(node);
 	}
 	
 	@Override
@@ -150,6 +106,71 @@ public class CatalogTreeControlProvider extends LabelProvider implements IContro
 		{
 			controlProvidersLock.readLock().unlock();
 		}
+		decoratedImages.dispose();
+	}
+	
+	@Inject
+	public void setController(ICatalogBrowserController controller)
+	{
+		this.controller = controller;
+	}
+	
+	@Override
+	public Image decorateImage(Image image, Object element)
+	{
+		System.out.println("Decorating!");
+		if (!(element instanceof ICatalogTreeNode) || !((ICatalogTreeNode)element).isLayerNode())
+		{
+			return null;
+		}
+		
+		ICatalogTreeNode node = (ICatalogTreeNode)element;
+		
+		if (!controller.existsInLayerModel(node.getLayerURI()))
+		{
+			return null;
+		}
+		
+		return getDecoratedIcon(image);
+	}
+
+	@Override
+	public String decorateText(String text, Object element)
+	{
+		if (!(element instanceof ICatalogTreeNode) || !((ICatalogTreeNode)element).isLayerNode())
+		{
+			return null;
+		}
+		
+		ICatalogTreeNode node = (ICatalogTreeNode)element;
+		
+		if (!controller.existsInLayerModel(node.getLayerURI()))
+		{
+			return null;
+		}
+		System.out.println(node.getLayerURI());
+		return text + "*"; //$NON-NLS-1$
+	}
+	
+	private Image getDecoratedIcon(Image base)
+	{
+		String key = base.hashCode() + ""; //$NON-NLS-1$
+		
+		if (base.isDisposed())
+		{
+			decoratedImages.remove(key);
+			return null;
+		}
+		
+		Image decorated = decoratedImages.get(key);
+		if (decorated != null)
+		{
+			return decorated;
+		}
+				
+		decorated = new DecorationOverlayIcon(base, ImageRegistry.getInstance().getDescriptor(ImageRegistry.DECORATION_INCLUDED), IDecoration.BOTTOM_RIGHT).createImage();
+		decoratedImages.put(key, decorated);
+		return decorated;
 	}
 	
 	private static final Set<ICatalogTreeNodeControlProvider> controlProviders = new LinkedHashSet<ICatalogTreeNodeControlProvider>();

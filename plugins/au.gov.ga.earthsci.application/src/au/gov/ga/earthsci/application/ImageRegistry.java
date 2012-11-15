@@ -55,6 +55,7 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_REMOVE = "icon.remove"; //$NON-NLS-1$
 	public static final String ICON_TRANSPARENT = "icon.transparent"; //$NON-NLS-1$
 	public static final String ICON_LOADING = "icon.loading"; //$NON-NLS-1$
+	public static final String DECORATION_INCLUDED = "decoration.included"; //$NON-NLS-1$
 	
 	public static ImageRegistry getInstance()
 	{
@@ -83,6 +84,8 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 		putResource(ICON_REMOVE, "/icons/remove.gif"); //$NON-NLS-1$
 
 		putResource(ICON_TRANSPARENT, "/icons/transparent.gif"); //$NON-NLS-1$
+
+		putResource(DECORATION_INCLUDED, "/icons/included_dec.gif"); //$NON-NLS-1$
 
 		putAnimatedResource(ICON_LOADING, "/icons/loading.gif"); //$NON-NLS-1$
 	}
@@ -122,7 +125,9 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 			String frameKey = key + "." + i; //$NON-NLS-1$
 			Image image = get(frameKey);
 			if (image == null)
+			{
 				break;
+			}
 			images.add(image);
 		}
 		return images.toArray(new Image[images.size()]);

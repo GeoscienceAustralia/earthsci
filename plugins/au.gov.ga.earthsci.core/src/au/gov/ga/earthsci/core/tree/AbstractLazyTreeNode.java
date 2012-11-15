@@ -54,7 +54,7 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 					public void done(final IJobChangeEvent event)
 					{
 						setLoaded(event.getResult().getCode() != Status.CANCEL);
-						status.set(event.getResult());
+						setStatus(event.getResult());
 						lastLoadJob.set(null);
 					}
 				});
@@ -84,13 +84,28 @@ public abstract class AbstractLazyTreeNode<E> extends AbstractTreeNode<E> implem
 
 	protected final void setLoaded(boolean loaded)
 	{
-		this.loaded.set(loaded);
+		boolean old = this.loaded.getAndSet(loaded);
+		
+		if (old != loaded)
+		{
+			firePropertyChange("loaded", old, loaded); //$NON-NLS-1$
+		}
 	}
 	
 	@Override
 	public IStatus getStatus()
 	{
 		return status.get();
+	}
+	
+	protected final void setStatus(IStatus status)
+	{
+		IStatus old = this.status.getAndSet(status);
+		
+		if (old == null || old.getCode() != status.getCode())
+		{
+			firePropertyChange("status", old, status); //$NON-NLS-1$
+		}
 	}
 	
 	@Override

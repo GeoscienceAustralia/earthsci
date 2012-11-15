@@ -6,6 +6,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
+import au.gov.ga.earthsci.core.persistence.Exportable;
+import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.tree.AbstractLazyTreeNode;
 import au.gov.ga.earthsci.core.tree.LazyTreeJob;
 
@@ -14,16 +16,22 @@ import au.gov.ga.earthsci.core.tree.LazyTreeJob;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
+@Exportable
 public abstract class AbstractCatalogTreeNode extends AbstractLazyTreeNode<ICatalogTreeNode> implements ICatalogTreeNode
 {
 
+	@Persistent
 	private URI nodeURI;
+	@Persistent
 	private String label;
 	
 	public AbstractCatalogTreeNode(URI nodeURI)
 	{
 		this.nodeURI = nodeURI;
 	}
+	
+	/** For persistence mechanism only */
+	protected AbstractCatalogTreeNode() {};
 	
 	@Override
 	protected IStatus doLoad(IProgressMonitor monitor)
@@ -47,7 +55,10 @@ public abstract class AbstractCatalogTreeNode extends AbstractLazyTreeNode<ICata
 	@Override
 	public void setLabel(String label)
 	{
+		String oldLabel = this.label;
 		this.label = label;
+		
+		firePropertyChange("label", oldLabel, label); //$NON-NLS-1$
 	}
 	
 	@Override

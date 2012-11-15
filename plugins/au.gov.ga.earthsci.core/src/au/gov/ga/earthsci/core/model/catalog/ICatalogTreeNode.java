@@ -29,6 +29,7 @@ import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
  * datasets, GOCAD project files, WMS catalogs, etc.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * @author James Navin (james.navin@ga.gov.au)
  */
 public interface ICatalogTreeNode extends ILazyTreeNode<ICatalogTreeNode>, IPropertyChangeBean, INamed, ILabelable
 {
@@ -52,4 +53,16 @@ public interface ICatalogTreeNode extends ILazyTreeNode<ICatalogTreeNode>, IProp
 	 * @return A URI that uniquely identifies this node in a catalog model. One should be able to re-create the node from this URI.
 	 */
 	URI getURI();
+	
+	/**
+	 * Return whether this node represents a layer that can be applied to the layer model
+	 * 
+	 * @return whether this node represents a layer that can be applied to the layer model
+	 */
+	boolean isLayerNode();
+	
+	/**
+	 * @return the URI of the layer this node represents if {@link #isLayerNode()} returns <code>true</code>
+	 */
+	URI getLayerURI();
 }

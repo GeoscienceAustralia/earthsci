@@ -22,7 +22,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 
-import au.gov.ga.earthsci.catalog.part.CatalogTreeControlProvider;
+import au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProvider;
 import au.gov.ga.earthsci.core.retrieve.RetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 import au.gov.ga.earthsci.core.worldwind.WorldWindView;
@@ -60,7 +60,7 @@ public class LifeCycleManager
 	@Inject
 	private void initialiseExtensions(IExtensionRegistry registry)
 	{
-		CatalogTreeControlProvider.loadProviders(registry);
+		CatalogTreeLabelProvider.loadProviders(registry);
 	}
 
 	@PostContextCreate

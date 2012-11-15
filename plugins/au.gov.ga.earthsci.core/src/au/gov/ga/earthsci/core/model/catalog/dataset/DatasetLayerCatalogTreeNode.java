@@ -19,6 +19,8 @@ import java.net.URI;
 import java.net.URL;
 
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.core.persistence.Exportable;
+import au.gov.ga.earthsci.core.persistence.Persistent;
 
 /**
  * An {@link ICatalogTreeNode} that represents a {@code Layer} element from the legacy
@@ -26,12 +28,15 @@ import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
+@Exportable
 public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 {
 
-	private final URL layerUrl;
-	private final boolean def;
-	private final boolean enabled;
+	@Persistent
+	private URL layerURL;
+	
+	private boolean def;
+	private boolean enabled;
 	
 	public DatasetLayerCatalogTreeNode(final URI nodeURI, final String name, final URL url, 
 									  final URL infoURL, final URL iconURL, 
@@ -39,10 +44,13 @@ public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 	{
 		super(nodeURI, name, infoURL, iconURL, base);
 		
-		this.layerUrl = url;
+		this.layerURL = url;
 		this.def = def;
 		this.enabled = enabled;
 	}
+
+	/** For persistence mechanism only */
+	protected DatasetLayerCatalogTreeNode() {}
 
 	@Override
 	public boolean isLoaded()
@@ -74,7 +82,25 @@ public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 
 	public URL getLayerUrl()
 	{
-		return layerUrl;
+		return layerURL;
 	}
 	
+	@Override
+	public boolean isLayerNode()
+	{
+		return true;
+	}
+	
+	@Override
+	public URI getLayerURI()
+	{
+		try
+		{
+			return layerURL.toURI();
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
 }

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.catalog;
 
+import java.net.URI;
+
 
 /**
  * Default implementation of the {@link ICatalogModel} interface
@@ -103,6 +105,18 @@ public class CatalogModel implements ICatalogModel
 		public boolean isLoaded()
 		{
 			return true;
+		}
+		
+		@Override
+		public boolean isLayerNode()
+		{
+			return false;
+		}
+		
+		@Override
+		public URI getLayerURI() 
+		{
+			return null;
 		}
 	}
 	

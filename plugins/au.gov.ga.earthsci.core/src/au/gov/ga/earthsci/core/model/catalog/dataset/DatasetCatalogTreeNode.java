@@ -26,13 +26,8 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 	
 	private boolean base;
 	
-	/**
-	 * 
-	 */
-	private DatasetCatalogTreeNode()
-	{
-		super(null);
-	}
+	/** For persistence mechanism only */
+	protected DatasetCatalogTreeNode() {}
 	
 	public DatasetCatalogTreeNode(final URI nodeURI, final String name, final URL infoURL, final URL iconURL, final boolean base)
 	{
@@ -79,4 +74,15 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 		return base;
 	}
 	
+	@Override
+	public boolean isLayerNode()
+	{
+		return false;
+	}
+	
+	@Override
+	public URI getLayerURI()
+	{
+		return null;
+	}
 }

@@ -56,7 +56,7 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 		{
 			return false;
 		}
-		return FileTransfer.getInstance().isSupportedType(transferType);
+		return FileTransfer.getInstance().isSupportedType(transferType) || CatalogTransfer.getInstance().isSupportedType(transferType);
 	}
 	
 	@Override
@@ -69,15 +69,20 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 			return false;
 		}
 		
-		if (isFileDrop(data))
+		if (isFileDrop())
 		{
 			return doFileDrop(data);
+		}
+		
+		if (isDragDrop())
+		{
+			return doDragDrop(data);
 		}
 		
 		return false;
 	}
 
-	private boolean isFileDrop(Object data)
+	private boolean isFileDrop()
 	{
 		return FileTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType);
 	}
@@ -116,6 +121,17 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 			}
 		}
 		return true;
+	}
+	
+	private boolean isDragDrop()
+	{
+		return CatalogTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType);
+	}
+	
+	private boolean doDragDrop(Object data)
+	{
+		// TODO
+		return false;
 	}
 	
 	private int getDropIndex()
