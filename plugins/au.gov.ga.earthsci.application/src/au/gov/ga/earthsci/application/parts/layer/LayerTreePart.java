@@ -23,7 +23,6 @@ import org.eclipse.core.databinding.property.list.MultiListProperty;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
@@ -73,9 +72,6 @@ public class LayerTreePart
 
 	@Inject
 	private ESelectionService selectionService;
-
-	@Inject
-	private EModelService modelService;
 
 	private LayerTreeLabelProvider labelProvider;
 
