@@ -23,10 +23,13 @@ import org.eclipse.core.databinding.property.list.MultiListProperty;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -53,7 +56,6 @@ import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindView;
-import au.gov.ga.earthsci.viewers.ControlCheckboxTreeViewer;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 import au.gov.ga.earthsci.worldwind.common.util.FlyToSectorAnimator;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
@@ -73,17 +75,17 @@ public class LayerTreePart
 	private ESelectionService selectionService;
 
 	@Inject
-	private LayerTreeControlProvider controlProvider;
+	private EModelService modelService;
 
 	private LayerTreeLabelProvider labelProvider;
 
-	private ControlCheckboxTreeViewer viewer;
+	private CheckboxTreeViewer viewer;
 	private Clipboard clipboard;
 
 	@PostConstruct
 	public void init(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell, Composite parent, EMenuService menuService)
 	{
-		viewer = new ControlCheckboxTreeViewer(parent, SWT.MULTI);
+		viewer = new CheckboxTreeViewer(parent, SWT.MULTI);
 		viewer.getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
 		context.set(TreeViewer.class, viewer);
 
@@ -112,8 +114,7 @@ public class LayerTreePart
 				new IObservableMap[] { enableds, opacities, names, labels, anyChildrenEnableds, allChildrenEnableds };
 		labelProvider = new LayerTreeLabelProvider(attributeMap);
 
-		viewer.setLabelProvider(labelProvider);
-		viewer.setControlProvider(controlProvider);
+		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(labelProvider, labelProvider, null));
 		viewer.setCheckStateProvider(new LayerTreeCheckStateProvider());
 
 		viewer.setInput(model.getRootNode());
@@ -207,7 +208,6 @@ public class LayerTreePart
 	{
 		context.remove(TreeViewer.class);
 		context.remove(Clipboard.class);
-		labelProvider.dispose();
 	}
 
 	@Focus
