@@ -136,7 +136,9 @@ public class LayerTreePart
 			public void selectionChanged(SelectionChangedEvent event)
 			{
 				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-				selectionService.setSelection(selection.getFirstElement());
+				List<?> list = selection.toList();
+				ILayerTreeNode[] array = list.toArray(new ILayerTreeNode[list.size()]);
+				selectionService.setSelection(selection.size() == 1 ? selection.getFirstElement() : array);
 			}
 		});
 
