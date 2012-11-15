@@ -53,7 +53,7 @@ public class LayerOpacityToolControl
 	{
 		//TODO BUG: for some reason, after the layer part is closed and reopened, the
 		//injected context is "anonymous", and doesn't contain the TreeViewer
-		
+
 		int width = 80;
 		int height = 21;
 
@@ -100,6 +100,7 @@ public class LayerOpacityToolControl
 					Double o = getMinOpacity(nodes, null);
 					opacity = o == null ? opacity : o;
 					scale.setSelection((int) (opacity * 100d));
+					scale.setEnabled(!selection.isEmpty());
 					settingScale = false;
 				}
 			});
@@ -121,7 +122,7 @@ public class LayerOpacityToolControl
 				}
 			});
 
-			scale.setEnabled(true);
+			scale.setEnabled(!viewer.getSelection().isEmpty());
 		}
 	}
 
