@@ -80,6 +80,6 @@ public class LegendHandler
 	@CanExecute
 	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
-		return layer.getLegendURL() != null;
+		return layer != null && layer.getLegendURL() != null;
 	}
 }
