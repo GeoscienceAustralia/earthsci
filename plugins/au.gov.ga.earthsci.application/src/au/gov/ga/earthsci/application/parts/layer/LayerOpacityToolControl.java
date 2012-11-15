@@ -15,16 +15,12 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.Optional;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -45,15 +41,15 @@ public class LayerOpacityToolControl
 {
 	private boolean settingScale = false;
 	private Scale scale;
-	private TreeViewer viewer;
 	private boolean connected = false;
+	private ILayerTreeNode[] selection = null;
 
 	@PostConstruct
 	public void createControls(Composite parent)
 	{
 		//TODO BUG: for some reason, after the layer part is closed and reopened, the
 		//injected context is "anonymous", and doesn't contain the TreeViewer
-		
+
 		int width = 80;
 		int height = 21;
 
@@ -70,59 +66,50 @@ public class LayerOpacityToolControl
 		scale.setToolTipText("Set opacity of the selected layer(s)");
 		scale.setEnabled(false);
 
-		connectViewerToScale();
+		scale.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				if (settingScale)
+				{
+					return;
+				}
+				double opacity = scale.getSelection() / 100d;
+				setOpacity(selection, opacity);
+			}
+		});
 	}
 
 	@Inject
-	@Optional
-	private void setViewer(TreeViewer viewer)
+	public void selectionChanged(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
-		this.viewer = viewer;
-		connectViewerToScale();
+		if (layer != null)
+		{
+			setSelection(new ILayerTreeNode[] { layer });
+		}
 	}
 
-	private void connectViewerToScale()
+	@Inject
+	public void selectionChanged(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode[] layers)
 	{
-		if (!connected && viewer != null && scale != null)
+		if (layers != null)
 		{
-			connected = true;
-
-			viewer.addSelectionChangedListener(new ISelectionChangedListener()
-			{
-				@Override
-				public void selectionChanged(SelectionChangedEvent event)
-				{
-					settingScale = true;
-					double opacity = scale.getSelection() / 100d;
-					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-					List<?> selectionList = selection.toList();
-					ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
-					Double o = getMinOpacity(nodes, null);
-					opacity = o == null ? opacity : o;
-					scale.setSelection((int) (opacity * 100d));
-					settingScale = false;
-				}
-			});
-
-			scale.addSelectionListener(new SelectionAdapter()
-			{
-				@Override
-				public void widgetSelected(SelectionEvent e)
-				{
-					if (settingScale)
-					{
-						return;
-					}
-					double opacity = scale.getSelection() / 100d;
-					IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-					List<?> selectionList = selection.toList();
-					ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
-					setOpacity(nodes, opacity);
-				}
-			});
-
-			scale.setEnabled(true);
+			setSelection(layers);
 		}
+	}
+
+	private void setSelection(ILayerTreeNode[] selection)
+	{
+		this.selection = selection;
+
+		settingScale = true;
+		double opacity = scale.getSelection() / 100d;
+		Double o = getMinOpacity(selection, null);
+		opacity = o == null ? opacity : o;
+		scale.setSelection((int) (opacity * 100d));
+		scale.setEnabled(selection.length > 0);
+		settingScale = false;
 	}
 
 	private Double getMinOpacity(ITreeNode<ILayerTreeNode>[] nodes, Double opacity)
@@ -141,14 +128,17 @@ public class LayerOpacityToolControl
 
 	private void setOpacity(ITreeNode<ILayerTreeNode>[] nodes, double opacity)
 	{
-		for (ITreeNode<ILayerTreeNode> node : nodes)
+		if (nodes != null)
 		{
-			if (node instanceof LayerNode)
+			for (ITreeNode<ILayerTreeNode> node : nodes)
 			{
-				LayerNode layer = (LayerNode) node;
-				layer.setOpacity(opacity);
+				if (node instanceof LayerNode)
+				{
+					LayerNode layer = (LayerNode) node;
+					layer.setOpacity(opacity);
+				}
+				setOpacity(node.getChildren(), opacity);
 			}
-			setOpacity(node.getChildren(), opacity);
 		}
 	}
 }

@@ -19,6 +19,7 @@ import java.io.File;
 
 import javax.inject.Inject;
 
+import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -80,5 +81,21 @@ public class PasteHandler
 				}
 			}
 		}
+	}
+
+	@CanExecute
+	public boolean canExecute(Clipboard clipboard)
+	{
+		LayerTransferData data = (LayerTransferData) clipboard.getContents(LayerTransfer.getInstance());
+		if (data != null)
+		{
+			return true;
+		}
+		String[] filenames = (String[]) clipboard.getContents(FileTransfer.getInstance());
+		if (filenames != null)
+		{
+			return true;
+		}
+		return false;
 	}
 }

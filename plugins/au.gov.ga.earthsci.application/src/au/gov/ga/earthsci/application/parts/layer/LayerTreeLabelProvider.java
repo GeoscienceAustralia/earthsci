@@ -24,8 +24,17 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.StyledString.Styler;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,21 +52,62 @@ import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerTreeLabelProvider extends ObservableMapLabelProvider
+public class LayerTreeLabelProvider extends ObservableMapLabelProvider implements ILabelDecorator, IStyledLabelProvider
 {
 	private final IconLoader iconLoader = new IconLoader();
 	private static final Logger logger = LoggerFactory.getLogger(LayerTreeLabelProvider.class);
 
+	private boolean disposed = false;
+
+	private final Color informationColor;
+	private final Color legendColor;
+	private final Font subscriptFont;
+	private final Styler informationStyler = new Styler()
+	{
+		@Override
+		public void applyStyles(TextStyle textStyle)
+		{
+			textStyle.foreground = informationColor;
+			textStyle.font = subscriptFont;
+		}
+	};
+	private final Styler legendStyler = new Styler()
+	{
+		@Override
+		public void applyStyles(TextStyle textStyle)
+		{
+			textStyle.foreground = legendColor;
+			textStyle.font = subscriptFont;
+		}
+	};
+
 	public LayerTreeLabelProvider(IObservableMap[] attributeMaps)
 	{
 		super(attributeMaps);
+		informationColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
+		legendColor = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
+		FontData[] fontDatas = Display.getDefault().getSystemFont().getFontData();
+		for (FontData fontData : fontDatas)
+		{
+			fontData.setStyle(SWT.BOLD);
+			fontData.setHeight((int) (fontData.getHeight() * 0.8));
+		}
+		subscriptFont = new Font(Display.getDefault(), fontDatas);
 	}
 
 	@Override
 	public void dispose()
 	{
+		//because this object is acting as both the decorator and the provider,
+		//dispose is called twice, causing a NPE in the super class
+		//workaround: set a flag when disposed, disabling multiple disposals
+		if (disposed)
+			return;
+		disposed = true;
+		
 		super.dispose();
 		iconLoader.dispose();
+		subscriptFont.dispose();
 	}
 
 	@Override
@@ -96,6 +146,41 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider
 		return super.getImage(element);
 	}
 
+	@Override
+	public Image decorateImage(Image image, Object element)
+	{
+		return null;
+	}
+
+	@Override
+	public String decorateText(String text, Object element)
+	{
+		return text;
+	}
+
+	@Override
+	public StyledString getStyledText(Object element)
+	{
+		StyledString string = new StyledString(getColumnText(element, 0));
+		if (element instanceof ILayerTreeNode)
+		{
+			ILayerTreeNode layerNode = (ILayerTreeNode) element;
+			if (layerNode.getInfoURL() != null || layerNode.getLegendURL() != null)
+			{
+				string.append(" "); //$NON-NLS-1$
+				if (layerNode.getInfoURL() != null)
+				{
+					string.append(" i", informationStyler); //$NON-NLS-1$
+				}
+				if (layerNode.getLegendURL() != null)
+				{
+					string.append(" L", legendStyler); //$NON-NLS-1$
+				}
+			}
+		}
+		return string;
+	}
+
 	private class IconLoader implements LoadingIconFrameListener
 	{
 		private final ImageRegistry imageRegistry = new ImageRegistry();
@@ -114,7 +199,7 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider
 					setLoading(element, false);
 					return image;
 				}
-				
+
 				//if an error occured when loading the icon, return the error icon
 				if (errorElements.contains(element))
 				{
