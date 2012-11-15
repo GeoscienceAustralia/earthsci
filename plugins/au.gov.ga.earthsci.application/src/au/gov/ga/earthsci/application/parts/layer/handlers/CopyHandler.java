@@ -17,7 +17,12 @@ package au.gov.ga.earthsci.application.parts.layer.handlers;
 
 import java.util.List;
 
+import javax.inject.Named;
+
+import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.Clipboard;
@@ -42,5 +47,11 @@ public class CopyHandler
 		ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
 		LayerTransferData data = LayerTransferData.fromNodes(nodes);
 		clipboard.setContents(new Object[] { data }, new Transfer[] { LayerTransfer.getInstance() });
+	}
+	
+	@CanExecute
+	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
+	{
+		return layer != null;
 	}
 }
