@@ -57,6 +57,8 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider implement
 	private final IconLoader iconLoader = new IconLoader();
 	private static final Logger logger = LoggerFactory.getLogger(LayerTreeLabelProvider.class);
 
+	private boolean disposed = false;
+
 	private final Color informationColor;
 	private final Color legendColor;
 	private final Font subscriptFont;
@@ -96,6 +98,13 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider implement
 	@Override
 	public void dispose()
 	{
+		//because this object is acting as both the decorator and the provider,
+		//dispose is called twice, causing a NPE in the super class
+		//workaround: set a flag when disposed, disabling multiple disposals
+		if (disposed)
+			return;
+		disposed = true;
+		
 		super.dispose();
 		iconLoader.dispose();
 		subscriptFont.dispose();
