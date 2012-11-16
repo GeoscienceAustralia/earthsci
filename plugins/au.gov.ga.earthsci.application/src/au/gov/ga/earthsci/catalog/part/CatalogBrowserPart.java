@@ -43,6 +43,7 @@ public class CatalogBrowserPart
 	@PostConstruct
 	public void init(Composite parent, MPart part)
 	{
+		controller.setCatalogBrowserPart(this);
 		initViewer(parent);
 	}
 	
@@ -57,5 +58,10 @@ public class CatalogBrowserPart
 		
 		viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance(), CatalogTransfer.getInstance()}, new CatalogTreeDropAdapter(viewer, model));
 		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] { CatalogTransfer.getInstance() }, new LayerTreeDragSourceListener(viewer));
+	}
+	
+	public TreeViewer getTreeViewer()
+	{
+		return viewer;
 	}
 }

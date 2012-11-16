@@ -15,10 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog.part;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.net.URI;
-import java.util.Arrays;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -27,15 +24,14 @@ import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.list.IListChangeListener;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.ListChangeEvent;
-import org.eclipse.core.databinding.property.list.IListProperty;
-import org.eclipse.core.databinding.property.list.MultiListProperty;
+import org.eclipse.core.databinding.observable.list.ListDiffEntry;
 import org.eclipse.e4.core.di.annotations.Creatable;
 
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
+import au.gov.ga.earthsci.core.util.Bag;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
@@ -50,33 +46,22 @@ public class CatalogBrowserController implements ICatalogBrowserController
 
 	private ITreeModel currentLayerModel;
 	
+	private Bag<URI> layers;
+
+	private CatalogBrowserPart part;
+	
+	@Override
+	public void setCatalogBrowserPart(CatalogBrowserPart part)
+	{
+		this.part = part;
+	}
+	
 	@Override
 	public boolean existsInLayerModel(URI layerURI)
 	{
-		return findLayerURI(currentLayerModel.getRootNode(), layerURI);
+		return layers.contains(layerURI);
 	}
 
-	// TODO: This is grossly naive and inefficient
-	private boolean findLayerURI(ILayerTreeNode node, URI uri)
-	{
-		if (node instanceof LayerNode)
-		{
-			return ((LayerNode)node).getLayerURI().equals(uri);
-		}
-		
-		if (node instanceof FolderNode)
-		{
-			for (ITreeNode<ILayerTreeNode> child : ((FolderNode)node).getChildren())
-			{
-				if (findLayerURI(child.getValue(), uri))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
 	@Override
 	public void addToLayerModel(ICatalogTreeNode[] nodes)
 	{
@@ -95,30 +80,86 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	public void setCurrentLayerModel(ITreeModel currentLayerModel)
 	{
 		this.currentLayerModel = currentLayerModel;
+		this.layers = new Bag<URI>();
 		
-		System.out.println(Arrays.asList(currentLayerModel.getRootNode().getChildren()[0].getChildren()));
-		
-		currentLayerModel.getRootNode().addPropertyChangeListener("children", new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				System.out.println("IM CHANGED!");
-			}
-		});
-		
-		IListProperty childrenProperty = new MultiListProperty(new IListProperty[] { BeanProperties.list("children") }); //$NON-NLS-1$
-		final IObservableList observe = childrenProperty.observe(currentLayerModel.getRootNode());
-		
-		observe.addListChangeListener(new IListChangeListener()
+		final IListChangeListener recursiveChildListener = new IListChangeListener()
 		{
 			@Override
 			public void handleListChange(ListChangeEvent event)
 			{
-				System.out.println("I changed!");
+				boolean redecorateRequired = false;
+				for (ListDiffEntry diff : event.diff.getDifferences())
+				{
+					ILayerTreeNode node = (ILayerTreeNode)diff.getElement();
+					if (diff.isAddition())
+					{
+						redecorateRequired = collectLayerURIs(layers, this, node) || redecorateRequired;
+					}
+					else
+					{
+						redecorateRequired = removeLayerURIs(layers, node) || redecorateRequired;
+					}
+				}
+				if (redecorateRequired)
+				{
+					triggerRedecorate();
+				}
 			}
-		});
+		};
 		
+		collectLayerURIs(layers, recursiveChildListener, currentLayerModel.getRootNode());
 	}
 
+	/**
+	 * Walk the tree from the provided node in a depth-first fashion and collect layer URIs into the provided bag.
+	 * <p/>
+	 * Additionally, attach the provided list change listener to the child lists of each node so
+	 * future changes to the child state can be detected.
+	 * 
+	 * @return true If any new layer URIs were added to the bag
+	 */
+	private boolean collectLayerURIs(final Bag<URI> layers, final IListChangeListener listener, ILayerTreeNode node)
+	{
+		boolean changesFound = false;
+		if (node instanceof LayerNode)
+		{
+			int newCount = layers.add(((LayerNode)node).getLayerURI());
+			changesFound = (newCount == 1) || changesFound;
+		}
+		
+		IObservableList observer = BeanProperties.list("children").observe(node); //$NON-NLS-1$
+		observer.addListChangeListener(listener);
+		
+		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
+		{
+			changesFound = collectLayerURIs(layers, listener, (ILayerTreeNode)child) || changesFound;
+		}
+		return changesFound;
+	}
+	
+	/**
+	 * Walk the tree from the provided node in a depth-first fashion and remove layer URIs from the provided bag.
+	 * 
+	 * @return true If any new layer URIs were added to the bag
+	 */
+	private boolean removeLayerURIs(final Bag<URI> layers, ILayerTreeNode node)
+	{
+		boolean changesFound = false;
+		if (node instanceof LayerNode)
+		{
+			int newCount = layers.remove(((LayerNode)node).getLayerURI());
+			changesFound = (newCount == 0) || changesFound;
+		}
+		
+		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
+		{
+			changesFound = removeLayerURIs(layers, (ILayerTreeNode)child) || changesFound;
+		}
+		return changesFound;
+	}
+	
+	private void triggerRedecorate()
+	{
+		part.getTreeViewer().refresh(true);
+	}
 }

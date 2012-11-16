@@ -118,7 +118,6 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 	@Override
 	public Image decorateImage(Image image, Object element)
 	{
-		System.out.println("Decorating!");
 		if (!(element instanceof ICatalogTreeNode) || !((ICatalogTreeNode)element).isLayerNode())
 		{
 			return null;
@@ -148,7 +147,6 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		{
 			return null;
 		}
-		System.out.println(node.getLayerURI());
 		return text + "*"; //$NON-NLS-1$
 	}
 	

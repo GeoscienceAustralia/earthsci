@@ -52,4 +52,11 @@ public interface ICatalogBrowserController
 	 */
 	void removeFromLayerModel(ICatalogTreeNode[] nodes);
 	
+	/**
+	 * Set the catalog browser part on this controller
+	 * 
+	 * @param part
+	 */
+	void setCatalogBrowserPart(CatalogBrowserPart part);
+	
 }
