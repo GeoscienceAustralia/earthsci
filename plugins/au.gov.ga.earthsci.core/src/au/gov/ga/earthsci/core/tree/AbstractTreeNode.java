@@ -158,6 +158,14 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	@Override
 	public void add(int index, ITreeNode<E> child)
 	{
+		// Handle the edge case of a child node being added that already exists
+		// Note - the rest of the tree API expects child arrays to act as sets
+		if (child.getParent() == this)
+		{
+			moveChild(child, child.index(), index);
+			return;
+		}
+		
 		if (child.getParent() != null)
 		{
 			child.getParent().remove(child);
@@ -180,6 +188,53 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 		setChildren(newChildren);
 	}
 
+	/**
+	 * Move the child node from the given old index to the new index and 
+	 * trigger a single children changed property event.
+	 * 
+	 * @param child The child to move
+	 * @param oldIndex The old index of the child
+	 * @param newIndex The new index of the child
+	 * 
+	 */
+	// TODO: Should this be promoted to the public API? 
+	private void moveChild(ITreeNode<E> child, int oldIndex, int newIndex)
+	{
+		if (newIndex < 0  || newIndex > children.length)
+		{
+			newIndex = children.length - 1;
+		}
+		
+		if (oldIndex == newIndex)
+		{
+			return;
+		}
+		
+		@SuppressWarnings("unchecked")
+		ITreeNode<E>[] newChildren = new ITreeNode[children.length];
+		System.arraycopy(children, 0, newChildren, 0, Math.min(oldIndex, newIndex));
+		
+		if (oldIndex < newIndex)
+		{
+			System.arraycopy(children, oldIndex+1, newChildren, oldIndex, newIndex - oldIndex);
+			if (newIndex < children.length - 1)
+			{
+				System.arraycopy(children, newIndex+1, newChildren, newIndex+1, children.length - newIndex - 1);
+			}
+		}
+		else
+		{
+			System.arraycopy(children, newIndex, newChildren, newIndex+1, oldIndex - newIndex);
+			if (oldIndex < children.length - 1)
+			{
+				System.arraycopy(children, oldIndex+1, newChildren, oldIndex+1, children.length - oldIndex - 1);
+			}
+		}
+		newChildren[newIndex] = child;
+		
+		setChildren(newChildren);
+	}
+	
 	@Override
 	public boolean remove(ITreeNode<E> child)
 	{
@@ -226,6 +281,11 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	@Override
 	public void removeAll()
 	{
+		if (children.length == 0)
+		{
+			return;
+		}
+		
 		@SuppressWarnings("unchecked")
 		ITreeNode<E>[] newChildren = new ITreeNode[0];
 		
