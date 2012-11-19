@@ -52,6 +52,17 @@ public class IconLoader implements LoadingIconFrameListener
 		this.labelProvider = labelProvider;
 	}
 
+	/**
+	 * Retrieve an icon for a viewer element from the given url. If the url
+	 * hasn't yet been retrieved, a frame of the loading icon will be returned.
+	 * If the url could not be retrieved, an error icon is returned.
+	 * 
+	 * @param element
+	 *            Viewer element
+	 * @param url
+	 *            Icon url
+	 * @return Icon to be displayed
+	 */
 	public Image getImage(final Object element, URL url)
 	{
 		synchronized (semaphore)
