@@ -200,7 +200,7 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	// TODO: Should this be promoted to the public API? 
 	private void moveChild(ITreeNode<E> child, int oldIndex, int newIndex)
 	{
-		if (newIndex < 0  || newIndex > children.length)
+		if (newIndex < 0  || newIndex >= children.length)
 		{
 			newIndex = children.length - 1;
 		}
