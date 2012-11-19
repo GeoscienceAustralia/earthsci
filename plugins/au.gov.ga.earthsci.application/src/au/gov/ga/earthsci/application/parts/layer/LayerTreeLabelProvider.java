@@ -16,14 +16,9 @@
 package au.gov.ga.earthsci.application.parts.layer;
 
 import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.core.databinding.observable.map.IObservableMap;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
@@ -36,26 +31,22 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.application.LoadingIconAnimator;
-import au.gov.ga.earthsci.application.LoadingIconFrameListener;
+import au.gov.ga.earthsci.application.IFireableLabelProvider;
+import au.gov.ga.earthsci.application.IconLoader;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
-import au.gov.ga.earthsci.core.retrieve.RetrievalJob;
-import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 
 /**
  * Label provider for the layer tree.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerTreeLabelProvider extends ObservableMapLabelProvider implements ILabelDecorator, IStyledLabelProvider
+public class LayerTreeLabelProvider extends ObservableMapLabelProvider implements ILabelDecorator,
+		IStyledLabelProvider, IFireableLabelProvider
 {
-	private final IconLoader iconLoader = new IconLoader();
-	private static final Logger logger = LoggerFactory.getLogger(LayerTreeLabelProvider.class);
+	private final IconLoader iconLoader = new IconLoader(this);
 
 	private boolean disposed = false;
 
@@ -104,7 +95,7 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider implement
 		if (disposed)
 			return;
 		disposed = true;
-		
+
 		super.dispose();
 		iconLoader.dispose();
 		subscriptFont.dispose();
@@ -181,159 +172,9 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider implement
 		return string;
 	}
 
-	private class IconLoader implements LoadingIconFrameListener
+	@Override
+	public void fireLabelProviderChanged(LabelProviderChangedEvent event)
 	{
-		private final ImageRegistry imageRegistry = new ImageRegistry();
-		private final Set<Object> loadingElements = new HashSet<Object>();
-		private final Set<Object> errorElements = new HashSet<Object>();
-		private final Object semaphore = new Object();
-
-		public Image getImage(final Object element, URL url)
-		{
-			synchronized (semaphore)
-			{
-				//first check the registry to see if the image has been loaded yet
-				Image image = getImageForURL(url);
-				if (image != null)
-				{
-					setLoading(element, false);
-					return image;
-				}
-
-				//if an error occured when loading the icon, return the error icon
-				if (errorElements.contains(element))
-				{
-					return au.gov.ga.earthsci.application.ImageRegistry.getInstance().get(
-							au.gov.ga.earthsci.application.ImageRegistry.ICON_ERROR);
-				}
-
-				//if its not already loading, begin loading
-				if (!isLoading(element))
-				{
-					scheduleRetrievalJob(element, url);
-					setLoading(element, true);
-				}
-
-				return LoadingIconAnimator.get().getCurrentFrame();
-			}
-		}
-
-		public void dispose()
-		{
-			imageRegistry.dispose();
-		}
-
-		private void scheduleRetrievalJob(final Object element, final URL url)
-		{
-			final RetrievalJob job = RetrievalServiceFactory.getServiceInstance().retrieve(url);
-			job.addJobChangeListener(new JobChangeAdapter()
-			{
-				@Override
-				public void done(IJobChangeEvent event)
-				{
-					synchronized (semaphore)
-					{
-						setLoading(element, false);
-						boolean success = false;
-						if (job.getRetrievalResult().hasData())
-						{
-							try
-							{
-								Image image =
-										new Image(Display.getDefault(), job.getRetrievalResult().getAsInputStream());
-								setImageForURL(url, image);
-								success = true;
-							}
-							catch (Exception e)
-							{
-								logger.error("Error loading image from " + url, e); //$NON-NLS-1$
-							}
-						}
-						if (!success)
-						{
-							errorElements.add(element);
-						}
-
-						Display.getDefault().asyncExec(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								fireLabelProviderChanged(new LabelProviderChangedEvent(LayerTreeLabelProvider.this,
-										element));
-							}
-						});
-					}
-				}
-			});
-			job.schedule();
-		}
-
-		private Image getImageForURL(URL url)
-		{
-			synchronized (semaphore)
-			{
-				return imageRegistry.get(url.toString());
-			}
-		}
-
-		private void setImageForURL(URL url, Image image)
-		{
-			imageRegistry.put(url.toString(), image);
-		}
-
-		private boolean isLoading(Object element)
-		{
-			synchronized (semaphore)
-			{
-				return loadingElements.contains(element);
-			}
-		}
-
-		private void setLoading(Object element, boolean loading)
-		{
-			synchronized (semaphore)
-			{
-				if (loading)
-				{
-					boolean wasEmpty = loadingElements.isEmpty();
-					loadingElements.add(element);
-					if (wasEmpty)
-					{
-						LoadingIconAnimator.get().addListener(this);
-					}
-				}
-				else
-				{
-					loadingElements.remove(element);
-					boolean isEmpty = loadingElements.isEmpty();
-					if (isEmpty)
-					{
-						LoadingIconAnimator.get().removeListener(this);
-					}
-				}
-			}
-		}
-
-		@Override
-		public void nextFrame(Image image)
-		{
-			synchronized (semaphore)
-			{
-				if (!loadingElements.isEmpty())
-				{
-					final Object[] loadingElementsArray = loadingElements.toArray(new Object[loadingElements.size()]);
-					Display.getDefault().asyncExec(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							fireLabelProviderChanged(new LabelProviderChangedEvent(LayerTreeLabelProvider.this,
-									loadingElementsArray));
-						}
-					});
-				}
-			}
-		}
+		super.fireLabelProviderChanged(event);
 	}
 }
