@@ -145,10 +145,7 @@ public class IconLoader implements LoadingIconFrameListener
 
 	private Image getImageForURL(URL url)
 	{
-		synchronized (semaphore)
-		{
-			return imageRegistry.get(url.toString());
-		}
+		return imageRegistry.get(url.toString());
 	}
 
 	private void setImageForURL(URL url, Image image)
@@ -158,33 +155,27 @@ public class IconLoader implements LoadingIconFrameListener
 
 	private boolean isLoading(Object element)
 	{
-		synchronized (semaphore)
-		{
-			return loadingElements.contains(element);
-		}
+		return loadingElements.contains(element);
 	}
 
 	private void setLoading(Object element, boolean loading)
 	{
-		synchronized (semaphore)
+		if (loading)
 		{
-			if (loading)
+			boolean wasEmpty = loadingElements.isEmpty();
+			loadingElements.add(element);
+			if (wasEmpty)
 			{
-				boolean wasEmpty = loadingElements.isEmpty();
-				loadingElements.add(element);
-				if (wasEmpty)
-				{
-					LoadingIconAnimator.get().addListener(this);
-				}
+				LoadingIconAnimator.get().addListener(this);
 			}
-			else
+		}
+		else
+		{
+			loadingElements.remove(element);
+			boolean isEmpty = loadingElements.isEmpty();
+			if (isEmpty)
 			{
-				loadingElements.remove(element);
-				boolean isEmpty = loadingElements.isEmpty();
-				if (isEmpty)
-				{
-					LoadingIconAnimator.get().removeListener(this);
-				}
+				LoadingIconAnimator.get().removeListener(this);
 			}
 		}
 	}
