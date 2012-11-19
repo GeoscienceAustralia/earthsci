@@ -143,12 +143,10 @@ public interface ITreeNode<E>
 	 * 
 	 * @param child
 	 *            The child to move
-	 * @param oldIndex
-	 *            The old index of the child
 	 * @param newIndex
 	 *            The new index of the child
 	 */
-	void moveChild(ITreeNode<E> child, int oldIndex, int newIndex);
+	void moveChild(ITreeNode<E> child, int newIndex);
 
 	/**
 	 * @return Array containing all nodes from the root (at index 0) to this

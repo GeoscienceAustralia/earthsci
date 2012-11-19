@@ -162,7 +162,7 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 		// Note - the rest of the tree API expects child arrays to act as sets
 		if (child.getParent() == this)
 		{
-			moveChild(child, child.index(), index);
+			moveChild(child, index);
 			return;
 		}
 
@@ -189,13 +189,14 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 	}
 
 	@Override
-	public void moveChild(ITreeNode<E> child, int oldIndex, int newIndex)
+	public void moveChild(ITreeNode<E> child, int newIndex)
 	{
 		if (newIndex < 0 || newIndex >= children.length)
 		{
 			newIndex = children.length - 1;
 		}
 
+		int oldIndex = child.index();
 		if (oldIndex == newIndex)
 		{
 			return;
