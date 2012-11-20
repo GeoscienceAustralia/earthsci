@@ -82,6 +82,8 @@ public class LayerTreePart
 	@PostConstruct
 	public void init(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell, Composite parent, EMenuService menuService)
 	{
+		LayerOpacityToolControl.setPartContext(context);
+
 		viewer = new CheckboxTreeViewer(parent, SWT.MULTI);
 		viewer.getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
 		context.set(TreeViewer.class, viewer);
