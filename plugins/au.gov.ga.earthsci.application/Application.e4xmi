@@ -57,9 +57,11 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_GlFLcCk_EeKGOtKz07iBzg" elementId="" label="Paste" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/paste_edit.gif" command="_1dBA8CfCEeKGOtKz07iBzg"/>
       </menus>
       <toolbar xmi:id="_ZzktwCiIEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.toolbar.0">
+        <children xsi:type="menu:ToolControl" xmi:id="_bdOMICiIEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.layertree.opacitycontrol" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.LayerOpacityToolControl"/>
         <children xsi:type="menu:HandledToolItem" xmi:id="_GECvIC7KEeKZx7qTf2KT5w" elementId="" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/information.gif" tooltip="Information" command="_NMA3YC7KEeKZx7qTf2KT5w"/>
         <children xsi:type="menu:HandledToolItem" xmi:id="_b9ypoC7KEeKZx7qTf2KT5w" elementId="" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/legend.gif" tooltip="Legend" command="_TIcZkC7KEeKZx7qTf2KT5w"/>
-        <children xsi:type="menu:ToolControl" xmi:id="_bdOMICiIEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.layertree.opacitycontrol" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.LayerOpacityToolControl"/>
+        <children xsi:type="menu:ToolBarSeparator" xmi:id="_2u3NYDLFEeKiIoL1c99uFw" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_3BfOcDLFEeKiIoL1c99uFw" elementId="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/delete.gif" tooltip="Delete" command="_7dKlgCfCEeKGOtKz07iBzg"/>
       </toolbar>
     </sharedElements>
     <sharedElements xsi:type="basic:Part" xmi:id="_OVvf0ClJEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.part.information" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.info.InfoPart" label="Information" closeable="true">

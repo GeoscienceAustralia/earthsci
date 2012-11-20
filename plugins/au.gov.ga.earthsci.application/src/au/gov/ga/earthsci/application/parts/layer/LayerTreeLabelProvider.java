@@ -15,7 +15,14 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer;
 
+import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.layers.Layer;
+import gov.nasa.worldwind.retrieve.RetrievalService;
+import gov.nasa.worldwind.retrieve.Retriever;
+
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
@@ -34,9 +41,14 @@ import org.eclipse.swt.widgets.Display;
 
 import au.gov.ga.earthsci.application.IFireableLabelProvider;
 import au.gov.ga.earthsci.application.IconLoader;
+import au.gov.ga.earthsci.application.LoadingIconAnimator;
+import au.gov.ga.earthsci.application.LoadingIconFrameListener;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
+import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
+import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService.RetrievalListener;
+import au.gov.ga.earthsci.worldwind.common.retrieve.RetrievalListenerHelper;
 
 /**
  * Label provider for the layer tree.
@@ -44,9 +56,11 @@ import au.gov.ga.earthsci.core.model.layer.LayerNode;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class LayerTreeLabelProvider extends ObservableMapLabelProvider implements ILabelDecorator,
-		IStyledLabelProvider, IFireableLabelProvider
+		IStyledLabelProvider, IFireableLabelProvider, RetrievalListener, LoadingIconFrameListener
 {
 	private final IconLoader iconLoader = new IconLoader(this);
+	private final Map<Layer, Integer> layerRetrieverCount = new HashMap<Layer, Integer>();
+	private final Map<Layer, ILayerTreeNode> retrievingElements = new HashMap<Layer, ILayerTreeNode>();
 
 	private boolean disposed = false;
 
@@ -84,6 +98,12 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider implement
 			fontData.setHeight((int) (fontData.getHeight() * 0.8));
 		}
 		subscriptFont = new Font(Display.getDefault(), fontDatas);
+
+		RetrievalService rs = WorldWind.getRetrievalService();
+		if (rs instanceof ExtendedRetrievalService)
+		{
+			((ExtendedRetrievalService) rs).addRetrievalListener(this);
+		}
 	}
 
 	@Override
@@ -127,8 +147,12 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider implement
 	{
 		if (element instanceof ILayerTreeNode)
 		{
-			ILayerTreeNode layer = (ILayerTreeNode) element;
-			URL imageURL = layer.getIconURL();
+			ILayerTreeNode node = (ILayerTreeNode) element;
+			if (isLayerNodeRetrieving(node))
+			{
+				return LoadingIconAnimator.get().getCurrentFrame();
+			}
+			URL imageURL = node.getIconURL();
 			if (imageURL != null)
 			{
 				return iconLoader.getImage(element, imageURL);
@@ -176,5 +200,99 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider implement
 	public void fireLabelProviderChanged(LabelProviderChangedEvent event)
 	{
 		super.fireLabelProviderChanged(event);
+	}
+
+	@Override
+	public void beforeRetrieve(Retriever retriever)
+	{
+		Layer layer = RetrievalListenerHelper.getLayer(retriever);
+		if (layer != null)
+		{
+			synchronized (layerRetrieverCount)
+			{
+				boolean wasEmpty = layerRetrieverCount.isEmpty();
+				Integer count = layerRetrieverCount.get(layer);
+				boolean fireChange = count == null;
+				count = count == null ? 0 : count;
+				layerRetrieverCount.put(layer, count + 1);
+				if (wasEmpty)
+				{
+					LoadingIconAnimator.get().addListener(this);
+				}
+				if (fireChange)
+				{
+					fireLabelProviderChangedFor(true);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void afterRetrieve(Retriever retriever)
+	{
+		Layer layer = RetrievalListenerHelper.getLayer(retriever);
+		if (layer != null)
+		{
+			synchronized (layerRetrieverCount)
+			{
+				Integer count = layerRetrieverCount.get(layer);
+				if (count != null)
+				{
+					if (count <= 1)
+					{
+						layerRetrieverCount.remove(layer);
+						retrievingElements.remove(layer);
+						fireLabelProviderChangedFor(true);
+					}
+					else
+					{
+						layerRetrieverCount.put(layer, count - 1);
+					}
+				}
+				if (layerRetrieverCount.isEmpty())
+				{
+					LoadingIconAnimator.get().removeListener(this);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void nextFrame(Image image)
+	{
+		fireLabelProviderChangedFor(false);
+	}
+
+	private void fireLabelProviderChangedFor(boolean allElements)
+	{
+		synchronized (layerRetrieverCount)
+		{
+			final Object[] elements = allElements ? null : retrievingElements.values().toArray();
+			Display.getDefault().asyncExec(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					fireLabelProviderChanged(new LabelProviderChangedEvent(LayerTreeLabelProvider.this, elements));
+				}
+			});
+		}
+	}
+
+	private boolean isLayerNodeRetrieving(ILayerTreeNode node)
+	{
+		if (node instanceof LayerNode)
+		{
+			Layer layer = ((LayerNode) node).getLayer();
+			synchronized (layerRetrieverCount)
+			{
+				if (layerRetrieverCount.containsKey(layer))
+				{
+					retrievingElements.put(layer, node);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
