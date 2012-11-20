@@ -41,7 +41,6 @@ public class LayerOpacityToolControl
 {
 	private boolean settingScale = false;
 	private Scale scale;
-	private boolean connected = false;
 	private ILayerTreeNode[] selection = null;
 
 	@PostConstruct
