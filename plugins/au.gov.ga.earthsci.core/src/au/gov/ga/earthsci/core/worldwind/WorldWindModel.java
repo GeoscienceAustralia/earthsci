@@ -31,6 +31,7 @@ import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerPersister;
 import au.gov.ga.earthsci.core.model.layer.uri.DefaultLayers;
+import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 
 /**
@@ -106,9 +107,11 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		}
 		else
 		{
-			for (int i = 0; i < loadedNode.getChildCount(); i++)
+			while (loadedNode.getChildCount() > 0)
 			{
-				rootNode.add(loadedNode.getChild(i));
+				ITreeNode<ILayerTreeNode> child = loadedNode.getChild(0);
+				child.removeFromParent();
+				rootNode.add(child);
 			}
 		}
 	}

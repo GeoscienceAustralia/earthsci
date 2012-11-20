@@ -16,8 +16,12 @@
 package au.gov.ga.earthsci.application.parts.layer.handlers;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -77,6 +81,12 @@ public class RenameHandler
 		textEditor.setText(layerNode.getLabelOrName());
 
 		showTextEditor();
+	}
+	
+	@CanExecute
+	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
+	{
+		return layer != null;
 	}
 
 	private int getInset()

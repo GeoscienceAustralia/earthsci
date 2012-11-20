@@ -13,31 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application;
+package au.gov.ga.earthsci.worldwind.common.util;
 
-import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.avlist.AVKey;
-
-import javax.inject.Singleton;
-
-import org.eclipse.e4.core.di.annotations.Creatable;
-
-import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
-import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
+import java.awt.Color;
+import java.awt.Font;
 
 /**
- * Helper class which sets up the required World Wind {@link Configuration}
- * values.
+ * Simple container class for storing a font with a color and background color.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@Creatable
-@Singleton
-public class WorldWindConfigurator
+public class ColorFont
 {
-	public WorldWindConfigurator()
+	public final Color backgroundColor;
+	public final Color color;
+	public final Font font;
+
+	public ColorFont(Font font, Color color, Color backgroundColor)
 	{
-		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
-		Configuration.setValue(AVKey.RETRIEVAL_SERVICE_CLASS_NAME, ExtendedRetrievalService.class.getName());
+		this.font = font;
+		this.color = color;
+		this.backgroundColor = backgroundColor;
 	}
 }

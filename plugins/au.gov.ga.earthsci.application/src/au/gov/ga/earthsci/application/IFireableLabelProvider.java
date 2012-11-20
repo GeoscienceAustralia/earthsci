@@ -15,29 +15,19 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
-import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.avlist.AVKey;
-
-import javax.inject.Singleton;
-
-import org.eclipse.e4.core.di.annotations.Creatable;
-
-import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
-import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
+import org.eclipse.jface.viewers.BaseLabelProvider;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 
 /**
- * Helper class which sets up the required World Wind {@link Configuration}
- * values.
+ * Represents a {@link ILabelProvider} that provides access to the
+ * {@link #fireLabelProviderChanged(LabelProviderChangedEvent)} method of the
+ * {@link BaseLabelProvider} class.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@Creatable
-@Singleton
-public class WorldWindConfigurator
+public interface IFireableLabelProvider extends IBaseLabelProvider
 {
-	public WorldWindConfigurator()
-	{
-		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
-		Configuration.setValue(AVKey.RETRIEVAL_SERVICE_CLASS_NAME, ExtendedRetrievalService.class.getName());
-	}
+	void fireLabelProviderChanged(LabelProviderChangedEvent event);
 }

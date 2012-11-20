@@ -34,6 +34,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -170,6 +171,16 @@ public class LayerTreePart
 
 				ILayerTreeNode layer = (ILayerTreeNode) cell.getElement();
 				flyToLayer(layer);
+			}
+
+			@Override
+			public void mouseDown(MouseEvent e)
+			{
+				ViewerCell cell = viewer.getCell(new Point(e.x, e.y));
+				if (cell == null)
+				{
+					viewer.setSelection(StructuredSelection.EMPTY);
+				}
 			}
 		});
 

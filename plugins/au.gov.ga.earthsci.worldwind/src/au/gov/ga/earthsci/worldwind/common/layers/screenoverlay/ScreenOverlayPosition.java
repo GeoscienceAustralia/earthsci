@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application;
-
-import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.avlist.AVKey;
-
-import javax.inject.Singleton;
-
-import org.eclipse.e4.core.di.annotations.Creatable;
-
-import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
-import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
+package au.gov.ga.earthsci.worldwind.common.layers.screenoverlay;
 
 /**
- * Helper class which sets up the required World Wind {@link Configuration}
- * values.
+ * The position to place the screen overlay in
  * 
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * @author James Navin (james.navin@ga.gov.au)
  */
-@Creatable
-@Singleton
-public class WorldWindConfigurator
+public enum ScreenOverlayPosition
 {
-	public WorldWindConfigurator()
-	{
-		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
-		Configuration.setValue(AVKey.RETRIEVAL_SERVICE_CLASS_NAME, ExtendedRetrievalService.class.getName());
-	}
+	NORTH,
+	NORTHEAST,
+	EAST,
+	SOUTHEAST,
+	SOUTH,
+	SOUTHWEST,
+	WEST,
+	NORTHWEST,
+	CENTER
 }

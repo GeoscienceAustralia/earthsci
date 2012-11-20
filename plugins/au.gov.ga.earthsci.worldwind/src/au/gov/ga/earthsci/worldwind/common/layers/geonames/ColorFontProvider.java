@@ -13,31 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application;
+package au.gov.ga.earthsci.worldwind.common.layers.geonames;
 
-import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.avlist.AVKey;
+import java.util.HashMap;
 
-import javax.inject.Singleton;
-
-import org.eclipse.e4.core.di.annotations.Creatable;
-
-import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
-import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
+import au.gov.ga.earthsci.worldwind.common.util.ColorFont;
 
 /**
- * Helper class which sets up the required World Wind {@link Configuration}
- * values.
+ * Simple map between a String and {@link ColorFont}. Used for providing
+ * different font/color combinations for different attribute values.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@Creatable
-@Singleton
-public class WorldWindConfigurator
+public class ColorFontProvider extends HashMap<String, ColorFont>
 {
-	public WorldWindConfigurator()
+	private ColorFont def;
+
+	public ColorFontProvider()
 	{
-		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
-		Configuration.setValue(AVKey.RETRIEVAL_SERVICE_CLASS_NAME, ExtendedRetrievalService.class.getName());
+		def = new ColorFont(null, null, null);
+	}
+
+	public ColorFontProvider(ColorFont def)
+	{
+		this.def = def;
+	}
+
+	@Override
+	public ColorFont get(Object key)
+	{
+		ColorFont font = super.get(key);
+		if (font == null)
+		{
+			font = def;
+		}
+		return font;
 	}
 }

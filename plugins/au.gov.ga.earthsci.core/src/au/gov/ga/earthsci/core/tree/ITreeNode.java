@@ -47,8 +47,10 @@ public interface ITreeNode<E>
 	boolean hasParentInPathToRoot(ITreeNode<?> parent);
 
 	/**
-	 * Set the parent of this node. Should only be called by the
-	 * {@link ITreeNode} implementation, when added/removing children.
+	 * Set the parent of this node.
+	 * <p/>
+	 * DO NOT CALL THIS METHOD. Should only be called by the {@link ITreeNode}
+	 * implementation, when added/removing children.
 	 * 
 	 * @param parent
 	 * @param indexInParent
@@ -88,7 +90,8 @@ public interface ITreeNode<E>
 	int depth();
 
 	/**
-	 * Add a child to this node.
+	 * Add a child to this node. If the child is already a child of this node,
+	 * it is moved to the end of the child array.
 	 * 
 	 * @param child
 	 *            Child to add.
@@ -96,7 +99,8 @@ public interface ITreeNode<E>
 	void add(ITreeNode<E> child);
 
 	/**
-	 * Add a child to this node at the specified index.
+	 * Add a child to this node at the specified index. If the specified child
+	 * is already a child of this node, it is moved to the given index.
 	 * 
 	 * @param index
 	 *            Index at which to add the child.
@@ -113,7 +117,7 @@ public interface ITreeNode<E>
 	 * @return True if the child was found and removed, false otherwise.
 	 */
 	boolean remove(ITreeNode<E> child);
-	
+
 	/**
 	 * Remove all children from this node
 	 */
@@ -132,6 +136,17 @@ public interface ITreeNode<E>
 	 * Remove this node from its parent (no-op if this node is the root).
 	 */
 	void removeFromParent();
+
+	/**
+	 * Move the child node from the given old index to the new index and trigger
+	 * a single children changed property event.
+	 * 
+	 * @param child
+	 *            The child to move
+	 * @param newIndex
+	 *            The new index of the child
+	 */
+	void moveChild(ITreeNode<E> child, int newIndex);
 
 	/**
 	 * @return Array containing all nodes from the root (at index 0) to this
