@@ -21,14 +21,14 @@ import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.render.Polyline;
 import gov.nasa.worldwind.render.Renderable;
-import gov.nasa.worldwind.retrieve.ExtendedRetrievalService;
-import gov.nasa.worldwind.retrieve.ExtendedRetrievalService.RetrievalListener;
 import gov.nasa.worldwind.retrieve.Retriever;
 import gov.nasa.worldwind.util.Tile;
 
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+
+import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService.RetrievalListener;
 
 /**
  * {@link RetrievalListener} implementation that displays polylines on the

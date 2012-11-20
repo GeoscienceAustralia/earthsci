@@ -3,7 +3,7 @@
  * National Aeronautics and Space Administration.
  * All Rights Reserved.
  */
-package gov.nasa.worldwind.retrieve;
+package au.gov.ga.earthsci.worldwind.common.retrieve;
 
 import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.WWObjectImpl;
@@ -11,6 +11,7 @@ import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.retrieve.RetrievalFuture;
 import gov.nasa.worldwind.retrieve.RetrievalService;
 import gov.nasa.worldwind.retrieve.Retriever;
+import gov.nasa.worldwind.retrieve.RetrievalService.SSLExceptionListener;
 import gov.nasa.worldwind.util.Logging;
 
 import java.net.SocketTimeoutException;
