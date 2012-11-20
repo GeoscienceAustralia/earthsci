@@ -80,7 +80,18 @@
         </children>
       </menus>
     </sharedElements>
-    <sharedElements xsi:type="basic:Part" xmi:id="_rlFg4BjMEeKlbolCp2yOsg" elementId="au.gov.ga.earthsci.application.catalog.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.catalog.part.CatalogBrowserPart" label="Catalog" closeable="true"/>
+    <sharedElements xsi:type="basic:Part" xmi:id="_rlFg4BjMEeKlbolCp2yOsg" elementId="au.gov.ga.earthsci.application.catalog.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.catalog.part.CatalogBrowserPart" label="Catalog" closeable="true">
+      <handlers xmi:id="_xPlEkDKhEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.catalogbrowser.addhandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.catalog.part.handler.AddHandler" command="_CDcDUDKiEeKVc-uaxJMq1A"/>
+      <handlers xmi:id="_wc7wkDKqEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.catalogbrowser.removehandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.catalog.part.handler.RemoveHandler" command="_MOx8UDKqEeKVc-uaxJMq1A"/>
+      <menus xsi:type="menu:PopupMenu" xmi:id="_jLAWkDKhEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.catalogbrowser.popupmenu" label="Catalog Menu">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_pFTKwDKhEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.catalogbrowser.popupmenu.addremove" label="Add" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add.gif" tooltip="Add to the layer tree" mnemonics="+" command="_CDcDUDKiEeKVc-uaxJMq1A"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_6_fJUDKqEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.handledmenuitem.0" label="Remove" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/remove.gif" tooltip="Remove from the layer tree" mnemonics="-" command="_MOx8UDKqEeKVc-uaxJMq1A"/>
+      </menus>
+      <toolbar xmi:id="_a0EIsDLAEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar">
+        <children xsi:type="menu:HandledToolItem" xmi:id="_dYvE4DLAEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.catalogbrowser.handledtoolitem.add" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add.gif" tooltip="Add to the layer tree" command="_CDcDUDKiEeKVc-uaxJMq1A"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_kA2oYDLAEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.catalogbrowser.handledtoolitem.remove" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/remove.gif" tooltip="Remove from the layer tree" command="_MOx8UDKqEeKVc-uaxJMq1A"/>
+      </toolbar>
+    </sharedElements>
     <sharedElements xsi:type="basic:Part" xmi:id="_RmbeQC1LEeK0vtabFDqVSw" elementId="au.gov.ga.earthsci.application.part.legend" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.legend.LegendPart" label="Legend" closeable="true"/>
     <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.windowtrim">
       <children xsi:type="menu:ToolBar" xmi:id="_007tdPsMEeG36NOaHUgVKA" elementId="toolbar:org.eclipse.ui.main.toolbar">
@@ -135,6 +146,8 @@
   <commands xmi:id="_21JkQCoBEeKSQfx7uoupxA" elementId="au.gov.ga.earthsci.application.link" commandName="linkCommand"/>
   <commands xmi:id="_NMA3YC7KEeKZx7qTf2KT5w" elementId="au.gov.ga.earthsci.application.information" commandName="informationCommand"/>
   <commands xmi:id="_TIcZkC7KEeKZx7qTf2KT5w" elementId="au.gov.ga.earthsci.application.legend" commandName="legendCommand"/>
+  <commands xmi:id="_CDcDUDKiEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.command.add" commandName="addCommand" description="Add an item"/>
+  <commands xmi:id="_MOx8UDKqEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.command.remove" commandName="removeCommand" description="Remove an item"/>
   <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_007tVfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_007tVvsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

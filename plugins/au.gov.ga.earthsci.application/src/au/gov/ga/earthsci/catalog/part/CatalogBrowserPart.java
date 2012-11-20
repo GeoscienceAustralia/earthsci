@@ -1,11 +1,18 @@
 package au.gov.ga.earthsci.catalog.part;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
+import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -15,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import au.gov.ga.earthsci.application.parts.layer.LayerTreeDragSourceListener;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
+import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.viewers.ControlTreeViewer;
 
 /**
@@ -40,24 +48,43 @@ public class CatalogBrowserPart
 	@Inject
 	private ICatalogBrowserController controller;
 	
+	@Inject
+	private ESelectionService selectionService;
+	
 	@PostConstruct
-	public void init(Composite parent, MPart part)
+	public void init(final Composite parent, final MPart part, final EMenuService menuService)
 	{
 		controller.setCatalogBrowserPart(this);
-		initViewer(parent);
+		
+		initViewer(parent, part, menuService);
+		
 	}
 	
-	private void initViewer(Composite parent)
+	private void initViewer(final Composite parent, final MPart part, final EMenuService menuService)
 	{
 		viewer = new ControlTreeViewer(parent, SWT.VIRTUAL);
 		viewer.setContentProvider(new CatalogContentProvider(viewer));
 		viewer.setLabelProvider(new DecoratingLabelProvider(labelProvider, labelProvider));
 		viewer.setSorter(null);
 		viewer.setInput(model);
-		viewer.getTree().setItemCount(1);
+		//viewer.getTree().setItemCount(1);
 		
 		viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance(), CatalogTransfer.getInstance()}, new CatalogTreeDropAdapter(viewer, model));
-		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] { CatalogTransfer.getInstance() }, new LayerTreeDragSourceListener(viewer));
+		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] {CatalogTransfer.getInstance()}, new LayerTreeDragSourceListener(viewer));
+		
+		viewer.addSelectionChangedListener(new ISelectionChangedListener()
+		{
+			@Override
+			public void selectionChanged(SelectionChangedEvent event)
+			{
+				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+				List<?> list = selection.toList();
+				ICatalogTreeNode[] array = list.toArray(new ICatalogTreeNode[list.size()]);
+				selectionService.setSelection(array);
+			}
+		});
+		
+		menuService.registerContextMenu(viewer.getTree(), "au.gov.ga.earthsci.application.catalogbrowser.popupmenu"); //$NON-NLS-1$
 	}
 	
 	public TreeViewer getTreeViewer()

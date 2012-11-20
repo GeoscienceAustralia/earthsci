@@ -61,16 +61,82 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	{
 		return layers.contains(layerURI);
 	}
+	
+	@Override
+	public boolean allExistInLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
+	{
+		if (nodes == null || nodes.length == 0)
+		{
+			return true;
+		}
+		boolean allExistInModel = true;
+		for (ITreeNode<ICatalogTreeNode> n : nodes)
+		{
+			if (n != null && n.getValue().isLayerNode())
+			{
+				allExistInModel = allExistInModel && existsInLayerModel(n.getValue().getLayerURI());
+			}
+			if (n.getChildCount() > 0)
+			{
+				allExistInModel = allExistInModel && allExistInLayerModel(n.getChildren());
+			}
+			// Shortcut exit from the loop
+			if (!allExistInModel)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean anyExistInLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
+	{
+		if (nodes == null || nodes.length == 0)
+		{
+			return false;
+		}
+		boolean anyExistInModel = false;
+		for (ITreeNode<ICatalogTreeNode> n : nodes)
+		{
+			if (n != null && n.getValue() != null && n.getValue().isLayerNode())
+			{
+				anyExistInModel = anyExistInModel || existsInLayerModel(n.getValue().getLayerURI());
+			}
+			if (n.getChildCount() > 0)
+			{
+				anyExistInModel = anyExistInModel || anyExistInLayerModel(n.getChildren());
+			}
+			if (anyExistInModel)
+			{
+				return true;
+			}
+		}
+		return anyExistInModel;
+	}
+	
+	@Override
+	public boolean areAllLayerNodes(ITreeNode<ICatalogTreeNode>... nodes)
+	{
+		for (ITreeNode<ICatalogTreeNode> node : nodes)
+		{
+			if (node != null && !node.getValue().isLayerNode())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 
 	@Override
-	public void addToLayerModel(ICatalogTreeNode[] nodes)
+	public void addToLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void removeFromLayerModel(ICatalogTreeNode[] nodes)
+	public void removeFromLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
 	{
 		// TODO Auto-generated method stub
 

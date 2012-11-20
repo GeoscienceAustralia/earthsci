@@ -28,6 +28,7 @@ public abstract class AbstractCatalogTreeNode extends AbstractLazyTreeNode<ICata
 	public AbstractCatalogTreeNode(URI nodeURI)
 	{
 		this.nodeURI = nodeURI;
+		setValue(this);
 	}
 	
 	/** For persistence mechanism only */
