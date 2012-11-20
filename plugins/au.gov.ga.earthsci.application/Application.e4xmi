@@ -50,6 +50,7 @@
       <handlers xmi:id="_fqasYC7KEeKZx7qTf2KT5w" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.layer.handlers.LegendHandler" command="_TIcZkC7KEeKZx7qTf2KT5w"/>
       <menus xsi:type="menu:PopupMenu" xmi:id="_a1zKECkoEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu" label="Layer Menu">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_h6f74CkoEeKGOtKz07iBzg" elementId="" label="Rename" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/rename.gif" command="_KVOo0CkqEeKGOtKz07iBzg"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_v9ktUDKlEeKiIoL1c99uFw" elementId="au.gov.ga.earthsci.application.handledmenuitem.0" label="Delete" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/delete.gif" command="_7dKlgCfCEeKGOtKz07iBzg"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_FCIyACk_EeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_FykJYCk_EeKGOtKz07iBzg" elementId="" label="Cut" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/cut_edit.gif" command="_09bh8CfCEeKGOtKz07iBzg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_GPBb4Ck_EeKGOtKz07iBzg" elementId="" label="Copy" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/copy_edit.gif" command="_1NhMYCfCEeKGOtKz07iBzg"/>
