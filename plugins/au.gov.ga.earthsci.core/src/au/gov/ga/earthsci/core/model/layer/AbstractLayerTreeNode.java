@@ -277,7 +277,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		return getClass().getSimpleName() + " {" + getLabelOrName() + "}"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
-	@Persistent
+	@Persistent(attribute = true)
 	@Override
 	public boolean isExpanded()
 	{
