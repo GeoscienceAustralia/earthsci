@@ -49,14 +49,62 @@
 
    <element name="injectable">
       <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="type"/>
+            <element ref="name"/>
+         </choice>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Class to instantiate, and optionally inject into the context. All valid injectable annotations on this class are processed.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java"/>
                </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="inject" type="boolean">
+            <annotation>
+               <documentation>
+                  Should the object be injected into the context?
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="type">
+      <annotation>
+         <documentation>
+            Class/interface to associate with the instantiated object in the context.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Class/interface to associate with the instantiated object in the context.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="name">
+      <annotation>
+         <documentation>
+            Name string to associate with the instantiated object in the context.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Name string to associate with the instantiated object in the context.
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

@@ -16,9 +16,12 @@
 package au.gov.ga.earthsci.injectable;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.IContributor;
+import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.core.runtime.spi.RegistryContributor;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,18 +42,49 @@ public final class Injector
 
 	public static void injectIntoContext(IEclipseContext context)
 	{
-		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(INJECTOR_ID);
-		try
+		IConfigurationElement[] config = RegistryFactory.getRegistry().getConfigurationElementsFor(INJECTOR_ID);
+		for (IConfigurationElement element : config)
 		{
-			for (IConfigurationElement element : config)
+			try
 			{
 				Object object = element.createExecutableExtension("class"); //$NON-NLS-1$
 				ContextInjectionFactory.inject(object, context);
+				String injectString = element.getAttribute("inject"); //$NON-NLS-1$
+				if (Boolean.parseBoolean(injectString))
+				{
+					IConfigurationElement[] types = element.getChildren("type"); //$NON-NLS-1$
+					for (IConfigurationElement type : types)
+					{
+						@SuppressWarnings("unchecked")
+						Class<Object> c = (Class<Object>) getClass(type, "class"); //$NON-NLS-1$
+						context.set(c, c.cast(object));
+					}
+					IConfigurationElement[] names = element.getChildren("name"); //$NON-NLS-1$
+					for (IConfigurationElement name : names)
+					{
+						String n = name.getAttribute("value"); //$NON-NLS-1$
+						context.set(n, object);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				logger.error("Error processing injectable", e); //$NON-NLS-1$
 			}
 		}
-		catch (Exception e)
+	}
+
+	private static Class<?> getClass(IConfigurationElement element, String propertyName) throws ClassNotFoundException
+	{
+		String className = element.getAttribute(propertyName);
+		IContributor contributor = element.getContributor();
+		if (contributor instanceof RegistryContributor)
 		{
-			logger.error("Error processing injectable", e); //$NON-NLS-1$
+			String stringId = ((RegistryContributor) contributor).getId();
+			long id = Long.parseLong(stringId);
+			Bundle bundle = Activator.getContext().getBundle(id);
+			return bundle.loadClass(className);
 		}
+		throw new ClassNotFoundException(className);
 	}
 }
