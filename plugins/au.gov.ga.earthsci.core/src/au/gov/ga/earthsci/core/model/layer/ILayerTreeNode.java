@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.layers.LayerList;
 
+import java.net.URI;
 import java.net.URL;
 
 import au.gov.ga.earthsci.core.tree.ITreeNode;
@@ -84,17 +85,17 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	/**
 	 * @return The URL pointing to this layer's information page.
 	 */
-	URL getInfoURL();
+	URL getInfoUrl();
 
 	/**
 	 * @return The URL pointing to this layer's legend.
 	 */
-	URL getLegendURL();
+	URL getLegendUrl();
 
 	/**
 	 * @return The URL pointing to this layer's icon.
 	 */
-	URL getIconURL();
+	URL getIconUrl();
 
 	/**
 	 * @return Is this tree node expanded?
@@ -108,4 +109,18 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	 *            Expanded state
 	 */
 	void setExpanded(boolean expanded);
+
+	/**
+	 * @return URI that uniquely identifies this layer node, and optionally
+	 *         locates a resource for layer creation.
+	 */
+	URI getUri();
+
+	/**
+	 * Set this node's URI, which uniquely identifies this node. This is also
+	 * used by certain nodes for layer creation.
+	 * 
+	 * @param uri
+	 */
+	void setUri(URI uri);
 }

@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.application.preferences.fieldeditor;
+package au.gov.ga.earthsci.core.preferences;
 
 import org.eclipse.swt.widgets.Composite;
 

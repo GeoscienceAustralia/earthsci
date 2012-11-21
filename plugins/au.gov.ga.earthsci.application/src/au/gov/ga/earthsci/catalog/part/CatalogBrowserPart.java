@@ -79,7 +79,16 @@ public class CatalogBrowserPart
 			{
 				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 				List<?> list = selection.toList();
-				ICatalogTreeNode[] array = list.toArray(new ICatalogTreeNode[list.size()]);
+				ICatalogTreeNode[] array;
+				try
+				{
+					array = list.toArray(new ICatalogTreeNode[list.size()]);
+				}
+				catch (ArrayStoreException e)
+				{
+					//occurs when the selection contains a loading node, which is not an ICatalogTreeNode
+					array = new ICatalogTreeNode[0];
+				}
 				selectionService.setSelection(array);
 			}
 		});

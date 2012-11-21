@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application;
-
-import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.avlist.AVKey;
-
-import javax.inject.Singleton;
-
-import org.eclipse.e4.core.di.annotations.Creatable;
-
-import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
-import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
+package au.gov.ga.earthsci.core.preferences;
 
 /**
- * Helper class which sets up the required World Wind {@link Configuration}
- * values.
+ * Constant definitions for preference constants
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@Creatable
-@Singleton
-public class WorldWindConfigurator
+public class PreferenceConstants
 {
-	public WorldWindConfigurator()
-	{
-		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
-		Configuration.setValue(AVKey.RETRIEVAL_SERVICE_CLASS_NAME, ExtendedRetrievalService.class.getName());
-	}
+	public static final String PAGES_EXTENSION_POINT = "org.eclipse.ui.preferencePages"; //$NON-NLS-1$
+	public static final String QUALIFIER_ID = "au.gov.ga.earthsci.core"; //$NON-NLS-1$
+
+	public static final String PROXY_TYPE = "proxyType"; //$NON-NLS-1$
+	public static final String PROXY_TYPE_NONE = "none"; //$NON-NLS-1$
+	public static final String PROXY_TYPE_SYSTEM = "system"; //$NON-NLS-1$
+	public static final String PROXY_TYPE_USER = "user"; //$NON-NLS-1$
+	public static final String PROXY_HOST = "proxyHost"; //$NON-NLS-1$
+	public static final String PROXY_PORT = "proxyPort"; //$NON-NLS-1$
+	public static final String NON_PROXY_HOSTS = "nonProxyHosts"; //$NON-NLS-1$
 }

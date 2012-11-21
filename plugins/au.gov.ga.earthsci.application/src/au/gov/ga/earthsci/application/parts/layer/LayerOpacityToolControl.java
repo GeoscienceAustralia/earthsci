@@ -19,7 +19,10 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -41,44 +44,65 @@ public class LayerOpacityToolControl
 {
 	private boolean settingScale = false;
 	private Scale scale;
-	private boolean connected = false;
 	private ILayerTreeNode[] selection = null;
 
-	@PostConstruct
-	public void createControls(Composite parent)
+	private static IEclipseContext context;
+
+	/**
+	 * e4 bug workaround, don't call.
+	 */
+	public static void setPartContext(IEclipseContext context)
 	{
-		//TODO BUG: for some reason, after the layer part is closed and reopened, the
+		LayerOpacityToolControl.context = context;
+	}
+
+	@PostConstruct
+	public void createControls(Composite parent, IEclipseContext context)
+	{
+		//XXX BUG: for some reason, after the layer part is closed and reopened, the
 		//injected context is "anonymous", and doesn't contain the TreeViewer
+		//the following is a workaround; the LayerTreePart's context is passed
+		//to this class and stored in a static variable, and then this context
+		//is used to create the scale on instead of the injected one
 
-		int width = 80;
-		int height = 21;
-
-		Composite child = new Composite(parent, SWT.NONE);
-		child.setSize(child.computeSize(width, SWT.DEFAULT));
-
-		scale = new Scale(child, SWT.HORIZONTAL);
-		Point size = scale.computeSize(width, SWT.DEFAULT);
-		scale.setSize(size);
-		scale.setMinimum(0);
-		scale.setMaximum(100);
-		scale.setSelection(100);
-		scale.setLocation(0, (height - size.y) / 2);
-		scale.setToolTipText("Set opacity of the selected layer(s)");
-		scale.setEnabled(false);
-
-		scale.addSelectionListener(new SelectionAdapter()
+		if (context.get(MPart.class) == null)
 		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
+			context = LayerOpacityToolControl.context.createChild();
+			context.set(Composite.class, parent);
+			ContextInjectionFactory.inject(this, context);
+		}
+		else
+		{
+			int width = 80;
+			int height = 21;
+
+			Composite child = new Composite(parent, SWT.NONE);
+			child.setSize(child.computeSize(width, SWT.DEFAULT));
+
+			scale = new Scale(child, SWT.HORIZONTAL);
+			Point size = scale.computeSize(width, SWT.DEFAULT);
+			scale.setSize(size);
+			scale.setMinimum(0);
+			scale.setMaximum(100);
+			scale.setSelection(100);
+			scale.setLocation(0, (height - size.y) / 2);
+			scale.setToolTipText("Set opacity of the selected layer(s)");
+			scale.setEnabled(false);
+
+			scale.addSelectionListener(new SelectionAdapter()
 			{
-				if (settingScale)
+				@Override
+				public void widgetSelected(SelectionEvent e)
 				{
-					return;
+					if (settingScale)
+					{
+						return;
+					}
+					double opacity = scale.getSelection() / 100d;
+					setOpacity(selection, opacity);
 				}
-				double opacity = scale.getSelection() / 100d;
-				setOpacity(selection, opacity);
-			}
-		});
+			});
+		}
 	}
 
 	@Inject

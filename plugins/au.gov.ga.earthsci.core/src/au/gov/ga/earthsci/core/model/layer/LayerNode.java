@@ -50,53 +50,15 @@ import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
  */
 public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableable
 {
-	protected URI layerURI;
 	protected Layer layer = new DummyLayer();
 	private Set<String> propertiesChanged = new HashSet<String>();
 	private boolean copyingProperties = false;
 	private final Object layerSemaphore = new Object();
 
-	public LayerNode()
+	@Override
+	public void setUri(URI uri)
 	{
-		// Default constructor for persistence API
-	}
-	
-	/**
-	 * Create a new {@link LayerNode} which will load the layer from the provided URI
-	 * @param layerURI
-	 */
-	public LayerNode(URI layerURI)
-	{
-		doSetLayerURI(layerURI);
-	}
-	
-	/**
-	 * @return The layer {@link URI} that uniquely defines how to create this
-	 *         layer
-	 */
-	@Persistent
-	public URI getLayerURI()
-	{
-		return layerURI;
-	}
-
-	/**
-	 * Set the layer {@link URI} that uniquely defines the how to create this
-	 * layer.
-	 * 
-	 * @param layerURI
-	 */
-	public void setLayerURI(URI layerURI)
-	{
-		doSetLayerURI(layerURI);
-	}
-
-	private void doSetLayerURI(URI layerURI)
-	{
-		URI oldValue = getLayerURI();
-		this.layerURI = layerURI;
-		firePropertyChange("layerURI", oldValue, layerURI); //$NON-NLS-1$
-
+		super.setUri(uri);
 		URILayerLoadJob job = new URILayerLoadJob(this);
 		job.schedule();
 	}
@@ -131,7 +93,7 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 		}
 		if (legendURL != null)
 		{
-			setLegendURL(legendURL);
+			setLegendUrl(legendURL);
 		}
 
 		Layer oldValue;

@@ -64,7 +64,6 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		FolderNode rootNode = new FolderNode();
 		rootNode.setName("root"); //$NON-NLS-1$
 		rootNode.setExpanded(true);
-		loadRootNode(rootNode);
 		return rootNode;
 	}
 
@@ -77,6 +76,11 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 	public ILayerTreeNode getRootNode()
 	{
 		return rootNode;
+	}
+
+	public void loadLayers()
+	{
+		loadRootNode(rootNode);
 	}
 
 	@PreDestroy
@@ -103,6 +107,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		if (loadedNode == null)
 		{
 			FolderNode folder = DefaultLayers.getLayers();
+			folder.setExpanded(true);
 			rootNode.add(folder);
 		}
 		else

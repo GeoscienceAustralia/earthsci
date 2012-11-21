@@ -154,7 +154,7 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider implement
 			{
 				return LoadingIconAnimator.get().getCurrentFrame();
 			}
-			URL imageURL = node.getIconURL();
+			URL imageURL = node.getIconUrl();
 			if (imageURL != null)
 			{
 				return iconLoader.getImage(element, imageURL);
@@ -182,14 +182,14 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider implement
 		if (element instanceof ILayerTreeNode)
 		{
 			ILayerTreeNode layerNode = (ILayerTreeNode) element;
-			if (layerNode.getInfoURL() != null || layerNode.getLegendURL() != null)
+			if (layerNode.getInfoUrl() != null || layerNode.getLegendUrl() != null)
 			{
 				string.append(" "); //$NON-NLS-1$
-				if (layerNode.getInfoURL() != null)
+				if (layerNode.getInfoUrl() != null)
 				{
 					string.append(" i", informationStyler); //$NON-NLS-1$
 				}
-				if (layerNode.getLegendURL() != null)
+				if (layerNode.getLegendUrl() != null)
 				{
 					string.append(" L", legendStyler); //$NON-NLS-1$
 				}

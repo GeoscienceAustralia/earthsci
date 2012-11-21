@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.preferences.pages;
+package au.gov.ga.earthsci.core.proxy;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditor;
@@ -23,10 +23,10 @@ import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 
-import au.gov.ga.earthsci.application.preferences.PreferenceConstants;
-import au.gov.ga.earthsci.application.preferences.ScopedPreferenceStore;
-import au.gov.ga.earthsci.application.preferences.fieldeditor.ListenableRadioGroupFieldEditor;
-import au.gov.ga.earthsci.application.preferences.fieldeditor.ListenableRadioGroupFieldEditor.ChangeListener;
+import au.gov.ga.earthsci.core.preferences.ListenableRadioGroupFieldEditor;
+import au.gov.ga.earthsci.core.preferences.ListenableRadioGroupFieldEditor.ChangeListener;
+import au.gov.ga.earthsci.core.preferences.PreferenceConstants;
+import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 
 /**
  * {@link PreferencePage} which allows configuration of how the application
@@ -34,9 +34,9 @@ import au.gov.ga.earthsci.application.preferences.fieldeditor.ListenableRadioGro
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class NetworkPreferencePage extends FieldEditorPreferencePage
+public class ProxyPreferencePage extends FieldEditorPreferencePage
 {
-	public NetworkPreferencePage()
+	public ProxyPreferencePage()
 	{
 		super(GRID);
 		IPreferenceStore store = new ScopedPreferenceStore(InstanceScope.INSTANCE, PreferenceConstants.QUALIFIER_ID);

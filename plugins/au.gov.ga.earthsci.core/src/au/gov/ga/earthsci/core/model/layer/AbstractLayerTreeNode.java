@@ -20,6 +20,7 @@ import gov.nasa.worldwind.layers.LayerList;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URI;
 import java.net.URL;
 
 import au.gov.ga.earthsci.core.persistence.Exportable;
@@ -40,9 +41,10 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private LayerList layerList;
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
 	private String label;
-	private URL infoURL;
-	private URL legendURL;
-	private URL iconURL;
+	private URI uri;
+	private URL infoUrl;
+	private URL legendUrl;
+	private URL iconUrl;
 	private boolean expanded;
 
 	protected AbstractLayerTreeNode()
@@ -96,38 +98,51 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 
 	@Persistent
 	@Override
-	public URL getInfoURL()
+	public URI getUri()
 	{
-		return infoURL;
+		return uri;
 	}
 
-	public void setInfoURL(URL infoURL)
+	@Override
+	public void setUri(URI uri)
 	{
-		this.infoURL = infoURL;
+		this.uri = uri;
 	}
 
 	@Persistent
 	@Override
-	public URL getLegendURL()
+	public URL getInfoUrl()
 	{
-		return legendURL;
+		return infoUrl;
 	}
 
-	public void setLegendURL(URL legendURL)
+	public void setInfoUrl(URL infoUrl)
 	{
-		this.legendURL = legendURL;
+		this.infoUrl = infoUrl;
 	}
 
 	@Persistent
 	@Override
-	public URL getIconURL()
+	public URL getLegendUrl()
 	{
-		return iconURL;
+		return legendUrl;
 	}
 
-	public void setIconURL(URL iconURL)
+	public void setLegendUrl(URL legendUrl)
 	{
-		this.iconURL = iconURL;
+		this.legendUrl = legendUrl;
+	}
+
+	@Persistent
+	@Override
+	public URL getIconUrl()
+	{
+		return iconUrl;
+	}
+
+	public void setIconUrl(URL iconUrl)
+	{
+		this.iconUrl = iconUrl;
 	}
 
 	@Persistent

@@ -13,15 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.preferences;
+package au.gov.ga.earthsci.injectable;
 
-/**
- * Constant definitions for plug-in preferences
- * 
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
- */
-public class PreferenceConstants
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+public class Activator implements BundleActivator
 {
-	public static final String PAGES_EXTENSION_POINT = "org.eclipse.ui.preferencePages"; //$NON-NLS-1$
-	public static final String QUALIFIER_ID = "au.gov.ga.earthsci.application"; //$NON-NLS-1$
+	private static BundleContext context;
+
+	static BundleContext getContext()
+	{
+		return context;
+	}
+
+	@Override
+	public void start(BundleContext bundleContext) throws Exception
+	{
+		Activator.context = bundleContext;
+	}
+
+	@Override
+	public void stop(BundleContext bundleContext) throws Exception
+	{
+		Activator.context = null;
+	}
 }

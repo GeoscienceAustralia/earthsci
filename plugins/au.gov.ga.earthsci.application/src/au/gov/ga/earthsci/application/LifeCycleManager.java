@@ -25,7 +25,7 @@ import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
 import au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProvider;
 import au.gov.ga.earthsci.core.retrieve.RetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
-import au.gov.ga.earthsci.core.worldwind.WorldWindView;
+import au.gov.ga.earthsci.injectable.Injector;
 import au.gov.ga.earthsci.logging.SLF4JE4LoggerBridge;
 
 /**
@@ -43,20 +43,11 @@ public class LifeCycleManager
 	private SLF4JE4LoggerBridge loggerBridge;
 
 	@Inject
-	private ProxyConfigurator proxyConfigurator;
-
-	@Inject
-	private WorldWindConfigurator worldWindConfigurator;
-
-	@Inject
 	private RetrievalService retrievalService;
 
 	@Inject
 	private RetrievalServiceFactory retrievalServiceFactory;
 
-	@Inject
-	private WorldWindView worldWindView;
-	
 	@Inject
 	private void initialiseExtensions(IExtensionRegistry registry)
 	{
@@ -66,7 +57,7 @@ public class LifeCycleManager
 	@PostContextCreate
 	void postContextCreate()
 	{
-		context.set(WorldWindView.class, worldWindView);
+		Injector.injectIntoContext(context);
 	}
 
 	@PreSave
