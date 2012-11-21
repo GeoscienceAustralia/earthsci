@@ -20,12 +20,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-import au.gov.ga.earthsci.application.preferences.ScopedPreferenceStore;
-import au.gov.ga.earthsci.application.preferences.fieldeditor.LabelFieldEditor;
-import au.gov.ga.earthsci.application.preferences.fieldeditor.MultiSelectTableListFieldEditor;
-import au.gov.ga.earthsci.application.preferences.fieldeditor.MultiSelectTableListFieldEditor.IItemSerializer;
-import au.gov.ga.earthsci.application.preferences.fieldeditor.MultiSelectTableListFieldEditor.ITableItemCreator;
-import au.gov.ga.earthsci.application.preferences.fieldeditor.SpacerFieldEditor;
+import au.gov.ga.earthsci.core.preferences.LabelFieldEditor;
+import au.gov.ga.earthsci.core.preferences.MultiSelectTableListFieldEditor;
+import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
+import au.gov.ga.earthsci.core.preferences.SpacerFieldEditor;
+import au.gov.ga.earthsci.core.preferences.MultiSelectTableListFieldEditor.IItemSerializer;
+import au.gov.ga.earthsci.core.preferences.MultiSelectTableListFieldEditor.ITableItemCreator;
 import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.popup.Messages;
 
