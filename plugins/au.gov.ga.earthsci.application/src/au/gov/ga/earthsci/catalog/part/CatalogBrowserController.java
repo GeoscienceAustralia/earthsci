@@ -16,7 +16,9 @@
 package au.gov.ga.earthsci.catalog.part;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -38,7 +40,7 @@ import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
-import au.gov.ga.earthsci.core.util.Bag;
+import au.gov.ga.earthsci.core.util.MultiMap;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
@@ -53,7 +55,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 
 	private ITreeModel currentLayerModel;
 	
-	private Bag<URI> layers;
+	private MultiMap<URI, LayerNode> layers;
 	private Map<URI, FolderNode> folders;
 
 	private CatalogBrowserPart part;
@@ -71,7 +73,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	public void setCurrentLayerModel(ITreeModel currentLayerModel)
 	{
 		this.currentLayerModel = currentLayerModel;
-		this.layers = new Bag<URI>();
+		this.layers = new MultiMap<URI, LayerNode>();
 		this.folders = new HashMap<URI, FolderNode>();
 		
 		final IListChangeListener recursiveChildListener = new IListChangeListener()
@@ -105,7 +107,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	@Override
 	public boolean existsInLayerModel(URI layerURI)
 	{
-		return layers.contains(layerURI);
+		return layers.count(layerURI) > 0;
 	}
 	
 	@Override
@@ -290,8 +292,64 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	@Override
 	public void removeFromLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
 	{
-		// TODO Auto-generated method stub
+		Boolean deleteEmptyFolders = null;
+		for (ITreeNode<ICatalogTreeNode> node : nodes)
+		{
+			if (node.getValue().isLayerNode())
+			{
+				List<LayerNode> list = new ArrayList<LayerNode>(layers.get(node.getValue().getLayerURI()));
+				for (LayerNode layer : list)
+				{
+					ITreeNode<ILayerTreeNode> parent = layer.getParent();
+					layer.removeFromParent();
+					
+					// If the removal will create an empty folder, determine whether to remove it
+					if ((parent instanceof FolderNode) && !parent.hasChildren())
+					{
+						if (deleteEmptyFolders == null)
+						{
+							deleteEmptyFolders = isEmptyFolderDeletionRequiredOnRemoval();
+						}
+						if (deleteEmptyFolders)
+						{
+							deleteEmptyFolders(parent);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private void deleteEmptyFolders(ITreeNode<ILayerTreeNode> node)
+	{
+		if (node.isRoot())
+		{
+			return;
+		}
+		if (node.getParent().getChildCount() > 1 || (node.getParent() instanceof LayerNode))
+		{
+			node.removeFromParent();
+			return;
+		}
+		deleteEmptyFolders(node.getParent());
+	}
+	
+	private boolean isEmptyFolderDeletionRequiredOnRemoval()
+	{
+		if (preferences.getDeleteEmptyFoldersMode() != UserActionPreference.ASK)
+		{
+			return preferences.getDeleteEmptyFoldersMode() == UserActionPreference.ALWAYS;
+		}
+		
+		MessageDialogWithToggle message = MessageDialogWithToggle.openYesNoQuestion(null, "Delete empty folders", 
+																						  "Would you like to delete any empty folder nodes that exist after removal?", 
+																						  Messages.CatalogBrowserController_AddNodePathDialogDontAsk, 
+																						  false, null, null);
 
+		UserActionPreference preference = (message.getReturnCode() == IDialogConstants.YES_ID) ? UserActionPreference.ALWAYS : UserActionPreference.NEVER;
+		preferences.setDeleteEmptyFoldersMode(message.getToggleState() ? preference : UserActionPreference.ASK);
+		
+		return preference == UserActionPreference.ALWAYS;
 	}
 	
 	/**
@@ -307,7 +365,9 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		boolean changesFound = false;
 		if (node instanceof LayerNode)
 		{
-			int newCount = layers.add(node.getUri());
+			layers.putSingle(node.getUri(), (LayerNode)node);
+			
+			int newCount = layers.count(node.getUri());
 			changesFound = (newCount == 1) || changesFound;
 		}
 		if (node instanceof FolderNode)
@@ -335,7 +395,9 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		boolean changesFound = false;
 		if (node instanceof LayerNode)
 		{
-			int newCount = layers.remove(node.getUri());
+			layers.removeSingle(node.getUri(), (LayerNode)node);
+			
+			int newCount = layers.count(node.getUri());
 			changesFound = (newCount == 0) || changesFound;
 		}
 		if (node instanceof FolderNode)

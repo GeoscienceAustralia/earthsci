@@ -27,22 +27,28 @@ public interface ICatalogBrowserPreferences
 {
 	String QUALIFIER_ID = "au.gov.ga.earthsci.catalog"; //$NON-NLS-1$
 	String ADD_NODE_STRUCTURE_MODE = "au.gov.ga.earthsci.catalog.preferences.addNodeStructure"; //$NON-NLS-1$
+	String DELETE_EMPTY_FOLDERS_MODE = "au.gov.ga.earthsci.catalog.preferences.deleteEmptyFolders"; //$NON-NLS-1$
 	
 	/**
 	 * Return the user's preference for adding the complete tree structure
 	 * when a leaf (layer) node is added.
-	 * 
-	 * @return <code>true</code> if the complete structure is to be created; <code>false</code> if the layer is to be added flat; 
-	 * and <code>null</code> if no preference has been set and the user should be prompted.
 	 */
 	UserActionPreference getAddNodeStructureMode();
 
 	/**
 	 * Set the user's preference for adding the complete tree structure when a leaf node is added.
-	 * 
-	 * @param mode <code>true</code> = Always add; <code>false</code> = Never add; <code>null</code> = prompt;
 	 */
 	void setAddNodeStructureMode(UserActionPreference mode);
 	
+	/**
+	 * Return the user's preference for removing empty folder nodes from the layer tree
+	 * when all children are removed using the catalog browser.
+	 */
+	UserActionPreference getDeleteEmptyFoldersMode();
 	
+	/**
+	 * Set the user's preference for removing empty folder nodes from the layer tree
+	 * when all children are removed using the catalog browser
+	 */
+	void setDeleteEmptyFoldersMode(UserActionPreference mode);
 }

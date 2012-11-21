@@ -70,4 +70,20 @@ public class MultiMap<K, V> extends HashMap<K, List<V>>
 		}
 		return false;
 	}
+	
+	/**
+	 * Return the number of entries stored for the given key
+	 * 
+	 * @param key
+	 * 
+	 * @return The number of entries stored for the given key
+	 */
+	public int count(K key)
+	{
+		if (!containsKey(key))
+		{
+			return 0;
+		}
+		return get(key).size();
+	}
 }

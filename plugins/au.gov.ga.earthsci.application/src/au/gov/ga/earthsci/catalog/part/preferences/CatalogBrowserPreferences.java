@@ -38,6 +38,10 @@ public class CatalogBrowserPreferences implements ICatalogBrowserPreferences
 	@Preference(nodePath=QUALIFIER_ID, value=ADD_NODE_STRUCTURE_MODE)
 	private String addNodeStructureMode;
 	
+	@Inject
+	@Preference(nodePath=QUALIFIER_ID, value=DELETE_EMPTY_FOLDERS_MODE)
+	private String deleteEmptyFoldersMode;
+	
 	@Override
 	public UserActionPreference getAddNodeStructureMode()
 	{
@@ -48,5 +52,17 @@ public class CatalogBrowserPreferences implements ICatalogBrowserPreferences
 	public void setAddNodeStructureMode(UserActionPreference mode)
 	{
 		preferenceStore.put(ADD_NODE_STRUCTURE_MODE, mode == null ? UserActionPreference.ASK.name() : mode.name());
+	}
+	
+	@Override
+	public UserActionPreference getDeleteEmptyFoldersMode()
+	{
+		return UserActionPreference.valueOf(addNodeStructureMode);
+	}
+	
+	@Override
+	public void setDeleteEmptyFoldersMode(UserActionPreference mode)
+	{
+		preferenceStore.put(DELETE_EMPTY_FOLDERS_MODE, mode == null ? UserActionPreference.ASK.name() : mode.name());
 	}
 }
