@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.core.context;
 
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
+import au.gov.ga.earthsci.core.worldwind.WorldWindView;
 
 /**
  * A typesafe context for accessing the core components of the Earthsci platform
@@ -56,4 +57,11 @@ public interface IPlatformContext
 	 * @return The current worldwind model
 	 */
 	WorldWindModel getWorldWindModel();
+	
+	/**
+	 * Return the current worldwind view
+	 * 
+	 * @return The current worldwind view
+	 */
+	WorldWindView getWorldWindView();
 }
