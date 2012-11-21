@@ -73,9 +73,9 @@ public class LegendPart
 	private void setPartInput(@Named(INPUT_NAME) ILayerTreeNode partInput)
 	{
 		ILayerTreeNode layer = partInput;
-		if (layer.getLegendUrl() != null)
+		if (layer.getLegendURL() != null)
 		{
-			browser.setUrl(layer.getLegendUrl().toString());
+			browser.setUrl(layer.getLegendURL().toString());
 		}
 		else
 		{

@@ -110,7 +110,7 @@ public class LayerTreeControlProvider implements IControlProvider
 					else
 					{
 						String tag = url.toString();
-						tag += "|" + layerNode.getUri(); //$NON-NLS-1$
+						tag += "|" + layerNode.getURI(); //$NON-NLS-1$
 						String label = "Legend" + ": " + layerNode.getLabelOrName(); //$NON-NLS-2$
 						part = LegendPart.showPart(partService, modelService, window, tag, label);
 					}
@@ -139,10 +139,10 @@ public class LayerTreeControlProvider implements IControlProvider
 		if (element instanceof ILayerTreeNode)
 		{
 			ILayerTreeNode node = (ILayerTreeNode) element;
-			createURLClickableLabel(composite, node, node.getInfoUrl(),
+			createURLClickableLabel(composite, node, node.getInfoURL(),
 					ImageRegistry.getInstance().get(ImageRegistry.ICON_INFORMATION_WHITE), ImageRegistry.getInstance()
 							.get(ImageRegistry.ICON_INFORMATION), true);
-			createURLClickableLabel(composite, node, node.getLegendUrl(),
+			createURLClickableLabel(composite, node, node.getLegendURL(),
 					ImageRegistry.getInstance().get(ImageRegistry.ICON_LEGEND_WHITE),
 					ImageRegistry.getInstance().get(ImageRegistry.ICON_LEGEND), false);
 		}

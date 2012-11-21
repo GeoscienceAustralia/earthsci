@@ -56,9 +56,9 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	private final Object layerSemaphore = new Object();
 
 	@Override
-	public void setUri(URI uri)
+	public void setURI(URI uri)
 	{
-		super.setUri(uri);
+		super.setURI(uri);
 		URILayerLoadJob job = new URILayerLoadJob(this);
 		job.schedule();
 	}
@@ -93,7 +93,7 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 		}
 		if (legendURL != null)
 		{
-			setLegendUrl(legendURL);
+			setLegendURL(legendURL);
 		}
 
 		Layer oldValue;

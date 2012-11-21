@@ -96,53 +96,53 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		return getLabel() == null ? getName() : getLabel();
 	}
 
-	@Persistent
+	@Persistent(name = "uri")
 	@Override
-	public URI getUri()
+	public URI getURI()
 	{
 		return uri;
 	}
 
 	@Override
-	public void setUri(URI uri)
+	public void setURI(URI uri)
 	{
 		this.uri = uri;
 	}
 
 	@Persistent
 	@Override
-	public URL getInfoUrl()
+	public URL getInfoURL()
 	{
 		return infoUrl;
 	}
 
-	public void setInfoUrl(URL infoUrl)
+	public void setInfoURL(URL infoURL)
 	{
-		this.infoUrl = infoUrl;
+		this.infoUrl = infoURL;
 	}
 
 	@Persistent
 	@Override
-	public URL getLegendUrl()
+	public URL getLegendURL()
 	{
 		return legendUrl;
 	}
 
-	public void setLegendUrl(URL legendUrl)
+	public void setLegendURL(URL legendURL)
 	{
-		this.legendUrl = legendUrl;
+		this.legendUrl = legendURL;
 	}
 
 	@Persistent
 	@Override
-	public URL getIconUrl()
+	public URL getIconURL()
 	{
 		return iconUrl;
 	}
 
-	public void setIconUrl(URL iconUrl)
+	public void setIconURL(URL iconURL)
 	{
-		this.iconUrl = iconUrl;
+		this.iconUrl = iconURL;
 	}
 
 	@Persistent

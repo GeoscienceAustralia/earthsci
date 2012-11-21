@@ -106,7 +106,7 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 					LayerNode node = new LayerNode();
 					node.setName(file.getName());
 					node.setEnabled(true);
-					node.setUri(file.toURI());
+					node.setURI(file.toURI());
 					target.add(index, node);
 					getViewer().add(target, node);
 					getViewer().reveal(node);

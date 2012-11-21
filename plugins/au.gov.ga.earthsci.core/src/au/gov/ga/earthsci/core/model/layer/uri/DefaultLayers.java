@@ -58,7 +58,7 @@ public class DefaultLayers
 		for (URI uri : uris)
 		{
 			LayerNode node = new LayerNode();
-			node.setUri(uri);
+			node.setURI(uri);
 			folder.add(node);
 		}
 		return folder;

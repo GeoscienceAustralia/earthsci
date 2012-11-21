@@ -146,6 +146,14 @@ public class PersisterTest
 		named.setField(3254235);
 		performTest(named, "testNamedPersistant.xml");
 	}
+	
+	@Test
+	public void testNamedMethodPersistant() throws PersistenceException
+	{
+		ExportableWithNamedMethodPersistant named = new ExportableWithNamedMethodPersistant();
+		named.setField(3254235);
+		performTest(named, "testNamedMethodPersistant.xml");
+	}
 
 	@Test(expected = PersistenceException.class)
 	public void testNonExportable() throws PersistenceException
