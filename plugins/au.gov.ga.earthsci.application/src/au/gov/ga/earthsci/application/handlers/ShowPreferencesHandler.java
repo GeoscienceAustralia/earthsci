@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.application.preferences.PreferenceConstants;
 import au.gov.ga.earthsci.application.preferences.PreferenceUtil;
-import au.gov.ga.earthsci.application.preferences.ScopedPreferenceStore;
+import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 
 /**
  * Handler used to show the preference dialog.
