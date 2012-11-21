@@ -20,5 +20,25 @@
             class="au.gov.ga.earthsci.core.model.catalog.dataset.DatasetXMLCatalogProvider">
       </provider>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="au.gov.ga.earthsci.core.proxy.ProxyPreferencePage"
+            id="au.gov.ga.earthsci.core.proxy.ProxyPreferencePage"
+            name="Network Connections">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences">
+      </initializer>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.injectable">
+      <injectable
+            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences">
+      </injectable>
+   </extension>
 
 </plugin>
