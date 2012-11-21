@@ -29,9 +29,9 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="au.gov.ga.earthsci.application.preferences.pages.NetworkPreferencePage"
-            id="au.gov.ga.earthsci.application.preferences.pages.NetworkPreferencePage"
-            name="Network Connections">
+            class="au.gov.ga.earthsci.notification.preferences.NotificationPreferencesPage"
+            id="au.gov.ga.earthsci.notifications"
+            name="Notifications">
       </page>
    </extension>
    <extension
