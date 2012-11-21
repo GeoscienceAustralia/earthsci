@@ -10,7 +10,7 @@
  *     Yves YANG <yves.yang@soyatec.com> - 
  *     		Initial Fix for Bug 138078 [Preferences] Preferences Store for i18n support
  *******************************************************************************/
-package au.gov.ga.earthsci.application.preferences;
+package au.gov.ga.earthsci.core.preferences;
 
 import java.io.IOException;
 import java.util.Arrays;

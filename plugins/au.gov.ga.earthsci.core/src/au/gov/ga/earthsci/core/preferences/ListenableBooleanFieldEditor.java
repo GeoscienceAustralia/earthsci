@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.application.preferences.fieldeditor;
+package au.gov.ga.earthsci.core.preferences;
 
 import java.util.ArrayList;
 import java.util.List;
