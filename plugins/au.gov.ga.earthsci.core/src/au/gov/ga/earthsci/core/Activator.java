@@ -15,7 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core;
 
+import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.View;
+import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -32,11 +34,13 @@ import au.gov.ga.earthsci.core.context.PlatformContext;
 import au.gov.ga.earthsci.core.model.catalog.CatalogFactory;
 import au.gov.ga.earthsci.core.model.catalog.CatalogPersister;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
+import au.gov.ga.earthsci.core.model.layer.LayerFactory;
 import au.gov.ga.earthsci.core.proxy.ProxyPreferences;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindView;
 import au.gov.ga.earthsci.notification.NotificationManager;
+import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
 
 /**
  * Plugin's activator.
@@ -58,6 +62,10 @@ public class Activator implements BundleActivator
 		bundleContext = context;
 
 		ProxyPreferences.preConfigureProxy();
+
+		Configuration.setValue(AVKey.LAYER_FACTORY, LayerFactory.class.getName());
+		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
+		Configuration.setValue(AVKey.RETRIEVAL_SERVICE_CLASS_NAME, ExtendedRetrievalService.class.getName());
 
 		loadExtensions(context);
 

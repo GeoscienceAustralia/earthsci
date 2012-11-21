@@ -43,9 +43,6 @@ public class LifeCycleManager
 	private SLF4JE4LoggerBridge loggerBridge;
 
 	@Inject
-	private WorldWindConfigurator worldWindConfigurator;
-
-	@Inject
 	private RetrievalService retrievalService;
 
 	@Inject
