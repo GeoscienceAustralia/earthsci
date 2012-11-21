@@ -61,9 +61,9 @@ public class LegendHandler
 			ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
 			ILayerTreeNode layerNode = nodes[0];
 
-			if (layerNode.getLegendURL() != null)
+			if (layerNode.getLegendUrl() != null)
 			{
-				String tag = layerNode.getLegendURL().toString();
+				String tag = layerNode.getLegendUrl().toString();
 				if (layerNode instanceof LayerNode)
 				{
 					tag += "|" + ((LayerNode) layerNode).getLayerURI().toString(); //$NON-NLS-1$
@@ -80,6 +80,6 @@ public class LegendHandler
 	@CanExecute
 	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
-		return layer != null && layer.getLegendURL() != null;
+		return layer != null && layer.getLegendUrl() != null;
 	}
 }

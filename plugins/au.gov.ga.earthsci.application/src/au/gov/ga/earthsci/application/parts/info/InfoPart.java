@@ -102,9 +102,9 @@ public class InfoPart
 	{
 		if (layer != null)
 		{
-			if (layer.getInfoURL() != null)
+			if (layer.getInfoUrl() != null)
 			{
-				browser.setUrl(layer.getInfoURL().toString());
+				browser.setUrl(layer.getInfoUrl().toString());
 			}
 			else
 			{
@@ -132,9 +132,9 @@ public class InfoPart
 			LayerNode layer = (LayerNode) node;
 			appendProperty(sb, "URI", layer.getLayerURI()); //$NON-NLS-1$
 		}
-		if (node.getLegendURL() != null)
+		if (node.getLegendUrl() != null)
 		{
-			String url = node.getLegendURL().toString();
+			String url = node.getLegendUrl().toString();
 			appendProperty(sb, "Legend", "<a href=\"" + url + "\">" + url + "</a>"); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
 		sb.append("</body>"); //$NON-NLS-1$
