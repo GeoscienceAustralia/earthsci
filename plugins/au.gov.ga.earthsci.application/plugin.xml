@@ -44,6 +44,9 @@
       <initializer
             class="au.gov.ga.earthsci.application.preferences.PreferenceInitializer">
       </initializer>
+      <initializer
+            class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferenceInitializer">
+      </initializer>
    </extension>
    <extension
          point="au.gov.ga.earthsci.notification.receiver">

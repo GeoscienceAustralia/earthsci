@@ -56,6 +56,20 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	private boolean copyingProperties = false;
 	private final Object layerSemaphore = new Object();
 
+	public LayerNode()
+	{
+		// Default constructor for persistence API
+	}
+	
+	/**
+	 * Create a new {@link LayerNode} which will load the layer from the provided URI
+	 * @param layerURI
+	 */
+	public LayerNode(URI layerURI)
+	{
+		doSetLayerURI(layerURI);
+	}
+	
 	/**
 	 * @return The layer {@link URI} that uniquely defines how to create this
 	 *         layer
@@ -73,6 +87,11 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	 * @param layerURI
 	 */
 	public void setLayerURI(URI layerURI)
+	{
+		doSetLayerURI(layerURI);
+	}
+
+	private void doSetLayerURI(URI layerURI)
 	{
 		URI oldValue = getLayerURI();
 		this.layerURI = layerURI;
@@ -137,7 +156,9 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	private void copyProperties(Layer from, Layer to)
 	{
 		if (from == to)
+		{
 			return;
+		}
 
 		synchronized (propertiesChanged)
 		{

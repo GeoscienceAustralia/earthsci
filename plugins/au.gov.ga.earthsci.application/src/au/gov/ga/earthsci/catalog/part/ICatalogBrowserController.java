@@ -87,6 +87,6 @@ public interface ICatalogBrowserController
 	 * 
 	 * @return <code>true</code> if all nodes are layer nodes; <code>false</code> otherwise.
 	 */
-	boolean areAllLayerNodes(ITreeNode<ICatalogTreeNode>[] nodes);
+	boolean areAllLayerNodes(ITreeNode<ICatalogTreeNode>... nodes);
 	
 }

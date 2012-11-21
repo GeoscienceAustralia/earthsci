@@ -113,7 +113,9 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider implement
 		//dispose is called twice, causing a NPE in the super class
 		//workaround: set a flag when disposed, disabling multiple disposals
 		if (disposed)
+		{
 			return;
+		}
 		disposed = true;
 
 		super.dispose();
@@ -137,7 +139,7 @@ public class LayerTreeLabelProvider extends ObservableMapLabelProvider implement
 		else if (element instanceof FolderNode)
 		{
 			FolderNode folder = (FolderNode) element;
-			return folder.getName();
+			return folder.getLabelOrName();
 		}
 		return super.getColumnText(element, columnIndex);
 	}
