@@ -130,7 +130,7 @@ public class InfoPart
 		if (node instanceof LayerNode)
 		{
 			LayerNode layer = (LayerNode) node;
-			appendProperty(sb, "URI", layer.getLayerURI()); //$NON-NLS-1$
+			appendProperty(sb, "URI", layer.getUri()); //$NON-NLS-1$
 		}
 		if (node.getLegendUrl() != null)
 		{

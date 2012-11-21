@@ -74,7 +74,7 @@ public class PasteHandler
 					LayerNode node = new LayerNode();
 					node.setName(file.getName());
 					node.setEnabled(true);
-					node.setLayerURI(file.toURI());
+					node.setUri(file.toURI());
 					target.add(node);
 					viewer.add(target, node);
 					viewer.reveal(node);
