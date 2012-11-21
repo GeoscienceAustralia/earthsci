@@ -9,6 +9,7 @@ import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -16,7 +17,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.observable.map.IMapChangeListener;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
+import org.eclipse.core.databinding.observable.map.MapChangeEvent;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.property.list.IListProperty;
 import org.eclipse.core.databinding.property.list.MultiListProperty;
@@ -100,24 +103,61 @@ public class LayerTreePart
 		//TreeViewerEditor.create(viewer, new SecondClickColumnViewerEditorActivationStrategy(viewer), ColumnViewerEditor.DEFAULT);
 
 		IObservableSet knownElements = contentProvider.getKnownElements();
-		final IObservableMap enableds = BeanProperties.value("enabled").observeDetail(knownElements); //$NON-NLS-1$
-		final IObservableMap opacities = BeanProperties.value("opacity").observeDetail(knownElements); //$NON-NLS-1$
-		final IObservableMap names = BeanProperties.value("name").observeDetail(knownElements); //$NON-NLS-1$
-		final IObservableMap labels = BeanProperties.value("label").observeDetail(knownElements); //$NON-NLS-1$
-		final IObservableMap anyChildrenEnableds =
-				BeanProperties.value("anyChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
-		final IObservableMap allChildrenEnableds =
-				BeanProperties.value("allChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
+		IObservableMap enabledMap = BeanProperties.value("enabled").observeDetail(knownElements); //$NON-NLS-1$
+		IObservableMap opacityMap = BeanProperties.value("opacity").observeDetail(knownElements); //$NON-NLS-1$
+		IObservableMap nameMap = BeanProperties.value("name").observeDetail(knownElements); //$NON-NLS-1$
+		IObservableMap labelMap = BeanProperties.value("label").observeDetail(knownElements); //$NON-NLS-1$
+		IObservableMap anyChildrenEnabledMap = BeanProperties.value("anyChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
+		IObservableMap allChildrenEnabledMap = BeanProperties.value("allChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
+		IObservableMap childrenMap = BeanProperties.value("children").observeDetail(knownElements); //$NON-NLS-1$
+		IObservableMap expandedMap = BeanProperties.value("expanded").observeDetail(knownElements); //$NON-NLS-1$
 
-		final IObservableMap[] attributeMap =
-				new IObservableMap[] { enableds, opacities, names, labels, anyChildrenEnableds, allChildrenEnableds };
-		labelProvider = new LayerTreeLabelProvider(attributeMap);
+		IObservableMap[] labelAttributeMaps =
+				new IObservableMap[] { enabledMap, opacityMap, nameMap, labelMap, anyChildrenEnabledMap,
+						allChildrenEnabledMap };
+		labelProvider = new LayerTreeLabelProvider(labelAttributeMaps);
 
 		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(labelProvider, labelProvider, null));
 		viewer.setCheckStateProvider(new LayerTreeCheckStateProvider());
 
 		viewer.setInput(model.getRootNode());
 		viewer.setExpandedElements(getExpandedNodes());
+
+		childrenMap.addMapChangeListener(new IMapChangeListener()
+		{
+			@Override
+			public void handleMapChange(MapChangeEvent event)
+			{
+				//for any children added, expand the nodes
+				Set<?> addedKeys = event.diff.getAddedKeys();
+				for (Object o : addedKeys)
+				{
+					if (o instanceof ILayerTreeNode)
+					{
+						((ILayerTreeNode) o).getParent().getValue().setExpanded(true);
+					}
+				}
+			}
+		});
+		expandedMap.addMapChangeListener(new IMapChangeListener()
+		{
+			@Override
+			public void handleMapChange(MapChangeEvent event)
+			{
+				//ensure the expanded elements are kept in sync with the model
+				viewer.getTree().getDisplay().asyncExec(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						if (!viewer.getTree().isDisposed())
+						{
+							viewer.setExpandedElements(getExpandedNodes());
+						}
+					}
+				});
+			}
+		});
 
 		viewer.addCheckStateListener(new ICheckStateListener()
 		{
