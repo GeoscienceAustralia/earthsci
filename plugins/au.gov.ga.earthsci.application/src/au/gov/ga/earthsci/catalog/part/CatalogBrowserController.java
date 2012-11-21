@@ -209,6 +209,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 			FolderNode folder = new FolderNode();
 			folder.setName(node.getValue().getName());
 			folder.setLabel(node.getValue().getLabel());
+			folder.setUri(node.getValue().getURI());
 			parent.add(folder);
 			return folder;
 		}
@@ -228,7 +229,8 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		
 		if (catalogTreeNode.isLayerNode())
 		{
-			LayerNode layer = new LayerNode(catalogTreeNode.getLayerURI());
+			LayerNode layer = new LayerNode();
+			layer.setUri(catalogTreeNode.getLayerURI());
 			layer.setLabel(catalogTreeNode.getLabelOrName());
 			parent.add(layer);
 		}
@@ -237,6 +239,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 			FolderNode folder = new FolderNode();
 			folder.setName(catalogTreeNode.getName());
 			folder.setLabel(catalogTreeNode.getLabel());
+			folder.setUri(catalogTreeNode.getURI());
 			parent.add(folder);
 			for (ITreeNode<ICatalogTreeNode> child : catalogTreeNode.getChildren())
 			{

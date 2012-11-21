@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import au.gov.ga.earthsci.application.preferences.ScopedPreferenceStore;
 import au.gov.ga.earthsci.application.util.UserActionPreference;
+import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 
 /**
  * Initializer for the catalog browser preferences
