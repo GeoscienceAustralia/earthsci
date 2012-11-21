@@ -20,7 +20,6 @@ import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.e4.core.di.InjectorFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -57,8 +56,8 @@ public class Activator implements BundleActivator
 	public void start(final BundleContext context) throws Exception
 	{
 		bundleContext = context;
-		
-		InjectorFactory.getDefault().addBinding(ProxyPreferences.class).implementedBy(ProxyPreferences.class);
+
+		ProxyPreferences.preConfigureProxy();
 
 		loadExtensions(context);
 

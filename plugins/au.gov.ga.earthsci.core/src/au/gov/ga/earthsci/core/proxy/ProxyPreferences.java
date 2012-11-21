@@ -37,22 +37,22 @@ import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 @Singleton
 public class ProxyPreferences extends AbstractPreferenceInitializer
 {
-	@Override
-	public void initializeDefaultPreferences()
+	private static IPreferenceStore createStore()
 	{
-		IPreferenceStore store = new ScopedPreferenceStore(DefaultScope.INSTANCE, PreferenceConstants.QUALIFIER_ID);
-		store.setDefault(PreferenceConstants.PROXY_TYPE, PreferenceConstants.PROXY_TYPE_SYSTEM);
-		store.setDefault(PreferenceConstants.PROXY_HOST, ""); //$NON-NLS-1$
-		store.setDefault(PreferenceConstants.PROXY_PORT, 80);
-		store.setDefault(PreferenceConstants.NON_PROXY_HOSTS, "localhost"); //$NON-NLS-1$
+		return new ScopedPreferenceStore(DefaultScope.INSTANCE, PreferenceConstants.QUALIFIER_ID);
 	}
 
-	@Inject
-	public void configureProxy(
-			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_TYPE) String proxyType,
-			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_HOST) String proxyHost,
-			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_PORT) int proxyPort,
-			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.NON_PROXY_HOSTS) String nonProxyHosts)
+	public static void preConfigureProxy()
+	{
+		IPreferenceStore store = createStore();
+		String proxyType = store.getString(PreferenceConstants.PROXY_TYPE);
+		String proxyHost = store.getString(PreferenceConstants.PROXY_HOST);
+		int proxyPort = store.getInt(PreferenceConstants.PROXY_PORT);
+		String nonProxyHosts = store.getString(PreferenceConstants.NON_PROXY_HOSTS);
+		configureProxy(proxyType, proxyHost, proxyPort, nonProxyHosts);
+	}
+
+	public static void configureProxy(String proxyType, String proxyHost, int proxyPort, String nonProxyHosts)
 	{
 		boolean system = PreferenceConstants.PROXY_TYPE_SYSTEM.equals(proxyType);
 		boolean user = PreferenceConstants.PROXY_TYPE_USER.equals(proxyType);
@@ -67,5 +67,25 @@ public class ProxyPreferences extends AbstractPreferenceInitializer
 
 		System.setProperty("http.nonProxyHosts", "" + nonProxyHosts); //$NON-NLS-1$ //$NON-NLS-2$
 		System.setProperty("ftp.nonProxyHosts", "" + nonProxyHosts); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
+	@Override
+	public void initializeDefaultPreferences()
+	{
+		IPreferenceStore store = createStore();
+		store.setDefault(PreferenceConstants.PROXY_TYPE, PreferenceConstants.PROXY_TYPE_SYSTEM);
+		store.setDefault(PreferenceConstants.PROXY_HOST, ""); //$NON-NLS-1$
+		store.setDefault(PreferenceConstants.PROXY_PORT, 80);
+		store.setDefault(PreferenceConstants.NON_PROXY_HOSTS, "localhost"); //$NON-NLS-1$
+	}
+
+	@Inject
+	public void preferencesChanged(
+			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_TYPE) String proxyType,
+			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_HOST) String proxyHost,
+			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_PORT) int proxyPort,
+			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.NON_PROXY_HOSTS) String nonProxyHosts)
+	{
+		configureProxy(proxyType, proxyHost, proxyPort, nonProxyHosts);
 	}
 }
