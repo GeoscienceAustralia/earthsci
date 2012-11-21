@@ -46,7 +46,7 @@ public class URILayerLoadJob extends Job
 	@Override
 	protected IStatus run(IProgressMonitor monitor)
 	{
-		URI uri = layerNode.getUri();
+		URI uri = layerNode.getURI();
 		try
 		{
 			layer = URILayerFactory.createLayer(uri, monitor);

@@ -209,7 +209,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 			FolderNode folder = new FolderNode();
 			folder.setName(node.getValue().getName());
 			folder.setLabel(node.getValue().getLabel());
-			folder.setUri(node.getValue().getURI());
+			folder.setURI(node.getValue().getURI());
 			parent.add(folder);
 			return folder;
 		}
@@ -230,7 +230,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		if (catalogTreeNode.isLayerNode())
 		{
 			LayerNode layer = new LayerNode();
-			layer.setUri(catalogTreeNode.getLayerURI());
+			layer.setURI(catalogTreeNode.getLayerURI());
 			layer.setLabel(catalogTreeNode.getLabelOrName());
 			parent.add(layer);
 		}
@@ -239,7 +239,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 			FolderNode folder = new FolderNode();
 			folder.setName(catalogTreeNode.getName());
 			folder.setLabel(catalogTreeNode.getLabel());
-			folder.setUri(catalogTreeNode.getURI());
+			folder.setURI(catalogTreeNode.getURI());
 			parent.add(folder);
 			for (ITreeNode<ICatalogTreeNode> child : catalogTreeNode.getChildren())
 			{
@@ -286,7 +286,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		boolean changesFound = false;
 		if (node instanceof LayerNode)
 		{
-			int newCount = layers.add(node.getUri());
+			int newCount = layers.add(node.getURI());
 			changesFound = (newCount == 1) || changesFound;
 		}
 		
@@ -310,7 +310,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		boolean changesFound = false;
 		if (node instanceof LayerNode)
 		{
-			int newCount = layers.remove(node.getUri());
+			int newCount = layers.remove(node.getURI());
 			changesFound = (newCount == 0) || changesFound;
 		}
 		

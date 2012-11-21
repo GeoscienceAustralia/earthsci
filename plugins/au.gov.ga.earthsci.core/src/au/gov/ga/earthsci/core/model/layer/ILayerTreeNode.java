@@ -85,17 +85,17 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	/**
 	 * @return The URL pointing to this layer's information page.
 	 */
-	URL getInfoUrl();
+	URL getInfoURL();
 
 	/**
 	 * @return The URL pointing to this layer's legend.
 	 */
-	URL getLegendUrl();
+	URL getLegendURL();
 
 	/**
 	 * @return The URL pointing to this layer's icon.
 	 */
-	URL getIconUrl();
+	URL getIconURL();
 
 	/**
 	 * @return Is this tree node expanded?
@@ -114,7 +114,7 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	 * @return URI that uniquely identifies this layer node, and optionally
 	 *         locates a resource for layer creation.
 	 */
-	URI getUri();
+	URI getURI();
 
 	/**
 	 * Set this node's URI, which uniquely identifies this node. This is also
@@ -122,5 +122,5 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	 * 
 	 * @param uri
 	 */
-	void setUri(URI uri);
+	void setURI(URI uri);
 }
