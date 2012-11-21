@@ -35,6 +35,15 @@
       </page>
    </extension>
    <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="au.gov.ga.earthsci.application.preferences.PreferenceInitializer">
+      </initializer>
+      <initializer
+            class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
          point="au.gov.ga.earthsci.notification.receiver">
       <receiver
             class="au.gov.ga.earthsci.notification.dialog.DialogNotificationReceiver">

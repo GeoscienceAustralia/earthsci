@@ -118,7 +118,9 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	private void copyProperties(Layer from, Layer to)
 	{
 		if (from == to)
+		{
 			return;
+		}
 
 		synchronized (propertiesChanged)
 		{
