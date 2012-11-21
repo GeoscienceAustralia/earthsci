@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import au.gov.ga.earthsci.application.preferences.ScopedPreferenceStore;
+import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 
 /**
  * Initialises the popup notification preferences to default values
