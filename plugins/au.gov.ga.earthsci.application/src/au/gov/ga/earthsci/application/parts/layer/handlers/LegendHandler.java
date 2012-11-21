@@ -33,7 +33,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 
 import au.gov.ga.earthsci.application.parts.legend.LegendPart;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.model.layer.LayerNode;
 
 /**
  * Handles layer node legend button selection.
@@ -64,10 +63,7 @@ public class LegendHandler
 			if (layerNode.getLegendUrl() != null)
 			{
 				String tag = layerNode.getLegendUrl().toString();
-				if (layerNode instanceof LayerNode)
-				{
-					tag += "|" + ((LayerNode) layerNode).getLayerURI().toString(); //$NON-NLS-1$
-				}
+				tag += "|" + layerNode.getUri(); //$NON-NLS-1$
 				String label = "Legend" + ": " + layerNode.getLabelOrName(); //$NON-NLS-2$
 
 				MPart part = LegendPart.showPart(partService, modelService, window, tag, label);

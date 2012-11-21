@@ -189,7 +189,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		boolean changesFound = false;
 		if (node instanceof LayerNode)
 		{
-			int newCount = layers.add(((LayerNode)node).getLayerURI());
+			int newCount = layers.add(node.getUri());
 			changesFound = (newCount == 1) || changesFound;
 		}
 		
@@ -213,7 +213,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		boolean changesFound = false;
 		if (node instanceof LayerNode)
 		{
-			int newCount = layers.remove(((LayerNode)node).getLayerURI());
+			int newCount = layers.remove(node.getUri());
 			changesFound = (newCount == 0) || changesFound;
 		}
 		
