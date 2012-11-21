@@ -39,6 +39,16 @@
       <injectable
             class="au.gov.ga.earthsci.core.proxy.ProxyPreferences">
       </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.retrieve.RetrievalService"
+            inject="true">
+         <type
+               class="au.gov.ga.earthsci.core.retrieve.IRetrievalService">
+         </type>
+      </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory">
+      </injectable>
    </extension>
 
 </plugin>

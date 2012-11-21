@@ -37,9 +37,6 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="au.gov.ga.earthsci.application.preferences.PreferenceInitializer">
-      </initializer>
-      <initializer
             class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferenceInitializer">
       </initializer>
    </extension>
@@ -57,6 +54,12 @@
       <provider
             class="au.gov.ga.earthsci.catalog.part.DatasetCatalogTreeNodeControlProvider">
       </provider>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.injectable">
+      <injectable
+            class="au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderInjectable">
+      </injectable>
    </extension>
 
 </plugin>

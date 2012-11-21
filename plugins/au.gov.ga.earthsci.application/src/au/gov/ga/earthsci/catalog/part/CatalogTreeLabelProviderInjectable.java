@@ -13,39 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application;
+package au.gov.ga.earthsci.catalog.part;
 
 import javax.inject.Inject;
 
-import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
-import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
-
-import au.gov.ga.earthsci.injectable.Injector;
-import au.gov.ga.earthsci.logging.SLF4JE4LoggerBridge;
+import org.eclipse.core.runtime.IExtensionRegistry;
 
 /**
- * Registered as the product application 'lifeCycleURI' class, which gets called
- * by the injector at different points in the application lifecycle.
+ * Injectable for setting up the {@link CatalogTreeLabelProvider}'s registered
+ * providers.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LifeCycleManager
+public class CatalogTreeLabelProviderInjectable
 {
 	@Inject
-	private IEclipseContext context;
-
-	@Inject
-	private SLF4JE4LoggerBridge loggerBridge;
-
-	@PostContextCreate
-	void postContextCreate()
+	public void initialiseExtensions(IExtensionRegistry registry)
 	{
-		Injector.injectIntoContext(context);
-	}
-
-	@PreSave
-	void preSave()
-	{
+		CatalogTreeLabelProvider.loadProviders(registry);
 	}
 }
