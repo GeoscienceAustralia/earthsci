@@ -16,6 +16,8 @@
 package au.gov.ga.earthsci.catalog.part;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -52,6 +54,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	private ITreeModel currentLayerModel;
 	
 	private Bag<URI> layers;
+	private Map<URI, FolderNode> folders;
 
 	private CatalogBrowserPart part;
 	
@@ -69,6 +72,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	{
 		this.currentLayerModel = currentLayerModel;
 		this.layers = new Bag<URI>();
+		this.folders = new HashMap<URI, FolderNode>();
 		
 		final IListChangeListener recursiveChildListener = new IListChangeListener()
 		{
@@ -81,11 +85,11 @@ public class CatalogBrowserController implements ICatalogBrowserController
 					ILayerTreeNode node = (ILayerTreeNode)diff.getElement();
 					if (diff.isAddition())
 					{
-						redecorateRequired = collectLayerURIs(layers, this, node) || redecorateRequired;
+						redecorateRequired = collectLayerURIs(this, node) || redecorateRequired;
 					}
 					else
 					{
-						redecorateRequired = removeLayerURIs(layers, node) || redecorateRequired;
+						redecorateRequired = removeLayerURIs(node) || redecorateRequired;
 					}
 				}
 				if (redecorateRequired)
@@ -95,7 +99,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 			}
 		};
 		
-		collectLayerURIs(layers, recursiveChildListener, currentLayerModel.getRootNode());
+		collectLayerURIs(recursiveChildListener, currentLayerModel.getRootNode());
 	}
 	
 	@Override
@@ -202,14 +206,17 @@ public class CatalogBrowserController implements ICatalogBrowserController
 			return currentLayerModel.getRootNode();
 		}
 		
+		FolderNode folder = folders.get(node.getValue().getURI());
+		if (folder != null)
+		{
+			return folder;
+		}
+		
 		ILayerTreeNode parent = createNodePath(node.getParent());
 		
 		if (!node.getValue().isLayerNode())
 		{
-			FolderNode folder = new FolderNode();
-			folder.setName(node.getValue().getName());
-			folder.setLabel(node.getValue().getLabel());
-			folder.setUri(node.getValue().getURI());
+			folder = createFolderNode(node.getValue());
 			parent.add(folder);
 			return folder;
 		}
@@ -229,23 +236,37 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		
 		if (catalogTreeNode.isLayerNode())
 		{
-			LayerNode layer = new LayerNode();
-			layer.setUri(catalogTreeNode.getLayerURI());
-			layer.setLabel(catalogTreeNode.getLabelOrName());
+			LayerNode layer = createLayerNode(catalogTreeNode);
 			parent.add(layer);
 		}
 		else
 		{
-			FolderNode folder = new FolderNode();
-			folder.setName(catalogTreeNode.getName());
-			folder.setLabel(catalogTreeNode.getLabel());
-			folder.setUri(catalogTreeNode.getURI());
+			FolderNode folder = createFolderNode(catalogTreeNode);
 			parent.add(folder);
 			for (ITreeNode<ICatalogTreeNode> child : catalogTreeNode.getChildren())
 			{
 				insertIntoLayerModel(folder, child);
 			}
 		}
+	}
+
+	private LayerNode createLayerNode(ICatalogTreeNode catalogTreeNode)
+	{
+		LayerNode layer = new LayerNode();
+		layer.setUri(catalogTreeNode.getLayerURI());
+		layer.setLabel(catalogTreeNode.getLabelOrName());
+		layer.setEnabled(true);
+		return layer;
+	}
+
+	private FolderNode createFolderNode(ICatalogTreeNode catalogTreeNode)
+	{
+		FolderNode folder = new FolderNode();
+		folder.setName(catalogTreeNode.getName());
+		folder.setLabel(catalogTreeNode.getLabel());
+		folder.setUri(catalogTreeNode.getURI());
+		folder.setExpanded(true);
+		return folder;
 	}
 
 	private boolean isFullNodePathRequiredOnAdd()
@@ -281,7 +302,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	 * 
 	 * @return true If any new layer URIs were added to the bag
 	 */
-	private boolean collectLayerURIs(final Bag<URI> layers, final IListChangeListener listener, ILayerTreeNode node)
+	private boolean collectLayerURIs(final IListChangeListener listener, ILayerTreeNode node)
 	{
 		boolean changesFound = false;
 		if (node instanceof LayerNode)
@@ -289,13 +310,17 @@ public class CatalogBrowserController implements ICatalogBrowserController
 			int newCount = layers.add(node.getUri());
 			changesFound = (newCount == 1) || changesFound;
 		}
+		if (node instanceof FolderNode)
+		{
+			folders.put(node.getUri(), (FolderNode)node);
+		}
 		
 		IObservableList observer = BeanProperties.list("children").observe(node); //$NON-NLS-1$
 		observer.addListChangeListener(listener);
 		
 		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
 		{
-			changesFound = collectLayerURIs(layers, listener, (ILayerTreeNode)child) || changesFound;
+			changesFound = collectLayerURIs(listener, (ILayerTreeNode)child) || changesFound;
 		}
 		return changesFound;
 	}
@@ -305,7 +330,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	 * 
 	 * @return true If any new layer URIs were added to the bag
 	 */
-	private boolean removeLayerURIs(final Bag<URI> layers, ILayerTreeNode node)
+	private boolean removeLayerURIs(ILayerTreeNode node)
 	{
 		boolean changesFound = false;
 		if (node instanceof LayerNode)
@@ -313,10 +338,13 @@ public class CatalogBrowserController implements ICatalogBrowserController
 			int newCount = layers.remove(node.getUri());
 			changesFound = (newCount == 0) || changesFound;
 		}
-		
+		if (node instanceof FolderNode)
+		{
+			folders.remove(node.getUri());
+		}
 		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
 		{
-			changesFound = removeLayerURIs(layers, (ILayerTreeNode)child) || changesFound;
+			changesFound = removeLayerURIs((ILayerTreeNode)child) || changesFound;
 		}
 		return changesFound;
 	}
