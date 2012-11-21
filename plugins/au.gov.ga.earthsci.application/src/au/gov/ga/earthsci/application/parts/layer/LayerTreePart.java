@@ -123,7 +123,7 @@ public class LayerTreePart
 		viewer.setInput(model.getRootNode());
 		viewer.setExpandedElements(getExpandedNodes());
 
-		childrenMap.addMapChangeListener(new IMapChangeListener()
+		IMapChangeListener childrenListener = new IMapChangeListener()
 		{
 			@Override
 			public void handleMapChange(MapChangeEvent event)
@@ -138,8 +138,8 @@ public class LayerTreePart
 					}
 				}
 			}
-		});
-		expandedMap.addMapChangeListener(new IMapChangeListener()
+		};
+		IMapChangeListener expandedListener = new IMapChangeListener()
 		{
 			@Override
 			public void handleMapChange(MapChangeEvent event)
@@ -157,7 +157,10 @@ public class LayerTreePart
 					}
 				});
 			}
-		});
+		};
+		childrenMap.addMapChangeListener(childrenListener);
+		childrenMap.addMapChangeListener(expandedListener);
+		expandedMap.addMapChangeListener(expandedListener);
 
 		viewer.addCheckStateListener(new ICheckStateListener()
 		{
