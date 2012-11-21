@@ -506,8 +506,9 @@ public class Persister
 			method.setAccessible(true);
 			Persistent persistent = AnnotationUtil.getAnnotation(method, Persistent.class);
 			String name = checkAndGetPersistentName(method, persistent);
+			String methodName = removeGetter(method);
 			Class<?> type = method.getReturnType();
-			Method setter = getSetter(o.getClass(), name, type, persistent);
+			Method setter = getSetter(o.getClass(), methodName, type, persistent);
 
 			Adapter adapter = AnnotationUtil.getAnnotation(method, Adapter.class);
 			try
@@ -854,7 +855,7 @@ public class Persister
 	 * @param c
 	 *            Class in which to find the setter method
 	 * @param name
-	 *            Name of the property to find a setter for (ignored the
+	 *            Name of the property to find a setter for (ignored if the
 	 *            {@link Persistent} annotation defines the setter)
 	 * @param parameterType
 	 *            Type that the setter method should have a single parameter for
