@@ -255,7 +255,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	private LayerNode createLayerNode(ICatalogTreeNode catalogTreeNode)
 	{
 		LayerNode layer = new LayerNode();
-		layer.setUri(catalogTreeNode.getLayerURI());
+		layer.setURI(catalogTreeNode.getLayerURI());
 		layer.setLabel(catalogTreeNode.getLabelOrName());
 		layer.setEnabled(true);
 		return layer;
@@ -266,7 +266,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		FolderNode folder = new FolderNode();
 		folder.setName(catalogTreeNode.getName());
 		folder.setLabel(catalogTreeNode.getLabel());
-		folder.setUri(catalogTreeNode.getURI());
+		folder.setURI(catalogTreeNode.getURI());
 		folder.setExpanded(true);
 		return folder;
 	}
@@ -365,14 +365,14 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		boolean changesFound = false;
 		if (node instanceof LayerNode)
 		{
-			layers.putSingle(node.getUri(), (LayerNode)node);
+			layers.putSingle(node.getURI(), (LayerNode)node);
 			
-			int newCount = layers.count(node.getUri());
+			int newCount = layers.count(node.getURI());
 			changesFound = (newCount == 1) || changesFound;
 		}
 		if (node instanceof FolderNode)
 		{
-			folders.put(node.getUri(), (FolderNode)node);
+			folders.put(node.getURI(), (FolderNode)node);
 		}
 		
 		IObservableList observer = BeanProperties.list("children").observe(node); //$NON-NLS-1$
@@ -395,14 +395,14 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		boolean changesFound = false;
 		if (node instanceof LayerNode)
 		{
-			layers.removeSingle(node.getUri(), (LayerNode)node);
+			layers.removeSingle(node.getURI(), (LayerNode)node);
 			
-			int newCount = layers.count(node.getUri());
+			int newCount = layers.count(node.getURI());
 			changesFound = (newCount == 0) || changesFound;
 		}
 		if (node instanceof FolderNode)
 		{
-			folders.remove(node.getUri());
+			folders.remove(node.getURI());
 		}
 		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
 		{
