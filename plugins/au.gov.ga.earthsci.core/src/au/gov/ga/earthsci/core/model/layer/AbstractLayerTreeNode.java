@@ -49,6 +49,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private URL legendURL;
 	private URL iconURL;
 	private boolean expanded;
+	private final Object semaphore = new Object();
 
 	protected AbstractLayerTreeNode()
 	{
@@ -202,19 +203,22 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	@Override
 	public LayerList getLayerList()
 	{
-		if (layerList == null)
+		synchronized (semaphore)
 		{
-			layerList = new LayerList();
-			updateLayerList();
+			if (layerList == null)
+			{
+				layerList = new LayerList();
+				updateLayerList();
+			}
+			return layerList;
 		}
-		return layerList;
 	}
 
 	private void updateLayerList()
 	{
-		if (layerList != null)
+		synchronized (semaphore)
 		{
-			synchronized (layerList)
+			if (layerList != null)
 			{
 				layerList.removeAll();
 				addNodesToLayerList(this);
@@ -233,39 +237,45 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 			addNodesToLayerList(child.getValue());
 		}
 	}
-	
+
 	@Override
 	public boolean hasNodesForURI(URI uri)
 	{
-		if (uriMap == null)
+		synchronized (semaphore)
 		{
-			uriMap = new MultiMap<URI, ILayerTreeNode>();
-			updateURIMap();
+			if (uriMap == null)
+			{
+				uriMap = new MultiMap<URI, ILayerTreeNode>();
+				updateURIMap();
+			}
+			return uriMap.containsKey(uri);
 		}
-		return uriMap.containsKey(uri);
 	}
 
 	@Override
 	public ILayerTreeNode[] getNodesForURI(URI uri)
 	{
-		if (uriMap == null)
+		synchronized (semaphore)
 		{
-			uriMap = new MultiMap<URI, ILayerTreeNode>();
-			updateURIMap();
+			if (uriMap == null)
+			{
+				uriMap = new MultiMap<URI, ILayerTreeNode>();
+				updateURIMap();
+			}
+			List<ILayerTreeNode> nodes = uriMap.get(uri);
+			if (nodes != null)
+			{
+				return nodes.toArray(new ILayerTreeNode[nodes.size()]);
+			}
+			return new ILayerTreeNode[0];
 		}
-		List<ILayerTreeNode> nodes = uriMap.get(uri);
-		if (nodes != null)
-		{
-			return nodes.toArray(new ILayerTreeNode[nodes.size()]);
-		}
-		return new ILayerTreeNode[0];
 	}
 
 	private void updateURIMap()
 	{
-		if (uriMap != null)
+		synchronized (semaphore)
 		{
-			synchronized (uriMap)
+			if (uriMap != null)
 			{
 				uriMap.clear();
 				addNodesToURIMap(this);
@@ -281,7 +291,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 			addNodesToURIMap(child.getValue());
 		}
 	}
-	
+
 	@Override
 	protected void fireChildrenPropertyChange(ITreeNode<ILayerTreeNode>[] oldChildren,
 			ITreeNode<ILayerTreeNode>[] newChildren)
