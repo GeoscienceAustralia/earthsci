@@ -20,7 +20,7 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 
-import au.gov.ga.earthsci.application.parts.layer.LayerTreeDragSourceListener;
+import au.gov.ga.earthsci.application.parts.layer.LayerTransfer;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.viewers.ControlTreeViewer;
@@ -67,10 +67,9 @@ public class CatalogBrowserPart
 		viewer.setLabelProvider(new DecoratingLabelProvider(labelProvider, labelProvider));
 		viewer.setSorter(null);
 		viewer.setInput(model);
-		//viewer.getTree().setItemCount(1);
 		
-		viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance(), CatalogTransfer.getInstance()}, new CatalogTreeDropAdapter(viewer, model));
-		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] {CatalogTransfer.getInstance()}, new LayerTreeDragSourceListener(viewer));
+		viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance()}, new CatalogTreeDropAdapter(viewer, model));
+		viewer.addDragSupport(DND.DROP_DEFAULT | DND.DROP_COPY, new Transfer[] {LayerTransfer.getInstance()}, new CatalogTreeDragSourceListener(viewer, controller));
 		
 		viewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{

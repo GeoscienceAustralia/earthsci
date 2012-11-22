@@ -20,6 +20,7 @@ import java.io.File;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -48,7 +49,9 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 	public boolean performDrop(Object d)
 	{
 		if (d == null)
+		{
 			return false;
+		}
 
 		int index;
 		ILayerTreeNode target = (ILayerTreeNode) getCurrentTarget();
@@ -82,7 +85,9 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 				for (TransferredLayer drop : toDrop)
 				{
 					if (!validDropTarget(target, drop))
+					{
 						return false;
+					}
 				}
 			}
 			for (int i = toDrop.length - 1; i >= 0; i--)
@@ -120,6 +125,10 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 	{
 		int[] dropPath = drop.getTreePath();
 		int[] targetPath = target.indicesToRoot();
+		if (dropPath == null)
+		{
+			return true;
+		}
 		return dropPath.length > 0
 				&& (targetPath.length < dropPath.length || targetPath[dropPath.length - 1] != dropPath[dropPath.length - 1]);
 	}
@@ -134,5 +143,23 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 	public boolean validateDrop(Object target, int op, TransferData type)
 	{
 		return LayerTransfer.getInstance().isSupportedType(type) || FileTransfer.getInstance().isSupportedType(type);
+	}
+	
+	@Override
+	public void dragEnter(DropTargetEvent event)
+	{
+		if (event.detail == DND.DROP_DEFAULT || FileTransfer.getInstance().isSupportedType(event.currentDataType) )
+		{
+			event.detail = DND.DROP_COPY;
+		}
+	}
+	
+	@Override
+	public void dragOperationChanged(DropTargetEvent event)
+	{
+		if (event.detail == DND.DROP_DEFAULT || FileTransfer.getInstance().isSupportedType(event.currentDataType))
+		{
+			event.detail = DND.DROP_COPY;
+		}
 	}
 }

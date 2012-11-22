@@ -15,8 +15,19 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog.part;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
+
+import au.gov.ga.earthsci.application.parts.layer.LayerTransfer;
+import au.gov.ga.earthsci.application.parts.layer.LayerTransferData;
+import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 
 /**
  * {@link DragSourceListener} implementation for the catalog browser tree
@@ -26,25 +37,70 @@ import org.eclipse.swt.dnd.DragSourceListener;
 public class CatalogTreeDragSourceListener implements DragSourceListener
 {
 
+	private final TreeViewer viewer;
+	private final ICatalogBrowserController controller;
+
+	public CatalogTreeDragSourceListener(TreeViewer viewer, ICatalogBrowserController controller)
+	{
+		this.viewer = viewer;
+		this.controller = controller;
+	}
+
 	@Override
 	public void dragStart(DragSourceEvent event)
 	{
-		// TODO Auto-generated method stub
-		
+		if (viewer.getSelection().isEmpty())
+		{
+			event.doit = false;
+		}
+		else
+		{
+			event.doit = controller.areAllLayerNodes(getSelectedCatalogNodes());
+		}
+		event.detail = DND.DROP_COPY;
 	}
 
 	@Override
 	public void dragSetData(DragSourceEvent event)
 	{
-		// TODO Auto-generated method stub
+		if (LayerTransfer.getInstance().isSupportedType(event.dataType))
+		{
+			doLayerTransfer(event);
+			return;
+		}
+	}
+
+	private void doLayerTransfer(DragSourceEvent event)
+	{
+		ICatalogTreeNode[] selectedCatalogNodes = getSelectedCatalogNodes();
+		List<ILayerTreeNode> layerTreeNodes = new ArrayList<ILayerTreeNode>();
+		for (ICatalogTreeNode node : selectedCatalogNodes)
+		{
+			if (node == null || !node.isLayerNode())
+			{
+				continue;
+			}
+			
+			ILayerTreeNode layerTreeNode = controller.createLayerTreeNode(node);
+			layerTreeNodes.add(layerTreeNode);
+		}
 		
+		LayerTransferData transferData = LayerTransferData.fromNodes(layerTreeNodes.toArray(new ILayerTreeNode[layerTreeNodes.size()]));
+		event.data = transferData;
+	}
+
+	private ICatalogTreeNode[] getSelectedCatalogNodes()
+	{
+		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+		List<?> selectionList = selection.toList();
+		ICatalogTreeNode[] nodes = selectionList.toArray(new ICatalogTreeNode[selectionList.size()]);
+		return nodes;
 	}
 
 	@Override
 	public void dragFinished(DragSourceEvent event)
 	{
-		// TODO Auto-generated method stub
-		
+		// Do nothing
 	}
 
 }

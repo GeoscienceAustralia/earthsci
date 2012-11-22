@@ -224,6 +224,16 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		}
 	}
 
+	@Override
+	public ILayerTreeNode createLayerTreeNode(ICatalogTreeNode catalogTreeNode)
+	{
+		if (catalogTreeNode.isLayerNode())
+		{
+			return createLayerNode(catalogTreeNode);
+		}
+		return createFolderNode(catalogTreeNode);
+	}
+	
 	private LayerNode createLayerNode(ICatalogTreeNode catalogTreeNode)
 	{
 		LayerNode layer = new LayerNode();

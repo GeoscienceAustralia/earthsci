@@ -18,6 +18,7 @@ package au.gov.ga.earthsci.catalog.part;
 import java.net.URI;
 
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 
@@ -88,5 +89,14 @@ public interface ICatalogBrowserController
 	 * @return <code>true</code> if all nodes are layer nodes; <code>false</code> otherwise.
 	 */
 	boolean areAllLayerNodes(ITreeNode<ICatalogTreeNode>... nodes);
+
+	/**
+	 * Create and return an {@link ILayerTreeNode} that is the equivalent of the given {@link ICatalogTreeNode}.
+	 * 
+	 * @param catalogTreeNode The catalog tree node to transform
+	 * 
+	 * @return A new {@link ILayerTreeNode} that is the equivalent of the given {@link ICatalogTreeNode}
+	 */
+	ILayerTreeNode createLayerTreeNode(ICatalogTreeNode catalogTreeNode);
 	
 }

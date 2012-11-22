@@ -56,7 +56,7 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 		{
 			return false;
 		}
-		return FileTransfer.getInstance().isSupportedType(transferType) || CatalogTransfer.getInstance().isSupportedType(transferType);
+		return FileTransfer.getInstance().isSupportedType(transferType);
 	}
 	
 	@Override
@@ -72,11 +72,6 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 		if (isFileDrop())
 		{
 			return doFileDrop(data);
-		}
-		
-		if (isDragDrop())
-		{
-			return doDragDrop(data);
 		}
 		
 		return false;
@@ -121,17 +116,6 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 			}
 		}
 		return true;
-	}
-	
-	private boolean isDragDrop()
-	{
-		return CatalogTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType);
-	}
-	
-	private boolean doDragDrop(Object data)
-	{
-		// TODO
-		return false;
 	}
 	
 	private int getDropIndex()
