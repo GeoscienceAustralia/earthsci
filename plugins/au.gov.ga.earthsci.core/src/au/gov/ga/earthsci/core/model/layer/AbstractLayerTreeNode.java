@@ -233,6 +233,17 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 			addNodesToLayerList(child.getValue());
 		}
 	}
+	
+	@Override
+	public boolean hasNodesForURI(URI uri)
+	{
+		if (uriMap == null)
+		{
+			uriMap = new MultiMap<URI, ILayerTreeNode>();
+			updateURIMap();
+		}
+		return uriMap.containsKey(uri);
+	}
 
 	@Override
 	public ILayerTreeNode[] getNodesForURI(URI uri)

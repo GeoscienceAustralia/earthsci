@@ -79,7 +79,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	@Override
 	public boolean existsInLayerModel(URI layerURI)
 	{
-		return currentLayerModel.getRootNode().getNodesForURI(layerURI).length > 0;
+		return currentLayerModel.getRootNode().hasNodesForURI(layerURI);
 	}
 	
 	@Override
