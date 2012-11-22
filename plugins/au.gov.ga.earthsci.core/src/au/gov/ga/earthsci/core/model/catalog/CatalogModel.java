@@ -16,6 +16,9 @@
 package au.gov.ga.earthsci.core.model.catalog;
 
 import java.net.URI;
+import java.util.Arrays;
+
+import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 
 /**
@@ -37,13 +40,8 @@ public class CatalogModel implements ICatalogModel
 	@Override
 	public ICatalogTreeNode[] getTopLevelCatalogs()
 	{
-		final ICatalogTreeNode[] result = new ICatalogTreeNode[root.getChildCount()];
-		
-		for (int i = 0; i < root.getChildCount(); i++)
-		{
-			result[i] = (ICatalogTreeNode)root.getChild(i);
-		}
-		return result;
+		ITreeNode<ICatalogTreeNode>[] children = root.getChildren();
+		return Arrays.asList(children).toArray(new ICatalogTreeNode[children.length]);
 	}
 
 	public void setTopLevelCatalogs(ICatalogTreeNode[] nodes)
