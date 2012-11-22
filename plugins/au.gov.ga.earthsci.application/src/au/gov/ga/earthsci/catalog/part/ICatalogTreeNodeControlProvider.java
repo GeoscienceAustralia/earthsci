@@ -17,8 +17,6 @@ package au.gov.ga.earthsci.catalog.part;
 
 import java.net.URL;
 
-import org.eclipse.swt.graphics.Image;
-
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 
 /**
@@ -45,13 +43,13 @@ public interface ICatalogTreeNodeControlProvider
 	boolean supports(ICatalogTreeNode node);
 	
 	/**
-	 * Return the icon to use for the node, if applicable.
+	 * Return a URL that can be used to retrieve an icon to use for the node, if applicable.
 	 * 
 	 * @param node The node for which an icon is required
 	 * 
-	 * @return The image to use for the node icon, or <code>null</code> if none is available
+	 * @return The URL of the image to use for the node icon, or <code>null</code> if none is available
 	 */
-	Image getIcon(ICatalogTreeNode node);
+	URL getIconURL(ICatalogTreeNode node);
 	
 	/**
 	 * Return the label to use for the node

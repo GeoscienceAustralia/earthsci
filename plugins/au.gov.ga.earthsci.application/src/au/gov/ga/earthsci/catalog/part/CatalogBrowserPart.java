@@ -100,4 +100,9 @@ public class CatalogBrowserPart
 	{
 		return viewer;
 	}
+	
+	public CatalogTreeLabelProvider getLabelProvider()
+	{
+		return labelProvider;
+	}
 }

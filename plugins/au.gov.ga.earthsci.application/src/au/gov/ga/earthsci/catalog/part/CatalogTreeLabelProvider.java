@@ -31,10 +31,13 @@ import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.application.IFireableLabelProvider;
+import au.gov.ga.earthsci.application.IconLoader;
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.util.ILabeled;
@@ -46,13 +49,15 @@ import au.gov.ga.earthsci.viewers.IControlProvider;
  * @author James Navin (james.navin@ga.gov.au)
  */
 @Creatable
-public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDecorator
+public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDecorator, IFireableLabelProvider
 {
 	private static final Logger logger = LoggerFactory.getLogger(CatalogTreeLabelProvider.class);
 	
-	private final org.eclipse.jface.resource.ImageRegistry decoratedImages = new org.eclipse.jface.resource.ImageRegistry();
+	private final org.eclipse.jface.resource.ImageRegistry decoratedImageCache = new org.eclipse.jface.resource.ImageRegistry();
 	
 	private ICatalogBrowserController controller;
+
+	private IconLoader iconLoader = new IconLoader(this);
 	
 	public CatalogTreeLabelProvider()
 	{
@@ -68,12 +73,8 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		}
 		ICatalogTreeNode node = (ICatalogTreeNode)element;
 		
-		Image icon = getProvider(node).getIcon(node);
-		if (icon == null)
-		{
-			icon = DEFAULT_PROVIDER.getIcon(node);
-		}
-		return icon;
+		URL iconURL = getProvider(node).getIconURL(node);
+		return getImage(element, iconURL);
 	}
 	
 	
@@ -106,7 +107,8 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		{
 			controlProvidersLock.readLock().unlock();
 		}
-		decoratedImages.dispose();
+		decoratedImageCache.dispose();
+		iconLoader.dispose();
 	}
 	
 	@Inject
@@ -150,25 +152,41 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		return text + "*"; //$NON-NLS-1$
 	}
 	
+	private Image getImage(Object element, URL imageURL)
+	{
+		if (imageURL == null)
+		{
+			return null;
+		}
+		
+		return iconLoader.getImage(element, imageURL);
+	}
+	
 	private Image getDecoratedIcon(Image base)
 	{
 		String key = base.hashCode() + ""; //$NON-NLS-1$
 		
 		if (base.isDisposed())
 		{
-			decoratedImages.remove(key);
+			decoratedImageCache.remove(key);
 			return null;
 		}
 		
-		Image decorated = decoratedImages.get(key);
+		Image decorated = decoratedImageCache.get(key);
 		if (decorated != null)
 		{
 			return decorated;
 		}
 				
 		decorated = new DecorationOverlayIcon(base, ImageRegistry.getInstance().getDescriptor(ImageRegistry.DECORATION_INCLUDED), IDecoration.BOTTOM_RIGHT).createImage();
-		decoratedImages.put(key, decorated);
+		decoratedImageCache.put(key, decorated);
 		return decorated;
+	}
+	
+	@Override
+	public void fireLabelProviderChanged(LabelProviderChangedEvent event)
+	{
+		super.fireLabelProviderChanged(event);
 	}
 	
 	private static final Set<ICatalogTreeNodeControlProvider> controlProviders = new LinkedHashSet<ICatalogTreeNodeControlProvider>();
@@ -177,7 +195,10 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 	public static final String CATALOG_NODE_CONTROL_PROVIDER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.application.catalogNodeControlProvider"; //$NON-NLS-1$
 	public static final String CONTROL_PROVIDER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 	
-	private static final ICatalogTreeNodeControlProvider DEFAULT_PROVIDER = new ICatalogTreeNodeControlProvider()
+	/**
+	 * The default provider - can be used to obtain default values for a given node
+	 */
+	public static final ICatalogTreeNodeControlProvider DEFAULT_PROVIDER = new ICatalogTreeNodeControlProvider()
 	{
 		
 		@Override
@@ -199,17 +220,22 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		}
 		
 		@Override
-		public Image getIcon(ICatalogTreeNode node)
+		public URL getIconURL(ICatalogTreeNode node)
 		{
+			URL result = null;
 			if (node.getParent() == null || node.getParent().getParent() == null)
 			{
-				return ImageRegistry.getInstance().get(ImageRegistry.ICON_REPOSITORY);
+				result = ImageRegistry.getInstance().getURL(ImageRegistry.ICON_REPOSITORY);
 			}
-			if (node.hasChildren())
+			else if (node.isLayerNode())
 			{
-				return ImageRegistry.getInstance().get(ImageRegistry.ICON_FOLDER);
+				result = ImageRegistry.getInstance().getURL(ImageRegistry.ICON_LAYER_NODE);
 			}
-			return ImageRegistry.getInstance().get(ImageRegistry.ICON_LAYER_NODE);
+			else
+			{
+				result = ImageRegistry.getInstance().getURL(ImageRegistry.ICON_FOLDER);
+			}
+			return result;
 		}
 		
 		@Override

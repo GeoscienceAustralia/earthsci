@@ -16,10 +16,7 @@
 package au.gov.ga.earthsci.catalog.part;
 
 import java.net.URL;
-import java.util.WeakHashMap;
 
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,10 +31,9 @@ import au.gov.ga.earthsci.core.model.catalog.dataset.DatasetCatalogTreeNode;
 public class DatasetCatalogTreeNodeControlProvider implements ICatalogTreeNodeControlProvider
 {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(DatasetCatalogTreeNodeControlProvider.class);
 
-	private final WeakHashMap<URL, Image> imageCache = new WeakHashMap<URL, Image>();
-	
 	@Override
 	public boolean supports(ICatalogTreeNode node)
 	{
@@ -45,16 +41,11 @@ public class DatasetCatalogTreeNodeControlProvider implements ICatalogTreeNodeCo
 	}
 
 	@Override
-	public Image getIcon(ICatalogTreeNode node)
+	public URL getIconURL(ICatalogTreeNode node)
 	{
 		DatasetCatalogTreeNode datasetNode = (DatasetCatalogTreeNode)node;
 		
-		if (datasetNode.getIconURL() == null)
-		{
-			return null;
-		}
-		
-		return getImage(datasetNode.getIconURL());
+		return datasetNode.getIconURL() == null ? CatalogTreeLabelProvider.DEFAULT_PROVIDER.getIconURL(datasetNode) : datasetNode.getIconURL();
 	}
 
 	@Override
@@ -72,34 +63,6 @@ public class DatasetCatalogTreeNodeControlProvider implements ICatalogTreeNodeCo
 	@Override
 	public void dispose()
 	{
-		for (Image i : imageCache.values())
-		{
-			if (i != null && !i.isDisposed())
-			{
-				i.dispose();
-			}
-		}
-		imageCache.clear();
-	}
-	
-	private Image getImage(URL imageURL)
-	{
-		Image image = imageCache.get(imageURL);
-		if (image != null && !image.isDisposed())
-		{
-			return image;
-		}
-		try
-		{
-			image = new Image(Display.getDefault(), imageURL.openStream());
-			imageCache.put(imageURL, image);
-			return image;
-		}
-		catch (Exception e)
-		{
-			logger.debug("Unable to load icon {}", imageURL, e); //$NON-NLS-1$
-			return null;
-		}
 	}
 	
 }

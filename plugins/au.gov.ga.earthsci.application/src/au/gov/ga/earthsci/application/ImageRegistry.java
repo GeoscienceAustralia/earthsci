@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -57,6 +59,8 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_LOADING = "icon.loading"; //$NON-NLS-1$
 	public static final String DECORATION_INCLUDED = "decoration.included"; //$NON-NLS-1$
 	
+	private final Map<String, URL> urlMap = new ConcurrentHashMap<String, URL>(); 
+	
 	public static ImageRegistry getInstance()
 	{
 		return INSTANCE;
@@ -92,7 +96,10 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 
 	protected void putResource(String key, String resourceName)
 	{
-		put(key, ImageDescriptor.createFromURL(getClass().getResource(resourceName)));
+		URL url = getClass().getResource(resourceName);
+		put(key, ImageDescriptor.createFromURL(url));
+		
+		urlMap.put(key, url);
 	}
 
 	protected void putAnimatedResource(String key, String resourceName)
@@ -145,5 +152,18 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 			images[i] = new Image(display, nextFrameData);
 		}
 		return images;
+	}
+	
+	/**
+	 * Return the URL for the image resource with the given key, if one exists
+	 * 
+	 * @param key The key for the image URL to load
+	 * 
+	 * @return the URL for the image resource with the given key. 
+	 * <code>null</code> if no resource exists or no URL is available for the resource.
+	 */
+	public URL getURL(String key)
+	{
+		return urlMap.get(key);
 	}
 }
