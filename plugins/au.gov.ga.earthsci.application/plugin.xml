@@ -62,6 +62,14 @@
    </extension>
    <extension
          point="au.gov.ga.earthsci.injectable">
+      <bind
+            binding="au.gov.ga.earthsci.catalog.part.ICatalogBrowserController"
+            implementation="au.gov.ga.earthsci.catalog.part.CatalogBrowserController">
+      </bind>
+      <bind
+            binding="au.gov.ga.earthsci.catalog.part.preferences.ICatalogBrowserPreferences"
+            implementation="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferences">
+      </bind>
       <injectable
             class="au.gov.ga.earthsci.catalog.part.CatalogTreeNodeControlProviderRegistry">
       </injectable>

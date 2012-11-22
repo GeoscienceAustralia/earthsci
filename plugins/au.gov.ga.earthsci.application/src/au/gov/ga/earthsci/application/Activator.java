@@ -16,15 +16,10 @@
 package au.gov.ga.earthsci.application;
 
 import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.e4.core.di.InjectorFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import au.gov.ga.earthsci.application.util.KeyboardFocusManagerFix;
-import au.gov.ga.earthsci.catalog.part.CatalogBrowserController;
-import au.gov.ga.earthsci.catalog.part.ICatalogBrowserController;
-import au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferences;
-import au.gov.ga.earthsci.catalog.part.preferences.ICatalogBrowserPreferences;
 
 /**
  * Application bundle activator.
@@ -45,8 +40,6 @@ public class Activator implements BundleActivator
 	{
 		Activator.context = bundleContext;
 		KeyboardFocusManagerFix.initialize();
-		InjectorFactory.getDefault().addBinding(ICatalogBrowserController.class).implementedBy(CatalogBrowserController.class);
-		InjectorFactory.getDefault().addBinding(ICatalogBrowserPreferences.class).implementedBy(CatalogBrowserPreferences.class);
 		
 		//create the preference initializers
 		DefaultScope.INSTANCE.getNode(getBundleName());
