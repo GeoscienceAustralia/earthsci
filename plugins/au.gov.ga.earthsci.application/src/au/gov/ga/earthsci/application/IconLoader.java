@@ -16,7 +16,9 @@
 package au.gov.ga.earthsci.application;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -45,6 +47,7 @@ public class IconLoader implements LoadingIconFrameListener
 	private final ImageRegistry imageRegistry = new ImageRegistry();
 	private final Set<Object> loadingElements = new HashSet<Object>();
 	private final Set<Object> errorElements = new HashSet<Object>();
+	private final Map<URL, Set<Object>> urlElements = new HashMap<URL, Set<Object>>();
 	private final Object semaphore = new Object();
 
 	public IconLoader(IFireableLabelProvider labelProvider)
@@ -98,49 +101,63 @@ public class IconLoader implements LoadingIconFrameListener
 		imageRegistry.dispose();
 	}
 
-	private void scheduleRetrievalJob(final Object element, final URL url)
+	private void scheduleRetrievalJob(Object element, final URL url)
 	{
-		final RetrievalJob job = RetrievalServiceFactory.getServiceInstance().retrieve(url);
-		job.addJobChangeListener(new JobChangeAdapter()
+		if (!urlElements.containsKey(url))
 		{
-			@Override
-			public void done(IJobChangeEvent event)
+			urlElements.put(url, new HashSet<Object>());
+			final RetrievalJob job = RetrievalServiceFactory.getServiceInstance().retrieve(url);
+			job.addJobChangeListener(new JobChangeAdapter()
 			{
-				synchronized (semaphore)
+				@Override
+				public void done(IJobChangeEvent event)
 				{
-					setLoading(element, false);
-					boolean success = false;
-					if (job.getRetrievalResult().hasData())
-					{
-						try
-						{
-							Image image = new Image(Display.getDefault(), job.getRetrievalResult().getAsInputStream());
-							setImageForURL(url, image);
-							success = true;
-						}
-						catch (Exception e)
-						{
-							logger.error("Error loading image from " + url, e); //$NON-NLS-1$
-						}
-					}
-					if (!success)
-					{
-						errorElements.add(element);
-					}
+					retrievalJobDone(job, url);
+				}
+			});
+			job.schedule();
+		}
+		urlElements.get(url).add(element);
+	}
 
-					Display.getDefault().asyncExec(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							labelProvider
-									.fireLabelProviderChanged(new LabelProviderChangedEvent(labelProvider, element));
-						}
-					});
+	private void retrievalJobDone(RetrievalJob job, URL url)
+	{
+		synchronized (semaphore)
+		{
+			final Set<Object> elements = urlElements.remove(url);
+			for (Object element : elements)
+			{
+				setLoading(element, false);
+			}
+			boolean success = false;
+			if (job.getRetrievalResult().hasData())
+			{
+				try
+				{
+					Image image = new Image(Display.getDefault(), job.getRetrievalResult().getAsInputStream());
+					setImageForURL(url, image);
+					success = true;
+				}
+				catch (Exception e)
+				{
+					logger.error("Error loading image from " + url, e); //$NON-NLS-1$
 				}
 			}
-		});
-		job.schedule();
+			if (!success)
+			{
+				errorElements.addAll(elements);
+			}
+
+			Display.getDefault().asyncExec(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					labelProvider.fireLabelProviderChanged(new LabelProviderChangedEvent(labelProvider, elements
+							.toArray()));
+				}
+			});
+		}
 	}
 
 	private Image getImageForURL(URL url)

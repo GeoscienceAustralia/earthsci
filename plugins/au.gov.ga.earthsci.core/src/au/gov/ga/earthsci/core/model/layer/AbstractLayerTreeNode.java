@@ -205,17 +205,20 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		if (layerList == null)
 		{
 			layerList = new LayerList();
-			fillLayerList();
+			updateLayerList();
 		}
 		return layerList;
 	}
 
-	private void fillLayerList()
+	private void updateLayerList()
 	{
-		synchronized (layerList)
+		if (layerList != null)
 		{
-			layerList.removeAll();
-			addNodesToLayerList(this);
+			synchronized (layerList)
+			{
+				layerList.removeAll();
+				addNodesToLayerList(this);
+			}
 		}
 	}
 
@@ -237,7 +240,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		if (uriMap == null)
 		{
 			uriMap = new MultiMap<URI, ILayerTreeNode>();
-			fillURIMap();
+			updateURIMap();
 		}
 		List<ILayerTreeNode> nodes = uriMap.get(uri);
 		if (nodes != null)
@@ -247,12 +250,15 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		return new ILayerTreeNode[0];
 	}
 
-	private void fillURIMap()
+	private void updateURIMap()
 	{
-		synchronized (uriMap)
+		if (uriMap != null)
 		{
-			uriMap.clear();
-			addNodesToURIMap(this);
+			synchronized (uriMap)
+			{
+				uriMap.clear();
+				addNodesToURIMap(this);
+			}
 		}
 	}
 
@@ -264,13 +270,13 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 			addNodesToURIMap(child.getValue());
 		}
 	}
-
+	
 	@Override
-	protected void setChildren(ITreeNode<ILayerTreeNode>[] children)
+	protected void fireChildrenPropertyChange(ITreeNode<ILayerTreeNode>[] oldChildren,
+			ITreeNode<ILayerTreeNode>[] newChildren)
 	{
-		ITreeNode<ILayerTreeNode>[] oldChildren = getChildren();
-		super.setChildren(children);
 		childrenChanged(oldChildren, children);
+		super.fireChildrenPropertyChange(oldChildren, newChildren);
 	}
 
 	@Override
@@ -278,18 +284,11 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	{
 		//TODO should we implement a (more efficient?) modification of these collections according to changed children?
 		//update the collections if they exist
-		if (layerList != null)
-		{
-			fillLayerList();
-		}
-		if (uriMap != null)
-		{
-			fillURIMap();
-		}
+		updateLayerList();
+		updateURIMap();
 
 		//fire property changes
 		fireAnyAllChildrenEnabledChanged();
-		firePropertyChange("descendants", null, this); //$NON-NLS-1$
 
 		//recurse up to the root node
 		if (!isRoot())

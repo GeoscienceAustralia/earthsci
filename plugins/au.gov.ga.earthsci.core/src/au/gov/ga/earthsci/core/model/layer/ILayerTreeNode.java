@@ -28,10 +28,6 @@ import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
 /**
  * Represents a tree node value in the layer tree.
- * <p/>
- * Implementations should fire a property change on the property "descendants"
- * when the children of one of this node's descendants changes. The old and new
- * values will be meaningless.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
