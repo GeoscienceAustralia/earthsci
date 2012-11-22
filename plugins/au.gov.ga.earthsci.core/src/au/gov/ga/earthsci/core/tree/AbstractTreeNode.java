@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.core.tree;
 
 import java.util.Arrays;
 
-import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
+import au.gov.ga.earthsci.core.util.AbstractTreePropertyChangeBean;
 
 /**
  * Abstract implementation of the {@link ITreeNode} interface.
@@ -27,7 +27,7 @@ import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
  * @param <E>
  *            Type wrapped by this node.
  */
-public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean implements ITreeNode<E>
+public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean implements ITreeNode<E>
 {
 	protected E value;
 	protected ITreeNode<E> parent;
@@ -85,25 +85,39 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 		return children == null ? 0 : children.length;
 	}
 
+	/**
+	 * Set this node's children.
+	 * 
+	 * @param children
+	 *            Node's children, cannot be null
+	 */
 	protected void setChildren(ITreeNode<E>[] children)
 	{
 		ITreeNode<E>[] oldValue = getChildren();
-		this.children = children == null ? null : Arrays.copyOf(children, children.length);
+		this.children = Arrays.copyOf(children, children.length);
 
 		//set children's parent to this
-		if (children != null)
+		for (int i = 0; i < children.length; i++)
 		{
-			for (int i = 0; i < children.length; i++)
+			ITreeNode<E> child = children[i];
+			if (child.getParent() != this)
 			{
-				ITreeNode<E> child = children[i];
-				if (child.getParent() != this)
-				{
-					child.setParent(this, i);
-				}
+				child.setParent(this, i);
 			}
 		}
 
-		firePropertyChange("children", oldValue, children); //$NON-NLS-1$
+		fireChildrenPropertyChange(oldValue, children);
+	}
+
+	/**
+	 * Fire the "children" property change.
+	 * 
+	 * @param oldChildren
+	 * @param newChildren
+	 */
+	protected void fireChildrenPropertyChange(ITreeNode<E>[] oldChildren, ITreeNode<E>[] newChildren)
+	{
+		firePropertyChange("children", oldChildren, newChildren); //$NON-NLS-1$
 	}
 
 	@Override

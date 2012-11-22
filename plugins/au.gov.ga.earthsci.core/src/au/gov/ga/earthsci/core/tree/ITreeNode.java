@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.tree;
 
+import au.gov.ga.earthsci.core.util.ITreePropertyChangeBean;
+
 /**
  * Represents a tree node, with children and a parent (unless root).
  * 
@@ -23,7 +25,7 @@ package au.gov.ga.earthsci.core.tree;
  * @param <E>
  *            Type wrapped by this tree node.
  */
-public interface ITreeNode<E>
+public interface ITreeNode<E> extends ITreePropertyChangeBean
 {
 	/**
 	 * @return Value at this node.
@@ -38,6 +40,7 @@ public interface ITreeNode<E>
 	/**
 	 * @return Parent of this node (returns null if this node is the root).
 	 */
+	@Override
 	ITreeNode<E> getParent();
 
 	/**

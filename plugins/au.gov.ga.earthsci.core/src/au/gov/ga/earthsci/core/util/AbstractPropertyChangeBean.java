@@ -38,7 +38,7 @@ public abstract class AbstractPropertyChangeBean implements IPropertyChangeBean
 	@Override
 	public void firePropertyChange(String propertyName, Object oldValue, Object newValue)
 	{
-		changeSupport.firePropertyChange(propertyName, oldValue, newValue);
+		firePropertyChange(new PropertyChangeEvent(this, propertyName, oldValue, newValue));
 	}
 
 	@Override

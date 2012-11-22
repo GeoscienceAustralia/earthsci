@@ -66,7 +66,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	{
 		this.currentLayerModel = currentLayerModel;
 		
-		currentLayerModel.getRootNode().addPropertyChangeListener("descendants", new PropertyChangeListener() //$NON-NLS-1$
+		currentLayerModel.getRootNode().addDescendantPropertyChangeListener("children", new PropertyChangeListener() //$NON-NLS-1$
 		{
 			@Override
 			public void propertyChange(PropertyChangeEvent evt)
