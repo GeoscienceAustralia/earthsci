@@ -64,9 +64,7 @@ public abstract class AbstractTreeNode<E> extends AbstractPropertyChangeBean imp
 		{
 			throw new IllegalArgumentException("Node is not a child of the given parent"); //$NON-NLS-1$
 		}
-		ITreeNode<E> oldValue = getParent();
-		this.parent = parent;
-		firePropertyChange("parent", oldValue, parent); //$NON-NLS-1$
+		firePropertyChange("parent", getParent(), this.parent = parent); //$NON-NLS-1$
 	}
 
 	@Override

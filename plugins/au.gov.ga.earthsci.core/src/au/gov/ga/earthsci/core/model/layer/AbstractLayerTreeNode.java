@@ -45,9 +45,9 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
 	private String label;
 	private URI uri;
-	private URL infoUrl;
-	private URL legendUrl;
-	private URL iconUrl;
+	private URL infoURL;
+	private URL legendURL;
+	private URL iconURL;
 	private boolean expanded;
 
 	protected AbstractLayerTreeNode()
@@ -67,9 +67,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	@Override
 	public void setName(String name)
 	{
-		String oldValue = getName();
-		this.name = name;
-		firePropertyChange("name", oldValue, name); //$NON-NLS-1$
+		firePropertyChange("name", getName(), this.name = name); //$NON-NLS-1$
 	}
 
 	@Override
@@ -87,10 +85,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 			setLabel(null);
 			return;
 		}
-
-		String oldValue = getLabel();
-		this.label = label;
-		firePropertyChange("label", oldValue, label); //$NON-NLS-1$
+		firePropertyChange("label", getLabel(), this.label = label); //$NON-NLS-1$
 	}
 
 	@Override
@@ -109,43 +104,43 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	@Override
 	public void setURI(URI uri)
 	{
-		this.uri = uri;
+		firePropertyChange("uRI", getURI(), this.uri = uri); //$NON-NLS-1$
 	}
 
 	@Persistent
 	@Override
 	public URL getInfoURL()
 	{
-		return infoUrl;
+		return infoURL;
 	}
 
 	public void setInfoURL(URL infoURL)
 	{
-		this.infoUrl = infoURL;
+		firePropertyChange("infoURL", getInfoURL(), this.infoURL = infoURL); //$NON-NLS-1$
 	}
 
 	@Persistent
 	@Override
 	public URL getLegendURL()
 	{
-		return legendUrl;
+		return legendURL;
 	}
 
 	public void setLegendURL(URL legendURL)
 	{
-		this.legendUrl = legendURL;
+		firePropertyChange("legendURL", getLegendURL(), this.legendURL = legendURL); //$NON-NLS-1$
 	}
 
 	@Persistent
 	@Override
 	public URL getIconURL()
 	{
-		return iconUrl;
+		return iconURL;
 	}
 
 	public void setIconURL(URL iconURL)
 	{
-		this.iconUrl = iconURL;
+		firePropertyChange("iconURL", getIconURL(), this.iconURL = iconURL); //$NON-NLS-1$
 	}
 
 	@Persistent
@@ -308,7 +303,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	{
 		//fire property changes
 		fireAnyAllChildrenEnabledChanged();
-		
+
 		//recurse up to the root node
 		if (!isRoot())
 		{
@@ -349,8 +344,6 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	@Override
 	public void setExpanded(boolean expanded)
 	{
-		boolean oldValue = isExpanded();
-		this.expanded = expanded;
-		firePropertyChange("expanded", oldValue, label); //$NON-NLS-1$
+		firePropertyChange("expanded", isExpanded(), this.expanded = expanded); //$NON-NLS-1$
 	}
 }
