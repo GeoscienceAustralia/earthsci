@@ -22,12 +22,14 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.IEnableable;
+import au.gov.ga.earthsci.core.util.MultiMap;
 
 /**
  * Abstract implementation of the {@link ILayerTreeNode} interface.
@@ -39,6 +41,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 {
 	private String name;
 	private LayerList layerList;
+	private MultiMap<URI, ILayerTreeNode> uriMap;
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
 	private String label;
 	private URI uri;
@@ -212,7 +215,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		return layerList;
 	}
 
-	protected void fillLayerList()
+	private void fillLayerList()
 	{
 		synchronized (layerList)
 		{
@@ -234,6 +237,40 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	}
 
 	@Override
+	public ILayerTreeNode[] getNodesForURI(URI uri)
+	{
+		if (uriMap == null)
+		{
+			uriMap = new MultiMap<URI, ILayerTreeNode>();
+			fillURIMap();
+		}
+		List<ILayerTreeNode> nodes = uriMap.get(uri);
+		if (nodes != null)
+		{
+			return nodes.toArray(new ILayerTreeNode[nodes.size()]);
+		}
+		return new ILayerTreeNode[0];
+	}
+
+	private void fillURIMap()
+	{
+		synchronized (uriMap)
+		{
+			uriMap.clear();
+			addNodesToURIMap(this);
+		}
+	}
+
+	private void addNodesToURIMap(ILayerTreeNode node)
+	{
+		uriMap.putSingle(node.getURI(), node);
+		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
+		{
+			addNodesToURIMap(child.getValue());
+		}
+	}
+
+	@Override
 	protected void setChildren(ITreeNode<ILayerTreeNode>[] children)
 	{
 		ITreeNode<ILayerTreeNode>[] oldChildren = getChildren();
@@ -244,16 +281,24 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	@Override
 	public void childrenChanged(ITreeNode<ILayerTreeNode>[] oldChildren, ITreeNode<ILayerTreeNode>[] newChildren)
 	{
+		//TODO should we implement a (more efficient?) modification of these collections according to changed children?
+		//update the collections if they exist
 		if (layerList != null)
 		{
-			//update any nodes that actually have layer lists
 			fillLayerList();
-			//TODO should we implement a (more efficient?) modification of the list according to changed children?
 		}
+		if (uriMap != null)
+		{
+			fillURIMap();
+		}
+
+		//fire property changes
 		fireAnyAllChildrenEnabledChanged();
+		firePropertyChange("descendants", null, this); //$NON-NLS-1$
+
+		//recurse up to the root node
 		if (!isRoot())
 		{
-			//recurse up to the root node
 			getParent().getValue().childrenChanged(oldChildren, newChildren);
 		}
 	}
@@ -261,10 +306,12 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	@Override
 	public void enabledChanged()
 	{
+		//fire property changes
 		fireAnyAllChildrenEnabledChanged();
+		
+		//recurse up to the root node
 		if (!isRoot())
 		{
-			//recurse up to the root node
 			getParent().getValue().enabledChanged();
 		}
 	}
@@ -277,7 +324,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 				"anyChildrenEnabled", lastAnyChildrenEnabled, lastAnyChildrenEnabled = isAnyChildrenEnabled()); //$NON-NLS-1$
 	}
 
-	protected class EnabledChangeListener implements PropertyChangeListener
+	private class EnabledChangeListener implements PropertyChangeListener
 	{
 		@Override
 		public void propertyChange(PropertyChangeEvent evt)

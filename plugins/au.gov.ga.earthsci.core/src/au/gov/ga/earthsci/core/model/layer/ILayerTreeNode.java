@@ -28,6 +28,10 @@ import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
 /**
  * Represents a tree node value in the layer tree.
+ * <p/>
+ * Implementations should fire a property change on the property "descendants"
+ * when the children of one of this node's descendants changes. The old and new
+ * values will be meaningless.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -38,6 +42,21 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	 *         below this node.
 	 */
 	LayerList getLayerList();
+
+	/**
+	 * Return an array of {@link ILayerTreeNode}s that are descendants of this
+	 * node which have URIs that match the given URI. If there are no
+	 * descendants with the given URI, the returned array is empty. The returned
+	 * array could also possibly contain this node if this node's URI matches.
+	 * <p/>
+	 * The results from this method are cached, and updated when the node's
+	 * descendants change.
+	 * 
+	 * @param uri
+	 *            URI to match
+	 * @return Array of nodes that have a matching URI
+	 */
+	ILayerTreeNode[] getNodesForURI(URI uri);
 
 	/**
 	 * @return Are any of this node's children enabled?
