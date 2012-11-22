@@ -33,6 +33,11 @@
             id="au.gov.ga.earthsci.notifications"
             name="Notifications">
       </page>
+      <page
+            class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferencesPage"
+            id="au.gov.ga.earthsci.catalogs"
+            name="Catalogs">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

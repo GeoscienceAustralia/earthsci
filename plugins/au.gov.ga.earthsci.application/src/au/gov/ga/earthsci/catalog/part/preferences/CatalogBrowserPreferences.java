@@ -19,6 +19,9 @@ import javax.inject.Inject;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.e4.core.di.extensions.Preference;
+import org.osgi.service.prefs.BackingStoreException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.application.util.UserActionPreference;
 
@@ -29,6 +32,8 @@ import au.gov.ga.earthsci.application.util.UserActionPreference;
  */
 public class CatalogBrowserPreferences implements ICatalogBrowserPreferences
 {
+	
+	private static Logger logger = LoggerFactory.getLogger(CatalogBrowserPreferences.class);
 	
 	@Inject
 	@Preference(nodePath=QUALIFIER_ID)
@@ -52,17 +57,31 @@ public class CatalogBrowserPreferences implements ICatalogBrowserPreferences
 	public void setAddNodeStructureMode(UserActionPreference mode)
 	{
 		preferenceStore.put(ADD_NODE_STRUCTURE_MODE, mode == null ? UserActionPreference.ASK.name() : mode.name());
+		applyPreferences();
 	}
 	
 	@Override
 	public UserActionPreference getDeleteEmptyFoldersMode()
 	{
-		return UserActionPreference.valueOf(addNodeStructureMode);
+		return UserActionPreference.valueOf(deleteEmptyFoldersMode);
 	}
 	
 	@Override
 	public void setDeleteEmptyFoldersMode(UserActionPreference mode)
 	{
 		preferenceStore.put(DELETE_EMPTY_FOLDERS_MODE, mode == null ? UserActionPreference.ASK.name() : mode.name());
+		applyPreferences();
+	}
+
+	private void applyPreferences()
+	{
+		try
+		{
+			preferenceStore.flush();
+		}
+		catch (BackingStoreException e)
+		{
+			logger.error("An exception occurred while applying the catalog browser preference", e); //$NON-NLS-1$
+		}
 	}
 }

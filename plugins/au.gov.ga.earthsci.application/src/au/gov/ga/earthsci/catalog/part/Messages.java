@@ -25,6 +25,13 @@ public class Messages extends NLS
 	public static String CatalogBrowserController_AddNodePathDialogTitle;
 	public static String CatalogBrowserController_DeleteEmptyFoldersDialogTitle;
 	public static String CatalogBrowserController_DeleteEmptyFoldersMessage;
+	public static String CatalogBrowserPreferencesPage_AddNodeStructureMessage;
+	public static String CatalogBrowserPreferencesPage_AskOptionLabel;
+	public static String CatalogBrowserPreferencesPage_AwlaysOptionLabel;
+	public static String CatalogBrowserPreferencesPage_DeleteEmptyFoldersMessage;
+	public static String CatalogBrowserPreferencesPage_NeverOptionLabel;
+	public static String CatalogBrowserPreferencesPage_PageDescription;
+	public static String CatalogBrowserPreferencesPage_PageTitle;
 	static
 	{
 		// initialize resource bundle
