@@ -63,7 +63,7 @@
    <extension
          point="au.gov.ga.earthsci.injectable">
       <injectable
-            class="au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderInjectable">
+            class="au.gov.ga.earthsci.catalog.part.CatalogTreeNodeControlProviderRegistry">
       </injectable>
    </extension>
 

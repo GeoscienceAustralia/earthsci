@@ -54,10 +54,7 @@ public class CatalogBrowserPart
 	@PostConstruct
 	public void init(final Composite parent, final MPart part, final EMenuService menuService)
 	{
-		controller.setCatalogBrowserPart(this);
-		
 		initViewer(parent, part, menuService);
-		
 	}
 	
 	private void initViewer(final Composite parent, final MPart part, final EMenuService menuService)

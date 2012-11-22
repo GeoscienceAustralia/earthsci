@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog.part;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.net.URI;
 
 import javax.inject.Inject;
@@ -44,37 +42,11 @@ import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 @Singleton
 public class CatalogBrowserController implements ICatalogBrowserController
 {
-
+	@Inject
 	private ITreeModel currentLayerModel;
-	
-//	private MultiMap<URI, LayerNode> layers;
-//	private Map<URI, FolderNode> folders;
-
-	private CatalogBrowserPart part;
 	
 	@Inject
 	private ICatalogBrowserPreferences preferences;
-	
-	@Override
-	public void setCatalogBrowserPart(CatalogBrowserPart part)
-	{
-		this.part = part;
-	}
-	
-	@Inject
-	public void setCurrentLayerModel(ITreeModel currentLayerModel)
-	{
-		this.currentLayerModel = currentLayerModel;
-		
-		currentLayerModel.getRootNode().addDescendantPropertyChangeListener("children", new PropertyChangeListener() //$NON-NLS-1$
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				triggerRedecorate();
-			}
-		});
-	}
 	
 	@Override
 	public boolean existsInLayerModel(URI layerURI)
@@ -230,7 +202,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		layer.setURI(catalogTreeNode.getLayerURI());
 		layer.setLabel(catalogTreeNode.getLabelOrName());
 		layer.setEnabled(true);
-		layer.setIconURL(CatalogTreeLabelProvider.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
+		layer.setIconURL(CatalogTreeNodeControlProviderRegistry.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
 		return layer;
 	}
 
@@ -241,7 +213,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		folder.setLabel(catalogTreeNode.getLabel());
 		folder.setURI(catalogTreeNode.getURI());
 		folder.setExpanded(true);
-		folder.setIconURL(CatalogTreeLabelProvider.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
+		folder.setIconURL(CatalogTreeNodeControlProviderRegistry.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
 		return folder;
 	}
 
@@ -323,10 +295,5 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		preferences.setDeleteEmptyFoldersMode(message.getToggleState() ? preference : UserActionPreference.ASK);
 		
 		return preference == UserActionPreference.ALWAYS;
-	}
-	
-	private void triggerRedecorate()
-	{
-		part.getTreeViewer().refresh(true);
 	}
 }
