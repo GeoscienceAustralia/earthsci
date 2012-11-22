@@ -54,12 +54,8 @@ public final class Injector
 				if (bind)
 				{
 					Class<?> implementationClass = getClass(element, "implementation"); //$NON-NLS-1$
-					IConfigurationElement[] bindings = element.getChildren("binding"); //$NON-NLS-1$
-					for (IConfigurationElement binding : bindings)
-					{
-						Class<?> bindingClass = getClass(binding, "class"); //$NON-NLS-1$
-						InjectorFactory.getDefault().addBinding(bindingClass).implementedBy(implementationClass);
-					}
+					Class<?> bindingClass = getClass(element, "binding"); //$NON-NLS-1$
+					InjectorFactory.getDefault().addBinding(bindingClass).implementedBy(implementationClass);
 				}
 				else if (inject || injectable)
 				{

@@ -55,13 +55,10 @@
    <element name="bind">
       <annotation>
          <documentation>
-            Binds an implementation class to 1 or more injectable interfaces/classes.
+            Binds an implementation class to an injectable interface/class.
          </documentation>
       </annotation>
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="binding"/>
-         </choice>
          <attribute name="implementation" type="string" use="required">
             <annotation>
                <documentation>
@@ -72,17 +69,7 @@
                </appinfo>
             </annotation>
          </attribute>
-      </complexType>
-   </element>
-
-   <element name="binding">
-      <annotation>
-         <documentation>
-            Class/interface to bind the implementation class to. Passed to the IInjector.addBinding() method.
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="class" type="string" use="required">
+         <attribute name="binding" type="string" use="required">
             <annotation>
                <documentation>
                   Class/interface to bind the implementation class to. Passed to the IInjector.addBinding() method.
