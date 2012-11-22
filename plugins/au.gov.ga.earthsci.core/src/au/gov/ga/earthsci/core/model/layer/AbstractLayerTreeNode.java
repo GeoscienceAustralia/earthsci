@@ -22,14 +22,14 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.net.URL;
-import java.util.List;
+import java.util.Set;
 
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.IEnableable;
-import au.gov.ga.earthsci.core.util.MultiMap;
+import au.gov.ga.earthsci.core.util.SetMap;
 
 /**
  * Abstract implementation of the {@link ILayerTreeNode} interface.
@@ -41,7 +41,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 {
 	private String name;
 	private LayerList layerList;
-	private MultiMap<URI, ILayerTreeNode> uriMap;
+	private SetMap<URI, ILayerTreeNode> uriMap;
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
 	private String label;
 	private URI uri;
@@ -245,7 +245,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		{
 			if (uriMap == null)
 			{
-				uriMap = new MultiMap<URI, ILayerTreeNode>();
+				uriMap = new SetMap<URI, ILayerTreeNode>();
 				updateURIMap();
 			}
 			return uriMap.containsKey(uri);
@@ -259,10 +259,10 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		{
 			if (uriMap == null)
 			{
-				uriMap = new MultiMap<URI, ILayerTreeNode>();
+				uriMap = new SetMap<URI, ILayerTreeNode>();
 				updateURIMap();
 			}
-			List<ILayerTreeNode> nodes = uriMap.get(uri);
+			Set<ILayerTreeNode> nodes = uriMap.get(uri);
 			if (nodes != null)
 			{
 				return nodes.toArray(new ILayerTreeNode[nodes.size()]);
