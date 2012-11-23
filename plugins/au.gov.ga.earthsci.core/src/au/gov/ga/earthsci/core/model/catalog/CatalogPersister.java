@@ -92,7 +92,7 @@ public class CatalogPersister
 		}
 		catch (Exception e)
 		{
-			logger.error("Unable to save catalog model to workspace", e);
+			logger.error("Unable to save catalog model to workspace", e); //$NON-NLS-1$
 		}
 	}
 	
@@ -182,6 +182,8 @@ public class CatalogPersister
 	/**
 	 * Load the catalog model from the current workspace, if it is available, or return a new empty model.
 	 * 
+	 * @param result The model to add the loaded catalog nodes to and return. If null, a new model is created.
+	 * 
 	 * @return The loaded catalog model
 	 * 
 	 * @throws IllegalArgumentException If the provided source file is <code>null</code>
@@ -189,7 +191,7 @@ public class CatalogPersister
 	 * @throws IOException If there is a problem reading from the source file
 	 * @throws PersistenceException If there is a problem recreating the model tree from the persistence mechanism
 	 */
-	public static ICatalogModel loadFromWorkspace()
+	public static ICatalogModel loadFromWorkspace(ICatalogModel result)
 	{
 		File workspaceFile = ConfigurationUtil.getWorkspaceFile(DEFAULT_WORKSPACE_CATALOG_FILENAME);
 		if (!workspaceFile.exists())
@@ -199,11 +201,11 @@ public class CatalogPersister
 		}
 		try
 		{
-			return loadCatalogModel(ConfigurationUtil.getWorkspaceFile(DEFAULT_WORKSPACE_CATALOG_FILENAME));
+			return loadCatalogModel(ConfigurationUtil.getWorkspaceFile(DEFAULT_WORKSPACE_CATALOG_FILENAME), result);
 		}
 		catch (Exception e)
 		{
-			logger.debug("Unable to load catalog model from workspace", e);
+			logger.debug("Unable to load catalog model from workspace", e); //$NON-NLS-1$
 			return new CatalogModel();
 		}
 		
@@ -213,6 +215,7 @@ public class CatalogPersister
 	 * Load a catalog model from the provided source file
 	 * 
 	 * @param source The file to load the catalog model from. Must be non-<code>null</code>.
+	 * @param result The model to add the loaded catalog nodes to and return. If null, a new model is created.
 	 * 
 	 * @return The loaded catalog model
 	 * 
@@ -221,7 +224,7 @@ public class CatalogPersister
 	 * @throws IOException If there is a problem reading from the source file
 	 * @throws PersistenceException If there is a problem recreating the model tree from the persistence mechanism
 	 */
-	public static ICatalogModel loadCatalogModel(File source) throws SAXException, IOException, PersistenceException
+	public static ICatalogModel loadCatalogModel(File source, ICatalogModel result) throws SAXException, IOException, PersistenceException
 	{
 		Validate.notNull(source, "An input file is required"); //$NON-NLS-1$
 		
@@ -229,7 +232,7 @@ public class CatalogPersister
 		try
 		{
 			is = new FileInputStream(source);
-			return loadCatalogModel(is);
+			return loadCatalogModel(is, result);
 		}
 		finally
 		{
@@ -244,6 +247,7 @@ public class CatalogPersister
 	 * Load a previously saved catalog model from the provided input stream.
 	 * 
 	 * @param is The input stream to load from. Must be non-<code>null</code>.
+	 * @param result The model to add the loaded catalog nodes to and return. If null, a new model is created.
 	 * 
 	 * @return The loaded catalog model
 	 * 
@@ -252,7 +256,7 @@ public class CatalogPersister
 	 * @throws IOException If there is a problem reading from the input stream
 	 * @throws PersistenceException If there is a problem recreating the model from the persistence mechanism 
 	 */
-	public static ICatalogModel loadCatalogModel(InputStream is) throws SAXException, IOException, PersistenceException
+	public static ICatalogModel loadCatalogModel(InputStream is, ICatalogModel result) throws SAXException, IOException, PersistenceException
 	{
 		Validate.notNull(is, "An input stream is required"); //$NON-NLS-1$
 		
@@ -263,20 +267,21 @@ public class CatalogPersister
 			throw new PersistenceException("Provided document is not a valid catalog model document. Expected root node " + ROOT_NODE_NAME + " but found " + parent.getNodeName());  //$NON-NLS-1$//$NON-NLS-2$
 		}
 		Element element = XmlUtil.getFirstChildElement(parent);
-		return loadCatalogModel(element);
+		return loadCatalogModel(element, result);
 	}
 	
 	/**
 	 * Load a previously saved catalog model from the provided parent XML element.
 	 * 
 	 * @param parentElement The parent element to load the catalog model from. Must be non-<code>null</code>.
+	 * @param result The model to add the loaded catalog nodes to and return. If null, a new model is created.
 	 * 
 	 * @return The loaded catalog model
 	 * 
 	 * @throws IllegalArgumentException If the parent element is <code>null</code>
 	 * @throws PersistenceException If there is a problem recreating the model from the persistence mechanism
 	 */
-	public static ICatalogModel loadCatalogModel(Element parentElement) throws PersistenceException
+	public static ICatalogModel loadCatalogModel(Element parentElement, ICatalogModel result) throws PersistenceException
 	{
 		Validate.notNull(parentElement, "A parent XML element is required"); //$NON-NLS-1$
 		
@@ -290,8 +295,11 @@ public class CatalogPersister
 			treeNodes[i] = node;
 		}
 		
-		CatalogModel result = new CatalogModel();
-		result.setTopLevelCatalogs(treeNodes);
+		if(result == null)
+		{
+			result = new CatalogModel();
+		}
+		result.addTopLevelCatalogs(treeNodes);
 	
 		return result;
 	}

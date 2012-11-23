@@ -16,29 +16,19 @@
 package au.gov.ga.earthsci.core;
 
 import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.avlist.AVKey;
-import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.context.IPlatformContext;
-import au.gov.ga.earthsci.core.context.PlatformContext;
 import au.gov.ga.earthsci.core.model.catalog.CatalogFactory;
-import au.gov.ga.earthsci.core.model.catalog.CatalogPersister;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
 import au.gov.ga.earthsci.core.model.layer.LayerFactory;
 import au.gov.ga.earthsci.core.proxy.ProxyPreferences;
-import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
-import au.gov.ga.earthsci.core.worldwind.WorldWindView;
 import au.gov.ga.earthsci.notification.NotificationManager;
 import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
 
@@ -53,9 +43,7 @@ public class Activator implements BundleActivator
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(Activator.class);
-
-	private IPlatformContext platformContext;
-
+	
 	@Override
 	public void start(final BundleContext context) throws Exception
 	{
@@ -70,31 +58,12 @@ public class Activator implements BundleActivator
 		loadExtensions(context);
 
 		context.registerService(NotificationManager.class, NotificationManager.get(), null);
-
-		initialisePlatformContext();
-		populateBundleContext();
-
-		context.addBundleListener(new BundleListener()
-		{
-			@Override
-			public void bundleChanged(BundleEvent event)
-			{
-				if (event.getType() == BundleEvent.STARTED
-						&& event.getBundle().getBundleId() == bundleContext.getBundle().getBundleId())
-				{
-					platformContext.startup();
-					context.removeBundleListener(this);
-				}
-			}
-		});
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception
 	{
 		bundleContext = null;
-
-		platformContext.shutdown();
 	}
 
 	static BundleContext getContext()
@@ -113,27 +82,5 @@ public class Activator implements BundleActivator
 
 		CatalogFactory.loadProvidersFromRegistry(registry);
 		NotificationManager.loadReceivers(registry, context);
-	}
-
-	private void initialisePlatformContext()
-	{
-		ICatalogModel catalogModel = CatalogPersister.loadFromWorkspace();
-		WorldWindModel wwModel = new WorldWindModel();
-		WorldWindView wwView = new WorldWindView();
-
-		PlatformContext platformContext = new PlatformContext(catalogModel, wwModel, wwView);
-
-		this.platformContext = platformContext;
-	}
-
-	private void populateBundleContext()
-	{
-		bundleContext.registerService(WorldWindModel.class, platformContext.getWorldWindModel(), null);
-		bundleContext.registerService(ITreeModel.class, platformContext.getWorldWindModel(), null);
-		bundleContext.registerService(ICatalogModel.class, platformContext.getCatalogModel(), null);
-		bundleContext.registerService(WorldWindView.class, platformContext.getWorldWindView(), null);
-		bundleContext.registerService(View.class, platformContext.getWorldWindView(), null);
-		bundleContext.registerService(OrbitView.class, platformContext.getWorldWindView(), null);
-		bundleContext.registerService(IPlatformContext.class, platformContext, null);
 	}
 }

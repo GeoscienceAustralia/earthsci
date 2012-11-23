@@ -99,7 +99,7 @@ public class CatalogPersisterTest
 	{
 		InputStream is = null;
 		
-		CatalogPersister.loadCatalogModel(is);
+		CatalogPersister.loadCatalogModel(is, null);
 	}
 	
 	@Test(expected=SAXParseException.class)
@@ -109,7 +109,7 @@ public class CatalogPersisterTest
 		
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 		
-		CatalogPersister.loadCatalogModel(is);
+		CatalogPersister.loadCatalogModel(is, null);
 	}
 	
 	@Test(expected=PersistenceException.class)
@@ -119,7 +119,7 @@ public class CatalogPersisterTest
 		
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 		
-		CatalogPersister.loadCatalogModel(is);
+		CatalogPersister.loadCatalogModel(is, null);
 	}
 	
 	@Test
@@ -129,7 +129,7 @@ public class CatalogPersisterTest
 		
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 		
-		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is);
+		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is, null);
 		
 		assertNotNull(catalogModel);
 		assertNotNull(catalogModel.getRoot());
@@ -145,7 +145,7 @@ public class CatalogPersisterTest
 		
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 		
-		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is);
+		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is, null);
 		
 		assertNotNull(catalogModel);
 		assertNotNull(catalogModel.getRoot());

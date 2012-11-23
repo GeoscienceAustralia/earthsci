@@ -23,6 +23,7 @@ import gov.nasa.worldwind.globes.Globe;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -78,6 +79,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		return rootNode;
 	}
 
+	@PostConstruct
 	public void loadLayers()
 	{
 		loadRootNode(rootNode);
