@@ -42,6 +42,9 @@
       <injectable
             class="au.gov.ga.earthsci.core.proxy.ProxyPreferences">
       </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration">
+      </injectable>
       <inject
             class="au.gov.ga.earthsci.core.retrieve.RetrievalService">
          <type
