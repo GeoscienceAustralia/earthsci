@@ -42,13 +42,12 @@
       <injectable
             class="au.gov.ga.earthsci.core.proxy.ProxyPreferences">
       </injectable>
-      <injectable
-            class="au.gov.ga.earthsci.core.retrieve.RetrievalService"
-            inject="true">
+      <inject
+            class="au.gov.ga.earthsci.core.retrieve.RetrievalService">
          <type
                class="au.gov.ga.earthsci.core.retrieve.IRetrievalService">
          </type>
-      </injectable>
+      </inject>
       <injectable
             class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory">
       </injectable>

@@ -45,7 +45,7 @@ public class DatasetCatalogTreeNodeControlProvider implements ICatalogTreeNodeCo
 	{
 		DatasetCatalogTreeNode datasetNode = (DatasetCatalogTreeNode)node;
 		
-		return datasetNode.getIconURL() == null ? CatalogTreeLabelProvider.DEFAULT_PROVIDER.getIconURL(datasetNode) : datasetNode.getIconURL();
+		return datasetNode.getIconURL() == null ? CatalogTreeNodeControlProviderRegistry.DEFAULT_PROVIDER.getIconURL(datasetNode) : datasetNode.getIconURL();
 	}
 
 	@Override

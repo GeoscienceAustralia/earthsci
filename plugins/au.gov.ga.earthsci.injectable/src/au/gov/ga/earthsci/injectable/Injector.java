@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.spi.RegistryContributor;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.InjectorFactory;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,24 +48,45 @@ public final class Injector
 		{
 			try
 			{
-				Object object = element.createExecutableExtension("class"); //$NON-NLS-1$
-				ContextInjectionFactory.inject(object, context);
-				String injectString = element.getAttribute("inject"); //$NON-NLS-1$
-				if (Boolean.parseBoolean(injectString))
+				boolean bind = "bind".equals(element.getName()); //$NON-NLS-1$
+				boolean inject = "inject".equals(element.getName()); //$NON-NLS-1$
+				boolean injectable = "injectable".equals(element.getName()); //$NON-NLS-1$
+				if (bind)
 				{
-					IConfigurationElement[] types = element.getChildren("type"); //$NON-NLS-1$
-					for (IConfigurationElement type : types)
+					Class<?> implementationClass = getClass(element, "implementation"); //$NON-NLS-1$
+					Class<?> bindingClass = getClass(element, "binding"); //$NON-NLS-1$
+					InjectorFactory.getDefault().addBinding(bindingClass).implementedBy(implementationClass);
+				}
+				else if (inject || injectable)
+				{
+					Object object = element.createExecutableExtension("class"); //$NON-NLS-1$
+					ContextInjectionFactory.inject(object, context);
+					if (inject)
 					{
-						@SuppressWarnings("unchecked")
-						Class<Object> c = (Class<Object>) getClass(type, "class"); //$NON-NLS-1$
-						context.set(c, c.cast(object));
+						IConfigurationElement[] types = element.getChildren("type"); //$NON-NLS-1$
+						for (IConfigurationElement type : types)
+						{
+							@SuppressWarnings("unchecked")
+							Class<Object> c = (Class<Object>) getClass(type, "class"); //$NON-NLS-1$
+							context.set(c, c.cast(object));
+						}
+						IConfigurationElement[] names = element.getChildren("name"); //$NON-NLS-1$
+						for (IConfigurationElement name : names)
+						{
+							String n = name.getAttribute("value"); //$NON-NLS-1$
+							context.set(n, object);
+						}
+						if (types.length == 0 && names.length == 0)
+						{
+							@SuppressWarnings("unchecked")
+							Class<Object> c = (Class<Object>) object.getClass();
+							context.set(c, object);
+						}
 					}
-					IConfigurationElement[] names = element.getChildren("name"); //$NON-NLS-1$
-					for (IConfigurationElement name : names)
-					{
-						String n = name.getAttribute("value"); //$NON-NLS-1$
-						context.set(n, object);
-					}
+				}
+				else
+				{
+					throw new IllegalArgumentException("Unknown injectable child: " + element.getName()); //$NON-NLS-1$
 				}
 			}
 			catch (Exception e)

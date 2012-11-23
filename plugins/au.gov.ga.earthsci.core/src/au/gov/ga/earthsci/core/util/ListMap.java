@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * {@link HashMap} subclass that supports adding multiple values for a single
- * key.
+ * key as a list.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  * 
@@ -30,7 +30,7 @@ import java.util.List;
  * @param <V>
  *            Value class
  */
-public class MultiMap<K, V> extends HashMap<K, List<V>>
+public class ListMap<K, V> extends HashMap<K, List<V>>
 {
 	/**
 	 * Put a single key/value pair into this map.

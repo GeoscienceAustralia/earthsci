@@ -23,7 +23,7 @@ import java.util.Map;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class QueryString extends MultiMap<String, String>
+public class QueryString extends ListMap<String, String>
 {
 	/**
 	 * Create a QueryString object from the given query string. The string must

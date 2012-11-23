@@ -40,6 +40,16 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	LayerList getLayerList();
 
 	/**
+	 * Return true if this node's URI matches the given URI, or any of this
+	 * node's descendant's URI matches the given URI.
+	 * 
+	 * @param uri
+	 *            URI to match
+	 * @return True if there are any descendants with a matching URI
+	 */
+	boolean hasNodesForURI(URI uri);
+
+	/**
 	 * Return an array of {@link ILayerTreeNode}s that are descendants of this
 	 * node which have URIs that match the given URI. If there are no
 	 * descendants with the given URI, the returned array is empty. The returned

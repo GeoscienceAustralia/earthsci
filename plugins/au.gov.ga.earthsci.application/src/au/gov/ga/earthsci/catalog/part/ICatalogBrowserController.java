@@ -73,13 +73,6 @@ public interface ICatalogBrowserController
 	 * @param nodes the nodes to remove from the layer model
 	 */
 	void removeFromLayerModel(ITreeNode<ICatalogTreeNode>... nodes);
-	
-	/**
-	 * Set the catalog browser part on this controller
-	 * 
-	 * @param part
-	 */
-	void setCatalogBrowserPart(CatalogBrowserPart part);
 
 	/**
 	 * Determine whether all of the provided nodes are layer nodes (e.g. ones that can be added to the current layer model)

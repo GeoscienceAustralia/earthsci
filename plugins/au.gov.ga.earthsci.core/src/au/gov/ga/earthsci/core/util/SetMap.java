@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.worldwind.common.util;
+package au.gov.ga.earthsci.core.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * {@link HashMap} subclass that supports adding multiple values for a single
- * key.
+ * key as a set.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  * 
@@ -30,20 +30,60 @@ import java.util.List;
  * @param <V>
  *            Value class
  */
-public class MultiMap<K, V> extends HashMap<K, List<V>>
+public class SetMap<K, V> extends HashMap<K, Set<V>>
 {
+	/**
+	 * Put a single key/value pair into this map.
+	 * 
+	 * @param key
+	 * @param value
+	 */
 	public void putSingle(K key, V value)
 	{
-		List<V> values = null;
+		Set<V> values = null;
 		if (containsKey(key))
 		{
 			values = get(key);
 		}
 		else
 		{
-			values = new ArrayList<V>();
+			values = new HashSet<V>();
 			put(key, values);
 		}
 		values.add(value);
+	}
+
+	/**
+	 * Remove a single key/value pair from this map if it exists.
+	 * 
+	 * @param key
+	 * @param value
+	 * @return True if the key/value pair was found and removed, false
+	 *         otherwise.
+	 */
+	public boolean removeSingle(K key, V value)
+	{
+		if (containsKey(key))
+		{
+			Set<V> values = get(key);
+			return values.remove(value);
+		}
+		return false;
+	}
+	
+	/**
+	 * Return the number of entries stored for the given key
+	 * 
+	 * @param key
+	 * 
+	 * @return The number of entries stored for the given key
+	 */
+	public int count(K key)
+	{
+		if (!containsKey(key))
+		{
+			return 0;
+		}
+		return get(key).size();
 	}
 }
