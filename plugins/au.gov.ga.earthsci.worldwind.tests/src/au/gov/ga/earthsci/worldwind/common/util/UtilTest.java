@@ -555,7 +555,7 @@ public class UtilTest
 	@Test
 	public void testComputeLatLonFromStringWithValidSignedDegMinSec()
 	{
-		LatLon result = Util.computeLatLonFromString("-87° 23' 33\", 123° 45' 56\"");
+		LatLon result = Util.computeLatLonFromString("-87\u00B0 23' 33\", 123\u00B0 45' 56\"");
 		LatLon expected = new LatLon(Angle.fromDegrees(-87.3925), Angle.fromDegrees(123.7656));
 
 		assertEquals(expected.latitude.degrees, result.latitude.degrees, ALLOWABLE_DOUBLE_ERROR);
@@ -565,7 +565,7 @@ public class UtilTest
 	@Test
 	public void testComputeLatLonFromStringWithValidEWNSDegMinSec()
 	{
-		LatLon result = Util.computeLatLonFromString("87° 23' 33\"S, 123° 45' 56\"E");
+		LatLon result = Util.computeLatLonFromString("87\u00B0 23' 33\"S, 123\u00B0 45' 56\"E");
 		LatLon expected = new LatLon(Angle.fromDegrees(-87.3925), Angle.fromDegrees(123.7656));
 
 		assertEquals(expected.latitude.degrees, result.latitude.degrees, ALLOWABLE_DOUBLE_ERROR);

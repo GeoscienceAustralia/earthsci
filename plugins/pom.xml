@@ -19,12 +19,14 @@
 
 	<modules>
 		<module>au.gov.ga.earthsci.logging</module>
+		<module>au.gov.ga.earthsci.injectable</module>
 		<module>au.gov.ga.earthsci.core</module>
 		<module>au.gov.ga.earthsci.core.tests</module>
 		<module>au.gov.ga.earthsci.worldwind</module>
 		<module>au.gov.ga.earthsci.worldwind.tests</module>
 		<module>au.gov.ga.earthsci.notification.popup</module>
 		<module>au.gov.ga.earthsci.application</module>
+		<module>au.gov.ga.earthsci.application.tests</module>
 	</modules>
 
 </project>
