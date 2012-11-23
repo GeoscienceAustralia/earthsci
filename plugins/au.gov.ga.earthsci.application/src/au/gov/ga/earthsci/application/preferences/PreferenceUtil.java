@@ -164,7 +164,7 @@ public class PreferenceUtil
 		{
 			if (BLACKLIST_PREFERENCES.contains(elmt.getContributor().getName()))
 			{
-				logger.info("Ignoring preferences from element {0}", elmt.getContributor().getName()); //$NON-NLS-1$
+				logger.debug("Ignoring preferences from element {0}", elmt.getContributor().getName()); //$NON-NLS-1$
 				continue;
 			}
 			if (!elmt.getName().equals(ELMT_PAGE))
