@@ -224,7 +224,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		layer.setURI(catalogTreeNode.getLayerURI());
 		layer.setLabel(catalogTreeNode.getLabelOrName());
 		layer.setEnabled(true);
-		layer.setIconURL(CatalogTreeNodeControlProviderRegistry.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
+		layer.setIconURL(CatalogTreeLabelProviderRegistry.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
 		return layer;
 	}
 
@@ -235,7 +235,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		folder.setLabel(catalogTreeNode.getLabel());
 		folder.setURI(catalogTreeNode.getURI());
 		folder.setExpanded(true);
-		folder.setIconURL(CatalogTreeNodeControlProviderRegistry.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
+		folder.setIconURL(CatalogTreeLabelProviderRegistry.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
 		return folder;
 	}
 

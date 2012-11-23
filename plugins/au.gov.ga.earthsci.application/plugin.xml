@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
-   <extension-point id="catalogNodeControlProvider" name="Catalog Node Control Provider" schema="schema/au.gov.ga.earthsci.catalog.CatalogNodeControlProvider.exsd"/>
+   <extension-point id="catalogTreeLabelProvider" name="Catalog Tree Label Provider" schema="schema/au.gov.ga.earthsci.catalog.CatalogTreeLabelProvider.exsd"/>
 
    <extension
          id="product"
@@ -55,9 +55,9 @@
       </receiver>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.application.catalogNodeControlProvider">
+         point="au.gov.ga.earthsci.application.catalogTreeLabelProvider">
       <provider
-            class="au.gov.ga.earthsci.catalog.part.DatasetCatalogTreeNodeControlProvider">
+            class="au.gov.ga.earthsci.catalog.part.DatasetCatalogTreeLabelProvider">
       </provider>
    </extension>
    <extension
@@ -71,7 +71,7 @@
             implementation="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferences">
       </bind>
       <injectable
-            class="au.gov.ga.earthsci.catalog.part.CatalogTreeNodeControlProviderRegistry">
+            class="au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry">
       </injectable>
    </extension>
 

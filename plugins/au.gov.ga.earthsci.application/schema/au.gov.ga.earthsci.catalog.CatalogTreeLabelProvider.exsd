@@ -3,10 +3,10 @@
 <schema targetNamespace="au.gov.ga.earthsci.application" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="au.gov.ga.earthsci.application" id="catalogNodeControlProvider" name="Catalog Node Control Provider"/>
+         <meta.schema plugin="au.gov.ga.earthsci.application" id="catalogTreeLabelProvider" name="Catalog Tree Label Provider"/>
       </appinfo>
       <documentation>
-         Used to provide control providers that style the appearance of ICatalogTreeNodes in the catalog browser panel.
+         Used to provide label providers that style the appearance of ICatalogTreeNodes in the catalog browser panel.
       </documentation>
    </annotation>
 
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.catalog.part.ICatalogTreeNodeControlProvider"/>
+                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.catalog.part.ICatalogTreeLabelProvider"/>
                </appinfo>
             </annotation>
          </attribute>
