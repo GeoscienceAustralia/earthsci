@@ -64,7 +64,11 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		boolean allExistInModel = true;
 		for (ITreeNode<ICatalogTreeNode> n : nodes)
 		{
-			if (n != null && n.getValue().isLayerNode())
+			if (n == null || n.getValue() == null)
+			{
+				continue;
+			}
+			if (n.getValue().isLayerNode())
 			{
 				allExistInModel = allExistInModel && existsInLayerModel(n.getValue().getLayerURI());
 			}
@@ -77,7 +81,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 				return false;
 			}
 		}
-		return true;
+		return allExistInModel;
 	}
 	
 	@Override
@@ -90,6 +94,10 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		boolean anyExistInModel = false;
 		for (ITreeNode<ICatalogTreeNode> n : nodes)
 		{
+			if (n == null || n.getValue() == null)
+			{
+				continue;
+			}
 			if (n != null && n.getValue() != null && n.getValue().isLayerNode())
 			{
 				anyExistInModel = anyExistInModel || existsInLayerModel(n.getValue().getLayerURI());
@@ -109,6 +117,10 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	@Override
 	public boolean areAllLayerNodes(ITreeNode<ICatalogTreeNode>... nodes)
 	{
+		if (nodes == null)
+		{
+			return true;
+		}
 		for (ITreeNode<ICatalogTreeNode> node : nodes)
 		{
 			if (node != null && !node.getValue().isLayerNode())
@@ -305,5 +317,10 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		preferences.setDeleteEmptyFoldersMode(message.getToggleState() ? preference : UserActionPreference.ASK);
 		
 		return preference == UserActionPreference.ALWAYS;
+	}
+	
+	public void setCurrentLayerModel(ITreeModel currentLayerModel)
+	{
+		this.currentLayerModel = currentLayerModel;
 	}
 }

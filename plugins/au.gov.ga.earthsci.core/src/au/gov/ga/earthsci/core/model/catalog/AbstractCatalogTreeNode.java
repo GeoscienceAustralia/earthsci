@@ -32,7 +32,7 @@ public abstract class AbstractCatalogTreeNode extends AbstractLazyTreeNode<ICata
 	}
 	
 	/** For persistence mechanism only */
-	protected AbstractCatalogTreeNode() {};
+	protected AbstractCatalogTreeNode() {setValue(this);};
 	
 	@Override
 	protected IStatus doLoad(IProgressMonitor monitor)

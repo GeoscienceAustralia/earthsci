@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 
@@ -57,7 +56,6 @@ public class CatalogTreeDragSourceListener implements DragSourceListener
 		{
 			event.doit = controller.areAllLayerNodes(getSelectedCatalogNodes());
 		}
-		event.detail = DND.DROP_COPY;
 	}
 
 	@Override
