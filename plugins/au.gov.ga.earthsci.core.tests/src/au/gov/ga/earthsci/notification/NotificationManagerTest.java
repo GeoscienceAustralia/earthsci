@@ -19,7 +19,7 @@ public class NotificationManagerTest
 	{
 		context = new Mockery();
 		
-		NotificationManager.get().removeAllRecievers();
+		NotificationManager.removeAllRecievers();
 	}
 	
 	@Test
@@ -34,10 +34,10 @@ public class NotificationManagerTest
 		final INotificationReceiver receiver = context.mock(INotificationReceiver.class);
 		final INotification notification = Notification.create(NotificationLevel.ERROR, "A title", "Some text").build();
 		
-		NotificationManager.get().registerReceiver(receiver);
+		NotificationManager.registerReceiver(receiver);
 		
 		context.checking(new Expectations() {{{
-			oneOf(receiver).handle(with(notification), with(NotificationManager.get()));
+			oneOf(receiver).handle(with(notification));
 		}}});
 		
 		NotificationManager.sendNotification(notification);
@@ -49,11 +49,11 @@ public class NotificationManagerTest
 		final INotificationReceiver receiver = context.mock(INotificationReceiver.class);
 		final INotification notification = Notification.create(NotificationLevel.ERROR, "A title", "Some text").build();
 		
-		NotificationManager.get().registerReceiver(receiver);
-		NotificationManager.get().removeReceiver(receiver);
+		NotificationManager.registerReceiver(receiver);
+		NotificationManager.removeReceiver(receiver);
 		
 		context.checking(new Expectations() {{{
-			never(receiver).handle(with(notification), with(NotificationManager.get()));
+			never(receiver).handle(with(notification));
 		}}});
 		
 		NotificationManager.sendNotification(notification);

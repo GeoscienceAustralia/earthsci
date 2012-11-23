@@ -6,7 +6,6 @@ import org.eclipse.swt.widgets.Display;
 import au.gov.ga.earthsci.notification.INotification;
 import au.gov.ga.earthsci.notification.INotificationReceiver;
 import au.gov.ga.earthsci.notification.NotificationLevel;
-import au.gov.ga.earthsci.notification.NotificationManager;
 
 /**
  * A notification receiver that responds to error level notifications that require acknowledgement.
@@ -20,7 +19,7 @@ public class DialogNotificationReceiver implements INotificationReceiver
 {
 
 	@Override
-	public void handle(final INotification notification, final NotificationManager manager)
+	public void handle(final INotification notification)
 	{
 		if (notification == null || 
 				notification.getLevel() != NotificationLevel.ERROR ||

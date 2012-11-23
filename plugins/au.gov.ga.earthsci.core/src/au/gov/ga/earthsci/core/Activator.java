@@ -18,18 +18,14 @@ package au.gov.ga.earthsci.core;
 import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.avlist.AVKey;
 
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.RegistryFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.model.catalog.CatalogFactory;
 import au.gov.ga.earthsci.core.model.layer.LayerFactory;
 import au.gov.ga.earthsci.core.proxy.ProxyPreferences;
 import au.gov.ga.earthsci.core.worldwind.WorldWindModel;
-import au.gov.ga.earthsci.notification.NotificationManager;
 import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
 
 /**
@@ -54,10 +50,6 @@ public class Activator implements BundleActivator
 		Configuration.setValue(AVKey.LAYER_FACTORY, LayerFactory.class.getName());
 		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
 		Configuration.setValue(AVKey.RETRIEVAL_SERVICE_CLASS_NAME, ExtendedRetrievalService.class.getName());
-
-		loadExtensions(context);
-
-		context.registerService(NotificationManager.class, NotificationManager.get(), null);
 	}
 
 	@Override
@@ -74,13 +66,5 @@ public class Activator implements BundleActivator
 	public static String getBundleName()
 	{
 		return bundleContext.getBundle().getSymbolicName();
-	}
-
-	private void loadExtensions(final BundleContext context)
-	{
-		IExtensionRegistry registry = RegistryFactory.getRegistry();
-
-		CatalogFactory.loadProvidersFromRegistry(registry);
-		NotificationManager.loadReceivers(registry, context);
 	}
 }

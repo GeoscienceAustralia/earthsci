@@ -51,6 +51,12 @@
       <injectable
             class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory">
       </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.model.catalog.CatalogFactory">
+      </injectable>
+      <inject
+            class="au.gov.ga.earthsci.notification.NotificationManager">
+      </inject>
       <inject
             class="au.gov.ga.earthsci.core.worldwind.WorldWindModel">
          <type

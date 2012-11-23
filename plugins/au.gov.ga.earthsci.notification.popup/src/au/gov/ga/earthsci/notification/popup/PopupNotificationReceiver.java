@@ -7,7 +7,6 @@ import org.eclipse.swt.widgets.Display;
 
 import au.gov.ga.earthsci.notification.INotification;
 import au.gov.ga.earthsci.notification.INotificationReceiver;
-import au.gov.ga.earthsci.notification.NotificationManager;
 import au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences;
 import au.gov.ga.earthsci.notification.popup.preferences.PopupNotificationPreferences;
 import au.gov.ga.earthsci.notification.popup.ui.PopupNotification;
@@ -31,7 +30,7 @@ public class PopupNotificationReceiver implements INotificationReceiver
 	private IPopupNotificationPreferences preferences;
 	
 	@Override
-	public void handle(final INotification notification, NotificationManager manager)
+	public void handle(final INotification notification)
 	{
 		if (notification.requiresAcknowledgment() || !preferences.shouldShow(notification))
 		{
