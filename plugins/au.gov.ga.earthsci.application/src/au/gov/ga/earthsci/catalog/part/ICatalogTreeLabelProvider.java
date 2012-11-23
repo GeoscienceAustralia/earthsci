@@ -27,7 +27,7 @@ import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public interface ICatalogTreeNodeControlProvider
+public interface ICatalogTreeLabelProvider
 {
 
 	/**

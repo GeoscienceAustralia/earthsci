@@ -33,12 +33,12 @@ import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 
 /**
- * Registry that provides {@link ICatalogTreeNodeControlProvider}s for
+ * Registry that provides {@link ICatalogTreeLabelProvider}s for
  * initializing the UI for catalog tree nodes.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class CatalogTreeNodeControlProviderRegistry
+public class CatalogTreeLabelProviderRegistry
 {
 	@Inject
 	public void initialiseExtensions(IExtensionRegistry registry)
@@ -46,21 +46,19 @@ public class CatalogTreeNodeControlProviderRegistry
 		loadProviders(registry);
 	}
 	
-	private static final Logger logger = LoggerFactory.getLogger(CatalogTreeNodeControlProviderRegistry.class);
+	private static final Logger logger = LoggerFactory.getLogger(CatalogTreeLabelProviderRegistry.class);
 
-	private static final Set<ICatalogTreeNodeControlProvider> controlProviders =
-			new LinkedHashSet<ICatalogTreeNodeControlProvider>();
-	private static final ReadWriteLock controlProvidersLock = new ReentrantReadWriteLock();
+	private static final Set<ICatalogTreeLabelProvider> labelProviders = new LinkedHashSet<ICatalogTreeLabelProvider>();
+	private static final ReadWriteLock labelProvidersLock = new ReentrantReadWriteLock();
 
-	public static final String CATALOG_NODE_CONTROL_PROVIDER_EXTENSION_POINT_ID =
-			"au.gov.ga.earthsci.application.catalogNodeControlProvider"; //$NON-NLS-1$
+	public static final String CATALOG_NODE_CONTROL_PROVIDER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.application.catalogTreeLabelProvider"; //$NON-NLS-1$
 	public static final String CONTROL_PROVIDER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
 	/**
 	 * The default provider - can be used to obtain default values for a given
 	 * node
 	 */
-	public static final ICatalogTreeNodeControlProvider DEFAULT_PROVIDER = new ICatalogTreeNodeControlProvider()
+	private static final ICatalogTreeLabelProvider DEFAULT_PROVIDER = new ICatalogTreeLabelProvider()
 	{
 
 		@Override
@@ -105,6 +103,14 @@ public class CatalogTreeNodeControlProviderRegistry
 		{
 		};
 	};
+	
+	/**
+	 * @return The default label provider to use if no others are available
+	 */
+	public static ICatalogTreeLabelProvider getDefaultProvider()
+	{
+		return DEFAULT_PROVIDER;
+	}
 
 	/**
 	 * Load the registered providers from the extension registry
@@ -114,18 +120,17 @@ public class CatalogTreeNodeControlProviderRegistry
 	 */
 	public static void loadProviders(final IExtensionRegistry registry)
 	{
-		logger.debug("Loading catalog node control providers from extension registry"); //$NON-NLS-1$
+		logger.debug("Registering catalog tree label providers"); //$NON-NLS-1$
 
-		IConfigurationElement[] config =
-				registry.getConfigurationElementsFor(CATALOG_NODE_CONTROL_PROVIDER_EXTENSION_POINT_ID);
+		IConfigurationElement[] config = registry.getConfigurationElementsFor(CATALOG_NODE_CONTROL_PROVIDER_EXTENSION_POINT_ID);
 		try
 		{
 			for (IConfigurationElement e : config)
 			{
 				final Object o = e.createExecutableExtension(CONTROL_PROVIDER_CLASS_ATTRIBUTE);
-				if (o instanceof ICatalogTreeNodeControlProvider)
+				if (o instanceof ICatalogTreeLabelProvider)
 				{
-					registerProvider((ICatalogTreeNodeControlProvider) o);
+					registerProvider((ICatalogTreeLabelProvider) o);
 				}
 			}
 		}
@@ -141,23 +146,23 @@ public class CatalogTreeNodeControlProviderRegistry
 	 * @param provider
 	 *            The provider to register
 	 */
-	public static void registerProvider(final ICatalogTreeNodeControlProvider provider)
+	public static void registerProvider(final ICatalogTreeLabelProvider provider)
 	{
 		if (provider == null)
 		{
 			return;
 		}
 
-		controlProvidersLock.writeLock().lock();
+		labelProvidersLock.writeLock().lock();
 		try
 		{
-			controlProviders.add(provider);
+			labelProviders.add(provider);
 		}
 		finally
 		{
-			controlProvidersLock.writeLock().unlock();
+			labelProvidersLock.writeLock().unlock();
 		}
-		logger.debug("Registered catalog node control provider: {}", provider); //$NON-NLS-1$
+		logger.debug("Registered catalog node label provider: {}", provider); //$NON-NLS-1$
 	}
 
 	/**
@@ -168,23 +173,23 @@ public class CatalogTreeNodeControlProviderRegistry
 	 * 
 	 * @return The appropriate control provider
 	 */
-	public static ICatalogTreeNodeControlProvider getProvider(ICatalogTreeNode node)
+	public static ICatalogTreeLabelProvider getProvider(ICatalogTreeNode node)
 	{
-		controlProvidersLock.readLock().lock();
+		labelProvidersLock.readLock().lock();
 		try
 		{
-			for (ICatalogTreeNodeControlProvider provider : controlProviders)
+			for (ICatalogTreeLabelProvider provider : labelProviders)
 			{
 				if (provider.supports(node))
 				{
 					return provider;
 				}
 			}
-			return DEFAULT_PROVIDER;
+			return getDefaultProvider();
 		}
 		finally
 		{
-			controlProvidersLock.readLock().unlock();
+			labelProvidersLock.readLock().unlock();
 		}
 	}
 
@@ -193,17 +198,17 @@ public class CatalogTreeNodeControlProviderRegistry
 	 */
 	public static void dispose()
 	{
-		controlProvidersLock.readLock().lock();
+		labelProvidersLock.readLock().lock();
 		try
 		{
-			for (ICatalogTreeNodeControlProvider provider : controlProviders)
+			for (ICatalogTreeLabelProvider provider : labelProviders)
 			{
 				provider.dispose();
 			}
 		}
 		finally
 		{
-			controlProvidersLock.readLock().unlock();
+			labelProvidersLock.readLock().unlock();
 		}
 	}
 }

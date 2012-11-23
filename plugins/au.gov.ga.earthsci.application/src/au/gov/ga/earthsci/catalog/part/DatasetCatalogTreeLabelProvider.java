@@ -24,15 +24,15 @@ import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.catalog.dataset.DatasetCatalogTreeNode;
 
 /**
- * An {@link ICatalogTreeNodeControlProvider} that supports {@link DatasetCatalogTreeNode}s
+ * An {@link ICatalogTreeLabelProvider} that supports {@link DatasetCatalogTreeNode}s
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class DatasetCatalogTreeNodeControlProvider implements ICatalogTreeNodeControlProvider
+public class DatasetCatalogTreeLabelProvider implements ICatalogTreeLabelProvider
 {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(DatasetCatalogTreeNodeControlProvider.class);
+	private static final Logger logger = LoggerFactory.getLogger(DatasetCatalogTreeLabelProvider.class);
 
 	@Override
 	public boolean supports(ICatalogTreeNode node)
@@ -45,7 +45,7 @@ public class DatasetCatalogTreeNodeControlProvider implements ICatalogTreeNodeCo
 	{
 		DatasetCatalogTreeNode datasetNode = (DatasetCatalogTreeNode)node;
 		
-		return datasetNode.getIconURL() == null ? CatalogTreeNodeControlProviderRegistry.DEFAULT_PROVIDER.getIconURL(datasetNode) : datasetNode.getIconURL();
+		return datasetNode.getIconURL() == null ? CatalogTreeLabelProviderRegistry.getDefaultProvider().getIconURL(datasetNode) : datasetNode.getIconURL();
 	}
 
 	@Override
