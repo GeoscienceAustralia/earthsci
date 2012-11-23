@@ -5,7 +5,6 @@ import java.util.List;
 
 import au.gov.ga.earthsci.notification.INotification;
 import au.gov.ga.earthsci.notification.INotificationReceiver;
-import au.gov.ga.earthsci.notification.NotificationManager;
 
 /**
  * A {@link INotificationReceiver} that provides a tabular view of historic
@@ -27,7 +26,7 @@ public class NotificationPartReceiver implements INotificationReceiver
 	private List<INotification> notifications = new ArrayList<INotification>();
 	
 	@Override
-	public void handle(INotification notification, NotificationManager manager)
+	public void handle(INotification notification)
 	{
 		notifications.add(notification);
 		if (view != null)

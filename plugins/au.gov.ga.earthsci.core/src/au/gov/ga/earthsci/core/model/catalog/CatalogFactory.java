@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.e4.core.di.annotations.Creatable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +22,15 @@ import org.slf4j.LoggerFactory;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
+@Creatable
+@Singleton
 public class CatalogFactory
 {
+	@Inject
+	public void setup(IExtensionRegistry registry)
+	{
+		loadProvidersFromRegistry(registry);
+	}
 
 	public static final String CATALOG_PROVIDER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.core.model.catalog.provider"; //$NON-NLS-1$
 	public static final String CATALOG_PROVIDER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$

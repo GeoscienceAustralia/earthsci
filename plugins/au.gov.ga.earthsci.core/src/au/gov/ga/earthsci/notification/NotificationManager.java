@@ -16,8 +16,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.core.internal.contexts.osgi.EclipseContextOSGi;
-import org.osgi.framework.BundleContext;
+import org.eclipse.e4.core.di.annotations.Creatable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,18 +35,24 @@ import org.slf4j.LoggerFactory;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-//@Creatable
+@Creatable
 @Singleton
 public class NotificationManager
 {
+	@Inject
+	public void setup(IExtensionRegistry registry, IEclipseContext context)
+	{
+		loadReceivers(registry, context);
+	}
+	
 	public static final String NOTIFICATION_RECEIVER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.receiver"; //$NON-NLS-1$
 	public static final String NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.categoryProvider"; //$NON-NLS-1$
 	public static final String NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 	
-	private Set<INotificationReceiver> receivers = new LinkedHashSet<INotificationReceiver>();
-	private ReadWriteLock receiversLock = new ReentrantReadWriteLock();
+	private static Set<INotificationReceiver> receivers = new LinkedHashSet<INotificationReceiver>();
+	private static ReadWriteLock receiversLock = new ReentrantReadWriteLock();
 	
-	private ExecutorService notifier = Executors.newSingleThreadExecutor(new ThreadFactory(){
+	private static ExecutorService notifier = Executors.newSingleThreadExecutor(new ThreadFactory(){
 		@Override
 		public Thread newThread(Runnable r)
 		{
@@ -55,12 +60,7 @@ public class NotificationManager
 		}
 	});
 	
-	private static final NotificationManager INSTANCE = new NotificationManager();
-	
 	private static final Logger logger = LoggerFactory.getLogger(NotificationManager.class);
-	
-	/** Singleton access via {@link #get()} */
-	private NotificationManager() {}
 	
 	/**
 	 * Load registered notification receivers from the provided extension registry.
@@ -71,8 +71,7 @@ public class NotificationManager
 	 * @param registry The extension registry to search for notification receivers
 	 * @param context The context to use for dependency injection etc.
 	 */
-	@Inject
-	public static void loadReceivers(IExtensionRegistry registry, BundleContext context)
+	public static void loadReceivers(IExtensionRegistry registry, IEclipseContext context)
 	{
 		logger.info("Registering notification receivers"); //$NON-NLS-1$
 		
@@ -84,9 +83,9 @@ public class NotificationManager
 				final Object o = e.createExecutableExtension(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE); 
 				if (o instanceof INotificationReceiver)
 				{
-					ContextInjectionFactory.inject(o, new EclipseContextOSGi(context));
-					context.registerService(e.getAttribute(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE), o, null);
-					INSTANCE.registerReceiver((INotificationReceiver)o);
+					ContextInjectionFactory.inject(o, context);
+					context.set(e.getAttribute(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE), o);
+					registerReceiver((INotificationReceiver)o);
 				}
 			}
 		}
@@ -139,19 +138,7 @@ public class NotificationManager
 	 */
 	public static void sendNotification(INotification notification)
 	{
-		get().notify(notification);
-	}
-	
-	/**
-	 * @return A singleton instance of the {@link NotificationManager}
-	 */
-	public static NotificationManager get()
-	{
-		if (INSTANCE == null)
-		{
-			new NotificationManager();
-		}
-		return INSTANCE;
+		notify(notification);
 	}
 	
 	/**
@@ -159,7 +146,7 @@ public class NotificationManager
 	 * 
 	 * @param notification
 	 */
-	public void notify(final INotification notification)
+	public static void notify(final INotification notification)
 	{
 		if (notification == null)
 		{
@@ -175,7 +162,7 @@ public class NotificationManager
 				{
 					for (INotificationReceiver receiver : receivers)
 					{
-						receiver.handle(notification, NotificationManager.this);
+						receiver.handle(notification);
 					}
 				}
 				finally
@@ -191,7 +178,7 @@ public class NotificationManager
 	 * 
 	 * @param receiver The receiver to register
 	 */
-	public void registerReceiver(INotificationReceiver receiver)
+	public static void registerReceiver(INotificationReceiver receiver)
 	{
 		if (receiver == null)
 		{
@@ -215,7 +202,7 @@ public class NotificationManager
 	 * 
 	 * @param receiver The receiver to register
 	 */
-	public void removeReceiver(INotificationReceiver receiver)
+	public static void removeReceiver(INotificationReceiver receiver)
 	{
 		if (receiver == null)
 		{
@@ -238,7 +225,7 @@ public class NotificationManager
 	/**
 	 * Remove all registered receivers from this manager 
 	 */
-	public void removeAllRecievers()
+	public static void removeAllRecievers()
 	{
 		receiversLock.writeLock().lock();
 		try

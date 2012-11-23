@@ -18,6 +18,12 @@ package au.gov.ga.earthsci.core.model.catalog;
 import java.net.URI;
 import java.util.Arrays;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Singleton;
+
+import org.eclipse.e4.core.di.annotations.Creatable;
+
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 
@@ -26,10 +32,23 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
+@Creatable
+@Singleton
 public class CatalogModel implements ICatalogModel
 {
-
 	private final ICatalogTreeNode root = new RootNode();
+	
+	@PostConstruct
+	public void load()
+	{
+		CatalogPersister.loadFromWorkspace(this);
+	}
+	
+	@PreDestroy
+	public void save()
+	{
+		CatalogPersister.saveToWorkspace(this);
+	}
 	
 	@Override
 	public ICatalogTreeNode getRoot()
@@ -61,6 +80,20 @@ public class CatalogModel implements ICatalogModel
 		}
 		
 		root.add(catalog);
+	}
+	
+	@Override
+	public void addTopLevelCatalogs(final ICatalogTreeNode[] catalogs)
+	{
+		if (catalogs == null)
+		{
+			return;
+		}
+		
+		for (ICatalogTreeNode catalog : catalogs)
+		{
+			addTopLevelCatalog(catalog);
+		}
 	}
 	
 	@Override

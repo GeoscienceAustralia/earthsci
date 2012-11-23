@@ -42,6 +42,9 @@
       <injectable
             class="au.gov.ga.earthsci.core.proxy.ProxyPreferences">
       </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration">
+      </injectable>
       <inject
             class="au.gov.ga.earthsci.core.retrieve.RetrievalService">
          <type
@@ -51,6 +54,39 @@
       <injectable
             class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory">
       </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.model.catalog.CatalogFactory">
+      </injectable>
+      <inject
+            class="au.gov.ga.earthsci.notification.NotificationManager">
+      </inject>
+      <inject
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindModel">
+         <type
+               class="au.gov.ga.earthsci.core.worldwind.WorldWindModel">
+         </type>
+         <type
+               class="au.gov.ga.earthsci.core.worldwind.ITreeModel">
+         </type>
+      </inject>
+      <inject
+            class="au.gov.ga.earthsci.core.model.catalog.CatalogModel">
+         <type
+               class="au.gov.ga.earthsci.core.model.catalog.ICatalogModel">
+         </type>
+      </inject>
+      <inject
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindView">
+         <type
+               class="au.gov.ga.earthsci.core.worldwind.WorldWindView">
+         </type>
+         <type
+               class="gov.nasa.worldwind.view.orbit.OrbitView">
+         </type>
+         <type
+               class="gov.nasa.worldwind.View">
+         </type>
+      </inject>
    </extension>
 
 </plugin>

@@ -16,5 +16,5 @@ public interface INotificationReceiver
 	 * @param notification The notification to handle
 	 * @param manager The notification manager that issued the notification
 	 */
-	void handle(INotification notification, NotificationManager manager);
+	void handle(INotification notification);
 }

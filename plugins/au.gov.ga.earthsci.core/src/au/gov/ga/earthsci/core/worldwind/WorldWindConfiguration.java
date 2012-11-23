@@ -13,44 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core;
+package au.gov.ga.earthsci.core.worldwind;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import gov.nasa.worldwind.Configuration;
+import gov.nasa.worldwind.avlist.AVKey;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Singleton;
+
+import org.eclipse.e4.core.di.annotations.Creatable;
+
+import au.gov.ga.earthsci.core.model.layer.LayerFactory;
+import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
 
 /**
- * Plugin's activator.
+ * Helper class for setting up the WorldWind {@link Configuration} properties.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class Activator implements BundleActivator
+@Creatable
+@Singleton
+public class WorldWindConfiguration
 {
-	private static BundleContext bundleContext;
-
-	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(Activator.class);
-	
-	@Override
-	public void start(final BundleContext context) throws Exception
+	@PostConstruct
+	public void setup()
 	{
-		bundleContext = context;
-	}
-
-	@Override
-	public void stop(BundleContext context) throws Exception
-	{
-		bundleContext = null;
-	}
-
-	static BundleContext getContext()
-	{
-		return bundleContext;
-	}
-
-	public static String getBundleName()
-	{
-		return bundleContext.getBundle().getSymbolicName();
+		Configuration.setValue(AVKey.LAYER_FACTORY, LayerFactory.class.getName());
+		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
+		Configuration.setValue(AVKey.RETRIEVAL_SERVICE_CLASS_NAME, ExtendedRetrievalService.class.getName());
 	}
 }
