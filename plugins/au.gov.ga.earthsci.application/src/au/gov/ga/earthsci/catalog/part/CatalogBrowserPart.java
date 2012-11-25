@@ -59,7 +59,7 @@ public class CatalogBrowserPart
 	
 	private void initViewer(final Composite parent, final MPart part, final EMenuService menuService)
 	{
-		viewer = new ControlTreeViewer(parent, SWT.VIRTUAL);
+		viewer = new ControlTreeViewer(parent, SWT.MULTI);
 		viewer.setContentProvider(new CatalogContentProvider(viewer));
 		viewer.setLabelProvider(new DecoratingLabelProvider(labelProvider, labelProvider));
 		viewer.setSorter(null);
