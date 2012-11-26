@@ -17,7 +17,6 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.help.AbstractHelpUI;
-import org.eclipse.ui.internal.WorkbenchPlugin;
 
 /**
  * A handler responsible for launching the help mechanism.
@@ -88,12 +87,12 @@ public class HelpHandler
 				// Instantiate the help UI
 				try
 				{
-					pluggableHelpUI = (AbstractHelpUI) WorkbenchPlugin.createExtension(element, "class"); //$NON-NLS-1$
+					pluggableHelpUI = (AbstractHelpUI) element.createExecutableExtension("class"); //$NON-NLS-1$
 					return true;
 				}
 				catch (CoreException e)
 				{
-					WorkbenchPlugin.log("Unable to instantiate help UI" + e.getStatus(), e);//$NON-NLS-1$
+					logger.error("Unable to instantiate help UI" + e.getStatus(), e);//$NON-NLS-1$
 				}
 				return false;
 			}
