@@ -1,6 +1,12 @@
 package au.gov.ga.earthsci.notification.popup.preferences;
 
-import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.*;
+import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.CATEGORY_FILTER;
+import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.ENABLE_POPUPS;
+import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.POPUP_DURATION;
+import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.QUALIFIER_ID;
+import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.SHOW_ERROR_NOTIFICATIONS;
+import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.SHOW_INFO_NOTIFICATIONS;
+import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.SHOW_WARNING_NOTIFICATIONS;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -22,10 +28,10 @@ import org.eclipse.swt.widgets.TableItem;
 
 import au.gov.ga.earthsci.core.preferences.LabelFieldEditor;
 import au.gov.ga.earthsci.core.preferences.MultiSelectTableListFieldEditor;
-import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
-import au.gov.ga.earthsci.core.preferences.SpacerFieldEditor;
 import au.gov.ga.earthsci.core.preferences.MultiSelectTableListFieldEditor.IItemSerializer;
 import au.gov.ga.earthsci.core.preferences.MultiSelectTableListFieldEditor.ITableItemCreator;
+import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
+import au.gov.ga.earthsci.core.preferences.SpacerFieldEditor;
 import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.popup.Messages;
 
@@ -46,6 +52,7 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 	private LabelFieldEditor categoryFilterLabelEditor;
 	private MultiSelectTableListFieldEditor<NotificationCategory> categoryFilterEditor;
 	
+	@SuppressWarnings("restriction")
 	public PopupNotificationPreferencePage()
 	{
 		super(GRID);
