@@ -34,7 +34,9 @@ Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
  au.gov.ga.earthsci.logging;bundle-version="1.0.0",
  org.eclipse.jface;bundle-version="3.8.0",
  au.gov.ga.earthsci.injectable;bundle-version="1.0.0"
-Import-Package: org.eclipse.osgi.util,org.slf4j
+Import-Package: javax.annotation;version="1.0.0",
+ org.eclipse.osgi.util,
+ org.slf4j
 Eclipse-BuddyPolicy: registered
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: au.gov.ga.earthsci.core.Activator

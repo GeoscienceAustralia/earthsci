@@ -28,6 +28,9 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerPersister;
@@ -45,6 +48,7 @@ import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 public class WorldWindModel extends BasicModel implements ITreeModel
 {
 	private final ILayerTreeNode rootNode;
+	private final static Logger logger = LoggerFactory.getLogger(WorldWindModel.class);
 	private static final String layerFilename = "layers.xml"; //$NON-NLS-1$
 	private static final File layerFile = ConfigurationUtil.getWorkspaceFile(layerFilename);
 
@@ -52,6 +56,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 	public WorldWindModel()
 	{
 		this(createRootNode());
+		logger.info("Using layer file: " + layerFile); //$NON-NLS-1$
 	}
 
 	private WorldWindModel(FolderNode rootNode)
