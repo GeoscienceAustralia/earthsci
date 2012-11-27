@@ -1,11 +1,13 @@
 package au.gov.ga.earthsci.ant;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -15,7 +17,8 @@ import org.apache.tools.ant.types.FileSet;
 public class OsgiBundles extends Task
 {
 	private String property;
-	private Vector<FileSet> filesets = new Vector<FileSet>();
+	private List<FileSet> filesets = new ArrayList<FileSet>();
+	private Map<String, Integer> startLevels = new HashMap<String, Integer>();
 
 	public void setProperty(String property)
 	{
@@ -25,6 +28,11 @@ public class OsgiBundles extends Task
 	public void addFileset(FileSet fileset)
 	{
 		filesets.add(fileset);
+	}
+
+	public void addConfiguredStartLevel(StartLevel startLevel)
+	{
+		startLevels.put(startLevel.getBundle(), startLevel.getLevel());
 	}
 
 	@Override
@@ -96,8 +104,10 @@ public class OsgiBundles extends Task
 				{
 					for (BundleProperties bundle : bundles)
 					{
-						sb.append(bundle.getSymbolicName());
-						sb.append("@start,");
+						String name = bundle.getSymbolicName();
+						Integer startLevel = startLevels.get(name);
+						sb.append(name);
+						sb.append(startLevel != null ? "@" + startLevel + ":start," : "@:start,");
 					}
 				}
 				sb.deleteCharAt(sb.length() - 1);
