@@ -5,6 +5,7 @@
    <extension-point id="au.gov.ga.earthsci.notification.categoryProvider" name="Notification Category Provider" schema="schema/au.gov.ga.earthsci.notification.categoryProvider.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.retrieve.retriever" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retriever.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.model.catalog.provider" name="Catalog Provider" schema="schema/au.gov.ga.earthsci.core.model.catalog.provider.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.bookmark.applicator" name="Bookmark Property Applicator" schema="schema/au.gov.ga.earthsci.core.bookmark.applicator.exsd"/>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retriever">
       <retriever
@@ -39,6 +40,9 @@
    </extension>
    <extension
          point="au.gov.ga.earthsci.injectable">
+      <inject
+            class="au.gov.ga.earthsci.core.util.ExtensionRegistryUtil">
+      </inject>
       <injectable
             class="au.gov.ga.earthsci.core.proxy.ProxyPreferences">
       </injectable>
@@ -86,6 +90,9 @@
          <type
                class="gov.nasa.worldwind.View">
          </type>
+      </inject>
+      <inject
+            class="au.gov.ga.earthsci.core.bookmark.BookmarkPropertyApplicatorRegistry">
       </inject>
    </extension>
 
