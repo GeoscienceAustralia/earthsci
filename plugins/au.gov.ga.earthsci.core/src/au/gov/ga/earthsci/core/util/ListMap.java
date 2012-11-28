@@ -40,12 +40,8 @@ public class ListMap<K, V> extends HashMap<K, List<V>>
 	 */
 	public void putSingle(K key, V value)
 	{
-		List<V> values = null;
-		if (containsKey(key))
-		{
-			values = get(key);
-		}
-		else
+		List<V> values = get(key);
+		if (values == null)
 		{
 			values = new ArrayList<V>();
 			put(key, values);
@@ -63,14 +59,14 @@ public class ListMap<K, V> extends HashMap<K, List<V>>
 	 */
 	public boolean removeSingle(K key, V value)
 	{
-		if (containsKey(key))
+		List<V> values = get(key);
+		if (values == null)
 		{
-			List<V> values = get(key);
-			return values.remove(value);
+			return false;
 		}
-		return false;
+		return values.remove(value);
 	}
-	
+
 	/**
 	 * Return the number of entries stored for the given key
 	 * 
@@ -80,10 +76,11 @@ public class ListMap<K, V> extends HashMap<K, List<V>>
 	 */
 	public int count(K key)
 	{
-		if (!containsKey(key))
+		List<V> values = get(key);
+		if (values == null)
 		{
 			return 0;
 		}
-		return get(key).size();
+		return values.size();
 	}
 }

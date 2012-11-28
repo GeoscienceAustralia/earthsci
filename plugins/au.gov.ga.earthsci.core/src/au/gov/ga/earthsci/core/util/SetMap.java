@@ -40,12 +40,8 @@ public class SetMap<K, V> extends HashMap<K, Set<V>>
 	 */
 	public void putSingle(K key, V value)
 	{
-		Set<V> values = null;
-		if (containsKey(key))
-		{
-			values = get(key);
-		}
-		else
+		Set<V> values = get(key);
+		if (values == null)
 		{
 			values = new HashSet<V>();
 			put(key, values);
@@ -63,14 +59,14 @@ public class SetMap<K, V> extends HashMap<K, Set<V>>
 	 */
 	public boolean removeSingle(K key, V value)
 	{
-		if (containsKey(key))
+		Set<V> values = get(key);
+		if (values == null)
 		{
-			Set<V> values = get(key);
-			return values.remove(value);
+			return false;
 		}
-		return false;
+		return values.remove(value);
 	}
-	
+
 	/**
 	 * Return the number of entries stored for the given key
 	 * 
@@ -80,10 +76,11 @@ public class SetMap<K, V> extends HashMap<K, Set<V>>
 	 */
 	public int count(K key)
 	{
-		if (!containsKey(key))
+		Set<V> values = get(key);
+		if (values == null)
 		{
 			return 0;
 		}
-		return get(key).size();
+		return values.size();
 	}
 }
