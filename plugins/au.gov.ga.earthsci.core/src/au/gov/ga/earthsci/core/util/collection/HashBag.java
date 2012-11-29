@@ -129,7 +129,7 @@ public class HashBag<E> extends AbstractCollection<E> implements Bag<E>
 		@Override
 		public boolean hasNext()
 		{
-			return keys.hasNext() || index < count(currentKey) - 1;
+			return keys.hasNext() || index < count(currentKey);
 		}
 
 		@Override
