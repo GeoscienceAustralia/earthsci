@@ -57,26 +57,22 @@ public class HashSetAndArray<E> extends HashSet<E> implements SetAndArray<E>
 	@Override
 	public boolean add(E e)
 	{
-		try
-		{
-			return super.add(e);
-		}
-		finally
+		boolean added = super.add(e);
+		if (added)
 		{
 			array = toArray();
 		}
+		return added;
 	}
 
 	@Override
 	public boolean remove(Object o)
 	{
-		try
-		{
-			return super.remove(o);
-		}
-		finally
+		boolean removed = super.remove(o);
+		if (removed)
 		{
 			array = toArray();
 		}
+		return removed;
 	}
 }
