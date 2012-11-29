@@ -25,6 +25,9 @@ import java.util.Set;
 public interface SetAndArray<E> extends Set<E>
 {
 	/**
+	 * The stored array of elements. The elements in this array will not change
+	 * when this Set is modified; instead the returned array changes.
+	 * 
 	 * @return The stored array of elements.
 	 */
 	E[] getArray();
