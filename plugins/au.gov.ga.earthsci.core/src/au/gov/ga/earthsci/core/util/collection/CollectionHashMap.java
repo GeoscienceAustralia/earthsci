@@ -13,53 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util;
+package au.gov.ga.earthsci.core.util.collection;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 /**
- * {@link HashMap} subclass that supports adding multiple values for a single
- * key as a list.
+ * Abstract {@link CollectionMap} implementation using a {@link HashMap}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
- * 
- * @param <K>
- *            Key class
- * @param <V>
- *            Value class
  */
-public class ListMap<K, V> extends HashMap<K, List<V>>
+public abstract class CollectionHashMap<K, V, C extends Collection<V>> extends HashMap<K, C> implements
+		CollectionMap<K, V, C>
 {
-	/**
-	 * Put a single key/value pair into this map.
-	 * 
-	 * @param key
-	 * @param value
-	 */
+	protected abstract C createCollection(K key);
+
+	@Override
 	public void putSingle(K key, V value)
 	{
-		List<V> values = get(key);
+		C values = get(key);
 		if (values == null)
 		{
-			values = new ArrayList<V>();
+			values = createCollection(key);
 			put(key, values);
 		}
 		values.add(value);
 	}
 
-	/**
-	 * Remove a single key/value pair from this map if it exists.
-	 * 
-	 * @param key
-	 * @param value
-	 * @return True if the key/value pair was found and removed, false
-	 *         otherwise.
-	 */
+	@Override
 	public boolean removeSingle(K key, V value)
 	{
-		List<V> values = get(key);
+		Collection<V> values = get(key);
 		if (values == null)
 		{
 			return false;
@@ -67,16 +51,10 @@ public class ListMap<K, V> extends HashMap<K, List<V>>
 		return values.remove(value);
 	}
 
-	/**
-	 * Return the number of entries stored for the given key
-	 * 
-	 * @param key
-	 * 
-	 * @return The number of entries stored for the given key
-	 */
+	@Override
 	public int count(K key)
 	{
-		List<V> values = get(key);
+		Collection<V> values = get(key);
 		if (values == null)
 		{
 			return 0;

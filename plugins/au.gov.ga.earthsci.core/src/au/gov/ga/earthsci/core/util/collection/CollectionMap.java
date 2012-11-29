@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util;
+package au.gov.ga.earthsci.core.util.collection;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Map;
 
 /**
- * {@link HashMap} subclass that supports adding multiple values for a single
- * key as a set.
+ * {@link Map} that supports adding multiple values for a single key.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
- * 
- * @param <K>
- *            Key class
- * @param <V>
- *            Value class
  */
-public class SetMap<K, V> extends HashMap<K, Set<V>>
+public interface CollectionMap<K, V, C extends Collection<V>> extends Map<K, C>
 {
 	/**
 	 * Put a single key/value pair into this map.
@@ -38,16 +31,7 @@ public class SetMap<K, V> extends HashMap<K, Set<V>>
 	 * @param key
 	 * @param value
 	 */
-	public void putSingle(K key, V value)
-	{
-		Set<V> values = get(key);
-		if (values == null)
-		{
-			values = new HashSet<V>();
-			put(key, values);
-		}
-		values.add(value);
-	}
+	void putSingle(K key, V value);
 
 	/**
 	 * Remove a single key/value pair from this map if it exists.
@@ -57,15 +41,7 @@ public class SetMap<K, V> extends HashMap<K, Set<V>>
 	 * @return True if the key/value pair was found and removed, false
 	 *         otherwise.
 	 */
-	public boolean removeSingle(K key, V value)
-	{
-		Set<V> values = get(key);
-		if (values == null)
-		{
-			return false;
-		}
-		return values.remove(value);
-	}
+	boolean removeSingle(K key, V value);
 
 	/**
 	 * Return the number of entries stored for the given key
@@ -74,13 +50,5 @@ public class SetMap<K, V> extends HashMap<K, Set<V>>
 	 * 
 	 * @return The number of entries stored for the given key
 	 */
-	public int count(K key)
-	{
-		Set<V> values = get(key);
-		if (values == null)
-		{
-			return 0;
-		}
-		return values.size();
-	}
+	int count(K key);
 }

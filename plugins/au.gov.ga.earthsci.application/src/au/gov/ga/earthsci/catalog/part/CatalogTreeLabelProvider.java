@@ -43,7 +43,7 @@ import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.ILabeled;
-import au.gov.ga.earthsci.core.util.SetMap;
+import au.gov.ga.earthsci.core.util.collection.SetMap;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.viewers.IControlProvider;
 

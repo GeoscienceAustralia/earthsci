@@ -29,7 +29,8 @@ import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.IEnableable;
-import au.gov.ga.earthsci.core.util.SetMap;
+import au.gov.ga.earthsci.core.util.collection.HashSetHashMap;
+import au.gov.ga.earthsci.core.util.collection.SetMap;
 
 /**
  * Abstract implementation of the {@link ILayerTreeNode} interface.
@@ -245,7 +246,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		{
 			if (uriMap == null)
 			{
-				uriMap = new SetMap<URI, ILayerTreeNode>();
+				uriMap = new HashSetHashMap<URI, ILayerTreeNode>();
 				updateURIMap();
 			}
 			return uriMap.containsKey(uri);
@@ -259,7 +260,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		{
 			if (uriMap == null)
 			{
-				uriMap = new SetMap<URI, ILayerTreeNode>();
+				uriMap = new HashSetHashMap<URI, ILayerTreeNode>();
 				updateURIMap();
 			}
 			Set<ILayerTreeNode> nodes = uriMap.get(uri);
