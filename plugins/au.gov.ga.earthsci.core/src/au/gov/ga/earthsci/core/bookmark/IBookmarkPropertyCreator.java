@@ -38,6 +38,7 @@ public interface IBookmarkPropertyCreator
 	 * Creates and returns a new {@link IBookmarkProperty} from the provided
 	 * context.
 	 * 
+	 * @param type The type of property to create
 	 * @param context A map containing key-value pairs used to re-create the property
 	 * 
 	 * @return The {@link IBookmarkProperty} created from the given context
@@ -45,5 +46,14 @@ public interface IBookmarkPropertyCreator
 	 * @throws IllegalArgumentException If the context is <code>null</code> or does not
 	 * contain the required keys for this creator
 	 */
-	IBookmarkProperty create(Map<String, String> context);
+	IBookmarkProperty createFromContext(String type, Map<String, Object> context);
+	
+	/**
+	 * Creates and returns a new {@link IBookmarkProperty} from the current world state.
+	 * 
+	 * @param type The type of property to create
+	 * 
+	 * @return The {@link IBookmarkProperty} created from the given context
+	 */
+	IBookmarkProperty createFromCurrentState(String type);
 }

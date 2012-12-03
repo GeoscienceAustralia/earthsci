@@ -40,6 +40,12 @@
       </initializer>
    </extension>
    <extension
+         point="au.gov.ga.earthsci.core.bookmark.creator">
+      <creator
+            class="au.gov.ga.earthsci.core.bookmark.properties.camera.CameraPropertyCreator">
+      </creator>
+   </extension>
+   <extension
          point="au.gov.ga.earthsci.injectable">
       <inject
             class="au.gov.ga.earthsci.core.util.ExtensionRegistryUtil">

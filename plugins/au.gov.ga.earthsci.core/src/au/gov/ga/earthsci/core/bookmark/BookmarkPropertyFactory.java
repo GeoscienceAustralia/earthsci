@@ -58,7 +58,7 @@ public class BookmarkPropertyFactory
 	 * 
 	 * @return A new bookmark property of the given type, created from the given context
 	 */
-	public static IBookmarkProperty createProperty(String type, Map<String, String> context)
+	public static IBookmarkProperty createProperty(String type, Map<String, Object> context)
 	{
 		if (type == null)
 		{
@@ -71,7 +71,30 @@ public class BookmarkPropertyFactory
 			return null;
 		}
 		
-		return propertyCreator.create(context);
+		return propertyCreator.createFromContext(type, context);
+	}
+	
+	/**
+	 * Create and return a new property of the given type using the current world state.
+	 * 
+	 * @param type The type of property to create
+	 * 
+	 * @return A new bookmark property of the given type, created from the current world state
+	 */
+	public static IBookmarkProperty createProperty(String type)
+	{
+		if (type == null)
+		{
+			return null;
+		}
+		
+		IBookmarkPropertyCreator propertyCreator = creators.get(type);
+		if (propertyCreator == null)
+		{
+			return null;
+		}
+		
+		return propertyCreator.createFromCurrentState(type);
 	}
 	
 	/**
@@ -112,6 +135,14 @@ public class BookmarkPropertyFactory
 			creators.put(type, creator);
 		}
 		logger.debug("Registered bookmark property creator: {}", creator.getClass()); //$NON-NLS-1$
+	}
+
+	/**
+	 * @return The list of known property types which have creators registered in this factory
+	 */
+	public static String[] getKnownPropertyTypes()
+	{
+		return creators.keySet().toArray(new String[creators.size()]);
 	}
 	
 }
