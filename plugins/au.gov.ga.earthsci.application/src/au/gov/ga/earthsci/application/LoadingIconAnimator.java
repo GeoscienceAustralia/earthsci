@@ -63,19 +63,19 @@ public final class LoadingIconAnimator
 							{
 							}
 						}
-						for (int i = listeners.size() - 1; i >= 0; i--)
-						{
-							try
-							{
-								listeners.get(i).nextFrame(getCurrentFrame());
-							}
-							catch (Exception e)
-							{
-								logger.warn("Error calling loading icon frame listener", e); //$NON-NLS-1$
-							}
-						}
-						frame = (frame + 1) % loadingFrames.length;
 					}
+					for (int i = listeners.size() - 1; i >= 0; i--)
+					{
+						try
+						{
+							listeners.get(i).nextFrame(getCurrentFrame());
+						}
+						catch (Exception e)
+						{
+							logger.warn("Error calling loading icon frame listener", e); //$NON-NLS-1$
+						}
+					}
+					frame = (frame + 1) % loadingFrames.length;
 					try
 					{
 						Thread.sleep(100);
