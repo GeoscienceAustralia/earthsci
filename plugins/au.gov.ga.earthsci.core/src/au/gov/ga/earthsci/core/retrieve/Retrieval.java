@@ -38,8 +38,8 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	private final IRetriever retriever;
 
 	private RetrievalStatus status = RetrievalStatus.NOT_STARTED;
-	private int position = 0;
-	private int length = UNKNOWN_LENGTH;
+	private long position = 0;
+	private long length = UNKNOWN_LENGTH;
 	private final CompoundRetrievalListener listeners = new CompoundRetrievalListener();
 
 	private final Object jobSemaphore = new Object();
@@ -94,13 +94,13 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	}
 
 	@Override
-	public int getPosition()
+	public long getPosition()
 	{
 		return position;
 	}
 
 	@Override
-	public int getLength()
+	public long getLength()
 	{
 		return length;
 	}
@@ -108,7 +108,7 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	@Override
 	public float getPercentage()
 	{
-		return length == 0 ? 1 : length < 0 ? -1 : Math.max(0, Math.min(1, position / length));
+		return length == 0 ? 1 : length < 0 ? -1 : Math.max(0, Math.min(1, (float) (position / (double) length)));
 	}
 
 	@Override
@@ -273,20 +273,20 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	}
 
 	@Override
-	public void progress(int amount)
+	public void progress(long amount)
 	{
 		setPosition(getPosition() + amount);
 	}
 
 	@Override
-	public void setPosition(int position)
+	public void setPosition(long position)
 	{
 		firePropertyChange("position", getPosition(), this.position = position); //$NON-NLS-1$
 		listeners.progress(this);
 	}
 
 	@Override
-	public void setLength(int length)
+	public void setLength(long length)
 	{
 		firePropertyChange("length", getLength(), this.length = length); //$NON-NLS-1$
 	}

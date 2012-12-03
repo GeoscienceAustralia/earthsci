@@ -41,7 +41,7 @@ public interface IRetrieverMonitor
 	 * @param amount
 	 *            Relative amount of progression of resource retrieval
 	 */
-	void progress(int amount);
+	void progress(long amount);
 
 	/**
 	 * Notify the monitor that the resource retrieval position has been updated
@@ -53,7 +53,7 @@ public interface IRetrieverMonitor
 	 * @param position
 	 *            Absolute position of the resource retrieval
 	 */
-	void setPosition(int position);
+	void setPosition(long position);
 
 	/**
 	 * Notify the monitor of the length of the resource being retrieved. Don't
@@ -62,7 +62,7 @@ public interface IRetrieverMonitor
 	 * @param length
 	 *            Length/size of the resource being retrieved
 	 */
-	void setLength(int length);
+	void setLength(long length);
 
 	/**
 	 * Has this retrieval been canceled? The {@link IRetriever} should check

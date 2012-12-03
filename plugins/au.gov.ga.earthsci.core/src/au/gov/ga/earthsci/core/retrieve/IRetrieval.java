@@ -27,7 +27,7 @@ import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 public interface IRetrieval extends IPropertyChangeBean
 {
 	/** Represents an unknown resource length. */
-	public final static int UNKNOWN_LENGTH = -1;
+	public final static long UNKNOWN_LENGTH = -1;
 
 	/**
 	 * @return The URL being retrieved.
@@ -47,13 +47,13 @@ public interface IRetrieval extends IPropertyChangeBean
 	/**
 	 * @return The current position of the resource retrieval.
 	 */
-	int getPosition();
+	long getPosition();
 
 	/**
 	 * @return The total length of the resource being retrieved. Returns
 	 *         {@link #UNKNOWN_LENGTH} if unknown.
 	 */
-	int getLength();
+	long getLength();
 
 	/**
 	 * The percentage progress of the resource retrieval, between 0 and 1
