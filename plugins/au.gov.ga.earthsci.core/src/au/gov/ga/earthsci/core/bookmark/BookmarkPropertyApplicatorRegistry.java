@@ -26,6 +26,7 @@ import javax.inject.Singleton;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Creatable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil.Callback;
  * @author James Navin (james.navin@ga.gov.au)
  */
 @Singleton
+@Creatable
 public class BookmarkPropertyApplicatorRegistry
 {
 	private static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.core.bookmark.applicator"; //$NON-NLS-1$
