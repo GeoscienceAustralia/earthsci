@@ -16,237 +16,124 @@
 package au.gov.ga.earthsci.core.retrieve;
 
 import java.net.URL;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.eclipse.core.internal.jobs.JobStatus;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.e4.core.contexts.ContextInjectionFactory;
-import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
-import org.eclipse.e4.core.di.annotations.Optional;
-import org.eclipse.e4.core.services.log.Logger;
-import org.eclipse.osgi.util.NLS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.retrieve.cache.IURLResourceCache;
-import au.gov.ga.earthsci.core.retrieve.preferences.IRetrievalServicePreferences;
+import au.gov.ga.earthsci.core.util.collection.HashSetAndArray;
+import au.gov.ga.earthsci.core.util.collection.HashSetAndArrayHashMap;
+import au.gov.ga.earthsci.core.util.collection.SetAndArray;
+import au.gov.ga.earthsci.core.util.collection.SetAndArrayMap;
 
 /**
- * A default base implementation of the {@link IRetrievalResult} interface.
- * <p/>
- * Provides a mechanism to register {@link IRetriever}s to perform the task of
- * retrieving from specific URL types.
+ * Basic implementation of {@link IRetrievalService}.
  * 
- * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 @Singleton
 @Creatable
 public class RetrievalService implements IRetrievalService
 {
-
-	public static final String RETRIEVER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.core.retrieve.retriever"; //$NON-NLS-1$
-	public static final String RETRIEVER_EXTENSION_POINT_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
+	private final static Logger logger = LoggerFactory.getLogger(RetrievalService.class);
 
 	@Inject
-	private Logger logger;
+	private IRetrieverFactory retrieverFactory;
 
-	@Inject
-	@Optional
-	private IRetrievalServicePreferences preferences;
+	private final Map<URL, Retrieval> urlToRetrieval = new HashMap<URL, Retrieval>();
+	private final SetAndArrayMap<Object, IRetrieval> callerToRetrievals =
+			new HashSetAndArrayHashMap<Object, IRetrieval>();
+	private final SetAndArray<IRetrieval> EMPTY_RETRIEVAL_COLLECTION = new HashSetAndArray<IRetrieval>();
 
-	@Inject
-	@Optional
-	private IURLResourceCache cache;
-
-	private Set<IRetriever> retrievers = new LinkedHashSet<IRetriever>();
-	private ReadWriteLock retrieversLock = new ReentrantReadWriteLock();
-
-	/**
-	 * Load registered {@link IRetriever}s from the provided extension registry.
-	 * <p/>
-	 * This method will inject dependencies on loaded classes using the provided
-	 * eclipse context, as appropriate.
-	 * 
-	 * @param registry
-	 *            The extension registry to search for {@link IRetriever}s
-	 * @param context
-	 *            The context to use for dependency injection etc.
-	 */
-	@PostConstruct
-	public void loadRetrievers(IExtensionRegistry registry, IEclipseContext context)
+	@Override
+	public IRetrieval retrieve(Object caller, URL url)
 	{
-		if (logger != null)
-		{
-			logger.info("Registering retrieval service retrievers"); //$NON-NLS-1$
-		}
-		IConfigurationElement[] config = registry.getConfigurationElementsFor(RETRIEVER_EXTENSION_POINT_ID);
-		try
-		{
-			for (IConfigurationElement e : config)
-			{
-				final Object o = e.createExecutableExtension(RETRIEVER_EXTENSION_POINT_CLASS_ATTRIBUTE);
-				if (o instanceof IRetriever)
-				{
-					ContextInjectionFactory.inject(o, context);
-					context.set(e.getAttribute(RETRIEVER_EXTENSION_POINT_CLASS_ATTRIBUTE), o);
-					registerRetriever((IRetriever) o);
-				}
-			}
-		}
-		catch (CoreException e)
-		{
-			if (logger != null)
-			{
-				logger.error(e, "Exception while loading retrievers"); //$NON-NLS-1$
-			}
-		}
-	}
-
-	/**
-	 * Register a retriever on this service instance.
-	 * 
-	 * @param retriever
-	 *            The retriever to register
-	 */
-	public void registerRetriever(IRetriever retriever)
-	{
-		if (retriever == null)
-		{
-			return;
-		}
-
-		retrieversLock.writeLock().lock();
-		try
-		{
-			retrievers.add(retriever);
-		}
-		finally
-		{
-			retrieversLock.writeLock().unlock();
-		}
+		return retrieve(caller, url, true, false);
 	}
 
 	@Override
-	public RetrievalJob retrieve(URL url)
+	public IRetrieval retrieve(Object caller, URL url, boolean cache, boolean refresh)
 	{
-		return retrieve(url, false);
-	}
-
-	@Override
-	public RetrievalJob retrieve(final URL url, final boolean forceRefresh)
-	{
-
 		if (url == null)
 		{
-			return null;
+			throw new NullPointerException("Retrieval URL is null"); //$NON-NLS-1$
 		}
 
-		// Determine the correct URL to use (cached or live)
-		final URL retrievalUrl;
-		final boolean fromCache;
-		if (cachingEnabled() && !forceRefresh)
+		synchronized (urlToRetrieval)
 		{
-			URL cachedUrl = cache.getResource(url);
-			if (cachedUrl != null)
+			Retrieval retrieval = urlToRetrieval.get(url);
+			if (retrieval == null)
 			{
-				retrievalUrl = cachedUrl;
-				fromCache = true;
+				//create a retriever to retrieve the url
+				IRetriever retriever = retrieverFactory.getRetriever(url);
+				if (retriever == null)
+				{
+					logger.error("Unsupported retrieval URL: " + url); //$NON-NLS-1$
+					return null;
+				}
+
+				//create a retrieval object
+				retrieval = new Retrieval(caller, url, cache, refresh, retriever);
+				urlToRetrieval.put(url, retrieval);
+
+				//add a listener to remove the retrieval after it's complete
+				retrieval.addListener(new RetrievalAdapter()
+				{
+					@Override
+					public void complete(IRetrieval retrieval)
+					{
+						retrieval.removeListener(this);
+						removeRetrieval(retrieval);
+					}
+				});
 			}
 			else
 			{
-				retrievalUrl = url;
-				fromCache = false;
+				retrieval.addCaller(caller);
 			}
+			callerToRetrievals.putSingle(caller, retrieval);
+			return retrieval;
 		}
-		else
-		{
-			retrievalUrl = url;
-			fromCache = false;
-		}
+	}
 
-		// Find the correct retriever for the url
-		final IRetriever retriever = findRetrieverFor(retrievalUrl);
-		if (retriever == null)
+	private void removeRetrieval(IRetrieval retrieval)
+	{
+		synchronized (urlToRetrieval)
 		{
-			return null;
-		}
-
-		// Create the retrieval job
-		return new RetrievalJob(retrievalUrl)
-		{
-			@Override
-			protected IStatus run(IProgressMonitor monitor)
+			urlToRetrieval.remove(retrieval.getURL());
+			Object[] callers = retrieval.getCallers();
+			for (Object caller : callers)
 			{
-				monitor.beginTask(NLS.bind(Messages.RetrievalService_TaskName, retrievalUrl.toExternalForm()),
-						IProgressMonitor.UNKNOWN);
-
-				IRetrievalMonitor retrievalMonitor = new RetrievalMonitor(monitor, this);
-
-				IRetrievalResult result = retriever.retrieve(retrievalUrl, retrievalMonitor);
-				if (fromCache)
-				{
-					markFromCache(retrievalUrl);
-				}
-				else if (cachingEnabled() && result.hasData())
-				{
-					cache.putResource(retrievalUrl, result.getAsInputStream());
-				}
-
-				setRetrievalResult(result);
-
-				monitor.done();
-				//TODO this is pretty horrible, rethink this whole function
-				//does !hasData() really mean an error?
-				//the result should have a status associated that is returned
-				return result.hasData() ? Status.OK_STATUS : new JobStatus(IStatus.ERROR, this, result.getMessage());
+				callerToRetrievals.removeSingle(caller, retrieval);
 			}
-		};
-	}
-
-	private boolean cachingEnabled()
-	{
-		return preferences != null && preferences.isCachingEnabled() && cache != null;
-	}
-
-	private IRetriever findRetrieverFor(URL url)
-	{
-		if (url == null)
-		{
-			return null;
 		}
+	}
 
-		retrieversLock.readLock().lock();
-		try
+	@Override
+	public IRetrieval getRetrieval(URL url)
+	{
+		synchronized (urlToRetrieval)
 		{
-			for (IRetriever r : retrievers)
+			return urlToRetrieval.get(url);
+		}
+	}
+
+	@Override
+	public IRetrieval[] getRetrievals(Object caller)
+	{
+		synchronized (urlToRetrieval)
+		{
+			SetAndArray<IRetrieval> retrievals = callerToRetrievals.get(caller);
+			if (retrievals == null)
 			{
-				if (r.supports(url))
-				{
-					return r;
-				}
+				retrievals = EMPTY_RETRIEVAL_COLLECTION;
 			}
-			return null;
-		}
-		finally
-		{
-			retrieversLock.readLock().unlock();
+			return retrievals.getArray();
 		}
 	}
-
-	public void setLogger(Logger l)
-	{
-		this.logger = l;
-	}
-
 }

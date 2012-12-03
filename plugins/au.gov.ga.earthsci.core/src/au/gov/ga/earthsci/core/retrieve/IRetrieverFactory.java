@@ -13,26 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.retrieve.retriever;
+package au.gov.ga.earthsci.core.retrieve;
 
-import org.eclipse.osgi.util.NLS;
+import java.net.URL;
 
 /**
- * Message bundle constants for the <code>retriever</code> package.
+ * Factory for returning {@link IRetriever}s that know how to retrieve resources
+ * from supported URLs.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class Messages extends NLS
+public interface IRetrieverFactory
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.retrieve.retriever.messages"; //$NON-NLS-1$
-	public static String AbstractRetriever_GenericInvalidConnectionMessage;
-	public static String FileRetriever_FileNotFoundMessage;
-	public static String HTTPRetriever_ServerErrorMessage;
-	static
-	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+	/**
+	 * Find and return an {@link IRetriever} that can retrieve a resource from
+	 * the given URL.
+	 * 
+	 * @param url
+	 *            URL that needs to be retrieved
+	 * @return {@link IRetriever} for retrieving the given URL
+	 */
+	IRetriever getRetriever(URL url);
 
-	private Messages()
-	{
-	}
+	/**
+	 * Register an {@link IRetriever}.
+	 * 
+	 * @param retriever
+	 *            {@link IRetriever} to register
+	 */
+	void registerRetriever(IRetriever retriever);
 }

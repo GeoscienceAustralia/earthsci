@@ -15,29 +15,30 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve;
 
-import org.eclipse.osgi.util.NLS;
-
 /**
- * @author u09145
- *
+ * Empty implementation of the {@link IRetrievalListener}.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class Messages extends NLS
+public class RetrievalAdapter implements IRetrievalListener
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.retrieve.messages"; //$NON-NLS-1$
-	public static String RetrievalJob_JobName;
-	public static String RetrievalMonitor_CompleteTask;
-	public static String RetrievalMonitor_ConnectedResourceTask;
-	public static String RetrievalMonitor_ConnectingResourceTask;
-	public static String RetrievalMonitor_ReadingResourceTask;
-	public static String RetrievalMonitor_StartingRetrievalTask;
-	public static String RetrievalService_TaskName;
-	static
+	@Override
+	public void statusChanged(IRetrieval retrieval)
 	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private Messages()
+	@Override
+	public void progress(IRetrieval retrieval)
+	{
+	}
+
+	@Override
+	public void complete(IRetrieval retrieval)
+	{
+	}
+
+	@Override
+	public void paused(IRetrieval retrieval)
 	{
 	}
 }

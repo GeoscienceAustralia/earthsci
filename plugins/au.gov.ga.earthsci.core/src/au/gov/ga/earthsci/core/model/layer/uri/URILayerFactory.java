@@ -71,6 +71,8 @@ public class URILayerFactory
 	 * Create a layer from a URI. Uses the handler registered for the URI's
 	 * scheme.
 	 * 
+	 * @param caller
+	 *            Object requesting the layer
 	 * @param uri
 	 *            URI to create the layer from
 	 * @param monitor
@@ -79,7 +81,7 @@ public class URILayerFactory
 	 * @return Layer created from the URI
 	 * @throws URILayerFactoryException
 	 */
-	public static Layer createLayer(URI uri, IProgressMonitor monitor) throws URILayerFactoryException
+	public static Layer createLayer(Object caller, URI uri, IProgressMonitor monitor) throws URILayerFactoryException
 	{
 		if (uri.getScheme() == null)
 		{
@@ -91,7 +93,7 @@ public class URILayerFactory
 			{
 				try
 				{
-					return handler.createLayer(uri, monitor);
+					return handler.createLayer(caller, uri, monitor);
 				}
 				catch (LayerURIHandlerException e)
 				{

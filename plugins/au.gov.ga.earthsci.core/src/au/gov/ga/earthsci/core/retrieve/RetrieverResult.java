@@ -13,28 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.retrieve.retriever;
-
-import java.net.URL;
-
-import au.gov.ga.earthsci.core.retrieve.IRetriever;
+package au.gov.ga.earthsci.core.retrieve;
 
 /**
- * {@link IRetriever} implementation for retrieving resources from file URLs.
+ * Result returned by an {@link IRetriever} implementation after retrieval is
+ * complete or stopped.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FileRetriever extends AbstractURLRetriever
+public class RetrieverResult
 {
-	@Override
-	public boolean supports(URL url)
+	public final IRetrievalResult result;
+	public final RetrieverResultStatus status;
+
+	/**
+	 * Create a new instance.
+	 * 
+	 * @param result
+	 *            Result of the retrieval
+	 * @param status
+	 *            Status of the retrieval, cannot be null
+	 * @throws NullPointerException
+	 *             If status is null
+	 */
+	public RetrieverResult(IRetrievalResult result, RetrieverResultStatus status)
 	{
-		return "file".equalsIgnoreCase(url.getProtocol()); //$NON-NLS-1$
-	}
-	
-	@Override
-	public void checkURL(URL url) throws Exception
-	{
-		url.openStream().close();
+		if (status == null)
+		{
+			throw new NullPointerException("Status is null"); //$NON-NLS-1$
+		}
+		this.result = result;
+		this.status = status;
 	}
 }

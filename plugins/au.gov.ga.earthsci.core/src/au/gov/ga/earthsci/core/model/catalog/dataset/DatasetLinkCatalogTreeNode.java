@@ -9,9 +9,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.core.retrieve.IRetrieval;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
-import au.gov.ga.earthsci.core.retrieve.RetrievalJob;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.Util;
@@ -51,20 +51,21 @@ public class DatasetLinkCatalogTreeNode extends DatasetCatalogTreeNode
 				throw new IllegalStateException(Messages.DatasetLinkCatalogTreeNode_NoRetrievalServiceMessage);
 			}
 			
-			RetrievalJob retrievalJob = retrievalService.retrieve(linkURL);
-			retrievalJob.schedule();
+			IRetrieval retrieval = retrievalService.retrieve(this, linkURL);
+			retrieval.start();
 
-			IRetrievalResult retrievalResult = retrievalJob.waitAndGetRetrievalResult();
+			IRetrievalResult retrievalResult = retrieval.waitAndGetResult();
 			if (retrievalResult == null)
 			{
 				return createErrorStatus(NLS.bind(Messages.DatasetLinkCatalogTreeNode_NoRetrieverFoundMessage, linkURL), null);
 			}
-			if (!retrievalResult.isSuccessful())
+			Exception error = retrievalResult.getError();
+			if (error != null)
 			{
-				return createErrorStatus(retrievalResult.getMessage(), retrievalResult.getException());
+				return createErrorStatus(error.getLocalizedMessage(), error);
 			}
 			
-			ICatalogTreeNode root = DatasetReader.read(retrievalResult.getAsInputStream(), linkURL);
+			ICatalogTreeNode root = DatasetReader.read(retrievalResult.getInputStream(), linkURL);
 			for (ITreeNode<ICatalogTreeNode> child : root.getChildren())
 			{
 				add(child);

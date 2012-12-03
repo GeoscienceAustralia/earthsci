@@ -13,28 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.retrieve.retriever;
+package au.gov.ga.earthsci.core.retrieve.result;
 
-import java.net.URL;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 
-import au.gov.ga.earthsci.core.retrieve.IRetriever;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 
 /**
- * {@link IRetriever} implementation for retrieving resources from file URLs.
+ * An {@link IRetrievalResult} that can be used when an error has occurred
+ * during resource retrieval.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FileRetriever extends AbstractURLRetriever
+public class ErrorRetrievalResult implements IRetrievalResult
 {
-	@Override
-	public boolean supports(URL url)
+	private final Exception error;
+
+	public ErrorRetrievalResult(Exception error)
 	{
-		return "file".equalsIgnoreCase(url.getProtocol()); //$NON-NLS-1$
+		this.error = error;
 	}
-	
+
 	@Override
-	public void checkURL(URL url) throws Exception
+	public InputStream getInputStream()
 	{
-		url.openStream().close();
+		return null;
+	}
+
+	@Override
+	public ByteBuffer getByteBuffer()
+	{
+		return null;
+	}
+
+	@Override
+	public Exception getError()
+	{
+		return error;
 	}
 }

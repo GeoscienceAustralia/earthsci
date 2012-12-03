@@ -13,28 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.retrieve.retriever;
-
-import java.net.URL;
-
-import au.gov.ga.earthsci.core.retrieve.IRetriever;
+package au.gov.ga.earthsci.core.retrieve;
 
 /**
- * {@link IRetriever} implementation for retrieving resources from file URLs.
+ * Delegate class for an {@link IRetrieverMonitor}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FileRetriever extends AbstractURLRetriever
+public class RetrieverMonitorDelegate implements IRetrieverMonitor
 {
-	@Override
-	public boolean supports(URL url)
+	protected final IRetrieverMonitor delegate;
+
+	public RetrieverMonitorDelegate(IRetrieverMonitor delegate)
 	{
-		return "file".equalsIgnoreCase(url.getProtocol()); //$NON-NLS-1$
+		this.delegate = delegate;
 	}
-	
+
 	@Override
-	public void checkURL(URL url) throws Exception
+	public void updateStatus(RetrievalStatus status)
 	{
-		url.openStream().close();
+		delegate.updateStatus(status);
+	}
+
+	@Override
+	public void progress(long amount)
+	{
+		delegate.progress(amount);
+	}
+
+	@Override
+	public void setPosition(long position)
+	{
+		delegate.setPosition(position);
+	}
+
+	@Override
+	public void setLength(long length)
+	{
+		delegate.setLength(length);
+	}
+
+	@Override
+	public boolean isCanceled()
+	{
+		return delegate.isCanceled();
+	}
+
+	@Override
+	public boolean isPaused()
+	{
+		return delegate.isPaused();
 	}
 }

@@ -15,72 +15,41 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
- * Represents the result of a resource retrieval.
- * <p/>
- * Contains methods for accessing the result in a variety of useful
- * ways.
+ * Result of a {@link IRetrieval} after the retrieval is completed.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
- * @author James Navin (james.navin@ga.gov.au)
  */
 public interface IRetrievalResult
 {
+	/**
+	 * Create an InputStream for reading the retrieved resource.
+	 * <p/>
+	 * Can return null if the retrieval was unsuccessful.
+	 * 
+	 * @return An InputStream for reading the retrieved resource.
+	 */
+	InputStream getInputStream() throws IOException;
 
 	/**
-	 * Returns whether there is any data available in this result.
+	 * Return a ByteBuffer containing the retrieved resource. Some
+	 * implementations create this buffer lazily when this method is called. For
+	 * large resources, using {@link #getInputStream()} is sometimes preferred
+	 * as the resource is not first loaded into memory.
 	 * <p/>
-	 * Typically there will always be data available if {@link #isSuccessful()} returns <code>true</code>, 
-	 * but this is not guaranteed and client code should be able to handle that scenario. 
+	 * Can return null if the retrieval was unsuccessful.
 	 * 
-	 * @return <code>true</code> if data is available in this result.
+	 * @return A ByteBuffer containing the retrieved resource.
 	 */
-	boolean hasData();
-	
-	/**
-	 * Get the result content as a byte buffer.
-	 * 
-	 * @return The result content as a byte buffer
-	 */
-	ByteBuffer getAsBuffer();
-	
-	/**
-	 * Get the result content as a String.
-	 * 
-	 * @return The result content as a String
-	 */
-	String getAsString();
-	
-	/**
-	 * Get the result content as an input stream.
-	 * 
-	 * @return The result content as an input stream
-	 */
-	InputStream getAsInputStream();
-	
-	/**
-	 * Return whether this result represents a successful retrieval or not
-	 * 
-	 * @return <code>true</code> if this result represents a successful retrieval; <code>false</code> otherwise.
-	 */
-	boolean isSuccessful();
-	
-	/**
-	 * Get any exception associated with this result.
-	 * <p/>
-	 * Generally <code>null</code> if {@link #isSuccessful()} returns <code>true</code>.
-	 * 
-	 * @return Any exception associated with this result.
-	 */
-	Exception getException();
+	ByteBuffer getByteBuffer() throws IOException;
 
 	/**
-	 * Return a user friendly (human readable) error message in the case of an unsuccessful result.
-	 * 
-	 * @return A user friendly message to describe any problems with the result
+	 * @return The Exception thrown during resource retrieval if there was an
+	 *         error.
 	 */
-	String getMessage();
+	Exception getError();
 }

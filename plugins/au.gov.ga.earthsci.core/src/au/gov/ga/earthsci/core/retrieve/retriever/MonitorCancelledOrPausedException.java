@@ -15,26 +15,15 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve.retriever;
 
-import java.net.URL;
-
-import au.gov.ga.earthsci.core.retrieve.IRetriever;
+import au.gov.ga.earthsci.core.retrieve.IRetrieverMonitor;
 
 /**
- * {@link IRetriever} implementation for retrieving resources from file URLs.
+ * Exception thrown by the {@link MonitorInputStream} when the
+ * {@link IRetrieverMonitor} indicates that the retrieval should be paused or
+ * canceled.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FileRetriever extends AbstractURLRetriever
+public class MonitorCancelledOrPausedException extends RuntimeException
 {
-	@Override
-	public boolean supports(URL url)
-	{
-		return "file".equalsIgnoreCase(url.getProtocol()); //$NON-NLS-1$
-	}
-	
-	@Override
-	public void checkURL(URL url) throws Exception
-	{
-		url.openStream().close();
-	}
 }

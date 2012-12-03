@@ -15,8 +15,15 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.retrieve.retriever;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import gov.nasa.worldwind.retrieve.HTTPRetriever;
+import gov.nasa.worldwind.util.WWIO;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -33,9 +40,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import au.gov.ga.earthsci.core.retrieve.IRetrievalMonitor;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
-import au.gov.ga.earthsci.core.retrieve.retriever.HTTPRetriever;
+import au.gov.ga.earthsci.core.retrieve.IRetrieverMonitor;
+import au.gov.ga.earthsci.core.retrieve.RetrievalStatus;
+import au.gov.ga.earthsci.core.retrieve.retriever.HttpRetriever;
 
 /**
  * Unit tests for the {@link HTTPRetriever} class
@@ -45,9 +53,9 @@ import au.gov.ga.earthsci.core.retrieve.retriever.HTTPRetriever;
 public class HTTPRetrieverTest
 {
 
-	private final HTTPRetriever classUnderTest = new HTTPRetriever();
+	private final HttpRetriever classUnderTest = new HttpRetriever();
 	
-	private IRetrievalMonitor monitor;
+	private IRetrieverMonitor monitor;
 	
 	private Mockery mockContext;
 	
@@ -69,14 +77,7 @@ public class HTTPRetrieverTest
 	{
 		mockContext = new Mockery();
 		
-		monitor = mockContext.mock(IRetrievalMonitor.class);
-	}
-	
-	@Test
-	public void testSupportsNullURL() throws Exception
-	{
-		URL url = null;
-		assertFalse(classUnderTest.supports(url));
+		monitor = mockContext.mock(IRetrieverMonitor.class);
 	}
 	
 	@Test
@@ -100,18 +101,28 @@ public class HTTPRetrieverTest
 		assertTrue(classUnderTest.supports(url));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = NullPointerException.class)
 	public void testRetrieveNullURL() throws Exception
 	{
 		URL url = null;
-		classUnderTest.retrieve(url, monitor);
+		
+		mockContext.checking(new Expectations() {{{
+			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
+		}}});
+		
+		classUnderTest.retrieve(url, monitor, false, false);
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testRetrieveFileURL() throws Exception
 	{
 		URL url = new URL("file://somefile.txt");
-		classUnderTest.retrieve(url, monitor);
+		
+		mockContext.checking(new Expectations() {{{
+			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
+		}}});
+		
+		classUnderTest.retrieve(url, monitor, false, false);
 	}
 	
 	@Test
@@ -119,84 +130,49 @@ public class HTTPRetrieverTest
 	{
 		Assume.assumeTrue(httpServerIsAvailable());
 		
-		String expectedResult = "success!";
+		final String expectedResult = "success!";
 		
 		setServerResponse("/success", 200, expectedResult, false);
 
 		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).notifyStarted();
-			oneOf(monitor).notifyConnecting();
-			oneOf(monitor).notifyConnected();
-			oneOf(monitor).notifyReading();
-			oneOf(monitor).notifyCompleted(with(true));
+			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
+			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTING);
+			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTED);
+			oneOf(monitor).updateStatus(RetrievalStatus.READING);
+			oneOf(monitor).setLength(expectedResult.length());
+			oneOf(monitor).isCanceled();
+			oneOf(monitor).isPaused();
+			oneOf(monitor).progress(expectedResult.length());
+			oneOf(monitor).isCanceled();
+			oneOf(monitor).isPaused();
 		}}});
-		
 		
 		URL url = createHttpURL("/success");
 		
-		IRetrievalResult result = classUnderTest.retrieve(url, monitor);
+		IRetrievalResult result = classUnderTest.retrieve(url, monitor, false, false).result;
 		
 		assertNotNull(result);
-		assertTrue(result.isSuccessful());
-		assertNull(result.getException());
-		assertNull(result.getMessage());
-		assertEquals(expectedResult, result.getAsString());
+		assertNull(result.getError());
+		String string = WWIO.readStreamToString(result.getInputStream(), "UTF-8");
+		assertEquals(expectedResult, string);
 	}
 	
-	@Test
-	public void testRetrieveHttpURLWithSuccessUnknownLength() throws Exception
-	{
-		Assume.assumeTrue(httpServerIsAvailable());
-		
-		String expectedResult = "success!";
-		
-		setServerResponse("/success", 200, expectedResult, true);
-
-		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).notifyStarted();
-			oneOf(monitor).notifyConnecting();
-			oneOf(monitor).notifyConnected();
-			oneOf(monitor).notifyReading();
-			oneOf(monitor).notifyCompleted(with(true));
-		}}});
-		
-		
-		URL url = createHttpURL("/success");
-		
-		IRetrievalResult result = classUnderTest.retrieve(url, monitor);
-		
-		assertNotNull(result);
-		assertTrue(result.isSuccessful());
-		assertNull(result.getException());
-		assertNull(result.getMessage());
-		assertEquals(expectedResult, result.getAsString());
-	}
-	
-	@Test
+	@Test(expected = IOException.class)
 	public void testRetrieveHttpURLWithFail404() throws Exception
 	{
 		Assume.assumeTrue(httpServerIsAvailable());
 		
 		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).notifyStarted();
-			oneOf(monitor).notifyConnecting();
-			never(monitor).notifyConnected();
-			never(monitor).notifyReading();
-			oneOf(monitor).notifyCompleted(with(false));
+			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
+			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTING);
+			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTED);
 		}}});
 		
 		URL url = createHttpURL("/404");
-		
-		IRetrievalResult result = classUnderTest.retrieve(url, monitor);
-		
-		assertNotNull(result);
-		assertFalse(result.isSuccessful());
-		assertNull(result.getException());
-		assertNotNull(result.getMessage());
-		assertEquals(null, result.getAsString());
+		classUnderTest.retrieve(url, monitor, false, false);
 	}
 	
-	@Test
+	@Test(expected = IOException.class)
 	public void testRetrieveHttpURLWithFail403() throws Exception
 	{
 		Assume.assumeTrue(httpServerIsAvailable());
@@ -206,22 +182,13 @@ public class HTTPRetrieverTest
 		setServerResponse("/fail", 403, expectedResult, true);
 
 		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).notifyStarted();
-			oneOf(monitor).notifyConnecting();
-			never(monitor).notifyConnected();
-			never(monitor).notifyReading();
-			oneOf(monitor).notifyCompleted(with(false));
+			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
+			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTING);
+			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTED);
 		}}});
 		
 		URL url = createHttpURL("/fail");
-		
-		IRetrievalResult result = classUnderTest.retrieve(url, monitor);
-		
-		assertNotNull(result);
-		assertFalse(result.isSuccessful());
-		assertNull(result.getException());
-		assertNotNull(result.getMessage());
-		assertEquals(null, result.getAsString());
+		classUnderTest.retrieve(url, monitor, false, false);
 	}
 	
 	// TODO: Move this code somewhere more reusable

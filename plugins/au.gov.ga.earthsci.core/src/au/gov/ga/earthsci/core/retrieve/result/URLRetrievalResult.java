@@ -13,28 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.retrieve.retriever;
+package au.gov.ga.earthsci.core.retrieve.result;
 
+import gov.nasa.worldwind.util.WWIO;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.ByteBuffer;
 
-import au.gov.ga.earthsci.core.retrieve.IRetriever;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 
 /**
- * {@link IRetriever} implementation for retrieving resources from file URLs.
+ * An {@link IRetrievalResult} that contains a URL from which the resource is
+ * read.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FileRetriever extends AbstractURLRetriever
+public class URLRetrievalResult implements IRetrievalResult
 {
-	@Override
-	public boolean supports(URL url)
+	private final URL url;
+
+	public URLRetrievalResult(URL url)
 	{
-		return "file".equalsIgnoreCase(url.getProtocol()); //$NON-NLS-1$
+		this.url = url;
 	}
-	
+
 	@Override
-	public void checkURL(URL url) throws Exception
+	public InputStream getInputStream() throws IOException
 	{
-		url.openStream().close();
+		return url.openStream();
+	}
+
+	@Override
+	public ByteBuffer getByteBuffer() throws IOException
+	{
+		return WWIO.readStreamToBuffer(getInputStream());
+	}
+
+	@Override
+	public Exception getError()
+	{
+		return null;
 	}
 }

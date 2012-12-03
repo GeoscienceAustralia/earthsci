@@ -17,16 +17,17 @@ package au.gov.ga.earthsci.core.retrieve.retriever;
 
 import java.net.URL;
 
-/**
- * A resource retriever that supports <code>bundleresource://</code> URLs
- * 
- * @author James Navin (james.navin@ga.gov.au)
- */
-public class BundleResourceRetriever extends AbstractRetriever
-{
+import au.gov.ga.earthsci.core.retrieve.IRetriever;
 
+/**
+ * {@link IRetriever} used to retrieve bundleresource:// URLs.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ */
+public class BundleResourceRetriever extends AbstractURLRetriever
+{
 	public static final String BUNDLE_RESOURCE_PROTOCOL = "bundleresource"; //$NON-NLS-1$
-	
+
 	@Override
 	public boolean supports(URL url)
 	{
@@ -34,8 +35,13 @@ public class BundleResourceRetriever extends AbstractRetriever
 		{
 			return false;
 		}
-		
+
 		return BUNDLE_RESOURCE_PROTOCOL.equalsIgnoreCase(url.getProtocol());
 	}
 
+	@Override
+	public void checkURL(URL url) throws Exception
+	{
+		url.openStream().close();
+	}
 }

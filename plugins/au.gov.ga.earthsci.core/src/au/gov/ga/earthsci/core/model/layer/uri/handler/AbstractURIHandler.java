@@ -39,6 +39,8 @@ public abstract class AbstractURIHandler implements ILayerURIHandler
 	 * Create a Layer from the given URI. The URI's scheme has already been
 	 * checked against {@link #getSupportedScheme()}.
 	 * 
+	 * @param caller
+	 *            Object requesting the layer
 	 * @param uri
 	 *            URI to create the layer from
 	 * @param monitor
@@ -46,7 +48,8 @@ public abstract class AbstractURIHandler implements ILayerURIHandler
 	 * @return New Layer created form the URI
 	 * @throws LayerURIHandlerException
 	 */
-	protected abstract Layer createLayerFromURI(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException;
+	protected abstract Layer createLayerFromURI(Object caller, URI uri, IProgressMonitor monitor)
+			throws LayerURIHandlerException;
 
 	/**
 	 * Should the query string be used to extract and set properties on the
@@ -62,13 +65,13 @@ public abstract class AbstractURIHandler implements ILayerURIHandler
 	}
 
 	@Override
-	public Layer createLayer(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
+	public Layer createLayer(Object caller, URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
 	{
 		if (!isSchemeSupported(uri.getScheme()))
 		{
 			throw new LayerURIHandlerException("Invalid URI scheme: " + uri); //$NON-NLS-1$
 		}
-		Layer layer = createLayerFromURI(uri, monitor);
+		Layer layer = createLayerFromURI(caller, uri, monitor);
 		if (shouldSetProperties())
 		{
 			setPropertiesFromQuery(layer, uri);
