@@ -23,8 +23,8 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import au.gov.ga.earthsci.core.retrieve.IRetrieval;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
-import au.gov.ga.earthsci.core.retrieve.RetrievalJob;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 
 /**
@@ -36,17 +36,17 @@ import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 public abstract class AbstractURLURIHandler extends AbstractInputStreamURIHandler
 {
 	@Override
-	public Layer createLayerFromURI(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
+	public Layer createLayerFromURI(Object caller, URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
 	{
 		monitor.beginTask("Loading layer from URL", IProgressMonitor.UNKNOWN);
 		InputStream is;
 		try
 		{
 			URL url = uri.toURL();
-			RetrievalJob job = RetrievalServiceFactory.getServiceInstance().retrieve(url, false);
-			job.schedule();
-			IRetrievalResult result = job.waitAndGetRetrievalResult();
-			is = result.getAsInputStream();
+			IRetrieval retrieval = RetrievalServiceFactory.getServiceInstance().retrieve(caller, url);
+			retrieval.start();
+			IRetrievalResult result = retrieval.waitAndGetResult();
+			is = result.getInputStream();
 		}
 		catch (Exception e)
 		{

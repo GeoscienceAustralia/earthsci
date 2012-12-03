@@ -49,7 +49,7 @@ public class URILayerLoadJob extends Job
 		URI uri = layerNode.getURI();
 		try
 		{
-			layer = URILayerFactory.createLayer(uri, monitor);
+			layer = URILayerFactory.createLayer(layerNode, uri, monitor);
 			layerNode.setLayer(layer);
 		}
 		catch (URILayerFactoryException e)

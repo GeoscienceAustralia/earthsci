@@ -36,6 +36,8 @@ public interface ILayerURIHandler
 	/**
 	 * Create a {@link Layer} from the given {@link URI}.
 	 * 
+	 * @param caller
+	 *            Object requesting the layer
 	 * @param uri
 	 *            URI to create the Layer from
 	 * @param monitor
@@ -44,5 +46,5 @@ public interface ILayerURIHandler
 	 * @throws LayerURIHandlerException
 	 *             when Layer creation fails
 	 */
-	Layer createLayer(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException;
+	Layer createLayer(Object caller, URI uri, IProgressMonitor monitor) throws LayerURIHandlerException;
 }

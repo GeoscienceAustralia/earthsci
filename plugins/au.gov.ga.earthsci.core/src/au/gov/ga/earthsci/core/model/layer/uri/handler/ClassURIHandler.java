@@ -39,7 +39,7 @@ public class ClassURIHandler extends AbstractURIHandler
 	}
 
 	@Override
-	public Layer createLayerFromURI(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
+	public Layer createLayerFromURI(Object caller, URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
 	{
 		monitor.beginTask("Loading layer class", 0);
 		try

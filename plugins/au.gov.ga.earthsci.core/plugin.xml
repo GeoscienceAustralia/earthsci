@@ -9,7 +9,7 @@
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retriever">
       <retriever
-            class="au.gov.ga.earthsci.core.retrieve.retriever.HTTPRetriever">
+            class="au.gov.ga.earthsci.core.retrieve.retriever.HttpRetriever">
       </retriever>
       <retriever
             class="au.gov.ga.earthsci.core.retrieve.retriever.FileRetriever">
@@ -49,6 +49,12 @@
       <injectable
             class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration">
       </injectable>
+      <inject
+            class="au.gov.ga.earthsci.core.retrieve.RetrieverFactory">
+         <type
+               class="au.gov.ga.earthsci.core.retrieve.IRetrieverFactory">
+         </type>
+      </inject>
       <inject
             class="au.gov.ga.earthsci.core.retrieve.RetrievalService">
          <type

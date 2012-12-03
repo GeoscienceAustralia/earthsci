@@ -43,7 +43,7 @@ public class ClasspathURIHandler extends AbstractInputStreamURIHandler
 	}
 
 	@Override
-	public Layer createLayerFromURI(URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
+	public Layer createLayerFromURI(Object caller, URI uri, IProgressMonitor monitor) throws LayerURIHandlerException
 	{
 		monitor.beginTask("Loading layer from classpath", IProgressMonitor.UNKNOWN);
 		InputStream is;

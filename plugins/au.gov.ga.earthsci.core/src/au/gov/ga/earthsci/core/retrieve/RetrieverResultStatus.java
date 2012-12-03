@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.retrieve.preferences;
-
-import au.gov.ga.earthsci.core.retrieve.RetrievalService;
+package au.gov.ga.earthsci.core.retrieve;
 
 /**
- * An interface for preferences used to control the {@link RetrievalService} behaviour.
+ * Status of an {@link IRetriever} result, after retrieval is complete.
  * 
- * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IRetrievalServicePreferences
+public enum RetrieverResultStatus
 {
-	/**
-	 * @return Whether caching is enabled
-	 */
-	boolean isCachingEnabled();
-	
+	/** Successfully completed retrieval */
+	COMPLETE,
+
+	/** An error occurred during retrieval */
+	ERROR,
+
+	/** The retrieval stopped due to being canceled */
+	CANCELED,
+
+	/** The retrieval stopped due to being paused */
+	PAUSED
 }

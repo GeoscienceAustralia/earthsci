@@ -24,16 +24,16 @@ import javax.inject.Named;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import au.gov.ga.earthsci.core.retrieve.IRetrieval;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
-import au.gov.ga.earthsci.core.retrieve.RetrievalJob;
+import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
 import au.gov.ga.earthsci.notification.INotificationAction;
 import au.gov.ga.earthsci.notification.Notification;
 import au.gov.ga.earthsci.notification.NotificationCategory;
@@ -138,28 +138,21 @@ public class AboutHandler
 	
 		try
 		{
-			final RetrievalJob retrievalJob = retrievalService.retrieve(new URL("http://www.ga.gov.au")); //$NON-NLS-1$
-			retrievalJob.addJobChangeListener(new JobChangeAdapter()
+			final IRetrieval retrieval = retrievalService.retrieve(this, new URL("http://www.ga.gov.au")); //$NON-NLS-1$
+			retrieval.addListener(new RetrievalAdapter()
 			{
 				@Override
-				public void done(IJobChangeEvent event)
+				public void complete(IRetrieval retrieval)
 				{
-					System.out.println("Retrieval done: " + event.getResult().getMessage() + ", " + retrievalJob.getRetrievalResult().isSuccessful());
-					if (!retrievalJob.getRetrievalResult().isSuccessful())
+					IRetrievalResult result = retrieval.getResult();
+					if(result.getError() != null)
 					{
-						System.out.println(retrievalJob.getRetrievalResult().getMessage());
+						result.getError().printStackTrace();
 					}
-					if (retrievalJob.getRetrievalResult().getException() != null)
-					{
-						retrievalJob.getRetrievalResult().getException().printStackTrace();
-					}
-					if (retrievalJob.getRetrievalResult().isSuccessful())
-					{
-						System.out.println(retrievalJob.getRetrievalResult().getAsString());
-					}
+					System.out.println("Retrieval done: " + retrieval.getStatus());
 				}
 			});
-			retrievalJob.schedule();
+			retrieval.start();
 			System.out.println("Im asynchronous!");
 		}
 		catch (MalformedURLException e)

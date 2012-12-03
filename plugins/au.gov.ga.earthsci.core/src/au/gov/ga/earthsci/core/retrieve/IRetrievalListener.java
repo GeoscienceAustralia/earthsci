@@ -16,45 +16,44 @@
 package au.gov.ga.earthsci.core.retrieve;
 
 /**
- * Provides a mechanism for {@link IRetriever} instances to report progress of
- * a retrieval.
+ * Object that listens for changes to the {@link IRetrievalState}.
  * 
- * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IRetrievalMonitor
+public interface IRetrievalListener
 {
+	/**
+	 * Fired when the retrieval status changes.
+	 * 
+	 * @param retrieval
+	 *            Retrieval for which the status changed.
+	 */
+	void statusChanged(IRetrieval retrieval);
 
 	/**
-	 * Retrieve the current status of the retrieval operation
+	 * Fired when the retrieval progresses.
 	 * 
-	 * @return The current retrieval status
+	 * @param retrieval
+	 *            Retrieval that progressed.
 	 */
-	RetrievalStatus getRetrievalStatus();
-	
+	void progress(IRetrieval retrieval);
+
 	/**
-	 * Notify that the retriever has started
-	 */
-	void notifyStarted();
-	
-	/**
-	 * Notify that the retriever is connecting to the resource
-	 */
-	void notifyConnecting();
-	
-	/**
-	 * Notify that the retriever has connected to the resource
-	 */
-	void notifyConnected();
-	
-	/**
-	 * Notify that the retriever has begun reading the resource
-	 */
-	void notifyReading();
-	
-	/**
-	 * Notify that the retriever has completed 
+	 * Fired when the retrieval is complete (either successfully, with an error,
+	 * or cancelled).
+	 * <p/>
+	 * Not called if the retrieval was paused.
 	 * 
-	 * @param success Whether the retrieval was successful
+	 * @param retrieval
+	 *            Retrieval that completed.
 	 */
-	void notifyCompleted(boolean success);
+	void complete(IRetrieval retrieval);
+
+	/**
+	 * Fired when the retrieval is paused.
+	 * 
+	 * @param retrieval
+	 *            Retrieval that paused.
+	 */
+	void paused(IRetrieval retrieval);
 }
