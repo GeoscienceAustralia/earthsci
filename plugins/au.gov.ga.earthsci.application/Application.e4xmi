@@ -7,6 +7,7 @@
           <children xsi:type="basic:PartStack" xmi:id="_007tcvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0.0" containerData="30">
             <children xsi:type="advanced:Placeholder" xmi:id="_YAxvgC0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.part.layertree" ref="_zNrj8PvCEeG36NOaHUgVKA"/>
             <children xsi:type="advanced:Placeholder" xmi:id="_YmoOkC0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.catalog.part" ref="_rlFg4BjMEeKlbolCp2yOsg"/>
+            <children xsi:type="advanced:Placeholder" xmi:id="_mr7p8D0FEeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmark.part.placeholder" ref="_AnyeEDz9EeKYepPxDbln0Q" closeable="true"/>
           </children>
           <children xsi:type="basic:PartSashContainer" xmi:id="_y24REA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partsashcontainer.0.0" containerData="70">
             <children xsi:type="basic:PartStack" xmi:id="_QfsYYPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0.0.0" containerData="70">
@@ -96,6 +97,12 @@
       </toolbar>
     </sharedElements>
     <sharedElements xsi:type="basic:Part" xmi:id="_RmbeQC1LEeK0vtabFDqVSw" elementId="au.gov.ga.earthsci.application.part.legend" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.legend.LegendPart" label="Legend" closeable="true"/>
+    <sharedElements xsi:type="basic:Part" xmi:id="_AnyeEDz9EeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.BookmarksPart" label="Bookmarks">
+      <handlers xmi:id="_mdkBUD0GEeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmark.addhandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.handlers.AddBookmarkHandler" command="_CDcDUDKiEeKVc-uaxJMq1A"/>
+      <toolbar xmi:id="_H6M7wDz9EeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar">
+        <children xsi:type="menu:HandledToolItem" xmi:id="_ZoawUD0FEeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar.createbookmark" label="New Bookmark" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add.gif" command="_CDcDUDKiEeKVc-uaxJMq1A"/>
+      </toolbar>
+    </sharedElements>
     <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.windowtrim">
       <children xsi:type="menu:ToolBar" xmi:id="_007tdPsMEeG36NOaHUgVKA" elementId="toolbar:org.eclipse.ui.main.toolbar">
         <children xsi:type="menu:HandledToolItem" xmi:id="_007tdfsMEeG36NOaHUgVKA" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>
