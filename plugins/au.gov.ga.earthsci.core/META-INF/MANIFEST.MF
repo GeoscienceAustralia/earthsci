@@ -20,6 +20,7 @@ Export-Package: au.gov.ga.earthsci.core,
  au.gov.ga.earthsci.core.retrieve.retriever,
  au.gov.ga.earthsci.core.tree,
  au.gov.ga.earthsci.core.util,
+ au.gov.ga.earthsci.core.util.collection,
  au.gov.ga.earthsci.core.util.message,
  au.gov.ga.earthsci.core.worldwind,
  au.gov.ga.earthsci.notification

@@ -43,6 +43,7 @@ import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.ILabeled;
+import au.gov.ga.earthsci.core.util.collection.HashSetHashMap;
 import au.gov.ga.earthsci.core.util.collection.SetMap;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.viewers.IControlProvider;
@@ -115,7 +116,9 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 	public void dispose()
 	{
 		if (disposed)
+		{
 			return;
+		}
 		disposed = true;
 
 		super.dispose();
@@ -208,7 +211,7 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 
 	private void setupListeners()
 	{
-		final SetMap<URI, ICatalogTreeNode> uriElements = new SetMap<URI, ICatalogTreeNode>();
+		final SetMap<URI, ICatalogTreeNode> uriElements = new HashSetHashMap<URI, ICatalogTreeNode>();
 
 		catalogModelChildrenListener = new PropertyChangeListener()
 		{
@@ -235,9 +238,13 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 							if (uri != null)
 							{
 								if (add)
+								{
 									uriElements.putSingle(uri, node);
+								}
 								else
+								{
 									uriElements.removeSingle(uri, node);
+								}
 							}
 						}
 					}
