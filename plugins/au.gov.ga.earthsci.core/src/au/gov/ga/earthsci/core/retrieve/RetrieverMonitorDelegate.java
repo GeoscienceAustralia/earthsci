@@ -36,19 +36,19 @@ public class RetrieverMonitorDelegate implements IRetrieverMonitor
 	}
 
 	@Override
-	public void progress(int amount)
+	public void progress(long amount)
 	{
 		delegate.progress(amount);
 	}
 
 	@Override
-	public void setPosition(int position)
+	public void setPosition(long position)
 	{
 		delegate.setPosition(position);
 	}
 
 	@Override
-	public void setLength(int length)
+	public void setLength(long length)
 	{
 		delegate.setLength(length);
 	}
