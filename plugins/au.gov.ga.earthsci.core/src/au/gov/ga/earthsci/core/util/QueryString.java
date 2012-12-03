@@ -18,12 +18,14 @@ package au.gov.ga.earthsci.core.util;
 import java.util.List;
 import java.util.Map;
 
+import au.gov.ga.earthsci.core.util.collection.ArrayListHashMap;
+
 /**
  * Class that parses a URL query string into a key/value map.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class QueryString extends ListMap<String, String>
+public class QueryString extends ArrayListHashMap<String, String>
 {
 	/**
 	 * Create a QueryString object from the given query string. The string must
