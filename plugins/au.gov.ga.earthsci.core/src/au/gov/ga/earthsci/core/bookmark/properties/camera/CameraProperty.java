@@ -17,8 +17,8 @@ package au.gov.ga.earthsci.core.bookmark.properties.camera;
 
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
+import au.gov.ga.earthsci.core.bookmark.Messages;
 import au.gov.ga.earthsci.core.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.core.bookmark.properties.Messages;
 
 /**
  * A bookmark property that contains information on camera position

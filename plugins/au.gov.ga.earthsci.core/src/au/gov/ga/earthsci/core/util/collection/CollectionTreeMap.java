@@ -17,16 +17,15 @@ package au.gov.ga.earthsci.core.util.collection;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
- * Abstract {@link CollectionMap} implementation using a {@link HashMap}.
+ * An abstract {@link CollectionMap} that uses a {@link TreeMap}, preserving the natural ordering of keys.
  * 
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * @author James Navin (james.navin@ga.gov.au)
  */
-public abstract class CollectionHashMap<K, V, C extends Collection<V>> extends HashMap<K, C> implements
-		CollectionMap<K, V, C>
+public abstract class CollectionTreeMap<K, V, C extends Collection<V>> extends TreeMap<K, C> implements CollectionMap<K, V, C>
 {
 	protected abstract C createCollection(K key);
 

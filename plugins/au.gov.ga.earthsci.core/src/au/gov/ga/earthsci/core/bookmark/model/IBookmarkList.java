@@ -28,6 +28,14 @@ import java.util.List;
 public interface IBookmarkList
 {
 	/**
+	 * Return the ID of this list. This will uniquely identify a list
+	 * in a session.
+	 * 
+	 * @return The ID of this bookmark list
+	 */
+	String getId();
+	
+	/**
 	 * Return the human readable name of this bookmark list.
 	 * 
 	 * @return The name of this bookmark list.

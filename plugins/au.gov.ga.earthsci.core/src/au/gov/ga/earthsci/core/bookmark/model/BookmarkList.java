@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.core.bookmark.model;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The default {@link IBookmarkList} implementation
@@ -24,8 +25,25 @@ import java.util.List;
  */
 public class BookmarkList implements IBookmarkList
 {
+	private String id;
 	private String name;
 	private List<IBookmark> bookmarks;
+
+	public BookmarkList()
+	{
+		this.id = UUID.randomUUID().toString();
+	}
+	
+	@Override
+	public String getId()
+	{
+		return id;
+	}
+	
+	public void setId(String id)
+	{
+		this.id = id;
+	}
 	
 	@Override
 	public String getName()

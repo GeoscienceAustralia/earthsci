@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark.properties;
+package au.gov.ga.earthsci.core.util.collection;
 
-import org.eclipse.osgi.util.NLS;
+import java.util.ArrayList;
 
-public class Messages extends NLS
+/**
+ * An implementation of the {@link CollectionTreeMap} that uses an {@link ArrayList}
+ * to store values for each key.
+ * 
+ * @author James Navin (james.navin@ga.gov.au)
+ */
+public class ArrayListTreeMap<K,V> extends CollectionTreeMap<K, V, ArrayList<V>>
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.bookmark.properties.messages"; //$NON-NLS-1$
-	public static String CameraProperty_Name;
-	static
+
+	@Override
+	protected ArrayList<V> createCollection(K key)
 	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+		return new ArrayList<V>();
 	}
 
-	private Messages()
-	{
-	}
 }
