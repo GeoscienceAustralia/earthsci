@@ -113,7 +113,7 @@ public class HTTPRetrieverTest
 		classUnderTest.retrieve(url, monitor, false, false);
 	}
 	
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = NullPointerException.class)
 	public void testRetrieveFileURL() throws Exception
 	{
 		URL url = new URL("file://somefile.txt");
