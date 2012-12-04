@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark.properties.camera;
+package au.gov.ga.earthsci.bookmark.properties.camera;
 
 import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.geom.Vec4;
@@ -23,8 +23,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import au.gov.ga.earthsci.core.bookmark.IBookmarkPropertyCreator;
-import au.gov.ga.earthsci.core.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.bookmark.IBookmarkPropertyCreator;
+import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 
 /**
  * An {@link IBookmarkPropertyCreator} that can create a {@link CameraProperty} instance

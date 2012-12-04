@@ -13,30 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark;
-
-import au.gov.ga.earthsci.core.bookmark.model.IBookmarkProperty;
+package au.gov.ga.earthsci.bookmark.model;
 
 /**
- * An interface for classes that are able to apply the state stored in 
+ * Represents a single property stored on a bookmark. A bookmark property stores state
+ * about a specific aspect of the model/view that can be persisted between application invocations
+ * and later re-applied. 
+ * <p/>
+ * Types of properties are uniquely identified by a type, and a bookmark may have at most one property
+ * of each type.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public interface IBookmarkPropertyApplicator
+public interface IBookmarkProperty
 {
 	/**
-	 * Returns the property types this applicator supports
+	 * Return the key that identifies the type of this property.
 	 * 
-	 * @return The property types this applicator supports
+	 * @return The key that identifies the type of this property
 	 */
-	String[] getSupportedTypes();
+	String getType();
 	
 	/**
-	 * Apply the given property to the current system state
+	 * Return the key to use for looking up the name for this property; or the name itself.
 	 * 
-	 * @param property The property to apply.
-	 * 
-	 * @throws IllegalArgumentException If this applicator cannot be used for the given property. See {@link #supports(String)}.
+	 * @return the key to use for looking up the name for this property; or the name itself.
 	 */
-	void apply(IBookmarkProperty property);
+	String getName();
 }

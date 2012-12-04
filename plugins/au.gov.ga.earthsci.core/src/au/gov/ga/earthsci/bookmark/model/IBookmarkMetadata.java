@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark;
+package au.gov.ga.earthsci.bookmark.model;
 
-import org.eclipse.osgi.util.NLS;
+import java.util.Map;
 
-public class Messages extends NLS
+/**
+ * An interface for storing and retrieving metadata about an {@link IBookmark}. This is a dictionary
+ * into which metadata can be stored relating to the associated bookmark.
+ * <p/>
+ * A number of standard keys are defined which can be used to store common pieces of information (description etc.).
+ * <p/>
+ * Where appropriate, data can be stored as HTML formatted strings for display purposes.
+ * 
+ * @author James Navin (james.navin@ga.gov.au)
+ */
+public interface IBookmarkMetadata extends Map<String, String>
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.bookmark.properties.messages"; //$NON-NLS-1$
-	public static String Bookmarks_DefaultListName;
-	public static String CameraProperty_Name;
-	static
-	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
-
-	private Messages()
-	{
-	}
+	/**
+	 * The key for the bookmark description
+	 */
+	String DESCRIPTION = "bookmark.metadata.description"; //$NON-NLS-1$
 }

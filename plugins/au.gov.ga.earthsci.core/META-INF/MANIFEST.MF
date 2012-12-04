@@ -5,10 +5,10 @@ Bundle-SymbolicName: au.gov.ga.earthsci.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: au.gov.ga.earthsci.core,
- au.gov.ga.earthsci.core.bookmark,
- au.gov.ga.earthsci.core.bookmark.model,
- au.gov.ga.earthsci.core.bookmark.properties.camera,
+Export-Package: au.gov.ga.earthsci.bookmark,
+ au.gov.ga.earthsci.bookmark.model,
+ au.gov.ga.earthsci.bookmark.properties.camera,
+ au.gov.ga.earthsci.core,
  au.gov.ga.earthsci.core.model.catalog,
  au.gov.ga.earthsci.core.model.catalog.dataset,
  au.gov.ga.earthsci.core.model.layer,

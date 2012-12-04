@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark.model;
+package au.gov.ga.earthsci.bookmark.model;
 
 /**
  * The core entry point to the bookmarks model. Gives access to named {@link IBookmarkList}s

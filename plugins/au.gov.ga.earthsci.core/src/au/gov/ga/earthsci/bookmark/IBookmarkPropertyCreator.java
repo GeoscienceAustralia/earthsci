@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark;
+package au.gov.ga.earthsci.bookmark;
 
 import java.util.Map;
 
-import au.gov.ga.earthsci.core.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 
 /**
  * An interface for classes that are able to create {@link IBookmarkProperty} instances

@@ -5,8 +5,8 @@
    <extension-point id="au.gov.ga.earthsci.notification.categoryProvider" name="Notification Category Provider" schema="schema/au.gov.ga.earthsci.notification.categoryProvider.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.retrieve.retriever" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retriever.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.model.catalog.provider" name="Catalog Provider" schema="schema/au.gov.ga.earthsci.core.model.catalog.provider.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.core.bookmark.applicator" name="Bookmark Property Applicator" schema="schema/au.gov.ga.earthsci.core.bookmark.applicator.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.core.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.core.bookmark.creator.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.applicator" name="Bookmark Property Applicator" schema="schema/au.gov.ga.earthsci.bookmark.applicator.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.bookmark.creator.exsd"/>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retriever">
       <retriever
@@ -40,9 +40,9 @@
       </initializer>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.core.bookmark.creator">
+         point="au.gov.ga.earthsci.bookmark.creator">
       <creator
-            class="au.gov.ga.earthsci.core.bookmark.properties.camera.CameraPropertyCreator">
+            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyCreator">
       </creator>
    </extension>
    <extension
@@ -105,10 +105,10 @@
          </type>
       </inject>
       <inject
-            class="au.gov.ga.earthsci.core.bookmark.BookmarkPropertyApplicatorRegistry">
+            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry">
       </inject>
       <inject
-            class="au.gov.ga.earthsci.core.bookmark.BookmarkPropertyFactory">
+            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory">
       </inject>
    </extension>
 

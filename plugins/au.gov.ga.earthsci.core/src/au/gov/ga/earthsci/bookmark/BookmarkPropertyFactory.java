@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark;
+package au.gov.ga.earthsci.bookmark;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +28,7 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil;
 import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil.Callback;
 
@@ -43,7 +43,7 @@ import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil.Callback;
 public class BookmarkPropertyFactory
 {
 	
-	private static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.core.bookmark.creator"; //$NON-NLS-1$
+	private static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.creator"; //$NON-NLS-1$
 	private static final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
 	private static Logger logger = LoggerFactory.getLogger(BookmarkPropertyFactory.class);

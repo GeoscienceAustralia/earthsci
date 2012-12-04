@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark.properties.camera;
+package au.gov.ga.earthsci.bookmark.properties.camera;
 
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
-import au.gov.ga.earthsci.core.bookmark.Messages;
-import au.gov.ga.earthsci.core.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.bookmark.Messages;
+import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 
 /**
  * A bookmark property that contains information on camera position
@@ -27,7 +27,7 @@ import au.gov.ga.earthsci.core.bookmark.model.IBookmarkProperty;
  */
 public class CameraProperty implements IBookmarkProperty
 {
-	public static final String TYPE = "au.gov.ga.earthsci.core.bookmark.properties.camera"; //$NON-NLS-1$
+	public static final String TYPE = "au.gov.ga.earthsci.bookmark.properties.camera"; //$NON-NLS-1$
 
 	/** The position of the camera eye */
 	private Position eyePosition = null;

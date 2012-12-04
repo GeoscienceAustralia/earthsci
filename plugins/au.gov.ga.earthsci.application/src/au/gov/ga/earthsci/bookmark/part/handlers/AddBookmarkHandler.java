@@ -17,9 +17,9 @@ package au.gov.ga.earthsci.bookmark.part.handlers;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 
-import au.gov.ga.earthsci.core.bookmark.BookmarkFactory;
-import au.gov.ga.earthsci.core.bookmark.model.IBookmark;
-import au.gov.ga.earthsci.core.bookmark.properties.camera.CameraProperty;
+import au.gov.ga.earthsci.bookmark.BookmarkFactory;
+import au.gov.ga.earthsci.bookmark.model.IBookmark;
+import au.gov.ga.earthsci.bookmark.properties.camera.CameraProperty;
 
 /**
  * A command handler for adding new bookmarks from the current world state

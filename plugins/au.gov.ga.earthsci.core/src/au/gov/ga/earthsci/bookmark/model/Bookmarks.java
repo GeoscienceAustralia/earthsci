@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark.model;
+package au.gov.ga.earthsci.bookmark.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import au.gov.ga.earthsci.core.bookmark.Messages;
+import au.gov.ga.earthsci.bookmark.Messages;
 import au.gov.ga.earthsci.core.util.collection.ArrayListTreeMap;
 
 
@@ -32,7 +32,7 @@ import au.gov.ga.earthsci.core.util.collection.ArrayListTreeMap;
  */
 public class Bookmarks implements IBookmarks
 {
-	private static final String DEFAULT_LIST_ID = "au.gov.ga.earthsci.core.bookmark.list.default"; //$NON-NLS-1$
+	private static final String DEFAULT_LIST_ID = "au.gov.ga.earthsci.bookmark.list.default"; //$NON-NLS-1$
 	
 	private ArrayListTreeMap<String, IBookmarkList> nameToListMap = new ArrayListTreeMap<String, IBookmarkList>();
 	private Map<String, IBookmarkList> idToListMap = new HashMap<String, IBookmarkList>();

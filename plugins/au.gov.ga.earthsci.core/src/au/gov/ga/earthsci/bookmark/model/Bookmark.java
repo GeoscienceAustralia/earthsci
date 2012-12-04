@@ -13,37 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark.model;
+package au.gov.ga.earthsci.bookmark.model;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * The default {@link IBookmarkList} implementation
- * 
+ * The default {@link IBookmark} implementation
+ *
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class BookmarkList implements IBookmarkList
+public class Bookmark implements IBookmark
 {
-	private String id;
-	private String name;
-	private List<IBookmark> bookmarks;
 
-	public BookmarkList()
-	{
-		this.id = UUID.randomUUID().toString();
-	}
-	
-	@Override
-	public String getId()
-	{
-		return id;
-	}
-	
-	public void setId(String id)
-	{
-		this.id = id;
-	}
+	private String name;
+	private IBookmarkMetadata metadata = new BookmarkMetadata();
+	private Map<String, IBookmarkProperty> properties = new HashMap<String, IBookmarkProperty>();
 	
 	@Override
 	public String getName()
@@ -52,21 +38,37 @@ public class BookmarkList implements IBookmarkList
 	}
 
 	@Override
-	public void setName(String name)
+	public IBookmarkMetadata getMetadata()
 	{
-		this.name = name;
-	}
-	
-	@Override
-	public List<IBookmark> getBookmarks()
-	{
-		return bookmarks;
+		return metadata;
 	}
 
 	@Override
-	public void setBookmarks(List<IBookmark> bookmarks)
+	public Collection<IBookmarkProperty> getProperties()
 	{
-		this.bookmarks = bookmarks;
+		return properties.values();
+	}
+
+	@Override
+	public IBookmarkProperty getProperty(String type)
+	{
+		return properties.get(type);
 	}
 	
+	@Override
+	public void addProperty(IBookmarkProperty property)
+	{
+		if (property == null)
+		{
+			return;
+		}
+		this.properties.put(property.getType(), property);
+	}
+
+	@Override
+	public boolean hasProperty(String type)
+	{
+		return properties.containsKey(type);
+	}
+
 }

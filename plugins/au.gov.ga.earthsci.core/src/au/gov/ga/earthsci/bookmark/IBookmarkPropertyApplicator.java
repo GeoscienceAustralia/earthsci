@@ -13,17 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark.model;
+package au.gov.ga.earthsci.bookmark;
 
-import java.util.HashMap;
+import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 
 /**
- * The default {@link IBookmarkMetadata} implementation which uses a {@link HashMap} for storing metadata
- * entries.
+ * An interface for classes that are able to apply the state stored in 
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class BookmarkMetadata extends HashMap<String, String> implements IBookmarkMetadata
+public interface IBookmarkPropertyApplicator
 {
-
+	/**
+	 * Returns the property types this applicator supports
+	 * 
+	 * @return The property types this applicator supports
+	 */
+	String[] getSupportedTypes();
+	
+	/**
+	 * Apply the given property to the current system state
+	 * 
+	 * @param property The property to apply.
+	 * 
+	 * @throws IllegalArgumentException If this applicator cannot be used for the given property. See {@link #supports(String)}.
+	 */
+	void apply(IBookmarkProperty property);
 }

@@ -13,23 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark.model;
+package au.gov.ga.earthsci.bookmark.model;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.UUID;
 
 /**
- * The default {@link IBookmark} implementation
- *
+ * The default {@link IBookmarkList} implementation
+ * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class Bookmark implements IBookmark
+public class BookmarkList implements IBookmarkList
 {
-
+	private String id;
 	private String name;
-	private IBookmarkMetadata metadata = new BookmarkMetadata();
-	private Map<String, IBookmarkProperty> properties = new HashMap<String, IBookmarkProperty>();
+	private List<IBookmark> bookmarks;
+
+	public BookmarkList()
+	{
+		this.id = UUID.randomUUID().toString();
+	}
+	
+	@Override
+	public String getId()
+	{
+		return id;
+	}
+	
+	public void setId(String id)
+	{
+		this.id = id;
+	}
 	
 	@Override
 	public String getName()
@@ -38,37 +52,21 @@ public class Bookmark implements IBookmark
 	}
 
 	@Override
-	public IBookmarkMetadata getMetadata()
+	public void setName(String name)
 	{
-		return metadata;
-	}
-
-	@Override
-	public Collection<IBookmarkProperty> getProperties()
-	{
-		return properties.values();
-	}
-
-	@Override
-	public IBookmarkProperty getProperty(String type)
-	{
-		return properties.get(type);
+		this.name = name;
 	}
 	
 	@Override
-	public void addProperty(IBookmarkProperty property)
+	public List<IBookmark> getBookmarks()
 	{
-		if (property == null)
-		{
-			return;
-		}
-		this.properties.put(property.getType(), property);
+		return bookmarks;
 	}
 
 	@Override
-	public boolean hasProperty(String type)
+	public void setBookmarks(List<IBookmark> bookmarks)
 	{
-		return properties.containsKey(type);
+		this.bookmarks = bookmarks;
 	}
-
+	
 }

@@ -3,7 +3,7 @@
 <schema targetNamespace="au.gov.ga.earthsci.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="au.gov.ga.earthsci.core" id="au.gov.ga.earthsci.core.bookmark.applicator" name="Bookmark Property Applicator"/>
+         <meta.schema plugin="au.gov.ga.earthsci.core" id="au.gov.ga.earthsci.bookmark.applicator" name="Bookmark Property Applicator"/>
       </appinfo>
       <documentation>
          Register bookmark property applicators.

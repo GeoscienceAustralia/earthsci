@@ -13,31 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.bookmark.model;
+package au.gov.ga.earthsci.bookmark.model;
+
+import java.util.HashMap;
 
 /**
- * Represents a single property stored on a bookmark. A bookmark property stores state
- * about a specific aspect of the model/view that can be persisted between application invocations
- * and later re-applied. 
- * <p/>
- * Types of properties are uniquely identified by a type, and a bookmark may have at most one property
- * of each type.
+ * The default {@link IBookmarkMetadata} implementation which uses a {@link HashMap} for storing metadata
+ * entries.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public interface IBookmarkProperty
+public class BookmarkMetadata extends HashMap<String, String> implements IBookmarkMetadata
 {
-	/**
-	 * Return the key that identifies the type of this property.
-	 * 
-	 * @return The key that identifies the type of this property
-	 */
-	String getType();
-	
-	/**
-	 * Return the key to use for looking up the name for this property; or the name itself.
-	 * 
-	 * @return the key to use for looking up the name for this property; or the name itself.
-	 */
-	String getName();
+
 }
