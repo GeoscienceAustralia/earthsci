@@ -20,7 +20,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.nasa.worldwind.retrieve.HTTPRetriever;
 import gov.nasa.worldwind.util.WWIO;
 
 import java.io.IOException;
@@ -46,7 +45,7 @@ import au.gov.ga.earthsci.core.retrieve.RetrievalStatus;
 import au.gov.ga.earthsci.core.retrieve.retriever.HttpRetriever;
 
 /**
- * Unit tests for the {@link HTTPRetriever} class
+ * Unit tests for the {@link HttpRetriever} class
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -211,7 +210,7 @@ public class HTTPRetrieverTest
 	{
 		try
 		{
-			ClassLoader classLoader = HTTPRetriever.class.getClassLoader();
+			ClassLoader classLoader = HttpRetriever.class.getClassLoader();
 			Class.forName("com.sun.net.httpserver.HttpServer", false, classLoader);
 			Class.forName("com.sun.net.httpserver.HttpHandler", false, classLoader);
 			Class.forName("com.sun.net.httpserver.HttpExchange", false, classLoader);
@@ -297,7 +296,7 @@ public class HTTPRetrieverTest
 			final Class<?> handlerClass = Class.forName("com.sun.net.httpserver.HttpHandler");
 			final Class<?> exchangeClass = Class.forName("com.sun.net.httpserver.HttpExchange");
 			
-			Object handler = Proxy.newProxyInstance(HTTPRetriever.class.getClassLoader(), new Class[] {handlerClass}, new InvocationHandler() {
+			Object handler = Proxy.newProxyInstance(HttpRetriever.class.getClassLoader(), new Class[] {handlerClass}, new InvocationHandler() {
 				@Override
 				public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
 				{
