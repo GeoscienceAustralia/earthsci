@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.model;
 
-import java.util.Collection;
 
 /**
  * Represents a bookmark, used to store state that can be re-applied at a later date.
@@ -47,7 +46,7 @@ public interface IBookmark
 	 * 
 	 * @return The set of properties associated with this bookmark.
 	 */
-	Collection<IBookmarkProperty> getProperties(); 
+	IBookmarkProperty[] getProperties(); 
 	
 	/**
 	 * Return the property with the given type (if any).

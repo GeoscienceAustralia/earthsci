@@ -27,10 +27,12 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil;
 import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil.Callback;
+import au.gov.ga.earthsci.core.util.Validate;
 
 /**
  * A factory class that uses registered {@link IBookmarkPropertyCreator}s to instantiate
@@ -43,22 +45,24 @@ import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil.Callback;
 public class BookmarkPropertyFactory
 {
 	
-	private static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.creator"; //$NON-NLS-1$
+	private static final String CREATORS_EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.creator"; //$NON-NLS-1$
+	private static final String EXPORTERS_EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.exporter"; //$NON-NLS-1$
 	private static final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
 	private static Logger logger = LoggerFactory.getLogger(BookmarkPropertyFactory.class);
 	
 	private static Map<String, IBookmarkPropertyCreator> creators = new ConcurrentHashMap<String, IBookmarkPropertyCreator>();
+	private static Map<String, IBookmarkPropertyExporter> exporters = new ConcurrentHashMap<String, IBookmarkPropertyExporter>();
 	
 	/**
-	 * Create and return a new property of the given type using the given context.
+	 * Create and return a new property of the given type using the given XML.
 	 * 
 	 * @param type The type of property to create
-	 * @param context The context to use for creating the property
+	 * @param root The root of the XML to use for creating the property
 	 * 
 	 * @return A new bookmark property of the given type, created from the given context
 	 */
-	public static IBookmarkProperty createProperty(String type, Map<String, Object> context)
+	public static IBookmarkProperty createProperty(String type, Element root)
 	{
 		if (type == null)
 		{
@@ -71,7 +75,7 @@ public class BookmarkPropertyFactory
 			return null;
 		}
 		
-		return propertyCreator.createFromContext(type, context);
+		return propertyCreator.createFromXML(type, root);
 	}
 	
 	/**
@@ -98,15 +102,45 @@ public class BookmarkPropertyFactory
 	}
 	
 	/**
-	 * Load the bookmark property creators from the extension registry
+	 * Export the given property to a map which can be used to persist and/or re-create the property using {@link #createProperty(String, Map)}
+	 * 
+	 * @param property The property to export
+	 * 
+	 * @return A map containing the exported information from the given property, or <code>null</code> if it cannot be exported.
+	 */
+	public static void exportProperty(IBookmarkProperty property, Element parent)
+	{
+		if (property == null)
+		{
+			return;
+		}
+		Validate.notNull(parent, "A parent element is required"); //$NON-NLS-1$
+		
+		IBookmarkPropertyExporter exporter = exporters.get(property.getType());
+		if (exporter == null)
+		{
+			return;
+		}
+		
+		exporter.exportToXML(property, parent);
+	}
+	
+	/**
+	 * Load the bookmark property creators and exporters from the extension registry
 	 */
 	@Inject
 	public static void loadFromExtensions()
 	{
+		loadCreatorsFromExtensions();
+		loadExportersFromExtensions();
+	}
+
+	private static void loadCreatorsFromExtensions()
+	{
 		logger.debug("Registering bookmark property creators"); //$NON-NLS-1$
 		try
 		{
-			ExtensionRegistryUtil.createFromExtension(EXTENSION_POINT_ID, CLASS_ATTRIBUTE, IBookmarkPropertyCreator.class, new Callback(){
+			ExtensionRegistryUtil.createFromExtension(CREATORS_EXTENSION_POINT_ID, CLASS_ATTRIBUTE, IBookmarkPropertyCreator.class, new Callback(){
 				@Override
 				public void run(Object object, IConfigurationElement element, IEclipseContext context)
 				{
@@ -117,6 +151,25 @@ public class BookmarkPropertyFactory
 		catch (CoreException e)
 		{
 			logger.error("Exception occurred while loading creator from extension", e); //$NON-NLS-1$
+		}
+	}
+	
+	private static void loadExportersFromExtensions()
+	{
+		logger.debug("Registering bookmark property exporters"); //$NON-NLS-1$
+		try
+		{
+			ExtensionRegistryUtil.createFromExtension(EXPORTERS_EXTENSION_POINT_ID, CLASS_ATTRIBUTE, IBookmarkPropertyExporter.class, new Callback(){
+				@Override
+				public void run(Object object, IConfigurationElement element, IEclipseContext context)
+				{
+					registerExporter((IBookmarkPropertyExporter) object);
+				}
+			});
+		}
+		catch (CoreException e)
+		{
+			logger.error("Exception occurred while loading exporters from extension", e); //$NON-NLS-1$
 		}
 	}
 	
@@ -135,6 +188,23 @@ public class BookmarkPropertyFactory
 			creators.put(type, creator);
 		}
 		logger.debug("Registered bookmark property creator: {}", creator.getClass()); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Register the given bookmark property exporter with this factory
+	 */
+	public static void registerExporter(IBookmarkPropertyExporter exporter)
+	{
+		if (exporter == null)
+		{
+			return;
+		}
+		
+		for (String type : exporter.getSupportedTypes())
+		{
+			exporters.put(type, exporter);
+		}
+		logger.debug("Registered bookmark property exporter: {}", exporter.getClass()); //$NON-NLS-1$
 	}
 
 	/**

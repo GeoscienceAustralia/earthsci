@@ -15,19 +15,29 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import au.gov.ga.earthsci.core.persistence.Exportable;
+import au.gov.ga.earthsci.core.persistence.Persistent;
 
 /**
  * The default {@link IBookmarkList} implementation
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
+@Exportable
 public class BookmarkList implements IBookmarkList
 {
+	@Persistent(attribute = true)
 	private String id;
+	
+	@Persistent
 	private String name;
-	private List<IBookmark> bookmarks;
+	
+	@Persistent
+	private List<IBookmark> bookmarks = new ArrayList<IBookmark>();
 
 	public BookmarkList()
 	{

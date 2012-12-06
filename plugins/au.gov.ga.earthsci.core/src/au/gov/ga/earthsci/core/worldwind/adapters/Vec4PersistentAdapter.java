@@ -13,23 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.bookmark;
+package au.gov.ga.earthsci.core.worldwind.adapters;
 
-import org.eclipse.osgi.util.NLS;
+import gov.nasa.worldwind.geom.Vec4;
 
-public class Messages extends NLS
+import java.net.URI;
+
+import org.w3c.dom.Element;
+
+import au.gov.ga.earthsci.core.persistence.IPersistentAdapter;
+import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
+
+/**
+ * An {@link IPersistentAdapter} used to persist {@link Vec4} instances
+ * 
+ * @author James Navin (james.navin@ga.gov.au)
+ */
+public class Vec4PersistentAdapter implements IPersistentAdapter<Vec4>
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.bookmark.messages"; //$NON-NLS-1$
-	public static String Bookmark_DefaultBookmarkName;
-	public static String Bookmarks_DefaultListName;
-	public static String CameraProperty_Name;
-	static
+	private static final String ELEMENT_NAME = "vector"; //$NON-NLS-1$
+
+	@Override
+	public void toXML(Vec4 object, Element element, URI context)
 	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+		XMLUtil.appendVec4(element, ELEMENT_NAME, object);
 	}
 
-	private Messages()
+	@Override
+	public Vec4 fromXML(Element element, URI context)
 	{
+		return XMLUtil.getVec4(element, ELEMENT_NAME, null);
 	}
+	
 }

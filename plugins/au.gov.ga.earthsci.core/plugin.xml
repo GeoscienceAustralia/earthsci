@@ -7,6 +7,7 @@
    <extension-point id="au.gov.ga.earthsci.core.model.catalog.provider" name="Catalog Provider" schema="schema/au.gov.ga.earthsci.core.model.catalog.provider.exsd"/>
    <extension-point id="au.gov.ga.earthsci.bookmark.applicator" name="Bookmark Property Applicator" schema="schema/au.gov.ga.earthsci.bookmark.applicator.exsd"/>
    <extension-point id="au.gov.ga.earthsci.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.bookmark.creator.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.exporter" name="Bookmark Property Exporter" schema="schema/au.gov.ga.earthsci.bookmark.exporter.exsd"/>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retriever">
       <retriever
@@ -42,8 +43,15 @@
    <extension
          point="au.gov.ga.earthsci.bookmark.creator">
       <creator
-            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyCreator">
+            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
       </creator>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.bookmark.exporter">
+      <exporter
+            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
+         exporter body text
+      </exporter>
    </extension>
    <extension
          point="au.gov.ga.earthsci.injectable">
@@ -104,6 +112,10 @@
                class="gov.nasa.worldwind.View">
          </type>
       </inject>
+      <bind
+            binding="au.gov.ga.earthsci.bookmark.model.IBookmarks"
+            implementation="au.gov.ga.earthsci.bookmark.model.Bookmarks">
+      </bind>
       <inject
             class="au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry">
       </inject>

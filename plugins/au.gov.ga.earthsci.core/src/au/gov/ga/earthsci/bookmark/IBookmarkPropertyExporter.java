@@ -15,21 +15,32 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark;
 
-import org.eclipse.osgi.util.NLS;
+import org.w3c.dom.Element;
 
-public class Messages extends NLS
+import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+
+/**
+ * An interface for classes that are able to export an IBookmarkProperty to a map
+ * of key-value pairs that can then be used by a corresponding {@link IBookmarkPropertyCreator}
+ * to re-create the property.
+ * 
+ * @author James Navin (james.navin@ga.gov.au)
+ */
+public interface IBookmarkPropertyExporter
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.bookmark.messages"; //$NON-NLS-1$
-	public static String Bookmark_DefaultBookmarkName;
-	public static String Bookmarks_DefaultListName;
-	public static String CameraProperty_Name;
-	static
-	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
 
-	private Messages()
-	{
-	}
+	/**
+	 * Returns the property types supported by this creator
+	 * 
+	 * @return The property types supported by this creator
+	 */
+	String[] getSupportedTypes();
+	
+	/**
+	 * Export the given property to XML
+	 * 
+	 * @param property The property to export
+	 * @param parent A parent XML element onto which the property XML can be attached
+	 */
+	void exportToXML(IBookmarkProperty property, Element parent);
 }

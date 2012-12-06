@@ -19,7 +19,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Singleton;
+
+import org.eclipse.e4.core.di.annotations.Creatable;
+
 import au.gov.ga.earthsci.bookmark.Messages;
+import au.gov.ga.earthsci.bookmark.io.BookmarksPersister;
+import au.gov.ga.earthsci.core.persistence.Exportable;
+import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.util.collection.ArrayListTreeMap;
 
 
@@ -30,6 +39,9 @@ import au.gov.ga.earthsci.core.util.collection.ArrayListTreeMap;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
+@Exportable
+@Creatable
+@Singleton
 public class Bookmarks implements IBookmarks
 {
 	private static final String DEFAULT_LIST_ID = "au.gov.ga.earthsci.bookmark.list.default"; //$NON-NLS-1$
@@ -39,11 +51,23 @@ public class Bookmarks implements IBookmarks
 
 	private IBookmarkList defaultList;
 	
+	@PostConstruct
+	public void load()
+	{
+		BookmarksPersister.loadFromWorkspace(this);
+	}
+	
+	@PreDestroy
+	public void save()
+	{
+		BookmarksPersister.saveToWorkspace(this);
+	}
+	
 	public Bookmarks()
 	{
 		BookmarkList defaultList = new BookmarkList();
 		defaultList.setId(DEFAULT_LIST_ID);
-		defaultList.setName("--" + Messages.Bookmarks_DefaultListName + "--"); //$NON-NLS-1$ //$NON-NLS-2$
+		defaultList.setName(Messages.Bookmarks_DefaultListName); 
 		
 		addList(defaultList);
 		this.defaultList = defaultList;
@@ -72,12 +96,22 @@ public class Bookmarks implements IBookmarks
 		return defaultList;
 	}
 
+	@Persistent
 	@Override
 	public IBookmarkList[] getLists()
 	{
 		return nameToListMap.flatValues().toArray(new IBookmarkList[0]);
 	}
 
+	@Override
+	public void setLists(IBookmarkList[] lists)
+	{
+		for (IBookmarkList list : lists)
+		{
+			addList(list);
+		}
+	}
+	
 	@Override
 	public void addList(IBookmarkList list)
 	{
@@ -88,10 +122,16 @@ public class Bookmarks implements IBookmarks
 		
 		if (idToListMap.containsKey(list.getId()))
 		{
-			nameToListMap.removeSingle(list.getId(), list);
+			IBookmarkList toRemove = idToListMap.get(list.getId());
+			nameToListMap.removeSingle(toRemove.getName(), toRemove);
 		}
 		idToListMap.put(list.getId(), list);
 		nameToListMap.putSingle(list.getName(), list);
+		
+		if (list.getId().equals(DEFAULT_LIST_ID))
+		{
+			defaultList = list;
+		}
 	}
 	
 }

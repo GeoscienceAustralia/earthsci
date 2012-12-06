@@ -13,33 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.bookmark.part.handlers;
+package au.gov.ga.earthsci.core.worldwind.adapters;
 
-import javax.inject.Inject;
+import gov.nasa.worldwind.geom.Position;
 
-import org.eclipse.e4.core.di.annotations.Execute;
+import java.net.URI;
 
-import au.gov.ga.earthsci.bookmark.BookmarkFactory;
-import au.gov.ga.earthsci.bookmark.model.IBookmark;
-import au.gov.ga.earthsci.bookmark.model.IBookmarks;
-import au.gov.ga.earthsci.bookmark.properties.camera.CameraProperty;
+import org.w3c.dom.Element;
+
+import au.gov.ga.earthsci.core.persistence.IPersistentAdapter;
+import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
 /**
- * A command handler for adding new bookmarks from the current world state
+ * An {@link IPersistentAdapter} that can be used to persist {@link Position} instances
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class AddBookmarkHandler
+public class PositionPersistentAdapter implements IPersistentAdapter<Position>
 {
-	@Inject
-	private IBookmarks bookmarks;
-	
-	@Execute
-	public void execute()
+
+	private static final String ELEMENT_NAME = "position"; //$NON-NLS-1$
+
+	@Override
+	public void toXML(Position object, Element element, URI context)
 	{
-		IBookmark b = BookmarkFactory.createBookmark(CameraProperty.TYPE);
-		System.out.println(bookmarks);
-		bookmarks.getDefaultList().getBookmarks().add(b);
-		System.out.println(b);
+		XMLUtil.appendPosition(element, ELEMENT_NAME, object);
+		
 	}
+
+	@Override
+	public Position fromXML(Element element, URI context)
+	{
+		return XMLUtil.getPosition(element, ELEMENT_NAME, null);
+	}
+
 }

@@ -15,14 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark;
 
-import java.util.Map;
+import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 
 /**
  * An interface for classes that are able to create {@link IBookmarkProperty} instances
- * from a context containing the required key-value pairs.
- * 
+ *  
  * @author James Navin (james.navin@ga.gov.au)
  */
 public interface IBookmarkPropertyCreator
@@ -39,14 +38,14 @@ public interface IBookmarkPropertyCreator
 	 * context.
 	 * 
 	 * @param type The type of property to create
-	 * @param context A map containing key-value pairs used to re-create the property
+	 * @param propertyElement The root element of an XML tree that contains the property information
 	 * 
-	 * @return The {@link IBookmarkProperty} created from the given context
+	 * @return The {@link IBookmarkProperty} created from the given XML
 	 * 
 	 * @throws IllegalArgumentException If the context is <code>null</code> or does not
 	 * contain the required keys for this creator
 	 */
-	IBookmarkProperty createFromContext(String type, Map<String, Object> context);
+	IBookmarkProperty createFromXML(String type, Element propertyElement);
 	
 	/**
 	 * Creates and returns a new {@link IBookmarkProperty} from the current world state.

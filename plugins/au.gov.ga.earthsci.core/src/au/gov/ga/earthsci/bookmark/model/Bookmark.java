@@ -15,21 +15,34 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.model;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import au.gov.ga.earthsci.bookmark.Messages;
+import au.gov.ga.earthsci.bookmark.io.BookmarkPropertyPersistentAdapter;
+import au.gov.ga.earthsci.core.persistence.Adapter;
+import au.gov.ga.earthsci.core.persistence.Exportable;
+import au.gov.ga.earthsci.core.persistence.Persistent;
 
 /**
  * The default {@link IBookmark} implementation
  *
  * @author James Navin (james.navin@ga.gov.au)
  */
+@Exportable
 public class Bookmark implements IBookmark
 {
 
+	@Persistent
 	private String name;
 	private IBookmarkMetadata metadata = new BookmarkMetadata();
-	private Map<String, IBookmarkProperty> properties = new HashMap<String, IBookmarkProperty>();
+	
+	private Map<String, IBookmarkProperty> properties = new ConcurrentHashMap<String, IBookmarkProperty>();
+	
+	public Bookmark()
+	{
+		this.name = Messages.Bookmark_DefaultBookmarkName;
+	}
 	
 	@Override
 	public String getName()
@@ -43,12 +56,23 @@ public class Bookmark implements IBookmark
 		return metadata;
 	}
 
+	@Persistent(elementName="property")
 	@Override
-	public Collection<IBookmarkProperty> getProperties()
+	@Adapter(BookmarkPropertyPersistentAdapter.class)
+	public IBookmarkProperty[] getProperties()
 	{
-		return properties.values();
+		return properties.values().toArray(new IBookmarkProperty[properties.size()]);
 	}
 
+	public void setProperties(IBookmarkProperty[] properties)
+	{
+		this.properties.clear();
+		for (IBookmarkProperty property : properties)
+		{
+			addProperty(property);
+		}
+	}
+	
 	@Override
 	public IBookmarkProperty getProperty(String type)
 	{

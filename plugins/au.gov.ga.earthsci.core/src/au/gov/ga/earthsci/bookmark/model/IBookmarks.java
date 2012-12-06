@@ -64,5 +64,12 @@ public interface IBookmarks
 	 * @param list The new list to add.
 	 */
 	void addList(IBookmarkList list);
+
+	/**
+	 * Set the given bookmarks liss on this model.
+	 * 
+	 * @param lists The lists to add.
+	 */
+	void setLists(IBookmarkList[] lists);
 	
 }
