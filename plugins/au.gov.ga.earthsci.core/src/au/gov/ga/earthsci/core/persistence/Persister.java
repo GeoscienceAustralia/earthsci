@@ -104,6 +104,10 @@ public class Persister
 	 * <p/>
 	 * The default behaviour is, if a field/method is marked persistent, and is
 	 * null, it will be saved as an element with an attribute null="true".
+	 * <p/>
+	 * If this property is true, then {@link #setIgnoreMissing(boolean)} should
+	 * also be set to true; otherwise an exception will be thrown for missing
+	 * elements for null values.
 	 * 
 	 * @param ignoreNulls
 	 */
