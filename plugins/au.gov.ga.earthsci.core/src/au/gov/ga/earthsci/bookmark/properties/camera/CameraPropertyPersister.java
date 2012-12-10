@@ -31,6 +31,7 @@ import au.gov.ga.earthsci.bookmark.IBookmarkPropertyExporter;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.core.persistence.Persister;
+import au.gov.ga.earthsci.core.util.Validate;
 import au.gov.ga.earthsci.core.util.XmlUtil;
 
 /**
@@ -54,8 +55,8 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 	public CameraPropertyPersister()
 	{
 		persister = new Persister();
-		persister.setIgnoreMissing(true);
-		persister.setIgnoreNulls(true);
+		persister.setIgnoreMissing(false);
+		persister.setIgnoreNulls(false);
 		persister.registerNamedExportable(CameraProperty.class, CAMERA_ELEMENT_NAME);
 	}
 	
@@ -82,6 +83,12 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 	@Override
 	public void exportToXML(IBookmarkProperty property, Element propertyElement)
 	{
+		if (property == null)
+		{
+			return;
+		}
+		Validate.isTrue(property.getType().equals(CameraProperty.TYPE), "CameraPropertyPersister can only be used for camera properties"); //$NON-NLS-1$
+		Validate.notNull(propertyElement, "A property element is required"); //$NON-NLS-1$
 		try
 		{
 			persister.save(property, propertyElement, null);
@@ -95,6 +102,11 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 	@Override
 	public IBookmarkProperty createFromXML(String type, Element propertyElement)
 	{
+		Validate.isTrue(CameraProperty.TYPE.equals(type), "CameraPropertyPersister can only be used for camera properties"); //$NON-NLS-1$
+		if (propertyElement == null)
+		{
+			return null;
+		}
 		try
 		{
 			return (CameraProperty)persister.load(XmlUtil.getChildElementByTagName(0, CAMERA_ELEMENT_NAME, propertyElement), null);
@@ -104,5 +116,10 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 			logger.error("Exception while loading camera bookmark property", e); //$NON-NLS-1$
 		}
 		return null;
+	}
+	
+	public void setWorldWindView(View worldWindView)
+	{
+		this.worldWindView = worldWindView;
 	}
 }

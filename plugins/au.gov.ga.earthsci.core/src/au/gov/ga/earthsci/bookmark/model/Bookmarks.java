@@ -65,14 +65,9 @@ public class Bookmarks implements IBookmarks
 	
 	public Bookmarks()
 	{
-		BookmarkList defaultList = new BookmarkList();
-		defaultList.setId(DEFAULT_LIST_ID);
-		defaultList.setName(Messages.Bookmarks_DefaultListName); 
-		
-		addList(defaultList);
-		this.defaultList = defaultList;
+		initialiseDefaultList();
 	}
-	
+
 	@Override
 	public IBookmarkList getListByName(String name)
 	{
@@ -106,9 +101,21 @@ public class Bookmarks implements IBookmarks
 	@Override
 	public void setLists(IBookmarkList[] lists)
 	{
-		for (IBookmarkList list : lists)
+		idToListMap.clear();
+		nameToListMap.clear();
+		defaultList = null;
+		
+		if (lists != null)
 		{
-			addList(list);
+			for (IBookmarkList list : lists)
+			{
+				addList(list);
+			}
+		}
+		
+		if (defaultList == null)
+		{
+			initialiseDefaultList();
 		}
 	}
 	
@@ -132,6 +139,16 @@ public class Bookmarks implements IBookmarks
 		{
 			defaultList = list;
 		}
+	}
+	
+	private void initialiseDefaultList()
+	{
+		BookmarkList defaultList = new BookmarkList();
+		defaultList.setId(DEFAULT_LIST_ID);
+		defaultList.setName(Messages.Bookmarks_DefaultListName); 
+		
+		addList(defaultList);
+		this.defaultList = defaultList;
 	}
 	
 }

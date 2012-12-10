@@ -39,9 +39,30 @@ public class BookmarkList implements IBookmarkList
 	@Persistent
 	private List<IBookmark> bookmarks = new ArrayList<IBookmark>();
 
+	/**
+	 * Create a new unnamed bookmark list with a unique randome ID.
+	 */
 	public BookmarkList()
 	{
 		this.id = UUID.randomUUID().toString();
+	}
+	
+	/**
+	 * Create a new bookmark list with the given name and a unique random ID.
+	 */
+	public BookmarkList(String name)
+	{
+		this();
+		this.name = name;
+	}
+	
+	/**
+	 * Create a new bookmark list with the given name and ID.
+	 */
+	public BookmarkList(String id, String name)
+	{
+		this.id = id;
+		this.name = name;
 	}
 	
 	@Override
