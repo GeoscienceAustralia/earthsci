@@ -245,6 +245,17 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	}
 
 	@Override
+	public IRetrievalData getData()
+	{
+		synchronized (jobSemaphore)
+		{
+			if (result != null && result.result != null && result.result.getData() != null)
+				return result.result.getData();
+			return cachedData;
+		}
+	}
+
+	@Override
 	public IRetrievalResult waitAndGetResult() throws InterruptedException
 	{
 		while (checkAndWaitIfPaused() || joinJob())

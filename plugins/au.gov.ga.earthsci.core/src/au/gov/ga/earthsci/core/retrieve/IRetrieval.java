@@ -100,6 +100,11 @@ public interface IRetrieval extends IPropertyChangeBean
 
 	/**
 	 * Get the cached retrieval data from a cache if available.
+	 * <p/>
+	 * After the retrieval is complete, this data is not guaranteed to be the
+	 * data from the cache before the retrieval was started. The cached version
+	 * may have been updated, and therefore the retrieved data and the cached
+	 * data may be the same.
 	 * 
 	 * @return Result from a cache, or null if no cached version is available or
 	 *         the cache hasn't yet been checked.
@@ -114,6 +119,23 @@ public interface IRetrieval extends IPropertyChangeBean
 	 *         was canceled before completion.
 	 */
 	IRetrievalResult getResult();
+
+	/**
+	 * Get the retrieval data if available.
+	 * <p/>
+	 * If the cache has been checked and a cached version is available, and the
+	 * retrieval isn't yet complete, the cached version is returned.
+	 * <p/>
+	 * If the retrieval is complete, but the cached version hasn't been updated,
+	 * the cached data is returned. Otherwise the updated retrieved data is
+	 * returned.
+	 * <p/>
+	 * If the cache is disabled for this retrieval, this will only return valid
+	 * data once the retrieval is complete.
+	 * 
+	 * @return Resource data for this retrieval
+	 */
+	IRetrievalData getData();
 
 	/**
 	 * Get the result after the retrieval has completed. If the retrieval is not

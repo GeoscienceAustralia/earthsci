@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrieval;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
-import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 
@@ -114,15 +113,15 @@ public class IconLoader implements LoadingIconFrameListener
 				@Override
 				public void cached(IRetrieval retrieval)
 				{
-					retrievalDone(retrieval, true);
+					retrievalDone(retrieval.getData(), url);
 				}
 
 				@Override
 				public void complete(IRetrieval retrieval)
 				{
-					if (!retrieval.getResult().cacheNotModified())
+					if (!retrieval.getResult().isFromCache())
 					{
-						retrievalDone(retrieval, false);
+						retrievalDone(retrieval.getData(), url);
 					}
 				}
 			});
@@ -131,20 +130,16 @@ public class IconLoader implements LoadingIconFrameListener
 		urlElements.get(url).add(element);
 	}
 
-	private void retrievalDone(IRetrieval retrieval, boolean cached)
+	private void retrievalDone(IRetrievalData data, URL url)
 	{
 		synchronized (semaphore)
 		{
-			final Set<Object> elements = urlElements.remove(retrieval.getURL());
+			final Set<Object> elements = urlElements.remove(url);
 			for (Object element : elements)
 			{
 				setLoading(element, false);
 			}
 			boolean success = false;
-			IRetrievalResult result = retrieval.getResult();
-			IRetrievalData data =
-					cached ? retrieval.getCachedData() : result != null && result.isSuccessful() ? result.getData()
-							: null;
 			if (data != null)
 			{
 				try
@@ -153,7 +148,7 @@ public class IconLoader implements LoadingIconFrameListener
 					try
 					{
 						Image image = new Image(Display.getDefault(), is);
-						setImageForURL(retrieval.getURL(), image);
+						setImageForURL(url, image);
 						success = true;
 					}
 					finally
@@ -163,7 +158,7 @@ public class IconLoader implements LoadingIconFrameListener
 				}
 				catch (Exception e)
 				{
-					logger.error("Error loading image from " + retrieval.getURL(), e); //$NON-NLS-1$
+					logger.error("Error loading image from " + url, e); //$NON-NLS-1$
 				}
 			}
 			if (!success)

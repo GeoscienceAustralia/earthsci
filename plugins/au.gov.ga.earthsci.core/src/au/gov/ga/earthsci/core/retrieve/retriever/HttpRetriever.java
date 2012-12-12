@@ -41,7 +41,6 @@ import au.gov.ga.earthsci.core.retrieve.cache.IURLCache;
 import au.gov.ga.earthsci.core.retrieve.result.BasicRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.result.ByteBufferRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.result.URLCacheRetrievalData;
-import au.gov.ga.earthsci.core.retrieve.result.URLCacheRetrievalResult;
 import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 
 /**
@@ -132,8 +131,7 @@ public class HttpRetriever implements IRetriever
 
 			if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED)
 			{
-				return new RetrieverResult(new URLCacheRetrievalResult(urlCache, url, cachedData),
-						RetrieverResultStatus.COMPLETE);
+				return new RetrieverResult(new BasicRetrievalResult(cachedData, true), RetrieverResultStatus.COMPLETE);
 			}
 			else if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_PARTIAL)
 			{
@@ -186,10 +184,9 @@ public class HttpRetriever implements IRetriever
 				else
 				{
 					ByteBuffer buffer = WWIO.readStreamToBuffer(is);
-					retrievedData = new ByteBufferRetrievalData(buffer);
+					retrievedData = new ByteBufferRetrievalData(buffer, contentType);
 				}
-				IRetrievalResult result =
-						new BasicRetrievalResult(cachedData, false, retrievedData, contentLength, contentType);
+				IRetrievalResult result = new BasicRetrievalResult(retrievedData, false);
 				return new RetrieverResult(result, RetrieverResultStatus.COMPLETE);
 			}
 			catch (MonitorCancelledOrPausedException e)

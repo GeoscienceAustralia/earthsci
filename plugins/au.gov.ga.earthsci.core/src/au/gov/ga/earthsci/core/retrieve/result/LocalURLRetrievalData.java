@@ -33,10 +33,26 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 public class LocalURLRetrievalData implements IRetrievalData
 {
 	private final URL url;
+	private final long contentLength;
+	private final String contentType;
 
-	public LocalURLRetrievalData(URL url)
+	public LocalURLRetrievalData(URL url, long contentLength, String contentType)
 	{
 		this.url = url;
+		this.contentLength = contentLength;
+		this.contentType = contentType;
+	}
+
+	@Override
+	public long getContentLength()
+	{
+		return contentLength;
+	}
+
+	@Override
+	public String getContentType()
+	{
+		return contentType;
 	}
 
 	@Override

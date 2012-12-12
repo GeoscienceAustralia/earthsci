@@ -27,6 +27,18 @@ import java.nio.ByteBuffer;
 public interface IRetrievalData
 {
 	/**
+	 * @return The length of the content; or the value read from the
+	 *         content-length response header. -1 if unknown.
+	 */
+	long getContentLength();
+
+	/**
+	 * @return The value read from the content-type response header, or null if
+	 *         this is unavailable.
+	 */
+	String getContentType();
+
+	/**
 	 * Create an InputStream for reading the retrieved resource. The caller must
 	 * close the returned InputStream once reading is complete.
 	 * 

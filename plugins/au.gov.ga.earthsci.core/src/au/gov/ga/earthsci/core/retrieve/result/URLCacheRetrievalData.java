@@ -43,6 +43,18 @@ public class URLCacheRetrievalData implements IRetrievalData
 	}
 
 	@Override
+	public long getContentLength()
+	{
+		return cache.getLength(url);
+	}
+
+	@Override
+	public String getContentType()
+	{
+		return cache.getContentType(url);
+	}
+
+	@Override
 	public InputStream getInputStream() throws IOException
 	{
 		return cache.read(url);

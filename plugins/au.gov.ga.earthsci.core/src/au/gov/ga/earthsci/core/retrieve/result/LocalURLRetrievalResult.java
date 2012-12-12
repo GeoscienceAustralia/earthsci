@@ -24,18 +24,20 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 
 /**
  * {@link IRetrievalResult} used for local URLs, such as file and resource URLs.
+ * Cached URLs shouldn't use this class.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class LocalURLRetrievalResult implements IRetrievalResult
 {
 	private Exception error = null;
-	private long contentLength = -1;
-	private String contentType = null;
 	private final IRetrievalData data;
 
 	public LocalURLRetrievalResult(URL url)
 	{
+		long contentLength = -1;
+		String contentType = null;
+
 		//try opening a connection to this url to see if it is valid
 		try
 		{
@@ -63,7 +65,7 @@ public class LocalURLRetrievalResult implements IRetrievalResult
 		{
 		}
 
-		this.data = error == null ? new LocalURLRetrievalData(url) : null;
+		this.data = error == null ? new LocalURLRetrievalData(url, contentLength, contentType) : null;
 	}
 
 	@Override
@@ -79,44 +81,14 @@ public class LocalURLRetrievalResult implements IRetrievalResult
 	}
 
 	@Override
-	public boolean hasCachedData()
-	{
-		return false;
-	}
-
-	@Override
-	public IRetrievalData getCachedData()
-	{
-		return null;
-	}
-
-	@Override
-	public IRetrievalData getRetrievedData()
-	{
-		return data;
-	}
-
-	@Override
 	public IRetrievalData getData()
 	{
 		return data;
 	}
 
 	@Override
-	public boolean cacheNotModified()
+	public boolean isFromCache()
 	{
 		return false;
-	}
-
-	@Override
-	public long getContentLength()
-	{
-		return contentLength;
-	}
-
-	@Override
-	public String getContentType()
-	{
-		return contentType;
 	}
 }

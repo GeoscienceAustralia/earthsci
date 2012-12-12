@@ -46,71 +46,33 @@ public interface IRetrievalResult
 	Exception getError();
 
 	/**
-	 * Does this result contain data read from a cache?
+	 * Whether this data's content was read from a cached version of the
+	 * resource. If there's no cached version of the resource, this returns
+	 * false.
 	 * <p/>
-	 * The cached data can be accessed using the {@link #getCachedData()}
-	 * method.
+	 * If a previous result was read from a cache, and the remote resource has
+	 * not been modified since the cached version was last updated, the cached
+	 * version is not updated, and this returns true.
+	 * <p/>
+	 * If this method returns false, either the resource was not available in
+	 * the cache, or the cached version was updated by this retrieval. The
+	 * latest resource data is available via {@link #getData()}.
+	 * <p/>
+	 * If the retrieval caller has already used a version of the resource read
+	 * from the cache, and this returns true, then there's no reason to use the
+	 * data in this result.
 	 * 
-	 * @return True if this result has data read from a cache.
+	 * @return True if this data is from a cache.
 	 */
-	boolean hasCachedData();
+	boolean isFromCache();
 
 	/**
-	 * The retrieval data if the result existed in a cache.
-	 * 
-	 * @return Retrieval data read from a cache.
-	 */
-	IRetrievalData getCachedData();
-
-	/**
-	 * The retrieval data from the remote source.
-	 * <p/>
-	 * If the retrieval was successful and the result was not read from a cache
-	 * or the cache was updated, this will return data. Otherwise it will return
-	 * null.
-	 * <p/>
-	 * This method will return null in the following situations:
-	 * <ul>
-	 * <li>Retrieval failed.</li>
-	 * <li>Caching for the retrieval was enabled, and a resource existed in the
-	 * cache that is up to date (ie not modified).</li>
-	 * </ul>
-	 * 
-	 * @return The data retrieved from the remote source.
-	 */
-	IRetrievalData getRetrievedData();
-
-	/**
-	 * The best data to use when reading the retrieved resource. If the cached
-	 * version was not modified, this returns the cached data. Otherwise it
-	 * returns the retrieved data.
+	 * The best, most up-to-date data to use when reading the retrieved
+	 * resource. If a cached version is available and was not modified, this
+	 * returns the cached data. Otherwise it returns the retrieved data if
+	 * available.
 	 * 
 	 * @return The resource data, if available.
 	 */
 	IRetrievalData getData();
-
-	/**
-	 * The modified state of this retrieval. If a previous result was read from
-	 * a cache, and the remote resource has not been modified since the cached
-	 * version was last updated, this returns true.
-	 * <p/>
-	 * If this returns true, the content is only accessible via the
-	 * {@link #getCachedData()} method. {@link #getRetrievedData()} will return
-	 * null.
-	 * 
-	 * @return True if the cached resource is up to date.
-	 */
-	boolean cacheNotModified();
-
-	/**
-	 * @return The length of the content; or the value read from the
-	 *         content-length response header. -1 if unknown.
-	 */
-	long getContentLength();
-
-	/**
-	 * @return The value read from the content-type response header, or null if
-	 *         this is unavailable.
-	 */
-	String getContentType();
 }
