@@ -35,7 +35,9 @@ import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -71,6 +73,9 @@ public class BookmarksPart
 	
 	@Inject
 	private IEclipseContext context;
+
+	@Inject
+	private IBookmarksController controller;
 	
 	private TableViewer bookmarkListTableViewer;
 	private ComboViewer bookmarkListsComboViewer;
@@ -171,7 +176,7 @@ public class BookmarksPart
 		};
 		TableViewerEditor.create(bookmarkListTableViewer, activationStrategy, ColumnViewerEditor.KEYBOARD_ACTIVATION);
 		
-		// Popuplate the current selection with the actual bookmark items
+		// Populate the current selection with the actual bookmark items
 		bookmarkListTableViewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
 			@Override
@@ -180,6 +185,15 @@ public class BookmarksPart
 				IStructuredSelection selection = (IStructuredSelection) bookmarkListTableViewer.getSelection();
 				List<?> list = selection.toList();
 				selectionService.setSelection(list.toArray(new IBookmark[list.size()]));
+			}
+		});
+		
+		bookmarkListTableViewer.addDoubleClickListener(new IDoubleClickListener()
+		{
+			@Override
+			public void doubleClick(DoubleClickEvent event)
+			{
+				controller.apply((IBookmark)((IStructuredSelection)event.getSelection()).getFirstElement());
 			}
 		});
 	}

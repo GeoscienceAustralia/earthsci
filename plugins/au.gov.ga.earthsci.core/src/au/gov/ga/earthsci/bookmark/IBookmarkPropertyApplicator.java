@@ -39,4 +39,19 @@ public interface IBookmarkPropertyApplicator
 	 * @throws IllegalArgumentException If this applicator cannot be used for the given property. See {@link #supports(String)}.
 	 */
 	void apply(IBookmarkProperty property);
+	
+	/**
+	 * Partially apply the given property to the current system state
+	 * by interpolating between the current system state and that defined by
+	 * the property, and applying the state at the given percentage along that interpolation.
+	 * <p/>
+	 * If the percentage is {@code 0} this method will have no effect. A percentage of {@code 1} is
+	 * equivalent to calling {@link #apply(IBookmarkProperty)}.
+	 * 
+	 * @param property The property to apply
+	 * @param percent The percent to interpolate between. Must be in the range {@code [0.0, 1.0]}
+	 * 
+	 * @throws IllegalArgumentException If this applicator cannot be used for the given property
+	 */
+	void apply(IBookmarkProperty property, double percent);
 }
