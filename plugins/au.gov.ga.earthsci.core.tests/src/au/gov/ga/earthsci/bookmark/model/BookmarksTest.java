@@ -20,7 +20,9 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.databinding.observable.Realm;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -31,6 +33,15 @@ import org.junit.Test;
 public class BookmarksTest
 {
 	private Bookmarks classUnderTest;
+
+	@BeforeClass
+	public static void init()
+	{
+		if (Realm.getDefault() == null)
+		{
+			DummyRealm.init();
+		}
+	}
 	
 	@Before
 	public void setup()
@@ -214,5 +225,20 @@ public class BookmarksTest
 		assertTrue(lists.contains(newLists[0]));
 		assertTrue(lists.contains(newLists[1]));
 		assertTrue(lists.contains(newLists[2]));
+	}
+	
+	private static class DummyRealm extends Realm
+	{
+		public static void init()
+		{
+			setDefault(new DummyRealm());
+		}
+		
+		@Override
+		public boolean isCurrent()
+		{
+			return true;
+		}
+		
 	}
 }
