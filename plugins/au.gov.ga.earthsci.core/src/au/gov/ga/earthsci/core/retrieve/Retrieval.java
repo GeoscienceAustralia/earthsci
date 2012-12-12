@@ -49,7 +49,7 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	private final Object pausedSemaphore = new Object();
 
 	private IRetrievalData cachedData;
-	private RetrieverResult result;
+	private IRetrievalResult result;
 
 	public Retrieval(Object caller, URL url, boolean cache, boolean refresh, IRetriever retriever)
 	{
@@ -149,11 +149,12 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 					{
 						synchronized (jobSemaphore)
 						{
-							result = job.getRetrievalResult();
+							RetrieverResult retrieverResult = job.getRetrievalResult();
+							result = retrieverResult.result;
 
 							//ensure the retriever's paused/canceled state matches the result:
-							boolean wasPaused = result.status == RetrieverResultStatus.PAUSED;
-							boolean wasCanceled = result.status == RetrieverResultStatus.CANCELED;
+							boolean wasPaused = retrieverResult.status == RetrieverResultStatus.PAUSED;
+							boolean wasCanceled = retrieverResult.status == RetrieverResultStatus.CANCELED;
 							setPaused(wasPaused);
 							setCanceled(wasCanceled);
 
@@ -241,7 +242,13 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	@Override
 	public IRetrievalResult getResult()
 	{
-		return result == null ? null : result.result;
+		return result;
+	}
+
+	@Override
+	public boolean hasResult()
+	{
+		return getResult() != null;
 	}
 
 	@Override
@@ -249,8 +256,8 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	{
 		synchronized (jobSemaphore)
 		{
-			if (result != null && result.result != null && result.result.getData() != null)
-				return result.result.getData();
+			if (result != null && result.getData() != null)
+				return result.getData();
 			return cachedData;
 		}
 	}
