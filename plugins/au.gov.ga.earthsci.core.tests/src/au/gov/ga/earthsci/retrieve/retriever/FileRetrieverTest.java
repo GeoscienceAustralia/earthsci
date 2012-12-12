@@ -80,7 +80,7 @@ public class FileRetrieverTest
 			oneOf(monitor).updateStatus(RetrievalStatus.READING);
 		}}});
 		
-		IRetrievalResult result = classUnderTest.retrieve(url, monitor, false, false).result;
+		IRetrievalResult result = classUnderTest.retrieve(url, monitor, false, false, null).result;
 		assertEquals(result.getError().getClass(), NullPointerException.class);
 	}
 	
@@ -89,7 +89,7 @@ public class FileRetrieverTest
 	{
 		URL url = new URL("file:///file.txt");
 		
-		classUnderTest.retrieve(url, null, false, false);
+		classUnderTest.retrieve(url, null, false, false, null);
 	}
 	
 	@Test
@@ -102,10 +102,10 @@ public class FileRetrieverTest
 			oneOf(monitor).updateStatus(RetrievalStatus.READING);
 		}}});
 		
-		IRetrievalResult result = classUnderTest.retrieve(tmpFile.toURI().toURL(), monitor, false, false).result;
+		IRetrievalResult result = classUnderTest.retrieve(tmpFile.toURI().toURL(), monitor, false, false, null).result;
 		
 		assertNotNull(result);
-		String string = WWIO.readStreamToString(result.getInputStream(), "UTF-8");
+		String string = WWIO.readStreamToString(result.getData().getInputStream(), "UTF-8");
 		assertEquals(expectedContent, string);
 		assertNull(result.getError());
 	}
@@ -119,10 +119,10 @@ public class FileRetrieverTest
 			oneOf(monitor).updateStatus(RetrievalStatus.READING);
 		}}});
 		
-		IRetrievalResult result = classUnderTest.retrieve(url, monitor, false, false).result;
+		IRetrievalResult result = classUnderTest.retrieve(url, monitor, false, false, null).result;
 		
 		assertNotNull(result);
-		assertEquals(null, result.getInputStream());
+		assertEquals(null, result.getData());
 		assertNotNull(result.getError());
 	}
 

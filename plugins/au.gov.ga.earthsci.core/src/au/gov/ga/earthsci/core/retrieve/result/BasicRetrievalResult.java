@@ -19,71 +19,94 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 
 /**
- * An {@link IRetrievalResult} that can be used when an error has occurred
- * during resource retrieval.
+ * An {@link IRetrievalResult} representing a successful retrieval.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ErrorRetrievalResult implements IRetrievalResult
+public class BasicRetrievalResult implements IRetrievalResult
 {
-	private final Exception error;
+	private final IRetrievalData cachedData;
+	private final boolean cacheNotModified;
+	private final IRetrievalData retrievedData;
+	private final long contentLength;
+	private final String contentType;
 
-	public ErrorRetrievalResult(Exception error)
+	/**
+	 * Create a new result.
+	 * 
+	 * @param cachedData
+	 *            Resource data read from a cache
+	 * @param cacheNotModified
+	 *            True if the retrieved data would not modify the cache (ie the
+	 *            cache is up to date)
+	 * @param retrievedData
+	 *            Retrieved remote resource data
+	 * @param contentLength
+	 *            Content length of the data
+	 * @param contentType
+	 *            Content type of the data
+	 */
+	public BasicRetrievalResult(IRetrievalData cachedData, boolean cacheNotModified, IRetrievalData retrievedData,
+			long contentLength, String contentType)
 	{
-		this.error = error;
+		this.cachedData = cachedData;
+		this.cacheNotModified = cacheNotModified;
+		this.retrievedData = retrievedData;
+		this.contentLength = contentLength;
+		this.contentType = contentType;
 	}
 
 	@Override
 	public boolean isSuccessful()
 	{
-		return false;
+		return true;
 	}
 
 	@Override
 	public Exception getError()
 	{
-		return error;
+		return null;
 	}
 
 	@Override
 	public boolean hasCachedData()
 	{
-		return false;
+		return cachedData != null;
 	}
 
 	@Override
 	public boolean cacheNotModified()
 	{
-		return false;
+		return cacheNotModified;
 	}
 
 	@Override
 	public IRetrievalData getCachedData()
 	{
-		return null;
+		return cachedData;
 	}
 
 	@Override
 	public IRetrievalData getRetrievedData()
 	{
-		return null;
+		return retrievedData;
 	}
-	
+
 	@Override
 	public IRetrievalData getData()
 	{
-		return null;
+		return cachedData != null && cacheNotModified() ? cachedData : retrievedData;
 	}
 
 	@Override
 	public long getContentLength()
 	{
-		return -1;
+		return contentLength;
 	}
 
 	@Override
 	public String getContentType()
 	{
-		return null;
+		return contentType;
 	}
 }

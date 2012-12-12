@@ -15,52 +15,58 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve.result;
 
+import java.net.URL;
+
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
+import au.gov.ga.earthsci.core.retrieve.cache.IURLCache;
 
 /**
- * An {@link IRetrievalResult} that can be used when an error has occurred
- * during resource retrieval.
+ * {@link IRetrievalResult} implementation that reads data from an
+ * {@link IURLCache}. Only contains cached data, not retrieved data.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ErrorRetrievalResult implements IRetrievalResult
+public class URLCacheRetrievalResult implements IRetrievalResult
 {
-	private final Exception error;
+	private final IURLCache cache;
+	private final URL url;
+	private final IRetrievalData cachedData;
 
-	public ErrorRetrievalResult(Exception error)
+	public URLCacheRetrievalResult(IURLCache cache, URL url)
 	{
-		this.error = error;
+		this(cache, url, new URLCacheRetrievalData(cache, url));
+	}
+
+	public URLCacheRetrievalResult(IURLCache cache, URL url, IRetrievalData cachedData)
+	{
+		this.cache = cache;
+		this.url = url;
+		this.cachedData = cachedData;
 	}
 
 	@Override
 	public boolean isSuccessful()
 	{
-		return false;
+		return true;
 	}
 
 	@Override
 	public Exception getError()
 	{
-		return error;
+		return null;
 	}
 
 	@Override
 	public boolean hasCachedData()
 	{
-		return false;
-	}
-
-	@Override
-	public boolean cacheNotModified()
-	{
-		return false;
+		return true;
 	}
 
 	@Override
 	public IRetrievalData getCachedData()
 	{
-		return null;
+		return cachedData;
 	}
 
 	@Override
@@ -68,22 +74,28 @@ public class ErrorRetrievalResult implements IRetrievalResult
 	{
 		return null;
 	}
-	
+
 	@Override
 	public IRetrievalData getData()
 	{
-		return null;
+		return cachedData;
+	}
+
+	@Override
+	public boolean cacheNotModified()
+	{
+		return true;
 	}
 
 	@Override
 	public long getContentLength()
 	{
-		return -1;
+		return cache.getLength(url);
 	}
 
 	@Override
 	public String getContentType()
 	{
-		return null;
+		return cache.getContentType(url);
 	}
 }

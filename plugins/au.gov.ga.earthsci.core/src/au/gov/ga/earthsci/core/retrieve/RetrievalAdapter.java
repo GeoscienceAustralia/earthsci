@@ -33,6 +33,11 @@ public class RetrievalAdapter implements IRetrievalListener
 	}
 
 	@Override
+	public void cached(IRetrieval retrieval)
+	{
+	}
+
+	@Override
 	public void complete(IRetrieval retrieval)
 	{
 	}

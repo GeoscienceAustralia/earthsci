@@ -15,50 +15,47 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve.result;
 
-import java.io.ByteArrayInputStream;
+import gov.nasa.worldwind.util.WWIO;
+
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.ByteBuffer;
 
-import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 
 /**
- * An {@link IRetrievalResult} containing the retrieved resource in memory in
- * the form of a {@link ByteBuffer}.
+ * {@link IRetrievalData} implementation that reads data from a URL using
+ * {@link URL#openStream()}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ByteBufferRetrievalResult implements IRetrievalResult
+public class LocalURLRetrievalData implements IRetrievalData
 {
-	private final ByteBuffer buffer;
+	private final URL url;
 
-	public ByteBufferRetrievalResult(ByteBuffer buffer)
+	public LocalURLRetrievalData(URL url)
 	{
-		this.buffer = buffer;
+		this.url = url;
 	}
 
 	@Override
-	public InputStream getInputStream()
+	public InputStream getInputStream() throws IOException
 	{
-		if (buffer.hasArray())
+		return url.openStream();
+	}
+
+	@Override
+	public ByteBuffer getByteBuffer() throws IOException
+	{
+		InputStream is = getInputStream();
+		try
 		{
-			return new ByteArrayInputStream(buffer.array(), 0, buffer.limit());
+			return WWIO.readStreamToBuffer(is);
 		}
-		byte[] array = new byte[buffer.limit()];
-		buffer.rewind();
-		buffer.get(array);
-		return new ByteArrayInputStream(array);
-	}
-
-	@Override
-	public ByteBuffer getByteBuffer()
-	{
-		buffer.rewind();
-		return buffer.slice();
-	}
-
-	@Override
-	public Exception getError()
-	{
-		return null;
+		finally
+		{
+			is.close();
+		}
 	}
 }

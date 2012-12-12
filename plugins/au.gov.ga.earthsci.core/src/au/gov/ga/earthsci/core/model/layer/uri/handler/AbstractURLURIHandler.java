@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.core.model.layer.uri.handler;
 
 import gov.nasa.worldwind.layers.Layer;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -46,7 +47,7 @@ public abstract class AbstractURLURIHandler extends AbstractInputStreamURIHandle
 			IRetrieval retrieval = RetrievalServiceFactory.getServiceInstance().retrieve(caller, url);
 			retrieval.start();
 			IRetrievalResult result = retrieval.waitAndGetResult();
-			is = result.getInputStream();
+			is = result.getData().getInputStream();
 		}
 		catch (Exception e)
 		{
@@ -56,6 +57,19 @@ public abstract class AbstractURLURIHandler extends AbstractInputStreamURIHandle
 		{
 			monitor.done();
 		}
-		return createLayer(is, uri);
+		try
+		{
+			return createLayer(is, uri);
+		}
+		finally
+		{
+			try
+			{
+				is.close();
+			}
+			catch (IOException e)
+			{
+			}
+		}
 	}
 }

@@ -34,6 +34,15 @@ public interface IRetriever
 	boolean supports(URL url);
 
 	/**
+	 * Check this retriever's cache for a cached resource for the given URL.
+	 * 
+	 * @param url
+	 *            URL to check the cache for
+	 * @return A result if the cached resource exists, or null.
+	 */
+	IRetrievalData checkCache(URL url);
+
+	/**
 	 * Retrieve the resource from the given URL, and return a result. The
 	 * retrieval should be performed synchronously on the calling thread.
 	 * <p/>
@@ -49,9 +58,14 @@ public interface IRetriever
 	 *            Should the retrieved resource be cached?
 	 * @param refresh
 	 *            Should a cached resource be refreshed?
+	 * @param cachedData
+	 *            The data returned from an earlier call to
+	 *            {@link #checkCache(URL)}, for inserting into the returned
+	 *            result
 	 * @return The result of the retrieval, cannot be null.
 	 * @throws Exception
 	 *             If the retrieval could not be completed
 	 */
-	RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, boolean cache, boolean refresh) throws Exception;
+	RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, boolean cache, boolean refresh,
+			IRetrievalData cachedData) throws Exception;
 }

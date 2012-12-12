@@ -48,6 +48,7 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	private boolean paused = false;
 	private final Object pausedSemaphore = new Object();
 
+	private IRetrievalData cachedData;
 	private RetrieverResult result;
 
 	public Retrieval(Object caller, URL url, boolean cache, boolean refresh, IRetriever retriever)
@@ -69,7 +70,15 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 
 	RetrieverResult retrieve(IRetrieverMonitor monitor) throws Exception
 	{
-		return retriever.retrieve(url, monitor, cache, refresh);
+		if (cache)
+		{
+			cachedData = retriever.checkCache(url);
+			if (cachedData != null)
+			{
+				listeners.cached(this);
+			}
+		}
+		return retriever.retrieve(url, monitor, cache, refresh, cachedData);
 	}
 
 	@Override
@@ -221,6 +230,12 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	void setCanceled(boolean canceled)
 	{
 		this.canceled = canceled;
+	}
+
+	@Override
+	public IRetrievalData getCachedData()
+	{
+		return cachedData;
 	}
 
 	@Override

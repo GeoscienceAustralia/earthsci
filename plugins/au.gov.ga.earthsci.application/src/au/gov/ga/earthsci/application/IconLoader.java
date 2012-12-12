@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrieval;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
@@ -110,9 +112,18 @@ public class IconLoader implements LoadingIconFrameListener
 			retrieval.addListener(new RetrievalAdapter()
 			{
 				@Override
+				public void cached(IRetrieval retrieval)
+				{
+					retrievalDone(retrieval, true);
+				}
+
+				@Override
 				public void complete(IRetrieval retrieval)
 				{
-					retrievalDone(retrieval);
+					if (!retrieval.getResult().cacheNotModified())
+					{
+						retrievalDone(retrieval, false);
+					}
 				}
 			});
 			retrieval.start();
@@ -120,7 +131,7 @@ public class IconLoader implements LoadingIconFrameListener
 		urlElements.get(url).add(element);
 	}
 
-	private void retrievalDone(IRetrieval retrieval)
+	private void retrievalDone(IRetrieval retrieval, boolean cached)
 	{
 		synchronized (semaphore)
 		{
@@ -131,13 +142,24 @@ public class IconLoader implements LoadingIconFrameListener
 			}
 			boolean success = false;
 			IRetrievalResult result = retrieval.getResult();
-			if (result.getError() == null)
+			IRetrievalData data =
+					cached ? retrieval.getCachedData() : result != null && result.isSuccessful() ? result.getData()
+							: null;
+			if (data != null)
 			{
 				try
 				{
-					Image image = new Image(Display.getDefault(), result.getInputStream());
-					setImageForURL(retrieval.getURL(), image);
-					success = true;
+					InputStream is = data.getInputStream();
+					try
+					{
+						Image image = new Image(Display.getDefault(), is);
+						setImageForURL(retrieval.getURL(), image);
+						success = true;
+					}
+					finally
+					{
+						is.close();
+					}
 				}
 				catch (Exception e)
 				{

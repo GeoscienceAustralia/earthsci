@@ -24,17 +24,13 @@ import au.gov.ga.earthsci.core.retrieve.IRetriever;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FileRetriever extends AbstractURLRetriever
+public class FileRetriever extends AbstractLocalURLRetriever
 {
+	public static final String FILE_RESOURCE_PROTOCOL = "file"; //$NON-NLS-1$
+
 	@Override
 	public boolean supports(URL url)
 	{
-		return "file".equalsIgnoreCase(url.getProtocol()); //$NON-NLS-1$
-	}
-	
-	@Override
-	public void checkURL(URL url) throws Exception
-	{
-		url.openStream().close();
+		return FILE_RESOURCE_PROTOCOL.equalsIgnoreCase(url.getProtocol());
 	}
 }

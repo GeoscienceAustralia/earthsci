@@ -39,10 +39,27 @@ public interface IRetrievalListener
 	void progress(IRetrieval retrieval);
 
 	/**
+	 * Fired when data for the retrieval is available from a cache.
+	 * <p/>
+	 * {@link #complete(IRetrieval)} will still be fired once the retrieval is
+	 * complete.
+	 * <p/>
+	 * This will be called even if the retrieval has been started with
+	 * refresh=true; however, the cached version will be refreshed once the
+	 * retrieval is complete.
+	 * 
+	 * @param retrieval
+	 *            Retrieval that has cached data.
+	 * @see IRetrieval#getCachedData()
+	 */
+	void cached(IRetrieval retrieval);
+
+	/**
 	 * Fired when the retrieval is complete (either successfully, with an error,
 	 * or cancelled).
 	 * <p/>
-	 * Not called if the retrieval was paused.
+	 * Not called if the retrieval was paused (until it is resumed and
+	 * completed).
 	 * 
 	 * @param retrieval
 	 *            Retrieval that completed.

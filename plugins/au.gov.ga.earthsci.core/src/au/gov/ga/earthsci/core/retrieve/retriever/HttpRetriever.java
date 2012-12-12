@@ -21,7 +21,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -29,15 +29,20 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetriever;
 import au.gov.ga.earthsci.core.retrieve.IRetrieverMonitor;
 import au.gov.ga.earthsci.core.retrieve.RetrievalStatus;
 import au.gov.ga.earthsci.core.retrieve.RetrieverResult;
 import au.gov.ga.earthsci.core.retrieve.RetrieverResultStatus;
-import au.gov.ga.earthsci.core.retrieve.result.ByteBufferRetrievalResult;
-import au.gov.ga.earthsci.core.retrieve.result.URLRetrievalResult;
+import au.gov.ga.earthsci.core.retrieve.cache.FileURLCache;
+import au.gov.ga.earthsci.core.retrieve.cache.IURLCache;
+import au.gov.ga.earthsci.core.retrieve.result.BasicRetrievalResult;
+import au.gov.ga.earthsci.core.retrieve.result.ByteBufferRetrievalData;
+import au.gov.ga.earthsci.core.retrieve.result.URLCacheRetrievalData;
+import au.gov.ga.earthsci.core.retrieve.result.URLCacheRetrievalResult;
 import au.gov.ga.earthsci.core.util.ConfigurationUtil;
-import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
  * {@link IRetriever} implementation used for retrieving HTTP URLs.
@@ -47,9 +52,8 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
 public class HttpRetriever implements IRetriever
 {
 	private final static Logger logger = LoggerFactory.getLogger(HttpRetriever.class);
-	private final static File cacheDirectory;
+	private final static IURLCache urlCache;
 	private final static int REDOWNLOAD_BYTES = 1024;
-	private final static String INCOMPLETE_SUFFIX = ".incomplete"; //$NON-NLS-1$
 
 	static
 	{
@@ -62,9 +66,9 @@ public class HttpRetriever implements IRetriever
 		catch (Exception e)
 		{
 			cacheDir = null;
-			logger.warn("Could not initialize cache directory: " + e.getLocalizedMessage()); //$NON-NLS-1$
+			logger.warn("Could not initialize http cache directory: " + e.getLocalizedMessage()); //$NON-NLS-1$
 		}
-		cacheDirectory = cacheDir;
+		urlCache = cacheDir == null ? null : new FileURLCache(cacheDir);
 	}
 
 	@Override
@@ -74,8 +78,18 @@ public class HttpRetriever implements IRetriever
 	}
 
 	@Override
-	public RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, boolean cache, boolean refresh)
-			throws Exception
+	public IRetrievalData checkCache(URL url)
+	{
+		if (urlCache.isComplete(url))
+		{
+			return new URLCacheRetrievalData(urlCache, url);
+		}
+		return null;
+	}
+
+	@Override
+	public RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, boolean cache, boolean refresh,
+			IRetrievalData cachedData) throws Exception
 	{
 		monitor.updateStatus(RetrievalStatus.STARTED);
 
@@ -84,46 +98,27 @@ public class HttpRetriever implements IRetriever
 		{
 			connection = (HttpURLConnection) url.openConnection();
 
-			File cacheFile = null, cacheIncompleteFile = null;
-			if (cache)
-			{
-				cacheFile = getCacheFile(url);
-				cacheIncompleteFile = getCacheIncompleteFile(cacheFile);
-				if (cacheFile == null)
-				{
-					cache = false;
-				}
-			}
-
 			long position = 0;
 			if (cache)
 			{
-				if (cacheFile.exists())
+				//if the resource has a cached version, set the if modified header
+				if (cachedData != null)
 				{
-					if (refresh)
+					if (!refresh)
 					{
-						cacheFile.delete();
-					}
-					else
-					{
-						//TODO return cached result to user here, but still check the server; 
-						//if the server responds not modified, tell the user
-						//if the server responds modified, download, cache, and give the data to the user
-						connection.setIfModifiedSince(cacheFile.lastModified());
+						connection.setIfModifiedSince(urlCache.getLastModified(url));
 					}
 				}
 
-				if (cacheIncompleteFile.exists())
+				//if the resource is partially cached, set the range header to resume the download
+				if (urlCache.isPartial(url))
 				{
-					if (refresh)
+					if (!refresh)
 					{
-						cacheIncompleteFile.delete();
-					}
-					else
-					{
-						position = Math.max(0, cacheIncompleteFile.length() - REDOWNLOAD_BYTES);
+						position = Math.max(0, urlCache.getPartialLength(url) - REDOWNLOAD_BYTES);
 					}
 				}
+
 				if (position > 0)
 				{
 					connection.setRequestProperty("Range", "bytes=" + position + "-"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -137,7 +132,7 @@ public class HttpRetriever implements IRetriever
 
 			if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED)
 			{
-				return new RetrieverResult(new URLRetrievalResult(cacheFile.toURI().toURL()),
+				return new RetrieverResult(new URLCacheRetrievalResult(urlCache, url, cachedData),
 						RetrieverResultStatus.COMPLETE);
 			}
 			else if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_PARTIAL)
@@ -153,30 +148,49 @@ public class HttpRetriever implements IRetriever
 			int contentLength = connection.getContentLength();
 			if (contentLength >= 0)
 			{
-				monitor.setLength(position + contentLength);
+				contentLength += position;
+				monitor.setLength(contentLength);
 			}
 			if (position > 0)
 			{
 				monitor.setPosition(position);
 			}
 
+			String contentType = connection.getContentType();
+			long lastModified = connection.getLastModified();
+
 			monitor.updateStatus(RetrievalStatus.READING);
 			InputStream is = null;
 			try
 			{
+				IRetrievalData retrievedData;
 				is = new BufferedInputStream(new MonitorInputStream(connection.getInputStream(), monitor));
 				if (cache)
 				{
-					writeInputStreamToFile(is, cacheIncompleteFile, position);
-					cacheIncompleteFile.renameTo(cacheFile);
-					return new RetrieverResult(new URLRetrievalResult(cacheFile.toURI().toURL()),
-							RetrieverResultStatus.COMPLETE);
+					OutputStream os = null;
+					try
+					{
+						os = urlCache.writePartial(url, position);
+						writeInputStreamToOutputStream(is, os);
+					}
+					finally
+					{
+						if (os != null)
+						{
+							os.close();
+						}
+					}
+					urlCache.writeComplete(url, lastModified, contentType);
+					retrievedData = new URLCacheRetrievalData(urlCache, url);
 				}
 				else
 				{
 					ByteBuffer buffer = WWIO.readStreamToBuffer(is);
-					return new RetrieverResult(new ByteBufferRetrievalResult(buffer), RetrieverResultStatus.COMPLETE);
+					retrievedData = new ByteBufferRetrievalData(buffer);
 				}
+				IRetrievalResult result =
+						new BasicRetrievalResult(cachedData, false, retrievedData, contentLength, contentType);
+				return new RetrieverResult(result, RetrieverResultStatus.COMPLETE);
 			}
 			catch (MonitorCancelledOrPausedException e)
 			{
@@ -185,7 +199,10 @@ public class HttpRetriever implements IRetriever
 			}
 			finally
 			{
-				is.close();
+				if (is != null)
+				{
+					is.close();
+				}
 			}
 		}
 		finally
@@ -194,122 +211,13 @@ public class HttpRetriever implements IRetriever
 		}
 	}
 
-	private static File getCacheFile(URL url)
+	private static void writeInputStreamToOutputStream(InputStream is, OutputStream os) throws IOException
 	{
-		if (cacheDirectory == null)
+		byte[] buffer = new byte[8096];
+		int len;
+		while ((len = is.read(buffer)) >= 0)
 		{
-			return null;
+			os.write(buffer, 0, len);
 		}
-		return new File(cacheDirectory, filenameForURL(url));
-	}
-
-	private static String filenameForURL(URL url)
-	{
-		String filename;
-		if (!Util.isBlank(url.getHost()) && !Util.isBlank(url.getPath()))
-		{
-			filename = fixForFilename(url.getHost()) + File.separator + fixForFilename(url.getPath());
-			if (url.getQuery() != null)
-			{
-				filename += "#" + url.getQuery(); //$NON-NLS-1$
-			}
-		}
-		else
-		{
-			filename = fixForFilename(url.toExternalForm());
-		}
-		return filename;
-	}
-
-	private static String fixForFilename(String s)
-	{
-		// need to replace the following invalid filename characters: \/:*?"<>|
-		// replace them with exclamation points, because that is cool
-		return s.replaceAll("!", "!!").replaceAll("[\\/:*?\"<>|]", "!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-	}
-
-	private static File getCacheIncompleteFile(File cacheFile)
-	{
-		if (cacheFile == null)
-		{
-			return null;
-		}
-		return new File(cacheFile.getParent(), cacheFile.getName() + INCOMPLETE_SUFFIX);
-	}
-
-	private static void writeInputStreamToFile(InputStream is, File output, long startPosition) throws IOException
-	{
-		if (!output.getParentFile().exists())
-		{
-			output.getParentFile().mkdirs();
-		}
-		RandomAccessFile raf = new RandomAccessFile(output, "rw"); //$NON-NLS-1$
-		output.setReadable(true, false);
-		output.setWritable(true, false);
-		try
-		{
-			raf.seek(startPosition);
-			byte[] page = new byte[8096];
-			int len;
-			while ((len = is.read(page)) >= 0)
-			{
-				raf.write(page, 0, len);
-			}
-		}
-		finally
-		{
-			raf.close();
-		}
-	}
-
-	public static void main(String[] args) throws Exception
-	{
-		System.setProperty("java.net.useSystemProxies", "true");
-
-		IRetrieverMonitor monitor = new IRetrieverMonitor()
-		{
-			@Override
-			public void updateStatus(RetrievalStatus status)
-			{
-				System.out.println("Status changed to: " + status);
-			}
-
-			@Override
-			public void setPosition(long position)
-			{
-				System.out.println("Position updated: " + position);
-			}
-
-			@Override
-			public void setLength(long length)
-			{
-				System.out.println("Length updated: " + length);
-			}
-
-			@Override
-			public void progress(long amount)
-			{
-				System.out.println("Progressed: " + amount);
-			}
-
-			@Override
-			public boolean isPaused()
-			{
-				return false;
-			}
-
-			@Override
-			public boolean isCanceled()
-			{
-				return false;
-			}
-		};
-
-		//URL url = new URL("http://ict.icrar.org/store/staff/derek/whd/anims/dkg-whd-scivis-music-1080p.mov");
-		URL url = new URL("http://www.cloudsourced.com/wp-content/uploads/2010/01/londonlanduse.jpg");
-		//URL url = new URL("http://www.ga.gov.au");
-
-		HttpRetriever retriever = new HttpRetriever();
-		retriever.retrieve(url, monitor, true, false);
 	}
 }

@@ -17,37 +17,38 @@ package au.gov.ga.earthsci.core.retrieve.retriever;
 
 import java.net.URL;
 
+import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetriever;
 import au.gov.ga.earthsci.core.retrieve.IRetrieverMonitor;
 import au.gov.ga.earthsci.core.retrieve.RetrievalStatus;
 import au.gov.ga.earthsci.core.retrieve.RetrieverResult;
 import au.gov.ga.earthsci.core.retrieve.RetrieverResultStatus;
-import au.gov.ga.earthsci.core.retrieve.result.ErrorRetrievalResult;
-import au.gov.ga.earthsci.core.retrieve.result.URLRetrievalResult;
+import au.gov.ga.earthsci.core.retrieve.result.LocalURLRetrievalResult;
 
 /**
  * Abstract {@link IRetriever} that reads a resource from a URL naively using
- * the {@link URL#openStream()} method.
+ * the {@link URL#openStream()} method. Can be used for local URLs, such as file
+ * and resource URLs.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class AbstractURLRetriever implements IRetriever
+public abstract class AbstractLocalURLRetriever implements IRetriever
 {
 	@Override
-	public RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, boolean cache, boolean refresh)
-			throws Exception
+	public RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, boolean cache, boolean refresh,
+			IRetrievalData cachedData) throws Exception
 	{
 		monitor.updateStatus(RetrievalStatus.READING);
-		try
-		{
-			checkURL(url);
-			return new RetrieverResult(new URLRetrievalResult(url), RetrieverResultStatus.COMPLETE);
-		}
-		catch (Exception e)
-		{
-			return new RetrieverResult(new ErrorRetrievalResult(e), RetrieverResultStatus.ERROR);
-		}
+		IRetrievalResult result = new LocalURLRetrievalResult(url);
+		return new RetrieverResult(result, result.isSuccessful() ? RetrieverResultStatus.COMPLETE
+				: RetrieverResultStatus.ERROR);
 	}
 
-	public abstract void checkURL(URL url) throws Exception;
+	@Override
+	public IRetrievalData checkCache(URL url)
+	{
+		//caching is unsupported for these retrievers
+		return null;
+	}
 }

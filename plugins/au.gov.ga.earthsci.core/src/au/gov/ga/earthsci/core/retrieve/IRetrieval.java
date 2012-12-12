@@ -99,6 +99,15 @@ public interface IRetrieval extends IPropertyChangeBean
 	void cancel();
 
 	/**
+	 * Get the cached retrieval data from a cache if available.
+	 * 
+	 * @return Result from a cache, or null if no cached version is available or
+	 *         the cache hasn't yet been checked.
+	 * @see IRetrievalListener#cached(IRetrieval)
+	 */
+	IRetrievalData getCachedData();
+
+	/**
 	 * Get the result after the retrieval has completed.
 	 * 
 	 * @return Retrieval result, or null if the retrieval isn't yet complete or

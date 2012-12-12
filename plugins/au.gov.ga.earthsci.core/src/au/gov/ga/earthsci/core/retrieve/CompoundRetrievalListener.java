@@ -57,6 +57,15 @@ public class CompoundRetrievalListener implements IRetrievalListener
 	}
 
 	@Override
+	public void cached(IRetrieval retrieval)
+	{
+		for (int i = listeners.size() - 1; i >= 0; i--)
+		{
+			listeners.get(i).cached(retrieval);
+		}
+	}
+
+	@Override
 	public void complete(IRetrieval retrieval)
 	{
 		for (int i = listeners.size() - 1; i >= 0; i--)

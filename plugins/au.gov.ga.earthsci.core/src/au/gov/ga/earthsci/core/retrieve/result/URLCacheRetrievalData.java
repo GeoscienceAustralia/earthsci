@@ -13,24 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.retrieve.retriever;
+package au.gov.ga.earthsci.core.retrieve.result;
 
+import gov.nasa.worldwind.util.WWIO;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.ByteBuffer;
 
-import au.gov.ga.earthsci.core.retrieve.IRetriever;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import au.gov.ga.earthsci.core.retrieve.cache.IURLCache;
 
 /**
- * {@link IRetriever} used to retrieve bundleresource:// URLs.
+ * {@link IRetrievalData} implementation that reads data from an
+ * {@link IURLCache}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class BundleResourceRetriever extends AbstractLocalURLRetriever
+public class URLCacheRetrievalData implements IRetrievalData
 {
-	public static final String BUNDLE_RESOURCE_PROTOCOL = "bundleresource"; //$NON-NLS-1$
+	private final IURLCache cache;
+	private final URL url;
+
+	public URLCacheRetrievalData(IURLCache cache, URL url)
+	{
+		this.cache = cache;
+		this.url = url;
+	}
 
 	@Override
-	public boolean supports(URL url)
+	public InputStream getInputStream() throws IOException
 	{
-		return BUNDLE_RESOURCE_PROTOCOL.equalsIgnoreCase(url.getProtocol());
+		return cache.read(url);
+	}
+
+	@Override
+	public ByteBuffer getByteBuffer() throws IOException
+	{
+		InputStream is = getInputStream();
+		try
+		{
+			return WWIO.readStreamToBuffer(is);
+		}
+		finally
+		{
+			is.close();
+		}
 	}
 }
