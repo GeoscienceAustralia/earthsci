@@ -46,43 +46,13 @@ public class ErrorRetrievalResult implements IRetrievalResult
 	}
 
 	@Override
-	public boolean hasCachedData()
+	public boolean isFromCache()
 	{
 		return false;
 	}
 
-	@Override
-	public boolean cacheNotModified()
-	{
-		return false;
-	}
-
-	@Override
-	public IRetrievalData getCachedData()
-	{
-		return null;
-	}
-
-	@Override
-	public IRetrievalData getRetrievedData()
-	{
-		return null;
-	}
-	
 	@Override
 	public IRetrievalData getData()
-	{
-		return null;
-	}
-
-	@Override
-	public long getContentLength()
-	{
-		return -1;
-	}
-
-	@Override
-	public String getContentType()
 	{
 		return null;
 	}

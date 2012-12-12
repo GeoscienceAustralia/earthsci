@@ -47,10 +47,12 @@ public interface IRetrievalListener
 	 * This will be called even if the retrieval has been started with
 	 * refresh=true; however, the cached version will be refreshed once the
 	 * retrieval is complete.
+	 * <p/>
+	 * The cached data is available via the {@link IRetrieval#getCachedData()}
+	 * method.
 	 * 
 	 * @param retrieval
 	 *            Retrieval that has cached data.
-	 * @see IRetrieval#getCachedData()
 	 */
 	void cached(IRetrieval retrieval);
 

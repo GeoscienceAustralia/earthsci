@@ -25,35 +25,21 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
  */
 public class BasicRetrievalResult implements IRetrievalResult
 {
-	private final IRetrievalData cachedData;
-	private final boolean cacheNotModified;
-	private final IRetrievalData retrievedData;
-	private final long contentLength;
-	private final String contentType;
+	private final IRetrievalData data;
+	private final boolean fromCache;
 
 	/**
 	 * Create a new result.
 	 * 
-	 * @param cachedData
-	 *            Resource data read from a cache
-	 * @param cacheNotModified
-	 *            True if the retrieved data would not modify the cache (ie the
-	 *            cache is up to date)
-	 * @param retrievedData
+	 * @param data
 	 *            Retrieved remote resource data
-	 * @param contentLength
-	 *            Content length of the data
-	 * @param contentType
-	 *            Content type of the data
+	 * @param fromCache
+	 *            True if the data is from a cache
 	 */
-	public BasicRetrievalResult(IRetrievalData cachedData, boolean cacheNotModified, IRetrievalData retrievedData,
-			long contentLength, String contentType)
+	public BasicRetrievalResult(IRetrievalData data, boolean fromCache)
 	{
-		this.cachedData = cachedData;
-		this.cacheNotModified = cacheNotModified;
-		this.retrievedData = retrievedData;
-		this.contentLength = contentLength;
-		this.contentType = contentType;
+		this.data = data;
+		this.fromCache = fromCache;
 	}
 
 	@Override
@@ -69,44 +55,14 @@ public class BasicRetrievalResult implements IRetrievalResult
 	}
 
 	@Override
-	public boolean hasCachedData()
+	public boolean isFromCache()
 	{
-		return cachedData != null;
-	}
-
-	@Override
-	public boolean cacheNotModified()
-	{
-		return cacheNotModified;
-	}
-
-	@Override
-	public IRetrievalData getCachedData()
-	{
-		return cachedData;
-	}
-
-	@Override
-	public IRetrievalData getRetrievedData()
-	{
-		return retrievedData;
+		return fromCache;
 	}
 
 	@Override
 	public IRetrievalData getData()
 	{
-		return cachedData != null && cacheNotModified() ? cachedData : retrievedData;
-	}
-
-	@Override
-	public long getContentLength()
-	{
-		return contentLength;
-	}
-
-	@Override
-	public String getContentType()
-	{
-		return contentType;
+		return data;
 	}
 }

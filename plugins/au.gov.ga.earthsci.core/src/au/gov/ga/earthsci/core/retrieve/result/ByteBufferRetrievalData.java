@@ -30,10 +30,24 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 public class ByteBufferRetrievalData implements IRetrievalData
 {
 	private final ByteBuffer buffer;
+	private final String contentType;
 
-	public ByteBufferRetrievalData(ByteBuffer buffer)
+	public ByteBufferRetrievalData(ByteBuffer buffer, String contentType)
 	{
 		this.buffer = buffer;
+		this.contentType = contentType;
+	}
+
+	@Override
+	public long getContentLength()
+	{
+		return buffer.limit();
+	}
+
+	@Override
+	public String getContentType()
+	{
+		return contentType;
 	}
 
 	@Override
