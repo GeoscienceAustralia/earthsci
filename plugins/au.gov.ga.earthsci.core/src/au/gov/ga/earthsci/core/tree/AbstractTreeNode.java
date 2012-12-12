@@ -91,7 +91,7 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 	 * @param children
 	 *            Node's children, cannot be null
 	 */
-	protected void setChildren(ITreeNode<E>[] children)
+	public void setChildren(ITreeNode<E>[] children)
 	{
 		ITreeNode<E>[] oldValue = getChildren();
 		this.children = Arrays.copyOf(children, children.length);

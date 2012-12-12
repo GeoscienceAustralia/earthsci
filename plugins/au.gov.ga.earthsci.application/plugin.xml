@@ -70,6 +70,10 @@
             binding="au.gov.ga.earthsci.catalog.part.preferences.ICatalogBrowserPreferences"
             implementation="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferences">
       </bind>
+      <bind
+            binding="au.gov.ga.earthsci.bookmark.part.IBookmarksController"
+            implementation="au.gov.ga.earthsci.bookmark.part.BookmarksController">
+      </bind>
       <injectable
             class="au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry">
       </injectable>

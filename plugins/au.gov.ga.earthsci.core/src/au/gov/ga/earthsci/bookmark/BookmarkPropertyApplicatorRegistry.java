@@ -15,10 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -46,8 +44,7 @@ public class BookmarkPropertyApplicatorRegistry
 	private static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.applicator"; //$NON-NLS-1$
 	private static final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 	
-	private static Map<String, IBookmarkPropertyApplicator> applicators = new HashMap<String, IBookmarkPropertyApplicator>();
-	private static ReadWriteLock applicatorsLock = new ReentrantReadWriteLock();
+	private static Map<String, IBookmarkPropertyApplicator> applicators = new ConcurrentHashMap<String, IBookmarkPropertyApplicator>();
 	
 	private static final Logger logger = LoggerFactory.getLogger(BookmarkPropertyApplicatorRegistry.class);
 	
@@ -85,15 +82,7 @@ public class BookmarkPropertyApplicatorRegistry
 			return null;
 		}
 		
-		applicatorsLock.readLock().lock();
-		try
-		{
-			return applicators.get(property.getType());
-		}
-		finally
-		{
-			applicatorsLock.readLock().unlock();
-		}
+		return applicators.get(property.getType());
 	}
 	
 	/**
@@ -110,17 +99,9 @@ public class BookmarkPropertyApplicatorRegistry
 		
 		logger.debug("Registeried applicator: {}", applicator.getClass()); //$NON-NLS-1$
 		
-		applicatorsLock.writeLock().lock();
-		try
+		for (String supportedType : applicator.getSupportedTypes())
 		{
-			for (String supportedType : applicator.getSupportedTypes())
-			{
-				applicators.put(supportedType, applicator);
-			}
-		}
-		finally
-		{
-			applicatorsLock.writeLock().unlock();
+			applicators.put(supportedType, applicator);
 		}
 	}
 }

@@ -54,6 +54,12 @@
       </exporter>
    </extension>
    <extension
+         point="au.gov.ga.earthsci.bookmark.applicator">
+      <applicator
+            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyApplicator">
+      </applicator>
+   </extension>
+   <extension
          point="au.gov.ga.earthsci.injectable">
       <inject
             class="au.gov.ga.earthsci.core.util.ExtensionRegistryUtil">

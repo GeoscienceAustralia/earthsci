@@ -6,9 +6,13 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: au.gov.ga.earthsci.bookmark,
+ au.gov.ga.earthsci.bookmark.io,
  au.gov.ga.earthsci.bookmark.model,
  au.gov.ga.earthsci.bookmark.properties.camera,
  au.gov.ga.earthsci.core,
+ au.gov.ga.earthsci.core.math.bezier,
+ au.gov.ga.earthsci.core.math.interpolation,
+ au.gov.ga.earthsci.core.math.vector,
  au.gov.ga.earthsci.core.model.catalog,
  au.gov.ga.earthsci.core.model.catalog.dataset,
  au.gov.ga.earthsci.core.model.layer,
@@ -26,6 +30,7 @@ Export-Package: au.gov.ga.earthsci.bookmark,
  au.gov.ga.earthsci.core.util.collection,
  au.gov.ga.earthsci.core.util.message,
  au.gov.ga.earthsci.core.worldwind,
+ au.gov.ga.earthsci.core.worldwind.adapters,
  au.gov.ga.earthsci.notification
 Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
  org.eclipse.e4.core.di;bundle-version="1.1.0",

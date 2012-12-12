@@ -15,11 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.tree;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -74,7 +70,7 @@ public class AbstractTreeNodeTest
 
 		// Child should be on node
 		assertEquals(1, classUnderTest.getChildCount());
-		assertArrayEquals(new Object[] { child }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child }, classUnderTest.getChildren());
 
 		// Node should be parent of child
 		assertEquals(classUnderTest, child.getParent());
@@ -93,7 +89,7 @@ public class AbstractTreeNodeTest
 		classUnderTest.add(child2);
 		classUnderTest.add(child3);
 
-		assertArrayEquals(new Object[] { child0, child1, child2, child3 }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child0, child1, child2, child3 }, classUnderTest.getChildren());
 
 		ConcreteTreeNode newChild = new ConcreteTreeNode("newChild");
 
@@ -101,7 +97,7 @@ public class AbstractTreeNodeTest
 
 		classUnderTest.add(2, newChild);
 
-		assertArrayEquals(new Object[] { child0, child1, newChild, child2, child3 }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child0, child1, newChild, child2, child3 }, classUnderTest.getChildren());
 
 		// A children changed event should fire
 		assertEquals(1, changeListener.events.size());
@@ -123,7 +119,7 @@ public class AbstractTreeNodeTest
 		classUnderTest.add(child2);
 		classUnderTest.add(child3);
 
-		assertArrayEquals(new Object[] { child0, child1, child2, child3 }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child0, child1, child2, child3 }, classUnderTest.getChildren());
 
 		ConcreteTreeNode newChild = new ConcreteTreeNode("newChild");
 
@@ -131,7 +127,7 @@ public class AbstractTreeNodeTest
 
 		classUnderTest.add(200, newChild);
 
-		assertArrayEquals(new Object[] { child0, child1, child2, child3, newChild }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child0, child1, child2, child3, newChild }, classUnderTest.getChildren());
 
 		// A children changed event should fire
 		assertEquals(1, changeListener.events.size());
@@ -156,7 +152,7 @@ public class AbstractTreeNodeTest
 
 		// Child should be on node
 		assertEquals(1, classUnderTest.getChildCount());
-		assertArrayEquals(new Object[] { child }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child }, classUnderTest.getChildren());
 
 		// Node should be parent of child
 		assertEquals(classUnderTest, child.getParent());
@@ -180,7 +176,7 @@ public class AbstractTreeNodeTest
 
 		// Child should be on node
 		assertEquals(2, classUnderTest.getChildCount());
-		assertArrayEquals(new Object[] { child1, child0 }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child1, child0 }, classUnderTest.getChildren());
 
 		// Node should be parent of child
 		assertEquals(classUnderTest, child0.getParent());
@@ -210,7 +206,7 @@ public class AbstractTreeNodeTest
 
 		// Added child should be at the end of the children list
 		assertEquals(4, classUnderTest.getChildCount());
-		assertArrayEquals(new Object[] { child1, child2, child3, child0 }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child1, child2, child3, child0 }, classUnderTest.getChildren());
 
 		// Node should be parent of children
 		assertEquals(classUnderTest, child0.getParent());
@@ -250,7 +246,7 @@ public class AbstractTreeNodeTest
 
 		// Added child should be in the middle of the children list
 		assertEquals(5, classUnderTest.getChildCount());
-		assertArrayEquals(new Object[] { child1, child2, child0, child3, child4 }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child1, child2, child0, child3, child4 }, classUnderTest.getChildren());
 
 		// Node should be parent of children
 		assertEquals(classUnderTest, child0.getParent());
@@ -292,7 +288,7 @@ public class AbstractTreeNodeTest
 
 		// Added child should be in the middle of the children list
 		assertEquals(5, classUnderTest.getChildCount());
-		assertArrayEquals(new Object[] { child0, child3, child1, child2, child4 }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child0, child3, child1, child2, child4 }, classUnderTest.getChildren());
 
 		// Node should be parent of children
 		assertEquals(classUnderTest, child0.getParent());
@@ -380,7 +376,7 @@ public class AbstractTreeNodeTest
 		assertTrue(removed);
 
 		assertEquals(3, classUnderTest.getChildCount());
-		assertArrayEquals(new Object[] { child0, child2, child3 }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child0, child2, child3 }, classUnderTest.getChildren());
 
 		assertEquals(1, changeListener.events.size());
 		assertEquals("children", changeListener.events.get(0).getPropertyName());
@@ -439,7 +435,7 @@ public class AbstractTreeNodeTest
 
 		// Child should be on node
 		assertEquals(2, classUnderTest.getChildCount());
-		assertArrayEquals(new Object[] { child1, child0 }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child1, child0 }, classUnderTest.getChildren());
 
 		// Node should be parent of child
 		assertEquals(classUnderTest, child0.getParent());
@@ -464,7 +460,7 @@ public class AbstractTreeNodeTest
 
 		// Child should be on node
 		assertEquals(2, classUnderTest.getChildCount());
-		assertArrayEquals(new Object[] { child1, child0 }, classUnderTest.children);
+		assertArrayEquals(new Object[] { child1, child0 }, classUnderTest.getChildren());
 
 		// Node should be parent of child
 		assertEquals(classUnderTest, child0.getParent());
