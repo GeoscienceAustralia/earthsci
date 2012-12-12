@@ -97,8 +97,12 @@
       </toolbar>
     </sharedElements>
     <sharedElements xsi:type="basic:Part" xmi:id="_RmbeQC1LEeK0vtabFDqVSw" elementId="au.gov.ga.earthsci.application.part.legend" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.legend.LegendPart" label="Legend" closeable="true"/>
-    <sharedElements xsi:type="basic:Part" xmi:id="_AnyeEDz9EeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.BookmarksPart" label="Bookmarks">
+    <sharedElements xsi:type="basic:Part" xmi:id="_AnyeEDz9EeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.BookmarksPart" label="Bookmarks" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/bookmarks.gif" tooltip="Create, view and apply bookmarks">
       <handlers xmi:id="_mdkBUD0GEeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmark.addhandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.handlers.AddBookmarkHandler" command="_CDcDUDKiEeKVc-uaxJMq1A"/>
+      <handlers xmi:id="_gNYX8EPxEeKZ1uCI1kyREA" elementId="au.gov.ga.earthsci.application.handler.0" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.handlers.RenameBookmarkHandler" command="_KVOo0CkqEeKGOtKz07iBzg"/>
+      <menus xsi:type="menu:PopupMenu" xmi:id="_YxPocEPvEeKZ1uCI1kyREA" elementId="au.gov.ga.earthsci.application.bookmarks.popupmenu" label="Bookmark">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_lHNfkEPvEeKZ1uCI1kyREA" elementId="au.gov.ga.earthsci.application.bookmarks.popupmenu.rename" label="Rename" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/rename.gif" tooltip="Rename this bookmark" command="_KVOo0CkqEeKGOtKz07iBzg"/>
+      </menus>
       <toolbar xmi:id="_H6M7wDz9EeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar">
         <children xsi:type="menu:HandledToolItem" xmi:id="_ZoawUD0FEeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar.createbookmark" label="New Bookmark" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add.gif" command="_CDcDUDKiEeKVc-uaxJMq1A"/>
       </toolbar>

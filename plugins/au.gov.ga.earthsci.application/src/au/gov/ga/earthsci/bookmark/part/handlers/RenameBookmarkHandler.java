@@ -15,29 +15,32 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.part.handlers;
 
-import javax.inject.Inject;
+import javax.inject.Named;
 
+import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.jface.viewers.TableViewer;
 
-import au.gov.ga.earthsci.bookmark.BookmarkFactory;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
-import au.gov.ga.earthsci.bookmark.model.IBookmarks;
-import au.gov.ga.earthsci.bookmark.properties.camera.CameraProperty;
 
 /**
- * A command handler for adding new bookmarks from the current world state
+ * A command handler for triggering the renaming of the currently selected bookmark
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class AddBookmarkHandler
+public class RenameBookmarkHandler
 {
-	@Inject
-	private IBookmarks bookmarks;
-	
 	@Execute
-	public void execute()
+	public void execute(TableViewer bookmarkListView, @Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
 	{
-		IBookmark b = BookmarkFactory.createBookmark(CameraProperty.TYPE);
-		bookmarks.getDefaultList().getBookmarks().add(b);
+		bookmarkListView.editElement(selectedBookmarks[0], 0);
+	}
+	
+	@CanExecute
+	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
+	{
+		return selectedBookmarks != null && selectedBookmarks.length == 1;
 	}
 }
