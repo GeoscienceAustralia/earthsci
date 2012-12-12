@@ -119,7 +119,7 @@ public class IconLoader implements LoadingIconFrameListener
 				@Override
 				public void complete(IRetrieval retrieval)
 				{
-					if (!retrieval.getResult().isFromCache())
+					if (retrieval.hasResult() && !retrieval.getResult().isFromCache())
 					{
 						retrievalDone(retrieval.getData(), url);
 					}
