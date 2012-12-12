@@ -29,17 +29,24 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ColumnViewerEditor;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
@@ -52,6 +59,7 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.application.ImageRegistry;
@@ -245,6 +253,48 @@ public class LayerTreePart
 				}
 			}
 		});
+
+		viewer.setCellEditors(new CellEditor[] { new TextCellEditor(viewer.getTree(), SWT.BORDER) });
+		viewer.setColumnProperties(new String[] { "layer" }); //$NON-NLS-1$
+
+		viewer.setCellModifier(new ICellModifier()
+		{
+			@Override
+			public void modify(Object element, String property, Object value)
+			{
+				if (element instanceof Item)
+				{
+					element = ((Item) element).getData();
+				}
+				((ILayerTreeNode) element).setLabel((String) value);
+			}
+
+			@Override
+			public Object getValue(Object element, String property)
+			{
+				if (element instanceof Item)
+				{
+					element = ((Item) element).getData();
+				}
+				return ((ILayerTreeNode) element).getLabelOrName();
+			}
+
+			@Override
+			public boolean canModify(Object element, String property)
+			{
+				return true;
+			}
+		});
+
+		ColumnViewerEditorActivationStrategy activationStrategy = new ColumnViewerEditorActivationStrategy(viewer)
+		{
+			@Override
+			protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event)
+			{
+				return event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
+			}
+		};
+		TreeViewerEditor.create(viewer, activationStrategy, ColumnViewerEditor.KEYBOARD_ACTIVATION);
 
 		//add drag and drop support
 		int ops = DND.DROP_COPY | DND.DROP_MOVE;
