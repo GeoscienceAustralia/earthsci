@@ -29,6 +29,7 @@ import au.gov.ga.earthsci.bookmark.Messages;
 import au.gov.ga.earthsci.bookmark.io.BookmarksPersister;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
+import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
 import au.gov.ga.earthsci.core.util.collection.ArrayListTreeMap;
 
 
@@ -42,7 +43,7 @@ import au.gov.ga.earthsci.core.util.collection.ArrayListTreeMap;
 @Exportable
 @Creatable
 @Singleton
-public class Bookmarks implements IBookmarks
+public class Bookmarks extends AbstractPropertyChangeBean implements IBookmarks
 {
 	private static final String DEFAULT_LIST_ID = "au.gov.ga.earthsci.bookmark.list.default"; //$NON-NLS-1$
 	
@@ -101,6 +102,8 @@ public class Bookmarks implements IBookmarks
 	@Override
 	public void setLists(IBookmarkList[] lists)
 	{
+		IBookmarkList[] oldLists = getLists();
+		
 		idToListMap.clear();
 		nameToListMap.clear();
 		defaultList = null;
@@ -109,7 +112,7 @@ public class Bookmarks implements IBookmarks
 		{
 			for (IBookmarkList list : lists)
 			{
-				addList(list);
+				doAddList(list, false);
 			}
 		}
 		
@@ -117,15 +120,24 @@ public class Bookmarks implements IBookmarks
 		{
 			initialiseDefaultList();
 		}
+		
+		firePropertyChange("lists", oldLists, getLists()); //$NON-NLS-1$
 	}
 	
 	@Override
 	public void addList(IBookmarkList list)
 	{
+		doAddList(list, true);
+	}
+	
+	private void doAddList(IBookmarkList list, boolean raiseEvent)
+	{
 		if (list == null)
 		{
 			return;
 		}
+		
+		IBookmarkList[] oldLists = getLists();
 		
 		if (idToListMap.containsKey(list.getId()))
 		{
@@ -138,6 +150,13 @@ public class Bookmarks implements IBookmarks
 		if (list.getId().equals(DEFAULT_LIST_ID))
 		{
 			defaultList = list;
+			
+			firePropertyChange("defaultList", this.defaultList, this.defaultList = list); //$NON-NLS-1$
+		}
+		
+		if (raiseEvent)
+		{
+			firePropertyChange("lists", oldLists, getLists()); //$NON-NLS-1$
 		}
 	}
 	
@@ -148,7 +167,6 @@ public class Bookmarks implements IBookmarks
 		defaultList.setName(Messages.Bookmarks_DefaultListName); 
 		
 		addList(defaultList);
-		this.defaultList = defaultList;
 	}
 	
 }

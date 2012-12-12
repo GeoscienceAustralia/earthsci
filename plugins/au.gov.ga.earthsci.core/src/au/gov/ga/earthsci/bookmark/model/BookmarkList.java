@@ -15,12 +15,16 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.eclipse.core.databinding.observable.list.IListChangeListener;
+import org.eclipse.core.databinding.observable.list.ListChangeEvent;
+import org.eclipse.core.databinding.observable.list.WritableList;
+
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
+import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
 
 /**
  * The default {@link IBookmarkList} implementation
@@ -28,7 +32,7 @@ import au.gov.ga.earthsci.core.persistence.Persistent;
  * @author James Navin (james.navin@ga.gov.au)
  */
 @Exportable
-public class BookmarkList implements IBookmarkList
+public class BookmarkList extends AbstractPropertyChangeBean implements IBookmarkList
 {
 	@Persistent(attribute = true)
 	private String id;
@@ -36,15 +40,16 @@ public class BookmarkList implements IBookmarkList
 	@Persistent
 	private String name;
 	
-	@Persistent
-	private List<IBookmark> bookmarks = new ArrayList<IBookmark>();
-
+	private WritableList bookmarks;
+	
 	/**
 	 * Create a new unnamed bookmark list with a unique randome ID.
 	 */
 	public BookmarkList()
 	{
 		this.id = UUID.randomUUID().toString();
+		
+		doSetBookmarks(new WritableList());
 	}
 	
 	/**
@@ -52,7 +57,6 @@ public class BookmarkList implements IBookmarkList
 	 */
 	public BookmarkList(String name)
 	{
-		this();
 		this.name = name;
 	}
 	
@@ -73,7 +77,7 @@ public class BookmarkList implements IBookmarkList
 	
 	public void setId(String id)
 	{
-		this.id = id;
+		firePropertyChange("id", this.id, this.id = id); //$NON-NLS-1$
 	}
 	
 	@Override
@@ -85,10 +89,12 @@ public class BookmarkList implements IBookmarkList
 	@Override
 	public void setName(String name)
 	{
-		this.name = name;
+		firePropertyChange("name", this.name, this.name = name); //$NON-NLS-1$
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
+	@Persistent
 	public List<IBookmark> getBookmarks()
 	{
 		return bookmarks;
@@ -97,7 +103,32 @@ public class BookmarkList implements IBookmarkList
 	@Override
 	public void setBookmarks(List<IBookmark> bookmarks)
 	{
-		this.bookmarks = bookmarks;
+		WritableList oldList = this.bookmarks;
+		
+		WritableList newList = new WritableList();
+		newList.addAll(bookmarks);
+		
+		doSetBookmarks(newList);
+		
+		firePropertyChange("bookmarks", oldList, this.bookmarks); //$NON-NLS-1$
+	}
+	
+	private void doSetBookmarks(WritableList newBookmarks)
+	{
+		if (newBookmarks == this.bookmarks)
+		{
+			return;
+		}
+		
+		this.bookmarks = newBookmarks;
+		this.bookmarks.addListChangeListener(new IListChangeListener()
+		{
+			@Override
+			public void handleListChange(ListChangeEvent event)
+			{
+				firePropertyChange("bookmarks", null, bookmarks); //$NON-NLS-1$
+			}
+		});
 	}
 	
 }

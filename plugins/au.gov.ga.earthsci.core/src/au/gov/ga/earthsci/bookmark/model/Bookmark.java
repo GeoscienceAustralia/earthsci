@@ -23,6 +23,7 @@ import au.gov.ga.earthsci.bookmark.io.BookmarkPropertyPersistentAdapter;
 import au.gov.ga.earthsci.core.persistence.Adapter;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
+import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
 
 /**
  * The default {@link IBookmark} implementation
@@ -30,10 +31,9 @@ import au.gov.ga.earthsci.core.persistence.Persistent;
  * @author James Navin (james.navin@ga.gov.au)
  */
 @Exportable
-public class Bookmark implements IBookmark
+public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 {
 
-	@Persistent
 	private String name;
 	private IBookmarkMetadata metadata = new BookmarkMetadata();
 	
@@ -45,11 +45,18 @@ public class Bookmark implements IBookmark
 	}
 	
 	@Override
+	@Persistent
 	public String getName()
 	{
 		return name;
 	}
 
+	@Override
+	public void setName(String name)
+	{
+		firePropertyChange("name", this.name, this.name = name); //$NON-NLS-1$
+	}
+	
 	@Override
 	public IBookmarkMetadata getMetadata()
 	{
@@ -66,11 +73,15 @@ public class Bookmark implements IBookmark
 
 	public void setProperties(IBookmarkProperty[] properties)
 	{
+		IBookmarkProperty[] oldProperties = getProperties();
+		
 		this.properties.clear();
 		for (IBookmarkProperty property : properties)
 		{
-			addProperty(property);
+			doAddProperty(property, false);
 		}
+		
+		firePropertyChange("properties", oldProperties, getProperties()); //$NON-NLS-1$
 	}
 	
 	@Override
@@ -82,13 +93,30 @@ public class Bookmark implements IBookmark
 	@Override
 	public void addProperty(IBookmarkProperty property)
 	{
+		doAddProperty(property, true);
+	}
+
+	private void doAddProperty(IBookmarkProperty property, boolean fireEvent)
+	{
 		if (property == null)
 		{
 			return;
 		}
+		
+		IBookmarkProperty[] oldProperties = null;
+		if (fireEvent)
+		{
+			oldProperties = getProperties();
+		}
+		
 		this.properties.put(property.getType(), property);
+		
+		if (fireEvent)
+		{
+			firePropertyChange("properties", oldProperties, getProperties()); //$NON-NLS-1$
+		}
 	}
-
+	
 	@Override
 	public boolean hasProperty(String type)
 	{

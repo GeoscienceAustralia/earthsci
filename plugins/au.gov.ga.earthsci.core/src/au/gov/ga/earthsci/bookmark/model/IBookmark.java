@@ -35,6 +35,11 @@ public interface IBookmark
 	String getName();
 	
 	/**
+	 * Set the name of this bookmark, to allow for user edits etc.
+	 */
+	void setName(String name);
+	
+	/**
 	 * Return any metadata associated with this bookmark as a map of display strings keyed by 
 	 *   
 	 * @return The metadata associated with 
