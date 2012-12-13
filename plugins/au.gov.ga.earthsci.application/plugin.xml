@@ -38,11 +38,19 @@
             id="au.gov.ga.earthsci.catalogs"
             name="Catalogs">
       </page>
+      <page
+            class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferencesPage"
+            id="au.gov.ga.earthsci.bookmarks"
+            name="Bookmarks">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferenceInitializer">
+      </initializer>
+      <initializer
+            class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferenceInitializer">
       </initializer>
    </extension>
    <extension
@@ -73,6 +81,10 @@
       <bind
             binding="au.gov.ga.earthsci.bookmark.part.IBookmarksController"
             implementation="au.gov.ga.earthsci.bookmark.part.BookmarksController">
+      </bind>
+      <bind
+            binding="au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences"
+            implementation="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferences">
       </bind>
       <injectable
             class="au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry">
