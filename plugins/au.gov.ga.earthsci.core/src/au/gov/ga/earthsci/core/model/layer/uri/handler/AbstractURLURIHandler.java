@@ -47,6 +47,10 @@ public abstract class AbstractURLURIHandler extends AbstractInputStreamURIHandle
 			IRetrieval retrieval = RetrievalServiceFactory.getServiceInstance().retrieve(caller, url);
 			retrieval.start();
 			IRetrievalResult result = retrieval.waitAndGetResult();
+			if (result.getError() != null)
+			{
+				throw result.getError();
+			}
 			is = result.getData().getInputStream();
 		}
 		catch (Exception e)

@@ -28,15 +28,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * A simple progress part inspired by the legacy Eclipse 3.x <code>DetailedProgressView</code>
+ * A simple progress part inspired by the legacy Eclipse 3.x
+ * <code>DetailedProgressView</code>
  * <p/>
  * Used to show the progress of currently running jobs.
  * <p/>
- * This part also injects an {@link ProgressProvider} onto the current {@link IJobManager} to capture progress information.
- * Other plugins should not override this provider.
+ * This part also injects an {@link ProgressProvider} onto the current
+ * {@link IJobManager} to capture progress information. Other plugins should not
+ * override this provider.
  * <hr/>
- * <b>Important:</b> This part should be replaced with the inbuilt one when it becomes available
- * in the Eclipse 4.x release train.
+ * <b>Important:</b> This part should be replaced with the inbuilt one when it
+ * becomes available in the Eclipse 4.x release train.
  * <hr/>
  * 
  * @author James Navin (james.navin@ga.gov.au)
@@ -51,74 +53,84 @@ public class ProgressPart
 		JOB_STATE_LABEL.put(Job.SLEEPING, Messages.ProgressPart_SleepingStatusLabel);
 		JOB_STATE_LABEL.put(Job.RUNNING, Messages.ProgressPart_RunningStatusLabel);
 	}
-	
+
 	@Inject
 	private EModelService modelService;
-	
+
 	@Inject
 	private IJobManager jobManager;
-	
+
 	private TableViewer viewer;
-	
+
 	private List<JobInfo> jobList = new ArrayList<JobInfo>();
-	
+
 	@Inject
 	public void init(Composite parent, MPart part)
 	{
-		
+
 		viewer = new TableViewer(parent, SWT.V_SCROLL);
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
 		viewer.setInput(jobList);
 		viewer.getTable().setLinesVisible(true);
 		viewer.getTable().setHeaderVisible(true);
-		viewer.setSorter(new ViewerSorter() {
+		viewer.setSorter(new ViewerSorter()
+		{
 			@Override
 			public int category(Object element)
 			{
-				return ((JobInfo)element).job.getState();
+				return ((JobInfo) element).job.getState();
 			}
+
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2)
 			{
-				return ((JobInfo)e1).job.getPriority() - ((JobInfo)e2).job.getPriority();
+				return ((JobInfo) e1).job.getPriority() - ((JobInfo) e2).job.getPriority();
 			}
 		});
-		viewer.addFilter(new ViewerFilter() {
-
+		viewer.addFilter(new ViewerFilter()
+		{
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element)
 			{
-				return ((JobInfo)element).job.getState() != Job.SLEEPING; 
+				return ((JobInfo) element).job.getState() != Job.SLEEPING;
 			}
-			
+
 		});
-		
+
 		createColumns();
-		
-		jobManager.addJobChangeListener(new JobChangeAdapter() {
-			
+
+		jobManager.addJobChangeListener(new JobChangeAdapter()
+		{
+
 			@Override
 			public void scheduled(IJobChangeEvent event)
 			{
 				JobInfo jobInfo = new JobInfo(event.getJob(), ProgressPart.this);
-				
-				jobList.add(jobInfo);
+
+				synchronized (jobList)
+				{
+					jobList.add(jobInfo);
+				}
 				asyncRefresh();
-				
+
 				super.scheduled(event);
 			}
-			
+
 			@Override
 			public void done(final IJobChangeEvent event)
 			{
 				JobInfo jobInfo = findInfoForJob(event.getJob());
-				
-				jobList.remove(jobInfo);
+
+				synchronized (jobList)
+				{
+					jobList.remove(jobInfo);
+				}
 				asyncRefresh();
 			}
 		});
-		
-		jobManager.setProgressProvider(new ProgressProvider() {
+
+		jobManager.setProgressProvider(new ProgressProvider()
+		{
 
 			@Override
 			public IProgressMonitor createMonitor(final Job job)
@@ -127,11 +139,14 @@ public class ProgressPart
 				if (jobInfo == null)
 				{
 					jobInfo = new JobInfo(job, ProgressPart.this);
-					
-					jobList.add(jobInfo);
+
+					synchronized (jobList)
+					{
+						jobList.add(jobInfo);
+					}
 					asyncRefresh();
 				}
-				
+
 				return jobInfo;
 			}
 		});
@@ -139,70 +154,78 @@ public class ProgressPart
 
 	private JobInfo findInfoForJob(Job job)
 	{
-		for (JobInfo info : jobList)
+		synchronized (jobList)
 		{
-			if (info.job == job)
+			for (JobInfo info : jobList)
 			{
-				return info;
+				if (info.job == job)
+				{
+					return info;
+				}
 			}
 		}
 		return null;
 	}
-	
+
 	private void createColumns()
 	{
 		TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
 		column.getColumn().setText(Messages.ProgressPart_JobNameColumnLabel);
 		column.getColumn().setWidth(500);
-		
-		column.setLabelProvider(new ColumnLabelProvider() {
+
+		column.setLabelProvider(new ColumnLabelProvider()
+		{
 			@Override
 			public String getText(Object element)
 			{
-				return ((JobInfo)element).job.getName();
+				return ((JobInfo) element).job.getName();
 			}
 		});
-		
+
 		column = new TableViewerColumn(viewer, SWT.NONE);
 		column.getColumn().setText(Messages.ProgressPart_JobStateColumnLabel);
 		column.getColumn().setWidth(100);
-		
-		column.setLabelProvider(new ColumnLabelProvider() {
+
+		column.setLabelProvider(new ColumnLabelProvider()
+		{
 			@Override
 			public String getText(Object element)
 			{
-				return JOB_STATE_LABEL.get(((JobInfo)element).job.getState());
+				return JOB_STATE_LABEL.get(((JobInfo) element).job.getState());
 			}
 		});
-		
+
 		column = new TableViewerColumn(viewer, SWT.NONE);
 		column.getColumn().setText(Messages.ProgressPart_JobProgressColumnLabel);
 		column.getColumn().setWidth(100);
-		
-		column.setLabelProvider(new ColumnLabelProvider() {
+
+		column.setLabelProvider(new ColumnLabelProvider()
+		{
 			@Override
 			public String getText(Object element)
 			{
-				return ((JobInfo)element).getProgress();
+				return ((JobInfo) element).getProgress();
 			}
 		});
-		
+
 		column = new TableViewerColumn(viewer, SWT.NONE);
 		column.getColumn().setText(Messages.ProgressPart_JobTaskColumnLabel);
 		column.getColumn().setWidth(500);
-		
-		column.setLabelProvider(new ColumnLabelProvider() {
+
+		column.setLabelProvider(new ColumnLabelProvider()
+		{
 			@Override
 			public String getText(Object element)
 			{
-				return ((JobInfo)element).currentTask;
+				return ((JobInfo) element).currentTask;
 			}
 		});
 	}
-	
+
 	private void asyncRefresh()
 	{
-		Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable()
+		{
 			@Override
 			public void run()
 			{
@@ -213,10 +236,11 @@ public class ProgressPart
 			}
 		});
 	}
-	
+
 	private void asyncUpdate(final JobInfo job)
 	{
-		Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable()
+		{
 			@Override
 			public void run()
 			{
@@ -227,29 +251,30 @@ public class ProgressPart
 			}
 		});
 	}
-	
+
 	private static class JobInfo extends NullProgressMonitor
 	{
 		ProgressPart view;
-		
+
 		String currentTask;
 		int totalWork;
 		int work;
-		
+
 		Job job;
-		
+
 		public JobInfo(Job job, final ProgressPart view)
 		{
 			this.view = view;
 			this.job = job;
-			
-			this.job.addJobChangeListener(new JobChangeAdapter() {
+
+			this.job.addJobChangeListener(new JobChangeAdapter()
+			{
 				@Override
 				public void aboutToRun(IJobChangeEvent event)
 				{
 					view.asyncUpdate(JobInfo.this);
 				}
-				
+
 				@Override
 				public void running(IJobChangeEvent event)
 				{
@@ -257,41 +282,39 @@ public class ProgressPart
 				}
 			});
 		}
-		
+
 		String getProgress()
 		{
 			if (totalWork == IProgressMonitor.UNKNOWN)
 			{
 				return Messages.ProgressPart_UnknownProgress;
 			}
-			return (int)(work * 100d / totalWork) + "%"; //$NON-NLS-1$
+			return (int) (work * 100d / totalWork) + "%"; //$NON-NLS-1$
 		}
-		
+
 		@Override
 		public void worked(int work)
 		{
 			this.work += work;
-			
+
 			view.asyncUpdate(this);
 		}
-		
+
 		@Override
 		public void beginTask(String name, int totalWork)
 		{
 			this.currentTask = name;
 			this.totalWork = totalWork;
-			
+
 			view.asyncUpdate(this);
 		}
-		
+
 		@Override
 		public void subTask(String name)
 		{
 			this.currentTask = name;
-			
+
 			view.asyncUpdate(this);
 		}
-		
 	}
-
 }

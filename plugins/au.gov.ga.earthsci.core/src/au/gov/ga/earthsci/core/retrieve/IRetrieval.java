@@ -113,7 +113,19 @@ public interface IRetrieval extends IPropertyChangeBean
 	IRetrievalData getCachedData();
 
 	/**
-	 * Get the result after the retrieval has completed.
+	 * Whether this retrieval has a result after completion.
+	 * <p/>
+	 * This will return true once the retrieval is complete, unless the
+	 * retrieval was canceled.
+	 * 
+	 * @return True if this retrieval has a result.
+	 * @see #getResult()
+	 */
+	boolean hasResult();
+
+	/**
+	 * Get the result after the retrieval has completed. If the retrieval was
+	 * canceled, this could return null.
 	 * 
 	 * @return Retrieval result, or null if the retrieval isn't yet complete or
 	 *         was canceled before completion.

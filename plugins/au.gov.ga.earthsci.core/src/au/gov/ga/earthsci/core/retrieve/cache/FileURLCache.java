@@ -99,6 +99,8 @@ public class FileURLCache implements IURLCache
 			channel.position(offset);
 			return new FilterOutputStream(Channels.newOutputStream(channel))
 			{
+				private boolean unlocked = false;
+
 				@Override
 				public void close() throws IOException
 				{
@@ -108,7 +110,11 @@ public class FileURLCache implements IURLCache
 					}
 					finally
 					{
-						locker.unlockWrite(partialFile);
+						if (!unlocked)
+						{
+							unlocked = true;
+							locker.unlockWrite(partialFile);
+						}
 					}
 				}
 			};
@@ -329,6 +335,8 @@ public class FileURLCache implements IURLCache
 		{
 			return new FilterInputStream(new FileInputStream(completeFile))
 			{
+				private boolean unlocked = false;
+
 				@Override
 				public void close() throws IOException
 				{
@@ -338,7 +346,11 @@ public class FileURLCache implements IURLCache
 					}
 					finally
 					{
-						locker.unlockRead(completeFile);
+						if (!unlocked)
+						{
+							unlocked = true;
+							locker.unlockRead(completeFile);
+						}
 					}
 				}
 			};
@@ -370,7 +382,12 @@ public class FileURLCache implements IURLCache
 		String filename;
 		if (!Util.isBlank(url.getHost()) && !Util.isBlank(url.getPath()))
 		{
-			filename = fixForFilename(url.getHost()) + File.separator + fixForFilename(url.getPath());
+			filename = fixForFilename(url.getHost());
+			if (url.getPort() >= 0)
+			{
+				filename += "!" + url.getPort(); //$NON-NLS-1$
+			}
+			filename += File.separator + fixForFilename(url.getPath());
 			if (url.getQuery() != null)
 			{
 				filename += "#" + url.getQuery(); //$NON-NLS-1$

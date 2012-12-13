@@ -19,6 +19,9 @@
       <retriever
             class="au.gov.ga.earthsci.core.retrieve.retriever.BundleResourceRetriever">
       </retriever>
+      <retriever
+            class="au.gov.ga.earthsci.core.retrieve.retriever.JarRetriever">
+      </retriever>
    </extension>
    <extension
          point="au.gov.ga.earthsci.core.model.catalog.provider">
