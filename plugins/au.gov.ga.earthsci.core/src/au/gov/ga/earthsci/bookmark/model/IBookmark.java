@@ -78,5 +78,13 @@ public interface IBookmark
 	 */
 	boolean hasProperty(String type);
 	
-	
+	/**
+	 * Return the duration (in milliseconds) that the system should take when transitioning 
+	 * to this bookmark state from the current world state.
+	 * <p/>
+	 * If the global default is to be used, this method will return <code>null</code>.
+	 * 
+	 * @return The duration (in milliseconds) that the system should take when transitioning to this bookmark
+	 */
+	Long getTransitionDuration();
 }

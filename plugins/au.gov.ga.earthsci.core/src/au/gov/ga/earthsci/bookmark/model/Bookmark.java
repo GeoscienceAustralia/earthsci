@@ -37,6 +37,8 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 	private String name;
 	private IBookmarkMetadata metadata = new BookmarkMetadata();
 	
+	private Long transitionDuration = null;
+	
 	private Map<String, IBookmarkProperty> properties = new ConcurrentHashMap<String, IBookmarkProperty>();
 	
 	public Bookmark()
@@ -123,4 +125,16 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 		return properties.containsKey(type);
 	}
 
+	@Persistent
+	@Override
+	public Long getTransitionDuration()
+	{
+		return transitionDuration;
+	}
+
+	public void setTransitionDuration(Long duration)
+	{
+		firePropertyChange("transitionDuration", this.transitionDuration, this.transitionDuration = duration); //$NON-NLS-1$
+	}
+	
 }
