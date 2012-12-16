@@ -78,4 +78,42 @@ public interface IRetrievalService
 	 * @return {@link IRetrieval}s requested by the caller, empty array if none.
 	 */
 	IRetrieval[] getRetrievals(Object caller);
+
+	/**
+	 * Add a listener to the service.
+	 * 
+	 * @param listener
+	 *            Listener to add
+	 */
+	void addListener(IRetrievalServiceListener listener);
+
+	/**
+	 * Add a listener to the service, listening for added/removed retrievals for
+	 * the given caller.
+	 * 
+	 * @param listener
+	 *            Listener to add
+	 * @param caller
+	 *            Caller to listen for
+	 */
+	void addListener(IRetrievalServiceListener listener, Object caller);
+
+	/**
+	 * Remove a listener from the service.
+	 * 
+	 * @param listener
+	 *            Listener to remove
+	 */
+	void removeListener(IRetrievalServiceListener listener);
+
+	/**
+	 * Remove a listener from the service that was listening for added/removed
+	 * retrievals for the given caller.
+	 * 
+	 * @param listener
+	 *            Listener to remove
+	 * @param caller
+	 *            Caller that was being listened for
+	 */
+	void removeListener(IRetrievalServiceListener listener, Object caller);
 }
