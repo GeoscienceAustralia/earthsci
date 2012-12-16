@@ -33,7 +33,7 @@ import javax.net.ssl.SSLHandshakeException;
  * @author Tom Gaskins
  * @version $Id: BasicRetrievalService.java 448 2012-03-13 14:50:11Z tgaskins $
  */
-public final class ExtendedRetrievalService extends WWObjectImpl
+public class ExtendedRetrievalService extends WWObjectImpl
     implements RetrievalService, Thread.UncaughtExceptionHandler
 {
     // These constants are last-ditch values in case Configuration lacks defaults

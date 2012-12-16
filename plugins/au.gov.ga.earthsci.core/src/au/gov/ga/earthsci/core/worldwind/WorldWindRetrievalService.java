@@ -15,30 +15,27 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.worldwind;
 
-import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.avlist.AVKey;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
-
-import org.eclipse.e4.core.di.annotations.Creatable;
-
-import au.gov.ga.earthsci.core.model.layer.LayerFactory;
+import gov.nasa.worldwind.retrieve.RetrievalFuture;
+import gov.nasa.worldwind.retrieve.Retriever;
+import gov.nasa.worldwind.retrieve.URLRetriever;
+import au.gov.ga.earthsci.core.retrieve.RetrievalService;
+import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
 
 /**
- * Helper class for setting up the WorldWind {@link Configuration} properties.
+ * {@link RetrievalService} that redirects url retrievals through our retrieval
+ * system.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@Creatable
-@Singleton
-public class WorldWindConfiguration
+public class WorldWindRetrievalService extends ExtendedRetrievalService
 {
-	@PostConstruct
-	public void setup()
+	@Override
+	public synchronized RetrievalFuture runRetriever(Retriever retriever, double priority)
 	{
-		Configuration.setValue(AVKey.LAYER_FACTORY, LayerFactory.class.getName());
-		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
-		Configuration.setValue(AVKey.RETRIEVAL_SERVICE_CLASS_NAME, WorldWindRetrievalService.class.getName());
+		if (retriever instanceof URLRetriever)
+		{
+			retriever = new URLRetrieverWrapper((URLRetriever) retriever);
+		}
+		return super.runRetriever(retriever, priority);
 	}
 }
