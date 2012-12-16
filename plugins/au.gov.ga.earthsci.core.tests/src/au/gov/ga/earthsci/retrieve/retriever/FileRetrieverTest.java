@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetrieverMonitor;
+import au.gov.ga.earthsci.core.retrieve.RetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.RetrievalStatus;
 import au.gov.ga.earthsci.core.retrieve.retriever.FileRetriever;
 
@@ -80,7 +81,7 @@ public class FileRetrieverTest
 			oneOf(monitor).updateStatus(RetrievalStatus.READING);
 		}}});
 		
-		IRetrievalResult result = classUnderTest.retrieve(url, monitor, false, false, null).result;
+		IRetrievalResult result = classUnderTest.retrieve(url, monitor, new RetrievalProperties(), null).result;
 		assertEquals(result.getError().getClass(), NullPointerException.class);
 	}
 	
@@ -89,7 +90,7 @@ public class FileRetrieverTest
 	{
 		URL url = new URL("file:///file.txt");
 		
-		classUnderTest.retrieve(url, null, false, false, null);
+		classUnderTest.retrieve(url, null, new RetrievalProperties(), null);
 	}
 	
 	@Test
@@ -102,7 +103,7 @@ public class FileRetrieverTest
 			oneOf(monitor).updateStatus(RetrievalStatus.READING);
 		}}});
 		
-		IRetrievalResult result = classUnderTest.retrieve(tmpFile.toURI().toURL(), monitor, false, false, null).result;
+		IRetrievalResult result = classUnderTest.retrieve(tmpFile.toURI().toURL(), monitor, new RetrievalProperties(), null).result;
 		
 		assertNotNull(result);
 		String string = WWIO.readStreamToString(result.getData().getInputStream(), "UTF-8");
@@ -119,7 +120,7 @@ public class FileRetrieverTest
 			oneOf(monitor).updateStatus(RetrievalStatus.READING);
 		}}});
 		
-		IRetrievalResult result = classUnderTest.retrieve(url, monitor, false, false, null).result;
+		IRetrievalResult result = classUnderTest.retrieve(url, monitor, new RetrievalProperties(), null).result;
 		
 		assertNotNull(result);
 		assertEquals(null, result.getData());

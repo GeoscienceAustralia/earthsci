@@ -53,11 +53,11 @@ public class RetrievalService implements IRetrievalService
 	@Override
 	public IRetrieval retrieve(Object caller, URL url)
 	{
-		return retrieve(caller, url, true, false);
+		return retrieve(caller, url, new RetrievalProperties());
 	}
 
 	@Override
-	public IRetrieval retrieve(Object caller, URL url, boolean cache, boolean refresh)
+	public IRetrieval retrieve(Object caller, URL url, IRetrievalProperties retrievalProperties)
 	{
 		if (url == null)
 		{
@@ -78,7 +78,7 @@ public class RetrievalService implements IRetrievalService
 				}
 
 				//create a retrieval object
-				retrieval = new Retrieval(caller, url, cache, refresh, retriever);
+				retrieval = new Retrieval(caller, url, retrievalProperties, retriever);
 				urlToRetrieval.put(url, retrieval);
 
 				//add a listener to remove the retrieval after it's complete

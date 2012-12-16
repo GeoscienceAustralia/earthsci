@@ -18,6 +18,7 @@ package au.gov.ga.earthsci.core.retrieve.retriever;
 import java.net.URL;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetriever;
 import au.gov.ga.earthsci.core.retrieve.IRetrieverMonitor;
@@ -36,7 +37,7 @@ import au.gov.ga.earthsci.core.retrieve.result.LocalURLRetrievalResult;
 public abstract class AbstractLocalURLRetriever implements IRetriever
 {
 	@Override
-	public RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, boolean cache, boolean refresh,
+	public RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, IRetrievalProperties retrievalProperties,
 			IRetrievalData cachedData) throws Exception
 	{
 		monitor.updateStatus(RetrievalStatus.READING);

@@ -53,17 +53,11 @@ public interface IRetrievalService
 	 *            Object requesting the retrieval
 	 * @param url
 	 *            URL to retrieve
-	 * @param cache
-	 *            Whether to ask the {@link IRetriever} to cache the result or
-	 *            not. This should be <code>false</code> if the caller does has
-	 *            its own cache implementation.
-	 * @param refresh
-	 *            If caching is to be used, this will be passed to the
-	 *            {@link IRetriever} to request that it refreshes a cached
-	 *            result if it exists.
+	 * @param retrievalProperties
+	 *            Properties to use when retrieving the URL
 	 * @return {@link IRetrieval} used to retrieve the resource from the URL
 	 */
-	IRetrieval retrieve(Object caller, URL url, boolean cache, boolean refresh);
+	IRetrieval retrieve(Object caller, URL url, IRetrievalProperties retrievalProperties);
 
 	/**
 	 * Get the {@link IRetrieval} that is currently retrieving the given URL, if

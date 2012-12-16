@@ -41,6 +41,7 @@ import org.junit.Test;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetrieverMonitor;
+import au.gov.ga.earthsci.core.retrieve.RetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.RetrievalStatus;
 import au.gov.ga.earthsci.core.retrieve.retriever.HttpRetriever;
 
@@ -109,7 +110,7 @@ public class HTTPRetrieverTest
 			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
 		}}});
 		
-		classUnderTest.retrieve(url, monitor, false, false, null);
+		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
 	}
 	
 	@Test(expected = NullPointerException.class)
@@ -121,7 +122,7 @@ public class HTTPRetrieverTest
 			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
 		}}});
 		
-		classUnderTest.retrieve(url, monitor, false, false, null);
+		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
 	}
 	
 	@Test
@@ -148,7 +149,7 @@ public class HTTPRetrieverTest
 		
 		URL url = createHttpURL("/success");
 		
-		IRetrievalResult result = classUnderTest.retrieve(url, monitor, false, false, null).result;
+		IRetrievalResult result = classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null).result;
 		
 		assertNotNull(result);
 		assertNull(result.getError());
@@ -168,7 +169,7 @@ public class HTTPRetrieverTest
 		}}});
 		
 		URL url = createHttpURL("/404");
-		classUnderTest.retrieve(url, monitor, false, false, null);
+		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
 	}
 	
 	@Test(expected = IOException.class)
@@ -187,7 +188,7 @@ public class HTTPRetrieverTest
 		}}});
 		
 		URL url = createHttpURL("/fail");
-		classUnderTest.retrieve(url, monitor, false, false, null);
+		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
 	}
 	
 	// TODO: Move this code somewhere more reusable

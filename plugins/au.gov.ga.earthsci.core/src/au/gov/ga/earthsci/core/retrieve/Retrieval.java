@@ -33,8 +33,7 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 {
 	private final SetAndArray<Object> callers = new HashSetAndArray<Object>();
 	private final URL url;
-	private final boolean cache;
-	private final boolean refresh;
+	private final IRetrievalProperties retrievalProperties;
 	private final IRetriever retriever;
 
 	private RetrievalStatus status = RetrievalStatus.NOT_STARTED;
@@ -51,12 +50,11 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	private IRetrievalData cachedData;
 	private IRetrievalResult result;
 
-	public Retrieval(Object caller, URL url, boolean cache, boolean refresh, IRetriever retriever)
+	public Retrieval(Object caller, URL url, IRetrievalProperties retrievalProperties, IRetriever retriever)
 	{
 		addCaller(caller);
 		this.url = url;
-		this.cache = cache;
-		this.refresh = refresh;
+		this.retrievalProperties = retrievalProperties;
 		this.retriever = retriever;
 	}
 
@@ -70,7 +68,7 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 
 	RetrieverResult retrieve(IRetrieverMonitor monitor) throws Exception
 	{
-		if (cache)
+		if (retrievalProperties.isUseCache())
 		{
 			cachedData = retriever.checkCache(url);
 			if (cachedData != null)
@@ -78,7 +76,7 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 				listeners.cached(this);
 			}
 		}
-		return retriever.retrieve(url, monitor, cache, refresh, cachedData);
+		return retriever.retrieve(url, monitor, retrievalProperties, cachedData);
 	}
 
 	@Override

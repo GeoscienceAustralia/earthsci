@@ -54,10 +54,8 @@ public interface IRetriever
 	 *            URL to retrieve
 	 * @param monitor
 	 *            Monitor to update during retrieval
-	 * @param cache
-	 *            Should the retrieved resource be cached?
-	 * @param refresh
-	 *            Should a cached resource be refreshed?
+	 * @param retrievalProperties
+	 *            Properties to use when retrieving the resource
 	 * @param cachedData
 	 *            The data returned from an earlier call to
 	 *            {@link #checkCache(URL)}, for inserting into the returned
@@ -66,6 +64,6 @@ public interface IRetriever
 	 * @throws Exception
 	 *             If the retrieval could not be completed
 	 */
-	RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, boolean cache, boolean refresh,
+	RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, IRetrievalProperties retrievalProperties,
 			IRetrievalData cachedData) throws Exception;
 }

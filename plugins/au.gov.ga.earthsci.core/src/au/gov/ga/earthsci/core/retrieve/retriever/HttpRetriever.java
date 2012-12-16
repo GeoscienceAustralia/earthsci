@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetriever;
 import au.gov.ga.earthsci.core.retrieve.IRetrieverMonitor;
@@ -88,7 +89,7 @@ public class HttpRetriever implements IRetriever
 	}
 
 	@Override
-	public RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, boolean cache, boolean refresh,
+	public RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, IRetrievalProperties retrievalProperties,
 			IRetrievalData cachedData) throws Exception
 	{
 		monitor.updateStatus(RetrievalStatus.STARTED);
@@ -97,14 +98,16 @@ public class HttpRetriever implements IRetriever
 		try
 		{
 			connection = (HttpURLConnection) url.openConnection();
+			connection.setConnectTimeout(retrievalProperties.getConnectTimeout());
+			connection.setReadTimeout(retrievalProperties.getReadTimeout());
 
 			long position = 0;
-			if (cache)
+			if (retrievalProperties.isUseCache())
 			{
 				//if the resource has a cached version, set the if modified header
 				if (cachedData != null)
 				{
-					if (!refresh)
+					if (!retrievalProperties.isRefreshCache())
 					{
 						connection.setIfModifiedSince(urlCache.getLastModified(url));
 					}
@@ -113,7 +116,7 @@ public class HttpRetriever implements IRetriever
 				//if the resource is partially cached, set the range header to resume the download
 				if (urlCache.isPartial(url))
 				{
-					if (!refresh)
+					if (!retrievalProperties.isRefreshCache())
 					{
 						position = Math.max(0, urlCache.getPartialLength(url) - REDOWNLOAD_BYTES);
 					}
@@ -164,7 +167,7 @@ public class HttpRetriever implements IRetriever
 			{
 				IRetrievalData retrievedData;
 				is = new BufferedInputStream(new MonitorInputStream(connection.getInputStream(), monitor));
-				if (cache)
+				if (retrievalProperties.isUseCache())
 				{
 					OutputStream os = null;
 					try
