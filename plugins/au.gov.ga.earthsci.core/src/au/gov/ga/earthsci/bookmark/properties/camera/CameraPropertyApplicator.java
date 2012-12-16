@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.bookmark.model.IBookmarkPropertyAnimator;
 
 /**
  * An {@link IBookmarkPropertyApplicator} used to apply the state of {@link CameraProperty}s
@@ -54,9 +55,9 @@ public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
 	}
 
 	@Override
-	public void apply(IBookmarkProperty property, double percent)
+	public IBookmarkPropertyAnimator createAnimator(IBookmarkProperty start, IBookmarkProperty end, long duration)
 	{
-		// TODO
+		return new CameraPropertyAnimator(worldWindView, (CameraProperty)start, (CameraProperty)end, duration);
 	}
 	
 	public void setWorldWindView(View worldWindView)

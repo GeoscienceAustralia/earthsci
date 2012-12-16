@@ -49,6 +49,9 @@ import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -188,12 +191,27 @@ public class BookmarksPart
 			}
 		});
 		
+		// Apply the bookmark on double click
 		bookmarkListTableViewer.addDoubleClickListener(new IDoubleClickListener()
 		{
 			@Override
 			public void doubleClick(DoubleClickEvent event)
 			{
+				// TODO: Route through an 'apply' command
 				controller.apply((IBookmark)((IStructuredSelection)event.getSelection()).getFirstElement());
+			}
+		});
+		
+		// Deselect when clicking outside a valid row
+		bookmarkListTableViewer.getTable().addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseUp(MouseEvent e)
+			{
+				if (bookmarkListTableViewer.getTable().getItem(new Point(e.x, e.y)) == null)
+				{
+					bookmarkListTableViewer.setSelection(null);
+				}
 			}
 		});
 	}

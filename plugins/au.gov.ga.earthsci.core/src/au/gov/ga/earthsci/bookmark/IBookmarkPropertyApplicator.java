@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.bookmark;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.bookmark.model.IBookmarkPropertyAnimator;
 
 /**
  * An interface for classes that are able to apply the state stored in 
@@ -41,17 +42,14 @@ public interface IBookmarkPropertyApplicator
 	void apply(IBookmarkProperty property);
 	
 	/**
-	 * Partially apply the given property to the current system state
-	 * by interpolating between the current system state and that defined by
-	 * the property, and applying the state at the given percentage along that interpolation.
-	 * <p/>
-	 * If the percentage is {@code 0} this method will have no effect. A percentage of {@code 1} is
-	 * equivalent to calling {@link #apply(IBookmarkProperty)}.
+	 * Creates and returns a new {@link IBookmarkPropertyAnimator} that animates between the given start and end property states
+	 * over the given amount of time.
 	 * 
-	 * @param property The property to apply
-	 * @param percent The percent to interpolate between. Must be in the range {@code [0.0, 1.0]}
+	 * @param start The start property state
+	 * @param end The end property state
+	 * @param duration The duration over which to animate
 	 * 
-	 * @throws IllegalArgumentException If this applicator cannot be used for the given property
+	 * @throws IllegalArgumentException If this applicator cannot be used for the given properties
 	 */
-	void apply(IBookmarkProperty property, double percent);
+	IBookmarkPropertyAnimator createAnimator(IBookmarkProperty start, IBookmarkProperty end, long duration);
 }
