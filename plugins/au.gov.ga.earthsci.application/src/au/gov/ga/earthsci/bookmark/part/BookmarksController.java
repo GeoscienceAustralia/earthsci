@@ -17,6 +17,11 @@ package au.gov.ga.earthsci.bookmark.part;
 
 import gov.nasa.worldwind.View;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -53,12 +58,39 @@ public class BookmarksController implements IBookmarksController
 	@Inject
 	private View worldWindView;
 	
+	/**
+	 * A property change listener used to stop the bookmark applicator thread on {@link View#VIEW_STOPPED} events.
+	 */
+	private final PropertyChangeListener viewStopListener = new PropertyChangeListener()
+	{
+		@Override
+		public void propertyChange(PropertyChangeEvent evt)
+		{
+			if (evt.getPropertyName().equals(View.VIEW_STOPPED))
+			{
+				stopCurrentTransition();
+			}
+		}
+	};
+	
+	/**
+	 * A mouse listener used to stop the bookmark applicator thread on mouse pressed events
+	 */
+	private final MouseListener mouseStopListener = new MouseAdapter()
+	{
+			@Override
+			public void mousePressed(MouseEvent e)
+			{
+				stopCurrentTransition();
+			}
+	};
+	
 	private final ExecutorService applicatorService = Executors.newSingleThreadExecutor(new ThreadFactory()
 	{
 		@Override
-		public Thread newThread(final Runnable r)
+		public Thread newThread(final Runnable runnable)
 		{
-			return new Thread(r, "Bookmark Applicator Thread"); //$NON-NLS-1$
+			return new Thread(runnable, "Bookmark Applicator Thread"); //$NON-NLS-1$
 		}
 	});
 	private transient Future<?> currentTask;
@@ -67,13 +99,21 @@ public class BookmarksController implements IBookmarksController
 	@Override
 	public void apply(final IBookmark bookmark)
 	{
+		stopCurrentTransition();
+		
+		currentTask = applicatorService.submit(new BookmarkApplicatorRunnable(worldWindView, bookmark, getDuration(bookmark)));
+	}
+	
+	/**
+	 * Stop any current bookmark transitions that are running
+	 */
+	public void stopCurrentTransition()
+	{
 		if (currentTask != null)
 		{
 			currentTask.cancel(true);
 			currentTask = null;
 		}
-		
-		currentTask = applicatorService.submit(new BookmarkApplicatorRunnable(worldWindView, bookmark, getDuration(bookmark)));
 	}
 	
 	private long getDuration(final IBookmark bookmark)
@@ -81,7 +121,11 @@ public class BookmarksController implements IBookmarksController
 		return bookmark.getTransitionDuration() == null ? preferences.getDefaultTransitionDuration() : bookmark.getTransitionDuration();
 	}
 	
-	private static class BookmarkApplicatorRunnable implements Runnable
+	/**
+	 * A {@link Runnable} that triggers the animation between the current world state and the selected
+	 * bookmark. 
+	 */
+	private class BookmarkApplicatorRunnable implements Runnable
 	{
 		private final long duration;
 		private final View view;
@@ -113,6 +157,9 @@ public class BookmarksController implements IBookmarksController
 			view.stopMovement();
 			view.stopAnimations();
 			
+			view.addPropertyChangeListener(View.VIEW_STOPPED, viewStopListener);
+			view.getViewInputHandler().getWorldWindow().getInputHandler().addMouseListener(mouseStopListener);
+			
 			endTime = System.currentTimeMillis() + duration;
 			while (System.currentTimeMillis() <= endTime)
 			{
@@ -126,10 +173,13 @@ public class BookmarksController implements IBookmarksController
 				}
 				if (Thread.interrupted())
 				{
-					return;
+					break;
 				}
 				view.getViewInputHandler().getWorldWindow().redraw();
 			}
+			
+			view.getViewInputHandler().getWorldWindow().getInputHandler().removeMouseListener(mouseStopListener);
+			view.removePropertyChangeListener(View.VIEW_STOPPED, viewStopListener);
 		}
 	}
 	
