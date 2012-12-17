@@ -53,17 +53,11 @@ public interface IRetrievalService
 	 *            Object requesting the retrieval
 	 * @param url
 	 *            URL to retrieve
-	 * @param cache
-	 *            Whether to ask the {@link IRetriever} to cache the result or
-	 *            not. This should be <code>false</code> if the caller does has
-	 *            its own cache implementation.
-	 * @param refresh
-	 *            If caching is to be used, this will be passed to the
-	 *            {@link IRetriever} to request that it refreshes a cached
-	 *            result if it exists.
+	 * @param retrievalProperties
+	 *            Properties to use when retrieving the URL
 	 * @return {@link IRetrieval} used to retrieve the resource from the URL
 	 */
-	IRetrieval retrieve(Object caller, URL url, boolean cache, boolean refresh);
+	IRetrieval retrieve(Object caller, URL url, IRetrievalProperties retrievalProperties);
 
 	/**
 	 * Get the {@link IRetrieval} that is currently retrieving the given URL, if
@@ -84,4 +78,42 @@ public interface IRetrievalService
 	 * @return {@link IRetrieval}s requested by the caller, empty array if none.
 	 */
 	IRetrieval[] getRetrievals(Object caller);
+
+	/**
+	 * Add a listener to the service.
+	 * 
+	 * @param listener
+	 *            Listener to add
+	 */
+	void addListener(IRetrievalServiceListener listener);
+
+	/**
+	 * Add a listener to the service, listening for added/removed retrievals for
+	 * the given caller.
+	 * 
+	 * @param listener
+	 *            Listener to add
+	 * @param caller
+	 *            Caller to listen for
+	 */
+	void addListener(IRetrievalServiceListener listener, Object caller);
+
+	/**
+	 * Remove a listener from the service.
+	 * 
+	 * @param listener
+	 *            Listener to remove
+	 */
+	void removeListener(IRetrievalServiceListener listener);
+
+	/**
+	 * Remove a listener from the service that was listening for added/removed
+	 * retrievals for the given caller.
+	 * 
+	 * @param listener
+	 *            Listener to remove
+	 * @param caller
+	 *            Caller that was being listened for
+	 */
+	void removeListener(IRetrievalServiceListener listener, Object caller);
 }

@@ -16,7 +16,9 @@
 package au.gov.ga.earthsci.core.retrieve;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -26,8 +28,10 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.core.util.collection.ArrayListHashMap;
 import au.gov.ga.earthsci.core.util.collection.HashSetAndArray;
 import au.gov.ga.earthsci.core.util.collection.HashSetAndArrayHashMap;
+import au.gov.ga.earthsci.core.util.collection.ListMap;
 import au.gov.ga.earthsci.core.util.collection.SetAndArray;
 import au.gov.ga.earthsci.core.util.collection.SetAndArrayMap;
 
@@ -50,14 +54,18 @@ public class RetrievalService implements IRetrievalService
 			new HashSetAndArrayHashMap<Object, IRetrieval>();
 	private final SetAndArray<IRetrieval> EMPTY_RETRIEVAL_COLLECTION = new HashSetAndArray<IRetrieval>();
 
+	private final List<IRetrievalServiceListener> listeners = new ArrayList<IRetrievalServiceListener>();
+	private final ListMap<Object, IRetrievalServiceListener> callerListeners =
+			new ArrayListHashMap<Object, IRetrievalServiceListener>();
+
 	@Override
 	public IRetrieval retrieve(Object caller, URL url)
 	{
-		return retrieve(caller, url, true, false);
+		return retrieve(caller, url, new RetrievalProperties());
 	}
 
 	@Override
-	public IRetrieval retrieve(Object caller, URL url, boolean cache, boolean refresh)
+	public IRetrieval retrieve(Object caller, URL url, IRetrievalProperties retrievalProperties)
 	{
 		if (url == null)
 		{
@@ -78,8 +86,9 @@ public class RetrievalService implements IRetrievalService
 				}
 
 				//create a retrieval object
-				retrieval = new Retrieval(caller, url, cache, refresh, retriever);
+				retrieval = new Retrieval(caller, url, retrievalProperties, retriever);
 				urlToRetrieval.put(url, retrieval);
+				fireRetrievalAdded(retrieval);
 
 				//add a listener to remove the retrieval after it's complete
 				retrieval.addListener(new RetrievalAdapter()
@@ -97,6 +106,7 @@ public class RetrievalService implements IRetrievalService
 				retrieval.addCaller(caller);
 			}
 			callerToRetrievals.putSingle(caller, retrieval);
+			fireRetrievalAdded(caller, retrieval);
 			return retrieval;
 		}
 	}
@@ -106,11 +116,14 @@ public class RetrievalService implements IRetrievalService
 		synchronized (urlToRetrieval)
 		{
 			urlToRetrieval.remove(retrieval.getURL());
+			fireRetrievalRemoved(retrieval);
 			Object[] callers = retrieval.getCallers();
 			for (Object caller : callers)
 			{
 				callerToRetrievals.removeSingle(caller, retrieval);
+				fireRetrievalRemoved(caller, retrieval);
 			}
+
 		}
 	}
 
@@ -134,6 +147,94 @@ public class RetrievalService implements IRetrievalService
 				retrievals = EMPTY_RETRIEVAL_COLLECTION;
 			}
 			return retrievals.getArray();
+		}
+	}
+
+	@Override
+	public void addListener(IRetrievalServiceListener listener)
+	{
+		synchronized (listeners)
+		{
+			listeners.add(listener);
+		}
+	}
+
+	@Override
+	public void addListener(IRetrievalServiceListener listener, Object caller)
+	{
+		synchronized (callerListeners)
+		{
+			callerListeners.putSingle(caller, listener);
+		}
+	}
+
+	@Override
+	public void removeListener(IRetrievalServiceListener listener)
+	{
+		synchronized (listeners)
+		{
+			listeners.remove(listener);
+		}
+	}
+
+	@Override
+	public void removeListener(IRetrievalServiceListener listener, Object caller)
+	{
+		synchronized (callerListeners)
+		{
+			callerListeners.removeSingle(caller, listener);
+		}
+	}
+
+	private void fireRetrievalAdded(IRetrieval retrieval)
+	{
+		synchronized (listeners)
+		{
+			for (int i = listeners.size() - 1; i >= 0; i--)
+			{
+				listeners.get(i).retrievalAdded(retrieval);
+			}
+		}
+	}
+
+	private void fireRetrievalAdded(Object caller, IRetrieval retrieval)
+	{
+		synchronized (callerListeners)
+		{
+			List<IRetrievalServiceListener> listeners = callerListeners.get(caller);
+			if (listeners != null)
+			{
+				for (int i = listeners.size() - 1; i >= 0; i--)
+				{
+					listeners.get(i).retrievalAdded(retrieval);
+				}
+			}
+		}
+	}
+
+	private void fireRetrievalRemoved(IRetrieval retrieval)
+	{
+		synchronized (listeners)
+		{
+			for (int i = listeners.size() - 1; i >= 0; i--)
+			{
+				listeners.get(i).retrievalRemoved(retrieval);
+			}
+		}
+	}
+
+	private void fireRetrievalRemoved(Object caller, IRetrieval retrieval)
+	{
+		synchronized (callerListeners)
+		{
+			List<IRetrievalServiceListener> listeners = callerListeners.get(caller);
+			if (listeners != null)
+			{
+				for (int i = listeners.size() - 1; i >= 0; i--)
+				{
+					listeners.get(i).retrievalRemoved(retrieval);
+				}
+			}
 		}
 	}
 }

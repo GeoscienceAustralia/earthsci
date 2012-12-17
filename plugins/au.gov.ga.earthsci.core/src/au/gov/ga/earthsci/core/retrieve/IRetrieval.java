@@ -88,15 +88,26 @@ public interface IRetrieval extends IPropertyChangeBean
 
 	/**
 	 * Pause this retrieval. The {@link IRetriever} performing the retrieval
-	 * must support pausing for this to have any effect.
+	 * must support pausing for this to have any effect. To resume, call
+	 * {@link #start()}.
 	 */
 	void pause();
+
+	/**
+	 * @return Is this retrieval paused?
+	 */
+	boolean isPaused();
 
 	/**
 	 * Cancel this retrieval. The {@link IRetriever} performing the retrieval
 	 * must support cancellation for this to have any effect.
 	 */
 	void cancel();
+
+	/**
+	 * @return Is or was this retrieval canceled?
+	 */
+	boolean isCanceled();
 
 	/**
 	 * Get the cached retrieval data from a cache if available.
