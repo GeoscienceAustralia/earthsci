@@ -64,6 +64,7 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 		synchronized (callers)
 		{
 			callers.add(caller);
+			listeners.callersChanged(this);
 		}
 	}
 

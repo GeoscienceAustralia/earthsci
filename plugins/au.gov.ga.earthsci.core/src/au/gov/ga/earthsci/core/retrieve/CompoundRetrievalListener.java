@@ -96,4 +96,13 @@ public class CompoundRetrievalListener implements IRetrievalListener
 			listener.paused(retrieval);
 		}
 	}
+
+	@Override
+	public void callersChanged(IRetrieval retrieval)
+	{
+		for (IRetrievalListener listener : copy())
+		{
+			listener.callersChanged(retrieval);
+		}
+	}
 }
