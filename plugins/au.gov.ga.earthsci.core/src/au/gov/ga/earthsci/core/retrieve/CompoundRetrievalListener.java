@@ -30,56 +30,70 @@ public class CompoundRetrievalListener implements IRetrievalListener
 
 	public void addListener(IRetrievalListener listener)
 	{
-		listeners.add(listener);
+		synchronized (listeners)
+		{
+			listeners.add(listener);
+		}
 	}
 
 	public void removeListener(IRetrievalListener listener)
 	{
-		listeners.remove(listener);
+		synchronized (listeners)
+		{
+			listeners.remove(listener);
+		}
+	}
+
+	private IRetrievalListener[] copy()
+	{
+		synchronized (listeners)
+		{
+			return listeners.toArray(new IRetrievalListener[listeners.size()]);
+		}
 	}
 
 	@Override
 	public void statusChanged(IRetrieval retrieval)
 	{
-		for (int i = listeners.size() - 1; i >= 0; i--)
+		for (IRetrievalListener listener : copy())
 		{
-			listeners.get(i).statusChanged(retrieval);
+			listener.statusChanged(retrieval);
 		}
 	}
 
 	@Override
 	public void progress(IRetrieval retrieval)
 	{
-		for (int i = listeners.size() - 1; i >= 0; i--)
+		for (IRetrievalListener listener : copy())
 		{
-			listeners.get(i).progress(retrieval);
+			listener.progress(retrieval);
 		}
 	}
 
 	@Override
 	public void cached(IRetrieval retrieval)
 	{
-		for (int i = listeners.size() - 1; i >= 0; i--)
+		for (IRetrievalListener listener : copy())
 		{
-			listeners.get(i).cached(retrieval);
+			listener.cached(retrieval);
 		}
 	}
 
 	@Override
 	public void complete(IRetrieval retrieval)
 	{
-		for (int i = listeners.size() - 1; i >= 0; i--)
+		for (IRetrievalListener listener : copy())
 		{
-			listeners.get(i).complete(retrieval);
+			listener.complete(retrieval);
 		}
 	}
 
 	@Override
 	public void paused(IRetrieval retrieval)
 	{
-		for (int i = listeners.size() - 1; i >= 0; i--)
+		for (IRetrievalListener listener : copy())
 		{
-			listeners.get(i).paused(retrieval);
+			listener.paused(retrieval);
 		}
 	}
 }
