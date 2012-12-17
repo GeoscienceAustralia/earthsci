@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve;
 
+import java.io.Closeable;
 import java.net.URL;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -145,33 +146,40 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 					@Override
 					public void done(IJobChangeEvent event)
 					{
+						RetrieverResult retrieverResult = job.getRetrievalResult();
+						result = retrieverResult.result;
+
+						//ensure the retriever's paused/canceled state matches the result:
+						boolean wasPaused = retrieverResult.status == RetrieverResultStatus.PAUSED;
+						boolean wasCanceled = retrieverResult.status == RetrieverResultStatus.CANCELED;
+						setPaused(wasPaused);
+						setCanceled(wasCanceled);
+
 						synchronized (jobSemaphore)
 						{
-							RetrieverResult retrieverResult = job.getRetrievalResult();
-							result = retrieverResult.result;
-
-							//ensure the retriever's paused/canceled state matches the result:
-							boolean wasPaused = retrieverResult.status == RetrieverResultStatus.PAUSED;
-							boolean wasCanceled = retrieverResult.status == RetrieverResultStatus.CANCELED;
-							setPaused(wasPaused);
-							setCanceled(wasCanceled);
-
-							//if the retrieval wasn't paused, notify the listeners
-							if (wasPaused)
-							{
-								listeners.paused(Retrieval.this);
-							}
-							else
-							{
-								listeners.complete(Retrieval.this);
-							}
-
 							job.removeJobChangeListener(this);
 							job = null;
 						}
+
+						//if the retrieval wasn't paused, notify the listeners
+						if (wasPaused)
+						{
+							listeners.paused(Retrieval.this);
+						}
+						else
+						{
+							listeners.complete(Retrieval.this);
+						}
 					}
 				});
-				job.schedule();
+				try
+				{
+					job.schedule();
+				}
+				catch (IllegalStateException e)
+				{
+					//job manager shutdown, ignore
+				}
 			}
 		}
 	}
@@ -216,6 +224,7 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 			if (job != null)
 			{
 				setCanceled(true);
+				job.cancel();
 			}
 		}
 	}
@@ -320,5 +329,10 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	public void setLength(long length)
 	{
 		firePropertyChange("length", getLength(), this.length = length); //$NON-NLS-1$
+	}
+
+	@Override
+	public void setCloseable(Closeable closeable)
+	{
 	}
 }

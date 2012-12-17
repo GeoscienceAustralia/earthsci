@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve;
 
+import java.io.Closeable;
+
 /**
  * Delegate class for an {@link IRetrieverMonitor}.
  * 
@@ -63,5 +65,11 @@ public class RetrieverMonitorDelegate implements IRetrieverMonitor
 	public boolean isPaused()
 	{
 		return delegate.isPaused();
+	}
+
+	@Override
+	public void setCloseable(Closeable closeable)
+	{
+		delegate.setCloseable(closeable);
 	}
 }

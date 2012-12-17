@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve;
 
+import java.io.Closeable;
+
 /**
  * Monitors the resource retrieval. The {@link IRetriever} is expected to call
  * methods on this object during retrieval.
@@ -79,4 +81,15 @@ public interface IRetrieverMonitor
 	 * @return True if this retrieval has been paused.
 	 */
 	boolean isPaused();
+
+	/**
+	 * Set the object that can be closed if the job performing the retrieval is
+	 * canceled. This should interrupt the retrieval immediately.
+	 * {@link IRetriever} implementations should call this from the retrieve
+	 * method as soon as possible.
+	 * 
+	 * @param closeable
+	 *            Object to close if/when the retrieval job is canceled
+	 */
+	void setCloseable(Closeable closeable);
 }

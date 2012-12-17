@@ -18,6 +18,7 @@ package au.gov.ga.earthsci.core.retrieve.retriever;
 import gov.nasa.worldwind.util.WWIO;
 
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,6 +102,18 @@ public class HttpRetriever implements IRetriever
 			connection.setConnectTimeout(retrievalProperties.getConnectTimeout());
 			connection.setReadTimeout(retrievalProperties.getReadTimeout());
 
+			final HttpURLConnection closeableConnection = connection;
+			monitor.setCloseable(new Closeable()
+			{
+				@Override
+				public void close() throws IOException
+				{
+					closeableConnection.disconnect();
+				}
+			});
+			
+			checkMonitor(monitor);
+
 			long position = 0;
 			if (retrievalProperties.isUseCache())
 			{
@@ -127,11 +140,28 @@ public class HttpRetriever implements IRetriever
 					connection.setRequestProperty("Range", "bytes=" + position + "-"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 			}
+			
+			checkMonitor(monitor);
 
+			//connect
 			monitor.updateStatus(RetrievalStatus.CONNECTING);
 			connection.connect();
-			int responseCode = connection.getResponseCode();
-			monitor.updateStatus(RetrievalStatus.CONNECTED);
+			
+			checkMonitor(monitor);
+
+			//read the response code
+			int responseCode = -1;
+			try
+			{
+				responseCode = connection.getResponseCode();
+				monitor.updateStatus(RetrievalStatus.CONNECTED);
+			}
+			catch (Exception e)
+			{
+				//ignore exceptions from response code; handle invalid responses below
+			}
+
+			checkMonitor(monitor);
 
 			if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED)
 			{
@@ -160,6 +190,8 @@ public class HttpRetriever implements IRetriever
 
 			String contentType = connection.getContentType();
 			long lastModified = connection.getLastModified();
+			
+			checkMonitor(monitor);
 
 			monitor.updateStatus(RetrievalStatus.READING);
 			InputStream is = null;
@@ -193,11 +225,6 @@ public class HttpRetriever implements IRetriever
 				IRetrievalResult result = new BasicRetrievalResult(retrievedData, false);
 				return new RetrieverResult(result, RetrieverResultStatus.COMPLETE);
 			}
-			catch (MonitorCancelledOrPausedException e)
-			{
-				return new RetrieverResult(null, monitor.isPaused() ? RetrieverResultStatus.PAUSED
-						: RetrieverResultStatus.CANCELED);
-			}
 			finally
 			{
 				if (is != null)
@@ -206,9 +233,22 @@ public class HttpRetriever implements IRetriever
 				}
 			}
 		}
+		catch (MonitorCancelledOrPausedException e)
+		{
+			return new RetrieverResult(null, monitor.isPaused() ? RetrieverResultStatus.PAUSED
+					: RetrieverResultStatus.CANCELED);
+		}
 		finally
 		{
 			connection.disconnect();
+		}
+	}
+
+	private void checkMonitor(IRetrieverMonitor monitor) throws MonitorCancelledOrPausedException
+	{
+		if (monitor.isCanceled() || monitor.isPaused())
+		{
+			throw new MonitorCancelledOrPausedException();
 		}
 	}
 
