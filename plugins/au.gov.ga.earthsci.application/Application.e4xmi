@@ -14,6 +14,7 @@
               <children xsi:type="advanced:Placeholder" xmi:id="_ZB5OQC0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.part.worldwindow" ref="_RALPQPu2EeG36NOaHUgVKA"/>
             </children>
             <children xsi:type="basic:PartStack" xmi:id="_0HDfgA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partstack.0.0.1" containerData="30">
+              <children xsi:type="advanced:Placeholder" xmi:id="_VGKi4EfWEeKlQKEC4ZU57g" elementId="au.gov.ga.earthsci.application.part.retrieve" ref="_Lh4JMEfWEeKlQKEC4ZU57g"/>
               <children xsi:type="advanced:Placeholder" xmi:id="_m5rS4C0eEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.notification.part.part" ref="_IsdaEA0kEeK8pN67ikK9mw"/>
               <children xsi:type="advanced:Placeholder" xmi:id="_ZW508C0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.part.progress" ref="_3rRB4BgDEeKQJ6pSqihtuA"/>
               <children xsi:type="advanced:Placeholder" xmi:id="_ZprnAC0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.part.information" ref="_OVvf0ClJEeKGOtKz07iBzg"/>
@@ -107,6 +108,7 @@
         <children xsi:type="menu:HandledToolItem" xmi:id="_ZoawUD0FEeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar.createbookmark" label="New Bookmark" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add.gif" command="_CDcDUDKiEeKVc-uaxJMq1A"/>
       </toolbar>
     </sharedElements>
+    <sharedElements xsi:type="basic:Part" xmi:id="_Lh4JMEfWEeKlQKEC4ZU57g" elementId="au.gov.ga.earthsci.application.retrieve.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.retrieve.part.RetrievePart" label="Downloads"/>
     <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.windowtrim">
       <children xsi:type="menu:ToolBar" xmi:id="_007tdPsMEeG36NOaHUgVKA" elementId="toolbar:org.eclipse.ui.main.toolbar">
         <children xsi:type="menu:HandledToolItem" xmi:id="_007tdfsMEeG36NOaHUgVKA" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>
