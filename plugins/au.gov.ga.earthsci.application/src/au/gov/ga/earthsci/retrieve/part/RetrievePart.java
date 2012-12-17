@@ -207,7 +207,6 @@ public class RetrievePart implements IRetrievalServiceListener
 				if (!viewer.getTable().isDisposed())
 				{
 					viewer.refresh();
-					viewer.getTable().redraw();
 				}
 			}
 		});
