@@ -56,6 +56,7 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_ADD = "icon.add"; //$NON-NLS-1$
 	public static final String ICON_REMOVE = "icon.remove"; //$NON-NLS-1$
 	public static final String ICON_TRANSPARENT = "icon.transparent"; //$NON-NLS-1$
+	public static final String ICON_APPLY = "icon.apply"; //$NON-NLS-1$
 	public static final String ICON_LOADING = "icon.loading"; //$NON-NLS-1$
 	public static final String DECORATION_INCLUDED = "decoration.included"; //$NON-NLS-1$
 	
@@ -86,6 +87,8 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 
 		putResource(ICON_ADD, "/icons/add.gif"); //$NON-NLS-1$
 		putResource(ICON_REMOVE, "/icons/remove.gif"); //$NON-NLS-1$
+		
+		putResource(ICON_APPLY, "/icons/apply.gif"); //$NON-NLS-1$
 
 		putResource(ICON_TRANSPARENT, "/icons/transparent.gif"); //$NON-NLS-1$
 

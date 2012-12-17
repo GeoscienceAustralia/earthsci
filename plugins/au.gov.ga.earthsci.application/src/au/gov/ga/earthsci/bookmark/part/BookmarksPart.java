@@ -197,7 +197,6 @@ public class BookmarksPart
 			@Override
 			public void doubleClick(DoubleClickEvent event)
 			{
-				// TODO: Route through an 'apply' command
 				controller.apply((IBookmark)((IStructuredSelection)event.getSelection()).getFirstElement());
 			}
 		});

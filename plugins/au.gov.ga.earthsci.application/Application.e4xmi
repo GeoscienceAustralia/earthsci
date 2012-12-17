@@ -99,12 +99,15 @@
     <sharedElements xsi:type="basic:Part" xmi:id="_RmbeQC1LEeK0vtabFDqVSw" elementId="au.gov.ga.earthsci.application.part.legend" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.legend.LegendPart" label="Legend" closeable="true"/>
     <sharedElements xsi:type="basic:Part" xmi:id="_AnyeEDz9EeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.part" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.BookmarksPart" label="Bookmarks" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/bookmarks.gif" tooltip="Create, view and apply bookmarks">
       <handlers xmi:id="_mdkBUD0GEeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmark.addhandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.handlers.AddBookmarkHandler" command="_CDcDUDKiEeKVc-uaxJMq1A"/>
-      <handlers xmi:id="_gNYX8EPxEeKZ1uCI1kyREA" elementId="au.gov.ga.earthsci.application.handler.0" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.handlers.RenameBookmarkHandler" command="_KVOo0CkqEeKGOtKz07iBzg"/>
+      <handlers xmi:id="_gNYX8EPxEeKZ1uCI1kyREA" elementId="au.gov.ga.earthsci.application.bookmark.renameHandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.handlers.RenameBookmarkHandler" command="_KVOo0CkqEeKGOtKz07iBzg"/>
+      <handlers xmi:id="_CGB7AEfwEeKRt8yHXSHYtA" elementId="au.gov.ga.earthsci.application.bookmark.applyhandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.handlers.ApplyBookmarkHandler" command="_6LV8YEfvEeKRt8yHXSHYtA"/>
       <menus xsi:type="menu:PopupMenu" xmi:id="_YxPocEPvEeKZ1uCI1kyREA" elementId="au.gov.ga.earthsci.application.bookmarks.popupmenu" label="Bookmark">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_lHNfkEPvEeKZ1uCI1kyREA" elementId="au.gov.ga.earthsci.application.bookmarks.popupmenu.rename" label="Rename" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/rename.gif" tooltip="Rename this bookmark" command="_KVOo0CkqEeKGOtKz07iBzg"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_ioWMIEfvEeKRt8yHXSHYtA" elementId="au.gov.ga.earthsci.application.bookmarks.popupmenu.apply" label="Apply" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/apply.gif" tooltip="Apply this bookmark" command="_6LV8YEfvEeKRt8yHXSHYtA"/>
       </menus>
       <toolbar xmi:id="_H6M7wDz9EeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar">
-        <children xsi:type="menu:HandledToolItem" xmi:id="_ZoawUD0FEeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar.createbookmark" label="New Bookmark" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add.gif" command="_CDcDUDKiEeKVc-uaxJMq1A"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_ZoawUD0FEeKYepPxDbln0Q" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar.createbookmark" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add.gif" tooltip="Create a new bookmark" command="_CDcDUDKiEeKVc-uaxJMq1A"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_kr6v8Ef7EeKRt8yHXSHYtA" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar.applybookmark" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/apply.gif" tooltip="Apply selected bookmark" command="_6LV8YEfvEeKRt8yHXSHYtA"/>
       </toolbar>
     </sharedElements>
     <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.windowtrim">
@@ -162,6 +165,7 @@
   <commands xmi:id="_TIcZkC7KEeKZx7qTf2KT5w" elementId="au.gov.ga.earthsci.application.legend" commandName="legendCommand"/>
   <commands xmi:id="_CDcDUDKiEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.command.add" commandName="addCommand" description="Add an item"/>
   <commands xmi:id="_MOx8UDKqEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.command.remove" commandName="removeCommand" description="Remove an item"/>
+  <commands xmi:id="_6LV8YEfvEeKRt8yHXSHYtA" elementId="au.gov.ga.earthsci.application.command.apply" commandName="applyCommand" description="Apply and item state"/>
   <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_007tVfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_007tVvsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
