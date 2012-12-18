@@ -72,7 +72,7 @@ public final class LoadingIconAnimator
 							dirty = false;
 						}
 					}
-					for (LoadingIconFrameListener listener : listeners)
+					for (LoadingIconFrameListener listener : listenerArray)
 					{
 						try
 						{
