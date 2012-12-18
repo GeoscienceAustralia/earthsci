@@ -56,6 +56,7 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalServiceListener;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
+import au.gov.ga.earthsci.core.util.SWTUtil;
 
 /**
  * Label provider for the layer tree.
@@ -68,7 +69,6 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 	private final IRetrievalService retrievalService;
 	private final Set<IRetrieval> refreshingRetrievals = new HashSet<IRetrieval>();
 
-	private static final float RGB_VALUE_MULTIPLIER = 0.8f;
 	private static final Color DOWNLOAD_BACKGROUND_COLOR;
 	private static final Color DOWNLOAD_FOREGROUND_COLOR;
 	private static final int DOWNLOAD_WIDTH = 50;
@@ -76,10 +76,10 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 	static
 	{
 		Color listBackground = Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
-		int average = (listBackground.getRed() + listBackground.getGreen() + listBackground.getBlue()) / 3;
-		DOWNLOAD_BACKGROUND_COLOR = average > 128 ? darker(listBackground) : lighter(listBackground);
+		boolean darken = SWTUtil.shouldDarken(listBackground);
+		DOWNLOAD_BACKGROUND_COLOR = darken ? SWTUtil.darker(listBackground) : SWTUtil.lighter(listBackground);
 		DOWNLOAD_FOREGROUND_COLOR =
-				average > 128 ? darker(DOWNLOAD_BACKGROUND_COLOR) : lighter(DOWNLOAD_BACKGROUND_COLOR);
+				darken ? SWTUtil.darker(DOWNLOAD_BACKGROUND_COLOR) : SWTUtil.lighter(DOWNLOAD_BACKGROUND_COLOR);
 	}
 
 	public LayerTreeLabelProvider(IObservableMap[] attributeMaps)
@@ -98,19 +98,6 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 	void packup()
 	{
 		retrievalService.removeListener(retrievalServiceListener);
-	}
-
-	public static Color darker(Color color)
-	{
-		return new Color(null, (int) (color.getRed() * RGB_VALUE_MULTIPLIER),
-				(int) (color.getGreen() * RGB_VALUE_MULTIPLIER), (int) (color.getBlue() * RGB_VALUE_MULTIPLIER));
-	}
-
-	public static Color lighter(Color rgb)
-	{
-		return new Color(null, Math.max(2, Math.min((int) (rgb.getRed() / RGB_VALUE_MULTIPLIER), 255)), Math.max(2,
-				Math.min((int) (rgb.getGreen() / RGB_VALUE_MULTIPLIER), 255)), Math.max(2,
-				Math.min((int) (rgb.getBlue() / RGB_VALUE_MULTIPLIER), 255)));
 	}
 
 	@Override
