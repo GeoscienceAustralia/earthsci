@@ -16,7 +16,9 @@
 package au.gov.ga.earthsci.retrieve.part;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -57,6 +59,7 @@ public class RetrievePart implements IRetrievalServiceListener
 	private TableViewer viewer;
 
 	private final List<IRetrieval> retrievals = new ArrayList<IRetrieval>();
+	private final Set<Object> updatingElements = new HashSet<Object>();
 
 	@Inject
 	public void init(Composite parent, MPart part)
@@ -176,55 +179,69 @@ public class RetrievePart implements IRetrievalServiceListener
 	}
 
 	@Override
-	public void retrievalAdded(IRetrieval retrieval)
+	public void retrievalAdded(final IRetrieval retrieval)
 	{
 		synchronized (retrievals)
 		{
 			retrievals.add(retrieval);
 			retrieval.addListener(retrievalListener);
-			asyncRefresh();
+			viewer.getControl().getDisplay().asyncExec(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					if (!viewer.getControl().isDisposed())
+					{
+						viewer.add(retrieval);
+					}
+				}
+			});
 		}
 	}
 
 	@Override
-	public void retrievalRemoved(IRetrieval retrieval)
+	public void retrievalRemoved(final IRetrieval retrieval)
 	{
 		synchronized (retrievals)
 		{
 			retrievals.remove(retrieval);
 			retrieval.removeListener(retrievalListener);
-			asyncRefresh();
-		}
-	}
-
-	private void asyncRefresh()
-	{
-		Display.getDefault().asyncExec(new Runnable()
-		{
-			@Override
-			public void run()
+			viewer.getControl().getDisplay().asyncExec(new Runnable()
 			{
-				if (!viewer.getTable().isDisposed())
+				@Override
+				public void run()
 				{
-					viewer.refresh();
+					if (!viewer.getControl().isDisposed())
+					{
+						viewer.remove(retrieval);
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	private void asyncUpdate(final Object element)
 	{
-		Display.getDefault().asyncExec(new Runnable()
+		//don't queue multiple updates for each retrieval, so we don't flood the UI thread with asyncExec's
+		if (updatingElements.contains(element))
+			return;
+
+		if (!viewer.getControl().isDisposed())
 		{
-			@Override
-			public void run()
+			updatingElements.add(element);
+			viewer.getControl().getDisplay().asyncExec(new Runnable()
 			{
-				if (!viewer.getTable().isDisposed())
+				@Override
+				public void run()
 				{
-					viewer.update(element, null);
+					if (!viewer.getControl().isDisposed())
+					{
+						viewer.update(element, null);
+					}
+					updatingElements.remove(element);
 				}
-			}
-		});
+			});
+		}
 	}
 
 	private IRetrievalListener retrievalListener = new RetrievalAdapter()
