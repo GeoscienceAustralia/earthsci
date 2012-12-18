@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
+import org.eclipse.swt.widgets.Display;
 
 import au.gov.ga.earthsci.bookmark.BookmarkFactory;
 import au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry;
@@ -114,6 +115,20 @@ public class BookmarksController implements IBookmarksController
 			currentTask.cancel(true);
 			currentTask = null;
 		}
+	}
+	
+	@Override
+	public void edit(final IBookmark bookmark)
+	{
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run()
+			{
+				BookmarkEditorDialog dialog = new BookmarkEditorDialog(bookmark, Display.getDefault().getActiveShell());
+				//dialog.create();
+				dialog.open();
+			}
+		});
 	}
 	
 	private long getDuration(final IBookmark bookmark)
