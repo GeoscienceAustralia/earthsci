@@ -188,7 +188,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 		{
 			final Object[] array = elements.toArray();
 			final ColumnViewer viewer = getViewer();
-			if (!viewer.getControl().isDisposed())
+			if (viewer != null && !viewer.getControl().isDisposed())
 			{
 				refreshingRetrievals.add(retrieval);
 				viewer.getControl().getDisplay().asyncExec(new Runnable()
