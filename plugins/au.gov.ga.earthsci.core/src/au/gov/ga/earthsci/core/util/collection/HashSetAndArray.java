@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.util.collection;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -25,7 +26,7 @@ import java.util.HashSet;
  */
 public class HashSetAndArray<E> extends HashSet<E> implements SetAndArray<E>
 {
-	private Object[] array = new Object[0];
+	private E[] array;
 
 	public HashSetAndArray()
 	{
@@ -49,9 +50,18 @@ public class HashSetAndArray<E> extends HashSet<E> implements SetAndArray<E>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public E[] getArray()
+	public E[] getArray(Class<E> type)
 	{
-		return (E[]) array;
+		if (array == null)
+		{
+			array = (E[]) Array.newInstance(type, size());
+			int i = 0;
+			for (E e : this)
+			{
+				array[i++] = e;
+			}
+		}
+		return array;
 	}
 
 	@Override
@@ -60,7 +70,7 @@ public class HashSetAndArray<E> extends HashSet<E> implements SetAndArray<E>
 		boolean added = super.add(e);
 		if (added)
 		{
-			array = toArray();
+			array = null;
 		}
 		return added;
 	}
@@ -71,7 +81,7 @@ public class HashSetAndArray<E> extends HashSet<E> implements SetAndArray<E>
 		boolean removed = super.remove(o);
 		if (removed)
 		{
-			array = toArray();
+			array = null;
 		}
 		return removed;
 	}

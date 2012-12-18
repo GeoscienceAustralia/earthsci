@@ -15,286 +15,375 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer;
 
-import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.layers.Layer;
-import gov.nasa.worldwind.retrieve.RetrievalService;
-import gov.nasa.worldwind.retrieve.Retriever;
 
+import java.lang.ref.WeakReference;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
-import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.StyledString.Styler;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 
 import au.gov.ga.earthsci.application.IFireableLabelProvider;
 import au.gov.ga.earthsci.application.IconLoader;
-import au.gov.ga.earthsci.application.LoadingIconAnimator;
-import au.gov.ga.earthsci.application.LoadingIconFrameListener;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
-import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService;
-import au.gov.ga.earthsci.worldwind.common.retrieve.ExtendedRetrievalService.RetrievalListener;
-import au.gov.ga.earthsci.worldwind.common.retrieve.RetrievalListenerHelper;
+import au.gov.ga.earthsci.core.retrieve.IRetrieval;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalListener;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalServiceListener;
+import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
+import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 
 /**
  * Label provider for the layer tree.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerTreeLabelProvider extends ObservableMapLabelProvider implements ILabelDecorator,
-		IStyledLabelProvider, IFireableLabelProvider, RetrievalListener, LoadingIconFrameListener
+public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 {
-	private final IconLoader iconLoader = new IconLoader(this);
-	private final Map<Layer, Integer> layerRetrieverCount = new HashMap<Layer, Integer>();
-	private final Map<Layer, ILayerTreeNode> retrievingElements = new HashMap<Layer, ILayerTreeNode>();
+	private final LayerTreeLabelProviderDelegate delegate;
+	private final IRetrievalService retrievalService;
+	private final Set<IRetrieval> refreshingRetrievals = new HashSet<IRetrieval>();
 
-	private boolean disposed = false;
+	private static final float RGB_VALUE_MULTIPLIER = 0.8f;
+	private static final Color DOWNLOAD_BACKGROUND_COLOR;
+	private static final Color DOWNLOAD_FOREGROUND_COLOR;
+	private static final int DOWNLOAD_WIDTH = 50;
 
-	private final Color informationColor;
-	private final Color legendColor;
-	private final Font subscriptFont;
-	private final Styler informationStyler = new Styler()
+	static
 	{
-		@Override
-		public void applyStyles(TextStyle textStyle)
-		{
-			textStyle.foreground = informationColor;
-			textStyle.font = subscriptFont;
-		}
-	};
-	private final Styler legendStyler = new Styler()
-	{
-		@Override
-		public void applyStyles(TextStyle textStyle)
-		{
-			textStyle.foreground = legendColor;
-			textStyle.font = subscriptFont;
-		}
-	};
+		Color listBackground = Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
+		int average = (listBackground.getRed() + listBackground.getGreen() + listBackground.getBlue()) / 3;
+		DOWNLOAD_BACKGROUND_COLOR = average > 128 ? darker(listBackground) : lighter(listBackground);
+		DOWNLOAD_FOREGROUND_COLOR =
+				average > 128 ? darker(DOWNLOAD_BACKGROUND_COLOR) : lighter(DOWNLOAD_BACKGROUND_COLOR);
+	}
 
 	public LayerTreeLabelProvider(IObservableMap[] attributeMaps)
 	{
-		super(attributeMaps);
-		informationColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
-		legendColor = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
-		FontData[] fontDatas = Display.getDefault().getSystemFont().getFontData();
-		for (FontData fontData : fontDatas)
-		{
-			fontData.setStyle(SWT.BOLD);
-			fontData.setHeight((int) (fontData.getHeight() * 0.8));
-		}
-		subscriptFont = new Font(Display.getDefault(), fontDatas);
-
-		RetrievalService rs = WorldWind.getRetrievalService();
-		if (rs instanceof ExtendedRetrievalService)
-		{
-			((ExtendedRetrievalService) rs).addRetrievalListener(this);
-		}
+		this(new LayerTreeLabelProviderDelegate(attributeMaps));
 	}
 
-	@Override
-	public void dispose()
+	private LayerTreeLabelProvider(LayerTreeLabelProviderDelegate delegate)
 	{
-		//because this object is acting as both the decorator and the provider,
-		//dispose is called twice, causing a NPE in the super class
-		//workaround: set a flag when disposed, disabling multiple disposals
-		if (disposed)
-		{
-			return;
-		}
-		disposed = true;
+		super(delegate, delegate, null);
+		this.delegate = delegate;
+		this.retrievalService = RetrievalServiceFactory.getServiceInstance();
+		retrievalService.addListener(retrievalServiceListener);
+	}
 
-		super.dispose();
-		iconLoader.dispose();
-		subscriptFont.dispose();
+	void packup()
+	{
+		retrievalService.removeListener(retrievalServiceListener);
+	}
+
+	public static Color darker(Color color)
+	{
+		return new Color(null, (int) (color.getRed() * RGB_VALUE_MULTIPLIER),
+				(int) (color.getGreen() * RGB_VALUE_MULTIPLIER), (int) (color.getBlue() * RGB_VALUE_MULTIPLIER));
+	}
+
+	public static Color lighter(Color rgb)
+	{
+		return new Color(null, Math.max(2, Math.min((int) (rgb.getRed() / RGB_VALUE_MULTIPLIER), 255)), Math.max(2,
+				Math.min((int) (rgb.getGreen() / RGB_VALUE_MULTIPLIER), 255)), Math.max(2,
+				Math.min((int) (rgb.getBlue() / RGB_VALUE_MULTIPLIER), 255)));
 	}
 
 	@Override
-	public String getColumnText(Object element, int columnIndex)
+	public void update(ViewerCell cell)
+	{
+		super.update(cell);
+
+		//ensure that the paint method is called too:
+		Rectangle bounds = cell.getBounds();
+		getViewer().getControl().redraw(bounds.x, bounds.y, bounds.width, bounds.height, true);
+	}
+
+	@Override
+	protected void paint(Event event, Object element)
 	{
 		if (element instanceof LayerNode)
 		{
-			LayerNode layer = (LayerNode) element;
-			String label = layer.getLabelOrName();
-			if (layer.getOpacity() < 1)
+			IRetrieval[] retrievals = retrievalService.getRetrievals(((LayerNode) element).getLayer());
+			if (retrievals.length > 0)
 			{
-				label += String.format(" (%d%%)", (int) (layer.getOpacity() * 100)); //$NON-NLS-1$
-			}
-			return label;
-		}
-		else if (element instanceof FolderNode)
-		{
-			FolderNode folder = (FolderNode) element;
-			return folder.getLabelOrName();
-		}
-		return super.getColumnText(element, columnIndex);
-	}
+				GC gc = event.gc;
+				Color oldBackground = gc.getBackground();
+				Color oldForeground = gc.getForeground();
 
-	@Override
-	public Image getImage(Object element)
-	{
-		if (element instanceof ILayerTreeNode)
-		{
-			ILayerTreeNode node = (ILayerTreeNode) element;
-			if (isLayerNodeRetrieving(node))
-			{
-				return LoadingIconAnimator.get().getCurrentFrame();
-			}
-			URL imageURL = node.getIconURL();
-			if (imageURL != null)
-			{
-				return iconLoader.getImage(element, imageURL);
-			}
-		}
-		return super.getImage(element);
-	}
-
-	@Override
-	public Image decorateImage(Image image, Object element)
-	{
-		return null;
-	}
-
-	@Override
-	public String decorateText(String text, Object element)
-	{
-		return text;
-	}
-
-	@Override
-	public StyledString getStyledText(Object element)
-	{
-		StyledString string = new StyledString(getColumnText(element, 0));
-		if (element instanceof ILayerTreeNode)
-		{
-			ILayerTreeNode layerNode = (ILayerTreeNode) element;
-			if (layerNode.getInfoURL() != null || layerNode.getLegendURL() != null)
-			{
-				string.append(" "); //$NON-NLS-1$
-				if (layerNode.getInfoURL() != null)
+				float percentage = 0;
+				for (IRetrieval retrieval : retrievals)
 				{
-					string.append(" i", informationStyler); //$NON-NLS-1$
+					percentage += Math.max(0, retrieval.getPercentage());
 				}
-				if (layerNode.getLegendURL() != null)
-				{
-					string.append(" L", legendStyler); //$NON-NLS-1$
-				}
+				percentage /= retrievals.length;
+
+				int height = event.height / 2;
+				int width = (int) (DOWNLOAD_WIDTH * percentage);
+				gc.setBackground(DOWNLOAD_BACKGROUND_COLOR);
+				gc.setForeground(DOWNLOAD_FOREGROUND_COLOR);
+				gc.fillRectangle(event.x + event.width, event.y + (event.height - height) / 2, width, height);
+				gc.drawRectangle(event.x + event.width, event.y + (event.height - height) / 2, DOWNLOAD_WIDTH, height);
+
+				gc.setBackground(oldBackground);
+				gc.setForeground(oldForeground);
 			}
 		}
-		return string;
+		super.paint(event, element);
 	}
 
-	@Override
-	public void fireLabelProviderChanged(LabelProviderChangedEvent event)
+	private void refreshCallers(final IRetrieval retrieval)
 	{
-		super.fireLabelProviderChanged(event);
-	}
+		//don't queue up multiple updates for the same retrieval, as this floods the UI thread with asyncExec's
+		if (refreshingRetrievals.contains(retrieval))
+			return;
 
-	@Override
-	public void beforeRetrieve(Retriever retriever)
-	{
-		Layer layer = RetrievalListenerHelper.getLayer(retriever);
-		if (layer != null)
+		List<Object> elements = new ArrayList<Object>();
+		Object[] callers = retrieval.getCallers();
+		for (Object caller : callers)
 		{
-			synchronized (layerRetrieverCount)
+			if (caller instanceof ILayerTreeNode)
 			{
-				boolean wasEmpty = layerRetrieverCount.isEmpty();
-				Integer count = layerRetrieverCount.get(layer);
-				boolean fireChange = count == null;
-				count = count == null ? 0 : count;
-				layerRetrieverCount.put(layer, count + 1);
-				if (wasEmpty)
-				{
-					LoadingIconAnimator.get().addListener(this);
-				}
-				if (fireChange)
-				{
-					fireLabelProviderChangedFor(true);
-				}
+				elements.add(caller);
 			}
-		}
-	}
-
-	@Override
-	public void afterRetrieve(Retriever retriever)
-	{
-		Layer layer = RetrievalListenerHelper.getLayer(retriever);
-		if (layer != null)
-		{
-			synchronized (layerRetrieverCount)
+			else if (caller instanceof Layer)
 			{
-				Integer count = layerRetrieverCount.get(layer);
-				if (count != null)
+				WeakReference<LayerNode> weak = delegate.weakLayerToNodeMap.get(caller);
+				if (weak != null)
 				{
-					if (count <= 1)
+					LayerNode node = weak.get();
+					if (node != null)
 					{
-						layerRetrieverCount.remove(layer);
-						retrievingElements.remove(layer);
-						fireLabelProviderChangedFor(true);
-					}
-					else
-					{
-						layerRetrieverCount.put(layer, count - 1);
+						elements.add(node);
 					}
 				}
-				if (layerRetrieverCount.isEmpty())
+			}
+		}
+
+		if (!elements.isEmpty())
+		{
+			final Object[] array = elements.toArray();
+			final ColumnViewer viewer = getViewer();
+			if (viewer != null && !viewer.getControl().isDisposed())
+			{
+				refreshingRetrievals.add(retrieval);
+				viewer.getControl().getDisplay().asyncExec(new Runnable()
 				{
-					LoadingIconAnimator.get().removeListener(this);
-				}
+					@Override
+					public void run()
+					{
+						if (!viewer.getControl().isDisposed())
+						{
+							viewer.update(array, null);
+						}
+						refreshingRetrievals.remove(retrieval);
+					}
+				});
 			}
 		}
 	}
 
-	@Override
-	public void nextFrame(Image image)
+	private IRetrievalServiceListener retrievalServiceListener = new IRetrievalServiceListener()
 	{
-		fireLabelProviderChangedFor(false);
-	}
-
-	private void fireLabelProviderChangedFor(boolean allElements)
-	{
-		synchronized (layerRetrieverCount)
+		@Override
+		public void retrievalAdded(IRetrieval retrieval)
 		{
-			final Object[] elements = allElements ? null : retrievingElements.values().toArray();
-			Display.getDefault().asyncExec(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					fireLabelProviderChanged(new LabelProviderChangedEvent(LayerTreeLabelProvider.this, elements));
-				}
-			});
+			refreshCallers(retrieval);
+			retrieval.addListener(retrievalListener);
 		}
-	}
 
-	private boolean isLayerNodeRetrieving(ILayerTreeNode node)
-	{
-		if (node instanceof LayerNode)
+		@Override
+		public void retrievalRemoved(IRetrieval retrieval)
 		{
-			Layer layer = ((LayerNode) node).getLayer();
-			synchronized (layerRetrieverCount)
+			refreshCallers(retrieval);
+			retrieval.removeListener(retrievalListener);
+		}
+	};
+
+	private IRetrievalListener retrievalListener = new RetrievalAdapter()
+	{
+		@Override
+		public void callersChanged(IRetrieval retrieval)
+		{
+			refreshCallers(retrieval);
+		}
+
+		@Override
+		public void progress(IRetrieval retrieval)
+		{
+			refreshCallers(retrieval);
+		}
+	};
+
+	private static class LayerTreeLabelProviderDelegate extends ObservableMapLabelProvider implements ILabelDecorator,
+			IStyledLabelProvider, IFireableLabelProvider
+	{
+		private WeakHashMap<Layer, WeakReference<LayerNode>> weakLayerToNodeMap =
+				new WeakHashMap<Layer, WeakReference<LayerNode>>();
+
+		private final IconLoader iconLoader = new IconLoader(this);
+
+		private boolean disposed = false;
+
+		private final Color informationColor;
+		private final Color legendColor;
+		private final Font subscriptFont;
+		private final Styler informationStyler = new Styler()
+		{
+			@Override
+			public void applyStyles(TextStyle textStyle)
 			{
-				if (layerRetrieverCount.containsKey(layer))
+				textStyle.foreground = informationColor;
+				textStyle.font = subscriptFont;
+			}
+		};
+		private final Styler legendStyler = new Styler()
+		{
+			@Override
+			public void applyStyles(TextStyle textStyle)
+			{
+				textStyle.foreground = legendColor;
+				textStyle.font = subscriptFont;
+			}
+		};
+
+		public LayerTreeLabelProviderDelegate(IObservableMap[] attributeMaps)
+		{
+			super(attributeMaps);
+			informationColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
+			legendColor = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
+			FontData[] fontDatas = Display.getDefault().getSystemFont().getFontData();
+			for (FontData fontData : fontDatas)
+			{
+				fontData.setStyle(SWT.BOLD);
+				fontData.setHeight((int) (fontData.getHeight() * 0.8));
+			}
+			subscriptFont = new Font(Display.getDefault(), fontDatas);
+		}
+
+		@Override
+		public void dispose()
+		{
+			//because this object is acting as both the decorator and the provider,
+			//dispose is called twice, causing a NPE in the super class
+			//workaround: set a flag when disposed, disabling multiple disposals
+			if (disposed)
+			{
+				return;
+			}
+			disposed = true;
+
+			super.dispose();
+			iconLoader.dispose();
+			subscriptFont.dispose();
+		}
+
+		@Override
+		public String getColumnText(Object element, int columnIndex)
+		{
+			if (element instanceof LayerNode)
+			{
+				LayerNode layer = (LayerNode) element;
+
+				if (layer.getLayer() != null)
 				{
-					retrievingElements.put(layer, node);
-					return true;
+					weakLayerToNodeMap.put(layer.getLayer(), new WeakReference<LayerNode>(layer));
+				}
+
+				String label = layer.getLabelOrName();
+				if (layer.getOpacity() < 1)
+				{
+					label += String.format(" (%d%%)", (int) (layer.getOpacity() * 100)); //$NON-NLS-1$
+				}
+
+				return label;
+			}
+			else if (element instanceof FolderNode)
+			{
+				FolderNode folder = (FolderNode) element;
+				return folder.getLabelOrName();
+			}
+			return super.getColumnText(element, columnIndex);
+		}
+
+		@Override
+		public Image getImage(Object element)
+		{
+			if (element instanceof ILayerTreeNode)
+			{
+				ILayerTreeNode node = (ILayerTreeNode) element;
+				URL imageURL = node.getIconURL();
+				if (imageURL != null)
+				{
+					return iconLoader.getImage(element, imageURL);
 				}
 			}
+			return super.getImage(element);
 		}
-		return false;
+
+		@Override
+		public Image decorateImage(Image image, Object element)
+		{
+			return null;
+		}
+
+		@Override
+		public String decorateText(String text, Object element)
+		{
+			return text;
+		}
+
+		@Override
+		public StyledString getStyledText(Object element)
+		{
+			StyledString string = new StyledString(getColumnText(element, 0));
+			if (element instanceof ILayerTreeNode)
+			{
+				ILayerTreeNode layerNode = (ILayerTreeNode) element;
+				if (layerNode.getInfoURL() != null || layerNode.getLegendURL() != null)
+				{
+					string.append(" "); //$NON-NLS-1$
+					if (layerNode.getInfoURL() != null)
+					{
+						string.append(" i", informationStyler); //$NON-NLS-1$
+					}
+					if (layerNode.getLegendURL() != null)
+					{
+						string.append(" L", legendStyler); //$NON-NLS-1$
+					}
+				}
+			}
+			return string;
+		}
+
+		@Override
+		public void fireLabelProviderChanged(LabelProviderChangedEvent event)
+		{
+			super.fireLabelProviderChanged(event);
+		}
 	}
 }

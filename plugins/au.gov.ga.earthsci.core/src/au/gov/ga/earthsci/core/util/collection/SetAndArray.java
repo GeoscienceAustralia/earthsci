@@ -25,10 +25,11 @@ import java.util.Set;
 public interface SetAndArray<E> extends Set<E>
 {
 	/**
-	 * The stored array of elements. The elements in this array will not change
-	 * when this Set is modified; instead the returned array changes.
+	 * The array of elements. This array is lazily created. The returned array
+	 * is the same until this Set is modified, in which case it is recreated
+	 * next time this method is called.
 	 * 
 	 * @return The stored array of elements.
 	 */
-	E[] getArray();
+	E[] getArray(Class<E> type);
 }

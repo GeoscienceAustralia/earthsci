@@ -17,10 +17,12 @@ package au.gov.ga.earthsci.core.retrieve;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -57,6 +59,19 @@ public class RetrievalService implements IRetrievalService
 	private final List<IRetrievalServiceListener> listeners = new ArrayList<IRetrievalServiceListener>();
 	private final ListMap<Object, IRetrievalServiceListener> callerListeners =
 			new ArrayListHashMap<Object, IRetrievalServiceListener>();
+
+	@PreDestroy
+	public void cancelAll()
+	{
+		synchronized (urlToRetrieval)
+		{
+			Collection<Retrieval> retrievals = urlToRetrieval.values();
+			for (Retrieval retrieval : retrievals)
+			{
+				retrieval.cancel();
+			}
+		}
+	}
 
 	@Override
 	public IRetrieval retrieve(Object caller, URL url)
@@ -146,7 +161,7 @@ public class RetrievalService implements IRetrievalService
 			{
 				retrievals = EMPTY_RETRIEVAL_COLLECTION;
 			}
-			return retrievals.getArray();
+			return retrievals.getArray(IRetrieval.class);
 		}
 	}
 

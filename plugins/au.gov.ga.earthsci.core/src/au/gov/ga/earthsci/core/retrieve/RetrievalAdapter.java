@@ -46,4 +46,9 @@ public class RetrievalAdapter implements IRetrievalListener
 	public void paused(IRetrieval retrieval)
 	{
 	}
+
+	@Override
+	public void callersChanged(IRetrieval retrieval)
+	{
+	}
 }

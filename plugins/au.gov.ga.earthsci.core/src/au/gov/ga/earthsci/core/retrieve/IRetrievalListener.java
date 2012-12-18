@@ -75,4 +75,12 @@ public interface IRetrievalListener
 	 *            Retrieval that paused.
 	 */
 	void paused(IRetrieval retrieval);
+
+	/**
+	 * Fired when this retrieval's list of callers changes.
+	 * 
+	 * @param retrieval
+	 *            Retrieval that the caller was added to.
+	 */
+	void callersChanged(IRetrieval retrieval);
 }

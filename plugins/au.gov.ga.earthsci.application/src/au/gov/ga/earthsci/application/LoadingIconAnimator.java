@@ -15,8 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.swt.graphics.Image;
 import org.slf4j.Logger;
@@ -40,7 +40,9 @@ public final class LoadingIconAnimator
 	private static final Logger logger = LoggerFactory.getLogger(LoadingIconAnimator.class);
 	private final Image[] loadingFrames = ImageRegistry.getInstance().getAnimated(ImageRegistry.ICON_LOADING);
 	private int frame = 0;
-	private final List<LoadingIconFrameListener> listeners = new ArrayList<LoadingIconFrameListener>();
+	private final Set<LoadingIconFrameListener> listeners = new HashSet<LoadingIconFrameListener>();
+	private boolean dirty = false;
+	private LoadingIconFrameListener[] listenerArray;
 
 	private LoadingIconAnimator()
 	{
@@ -63,12 +65,18 @@ public final class LoadingIconAnimator
 							{
 							}
 						}
+
+						if (dirty)
+						{
+							listenerArray = listeners.toArray(new LoadingIconFrameListener[listeners.size()]);
+							dirty = false;
+						}
 					}
-					for (int i = listeners.size() - 1; i >= 0; i--)
+					for (LoadingIconFrameListener listener : listenerArray)
 					{
 						try
 						{
-							listeners.get(i).nextFrame(getCurrentFrame());
+							listener.nextFrame(getCurrentFrame());
 						}
 						catch (Exception e)
 						{
@@ -96,6 +104,7 @@ public final class LoadingIconAnimator
 		synchronized (listeners)
 		{
 			listeners.add(listener);
+			dirty = true;
 			listeners.notifyAll();
 		}
 	}
@@ -105,6 +114,7 @@ public final class LoadingIconAnimator
 		synchronized (listeners)
 		{
 			listeners.remove(listener);
+			dirty = true;
 		}
 	}
 

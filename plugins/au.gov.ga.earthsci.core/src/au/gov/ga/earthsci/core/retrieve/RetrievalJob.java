@@ -15,6 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 import org.eclipse.core.internal.jobs.JobStatus;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -31,6 +34,7 @@ public class RetrievalJob extends Job
 {
 	private final Retrieval retrieval;
 	private RetrieverResult result;
+	private Closeable closeable;
 
 	public RetrievalJob(Retrieval retrieval)
 	{
@@ -91,6 +95,13 @@ public class RetrievalJob extends Job
 				}
 				return super.isCanceled();
 			}
+
+			@Override
+			public void setCloseable(Closeable closeable)
+			{
+				super.setCloseable(closeable);
+				RetrievalJob.this.closeable = closeable;
+			}
 		};
 		try
 		{
@@ -114,5 +125,21 @@ public class RetrievalJob extends Job
 	public RetrieverResult getRetrievalResult()
 	{
 		return result;
+	}
+
+	@Override
+	protected void canceling()
+	{
+		if (getState() == Job.RUNNING && closeable != null)
+		{
+			try
+			{
+				closeable.close();
+			}
+			catch (IOException e)
+			{
+				//ignore
+			}
+		}
 	}
 }
