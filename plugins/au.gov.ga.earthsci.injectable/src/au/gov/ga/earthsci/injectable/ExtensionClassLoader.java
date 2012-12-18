@@ -21,14 +21,47 @@ import org.eclipse.core.runtime.spi.RegistryContributor;
 import org.osgi.framework.Bundle;
 
 /**
+ * Helper class for accessing classes defined in extention point definitions.
+ * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
- *
  */
 public class ExtensionClassLoader
 {
-	public static Class<?> getClass(IConfigurationElement element, String propertyName) throws ClassNotFoundException
+	/**
+	 * Load the class defined in the extension point configuration element under
+	 * the given property name.
+	 * 
+	 * @param element
+	 *            Extension point configuration element
+	 * @param propertyName
+	 *            Property name in element that defines the class name
+	 * @return Class defined in the configuration element property
+	 * @throws ClassNotFoundException
+	 *             If the class could not be found
+	 */
+	public static Class<?> getClassForProperty(IConfigurationElement element, String propertyName)
+			throws ClassNotFoundException
 	{
 		String className = element.getAttribute(propertyName);
+		return getClassForName(element, className);
+	}
+
+	/**
+	 * Load the named class defined in the given extension point configuration
+	 * element.
+	 * 
+	 * @param element
+	 *            Extension point configuration element
+	 * @param className
+	 *            Fully qualified class name, passed to
+	 *            {@link Bundle#loadClass(String)}
+	 * @return Class for the given name
+	 * @throws ClassNotFoundException
+	 *             If the class could not be found
+	 */
+	public static Class<?> getClassForName(IConfigurationElement element, String className)
+			throws ClassNotFoundException
+	{
 		IContributor contributor = element.getContributor();
 		if (contributor instanceof RegistryContributor)
 		{
