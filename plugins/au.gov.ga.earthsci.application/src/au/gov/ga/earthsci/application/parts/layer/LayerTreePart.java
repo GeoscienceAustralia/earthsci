@@ -35,7 +35,6 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
-import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -85,9 +84,8 @@ public class LayerTreePart
 	@Inject
 	private ESelectionService selectionService;
 
-	private LayerTreeLabelProvider labelProvider;
-
 	private CheckboxTreeViewer viewer;
+	private LayerTreeLabelProvider labelProvider;
 	private Clipboard clipboard;
 
 	@PostConstruct
@@ -123,9 +121,9 @@ public class LayerTreePart
 		IObservableMap[] labelAttributeMaps =
 				new IObservableMap[] { enabledMap, opacityMap, nameMap, labelMap, anyChildrenEnabledMap,
 						allChildrenEnabledMap };
-		labelProvider = new LayerTreeLabelProvider(labelAttributeMaps);
 
-		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(labelProvider, labelProvider, null));
+		labelProvider = new LayerTreeLabelProvider(labelAttributeMaps);
+		viewer.setLabelProvider(labelProvider);
 		viewer.setCheckStateProvider(new LayerTreeCheckStateProvider());
 
 		viewer.setInput(model.getRootNode());
@@ -312,6 +310,7 @@ public class LayerTreePart
 	{
 		context.remove(TreeViewer.class);
 		context.remove(Clipboard.class);
+		labelProvider.packup();
 	}
 
 	@Focus
