@@ -161,7 +161,7 @@ public class RetrievalService implements IRetrievalService
 			{
 				retrievals = EMPTY_RETRIEVAL_COLLECTION;
 			}
-			return retrievals.getArray();
+			return retrievals.getArray(IRetrieval.class);
 		}
 	}
 
