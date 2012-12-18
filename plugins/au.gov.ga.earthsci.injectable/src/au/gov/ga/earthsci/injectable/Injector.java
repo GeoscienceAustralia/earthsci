@@ -16,13 +16,10 @@
 package au.gov.ga.earthsci.injectable;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.core.runtime.spi.RegistryContributor;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.InjectorFactory;
-import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,8 +50,8 @@ public final class Injector
 				boolean injectable = "injectable".equals(element.getName()); //$NON-NLS-1$
 				if (bind)
 				{
-					Class<?> implementationClass = getClass(element, "implementation"); //$NON-NLS-1$
-					Class<?> bindingClass = getClass(element, "binding"); //$NON-NLS-1$
+					Class<?> implementationClass = ExtensionClassLoader.getClass(element, "implementation"); //$NON-NLS-1$
+					Class<?> bindingClass = ExtensionClassLoader.getClass(element, "binding"); //$NON-NLS-1$
 					InjectorFactory.getDefault().addBinding(bindingClass).implementedBy(implementationClass);
 				}
 				else if (inject || injectable)
@@ -67,7 +64,7 @@ public final class Injector
 						for (IConfigurationElement type : types)
 						{
 							@SuppressWarnings("unchecked")
-							Class<Object> c = (Class<Object>) getClass(type, "class"); //$NON-NLS-1$
+							Class<Object> c = (Class<Object>) ExtensionClassLoader.getClass(type, "class"); //$NON-NLS-1$
 							context.set(c, c.cast(object));
 						}
 						IConfigurationElement[] names = element.getChildren("name"); //$NON-NLS-1$
@@ -94,19 +91,5 @@ public final class Injector
 				logger.error("Error processing injectable", e); //$NON-NLS-1$
 			}
 		}
-	}
-
-	private static Class<?> getClass(IConfigurationElement element, String propertyName) throws ClassNotFoundException
-	{
-		String className = element.getAttribute(propertyName);
-		IContributor contributor = element.getContributor();
-		if (contributor instanceof RegistryContributor)
-		{
-			String stringId = ((RegistryContributor) contributor).getId();
-			long id = Long.parseLong(stringId);
-			Bundle bundle = Activator.getContext().getBundle(id);
-			return bundle.loadClass(className);
-		}
-		throw new ClassNotFoundException(className);
 	}
 }
