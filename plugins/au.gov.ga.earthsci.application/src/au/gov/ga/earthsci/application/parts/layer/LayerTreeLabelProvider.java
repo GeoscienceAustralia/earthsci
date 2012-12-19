@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Event;
 
 import au.gov.ga.earthsci.application.IFireableLabelProvider;
 import au.gov.ga.earthsci.application.IconLoader;
+import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
@@ -327,6 +328,14 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 				if (imageURL != null)
 				{
 					return iconLoader.getImage(element, imageURL);
+				}
+				else
+				{
+					if (element instanceof LayerNode)
+					{
+						return ImageRegistry.getInstance().get(ImageRegistry.ICON_FILE);
+					}
+					return ImageRegistry.getInstance().get(ImageRegistry.ICON_FOLDER);
 				}
 			}
 			return super.getImage(element);
