@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
+import gov.nasa.worldwind.terrain.CompoundElevationModel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -31,6 +32,7 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.IEnableable;
 import au.gov.ga.earthsci.core.util.collection.HashSetHashMap;
 import au.gov.ga.earthsci.core.util.collection.SetMap;
+import au.gov.ga.earthsci.core.worldwind.WorldWindCompoundElevationModel;
 
 /**
  * Abstract implementation of the {@link ILayerTreeNode} interface.
@@ -42,6 +44,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 {
 	private String name;
 	private LayerList layerList;
+	private WorldWindCompoundElevationModel elevationModels;
 	private SetMap<URI, ILayerTreeNode> uriMap;
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
 	private String label;
@@ -272,6 +275,49 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		}
 	}
 
+	@Override
+	public CompoundElevationModel getElevationModels()
+	{
+		synchronized (semaphore)
+		{
+			if (elevationModels == null)
+			{
+				elevationModels = new WorldWindCompoundElevationModel();
+				updateElevationModels();
+			}
+			return elevationModels;
+		}
+	}
+
+	private void updateElevationModels()
+	{
+		synchronized (semaphore)
+		{
+			if (elevationModels != null)
+			{
+				elevationModels.removeAll();
+				addNodesToElevationModels(this);
+			}
+		}
+	}
+
+	private void addNodesToElevationModels(ILayerTreeNode node)
+	{
+		if (node instanceof LayerNode)
+		{
+			LayerNode layerNode = (LayerNode) node;
+			if (layerNode.getLayer() instanceof IElevationModelLayer)
+			{
+				IElevationModelLayer elevationModelLayer = (IElevationModelLayer) layerNode.getLayer();
+				elevationModels.addElevationModel(elevationModelLayer.getElevationModel());
+			}
+		}
+		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
+		{
+			addNodesToElevationModels(child.getValue());
+		}
+	}
+
 	private void updateURIMap()
 	{
 		synchronized (semaphore)
@@ -307,6 +353,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		//TODO should we implement a (more efficient?) modification of these collections according to changed children?
 		//update the collections if they exist
 		updateLayerList();
+		updateElevationModels();
 		updateURIMap();
 
 		//fire property changes

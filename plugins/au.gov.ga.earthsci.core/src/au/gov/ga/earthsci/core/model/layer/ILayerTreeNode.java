@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.layers.LayerList;
+import gov.nasa.worldwind.terrain.CompoundElevationModel;
 
 import java.net.URI;
 import java.net.URL;
@@ -38,6 +39,12 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	 *         below this node.
 	 */
 	LayerList getLayerList();
+
+	/**
+	 * @return A {@link CompoundElevationModel} that contains all elevation
+	 *         models in the tree at and below this node.
+	 */
+	CompoundElevationModel getElevationModels();
 
 	/**
 	 * Return true if this node's URI matches the given URI, or any of this
