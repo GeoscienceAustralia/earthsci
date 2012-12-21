@@ -41,6 +41,7 @@ import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkPropertyAnimator;
+import au.gov.ga.earthsci.bookmark.part.editor.BookmarkEditorDialog;
 import au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences;
 
 /**
@@ -125,7 +126,6 @@ public class BookmarksController implements IBookmarksController
 			public void run()
 			{
 				BookmarkEditorDialog dialog = new BookmarkEditorDialog(bookmark, Display.getDefault().getActiveShell());
-				//dialog.create();
 				dialog.open();
 			}
 		});

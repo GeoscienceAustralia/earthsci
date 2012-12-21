@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
    <extension-point id="catalogTreeLabelProvider" name="Catalog Tree Label Provider" schema="schema/au.gov.ga.earthsci.catalog.CatalogTreeLabelProvider.exsd"/>
+   <extension-point id="bookmarkPropertyEditor" name="Bookmark Property Editor" schema="schema/au.gov.ga.earthsci.bookmark.editor.exsd"/>
 
    <extension
          id="product"
@@ -89,6 +90,16 @@
       <injectable
             class="au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry">
       </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.bookmark.part.editor.BookmarkPropertyEditorFactory">
+      </injectable>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.application.bookmarkPropertyEditor">
+      <editor
+            class="au.gov.ga.earthsci.bookmark.part.editor.CameraPropertyEditor"
+            type="au.gov.ga.earthsci.bookmark.properties.camera">
+      </editor>
    </extension>
 
 </plugin>

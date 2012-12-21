@@ -21,14 +21,15 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
+import org.eclipse.jface.databinding.viewers.ObservableMapCellLabelProvider;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
@@ -47,7 +48,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -155,19 +155,16 @@ public class BookmarksPart
 		
 		bookmarkListTableViewer.getTable().setLayoutData(gd);
 		
+		ObservableListContentProvider contentProvider = new ObservableListContentProvider();
+		bookmarkListTableViewer.setContentProvider(contentProvider);
+		
+		IObservableMap labelMap = BeanProperties.value("name").observeDetail(contentProvider.getKnownElements()); //$NON-NLS-1$
+		
 		TableViewerColumn column = new TableViewerColumn(bookmarkListTableViewer, SWT.LEFT);
 		column.setEditingSupport(new BookmarkNameEditingSupport(bookmarkListTableViewer));
-		column.setLabelProvider(new CellLabelProvider() {
-			@Override
-			public void update(ViewerCell cell)
-			{
-				cell.setText(((IBookmark)cell.getElement()).getName());
-			}
-		});
+		column.setLabelProvider(new ObservableMapCellLabelProvider(labelMap));
 		ColumnLayoutData cld = new ColumnWeightData(12);
 		layout.setColumnData(column.getColumn(), cld);
-		
-		bookmarkListTableViewer.setContentProvider(new ObservableListContentProvider());
 		
 		// Allow edit (rename) only via programmatic access (rename command) 
 		ColumnViewerEditorActivationStrategy activationStrategy = new ColumnViewerEditorActivationStrategy(bookmarkListTableViewer) {
