@@ -45,7 +45,7 @@ public interface IRetrieval extends IPropertyChangeBean
 	RetrievalStatus getStatus();
 
 	/**
-	 * @return The current position of the resource retrieval.
+	 * @return The current position of the resource retrieval. Never negative.
 	 */
 	long getPosition();
 

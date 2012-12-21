@@ -44,6 +44,7 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalListener;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalServiceListener;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
+import au.gov.ga.earthsci.core.util.SWTUtil;
 
 /**
  * Part that displays progress of {@link IRetrieval}s running in the
@@ -60,6 +61,15 @@ public class RetrievePart implements IRetrievalServiceListener
 
 	private final List<IRetrieval> retrievals = new ArrayList<IRetrieval>();
 	private final Set<Object> updatingElements = new HashSet<Object>();
+
+	private static final Color DOWNLOAD_BACKGROUND_COLOR;
+
+	static
+	{
+		Color listBackground = Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
+		DOWNLOAD_BACKGROUND_COLOR =
+				SWTUtil.shouldDarken(listBackground) ? SWTUtil.darker(listBackground) : SWTUtil.lighter(listBackground);
+	}
 
 	@Inject
 	public void init(Composite parent, MPart part)
@@ -143,7 +153,7 @@ public class RetrievePart implements IRetrievalServiceListener
 
 		column = new TableViewerColumn(viewer, SWT.NONE);
 		column.getColumn().setText("Progress");
-		column.getColumn().setWidth(100);
+		column.getColumn().setWidth(150);
 		column.setLabelProvider(new OwnerDrawLabelProvider()
 		{
 			@Override
@@ -155,11 +165,11 @@ public class RetrievePart implements IRetrievalServiceListener
 
 				IRetrieval retrieval = (IRetrieval) element;
 				float percentage = Math.max(0, retrieval.getPercentage());
-				String text = (int) (percentage * 100) + "%"; //$NON-NLS-1$
+				String text = positionString(retrieval);
 
 				Rectangle bounds = ((TableItem) event.item).getBounds(event.index);
 				int width = (int) ((bounds.width - 1) * percentage);
-				gc.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_SELECTION));
+				gc.setBackground(DOWNLOAD_BACKGROUND_COLOR);
 				gc.fillRectangle(event.x, event.y, width, event.height);
 
 				Point size = event.gc.textExtent(text);
@@ -176,6 +186,64 @@ public class RetrievePart implements IRetrievalServiceListener
 			{
 			}
 		});
+	}
+
+	private static String positionString(IRetrieval retrieval)
+	{
+		long position = retrieval.getPosition();
+		long length = retrieval.getLength();
+		float percentage = retrieval.getPercentage();
+		StringBuilder sb = new StringBuilder();
+		String unknown = "unknown";
+
+		long max = Math.max(position, length);
+		if (max >= 0)
+		{
+			int unitNumber = max == 0 ? 0 : (int) (Math.log10(max) / Math.log10(1024));
+
+			String prefixes = "kMGTPEZY"; //$NON-NLS-1$
+			if (unitNumber > prefixes.length())
+			{
+				unitNumber = 0;
+			}
+			String unit = (unitNumber <= 0 ? "" : prefixes.charAt(unitNumber - 1)) + "B"; //$NON-NLS-1$ //$NON-NLS-2$
+
+			long divisor = (long) Math.pow(1024, unitNumber);
+			position /= divisor;
+			length /= divisor;
+
+			sb.append(position);
+			sb.append(' ');
+			sb.append(unit);
+
+			sb.append(' ');
+			sb.append("of");
+			sb.append(' ');
+
+			if (length <= 0)
+			{
+				sb.append(unknown);
+			}
+			else
+			{
+				sb.append(length);
+				sb.append(' ');
+				sb.append(unit);
+			}
+		}
+		else
+		{
+			sb.append(unknown);
+		}
+
+		if (percentage >= 0)
+		{
+			sb.append(" ("); //$NON-NLS-1$
+			sb.append((int) (percentage * 100));
+			sb.append("%)"); //$NON-NLS-1$
+		}
+
+		return sb.toString();
 	}
 
 	@Override

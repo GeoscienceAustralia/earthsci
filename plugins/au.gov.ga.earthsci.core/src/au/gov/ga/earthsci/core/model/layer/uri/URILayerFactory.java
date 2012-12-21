@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import au.gov.ga.earthsci.core.model.layer.uri.handler.ClassURIHandler;
 import au.gov.ga.earthsci.core.model.layer.uri.handler.ClasspathURIHandler;
 import au.gov.ga.earthsci.core.model.layer.uri.handler.FileURIHandler;
+import au.gov.ga.earthsci.core.model.layer.uri.handler.HttpURIHandler;
 import au.gov.ga.earthsci.core.model.layer.uri.handler.ILayerURIHandler;
 import au.gov.ga.earthsci.core.model.layer.uri.handler.LayerURIHandlerException;
 
@@ -43,6 +44,7 @@ public class URILayerFactory
 		registerLayerURIHandler(new ClasspathURIHandler());
 		registerLayerURIHandler(new ClassURIHandler());
 		registerLayerURIHandler(new FileURIHandler());
+		registerLayerURIHandler(new HttpURIHandler());
 	}
 
 	/**

@@ -61,7 +61,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 
 	private WorldWindModel(FolderNode rootNode)
 	{
-		super(createGlobe(), rootNode.getLayerList());
+		super(createGlobe(rootNode), rootNode.getLayerList());
 		this.rootNode = rootNode;
 	}
 
@@ -73,9 +73,11 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		return rootNode;
 	}
 
-	protected static Globe createGlobe()
+	protected static Globe createGlobe(FolderNode rootNode)
 	{
-		return (Globe) WorldWind.createConfigurationComponent(AVKey.GLOBE_CLASS_NAME);
+		Globe globe = (Globe) WorldWind.createConfigurationComponent(AVKey.GLOBE_CLASS_NAME);
+		globe.setElevationModel(rootNode.getElevationModels());
+		return globe;
 	}
 
 	@Override
@@ -109,7 +111,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace(); //TODO
+			logger.error("Error loading layer file", e); //$NON-NLS-1$
 		}
 		if (loadedNode == null)
 		{
@@ -136,7 +138,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace(); //TODO
+			logger.error("Error saving layer file", e); //$NON-NLS-1$
 		}
 	}
 }

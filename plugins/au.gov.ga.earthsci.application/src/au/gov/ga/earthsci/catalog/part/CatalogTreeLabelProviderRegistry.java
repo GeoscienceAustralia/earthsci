@@ -89,7 +89,7 @@ public class CatalogTreeLabelProviderRegistry
 			}
 			else if (node.isLayerNode())
 			{
-				result = ImageRegistry.getInstance().getURL(ImageRegistry.ICON_LAYER_NODE);
+				result = ImageRegistry.getInstance().getURL(ImageRegistry.ICON_FILE);
 			}
 			else
 			{

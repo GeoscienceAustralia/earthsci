@@ -35,7 +35,6 @@ import au.gov.ga.earthsci.core.model.layer.LayerNode;
 public class URILayerLoadJob extends Job
 {
 	private final LayerNode layerNode;
-	private Layer layer;
 
 	public URILayerLoadJob(LayerNode layerNode)
 	{
@@ -49,7 +48,7 @@ public class URILayerLoadJob extends Job
 		URI uri = layerNode.getURI();
 		try
 		{
-			layer = URILayerFactory.createLayer(layerNode, uri, monitor);
+			Layer layer = URILayerFactory.createLayer(layerNode, uri, monitor);
 			layerNode.setLayer(layer);
 		}
 		catch (URILayerFactoryException e)
@@ -57,10 +56,5 @@ public class URILayerLoadJob extends Job
 			return new Status(Status.ERROR, Activator.getBundleName(), e.getLocalizedMessage(), e);
 		}
 		return Status.OK_STATUS;
-	}
-
-	public Layer getLayer()
-	{
-		return layer;
 	}
 }

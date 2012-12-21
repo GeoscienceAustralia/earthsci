@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.core.model.layer.uri;
 
 import gov.nasa.worldwind.Configuration;
+import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.layers.BasicLayerFactory;
@@ -30,6 +31,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
@@ -46,6 +49,8 @@ import au.gov.ga.earthsci.core.util.Util;
  */
 public class DefaultLayers
 {
+	private final static Logger logger = LoggerFactory.getLogger(DefaultLayers.class);
+
 	/**
 	 * @return {@link FolderNode} containing the {@link LayerNode}s representing
 	 *         the default layers defined in the WW configuration
@@ -74,10 +79,25 @@ public class DefaultLayers
 	 */
 	public static URI[] getLayerURIs()
 	{
+		List<URI> uris = new ArrayList<URI>();
+
+		//first add the elevation model
+		String elevationModelResource =
+				Configuration.getStringValue(AVKey.EARTH_ELEVATION_MODEL_CONFIG_FILE,
+						"config/Earth/EarthElevationModelAsBil16.xml"); //$NON-NLS-1$
+		String elevationModelURIString = "classpath://" + elevationModelResource; //$NON-NLS-1$
+		try
+		{
+			uris.add(new URI(elevationModelURIString));
+		}
+		catch (URISyntaxException e)
+		{
+			logger.error("Error creating layer URI from string: " + elevationModelURIString, e); //$NON-NLS-1$
+		}
+
+		//now add the default layers
 		Element element = Configuration.getElement("./LayerList"); //$NON-NLS-1$
 		LayerList layers = createLayersFromElement(element);
-
-		List<URI> uris = new ArrayList<URI>();
 		for (Layer layer : layers)
 		{
 			if (layer instanceof URILayer)
@@ -85,6 +105,7 @@ public class DefaultLayers
 				uris.add(((URILayer) layer).uri);
 			}
 		}
+
 		return uris.toArray(new URI[uris.size()]);
 	}
 
@@ -169,8 +190,7 @@ public class DefaultLayers
 			}
 			catch (URISyntaxException e)
 			{
-				//TODO
-				e.printStackTrace();
+				logger.error("Error creating layer URI from string: " + uriString, e); //$NON-NLS-1$
 				return null;
 			}
 		}

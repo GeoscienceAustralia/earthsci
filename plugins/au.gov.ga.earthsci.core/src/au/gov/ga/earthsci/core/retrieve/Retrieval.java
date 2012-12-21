@@ -147,12 +147,12 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 					@Override
 					public void done(IJobChangeEvent event)
 					{
-						RetrieverResult retrieverResult = job.getRetrievalResult();
-						result = retrieverResult.result;
+						RetrieverResult rr = job.getRetrievalResult();
+						result = rr == null ? null : rr.result;
 
 						//ensure the retriever's paused/canceled state matches the result:
-						boolean wasPaused = retrieverResult.status == RetrieverResultStatus.PAUSED;
-						boolean wasCanceled = retrieverResult.status == RetrieverResultStatus.CANCELED;
+						boolean wasPaused = rr == null ? false : rr.status == RetrieverResultStatus.PAUSED;
+						boolean wasCanceled = rr == null ? true : rr.status == RetrieverResultStatus.CANCELED;
 						setPaused(wasPaused);
 						setCanceled(wasCanceled);
 

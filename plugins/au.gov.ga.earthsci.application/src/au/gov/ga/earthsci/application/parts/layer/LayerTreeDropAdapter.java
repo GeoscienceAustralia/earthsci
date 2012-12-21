@@ -25,6 +25,7 @@ import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
+import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.application.parts.layer.LayerTransferData.TransferredLayer;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
@@ -112,6 +113,7 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 					node.setName(file.getName());
 					node.setEnabled(true);
 					node.setURI(file.toURI());
+					node.setIconURL(ImageRegistry.getInstance().getURL(ImageRegistry.ICON_FILE));
 					target.add(index, node);
 					getViewer().add(target, node);
 					getViewer().reveal(node);

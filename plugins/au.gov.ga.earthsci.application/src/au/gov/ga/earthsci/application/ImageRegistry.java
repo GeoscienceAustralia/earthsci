@@ -52,7 +52,8 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_WARNING = "icon.warning"; //$NON-NLS-1$
 	public static final String ICON_REPOSITORY = "icon.repo"; //$NON-NLS-1$
 	public static final String ICON_FOLDER = "icon.folder"; //$NON-NLS-1$
-	public static final String ICON_LAYER_NODE = "icon.layer_node"; //$NON-NLS-1$
+	public static final String ICON_LAYER = "icon.layer"; //$NON-NLS-1$
+	public static final String ICON_FILE = "icon.file"; //$NON-NLS-1$
 	public static final String ICON_ADD = "icon.add"; //$NON-NLS-1$
 	public static final String ICON_REMOVE = "icon.remove"; //$NON-NLS-1$
 	public static final String ICON_TRANSPARENT = "icon.transparent"; //$NON-NLS-1$
@@ -83,8 +84,8 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 		putResource(ICON_REPOSITORY, "/icons/repo.gif"); //$NON-NLS-1$
 
 		putResource(ICON_FOLDER, "/icons/folder.gif"); //$NON-NLS-1$
-
-		putResource(ICON_LAYER_NODE, "/icons/file_obj.gif"); //$NON-NLS-1$
+		putResource(ICON_FILE, "/icons/file_obj.gif"); //$NON-NLS-1$
+		putResource(ICON_LAYER, "/icons/layer.png"); //$NON-NLS-1$
 
 		putResource(ICON_ADD, "/icons/add.gif"); //$NON-NLS-1$
 		putResource(ICON_REMOVE, "/icons/remove.gif"); //$NON-NLS-1$
