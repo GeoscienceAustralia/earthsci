@@ -80,4 +80,14 @@ public interface IBookmarkEditor
 	 * Return any messages associated with this editor
 	 */
 	IBookmarkEditorMessage[] getMessages();
+	
+	/**
+	 * Add a listener to this editor
+	 */
+	void addListener(IBookmarkEditorListener listener);
+	
+	/**
+	 * Remove the listener from this editor.
+	 */
+	void removeListener(IBookmarkEditorListener listener);
 }

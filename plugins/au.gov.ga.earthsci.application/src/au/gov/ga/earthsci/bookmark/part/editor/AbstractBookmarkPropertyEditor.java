@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,30 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.part.editor;
 
+import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+
 /**
- * A simple message interface for the bookmark editor mechanism
+ * An abstract base class for {@link IBookmarkPropertyEditor} implementations.
+ * <p/>
+ * Provides convenience implementations of some methods.
  * 
  * @author James Navin (james.navin@ga.gov.au)
- *
  */
-public interface IBookmarkEditorMessage
+public abstract class AbstractBookmarkPropertyEditor extends AbstractBookmarkEditor implements IBookmarkPropertyEditor
 {
-	enum Level
+	private IBookmarkProperty property;
+	
+	@Override
+	public void setProperty(IBookmarkProperty property) 
 	{
-		ERROR,
-		WARNING,
-		INFO
+		this.property = property;
+	};
+	
+	/**
+	 * @return the property this editor is backed by
+	 */
+	public IBookmarkProperty getProperty()
+	{
+		return property;
 	}
-	
-	String getCode();
-	
-	Level getLevel();
-	
-	String getMessage();
-	
 }

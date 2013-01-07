@@ -18,20 +18,11 @@ package au.gov.ga.earthsci.bookmark.part.editor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-
 /**
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class CameraPropertyEditor implements IBookmarkPropertyEditor
+public class CameraPropertyEditor extends AbstractBookmarkPropertyEditor
 {
-
-	@Override
-	public void setProperty(IBookmarkProperty property)
-	{
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void okPressed()

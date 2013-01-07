@@ -20,6 +20,11 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.bookmark.part.messages"; //$NON-NLS-1$
+	public static String BookmarkEditorDialog_BookmarkNameFieldLabel;
+	public static String BookmarkEditorDialog_DialogTitle;
+	public static String BookmarkEditorDialog_EmptyBookmarkNameMessage;
+	public static String BookmarkEditorDialog_GeneralEditorDescription;
+	public static String BookmarkEditorDialog_GeneralEditorTitle;
 	public static String BookmarksPreferencesPage_Description;
 	public static String BookmarksPreferencesPage_Title;
 	public static String BookmarksPreferencesPage_TransitionDurationFieldTitle;

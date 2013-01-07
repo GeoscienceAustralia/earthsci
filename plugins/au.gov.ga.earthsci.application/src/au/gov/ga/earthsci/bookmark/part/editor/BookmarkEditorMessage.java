@@ -23,12 +23,14 @@ package au.gov.ga.earthsci.bookmark.part.editor;
 public class BookmarkEditorMessage implements IBookmarkEditorMessage
 {
 	private final Level level;
+	private final String code;
 	private final String message;
 	
-	public BookmarkEditorMessage(Level level, String message)
+	public BookmarkEditorMessage(Level level, String code, String message)
 	{
 		super();
 		this.level = level;
+		this.code = code;
 		this.message = message;
 	}
 
@@ -40,9 +42,35 @@ public class BookmarkEditorMessage implements IBookmarkEditorMessage
 	}
 
 	@Override
+	public String getCode()
+	{
+		return code;
+	}
+	
+	@Override
 	public String getMessage()
 	{
 		return message;
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == this)
+		{
+			return true;
+		}
+		if (!(obj instanceof IBookmarkEditorMessage))
+		{
+			return false;
+		}
+		return code.equals(((IBookmarkEditorMessage)obj).getCode());
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return code.hashCode();
+	}
+	
 }

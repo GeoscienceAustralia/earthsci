@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,27 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.part.editor;
 
+
 /**
- * A simple message interface for the bookmark editor mechanism
+ * A listener interface for classes that wish to be notified of events generated
+ * by a {@link IBookmarkEditor}
  * 
  * @author James Navin (james.navin@ga.gov.au)
- *
  */
-public interface IBookmarkEditorMessage
+public interface IBookmarkEditorListener
 {
-	enum Level
-	{
-		ERROR,
-		WARNING,
-		INFO
-	}
+	/**
+	 * Notified when the editor detects it is in an invalid state.
+	 * 
+	 * @param editor The editor that is invalid
+	 * @param messages Message associated with the validation failure
+	 */
+	void editorInvalid(IBookmarkEditor editor, IBookmarkEditorMessage[] messages);
 	
-	String getCode();
-	
-	Level getLevel();
-	
-	String getMessage();
-	
+	/**
+	 * Notified when the editor detects it has entered a valid state.
+	 * 
+	 * @param editor The editor that is now valid
+	 */
+	void editorValid(IBookmarkEditor editor);
 }

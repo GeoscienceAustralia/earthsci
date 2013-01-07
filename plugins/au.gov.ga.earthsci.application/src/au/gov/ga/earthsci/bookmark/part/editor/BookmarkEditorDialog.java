@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.e4.ui.workbench.swt.internal.copy.FilteredTree;
 import org.eclipse.e4.ui.workbench.swt.internal.copy.PatternFilter;
 import org.eclipse.jface.dialogs.DialogMessageArea;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -36,6 +37,8 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
@@ -50,6 +53,7 @@ import org.eclipse.swt.widgets.Text;
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.bookmark.part.Messages;
 import au.gov.ga.earthsci.bookmark.part.editor.IBookmarkEditorMessage.Level;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
@@ -69,7 +73,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class BookmarkEditorDialog extends TrayDialog
+public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorListener
 {
 	private static final int[] SASH_WEIGHTS = new int[] {30, 70}; 
 	private static final Point DEFAULT_MIN_PAGE_SIZE = new Point(400, 400);
@@ -81,7 +85,6 @@ public class BookmarkEditorDialog extends TrayDialog
 	
 	private Composite editorContainer;
 	private IBookmarkEditor currentEditor;
-	private Label editorTitleLabel;
 	private DialogMessageArea messageArea;
 	
 	public BookmarkEditorDialog(IBookmark bookmark, Shell shell)
@@ -91,17 +94,22 @@ public class BookmarkEditorDialog extends TrayDialog
 		setShellStyle(SWT.RESIZE | SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		this.bookmark = bookmark;
 		
-		editors.add(new GeneralBookmarkEditor());
+		GeneralBookmarkEditor generalBookmarkEditor = new GeneralBookmarkEditor();
+		generalBookmarkEditor.addListener(this);
+		editors.add(generalBookmarkEditor);
+		
 		for (String type : BookmarkPropertyEditorFactory.getSupportedTypes())
 		{
-			editors.add(BookmarkPropertyEditorFactory.createEditor(type));
+			IBookmarkPropertyEditor editor = BookmarkPropertyEditorFactory.createEditor(type);
+			editor.addListener(this);
+			editors.add(editor);
 		}
 	}
 	
 	@Override
 	protected Control createDialogArea(Composite parent)
 	{
-		getShell().setText("Edit bookmark");
+		getShell().setText(Messages.BookmarkEditorDialog_DialogTitle);
 		getShell().setImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_EDIT));
 		
 		// Remove margins etc. from the parent composite
@@ -231,6 +239,9 @@ public class BookmarkEditorDialog extends TrayDialog
 		
 		messageArea = new DialogMessageArea();
 		messageArea.createContents(inner);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		messageArea.setTitleLayoutData(gd);
+		messageArea.setMessageLayoutData(gd);
 		
 		editorContainer = new Composite(inner, SWT.NONE);
 		editorContainer.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -256,14 +267,9 @@ public class BookmarkEditorDialog extends TrayDialog
 		
 		if (currentEditor != null)
 		{
+			updateValidityIndicatorsForCurrent();
 			if (!currentEditor.isValid())
 			{
-				IBookmarkEditorMessage[] messages = currentEditor.getMessages();
-				if (messages != null && messages.length > 0)
-				{
-					messageArea.updateText(messages[0].getMessage(), 
-										   messages[0].getLevel() == Level.ERROR ? IMessageProvider.ERROR : messages[0].getLevel() == Level.WARNING ? IMessageProvider.WARNING : IMessageProvider.INFORMATION);
-				}
 				return false;
 			}
 			if (currentEditor.getControl() != null)
@@ -291,6 +297,7 @@ public class BookmarkEditorDialog extends TrayDialog
 	{
 		if (!currentEditor.isValid())
 		{
+			updateValidityIndicatorsForCurrent();
 			return;
 		}
 		
@@ -315,6 +322,49 @@ public class BookmarkEditorDialog extends TrayDialog
 		close();
 	}
 	
+	@Override
+	public void editorInvalid(IBookmarkEditor editor, IBookmarkEditorMessage[] messages)
+	{
+		updateValidityIndicators(editor, false, messages);
+	}
+	
+	@Override
+	public void editorValid(IBookmarkEditor editor)
+	{
+		updateValidityIndicators(editor, true, null);
+	}
+	
+	private void updateValidityIndicatorsForCurrent()
+	{
+		if (currentEditor == null)
+		{
+			return;
+		}
+		updateValidityIndicators(currentEditor, currentEditor.isValid(), currentEditor.getMessages());
+	}
+
+	private void updateValidityIndicators(IBookmarkEditor editor, boolean valid, IBookmarkEditorMessage[] messages)
+	{
+		if (editor == null)
+		{
+			return;
+		}
+		if (!valid)
+		{
+			if (messages != null && messages.length > 0)
+			{
+				messageArea.updateText(messages[0].getMessage(), 
+									   messages[0].getLevel() == Level.ERROR ? IMessageProvider.ERROR : messages[0].getLevel() == Level.WARNING ? IMessageProvider.WARNING : IMessageProvider.INFORMATION);
+			}
+			getButton(IDialogConstants.OK_ID).setEnabled(false);
+		}
+		else
+		{
+			messageArea.restoreTitle();
+			getButton(IDialogConstants.OK_ID).setEnabled(true);
+		}
+	}
+	
 	@Deprecated
 	private void debugControl(Control c)
 	{
@@ -324,8 +374,11 @@ public class BookmarkEditorDialog extends TrayDialog
 	/**
 	 * A class used to provide the editor fields for top-level bookmark members (name etc.)
 	 */
-	private class GeneralBookmarkEditor implements IBookmarkEditor
+	private class GeneralBookmarkEditor extends AbstractBookmarkEditor
 	{
+		private final String BOOKMARK_NAME_ID = "general.bookmark.name"; //$NON-NLS-1$
+		private final IBookmarkEditorMessage BOOKMARK_NAME_EMPTY_MESSAGE = new BookmarkEditorMessage(Level.ERROR, "general.bookmark.name.empty", Messages.BookmarkEditorDialog_EmptyBookmarkNameMessage); //$NON-NLS-1$
+		
 		private Composite container;
 		private Text bookmarkNameField;
 		
@@ -338,7 +391,7 @@ public class BookmarkEditorDialog extends TrayDialog
 		@Override
 		public void cancelPressed()
 		{
-			bookmarkNameField.setText("");
+			bookmarkNameField.setText(""); //$NON-NLS-1$
 		}
 
 		@Override
@@ -355,7 +408,7 @@ public class BookmarkEditorDialog extends TrayDialog
 			container.setLayout(new GridLayout(2, false));
 			
 			Label nameFieldLabel = new Label(container, SWT.NONE);
-			nameFieldLabel.setText("Name:");
+			nameFieldLabel.setText(Messages.BookmarkEditorDialog_BookmarkNameFieldLabel);
 			nameFieldLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, true));
 			
 			bookmarkNameField = new Text(container, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
@@ -363,6 +416,14 @@ public class BookmarkEditorDialog extends TrayDialog
 			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 			gd.verticalAlignment = SWT.TOP;
 			bookmarkNameField.setLayoutData(gd);
+			bookmarkNameField.addModifyListener(new ModifyListener()
+			{
+				@Override
+				public void modifyText(ModifyEvent e)
+				{
+					validate(BOOKMARK_NAME_ID, !Util.isBlank(bookmarkNameField.getText()), BOOKMARK_NAME_EMPTY_MESSAGE);
+				}
+			});
 			
 			return container;
 		}
@@ -376,30 +437,13 @@ public class BookmarkEditorDialog extends TrayDialog
 		@Override
 		public String getName()
 		{
-			return "General";
+			return Messages.BookmarkEditorDialog_GeneralEditorTitle;
 		}
 		
 		@Override
 		public String getDescription()
 		{
-			return "Edit general bookmark properties (name etc.)";
-		}
-		
-		@Override
-		public boolean isValid()
-		{
-			return !Util.isBlank(bookmarkNameField.getText());
-		}
-		
-		@Override
-		public IBookmarkEditorMessage[] getMessages()
-		{
-			List<IBookmarkEditorMessage> result = new ArrayList<IBookmarkEditorMessage>();
-			if (Util.isBlank(bookmarkNameField.getText()))
-			{
-				result.add(new BookmarkEditorMessage(Level.ERROR, "A bookmark name is required"));
-			}
-			return result.toArray(new IBookmarkEditorMessage[result.size()]);
+			return Messages.BookmarkEditorDialog_GeneralEditorDescription;
 		}
 	}
 	
