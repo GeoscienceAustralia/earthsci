@@ -46,6 +46,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -87,9 +88,13 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 	private FilteredTree editorFilteredTree;
 	private List<IBookmarkEditor> editors = new ArrayList<IBookmarkEditor>();
 	
+	private DialogMessageArea messageArea;
+
 	private Composite editorContainer;
 	private IBookmarkEditor currentEditor;
-	private DialogMessageArea messageArea;
+	
+	private Button fillFromCurrentButton;
+	private Button resetButton;
 	
 	public BookmarkEditorDialog(IBookmark bookmark, Shell shell)
 	{
@@ -256,15 +261,12 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		editorContainer.setLayoutData(new GridData(GridData.FILL_BOTH));
 		editorContainer.setLayout(new GridLayout());
 		
-		Composite buttonBarContainer = new Composite(inner, SWT.NONE);
+		Composite buttonBarContainer = new Composite(inner, SWT.RIGHT_TO_LEFT);
 		buttonBarContainer.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		buttonBarContainer.setLayout(new GridLayout());
+		buttonBarContainer.setLayout(new RowLayout());
 		
-		Button resetButton = new Button(buttonBarContainer, SWT.NONE);
+		resetButton = new Button(buttonBarContainer, SWT.NONE);
 		resetButton.setText("Reset Values");
-		gd = new GridData(GridData.GRAB_HORIZONTAL);
-		gd.horizontalAlignment = GridData.HORIZONTAL_ALIGN_END;
-		resetButton.setLayoutData(gd);
 		resetButton.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -275,6 +277,21 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 					return;
 				}
 				currentEditor.restoreOriginalValues();
+			}
+		});
+		
+		fillFromCurrentButton = new Button(buttonBarContainer, SWT.NONE);
+		fillFromCurrentButton.setText("Fill from current");
+		fillFromCurrentButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				if (currentEditor == null || !(currentEditor instanceof IBookmarkPropertyEditor))
+				{
+					return;
+				}
+				((IBookmarkPropertyEditor)currentEditor).fillFromCurrent();
 			}
 		});
 		
@@ -312,6 +329,8 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		
 		currentEditor = selectedEditor;
 		messageArea.showTitle(currentEditor.getName(), null);
+		fillFromCurrentButton.setVisible(currentEditor instanceof IBookmarkPropertyEditor);
+		
 		if (currentEditor.getControl() == null)
 		{
 			Control control = currentEditor.createControl(editorContainer);

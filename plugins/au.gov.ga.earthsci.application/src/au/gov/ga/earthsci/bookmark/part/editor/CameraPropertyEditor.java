@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Label;
 import au.gov.ga.earthsci.application.widgets.PositionEditor;
 import au.gov.ga.earthsci.application.widgets.PositionEditor.PositionChangedEvent;
 import au.gov.ga.earthsci.application.widgets.PositionEditor.PositionEditorListener;
+import au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory;
 import au.gov.ga.earthsci.bookmark.part.editor.IBookmarkEditorMessage.Level;
 import au.gov.ga.earthsci.bookmark.properties.camera.CameraProperty;
 
@@ -61,7 +62,18 @@ public class CameraPropertyEditor extends AbstractBookmarkPropertyEditor
 	@Override
 	public void restoreOriginalValues()
 	{
-		CameraProperty property = (CameraProperty)getProperty();
+		fillEditorsFromProperty((CameraProperty)getProperty());
+	}
+
+	@Override
+	public void fillFromCurrent()
+	{
+		CameraProperty current = (CameraProperty) BookmarkPropertyFactory.createProperty(CameraProperty.TYPE);
+		fillEditorsFromProperty(current);
+	}
+	
+	private void fillEditorsFromProperty(CameraProperty property)
+	{
 		if (property != null)
 		{
 			eyePositionEditor.setPositionValue(property.getEyePosition());
@@ -73,7 +85,7 @@ public class CameraPropertyEditor extends AbstractBookmarkPropertyEditor
 			lookatPositionEditor.setPositionValue(null);
 		}
 	}
-
+	
 	@Override
 	public Control createControl(Composite parent)
 	{

@@ -36,4 +36,11 @@ public interface IBookmarkPropertyEditor extends IBookmarkEditor
 	 */
 	void setProperty(IBookmarkProperty property);
 	
+	/**
+	 * Fill the fields of this editor from the current world state (as appropriate),
+	 * but (importantly) do not apply them to the backing property.
+	 * <p/>
+	 * Actual binding to the backing property should be done in {@link #okPressed()}
+	 */
+	void fillFromCurrent();
 }
