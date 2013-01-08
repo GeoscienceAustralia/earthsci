@@ -22,10 +22,9 @@ import java.text.NumberFormat;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -55,27 +54,17 @@ import org.eclipse.swt.widgets.Text;
 public class PositionEditor extends Composite
 {
 
-	private final Label latLabel;
 	private final Text latitude;
-	private final Label latUnit;
-	
-	private final Label lonLabel;
 	private final Text longitude;
-	private final Label lonUnit;
-	
-	private final Label elLabel;
 	private final Text elevation;
-	private final Label elUnit;
 	
 	private int numDecimalPlaces = 8;
 	
+	private final AtomicBoolean quiet = new AtomicBoolean(false);
 	private final Vector<PositionEditorListener> listeners = new Vector<PositionEditorListener>();
 	
 	/**
 	 * Create a new {@link PositionEditor}
-	 * 
-	 * @param parent
-	 * @param style
 	 */
 	public PositionEditor(Composite parent, int style)
 	{
@@ -97,39 +86,34 @@ public class PositionEditor extends Composite
 			}
 		};
 		
-		latLabel = new Label(this, style);
-		latLabel.setText("Latitude:");
-		latitude = new Text(this, fieldStyle);
-		latitude.setLayoutData(fieldLayoutData);
-		latitude.addModifyListener(modifyListener);
-		latUnit = new Label(this, style);
-		latUnit.setText("\u00B0");
+		addLabel(style, Messages.PositionEditor_LatitudeLabel);
+		latitude = addText(fieldStyle, fieldLayoutData, modifyListener);
+		addLabel(style, Messages.PositionEditor_LatitudeUnits);
 		
-		lonLabel = new Label(this, style);
-		lonLabel.setText("Longitude:");
-		longitude = new Text(this, fieldStyle);
-		longitude.setLayoutData(fieldLayoutData);
-		longitude.addModifyListener(modifyListener);
-		lonUnit = new Label(this, style);
-		lonUnit.setText("\u00B0");
+		addLabel(style, Messages.PositionEditor_LongitudeLabel);
+		longitude = addText(fieldStyle, fieldLayoutData, modifyListener);
+		addLabel(style, Messages.PositionEditor_LongitudeUnits);
 		
-		elLabel = new Label(this, style);
-		elLabel.setText("Elevation:");
-		elevation = new Text(this, fieldStyle);
-		elevation.setLayoutData(fieldLayoutData);
-		elevation.addModifyListener(modifyListener);
-		elUnit = new Label(this, style);
-		elUnit.setText("m");
-		
-		addDisposeListener(new DisposeListener()
-		{
-			@Override
-			public void widgetDisposed(DisposeEvent e)
-			{
-			}
-		});
+		addLabel(style, Messages.PositionEditor_ElevationLabel);
+		elevation = addText(fieldStyle, fieldLayoutData, modifyListener);
+		addLabel(style, Messages.PositionEditor_ElevationUnits);
 	}
 
+	private Label addLabel(int style, String text)
+	{
+		Label result = new Label(this, style);
+		result.setText(text);
+		return result;
+	}
+	
+	private Text addText(int style, Object layoutData, ModifyListener listener)
+	{
+		Text result = new Text(this, style);
+		result.setLayoutData(layoutData);
+		result.addModifyListener(listener);
+		return result;
+	}
+	
 	/**
 	 * Returns the current {@link Position} value this editor reflects, or <code>null</code>
 	 * if it is invalid.
@@ -159,6 +143,7 @@ public class PositionEditor extends Composite
 	 */
 	public void setPositionValue(Position p)
 	{
+		quiet.set(true);
 		if (p != null)
 		{
 			NumberFormat numberFormat = getNumberFormat();
@@ -173,7 +158,8 @@ public class PositionEditor extends Composite
 			longitude.setText(""); //$NON-NLS-1$
 			elevation.setText(""); //$NON-NLS-1$
 		}
-		layout(true, true);
+		quiet.set(false);
+		notifyModify();
 	}
 
 	/**
@@ -220,9 +206,15 @@ public class PositionEditor extends Composite
 	
 	private void notifyModify()
 	{
+		if (quiet.get())
+		{
+			return;
+		}
+		
 		// Send a low-level event
 		Event e = new Event();
 		e.item = this;
+		e.widget = this;
 		e.type = SWT.Modify;
 		e.display = Display.getCurrent();
 		e.data = new String[] {latitude.getText(), longitude.getText(), elevation.getText()};
@@ -245,8 +237,8 @@ public class PositionEditor extends Composite
 	}
 	
 	/**
-	 * An event that is fired when a user's text change alters the value of the {@link Position}
-	 * this editor reflects.
+	 * An event that is fired when a user's text change alters the value of a {@link Position}
+	 * within a {@link PositionEditor}
 	 */
 	public final static class PositionChangedEvent extends EventObject
 	{
