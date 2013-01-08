@@ -155,5 +155,12 @@ public abstract class AbstractBookmarkEditor implements IBookmarkEditor
 		}
 		listeners.remove(listener);
 	}
+	
+	@Override
+	public void cancelPressed()
+	{
+		// Subclasses may override to perform cleanup as necessary
+	}
+	
 
 }

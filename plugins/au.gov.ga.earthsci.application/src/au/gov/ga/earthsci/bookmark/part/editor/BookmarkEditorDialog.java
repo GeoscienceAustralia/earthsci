@@ -39,11 +39,14 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -77,6 +80,7 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 {
 	private static final int[] SASH_WEIGHTS = new int[] {30, 70}; 
 	private static final Point DEFAULT_MIN_PAGE_SIZE = new Point(400, 400);
+	private static final Point DEFAULT_PAGE_SIZE = new Point(400, 400);
 	
 	private final IBookmark bookmark;
 	
@@ -101,7 +105,12 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		for (String type : BookmarkPropertyEditorFactory.getSupportedTypes())
 		{
 			IBookmarkPropertyEditor editor = BookmarkPropertyEditorFactory.createEditor(type);
+			
 			editor.addListener(this);
+			if (bookmark.hasProperty(type))
+			{
+				editor.setProperty(bookmark.getProperty(type));
+			}
 			editors.add(editor);
 		}
 	}
@@ -247,6 +256,28 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		editorContainer.setLayoutData(new GridData(GridData.FILL_BOTH));
 		editorContainer.setLayout(new GridLayout());
 		
+		Composite buttonBarContainer = new Composite(inner, SWT.NONE);
+		buttonBarContainer.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		buttonBarContainer.setLayout(new GridLayout());
+		
+		Button resetButton = new Button(buttonBarContainer, SWT.NONE);
+		resetButton.setText("Reset Values");
+		gd = new GridData(GridData.GRAB_HORIZONTAL);
+		gd.horizontalAlignment = GridData.HORIZONTAL_ALIGN_END;
+		resetButton.setLayoutData(gd);
+		resetButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				if (currentEditor == null)
+				{
+					return;
+				}
+				currentEditor.restoreOriginalValues();
+			}
+		});
+		
 		return container;
 	}
 	
@@ -275,6 +306,7 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 			if (currentEditor.getControl() != null)
 			{
 				currentEditor.getControl().setVisible(false);
+				((GridData)currentEditor.getControl().getLayoutData()).exclude = true;
 			}
 		}
 		
@@ -282,12 +314,16 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		messageArea.showTitle(currentEditor.getName(), null);
 		if (currentEditor.getControl() == null)
 		{
-			currentEditor.createControl(editorContainer);
+			Control control = currentEditor.createControl(editorContainer);
+			control.setLayoutData(new GridData(GridData.FILL_BOTH));
 		}
 		else
 		{
 			currentEditor.getControl().setVisible(true);
+			((GridData)currentEditor.getControl().getLayoutData()).exclude = false;
 		}
+		
+		editorContainer.layout(true, true);
 		
 		return true;
 	}
