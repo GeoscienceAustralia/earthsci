@@ -26,6 +26,10 @@ public class Messages extends NLS
 	public static String PositionEditor_LatitudeUnits;
 	public static String PositionEditor_LongitudeLabel;
 	public static String PositionEditor_LongitudeUnits;
+	public static String Vec4Editor_WLabel;
+	public static String Vec4Editor_XLabel;
+	public static String Vec4Editor_YLabel;
+	public static String Vec4Editor_ZLabel;
 	static
 	{
 		// initialize resource bundle
