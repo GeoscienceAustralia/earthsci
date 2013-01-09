@@ -37,6 +37,8 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -44,6 +46,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -81,7 +84,6 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 {
 	private static final int[] SASH_WEIGHTS = new int[] {30, 70}; 
 	private static final Point DEFAULT_MIN_PAGE_SIZE = new Point(400, 400);
-	private static final Point DEFAULT_PAGE_SIZE = new Point(400, 400);
 	
 	private final IBookmark bookmark;
 	
@@ -90,6 +92,7 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 	
 	private DialogMessageArea messageArea;
 
+	private ScrolledComposite editorScroller;
 	private Composite editorContainer;
 	private IBookmarkEditor currentEditor;
 	
@@ -227,7 +230,7 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 	 */
 	protected Control createPropertyEditArea(Composite parent)
 	{
-		Composite container = new Composite(parent, SWT.NONE);
+		final Composite container = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.horizontalSpacing = 0;
@@ -235,21 +238,29 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		layout.marginWidth = 0;
 		container.setLayout(layout);
 		
-		Label leftSeparator = new Label(container, SWT.VERTICAL | SWT.SEPARATOR);
+		final Label leftSeparator = new Label(container, SWT.VERTICAL | SWT.SEPARATOR);
 		leftSeparator.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.GRAB_VERTICAL));
 		
-		ScrolledComposite scrolled = new ScrolledComposite(container, SWT.V_SCROLL | SWT.H_SCROLL);
-		scrolled.setShowFocusedControl(true);
-		scrolled.setExpandHorizontal(true);
-		scrolled.setExpandVertical(true);
-		scrolled.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-		scrolled.setMinSize(DEFAULT_MIN_PAGE_SIZE);
+		editorScroller = new ScrolledComposite(container, SWT.V_SCROLL | SWT.H_SCROLL);
+		editorScroller.setShowFocusedControl(true);
+		editorScroller.setExpandHorizontal(true);
+		editorScroller.setExpandVertical(true);
+		editorScroller.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+		editorScroller.setMinSize(DEFAULT_MIN_PAGE_SIZE);
 		
-		Composite inner = new Composite(scrolled, SWT.NONE);
+		final Composite inner = new Composite(editorScroller, SWT.NONE);
 		inner.setLayoutData(new GridData(GridData.FILL_BOTH));
 		inner.setLayout(new GridLayout());
 		
-		scrolled.setContent(inner);
+		editorScroller.setContent(inner);
+		editorScroller.addControlListener(new ControlAdapter()
+		{
+			@Override
+			public void controlResized(ControlEvent e)
+			{
+				updateScrollerMinSize();
+			}
+		});
 		
 		messageArea = new DialogMessageArea();
 		messageArea.createContents(inner);
@@ -344,7 +355,18 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		
 		editorContainer.layout(true, true);
 		
+		updateScrollerMinSize();
+		
 		return true;
+	}
+
+	private void updateScrollerMinSize()
+	{
+		Rectangle r = editorScroller.getClientArea();
+		Point computeSize = editorScroller.getContent().computeSize(r.width, SWT.DEFAULT);
+		
+		editorScroller.setMinSize(Math.max(DEFAULT_MIN_PAGE_SIZE.x, computeSize.x),
+								  Math.max(DEFAULT_MIN_PAGE_SIZE.y, computeSize.y));
 	}
 	
 	@Override
