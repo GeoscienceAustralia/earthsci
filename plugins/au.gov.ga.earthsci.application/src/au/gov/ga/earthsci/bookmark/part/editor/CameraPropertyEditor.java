@@ -34,6 +34,7 @@ import au.gov.ga.earthsci.application.widgets.Vec4Editor.Vec4ChangedEvent;
 import au.gov.ga.earthsci.application.widgets.Vec4Editor.Vec4EditorListener;
 import au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
+import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.part.editor.IBookmarkEditorMessage.Level;
 import au.gov.ga.earthsci.bookmark.properties.camera.CameraProperty;
 
@@ -72,25 +73,19 @@ public class CameraPropertyEditor extends AbstractBookmarkPropertyEditor
 	}
 
 	@Override
-	public void restoreOriginalValues()
+	protected IBookmarkProperty createPropertyFromCurrent()
 	{
-		fillEditorsFromProperty((CameraProperty)getProperty());
-	}
-
-	@Override
-	public void fillFromCurrent()
-	{
-		CameraProperty current = (CameraProperty) BookmarkPropertyFactory.createProperty(CameraProperty.TYPE);
-		fillEditorsFromProperty(current);
+		return BookmarkPropertyFactory.createProperty(CameraProperty.TYPE);
 	}
 	
-	private void fillEditorsFromProperty(CameraProperty property)
+	@Override
+	protected void fillFieldsFromProperty(IBookmarkProperty property)
 	{
 		if (property != null)
 		{
-			eyePositionEditor.setPositionValue(property.getEyePosition());
-			lookatPositionEditor.setPositionValue(property.getLookatPosition());
-			upVectorEditor.setVec4Value(property.getUpVector());
+			eyePositionEditor.setPositionValue(((CameraProperty)property).getEyePosition());
+			lookatPositionEditor.setPositionValue(((CameraProperty)property).getLookatPosition());
+			upVectorEditor.setVec4Value(((CameraProperty)property).getUpVector());
 		}
 		else
 		{

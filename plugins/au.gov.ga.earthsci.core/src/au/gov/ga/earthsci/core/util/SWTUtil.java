@@ -16,6 +16,8 @@
 package au.gov.ga.earthsci.core.util;
 
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 /**
  * Collection of static utility methods for SWT support.
@@ -61,5 +63,17 @@ public class SWTUtil
 	public static boolean shouldDarken(Color color)
 	{
 		return (color.getRed() + color.getGreen() + color.getBlue()) > 128 * 3;
+	}
+	
+	public static void setEnabled(Control root, boolean enabled)
+	{
+		root.setEnabled(enabled);
+		if (root instanceof Composite)
+		{
+			for (Control c: ((Composite)root).getChildren())
+			{
+				setEnabled(c, enabled);
+			}
+		}
 	}
 }

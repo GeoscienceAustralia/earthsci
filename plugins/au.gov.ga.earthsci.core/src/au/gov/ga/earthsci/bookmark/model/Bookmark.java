@@ -24,6 +24,7 @@ import au.gov.ga.earthsci.core.persistence.Adapter;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
+import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
  * The default {@link IBookmark} implementation
@@ -117,6 +118,37 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 		{
 			firePropertyChange("properties", oldProperties, getProperties()); //$NON-NLS-1$
 		}
+	}
+	
+	@Override
+	public boolean removeProperty(IBookmarkProperty p)
+	{
+		if (p == null)
+		{
+			return false;
+		}
+		
+		return removeProperty(p.getType()) != null;
+	}
+	
+	@Override
+	public IBookmarkProperty removeProperty(String type)
+	{
+		if (Util.isBlank(type))
+		{
+			return null;
+		}
+		
+		IBookmarkProperty[] oldProperties = getProperties();
+		
+		IBookmarkProperty p = this.properties.remove(type);
+		
+		if (p != null)
+		{
+			firePropertyChange("properties", oldProperties, getProperties()); //$NON-NLS-1$
+		}
+		
+		return p;
 	}
 	
 	@Override

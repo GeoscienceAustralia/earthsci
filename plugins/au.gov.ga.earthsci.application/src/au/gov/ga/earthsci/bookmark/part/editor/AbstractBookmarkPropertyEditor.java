@@ -27,6 +27,7 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 public abstract class AbstractBookmarkPropertyEditor extends AbstractBookmarkEditor implements IBookmarkPropertyEditor
 {
 	private IBookmarkProperty property;
+	private boolean includedInBookmark;
 	
 	@Override
 	public void setProperty(IBookmarkProperty property) 
@@ -37,8 +38,49 @@ public abstract class AbstractBookmarkPropertyEditor extends AbstractBookmarkEdi
 	/**
 	 * @return the property this editor is backed by
 	 */
+	@Override
 	public IBookmarkProperty getProperty()
 	{
 		return property;
 	}
+	
+	@Override
+	public void setIncludedInBookmark(boolean included)
+	{
+		this.includedInBookmark = included;
+		if (this.includedInBookmark && this.property == null)
+		{
+			this.property = createPropertyFromCurrent();
+			fillFromCurrent();
+		}
+	}
+	
+	@Override
+	public boolean isIncludedInBookmark()
+	{
+		return includedInBookmark;
+	}
+	
+	@Override
+	public void restoreOriginalValues()
+	{
+		fillFieldsFromProperty(getProperty());
+	}
+
+	@Override
+	public void fillFromCurrent()
+	{
+		fillFieldsFromProperty(createPropertyFromCurrent());
+	}
+	
+	/**
+	 * Create and return a new property from the current world state
+	 */
+	protected abstract IBookmarkProperty createPropertyFromCurrent();
+
+	/**
+	 * Fill this editor's fields with the values in the given property, or clear the fields
+	 * if <code>null</code>
+	 */
+	protected abstract void fillFieldsFromProperty(IBookmarkProperty property);
 }

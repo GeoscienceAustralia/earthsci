@@ -24,6 +24,7 @@ import org.eclipse.jface.dialogs.DialogMessageArea;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -43,9 +44,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -62,6 +61,7 @@ import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.part.Messages;
 import au.gov.ga.earthsci.bookmark.part.editor.IBookmarkEditorMessage.Level;
+import au.gov.ga.earthsci.core.util.SWTUtil;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
@@ -85,20 +85,45 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 	private static final int[] SASH_WEIGHTS = new int[] {30, 70}; 
 	private static final Point DEFAULT_MIN_PAGE_SIZE = new Point(400, 400);
 	
+	/** The current bookmark being edited */
 	private final IBookmark bookmark;
 	
+	/** The tree menu containing available editors */
 	private FilteredTree editorFilteredTree;
+	
+	/** The list of available editors */
 	private List<IBookmarkEditor> editors = new ArrayList<IBookmarkEditor>();
 	
-	private DialogMessageArea messageArea;
-
-	private ScrolledComposite editorScroller;
-	private Composite editorContainer;
+	/** The current editor */
 	private IBookmarkEditor currentEditor;
 	
+	/** The primary scroller that holds the editor and message area etc. */
+	private ScrolledComposite editorScroller;
+	
+	/** The editor message area, for display of title and errors etc. */
+	private DialogMessageArea messageArea;
+
+	/** The 'include in bookmark' question area */
+	private Composite editorInclusionArea;
+	
+	/** The 'include in bookmark' checkbox */
+	private Button editorInclusionCheck;
+	
+	/** The container that holds the controls of the editors */
+	private Composite editorContainer;
+	
+	/** The secondary button bar */
+	private Composite editorButtonBar;
+
+	/** The 'fill from current' button */
 	private Button fillFromCurrentButton;
+	
+	/** The 'restore to originals' button */
 	private Button resetButton;
 	
+	/**
+	 * Create a new dialog for the editing of the given {@link IBookmark}
+	 */
 	public BookmarkEditorDialog(IBookmark bookmark, Shell shell)
 	{
 		super(shell);
@@ -118,6 +143,7 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 			if (bookmark.hasProperty(type))
 			{
 				editor.setProperty(bookmark.getProperty(type));
+				editor.setIncludedInBookmark(true);
 			}
 			editors.add(editor);
 		}
@@ -268,16 +294,35 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		messageArea.setTitleLayoutData(gd);
 		messageArea.setMessageLayoutData(gd);
 		
+		Label separator = new Label(inner, SWT.HORIZONTAL | SWT.SEPARATOR);
+		separator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
+		
+		editorInclusionArea = new Composite(inner, SWT.NONE);
+		editorInclusionArea.setLayout(new GridLayout());
+		editorInclusionArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		editorInclusionCheck = new Button(editorInclusionArea, SWT.CHECK);
+		editorInclusionCheck.setText(Messages.BookmarkEditorDialog_IncludeInBookmarkLabel);
+		editorInclusionCheck.setSelection(true);
+		editorInclusionCheck.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				updateEditorIncluded(editorInclusionCheck.getSelection());
+			}
+		});
+		
 		editorContainer = new Composite(inner, SWT.NONE);
 		editorContainer.setLayoutData(new GridData(GridData.FILL_BOTH));
 		editorContainer.setLayout(new GridLayout());
 		
-		Composite buttonBarContainer = new Composite(inner, SWT.RIGHT_TO_LEFT);
-		buttonBarContainer.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		buttonBarContainer.setLayout(new RowLayout());
+		editorButtonBar = new Composite(inner, SWT.RIGHT_TO_LEFT);
+		editorButtonBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		editorButtonBar.setLayout(new RowLayout());
 		
-		resetButton = new Button(buttonBarContainer, SWT.NONE);
-		resetButton.setText("Reset Values");
+		resetButton = new Button(editorButtonBar, SWT.NONE);
+		resetButton.setText(Messages.BookmarkEditorDialog_ResetValuesLabel);
 		resetButton.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -291,8 +336,8 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 			}
 		});
 		
-		fillFromCurrentButton = new Button(buttonBarContainer, SWT.NONE);
-		fillFromCurrentButton.setText("Fill from current");
+		fillFromCurrentButton = new Button(editorButtonBar, SWT.NONE);
+		fillFromCurrentButton.setText(Messages.BookmarkEditorDialog_FillFromCurrentLabel);
 		fillFromCurrentButton.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -310,12 +355,14 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 	}
 	
 	/**
-	 * Set the current editor in the editor area, if there are no validation errors present in the currently visible editor.
+	 * Set the current editor in the editor area, if there are no validation errors present in the 
+	 * currently visible editor.
 	 *  
 	 * @param selectedEditor The editor to show
 	 * 
-	 * @return <code>true</code> if the editor was successfully changed; <code>false</code> if the editor was unable to be changed
-	 * (e.g. there is a validation error present on the current page)
+	 * @return <code>true</code> if the editor was successfully changed; <code>false</code> if 
+	 * the editor was unable to be changed (e.g. there is a validation error present on 
+	 * the current page)
 	 */
 	private boolean showEditor(IBookmarkEditor selectedEditor)
 	{
@@ -324,10 +371,11 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 			return false;
 		}
 		
+		// Check validity and hide current editor as appropriate
 		if (currentEditor != null)
 		{
 			updateValidityIndicatorsForCurrent();
-			if (!currentEditor.isValid())
+			if (!currentEditor.isValid() && currentEditorIncludedInBookmark())
 			{
 				return false;
 			}
@@ -338,10 +386,14 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 			}
 		}
 		
+		// Change editors
 		currentEditor = selectedEditor;
+
+		// Update the common components based on the current editor
 		messageArea.showTitle(currentEditor.getName(), null);
 		fillFromCurrentButton.setVisible(currentEditor instanceof IBookmarkPropertyEditor);
 		
+		// Instantiate / show editor control as appropriate
 		if (currentEditor.getControl() == null)
 		{
 			Control control = currentEditor.createControl(editorContainer);
@@ -353,8 +405,11 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 			((GridData)currentEditor.getControl().getLayoutData()).exclude = false;
 		}
 		
+		// Update the "include in bookmark" indicator
+		updateEditorIncluded(currentEditorIncludedInBookmark());
+
+		// Refresh the layout and scrollbar activation based on new content
 		editorContainer.layout(true, true);
-		
 		updateScrollerMinSize();
 		
 		return true;
@@ -369,6 +424,49 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 								  Math.max(DEFAULT_MIN_PAGE_SIZE.y, computeSize.y));
 	}
 	
+	private boolean currentEditorIncludedInBookmark()
+	{
+		return editorIncludedInBookmark(currentEditor);
+	}
+	
+	private boolean editorIncludedInBookmark(IBookmarkEditor editor)
+	{
+		if (editor == null)
+		{
+			return false;
+		}
+		if (!(editor instanceof IBookmarkPropertyEditor))
+		{
+			return true;
+		}
+		return ((IBookmarkPropertyEditor)editor).isIncludedInBookmark();
+	}
+	
+	private void updateEditorIncluded(boolean included)
+	{
+		SWTUtil.setEnabled(editorContainer, included);
+		SWTUtil.setEnabled(editorButtonBar, included);
+		
+		if (currentEditor instanceof IBookmarkPropertyEditor)
+		{
+			editorInclusionArea.setVisible(true);
+			((GridData)editorInclusionArea.getLayoutData()).exclude = false;
+			
+			editorInclusionCheck.setSelection(included);
+			
+			((IBookmarkPropertyEditor)currentEditor).setIncludedInBookmark(included);
+			
+			updateValidityIndicatorsForCurrent();
+			
+			editorFilteredTree.getViewer().refresh(currentEditor, true);
+		}
+		else
+		{
+			editorInclusionArea.setVisible(false);
+			((GridData)editorInclusionArea.getLayoutData()).exclude = true;
+		}
+	}
+	
 	@Override
 	protected void okPressed()
 	{
@@ -380,7 +478,21 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		
 		for (IBookmarkEditor e : editors)
 		{
-			e.okPressed();
+			if (editorIncludedInBookmark(e))
+			{
+				e.okPressed();
+				if (e instanceof IBookmarkPropertyEditor)
+				{
+					if (!bookmark.hasProperty(((IBookmarkPropertyEditor)e).getProperty().getType()))
+					{
+						bookmark.addProperty(((IBookmarkPropertyEditor)e).getProperty());
+					}
+				}
+			}
+			else
+			{
+				bookmark.removeProperty(((IBookmarkPropertyEditor)e).getProperty());
+			}
 		}
 		
 		setReturnCode(OK);
@@ -426,26 +538,26 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		{
 			return;
 		}
-		if (!valid)
+		if (valid || !currentEditorIncludedInBookmark())
+		{
+			messageArea.restoreTitle();
+			if (getButton(IDialogConstants.OK_ID) != null)
+			{
+				getButton(IDialogConstants.OK_ID).setEnabled(true);
+			}
+		}
+		else if (!valid)
 		{
 			if (messages != null && messages.length > 0)
 			{
 				messageArea.updateText(messages[0].getMessage(), 
 									   messages[0].getLevel() == Level.ERROR ? IMessageProvider.ERROR : messages[0].getLevel() == Level.WARNING ? IMessageProvider.WARNING : IMessageProvider.INFORMATION);
 			}
-			getButton(IDialogConstants.OK_ID).setEnabled(false);
+			if (getButton(IDialogConstants.OK_ID) != null)
+			{
+				getButton(IDialogConstants.OK_ID).setEnabled(false);
+			}
 		}
-		else
-		{
-			messageArea.restoreTitle();
-			getButton(IDialogConstants.OK_ID).setEnabled(true);
-		}
-	}
-	
-	@Deprecated
-	private void debugControl(Control c)
-	{
-		c.setBackground(new Color(getShell().getDisplay(), new RGB(255, 0, 0)));
 	}
 	
 	/**
@@ -541,7 +653,16 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		@Override
 		public void update(ViewerCell cell)
 		{
-			cell.setText(((IBookmarkEditor)cell.getElement()).getName());
+			IBookmarkEditor editor = (IBookmarkEditor)cell.getElement();
+			cell.setText(editor.getName());
+			if (editorIncludedInBookmark(editor))
+			{
+				cell.setFont(JFaceResources.getFontRegistry().getBold("default")); //$NON-NLS-1$
+			}
+			else
+			{
+				cell.setFont(JFaceResources.getDefaultFont());
+			}
 		}
 	}
 	

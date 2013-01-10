@@ -37,10 +37,33 @@ public interface IBookmarkPropertyEditor extends IBookmarkEditor
 	void setProperty(IBookmarkProperty property);
 	
 	/**
+	 * Retrieve the property this editor is editing
+	 * 
+	 * @return The property being edited, or <code>null</code> if none exist
+	 */
+	IBookmarkProperty getProperty();
+	
+	/**
 	 * Fill the fields of this editor from the current world state (as appropriate),
 	 * but (importantly) do not apply them to the backing property.
 	 * <p/>
 	 * Actual binding to the backing property should be done in {@link #okPressed()}
 	 */
 	void fillFromCurrent();
+	
+	/**
+	 * Return whether the property being edited by this editor should be included in
+	 * the current bookmark.
+	 * 
+	 * @return <code>true</code> if the property is to be included; <code>false</code> otherwise.
+	 */
+	boolean isIncludedInBookmark();
+	
+	/**
+	 * Set whether the property being edited by this editor should be included in the
+	 * current bookmark
+	 * 
+	 * @param included Whether or not to include the property in the current bookmark
+	 */
+	void setIncludedInBookmark(boolean included);
 }

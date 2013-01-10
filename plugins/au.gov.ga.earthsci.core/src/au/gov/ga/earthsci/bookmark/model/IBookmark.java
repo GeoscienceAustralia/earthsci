@@ -70,6 +70,24 @@ public interface IBookmark
 	void addProperty(IBookmarkProperty property);
 	
 	/**
+	 * Remove the property of the given type from this bookmark, if it exists
+	 * 
+	 * @param type The type of the property to remove
+	 * 
+	 * @return The removed property, or <code>null</code> if none is removed
+	 */
+	IBookmarkProperty removeProperty(String type);
+	
+	/**
+	 * Remove the given property from this bookmark, if it exists
+	 * 
+	 * @param p The property to remove
+	 * 
+	 * @return <code>true</code> if the property was removed; <code>false</code> otherwise
+	 */
+	boolean removeProperty(IBookmarkProperty p);
+	
+	/**
 	 * Return whether a property exists in this bookmark with the given type
 	 * 
 	 * @param type The property type to check for existence 
