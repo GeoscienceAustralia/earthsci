@@ -18,7 +18,8 @@ package au.gov.ga.earthsci.bookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 
 /**
- * An interface for classes that are able to apply the state stored in 
+ * An interface for classes that are able to apply the state stored in an {@link IBookmarkProperty}
+ * to the world.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
