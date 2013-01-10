@@ -15,11 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.retrieve.retriever;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import gov.nasa.worldwind.util.WWIO;
 
 import java.io.IOException;
@@ -78,6 +74,11 @@ public class HTTPRetrieverTest
 		mockContext = new Mockery();
 		
 		monitor = mockContext.mock(IRetrieverMonitor.class);
+		
+		mockContext.checking(new Expectations() {{{
+			// Monitor 
+			allowing(monitor);
+		}}});
 	}
 	
 	@Test
@@ -134,19 +135,6 @@ public class HTTPRetrieverTest
 		
 		setServerResponse("/success", 200, expectedResult, false);
 
-		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
-			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTING);
-			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTED);
-			oneOf(monitor).updateStatus(RetrievalStatus.READING);
-			oneOf(monitor).setLength(expectedResult.length());
-			oneOf(monitor).isCanceled();
-			oneOf(monitor).isPaused();
-			oneOf(monitor).progress(expectedResult.length());
-			oneOf(monitor).isCanceled();
-			oneOf(monitor).isPaused();
-		}}});
-		
 		URL url = createHttpURL("/success");
 		
 		IRetrievalResult result = classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null).result;
@@ -162,12 +150,6 @@ public class HTTPRetrieverTest
 	{
 		Assume.assumeTrue(httpServerIsAvailable());
 		
-		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
-			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTING);
-			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTED);
-		}}});
-		
 		URL url = createHttpURL("/404");
 		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
 	}
@@ -181,12 +163,6 @@ public class HTTPRetrieverTest
 		
 		setServerResponse("/fail", 403, expectedResult, true);
 
-		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
-			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTING);
-			oneOf(monitor).updateStatus(RetrievalStatus.CONNECTED);
-		}}});
-		
 		URL url = createHttpURL("/fail");
 		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
 	}
