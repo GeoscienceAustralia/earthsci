@@ -16,7 +16,6 @@
 package au.gov.ga.earthsci.bookmark;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.bookmark.model.IBookmarkPropertyAnimator;
 
 /**
  * An interface for classes that are able to apply the state stored in 

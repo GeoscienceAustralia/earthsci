@@ -19,9 +19,9 @@ import gov.nasa.worldwind.View;
 
 import javax.inject.Inject;
 
+import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.bookmark.model.IBookmarkPropertyAnimator;
 
 /**
  * An {@link IBookmarkPropertyApplicator} used to apply the state of {@link CameraProperty}s

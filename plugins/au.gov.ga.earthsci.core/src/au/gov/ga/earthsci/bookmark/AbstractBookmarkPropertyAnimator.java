@@ -16,7 +16,6 @@
 package au.gov.ga.earthsci.bookmark;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.bookmark.model.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**

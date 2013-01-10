@@ -37,10 +37,10 @@ import org.eclipse.swt.widgets.Display;
 
 import au.gov.ga.earthsci.bookmark.BookmarkFactory;
 import au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry;
+import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.bookmark.model.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.part.editor.BookmarkEditorDialog;
 import au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences;
 

@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.bookmark.model;
+package au.gov.ga.earthsci.bookmark;
+
+import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 
 /**
  * An interface for animators able to animate between two {@link IBookmarkProperty}s of the
