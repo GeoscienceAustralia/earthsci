@@ -33,19 +33,19 @@ import au.gov.ga.earthsci.core.persistence.IPersistentAdapter;
  */
 public class BookmarkPropertyPersistentAdapter implements IPersistentAdapter<IBookmarkProperty>
 {
-	private static final String PROPERTY_TYPE = "propertyType"; //$NON-NLS-1$
+	public static final String PROPERTY_TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
 	
 	@Override
 	public void toXML(IBookmarkProperty property, Element propertyElement, URI context)
 	{
-		propertyElement.setAttribute(PROPERTY_TYPE, property.getType());
+		propertyElement.setAttribute(PROPERTY_TYPE_ATTRIBUTE, property.getType());
 		BookmarkPropertyFactory.exportProperty(property, propertyElement);
 	}
 
 	@Override
 	public IBookmarkProperty fromXML(Element root, URI context)
 	{
-		return BookmarkPropertyFactory.createProperty(root.getAttribute(PROPERTY_TYPE), root);
+		return BookmarkPropertyFactory.createProperty(root.getAttribute(PROPERTY_TYPE_ATTRIBUTE), root);
 	}
 
 }

@@ -25,6 +25,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import au.gov.ga.earthsci.core.test.util.DummyRealm;
+
 /**
  * Unit tests for the {@link Bookmarks} class
  * 
@@ -225,20 +227,5 @@ public class BookmarksTest
 		assertTrue(lists.contains(newLists[0]));
 		assertTrue(lists.contains(newLists[1]));
 		assertTrue(lists.contains(newLists[2]));
-	}
-	
-	private static class DummyRealm extends Realm
-	{
-		public static void init()
-		{
-			setDefault(new DummyRealm());
-		}
-		
-		@Override
-		public boolean isCurrent()
-		{
-			return true;
-		}
-		
 	}
 }

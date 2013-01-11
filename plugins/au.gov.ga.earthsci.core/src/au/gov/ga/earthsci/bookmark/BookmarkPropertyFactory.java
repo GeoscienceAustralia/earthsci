@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.bookmark.properties.PlaceholderBookmarkProperty;
+import au.gov.ga.earthsci.bookmark.properties.PlaceholderBookmarkPropertyExporter;
 import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil;
 import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil.Callback;
 import au.gov.ga.earthsci.core.util.Validate;
@@ -53,6 +55,10 @@ public class BookmarkPropertyFactory
 	
 	private static Map<String, IBookmarkPropertyCreator> creators = new ConcurrentHashMap<String, IBookmarkPropertyCreator>();
 	private static Map<String, IBookmarkPropertyExporter> exporters = new ConcurrentHashMap<String, IBookmarkPropertyExporter>();
+	static
+	{
+		registerExporter(new PlaceholderBookmarkPropertyExporter());
+	}
 	
 	/**
 	 * Create and return a new property of the given type using the given XML.
@@ -72,7 +78,8 @@ public class BookmarkPropertyFactory
 		IBookmarkPropertyCreator propertyCreator = creators.get(type);
 		if (propertyCreator == null)
 		{
-			return null;
+			logger.debug("No bookmark property creator found for property type {}", type); //$NON-NLS-1$
+			return new PlaceholderBookmarkProperty(root);
 		}
 		
 		return propertyCreator.createFromXML(type, root);

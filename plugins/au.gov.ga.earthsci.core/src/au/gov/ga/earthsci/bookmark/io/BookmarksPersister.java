@@ -68,7 +68,9 @@ public class BookmarksPersister
 		persister.registerNamedExportable(Bookmark.class, "bookmark"); //$NON-NLS-1$
 		persister.registerNamedExportable(Bookmarks.class, "bookmarks"); //$NON-NLS-1$
 		persister.registerNamedExportable(BookmarkList.class, "bookmarkList"); //$NON-NLS-1$
+		
 		persister.registerAdapter(IBookmarkProperty.class, new BookmarkPropertyPersistentAdapter());
+		persister.registerNamedExportable(IBookmarkProperty.class, "property"); //$NON-NLS-1$
 	}
 	
 	/**
