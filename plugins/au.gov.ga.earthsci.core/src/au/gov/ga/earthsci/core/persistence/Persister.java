@@ -464,6 +464,15 @@ public class Persister
 
 		Class<?> c = getTypeFromName(element.getTagName());
 		assertIsExportable(c);
+		
+		IPersistentAdapter<?> adapter = getAdapter(c, AnnotationUtil.getAnnotation(c, Adapter.class));
+		if (adapter != null)
+		{
+			@SuppressWarnings("unchecked")
+			IPersistentAdapter<Object> objectAdapter = (IPersistentAdapter<Object>) adapter;
+			return objectAdapter.fromXML(element, context);
+		}
+		
 		Constructor<?> constructor = null;
 		try
 		{
@@ -635,12 +644,19 @@ public class Persister
 					arrayDepth++;
 				}
 				//load the class from the name
-				type = getTypeFromName(classNameAttribute);
-				//make the type an array type with the correct depth
-				while (arrayDepth > 0)
+				type = getTypeFromName(classNameAttribute, false);
+				if (type == null)
 				{
-					type = Array.newInstance(type, 0).getClass();
-					arrayDepth--;
+					type = getTypeFromName(element.getTagName(), false);
+				}
+				if (type != null)
+				{
+					//make the type an array type with the correct depth
+					while (arrayDepth > 0)
+					{
+						type = Array.newInstance(type, 0).getClass();
+						arrayDepth--;
+					}
 				}
 			}
 		}
@@ -686,7 +702,7 @@ public class Persister
 			}
 			else
 			{
-				//instantiate the collection impementation
+				//instantiate the collection implementation
 				String collectionClassName = element.getAttribute(TYPE_ATTRIBUTE);
 				Class<?> collectionType;
 				if (Util.isEmpty(collectionClassName))
@@ -1033,6 +1049,11 @@ public class Persister
 	 */
 	protected Class<?> getTypeFromName(String name) throws PersistenceException
 	{
+		return getTypeFromName(name, true);
+	}
+
+	private Class<?> getTypeFromName(String name, boolean failHard) throws PersistenceException
+	{
 		Class<?> c = nameToExportable.get(name);
 		if (c != null)
 		{
@@ -1061,9 +1082,16 @@ public class Persister
 			{
 			}
 		}
-		throw new PersistenceException("Could not determine type for name: " + name); //$NON-NLS-1$
+		if (failHard)
+		{
+			throw new PersistenceException("Could not determine type for name: " + name); //$NON-NLS-1$
+		}
+		else
+		{
+			return null;
+		}
 	}
-
+	
 	/**
 	 * Calculate the name for the given type. If the type is marked as
 	 * {@link Exportable} and a named exportable has been registered using
@@ -1120,9 +1148,13 @@ public class Persister
 	 */
 	protected void assertIsExportable(Class<?> type) throws PersistenceException
 	{
+		if (getAdapter(type, null) != null)
+		{
+			return;
+		}
 		if (AnnotationUtil.getAnnotation(type, Exportable.class) == null)
 		{
-			throw new PersistenceException(type + " is not marked " + Exportable.class.getSimpleName()); //$NON-NLS-1$
+			throw new PersistenceException(type + " is not marked " + Exportable.class.getSimpleName() + " and has no registered adapter."); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		try
 		{

@@ -15,13 +15,17 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.persistence;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import gov.nasa.worldwind.util.WWXML;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -168,6 +172,31 @@ public class PersisterTest
 		performTest(array, "testInterfaceArray.xml");
 	}
 
+	@Test
+	public void testNamedNonExportableWithAdapter() throws PersistenceException
+	{
+		IPersistentAdapter<Date> adapter = new IPersistentAdapter<Date>()
+		{
+			@Override
+			public void toXML(Date object, Element element, URI context){}
+			
+			@Override
+			public Date fromXML(Element element, URI context)
+			{
+				return new Date(123456);
+			}
+		};
+		
+		Persister p = new Persister();
+		p.registerAdapter(Date.class, adapter);
+		p.registerNamedExportable(Date.class, "myDate");
+		
+		Object loaded = p.load(WWXML.openDocument(this.getClass().getResourceAsStream("testNamedNonExportableWithAdapter.xml")).getDocumentElement(), null);
+		
+		assertNotNull(loaded);
+		assertEquals(new Date(123456), loaded);
+	}
+	
 	protected void performTest(Object o, String expectedResourceName) throws PersistenceException
 	{
 		performTest(o, new Persister(), expectedResourceName);
