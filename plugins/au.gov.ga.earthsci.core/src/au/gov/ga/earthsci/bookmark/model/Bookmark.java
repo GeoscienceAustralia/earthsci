@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.bookmark.model;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import au.gov.ga.earthsci.bookmark.Messages;
@@ -35,6 +36,9 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
 public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 {
 
+	@Persistent
+	private String id;
+	
 	private String name;
 	private IBookmarkMetadata metadata = new BookmarkMetadata();
 	
@@ -45,6 +49,13 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 	public Bookmark()
 	{
 		this.name = Messages.Bookmark_DefaultBookmarkName;
+		this.id = UUID.randomUUID().toString();
+	}
+	
+	@Override
+	public String getId()
+	{
+		return id;
 	}
 	
 	@Override

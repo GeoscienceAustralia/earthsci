@@ -27,6 +27,13 @@ package au.gov.ga.earthsci.bookmark.model;
 public interface IBookmark
 {
 
+	/**
+	 * Return the globally unique ID of this bookmark
+	 * 
+	 * @return The ID of this bookmark
+	 */
+	String getId();
+	
 	/** 
 	 * Return the name of this bookmark
 	 * 
