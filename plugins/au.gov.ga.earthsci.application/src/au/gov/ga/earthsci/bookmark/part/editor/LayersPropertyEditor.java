@@ -204,7 +204,14 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 	@Override
 	protected void fillFieldsFromProperty(IBookmarkProperty property)
 	{
-		layerState = new TreeMap<URI, Double>(((LayersProperty)property).getLayerState());
+		if (property == null)
+		{
+			layerState = new TreeMap<URI, Double>();
+		}
+		else
+		{
+			layerState = new TreeMap<URI, Double>(((LayersProperty)property).getLayerState());
+		}
 		layerTable.setInput(layerState.entrySet());
 		layerTable.setAllChecked(true);
 	}
