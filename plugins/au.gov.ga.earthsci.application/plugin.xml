@@ -100,6 +100,10 @@
             class="au.gov.ga.earthsci.bookmark.part.editor.CameraPropertyEditor"
             type="au.gov.ga.earthsci.bookmark.properties.camera">
       </editor>
+      <editor
+            class="au.gov.ga.earthsci.bookmark.part.editor.LayersPropertyEditor"
+            type="au.gov.ga.earthsci.bookmark.properties.layers">
+      </editor>
    </extension>
 
 </plugin>

@@ -48,6 +48,9 @@
       <creator
             class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
       </creator>
+      <creator
+            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
+      </creator>
    </extension>
    <extension
          point="au.gov.ga.earthsci.bookmark.exporter">
@@ -55,11 +58,17 @@
             class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
          exporter body text
       </exporter>
+      <exporter
+            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
+      </exporter>
    </extension>
    <extension
          point="au.gov.ga.earthsci.bookmark.applicator">
       <applicator
             class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyApplicator">
+      </applicator>
+      <applicator
+            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyApplicator">
       </applicator>
    </extension>
    <extension

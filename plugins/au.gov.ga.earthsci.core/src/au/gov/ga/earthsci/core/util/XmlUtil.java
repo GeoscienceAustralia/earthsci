@@ -604,6 +604,7 @@ public class XmlUtil
 	 */
 	public static Element[] getElements(Element context, String path, XPath xpath)
 	{
-		return WWXML.getElements(context, path, xpath);
+		Element[] elements = WWXML.getElements(context, path, xpath);
+		return elements == null ? new Element[0] : elements;
 	}
 }

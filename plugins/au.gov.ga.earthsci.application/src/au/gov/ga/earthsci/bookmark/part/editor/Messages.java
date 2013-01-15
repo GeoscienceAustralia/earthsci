@@ -28,6 +28,12 @@ public class Messages extends NLS
 	public static String CameraPropertyEditor_InvalidUpVectorMessage;
 	public static String CameraPropertyEditor_LookatPositionLabel;
 	public static String CameraPropertyEditor_UpVectorLabel;
+	public static String LayersPropertyEditor_EditorDescription;
+	public static String LayersPropertyEditor_EditorName;
+	public static String LayersPropertyEditor_InvalidOpacityMessage;
+	public static String LayersPropertyEditor_LayerStateLabel;
+	public static String LayersPropertyEditor_LayerStateLabelColumnLabel;
+	public static String LayersPropertyEditor_LayerStateOpacityColumnLabel;
 	static
 	{
 		// initialize resource bundle
