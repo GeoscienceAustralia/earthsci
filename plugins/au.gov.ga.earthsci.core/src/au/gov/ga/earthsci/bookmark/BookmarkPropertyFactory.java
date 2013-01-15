@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -220,6 +222,19 @@ public class BookmarkPropertyFactory
 	public static String[] getKnownPropertyTypes()
 	{
 		return creators.keySet().toArray(new String[creators.size()]);
+	}
+	
+	/**
+	 * @return An instance of every known property with the current world state
+	 */
+	public static IBookmarkProperty[] createKnownProperties()
+	{
+		List<IBookmarkProperty> result = new ArrayList<IBookmarkProperty>();
+		for (String type : getKnownPropertyTypes())
+		{
+			result.add(createProperty(type));
+		}
+		return result.toArray(new IBookmarkProperty[creators.size()]);
 	}
 	
 }

@@ -28,7 +28,9 @@ public class Messages extends NLS
 	public static String BookmarkEditorDialog_GeneralEditorTitle;
 	public static String BookmarkEditorDialog_IncludeInBookmarkLabel;
 	public static String BookmarkEditorDialog_ResetValuesLabel;
+	public static String BookmarksPreferencesPage_DefaultPropertiesLabel;
 	public static String BookmarksPreferencesPage_Description;
+	public static String BookmarksPreferencesPage_PropertyColumn;
 	public static String BookmarksPreferencesPage_Title;
 	public static String BookmarksPreferencesPage_TransitionDurationFieldTitle;
 	static

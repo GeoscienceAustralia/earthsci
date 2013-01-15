@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.part.preferences;
 
+import au.gov.ga.earthsci.bookmark.BookmarkFactory;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 
 /**
@@ -27,6 +28,7 @@ public interface IBookmarksPreferences
 {
 	String QUALIFIER_ID = "au.gov.ga.earthsci.bookmarks"; //$NON-NLS-1$
 	String DEFAULT_TRANSITION_DURATION = "au.gov.ga.earthsci.bookmarks.preferences.defaultTransitionDuration"; //$NON-NLS-1$
+	String DEFAULT_PROPERTIES = "au.gov.ga.earthsci.bookmarks.preferences.defaultProperties"; //$NON-NLS-1$
 	
 	/**
 	 * Returns the default duration to be used when transitioning
@@ -38,4 +40,13 @@ public interface IBookmarksPreferences
 	 */
 	long getDefaultTransitionDuration();
 	
+	/**
+	 * Returns the default list of bookmark properties that are to be included
+	 * when new bookmarks are created.
+	 * 
+	 * @return The list of default bookmark property types to include
+	 * 
+	 * @see BookmarkFactory#createBookmark(String...)
+	 */
+	String[] getDefaultPropertyTypes();
 }
