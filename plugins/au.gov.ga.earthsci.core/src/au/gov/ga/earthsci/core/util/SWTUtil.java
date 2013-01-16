@@ -16,8 +16,10 @@
 package au.gov.ga.earthsci.core.util;
 
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Collection of static utility methods for SWT support.
@@ -65,6 +67,13 @@ public class SWTUtil
 		return (color.getRed() + color.getGreen() + color.getBlue()) > 128 * 3;
 	}
 	
+	/**
+	 * Recursively enable/disable all the root control and all
+	 * of its children.
+	 * 
+	 * @param root The root node to enable/disable
+	 * @param enabled
+	 */
 	public static void setEnabled(Control root, boolean enabled)
 	{
 		root.setEnabled(enabled);
@@ -75,5 +84,13 @@ public class SWTUtil
 				setEnabled(c, enabled);
 			}
 		}
+	}
+	
+	/**
+	 * Add some colour to the provided control to better allow debugging
+	 */
+	public static void debug(Control control)
+	{
+		control.setBackground(new Color(Display.getCurrent(), new RGB(255,0,0)));
 	}
 }

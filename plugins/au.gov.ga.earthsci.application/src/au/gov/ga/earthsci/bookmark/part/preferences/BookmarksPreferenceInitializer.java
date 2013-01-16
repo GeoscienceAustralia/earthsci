@@ -34,7 +34,7 @@ public class BookmarksPreferenceInitializer extends AbstractPreferenceInitialize
 	{
 		IPreferenceStore store = new ScopedPreferenceStore(DefaultScope.INSTANCE, IBookmarksPreferences.QUALIFIER_ID);
 		
-		store.putValue(IBookmarksPreferences.DEFAULT_TRANSITION_DURATION, Long.toString(1000L));
+		store.putValue(IBookmarksPreferences.DEFAULT_TRANSITION_DURATION, Long.toString(3000L));
 	}
 
 }

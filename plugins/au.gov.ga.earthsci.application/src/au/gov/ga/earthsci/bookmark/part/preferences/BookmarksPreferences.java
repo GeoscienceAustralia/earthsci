@@ -20,6 +20,9 @@ import javax.inject.Inject;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.e4.core.di.extensions.Preference;
 
+import au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory;
+import au.gov.ga.earthsci.core.util.Util;
+
 /**
  * Default implementation of the {@link IBookmarksPreferences} interface that
  * uses the Eclipse preferences mechanism.
@@ -37,10 +40,25 @@ public class BookmarksPreferences implements IBookmarksPreferences
 	@Preference(nodePath=QUALIFIER_ID, value=DEFAULT_TRANSITION_DURATION)
 	private long defaultTransitionDuration;
 	
+	@Inject
+	@Preference(nodePath=QUALIFIER_ID, value=DEFAULT_PROPERTIES)
+	private String defaultProperties;
+	
 	@Override
 	public long getDefaultTransitionDuration()
 	{
 		return defaultTransitionDuration;
 	}
 	
+	@Override
+	public String[] getDefaultPropertyTypes()
+	{
+		if (defaultProperties == null)
+		{
+			String[] knownTypes = BookmarkPropertyFactory.getKnownPropertyTypes();
+			defaultProperties = Util.concat(knownTypes, ",", "");
+			return knownTypes;
+		}
+		return defaultProperties.split(","); //$NON-NLS-1$
+	}
 }

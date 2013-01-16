@@ -370,6 +370,10 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		{
 			return false;
 		}
+		if (selectedEditor == currentEditor)
+		{
+			return true;
+		}
 		
 		// Check validity and hide current editor as appropriate
 		if (currentEditor != null)
@@ -409,7 +413,7 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 		updateEditorIncluded(currentEditorIncludedInBookmark());
 
 		// Refresh the layout and scrollbar activation based on new content
-		editorContainer.layout(true, true);
+		editorScroller.layout(true, true);
 		updateScrollerMinSize();
 		
 		return true;
@@ -566,7 +570,9 @@ public class BookmarkEditorDialog extends TrayDialog implements IBookmarkEditorL
 	private class GeneralBookmarkEditor extends AbstractBookmarkEditor
 	{
 		private final String BOOKMARK_NAME_ID = "general.bookmark.name"; //$NON-NLS-1$
-		private final IBookmarkEditorMessage BOOKMARK_NAME_EMPTY_MESSAGE = new BookmarkEditorMessage(Level.ERROR, "general.bookmark.name.empty", Messages.BookmarkEditorDialog_EmptyBookmarkNameMessage); //$NON-NLS-1$
+		private final IBookmarkEditorMessage BOOKMARK_NAME_EMPTY_MESSAGE = new BookmarkEditorMessage(Level.ERROR, 
+																									"general.bookmark.name.empty",  //$NON-NLS-1$
+																									Messages.BookmarkEditorDialog_EmptyBookmarkNameMessage); 
 		
 		private Composite container;
 		private Text bookmarkNameField;

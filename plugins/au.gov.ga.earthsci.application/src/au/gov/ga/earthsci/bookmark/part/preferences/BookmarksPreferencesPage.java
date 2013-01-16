@@ -15,12 +15,25 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.part.preferences;
 
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 
+import au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory;
+import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.part.Messages;
+import au.gov.ga.earthsci.core.preferences.LabelFieldEditor;
+import au.gov.ga.earthsci.core.preferences.MultiSelectTableListFieldEditor;
+import au.gov.ga.earthsci.core.preferences.MultiSelectTableListFieldEditor.IItemSerializer;
+import au.gov.ga.earthsci.core.preferences.MultiSelectTableListFieldEditor.ITableItemCreator;
 import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 import au.gov.ga.earthsci.core.preferences.SpacerFieldEditor;
 
@@ -33,10 +46,12 @@ public class BookmarksPreferencesPage extends FieldEditorPreferencePage
 {
 
 	private IntegerFieldEditor transitionDurationEditor;
+	private MultiSelectTableListFieldEditor<IBookmarkProperty> defaultProperties;
+	private Map<String, IBookmarkProperty> cachedProperties;
 	
 	public BookmarksPreferencesPage()
 	{
-		super(FLAT);
+		super(GRID);
 		setTitle(Messages.BookmarksPreferencesPage_Title);
 		setDescription(Messages.BookmarksPreferencesPage_Description);
 		
@@ -54,6 +69,57 @@ public class BookmarksPreferencesPage extends FieldEditorPreferencePage
 														  Messages.BookmarksPreferencesPage_TransitionDurationFieldTitle, 
 														  getFieldEditorParent());
 		addField(transitionDurationEditor);
+		
+		addField(new SpacerFieldEditor(getFieldEditorParent()));
+		
+		LabelFieldEditor defaultPropertiesLabel = new LabelFieldEditor(Messages.BookmarksPreferencesPage_DefaultPropertiesLabel, getFieldEditorParent());
+		addField(defaultPropertiesLabel);
+		
+		loadAvailableBookmarkProperties();
+		
+		ITableItemCreator<IBookmarkProperty> tableItemCreator = new ITableItemCreator<IBookmarkProperty>()
+		{
+			@Override
+			public TableItem createTableItem(Table parent, IBookmarkProperty object)
+			{
+				TableItem item = new TableItem(parent, SWT.NONE);
+				item.setText(object.getName());
+				return item;
+			}
+		};
+		
+		IItemSerializer<IBookmarkProperty> itemSerializer = new IItemSerializer<IBookmarkProperty>() {
+
+			@Override
+			public String asString(IBookmarkProperty object)
+			{
+				return object.getType();
+			}
+
+			@Override
+			public IBookmarkProperty fromString(String string)
+			{
+				return cachedProperties.get(string);
+			}
+
+		};
+		
+		defaultProperties = new MultiSelectTableListFieldEditor<IBookmarkProperty>(IBookmarksPreferences.DEFAULT_PROPERTIES, 
+																		new ArrayList<IBookmarkProperty>(cachedProperties.values()),
+																		new String[] {Messages.BookmarksPreferencesPage_PropertyColumn},
+																		tableItemCreator,
+																		itemSerializer, 
+																		getFieldEditorParent());
+		addField(defaultProperties);
+	}
+
+	private void loadAvailableBookmarkProperties()
+	{
+		cachedProperties = new TreeMap<String, IBookmarkProperty>();
+		for (IBookmarkProperty p : BookmarkPropertyFactory.createKnownProperties())
+		{
+			cachedProperties.put(p.getType(), p);
+		}
 	}
 
 }

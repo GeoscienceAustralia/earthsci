@@ -62,7 +62,7 @@ public class CameraPropertyEditor extends AbstractBookmarkPropertyEditor
 	public void okPressed()
 	{
 		CameraProperty property = (CameraProperty)getProperty();
-		if (property == null)
+		if (property == null || container == null)
 		{
 			return;
 		}

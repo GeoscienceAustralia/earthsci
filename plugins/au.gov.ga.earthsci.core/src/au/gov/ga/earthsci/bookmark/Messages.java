@@ -23,6 +23,7 @@ public class Messages extends NLS
 	public static String Bookmark_DefaultBookmarkName;
 	public static String Bookmarks_DefaultListName;
 	public static String CameraProperty_Name;
+	public static String LayersProperty_Name;
 	static
 	{
 		// initialize resource bundle
