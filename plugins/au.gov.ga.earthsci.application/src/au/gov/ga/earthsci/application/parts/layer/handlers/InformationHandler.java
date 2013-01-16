@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer.handlers;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -27,8 +25,6 @@ import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 
 import au.gov.ga.earthsci.application.parts.info.InfoPart;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
@@ -44,19 +40,11 @@ public class InformationHandler
 	private EPartService partService;
 
 	@Execute
-	public void execute(TreeViewer viewer)
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
-		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-		List<?> selectionList = selection.toList();
-		if (!selectionList.isEmpty())
-		{
-			ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
-			ILayerTreeNode node = nodes[0];
-
-			MPart part = partService.showPart(InfoPart.PART_ID, PartState.VISIBLE);
-			part.getContext().modify(InfoPart.INPUT_NAME, node);
-			part.getContext().declareModifiable(InfoPart.INPUT_NAME);
-		}
+		MPart part = partService.showPart(InfoPart.PART_ID, PartState.VISIBLE);
+		part.getContext().modify(InfoPart.INPUT_NAME, layer);
+		part.getContext().declareModifiable(InfoPart.INPUT_NAME);
 	}
 
 	@CanExecute

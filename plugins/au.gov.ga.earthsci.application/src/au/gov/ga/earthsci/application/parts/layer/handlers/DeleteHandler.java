@@ -15,15 +15,11 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer.handlers;
 
-import java.util.List;
-
 import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 
@@ -35,14 +31,17 @@ import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 public class DeleteHandler
 {
 	@Execute
-	public void execute(TreeViewer viewer)
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
-		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-		List<?> selectionList = selection.toList();
-		ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
-		for (ILayerTreeNode node : nodes)
+		layer.removeFromParent();
+	}
+
+	@Execute
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode[] layers)
+	{
+		for (ILayerTreeNode layer : layers)
 		{
-			node.removeFromParent();
+			layer.removeFromParent();
 		}
 	}
 

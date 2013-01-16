@@ -15,14 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer.handlers;
 
-import java.util.List;
-
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.dnd.Clipboard;
 
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
@@ -39,11 +38,8 @@ public class NewFolderHandler
 	private ITreeModel model;
 
 	@Execute
-	public void execute(TreeViewer viewer, Clipboard clipboard)
+	public void execute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode parent, TreeViewer viewer)
 	{
-		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-		List<?> selectionList = selection.toList();
-		ILayerTreeNode parent = selectionList.isEmpty() ? null : (ILayerTreeNode) selectionList.get(0);
 		FolderNode folder = new FolderNode();
 		folder.setName("New Folder");
 		if (parent == null)
@@ -54,10 +50,6 @@ public class NewFolderHandler
 		{
 			parent.add(folder);
 		}
-		
-		//TreePath path = new TreePath(folder.pathToRoot());
-		//viewer.setSelection(new TreeSelection(path));
-		
 		viewer.editElement(folder, 0);
 	}
 }

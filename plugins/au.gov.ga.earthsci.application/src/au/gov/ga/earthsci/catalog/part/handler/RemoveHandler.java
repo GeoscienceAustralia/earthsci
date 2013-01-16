@@ -35,16 +35,32 @@ public class RemoveHandler
 {
 	@Inject
 	private ICatalogBrowserController controller;
-	
+
 	@Execute
-	public void execute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode node)
+	{
+		execute(new ICatalogTreeNode[] { node });
+	}
+
+	@Execute
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
 	{
 		controller.removeFromLayerModel(selectedNodes);
 	}
-	
+
 	@CanExecute
-	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
+	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode node)
 	{
-		return selectedNodes != null && selectedNodes.length > 0 && controller.areAllLayerNodes(selectedNodes) && controller.anyExistInLayerModel(selectedNodes);
+		if (node == null)
+			return false;
+
+		return canExecute(new ICatalogTreeNode[] { node });
+	}
+
+	@CanExecute
+	public boolean canExecute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
+	{
+		return selectedNodes != null && selectedNodes.length > 0 && controller.areAllLayerNodes(selectedNodes)
+				&& controller.anyExistInLayerModel(selectedNodes);
 	}
 }
