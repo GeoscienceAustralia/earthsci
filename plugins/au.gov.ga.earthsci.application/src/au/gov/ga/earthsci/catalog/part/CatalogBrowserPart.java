@@ -9,7 +9,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
-import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -61,7 +61,7 @@ public class CatalogBrowserPart
 	{
 		viewer = new ControlTreeViewer(parent, SWT.MULTI);
 		viewer.setContentProvider(new CatalogContentProvider(viewer));
-		viewer.setLabelProvider(new DecoratingLabelProvider(labelProvider, labelProvider));
+		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(labelProvider, labelProvider, null));
 		viewer.setSorter(null);
 		viewer.setInput(model);
 		
@@ -85,7 +85,7 @@ public class CatalogBrowserPart
 					//occurs when the selection contains a loading node, which is not an ICatalogTreeNode
 					array = new ICatalogTreeNode[0];
 				}
-				selectionService.setSelection(array);
+				selectionService.setSelection(array.length == 1 ? array[0] : array);
 			}
 		});
 		

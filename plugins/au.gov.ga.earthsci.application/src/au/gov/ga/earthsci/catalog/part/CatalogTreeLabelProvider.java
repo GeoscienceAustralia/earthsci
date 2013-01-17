@@ -29,11 +29,20 @@ import javax.inject.Inject;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.StyledString.Styler;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.TextStyle;
+import org.eclipse.swt.widgets.Display;
 
 import au.gov.ga.earthsci.application.IFireableLabelProvider;
 import au.gov.ga.earthsci.application.IconLoader;
@@ -54,7 +63,8 @@ import au.gov.ga.earthsci.viewers.IControlProvider;
  * @author James Navin (james.navin@ga.gov.au)
  */
 @Creatable
-public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDecorator, IFireableLabelProvider
+public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDecorator, IFireableLabelProvider,
+		IStyledLabelProvider
 {
 	private final org.eclipse.jface.resource.ImageRegistry decoratedImageCache =
 			new org.eclipse.jface.resource.ImageRegistry();
@@ -77,12 +87,22 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 	{
 		setupListeners();
 		addListeners();
+		
+		informationColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
+		FontData[] fontDatas = Display.getDefault().getSystemFont().getFontData();
+		for (FontData fontData : fontDatas)
+		{
+			fontData.setStyle(SWT.BOLD);
+			fontData.setHeight((int) (fontData.getHeight() * 0.8));
+		}
+		subscriptFont = new Font(Display.getDefault(), fontDatas);
 	}
 
 	@PreDestroy
 	public void preDestroy()
 	{
 		removeListeners();
+		subscriptFont.dispose();
 	}
 
 	@Override
@@ -107,6 +127,7 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 			{
 				return ((ILabeled) element).getLabelOrName();
 			}
+			return null;
 		}
 		ICatalogTreeNode node = (ICatalogTreeNode) element;
 		return CatalogTreeLabelProviderRegistry.getProvider(node).getLabel(node);
@@ -196,6 +217,22 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 						ImageRegistry.DECORATION_INCLUDED), IDecoration.BOTTOM_RIGHT).createImage();
 		decoratedImageCache.put(key, decorated);
 		return decorated;
+	}
+
+	@Override
+	public StyledString getStyledText(Object element)
+	{
+		StyledString string = new StyledString(getText(element));
+		if (element instanceof ICatalogTreeNode)
+		{
+			ICatalogTreeNode node = (ICatalogTreeNode) element;
+			URL infoURL = CatalogTreeLabelProviderRegistry.getProvider(node).getInfoURL(node);
+			if (infoURL != null)
+			{
+				string.append("  i", informationStyler); //$NON-NLS-1$
+			}
+		}
+		return string;
 	}
 
 	@Override
@@ -360,4 +397,16 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		layerModel.getRootNode().removePropertyChangeListener("children", layerModelChildrenListener); //$NON-NLS-1$
 		layerModel.getRootNode().removePropertyChangeListener("uRI", layerModelURIListener); //$NON-NLS-1$
 	}
+	
+	private Color informationColor;
+	private Font subscriptFont;
+	private final Styler informationStyler = new Styler()
+	{
+		@Override
+		public void applyStyles(TextStyle textStyle)
+		{
+			textStyle.foreground = informationColor;
+			textStyle.font = subscriptFont;
+		}
+	};
 }

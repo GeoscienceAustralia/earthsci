@@ -190,7 +190,7 @@ public class LayerTreePart
 				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 				List<?> list = selection.toList();
 				ILayerTreeNode[] array = list.toArray(new ILayerTreeNode[list.size()]);
-				selectionService.setSelection(selection.size() == 1 ? selection.getFirstElement() : array);
+				selectionService.setSelection(array.length == 1 ? array[0] : array);
 			}
 		});
 

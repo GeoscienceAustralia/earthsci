@@ -18,6 +18,7 @@ package au.gov.ga.earthsci.bookmark.part.handlers;
 import javax.inject.Inject;
 
 import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.jface.viewers.TableViewer;
 
 import au.gov.ga.earthsci.bookmark.BookmarkFactory;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
@@ -38,9 +39,10 @@ public class AddBookmarkHandler
 	private IBookmarksPreferences preferences;
 	
 	@Execute
-	public void execute()
+	public void execute(TableViewer viewer)
 	{
 		IBookmark b = BookmarkFactory.createBookmark(preferences.getDefaultPropertyTypes());
 		bookmarks.getDefaultList().getBookmarks().add(b);
+		viewer.editElement(b, 0);
 	}
 }

@@ -48,6 +48,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -56,6 +57,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.bookmark.model.Bookmarks;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkList;
@@ -162,7 +164,16 @@ public class BookmarksPart
 		
 		TableViewerColumn column = new TableViewerColumn(bookmarkListTableViewer, SWT.LEFT);
 		column.setEditingSupport(new BookmarkNameEditingSupport(bookmarkListTableViewer));
-		column.setLabelProvider(new ObservableMapCellLabelProvider(labelMap));
+		column.setLabelProvider(new ObservableMapCellLabelProvider(labelMap)
+		{
+			@Override
+			public void update(ViewerCell cell)
+			{
+				super.update(cell);
+				cell.setText(" " + cell.getText()); //$NON-NLS-1$
+				cell.setImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_BOOKMARKS));
+			}
+		});
 		ColumnLayoutData cld = new ColumnWeightData(12);
 		layout.setColumnData(column.getColumn(), cld);
 		
@@ -236,7 +247,7 @@ public class BookmarksPart
 		@Override
 		protected CellEditor getCellEditor(Object element)
 		{
-			return new TextCellEditor(viewer.getTable());
+			return new TextCellEditor(viewer.getTable(), SWT.BORDER);
 		}
 
 		@Override
