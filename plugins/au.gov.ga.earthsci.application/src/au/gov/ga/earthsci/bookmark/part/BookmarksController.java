@@ -40,7 +40,9 @@ import au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
+import au.gov.ga.earthsci.bookmark.model.IBookmarkList;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.bookmark.model.IBookmarks;
 import au.gov.ga.earthsci.bookmark.part.editor.BookmarkEditorDialog;
 import au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences;
 
@@ -56,6 +58,9 @@ public class BookmarksController implements IBookmarksController
 
 	@Inject
 	private IBookmarksPreferences preferences;
+	
+	@Inject
+	private IBookmarks bookmarks;
 	
 	@Inject
 	private View worldWindView;
@@ -129,6 +134,15 @@ public class BookmarksController implements IBookmarksController
 				dialog.open();
 			}
 		});
+	}
+	
+	@Override
+	public void delete(IBookmark bookmark)
+	{
+		for (IBookmarkList l : bookmarks.getLists())
+		{
+			l.getBookmarks().remove(bookmark);
+		}
 	}
 	
 	private long getDuration(final IBookmark bookmark)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,38 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.bookmark.part;
+package au.gov.ga.earthsci.bookmark.part.handlers;
 
-import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.services.IServiceConstants;
+
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
+import au.gov.ga.earthsci.bookmark.part.IBookmarksController;
 
 /**
- * A controller interface for the bookmarks feature
+ * A command handler for deleting a selected bookmark
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public interface IBookmarksController
+public class DeleteBookmarkHandler extends AbstractSingleBookmarkHandler
 {
 
-	/**
-	 * Apply the given bookmark using appropriate {@link IBookmarkPropertyApplicator}s
-	 * and user preferences.
-	 * 
-	 * @param bookmark The bookmark to apply
-	 */
-	void apply(IBookmark bookmark);
-
-	/**
-	 * Launch an editor to collect user edits to the provided bookmark.
-	 * 
-	 * @param bookmark The bookmark to edit
-	 */
-	void edit(IBookmark bookmark);
+	@Inject
+	private IBookmarksController controller;
 	
-	/**
-	 * Delete the given bookmark from its list
-	 * 
-	 * @param bookmark The bookmark to delete
-	 */
-	void delete(IBookmark bookmark);
+	@Execute
+	public void execute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
+	{
+		controller.delete(selectedBookmarks[0]);
+	}
+	
 }
