@@ -17,8 +17,6 @@ package au.gov.ga.earthsci.core.worldwind;
 
 import gov.nasa.worldwind.View;
 
-import javax.inject.Singleton;
-
 import org.eclipse.e4.core.di.annotations.Creatable;
 
 import au.gov.ga.earthsci.worldwind.common.view.stereo.StereoOrbitView;
@@ -29,7 +27,6 @@ import au.gov.ga.earthsci.worldwind.common.view.stereo.StereoOrbitView;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 @Creatable
-@Singleton
 public class WorldWindView extends StereoOrbitView
 {
 	//TODO implement subsurface, free spin, view pitch leniency, zoom out limits, animator support, etc

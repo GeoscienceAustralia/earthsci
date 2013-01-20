@@ -22,7 +22,9 @@ import gov.nasa.worldwind.avlist.AVKey;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import javax.swing.SwingUtilities;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
@@ -30,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindView;
+import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
 import au.gov.ga.earthsci.newt.awt.NewtInputHandlerAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtAutoDrawableAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtCanvasAWT;
@@ -41,25 +44,59 @@ import au.gov.ga.earthsci.newt.awt.WorldWindowNewtCanvasAWT;
  */
 public class WorldWindowPart
 {
+	public final static String PART_ID = "au.gov.ga.earthsci.application.part.worldwindow"; //$NON-NLS-1$
+
 	@Inject
 	private ITreeModel model;
 
 	@Inject
-	private WorldWindView view;
+	private WorldWindowRegistry registry;
+
+	private WorldWindow worldWindow;
 
 	@Inject
 	public void init(Composite parent)
 	{
 		Composite composite = new Composite(parent, SWT.EMBEDDED);
-		Frame frame = SWT_AWT.new_Frame(composite);
+		final Frame frame = SWT_AWT.new_Frame(composite);
 		frame.setLayout(new BorderLayout());
 
 		Configuration.setValue(AVKey.INPUT_HANDLER_CLASS_NAME, NewtInputHandlerAWT.class.getName());
 		Configuration.setValue(AVKey.WORLD_WINDOW_CLASS_NAME, WorldWindowNewtAutoDrawableAWT.class.getName());
-		WorldWindowNewtCanvasAWT wwd = new WorldWindowNewtCanvasAWT();
-		frame.add(wwd, BorderLayout.CENTER);
+		final WorldWindowNewtCanvasAWT wwd = new WorldWindowNewtCanvasAWT();
 
+		worldWindow = wwd;
 		wwd.setModel(model);
-		wwd.setView(view);
+		wwd.setView(new WorldWindView());
+
+		registry.register(worldWindow);
+
+		Runnable task = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				frame.add(wwd, BorderLayout.CENTER);
+			}
+		};
+		if (SwingUtilities.isEventDispatchThread())
+		{
+			task.run();
+		}
+		else
+		{
+			SwingUtilities.invokeLater(task);
+		}
+	}
+
+	@PreDestroy
+	private void preDestroy()
+	{
+		registry.unregister(worldWindow);
+	}
+
+	protected WorldWindow getWorldWindow()
+	{
+		return worldWindow;
 	}
 }
