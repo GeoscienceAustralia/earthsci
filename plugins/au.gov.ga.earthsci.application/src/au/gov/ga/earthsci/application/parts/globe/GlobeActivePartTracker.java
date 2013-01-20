@@ -24,8 +24,10 @@ import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Injected class that keeps track of the active WorldWindow, and notifies the
+ * {@link WorldWindowRegistry}.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class GlobeActivePartTracker
 {
