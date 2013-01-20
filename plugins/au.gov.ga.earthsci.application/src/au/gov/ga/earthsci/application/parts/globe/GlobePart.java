@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts;
+package au.gov.ga.earthsci.application.parts.globe;
 
 import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.WorldWindow;
@@ -42,10 +42,8 @@ import au.gov.ga.earthsci.newt.awt.WorldWindowNewtCanvasAWT;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class WorldWindowPart
+public class GlobePart
 {
-	public final static String PART_ID = "au.gov.ga.earthsci.application.part.worldwindow"; //$NON-NLS-1$
-
 	@Inject
 	private ITreeModel model;
 

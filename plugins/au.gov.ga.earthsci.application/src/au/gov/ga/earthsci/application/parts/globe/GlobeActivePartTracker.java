@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts;
+package au.gov.ga.earthsci.application.parts.globe;
 
 import javax.inject.Inject;
 
@@ -27,7 +27,7 @@ import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  * 
  */
-public class WorldWindowActivePartTracker
+public class GlobeActivePartTracker
 {
 	@Inject
 	private WorldWindowRegistry registry;
@@ -35,13 +35,10 @@ public class WorldWindowActivePartTracker
 	@Inject
 	public void execute(@Optional @Active MPart activePart)
 	{
-		if (activePart != null && activePart.getObject() instanceof WorldWindowPart)
+		if (activePart != null && activePart.getObject() instanceof GlobePart)
 		{
-			WorldWindowPart part = (WorldWindowPart) activePart.getObject();
+			GlobePart part = (GlobePart) activePart.getObject();
 			registry.setLastWorldWindow(part.getWorldWindow());
 		}
-
-		if (activePart != null)
-			System.out.println("ACTIVE = " + activePart.getElementId() + ", object = " + activePart.getObject());
 	}
 }
