@@ -15,9 +15,13 @@ import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PartInstantiator
 {
+	private Logger logger = LoggerFactory.getLogger(PartInstantiator.class);
+
 	@Inject
 	private IEventBroker broker;
 
@@ -50,6 +54,7 @@ public class PartInstantiator
 					{
 						// Something went wrong, the application model was not ready yet.
 						// Keep on listening.
+						logger.error("Error creating parts for placeholders", e); //$NON-NLS-1$
 					}
 				}
 			};
