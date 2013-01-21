@@ -33,6 +33,7 @@ import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.core.persistence.Persister;
 import au.gov.ga.earthsci.core.util.Validate;
 import au.gov.ga.earthsci.core.util.XmlUtil;
+import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
 
 /**
  * An {@link IBookmarkPropertyCreator} that can create a {@link CameraProperty} instance
@@ -50,7 +51,7 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 	private Persister persister;
 	
 	@Inject
-	private View worldWindView;
+	private WorldWindowRegistry registry;
 	
 	public CameraPropertyPersister()
 	{
@@ -69,13 +70,19 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 	@Override
 	public IBookmarkProperty createFromCurrentState(String type)
 	{
-		Position eyePosition = worldWindView.getCurrentEyePosition();
+		View view = registry.getLastView();
+		if (view == null)
+		{
+			return null;
+		}
 		
-		Vec4 center = worldWindView.getCenterPoint();
-		Globe globe = worldWindView.getGlobe();
+		Position eyePosition = view.getCurrentEyePosition();
+		
+		Vec4 center = view.getCenterPoint();
+		Globe globe = view.getGlobe();
 		Position lookatPosition = globe.computePositionFromPoint(center);
 		
-		Vec4 upVector = worldWindView.getUpVector();
+		Vec4 upVector = view.getUpVector();
 		
 		return new CameraProperty(eyePosition, lookatPosition, upVector);
 	}
@@ -116,10 +123,5 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 			logger.error("Exception while loading camera bookmark property", e); //$NON-NLS-1$
 		}
 		return null;
-	}
-	
-	public void setWorldWindView(View worldWindView)
-	{
-		this.worldWindView = worldWindView;
 	}
 }

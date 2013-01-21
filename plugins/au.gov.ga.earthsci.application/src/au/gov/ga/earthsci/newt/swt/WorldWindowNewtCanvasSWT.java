@@ -29,6 +29,7 @@ import gov.nasa.worldwind.util.PerformanceStatistic;
 import java.awt.GraphicsDevice;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -90,8 +91,8 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 	/** The drawable to which {@link WorldWindow} methods are delegated. */
 	protected final WorldWindowNewtDrawableSWT wwd; // WorldWindow interface delegates to wwd
 	protected final GLWindow window;
-	//protected final Redrawer redrawer = new Redrawer();
 	protected final TimedAnimator animator;
+	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
 	/**
 	 * Constructs a new <code>WorldWindowGLCanvas</code> on the default graphics
@@ -380,31 +381,35 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 	@Override
 	public synchronized void addPropertyChangeListener(PropertyChangeListener listener)
 	{
+		changeSupport.addPropertyChangeListener(listener);
 		this.wwd.addPropertyChangeListener(listener);
 	}
 
 	@Override
 	public synchronized void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)
 	{
+		changeSupport.addPropertyChangeListener(propertyName, listener);
 		this.wwd.addPropertyChangeListener(propertyName, listener);
 	}
 
 	@Override
 	public synchronized void removePropertyChangeListener(PropertyChangeListener listener)
 	{
+		changeSupport.removePropertyChangeListener(listener);
 		this.wwd.removePropertyChangeListener(listener);
 	}
 
 	@Override
 	public synchronized void removePropertyChangeListener(String propertyName, PropertyChangeListener listener)
 	{
+		changeSupport.removePropertyChangeListener(propertyName, listener);
 		this.wwd.removePropertyChangeListener(listener);
 	}
 
 	@Override
 	public void firePropertyChange(String propertyName, Object oldValue, Object newValue)
 	{
-		this.wwd.firePropertyChange(propertyName, oldValue, newValue);
+		changeSupport.firePropertyChange(propertyName, oldValue, newValue);
 	}
 
 	@Override

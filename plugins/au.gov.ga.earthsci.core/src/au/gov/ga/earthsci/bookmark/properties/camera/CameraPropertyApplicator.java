@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
 
 /**
  * An {@link IBookmarkPropertyApplicator} used to apply the state of {@link CameraProperty}s
@@ -32,7 +33,7 @@ public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
 {
 
 	@Inject
-	private View worldWindView;
+	private WorldWindowRegistry registry;
 	
 	@Override
 	public String[] getSupportedTypes()
@@ -47,22 +48,28 @@ public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
 		{
 			return;
 		}
+		
+		View view = registry.getLastView();
+		if (view == null)
+		{
+			return;
+		}
 	
 		CameraProperty cameraProperty = (CameraProperty)property;
 		
-		worldWindView.stopMovement();
-		worldWindView.setOrientation(cameraProperty.getEyePosition(), cameraProperty.getLookatPosition());
+		view.stopMovement();
+		view.setOrientation(cameraProperty.getEyePosition(), cameraProperty.getLookatPosition());
 	}
 
 	@Override
 	public IBookmarkPropertyAnimator createAnimator(IBookmarkProperty start, IBookmarkProperty end, long duration)
 	{
-		return new CameraPropertyAnimator(worldWindView, (CameraProperty)start, (CameraProperty)end, duration);
+		View view = registry.getLastView();
+		if (view == null)
+		{
+			return null;
+		}
+		
+		return new CameraPropertyAnimator(view, (CameraProperty)start, (CameraProperty)end, duration);
 	}
-	
-	public void setWorldWindView(View worldWindView)
-	{
-		this.worldWindView = worldWindView;
-	}
-
 }

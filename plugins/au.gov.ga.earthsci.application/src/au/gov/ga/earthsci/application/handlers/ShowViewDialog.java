@@ -15,18 +15,20 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.handlers;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
@@ -57,9 +59,13 @@ public class ShowViewDialog extends Dialog
 		Composite composite = (Composite) super.createDialogArea(parent);
 		composite.setLayout(new FillLayout());
 
-		ListViewer viewer = new ListViewer(composite, SWT.NONE);
+		TableViewer viewer = new TableViewer(composite, SWT.NONE);
 		viewer.setContentProvider(new ArrayContentProvider());
 		viewer.setLabelProvider(new PartLabelProvider());
+
+		//TODO this part collection is simply a list of parts that have been shown before
+		//need to improve this collection so that it removes duplicates, and also contains
+		//parts that are registered but have never been displayed
 		Collection<MPart> parts = partService.getParts();
 		viewer.setInput(parts);
 
@@ -99,7 +105,16 @@ public class ShowViewDialog extends Dialog
 		@Override
 		public Image getImage(Object element)
 		{
-			return super.getImage(element);
+			MPart part = (MPart) element;
+			String uri = part.getIconURI();
+			try
+			{
+				return ImageDescriptor.createFromURL(new URI(uri).toURL()).createImage();
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
 		}
 	}
 }

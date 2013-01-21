@@ -45,6 +45,7 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.model.IBookmarks;
 import au.gov.ga.earthsci.bookmark.part.editor.BookmarkEditorDialog;
 import au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences;
+import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
 
 /**
  * The default implementation of the {@link IBookmarksController} interface
@@ -63,7 +64,7 @@ public class BookmarksController implements IBookmarksController
 	private IBookmarks bookmarks;
 	
 	@Inject
-	private View worldWindView;
+	private WorldWindowRegistry registry;
 	
 	/**
 	 * A property change listener used to stop the bookmark applicator thread on {@link View#VIEW_STOPPED} events.
@@ -108,7 +109,11 @@ public class BookmarksController implements IBookmarksController
 	{
 		stopCurrentTransition();
 		
-		currentTask = applicatorService.submit(new BookmarkApplicatorRunnable(worldWindView, bookmark, getDuration(bookmark)));
+		View view = registry.getLastView();
+		if (view != null)
+		{
+			currentTask = applicatorService.submit(new BookmarkApplicatorRunnable(view, bookmark, getDuration(bookmark)));
+		}
 	}
 	
 	/**
@@ -175,7 +180,11 @@ public class BookmarksController implements IBookmarksController
 				final IBookmarkPropertyApplicator applicator = BookmarkPropertyApplicatorRegistry.getApplicator(property);
 				if (applicator != null)
 				{
-					animators.add(applicator.createAnimator(currentProperty, property, duration));
+					IBookmarkPropertyAnimator animator = applicator.createAnimator(currentProperty, property, duration);
+					if (animator != null)
+					{
+						animators.add(animator);
+					}
 				}
 			}
 		}
@@ -218,13 +227,5 @@ public class BookmarksController implements IBookmarksController
 	public void setPreferences(final IBookmarksPreferences preferences)
 	{
 		this.preferences = preferences;
-	}
-	
-	/**
-	 * Set the current world wind view on this controller
-	 */
-	public void setWorldWindView(final View worldWindView)
-	{
-		this.worldWindView = worldWindView;
 	}
 }

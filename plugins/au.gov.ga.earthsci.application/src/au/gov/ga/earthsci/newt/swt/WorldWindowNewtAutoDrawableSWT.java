@@ -52,7 +52,7 @@ public class WorldWindowNewtAutoDrawableSWT extends WorldWindowGLAutoDrawable im
 	@Override
 	public void initDrawable(GLAutoDrawable glAutoDrawable)
 	{
-		throw new IllegalStateException("WorldWindowNewtDrawable.initDrawable(GLAutoDrawable) should not be invoked");
+		throw new IllegalStateException("WorldWindowNewtDrawable.initDrawable(GLAutoDrawable) should not be invoked"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class WorldWindowNewtAutoDrawableSWT extends WorldWindowGLAutoDrawable im
 	public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int w, int h)
 	{
 		// This is apparently necessary to enable the WWJ canvas to resize correctly with JSplitPane.
-		//swtWidget.setMinimumSize(new Dimension(0, 0));
+		//swtControl.setMinimumSize(new Dimension(0, 0));
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class WorldWindowNewtAutoDrawableSWT extends WorldWindowGLAutoDrawable im
 	{
 		if (propertyChangeEvent == null)
 		{
-			String msg = Logging.getMessage("nullValue.PropertyChangeEventIsNull");
+			String msg = Logging.getMessage("nullValue.PropertyChangeEventIsNull"); //$NON-NLS-1$
 			Logging.logger().severe(msg);
 			throw new IllegalArgumentException(msg);
 		}

@@ -83,6 +83,9 @@
             class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration">
       </injectable>
       <inject
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry">
+      </inject>
+      <inject
             class="au.gov.ga.earthsci.core.retrieve.RetrieverFactory">
          <type
                class="au.gov.ga.earthsci.core.retrieve.IRetrieverFactory">
@@ -116,18 +119,6 @@
             class="au.gov.ga.earthsci.core.model.catalog.CatalogModel">
          <type
                class="au.gov.ga.earthsci.core.model.catalog.ICatalogModel">
-         </type>
-      </inject>
-      <inject
-            class="au.gov.ga.earthsci.core.worldwind.WorldWindView">
-         <type
-               class="au.gov.ga.earthsci.core.worldwind.WorldWindView">
-         </type>
-         <type
-               class="gov.nasa.worldwind.view.orbit.OrbitView">
-         </type>
-         <type
-               class="gov.nasa.worldwind.View">
          </type>
       </inject>
       <bind
