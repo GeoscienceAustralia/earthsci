@@ -40,7 +40,7 @@ public class GlobeActivePartTracker
 		if (activePart != null && activePart.getObject() instanceof GlobePart)
 		{
 			GlobePart part = (GlobePart) activePart.getObject();
-			registry.setLastWorldWindow(part.getWorldWindow());
+			registry.setActiveWindow(part.getWorldWindow());
 		}
 	}
 }

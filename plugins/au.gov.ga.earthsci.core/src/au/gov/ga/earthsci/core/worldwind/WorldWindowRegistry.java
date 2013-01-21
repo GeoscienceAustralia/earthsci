@@ -20,8 +20,9 @@ import gov.nasa.worldwind.WorldWindow;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 import javax.inject.Singleton;
 
@@ -36,46 +37,54 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 @Singleton
 public class WorldWindowRegistry
 {
-	private final Set<WorldWindow> worldWindows = new HashSet<WorldWindow>();
-	private final Set<View> views = new HashSet<View>();
-	private WorldWindow lastWorldWindow;
-	private View lastView;
+	private final Map<WorldWindow, View> map = new HashMap<WorldWindow, View>();
+	private final Stack<WorldWindow> stack = new Stack<WorldWindow>();
 
 	public void register(WorldWindow worldWindow)
 	{
-		worldWindows.add(worldWindow);
-		views.add(worldWindow.getView());
+		if (map.containsKey(worldWindow))
+		{
+			stack.remove(worldWindow);
+		}
+		map.put(worldWindow, worldWindow.getView());
+		stack.add(worldWindow);
 	}
 
 	public void unregister(WorldWindow worldWindow)
 	{
-		worldWindows.remove(worldWindow);
-		views.remove(worldWindow.getView());
+		if (map.containsKey(worldWindow))
+		{
+			stack.remove(worldWindow);
+			map.remove(worldWindow);
+		}
 	}
 
 	public Collection<WorldWindow> getWorldWindows()
 	{
-		return Collections.unmodifiableCollection(worldWindows);
+		return Collections.unmodifiableCollection(map.keySet());
 	}
 
 	public Collection<View> getViews()
 	{
-		return Collections.unmodifiableCollection(views);
+		return Collections.unmodifiableCollection(map.values());
+	}
+
+	public void setActiveWindow(WorldWindow lastWorldWindow)
+	{
+		register(lastWorldWindow);
 	}
 
 	public WorldWindow getLastWorldWindow()
 	{
-		return lastWorldWindow;
-	}
-
-	public void setLastWorldWindow(WorldWindow lastWorldWindow)
-	{
-		this.lastWorldWindow = lastWorldWindow;
-		this.lastView = lastWorldWindow.getView();
+		if (stack.isEmpty())
+			return null;
+		return stack.peek();
 	}
 
 	public View getLastView()
 	{
-		return lastView;
+		if (stack.isEmpty())
+			return null;
+		return map.get(stack.peek());
 	}
 }
