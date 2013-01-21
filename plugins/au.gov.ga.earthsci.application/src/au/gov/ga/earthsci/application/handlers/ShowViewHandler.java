@@ -25,6 +25,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.descriptor.basic.MPartDescriptor;
+import org.eclipse.e4.ui.model.application.ui.MElementContainer;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.basic.MPartStack;
 import org.eclipse.e4.ui.services.IServiceConstants;
@@ -72,49 +73,66 @@ public class ShowViewHandler
 
 		List<MPart> siblings = modelService.findElements(application, descriptor.getElementId(), MPart.class, null);
 
-		MPart part;
-		if (descriptor.isAllowMultiple() || siblings.isEmpty())
+		MPart part = null;
+		if (!siblings.isEmpty())
 		{
-			part = partService.createPart(descriptor.getElementId());
-		}
-		else
-		{
-			part = siblings.get(0);
-			part.setToBeRendered(true);
-		}
-
-		//use this opportunity to clean up old parts
-		for (MPart sibling : siblings)
-		{
-			//multi parts are not reused, so remove them if they are not ToBeRendered
-			if (!sibling.isToBeRendered() && sibling.getParent() != null)
+			if (descriptor.isAllowMultiple())
 			{
-				sibling.getParent().getChildren().remove(sibling);
+				//if the part is allowed multiple, find a part that isn't rendered, and make it rendered
+				for (MPart sibling : siblings)
+				{
+					if (!sibling.isToBeRendered())
+					{
+						part = sibling;
+						part.setToBeRendered(true);
+					}
+				}
+			}
+			else
+			{
+				//otherwise just get the first part that matches the descriptor's id
+				part = siblings.get(0);
+				part.setToBeRendered(true);
 			}
 		}
 
-		//select a stack next to one of the siblings
-		MPartStack stack = null;
-		for (MPart sibling : siblings)
+		if (part == null)
 		{
-			if (part != sibling && sibling.isToBeRendered())
+			//if no matching part was found, create a new one
+			part = partService.createPart(descriptor.getElementId());
+
+			//if creating a new part, select a stack next to one of the siblings
+			MPartStack stack = null;
+			int index = -1;
+			for (MPart sibling : siblings)
 			{
-				Object parent = sibling.getParent();
+				MElementContainer<?> parent = sibling.getParent();
 				if (parent instanceof MPartStack)
 				{
 					stack = (MPartStack) parent;
-					break;
+					index = ((MPartStack) parent).getChildren().indexOf(sibling) + 1;
+					if (sibling.isToBeRendered())
+					{
+						//prefer a visible sibling's stack
+						break;
+					}
+				}
+			}
+
+			if (stack != null)
+			{
+				try
+				{
+					stack.getChildren().add(index, part);
+				}
+				catch (IndexOutOfBoundsException e)
+				{
+					stack.getChildren().add(part);
 				}
 			}
 		}
 
-		if (stack != null)
-		{
-			stack.getChildren().add(part);
-		}
-		else
-		{
-			partService.showPart(part, PartState.ACTIVATE);
-		}
+		//activate the part
+		partService.showPart(part, PartState.ACTIVATE);
 	}
 }
