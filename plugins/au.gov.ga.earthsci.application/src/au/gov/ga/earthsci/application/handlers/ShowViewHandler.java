@@ -54,50 +54,56 @@ public class ShowViewHandler
 	public void execute(IEclipseContext context, @Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 			throws InvocationTargetException, InterruptedException
 	{
-		final ShowViewDialog dialog = new ShowViewDialog(shell, partService);
+		final ShowViewDialog dialog = new ShowViewDialog(shell, application);
 		dialog.open();
 		if (dialog.getReturnCode() != Window.OK)
 			return;
 
-		for (MPart part : dialog.getSelection())
+		for (MPartDescriptor part : dialog.getSelection())
 		{
 			showPart(part);
 		}
 	}
 
-	private void showPart(MPart part)
+	private void showPart(MPartDescriptor descriptor)
 	{
-		MPartStack stack = null;
-		MPartDescriptor descriptor = findDescriptor(part.getElementId());
+		if (descriptor == null)
+			return;
 
-		if (descriptor != null && descriptor.isAllowMultiple())
+		List<MPart> siblings = modelService.findElements(application, descriptor.getElementId(), MPart.class, null);
+
+		MPart part;
+		if (descriptor.isAllowMultiple() || siblings.isEmpty())
 		{
-			part = partService.createPart(part.getElementId());
+			part = partService.createPart(descriptor.getElementId());
+		}
+		else
+		{
+			part = siblings.get(0);
+			part.setToBeRendered(true);
+		}
 
-			//find other parts to put this part next to
-			List<MPart> siblings = modelService.findElements(application, part.getElementId(), MPart.class, null);
-
-			//use this opportunity to clean up old parts
-			for (MPart sibling : siblings)
+		//use this opportunity to clean up old parts
+		for (MPart sibling : siblings)
+		{
+			//multi parts are not reused, so remove them if they are not ToBeRendered
+			if (!sibling.isToBeRendered() && sibling.getParent() != null)
 			{
-				//multi parts are not reused, so remove them if they are not ToBeRendered
-				if (!sibling.isToBeRendered() && sibling.getParent() != null)
-				{
-					sibling.getParent().getChildren().remove(sibling);
-				}
+				sibling.getParent().getChildren().remove(sibling);
 			}
+		}
 
-			//select a stack next to one of the siblings
-			for (MPart sibling : siblings)
+		//select a stack next to one of the siblings
+		MPartStack stack = null;
+		for (MPart sibling : siblings)
+		{
+			if (part != sibling && sibling.isToBeRendered())
 			{
-				if (sibling.isToBeRendered())
+				Object parent = sibling.getParent();
+				if (parent instanceof MPartStack)
 				{
-					Object parent = sibling.getParent();
-					if (parent instanceof MPartStack)
-					{
-						stack = (MPartStack) parent;
-						break;
-					}
+					stack = (MPartStack) parent;
+					break;
 				}
 			}
 		}
@@ -110,17 +116,5 @@ public class ShowViewHandler
 		{
 			partService.showPart(part, PartState.ACTIVATE);
 		}
-	}
-
-	private MPartDescriptor findDescriptor(String id)
-	{
-		for (MPartDescriptor descriptor : application.getDescriptors())
-		{
-			if (descriptor.getElementId().equals(id))
-			{
-				return descriptor;
-			}
-		}
-		return null;
 	}
 }

@@ -16,11 +16,10 @@
 package au.gov.ga.earthsci.application.handlers;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.Iterator;
 
-import org.eclipse.e4.ui.model.application.ui.basic.MPart;
-import org.eclipse.e4.ui.workbench.modeling.EPartService;
+import org.eclipse.e4.ui.model.application.MApplication;
+import org.eclipse.e4.ui.model.application.descriptor.basic.MPartDescriptor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -44,13 +43,13 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ShowViewDialog extends Dialog
 {
-	private final EPartService partService;
-	private MPart[] selection = new MPart[] {};
+	private final MApplication application;
+	private MPartDescriptor[] selection = new MPartDescriptor[] {};
 
-	public ShowViewDialog(Shell parentShell, EPartService partService)
+	public ShowViewDialog(Shell parentShell, MApplication application)
 	{
 		super(parentShell);
-		this.partService = partService;
+		this.application = application;
 	}
 
 	@Override
@@ -66,8 +65,7 @@ public class ShowViewDialog extends Dialog
 		//TODO this part collection is simply a list of parts that have been shown before
 		//need to improve this collection so that it removes duplicates, and also contains
 		//parts that are registered but have never been displayed
-		Collection<MPart> parts = partService.getParts();
-		viewer.setInput(parts);
+		viewer.setInput(application.getDescriptors());
 
 		viewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
@@ -75,11 +73,11 @@ public class ShowViewDialog extends Dialog
 			public void selectionChanged(SelectionChangedEvent event)
 			{
 				IStructuredSelection s = (IStructuredSelection) event.getSelection();
-				selection = new MPart[s.size()];
+				selection = new MPartDescriptor[s.size()];
 				Iterator<?> iterator = s.iterator();
 				for (int i = 0; iterator.hasNext(); i++)
 				{
-					MPart part = (MPart) iterator.next();
+					MPartDescriptor part = (MPartDescriptor) iterator.next();
 					selection[i++] = part;
 				}
 			}
@@ -88,7 +86,7 @@ public class ShowViewDialog extends Dialog
 		return composite;
 	}
 
-	public MPart[] getSelection()
+	public MPartDescriptor[] getSelection()
 	{
 		return selection;
 	}
@@ -98,14 +96,14 @@ public class ShowViewDialog extends Dialog
 		@Override
 		public String getText(Object element)
 		{
-			MPart part = (MPart) element;
+			MPartDescriptor part = (MPartDescriptor) element;
 			return part.getLabel();
 		}
 
 		@Override
 		public Image getImage(Object element)
 		{
-			MPart part = (MPart) element;
+			MPartDescriptor part = (MPartDescriptor) element;
 			String uri = part.getIconURI();
 			try
 			{

@@ -26,6 +26,7 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
@@ -46,6 +47,9 @@ public class GlobePart
 {
 	@Inject
 	private ITreeModel model;
+	
+	@Inject
+	private IEclipseContext context;
 
 	@Inject
 	private WorldWindowRegistry registry;
@@ -55,6 +59,8 @@ public class GlobePart
 	@Inject
 	public void init(Composite parent)
 	{
+		GlobeExaggerationToolControl.setPartContext(context);
+		
 		Composite composite = new Composite(parent, SWT.EMBEDDED);
 		final Frame frame = SWT_AWT.new_Frame(composite);
 		frame.setLayout(new BorderLayout());
