@@ -7,6 +7,7 @@
    </configIni>
 
    <launcherArgs>
+      <vmArgs>-Dosgi.classloader.lock=classname</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -24,11 +25,11 @@
 
    <plugins>
    </plugins>
-   
+
    <features>
       <feature id="au.gov.ga.earthsci.feature"/>
    </features>
-   
+
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
