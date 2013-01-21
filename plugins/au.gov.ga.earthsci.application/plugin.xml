@@ -93,9 +93,9 @@
       <injectable
             class="au.gov.ga.earthsci.bookmark.part.editor.BookmarkPropertyEditorFactory">
       </injectable>
-      <injectable
+      <inject
             class="au.gov.ga.earthsci.application.parts.globe.GlobeActivePartTracker">
-      </injectable>
+      </inject>
    </extension>
    <extension
          point="au.gov.ga.earthsci.application.bookmarkPropertyEditor">
