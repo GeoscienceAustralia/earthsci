@@ -180,7 +180,11 @@ public class BookmarksController implements IBookmarksController
 				final IBookmarkPropertyApplicator applicator = BookmarkPropertyApplicatorRegistry.getApplicator(property);
 				if (applicator != null)
 				{
-					animators.add(applicator.createAnimator(currentProperty, property, duration));
+					IBookmarkPropertyAnimator animator = applicator.createAnimator(currentProperty, property, duration);
+					if (animator != null)
+					{
+						animators.add(animator);
+					}
 				}
 			}
 		}

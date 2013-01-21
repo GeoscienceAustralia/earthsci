@@ -64,6 +64,12 @@ public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
 	@Override
 	public IBookmarkPropertyAnimator createAnimator(IBookmarkProperty start, IBookmarkProperty end, long duration)
 	{
-		return new CameraPropertyAnimator(registry.getLastView(), (CameraProperty)start, (CameraProperty)end, duration);
+		View view = registry.getLastView();
+		if (view == null)
+		{
+			return null;
+		}
+		
+		return new CameraPropertyAnimator(view, (CameraProperty)start, (CameraProperty)end, duration);
 	}
 }
