@@ -36,12 +36,15 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_8QpMsCfJEeKGOtKz07iBzg" elementId="" label="Copy" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/copy_edit.gif" command="_1NhMYCfCEeKGOtKz07iBzg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_8fjLYCfJEeKGOtKz07iBzg" elementId="" label="Paste" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/paste_edit.gif" command="_1dBA8CfCEeKGOtKz07iBzg"/>
       </children>
+      <children xsi:type="menu:Menu" xmi:id="_f_WkgGTWEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.menu.window" label="Window">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_y0L9gPvQEeG36NOaHUgVKA" elementId="" label="Show View" command="_pU-REPvQEeG36NOaHUgVKA"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_nLWRIGTWEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_40V18Px8EeG36NOaHUgVKA" elementId="" label="Preferences" command="_940mAPyIEeG36NOaHUgVKA"/>
+      </children>
       <children xsi:type="menu:Menu" xmi:id="_007tbfsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.help" label="Help">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_ogLhQALaEeK4hsezy7qCSg" elementId="au.gov.ga.earthsci.displayHelp" label="Help Contents" tooltip="Display the application help" command="_t3D6kAODEeK17JdaarPZug"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_45q4MALaEeK4hsezy7qCSg" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tbvsMEeG36NOaHUgVKA" label="About" command="_007tZPsMEeG36NOaHUgVKA"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_y0L9gPvQEeG36NOaHUgVKA" elementId="" label="Show View" command="_pU-REPvQEeG36NOaHUgVKA"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_40V18Px8EeG36NOaHUgVKA" elementId="" label="Preferences..." command="_940mAPyIEeG36NOaHUgVKA"/>
       </children>
     </mainMenu>
     <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.windowtrim">
