@@ -289,7 +289,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		}
 	}
 
-	private void updateElevationModels()
+	protected void updateElevationModels()
 	{
 		synchronized (semaphore)
 		{

@@ -104,6 +104,13 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 			this.layer = layer;
 		}
 		firePropertyChange("layer", oldValue, layer); //$NON-NLS-1$
+
+		//TODO rethink this
+		//we need to update the root's elevation models if this layer is an elevation model layer
+		if (layer instanceof IElevationModelLayer)
+		{
+			childrenChanged(getChildren(), getChildren());
+		}
 	}
 
 	/**
