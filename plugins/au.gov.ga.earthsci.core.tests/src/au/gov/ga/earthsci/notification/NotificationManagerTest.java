@@ -25,7 +25,7 @@ public class NotificationManagerTest
 	@Test
 	public void testStaticNotifyNoReceivers()
 	{
-		NotificationManager.sendNotification(Notification.create(NotificationLevel.ERROR, "A title", "Some text").build());
+		NotificationManager.notify(Notification.create(NotificationLevel.ERROR, "A title", "Some text").build());
 	}
 	
 	@Test
@@ -40,7 +40,7 @@ public class NotificationManagerTest
 			oneOf(receiver).handle(with(notification));
 		}}});
 		
-		NotificationManager.sendNotification(notification);
+		NotificationManager.notify(notification);
 	}
 	
 	@Test
@@ -56,6 +56,6 @@ public class NotificationManagerTest
 			never(receiver).handle(with(notification));
 		}}});
 		
-		NotificationManager.sendNotification(notification);
+		NotificationManager.notify(notification);
 	}
 }

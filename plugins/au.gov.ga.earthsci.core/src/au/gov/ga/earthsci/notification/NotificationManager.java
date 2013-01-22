@@ -129,18 +129,6 @@ public class NotificationManager
 	}
 	
 	/**
-	 * Send the provided notification to all registered receivers
-	 * 
-	 * @param notification The notification to send.
-	 * 
-	 * @see #notify(INotification)
-	 */
-	public static void sendNotification(INotification notification)
-	{
-		notify(notification);
-	}
-	
-	/**
 	 * Notify the user with the provided notification object
 	 * 
 	 * @param notification
