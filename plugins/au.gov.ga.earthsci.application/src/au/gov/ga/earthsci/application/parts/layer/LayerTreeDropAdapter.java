@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 
 import org.eclipse.jface.viewers.TreeViewer;
@@ -24,6 +26,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.widgets.Display;
 
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.application.parts.layer.LayerTransferData.TransferredLayer;
@@ -109,11 +112,25 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 				File file = new File(filename);
 				if (file.isFile())
 				{
-					LayerNode node = new LayerNode();
+					final LayerNode node = new LayerNode();
 					node.setName(file.getName());
 					node.setEnabled(true);
-					node.setURI(file.toURI());
 					node.setIconURL(ImageRegistry.getInstance().getURL(ImageRegistry.ICON_FILE));
+
+					node.setURI(file.toURI());
+					
+					node.addPropertyChangeListener("status", new PropertyChangeListener()
+					{
+						@Override
+						public void propertyChange(PropertyChangeEvent evt)
+						{
+							Display.getDefault().asyncExec(new Runnable() {
+								@Override
+								public void run() {getViewer().refresh(node, true);}
+							});
+						}
+					});
+					
 					target.add(index, node);
 					getViewer().add(target, node);
 					getViewer().reveal(node);

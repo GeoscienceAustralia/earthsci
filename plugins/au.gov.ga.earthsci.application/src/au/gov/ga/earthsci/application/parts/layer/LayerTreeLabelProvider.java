@@ -148,7 +148,9 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 	{
 		//don't queue up multiple updates for the same retrieval, as this floods the UI thread with asyncExec's
 		if (refreshingRetrievals.contains(retrieval))
+		{
 			return;
+		}
 
 		List<Object> elements = new ArrayList<Object>();
 		Object[] callers = retrieval.getCallers();
@@ -324,6 +326,13 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 			if (element instanceof ILayerTreeNode)
 			{
 				ILayerTreeNode node = (ILayerTreeNode) element;
+				
+				if (!node.getStatus().isOk())
+				{
+					return ImageRegistry.getInstance().get(ImageRegistry.ICON_ERROR);
+				}
+				
+				
 				URL imageURL = node.getIconURL();
 				if (imageURL != null)
 				{
