@@ -47,7 +47,7 @@ public class GlobePart
 {
 	@Inject
 	private ITreeModel model;
-	
+
 	@Inject
 	private IEclipseContext context;
 
@@ -60,7 +60,7 @@ public class GlobePart
 	public void init(Composite parent)
 	{
 		GlobeExaggerationToolControl.setPartContext(context);
-		
+
 		Composite composite = new Composite(parent, SWT.EMBEDDED);
 		final Frame frame = SWT_AWT.new_Frame(composite);
 		frame.setLayout(new BorderLayout());
@@ -72,6 +72,7 @@ public class GlobePart
 		worldWindow = wwd;
 		wwd.setModel(model);
 		wwd.setView(new WorldWindView());
+		context.set(WorldWindow.class, worldWindow);
 
 		registry.register(worldWindow);
 

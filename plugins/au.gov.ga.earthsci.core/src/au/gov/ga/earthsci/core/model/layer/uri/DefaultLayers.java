@@ -26,10 +26,14 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.WWUtil;
 import gov.nasa.worldwind.util.WWXML;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +41,6 @@ import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
-import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.core.util.Util;
 
 /**
@@ -59,27 +62,24 @@ public class DefaultLayers
 	{
 		FolderNode folder = new FolderNode();
 		folder.setName("Default");
-		URI[] uris = getLayerURIs();
-		for (URI uri : uris)
+		LayerNode[] nodes = getLayerNodes();
+		for (LayerNode node : nodes)
 		{
-			LayerNode node = new LayerNode();
-			node.setURI(uri);
 			folder.add(node);
 		}
 		return folder;
 	}
 
 	/**
-	 * Generate an array of URIs which can be used for creating the default
-	 * layers defined in the WW configuration. Returned URIs can be instantiated
-	 * into Layer objects using the {@link URILayerFactory}.
+	 * Generate an array of {@link LayerNode}s containing the default layers
+	 * defined in the WW configuration.
 	 * 
-	 * @return Array of URIs that represent the default layers defined in the WW
-	 *         configuration
+	 * @return Array of LayerNodes that represent the default layers defined in
+	 *         the WW configuration
 	 */
-	public static URI[] getLayerURIs()
+	public static LayerNode[] getLayerNodes()
 	{
-		List<URI> uris = new ArrayList<URI>();
+		List<LayerNode> nodes = new ArrayList<LayerNode>();
 
 		//first add the elevation model
 		String elevationModelResource =
@@ -88,7 +88,9 @@ public class DefaultLayers
 		String elevationModelURIString = "classpath://" + elevationModelResource; //$NON-NLS-1$
 		try
 		{
-			uris.add(new URI(elevationModelURIString));
+			LayerNode node = new LayerNode();
+			node.setURI(new URI(elevationModelURIString));
+			nodes.add(node);
 		}
 		catch (URISyntaxException e)
 		{
@@ -100,13 +102,13 @@ public class DefaultLayers
 		LayerList layers = createLayersFromElement(element);
 		for (Layer layer : layers)
 		{
-			if (layer instanceof URILayer)
+			if (layer instanceof LayerNode)
 			{
-				uris.add(((URILayer) layer).uri);
+				nodes.add((LayerNode) layer);
 			}
 		}
 
-		return uris.toArray(new URI[uris.size()]);
+		return nodes.toArray(new LayerNode[nodes.size()]);
 	}
 
 	/**
@@ -118,7 +120,7 @@ public class DefaultLayers
 	 */
 	protected static LayerList createLayersFromElement(Element element)
 	{
-		URILayerFactory factory = new URILayerFactory();
+		LayerNodeFactory factory = new LayerNodeFactory();
 		Object o = factory.createFromConfigSource(element, null);
 
 		if (o instanceof LayerList)
@@ -139,10 +141,9 @@ public class DefaultLayers
 
 	/**
 	 * {@link BasicLayerFactory} subclass which overrides the standard Layer
-	 * creation by creating a dummy {@link URILayer}. The {@link URILayer}
-	 * contains a URI which can be used to instatiate the actual Layer.
+	 * creation by creating {@link LayerNode}s.
 	 */
-	protected static class URILayerFactory extends BasicLayerFactory
+	protected static class LayerNodeFactory extends BasicLayerFactory
 	{
 		//adapted from superclass, but doesn't actually create any real layers, only URILayers
 		@Override
@@ -160,22 +161,14 @@ public class DefaultLayers
 				enabled = WWUtil.isEmpty(actuate) || actuate.equals("onLoad"); //$NON-NLS-1$
 			}
 
-			//add enabled, and any properties, to a query string
-			String queryString = "?enabled=" + enabled; //$NON-NLS-1$
-			String propertyQueryStringPart = createPropertyQueryStringPart(domElement);
-			if (!Util.isEmpty(propertyQueryStringPart))
-			{
-				queryString += "&" + propertyQueryStringPart; //$NON-NLS-1$
-			}
-
 			String uriString = null;
 			if (classNameSpecified)
 			{
-				uriString = "class://" + className + queryString; //$NON-NLS-1$
+				uriString = "class://" + className; //$NON-NLS-1$
 			}
 			else if (!Util.isEmpty(href))
 			{
-				uriString = "classpath://" + href + queryString; //$NON-NLS-1$
+				uriString = "classpath://" + href; //$NON-NLS-1$
 			}
 
 			if (uriString == null)
@@ -184,20 +177,40 @@ public class DefaultLayers
 				return new InvalidLayer();
 			}
 
+			URI uri;
 			try
 			{
-				return new URILayer(new URI(uriString));
+				uri = new URI(uriString);
 			}
 			catch (URISyntaxException e)
 			{
 				logger.error("Error creating layer URI from string: " + uriString, e); //$NON-NLS-1$
 				return null;
 			}
+
+			LayerNode node = new LayerNode();
+			node.setEnabled(enabled);
+			node.setURI(uri);
+
+			Map<String, String> properties = createPropertyMap(domElement);
+			for (Entry<String, String> entry : properties.entrySet())
+			{
+				try
+				{
+					Util.setPropertyOn(node, entry.getKey(), entry.getValue());
+				}
+				catch (InvocationTargetException e)
+				{
+					logger.warn("Error setting property on layer: " + entry.getKey(), e); //$NON-NLS-1$
+				}
+			}
+
+			return node;
 		}
 
-		protected String createPropertyQueryStringPart(Element domElement)
+		protected Map<String, String> createPropertyMap(Element domElement)
 		{
-			StringBuilder sb = new StringBuilder();
+			Map<String, String> map = new HashMap<String, String>();
 
 			Element[] elements = WWXML.getElements(domElement, "Property", null); //$NON-NLS-1$
 			if (elements != null)
@@ -212,18 +225,11 @@ public class DefaultLayers
 					if (Util.isEmpty(propertyValue))
 						continue;
 
-					propertyName = UTF8URLEncoder.encode(propertyName);
-					propertyValue = UTF8URLEncoder.encode(propertyValue);
-					sb.append("&" + propertyName + "=" + propertyValue); //$NON-NLS-1$ //$NON-NLS-2$
+					map.put(propertyName, propertyValue);
 				}
 			}
 
-			if (sb.length() == 0)
-			{
-				return ""; //$NON-NLS-1$
-			}
-
-			return sb.substring(1);
+			return map;
 		}
 	}
 
