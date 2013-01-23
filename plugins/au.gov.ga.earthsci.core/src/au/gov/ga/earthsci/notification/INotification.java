@@ -69,4 +69,9 @@ public interface INotification
 	 * @return The timestamp of when the notification was acknowledged by the user (if applicable)
 	 */
 	Date getAcknowledgementTimestamp();
+	
+	/**
+	 * @return Any {@link Throwable} associated with this notification
+	 */
+	Throwable getThrowable();
 }
