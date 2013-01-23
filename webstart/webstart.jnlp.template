@@ -19,13 +19,13 @@
 	</application-desc>
 
 	<resources os="Windows">
-		<j2se version="1.6+" />
+		<j2se version="1.6+" java-vm-args="-Dosgi.classloader.lock=classname"/>
 	</resources>
 	<resources os="Mac">
-		<j2se version="1.6+" java-vm-args="-XstartOnFirstThread" />
+		<j2se version="1.6+" java-vm-args="-XstartOnFirstThread -Dosgi.classloader.lock=classname" />
 	</resources>
 	<resources os="Linux">
-		<j2se version="1.6+" />
+		<j2se version="1.6+" java-vm-args="-Dosgi.classloader.lock=classname"/>
 	</resources>
 
 	<resources>
