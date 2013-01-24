@@ -46,6 +46,7 @@ public class BookmarksPreferencesPage extends FieldEditorPreferencePage
 {
 
 	private IntegerFieldEditor transitionDurationEditor;
+	private IntegerFieldEditor playBookmarksWaitDurationEditor;
 	private MultiSelectTableListFieldEditor<IBookmarkProperty> defaultProperties;
 	private Map<String, IBookmarkProperty> cachedProperties;
 	
@@ -69,6 +70,13 @@ public class BookmarksPreferencesPage extends FieldEditorPreferencePage
 														  Messages.BookmarksPreferencesPage_TransitionDurationFieldTitle, 
 														  getFieldEditorParent());
 		addField(transitionDurationEditor);
+		
+		
+		playBookmarksWaitDurationEditor = new IntegerFieldEditor(IBookmarksPreferences.PLAY_BOOKMARKS_WAIT_DURATION, 
+																 Messages.BookmarksPreferencesPage_PlayBookmarksPauseDurationLabel, 
+																 getFieldEditorParent());
+		
+		addField(playBookmarksWaitDurationEditor);
 		
 		addField(new SpacerFieldEditor(getFieldEditorParent()));
 		

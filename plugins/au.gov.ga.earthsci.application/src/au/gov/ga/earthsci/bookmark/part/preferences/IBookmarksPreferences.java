@@ -28,6 +28,7 @@ public interface IBookmarksPreferences
 {
 	String QUALIFIER_ID = "au.gov.ga.earthsci.bookmarks"; //$NON-NLS-1$
 	String DEFAULT_TRANSITION_DURATION = "au.gov.ga.earthsci.bookmarks.preferences.defaultTransitionDuration"; //$NON-NLS-1$
+	String PLAY_BOOKMARKS_WAIT_DURATION = "au.gov.ga.earthsci.bookmarks.preferences.playBookmarksWaitDuration"; //$NON-NLS-1$
 	String DEFAULT_PROPERTIES = "au.gov.ga.earthsci.bookmarks.preferences.defaultProperties"; //$NON-NLS-1$
 	
 	/**
@@ -39,6 +40,14 @@ public interface IBookmarksPreferences
 	 * @see IBookmark#getTransitionDuration()
 	 */
 	long getDefaultTransitionDuration();
+	
+	/**
+	 * Returns the duration (in milliseconds) that bookmarks are paused at during playback
+	 * of a bookmarks list
+	 * 
+	 * @return The duration (in milliseconds) to wait on a bookmark during playback
+	 */
+	long getPlayBookmarksWaitDuration();
 	
 	/**
 	 * Returns the default list of bookmark properties that are to be included

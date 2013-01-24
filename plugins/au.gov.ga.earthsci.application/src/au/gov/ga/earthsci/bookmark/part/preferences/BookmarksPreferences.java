@@ -41,6 +41,10 @@ public class BookmarksPreferences implements IBookmarksPreferences
 	private long defaultTransitionDuration;
 	
 	@Inject
+	@Preference(nodePath=QUALIFIER_ID, value=PLAY_BOOKMARKS_WAIT_DURATION)
+	private long playBookmarksWaitDuration;
+	
+	@Inject
 	@Preference(nodePath=QUALIFIER_ID, value=DEFAULT_PROPERTIES)
 	private String defaultProperties;
 	
@@ -51,12 +55,18 @@ public class BookmarksPreferences implements IBookmarksPreferences
 	}
 	
 	@Override
+	public long getPlayBookmarksWaitDuration()
+	{
+		return playBookmarksWaitDuration;
+	}
+	
+	@Override
 	public String[] getDefaultPropertyTypes()
 	{
 		if (defaultProperties == null)
 		{
 			String[] knownTypes = BookmarkPropertyFactory.getKnownPropertyTypes();
-			defaultProperties = Util.concat(knownTypes, ",", "");
+			defaultProperties = Util.concat(knownTypes, ",", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			return knownTypes;
 		}
 		return defaultProperties.split(","); //$NON-NLS-1$
