@@ -47,7 +47,7 @@ public class PartInstantiator
 					try
 					{
 						createParts(application, service);
-						// sort did finish: stop listening to the broker.
+						// finished successfully: stop listening to the broker.
 						broker.unsubscribe(handler);
 					}
 					catch (Exception e)

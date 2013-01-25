@@ -8,6 +8,7 @@
    <extension-point id="au.gov.ga.earthsci.bookmark.applicator" name="Bookmark Property Applicator" schema="schema/au.gov.ga.earthsci.bookmark.applicator.exsd"/>
    <extension-point id="au.gov.ga.earthsci.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.bookmark.creator.exsd"/>
    <extension-point id="au.gov.ga.earthsci.bookmark.exporter" name="Bookmark Property Exporter" schema="schema/au.gov.ga.earthsci.bookmark.exporter.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.hud" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.hud.exsd"/>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retriever">
       <retriever

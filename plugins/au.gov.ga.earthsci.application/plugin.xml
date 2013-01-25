@@ -108,5 +108,44 @@
             type="au.gov.ga.earthsci.bookmark.properties.layers">
       </editor>
    </extension>
+   <extension
+         point="au.gov.ga.earthsci.hud">
+      <hud
+            class="gov.nasa.worldwind.layers.ScalebarLayer"
+            enabled="true"
+            icon="icons/scalebar.gif"
+            id="au.gov.ga.earthsci.application.hud.scalebar">
+      </hud>
+      <hud
+            class="gov.nasa.worldwind.layers.WorldMapLayer"
+            enabled="true"
+            icon="icons/world.gif"
+            id="au.gov.ga.earthsci.application.hud.worldmap">
+      </hud>
+      <hud
+            class="gov.nasa.worldwind.layers.ViewControlsLayer"
+            enabled="true"
+            icon="icons/navigation.png"
+            id="au.gov.ga.earthsci.application.hud.controls">
+      </hud>
+      <hud
+            class="gov.nasa.worldwind.layers.CrosshairLayer"
+            enabled="false"
+            icon="icons/crosshair.gif"
+            id="au.gov.ga.earthsci.application.hud.crosshair">
+      </hud>
+      <hud
+            class="gov.nasa.worldwind.layers.LatLonGraticuleLayer"
+            enabled="false"
+            icon="icons/graticule.png"
+            id="au.gov.ga.earthsci.application.hud.graticule">
+      </hud>
+      <hud
+            class="gov.nasa.worldwind.layers.CompassLayer"
+            enabled="true"
+            icon="icons/compass.gif"
+            id="au.gov.ga.earthsci.application.hud.compass">
+      </hud>
+   </extension>
 
 </plugin>

@@ -19,6 +19,7 @@ import gov.nasa.worldwind.BasicModel;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.globes.Globe;
+import gov.nasa.worldwind.layers.LayerList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,10 +32,10 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.core.model.layer.DefaultLayers;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerPersister;
-import au.gov.ga.earthsci.core.model.layer.uri.DefaultLayers;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 
@@ -47,7 +48,7 @@ import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 @Singleton
 public class WorldWindModel extends BasicModel implements ITreeModel
 {
-	private final ILayerTreeNode rootNode;
+	private final ConstructionParameters constructionParameters;
 	private final static Logger logger = LoggerFactory.getLogger(WorldWindModel.class);
 	private static final String layerFilename = "layers.xml"; //$NON-NLS-1$
 	private static final File layerFile = ConfigurationUtil.getWorkspaceFile(layerFilename);
@@ -55,47 +56,32 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 	@Inject
 	public WorldWindModel()
 	{
-		this(createRootNode());
+		this(new ConstructionParameters());
 		logger.info("Using layer file: " + layerFile); //$NON-NLS-1$
 	}
 
-	private WorldWindModel(FolderNode rootNode)
+	private WorldWindModel(ConstructionParameters constructionParameters)
 	{
-		super(createGlobe(rootNode), rootNode.getLayerList());
-		this.rootNode = rootNode;
-	}
-
-	protected static FolderNode createRootNode()
-	{
-		FolderNode rootNode = new FolderNode();
-		rootNode.setName("root"); //$NON-NLS-1$
-		rootNode.setExpanded(true);
-		return rootNode;
-	}
-
-	protected static Globe createGlobe(FolderNode rootNode)
-	{
-		Globe globe = (Globe) WorldWind.createConfigurationComponent(AVKey.GLOBE_CLASS_NAME);
-		globe.setElevationModel(rootNode.getElevationModels());
-		return globe;
+		super(constructionParameters.createGlobe(), constructionParameters.createLayerList());
+		this.constructionParameters = constructionParameters;
 	}
 
 	@Override
 	public ILayerTreeNode getRootNode()
 	{
-		return rootNode;
+		return constructionParameters.rootNode;
 	}
 
 	@PostConstruct
 	public void loadLayers()
 	{
-		loadRootNode(rootNode);
+		loadRootNode(constructionParameters.rootNode);
 	}
 
 	@PreDestroy
 	public void saveLayers()
 	{
-		saveRootNode(rootNode);
+		saveRootNode(constructionParameters.rootNode);
 	}
 
 	protected static void loadRootNode(ILayerTreeNode rootNode)
@@ -139,6 +125,30 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		catch (Exception e)
 		{
 			logger.error("Error saving layer file", e); //$NON-NLS-1$
+		}
+	}
+
+	private static class ConstructionParameters
+	{
+		public FolderNode rootNode;
+
+		public ConstructionParameters()
+		{
+			rootNode = new FolderNode();
+			rootNode.setName("root"); //$NON-NLS-1$
+			rootNode.setExpanded(true);
+		}
+
+		public Globe createGlobe()
+		{
+			Globe globe = (Globe) WorldWind.createConfigurationComponent(AVKey.GLOBE_CLASS_NAME);
+			globe.setElevationModel(rootNode.getElevationModels());
+			return globe;
+		}
+
+		public LayerList createLayerList()
+		{
+			return rootNode.getLayerList();
 		}
 	}
 }

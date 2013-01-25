@@ -50,8 +50,8 @@ public final class Injector
 				boolean injectable = "injectable".equals(element.getName()); //$NON-NLS-1$
 				if (bind)
 				{
-					Class<?> implementationClass = ExtensionClassLoader.getClassForProperty(element, "implementation"); //$NON-NLS-1$
-					Class<?> bindingClass = ExtensionClassLoader.getClassForProperty(element, "binding"); //$NON-NLS-1$
+					Class<?> implementationClass = ExtensionPointHelper.getClassForProperty(element, "implementation"); //$NON-NLS-1$
+					Class<?> bindingClass = ExtensionPointHelper.getClassForProperty(element, "binding"); //$NON-NLS-1$
 					InjectorFactory.getDefault().addBinding(bindingClass).implementedBy(implementationClass);
 				}
 				else if (inject || injectable)
@@ -64,7 +64,7 @@ public final class Injector
 						for (IConfigurationElement type : types)
 						{
 							@SuppressWarnings("unchecked")
-							Class<Object> c = (Class<Object>) ExtensionClassLoader.getClassForProperty(type, "class"); //$NON-NLS-1$
+							Class<Object> c = (Class<Object>) ExtensionPointHelper.getClassForProperty(type, "class"); //$NON-NLS-1$
 							context.set(c, c.cast(object));
 						}
 						IConfigurationElement[] names = element.getChildren("name"); //$NON-NLS-1$

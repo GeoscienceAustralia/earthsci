@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.injectable.ExtensionClassLoader;
+import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 
 /**
  * A factory class used to obtain a new {@link IBookmarkPropertyEditor} instance for use with a given {@link IBookmarkProperty}.
@@ -58,7 +58,7 @@ public class BookmarkPropertyEditorFactory
 			for (IConfigurationElement e : config)
 			{
 				@SuppressWarnings("unchecked")
-				Class<? extends IBookmarkPropertyEditor> clazz = (Class<? extends IBookmarkPropertyEditor>)ExtensionClassLoader.getClassForProperty(e, CLASS_ATTRIBUTE);
+				Class<? extends IBookmarkPropertyEditor> clazz = (Class<? extends IBookmarkPropertyEditor>)ExtensionPointHelper.getClassForProperty(e, CLASS_ATTRIBUTE);
 				String typeName = e.getAttribute(TYPE_ATTRIBUTE);
 				
 				registerEditor(typeName, clazz);

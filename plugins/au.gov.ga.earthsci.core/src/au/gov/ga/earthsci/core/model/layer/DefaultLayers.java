@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer.uri;
+package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.avlist.AVKey;
@@ -39,8 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import au.gov.ga.earthsci.core.model.layer.FolderNode;
-import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.util.Util;
 
 /**
@@ -165,6 +163,19 @@ public class DefaultLayers
 			if (classNameSpecified)
 			{
 				uriString = "class://" + className; //$NON-NLS-1$
+
+				//don't allow hud layers:
+				try
+				{
+					if (HudLayers.containsLayerClass(Class.forName(className)))
+					{
+						uriString = null;
+					}
+				}
+				catch (Exception e)
+				{
+					//ignore
+				}
 			}
 			else if (!Util.isEmpty(href))
 			{
