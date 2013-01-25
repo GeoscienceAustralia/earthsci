@@ -20,6 +20,7 @@ import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.GeographicSurfaceTileRenderer;
 import gov.nasa.worldwind.render.SurfaceTile;
 import gov.nasa.worldwind.render.SurfaceTileRenderer;
 import gov.nasa.worldwind.terrain.SectorGeometry;
@@ -35,7 +36,7 @@ import au.gov.ga.earthsci.worldwind.common.util.exaggeration.VerticalExaggeratio
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ExtendedSurfaceTileRenderer extends MultiTextureSurfaceTileRenderer
+public class ExtendedSurfaceTileRenderer extends GeographicSurfaceTileRenderer
 {
 	protected double elevationOffset = 0;
 	protected boolean ignoreElevation = false;
