@@ -28,6 +28,22 @@ public interface IBookmarksController
 {
 
 	/**
+	 * Create a new bookmark and append it to the given bookmark list.
+	 * 
+	 * @param list The list append the new bookmark to
+	 * 
+	 * @return The created bookmark
+	 */
+	IBookmark createNew(IBookmarkList list);
+	
+	/**
+	 * Create a new bookmark and append it to the current bookmark list
+	 * 
+	 * @return The created bookmark
+	 */
+	IBookmark createNew();
+	
+	/**
 	 * Apply the given bookmark using appropriate {@link IBookmarkPropertyApplicator}s
 	 * and user preferences.
 	 * 

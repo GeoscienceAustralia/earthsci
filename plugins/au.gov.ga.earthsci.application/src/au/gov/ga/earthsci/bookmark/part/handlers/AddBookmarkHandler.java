@@ -20,9 +20,9 @@ import javax.inject.Inject;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.jface.viewers.TableViewer;
 
-import au.gov.ga.earthsci.bookmark.BookmarkFactory;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarks;
+import au.gov.ga.earthsci.bookmark.part.IBookmarksController;
 import au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences;
 
 /**
@@ -38,11 +38,13 @@ public class AddBookmarkHandler
 	@Inject
 	private IBookmarksPreferences preferences;
 	
+	@Inject
+	private IBookmarksController controller;
+	
 	@Execute
 	public void execute(TableViewer viewer)
 	{
-		IBookmark b = BookmarkFactory.createBookmark(preferences.getDefaultPropertyTypes());
-		bookmarks.getDefaultList().getBookmarks().add(b);
+		IBookmark b = controller.createNew();
 		viewer.editElement(b, 0);
 	}
 }
