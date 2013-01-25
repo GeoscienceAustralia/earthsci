@@ -76,7 +76,6 @@ Export-Package: au.gov.ga.earthsci.worldwind,
  au.gov.ga.earthsci.worldwind.common.view.transform,
  gov.nasa.worldwind.geom.coords,
  gov.nasa.worldwind.layers,
- gov.nasa.worldwind.render,
  gov.nasa.worldwind.terrain,
  gov.nasa.worldwind.view.orbit,
  jargs.gnu
