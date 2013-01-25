@@ -15,17 +15,22 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.injectable;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.spi.RegistryContributor;
 import org.osgi.framework.Bundle;
 
 /**
- * Helper class for accessing classes defined in extention point definitions.
+ * Helper class for accessing classes and resources defined in extention point
+ * definitions.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ExtensionClassLoader
+public class ExtensionPointHelper
 {
 	/**
 	 * Load the class defined in the extension point configuration element under
@@ -71,5 +76,58 @@ public class ExtensionClassLoader
 			return bundle.loadClass(className);
 		}
 		throw new ClassNotFoundException(className);
+	}
+
+	/**
+	 * Get a URI pointing to the resource defined in the extension point
+	 * configuration element under the given property name.
+	 * 
+	 * @param element
+	 *            Extension point configuration element
+	 * @param propertyName
+	 *            Property name in element that defines the resource name
+	 * @return URI pointing at the resource, or null if the resource could not
+	 *         be found
+	 */
+	public static URI getResourceURIForProperty(IConfigurationElement element, String propertyName)
+	{
+		String resourceName = element.getAttribute(propertyName);
+		return getResourceURIForName(element, resourceName);
+	}
+
+	/**
+	 * Get a URI pointing to the named resource defined in the given extension
+	 * point configuration element.
+	 * 
+	 * @param element
+	 *            Extension point configuration element
+	 * @param resourceName
+	 *            Resource name, relative to the defining plugin (passed to
+	 *            {@link Bundle#getResource(String)})
+	 * @return URI pointing at the resource, or null if the resource could not
+	 *         be found
+	 */
+	public static URI getResourceURIForName(IConfigurationElement element, String resourceName)
+	{
+		IContributor contributor = element.getContributor();
+		if (contributor instanceof RegistryContributor)
+		{
+			String stringId = ((RegistryContributor) contributor).getId();
+			long id = Long.parseLong(stringId);
+			Bundle bundle = Activator.getContext().getBundle(id);
+			URL url = bundle.getResource(resourceName);
+			if (url != null)
+			{
+				try
+				{
+					return url.toURI();
+				}
+				catch (URISyntaxException e)
+				{
+					//ignore
+				}
+			}
+		}
+		return null;
 	}
 }
