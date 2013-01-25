@@ -34,6 +34,8 @@ import javax.inject.Singleton;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.bookmark.BookmarkFactory;
 import au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry;
@@ -57,14 +59,20 @@ import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
 public class BookmarksController implements IBookmarksController
 {
 
+	private static final Logger logger = LoggerFactory.getLogger(BookmarksController.class);
+	
 	@Inject
 	private IBookmarksPreferences preferences;
 	
 	@Inject
 	private IBookmarks bookmarks;
 	
+	private IBookmarkList currentList;
+	
 	@Inject
 	private WorldWindowRegistry registry;
+	
+	private BookmarksPart part;
 	
 	/**
 	 * A property change listener used to stop the bookmark applicator thread on {@link View#VIEW_STOPPED} events.
@@ -86,13 +94,16 @@ public class BookmarksController implements IBookmarksController
 	 */
 	private final MouseListener mouseStopListener = new MouseAdapter()
 	{
-			@Override
-			public void mousePressed(MouseEvent e)
-			{
-				stopCurrentTransition();
-			}
+		@Override
+		public void mousePressed(MouseEvent e)
+		{
+			stop();
+		}
 	};
-	
+
+	/**
+	 * An executor service used to execute the application of a single bookmark state to the world
+	 */
 	private final ExecutorService applicatorService = Executors.newSingleThreadExecutor(new ThreadFactory()
 	{
 		@Override
@@ -101,41 +112,62 @@ public class BookmarksController implements IBookmarksController
 			return new Thread(runnable, "Bookmark Applicator Thread"); //$NON-NLS-1$
 		}
 	});
-	private transient Future<?> currentTask;
 	
+	/**
+	 * The currently executing bookmark applicator. 
+	 * <code>null</code> implies no running application.
+	 */
+	private transient Future<?> currentApplicatorTask;
+	
+	/**
+	 * An executor service used to play through a bookmark list
+	 */
+	private final ExecutorService playlistService = Executors.newSingleThreadExecutor(new ThreadFactory() {
+		@Override
+		public Thread newThread(Runnable r)
+		{
+			return new Thread(r, "Bookmark Playlist Thread"); //$NON-NLS-1$
+		}
+	});
+	
+	/**
+	 * The currently executing playlist applicator.
+	 * <code>null</code> implies no running playlist.
+	 */
+	private transient Future<?> currentPlaylistTask;
 	
 	@Override
 	public void apply(final IBookmark bookmark)
 	{
-		stopCurrentTransition();
-		
-		View view = registry.getLastView();
-		if (view != null)
-		{
-			currentTask = applicatorService.submit(new BookmarkApplicatorRunnable(view, bookmark, getDuration(bookmark)));
-		}
+		stop();
+		doApply(bookmark);
 	}
 	
 	/**
-	 * Stop any current bookmark transitions that are running
+	 * Perform the application of the bookmark to the world, without stopping any running animations
 	 */
-	public void stopCurrentTransition()
+	private void doApply(final IBookmark bookmark)
 	{
-		if (currentTask != null)
+		View view = registry.getLastView();
+		if (view != null)
 		{
-			currentTask.cancel(true);
-			currentTask = null;
+			part.highlight(bookmark);
+			currentApplicatorTask = applicatorService.submit(new BookmarkApplicatorRunnable(view, 
+																						    bookmark, 
+																						    getDuration(bookmark)));
 		}
 	}
 	
 	@Override
 	public void edit(final IBookmark bookmark)
 	{
+		stop();
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run()
 			{
-				BookmarkEditorDialog dialog = new BookmarkEditorDialog(bookmark, Display.getDefault().getActiveShell());
+				BookmarkEditorDialog dialog = new BookmarkEditorDialog(bookmark, 
+																	   Display.getDefault().getActiveShell());
 				dialog.open();
 			}
 		});
@@ -144,15 +176,86 @@ public class BookmarksController implements IBookmarksController
 	@Override
 	public void delete(IBookmark bookmark)
 	{
+		stop();
 		for (IBookmarkList l : bookmarks.getLists())
 		{
 			l.getBookmarks().remove(bookmark);
 		}
 	}
 	
+	@Override
+	public IBookmarkList getCurrentList()
+	{
+		if (currentList == null)
+		{
+			return bookmarks.getDefaultList();
+		}
+		return currentList;
+	}
+	
+	@Override
+	public void play(IBookmark bookmark)
+	{
+		play(getCurrentList(), bookmark);
+	}
+	
+	@Override
+	public void play(IBookmarkList list, IBookmark bookmark)
+	{
+		stop();
+		if (list == null)
+		{
+			logger.debug("No bookmark list provided. Aborting play."); //$NON-NLS-1$
+			return;
+		}
+		
+		View wwview = registry.getLastView();
+		if (wwview == null)
+		{
+			logger.debug("No view found. Aborting play."); //$NON-NLS-1$
+			return;
+		}
+		
+		currentPlaylistTask = playlistService.submit(new BookmarkPlaylistRunnable(wwview, list, bookmark));
+	}
+	
+	@Override
+	public boolean isPlaying()
+	{
+		return currentPlaylistTask != null;
+	}
+	
+	@Override
+	public void stop()
+	{
+		if (currentPlaylistTask != null)
+		{
+			currentPlaylistTask.cancel(true);
+			currentPlaylistTask = null;
+		}
+		stopCurrentTransition();
+	}
+	
+	/**
+	 * Stop any current bookmark transitions that are running
+	 */
+	public void stopCurrentTransition()
+	{
+		if (currentApplicatorTask != null)
+		{
+			currentApplicatorTask.cancel(true);
+			currentApplicatorTask = null;
+		}
+	}
+	
+	/**
+	 * Return the duration (in milliseconds) to be used for transitioning to the given bookmark 
+	 */
 	private long getDuration(final IBookmark bookmark)
 	{
-		return bookmark.getTransitionDuration() == null ? preferences.getDefaultTransitionDuration() : bookmark.getTransitionDuration();
+		return bookmark.getTransitionDuration() == null ? 
+				preferences.getDefaultTransitionDuration() : 
+				bookmark.getTransitionDuration();
 	}
 	
 	/**
@@ -222,10 +325,76 @@ public class BookmarksController implements IBookmarksController
 	}
 	
 	/**
+	 * A runnable that loops through the provided bookmark list and applies each bookmark in turn
+	 */
+	private class BookmarkPlaylistRunnable implements Runnable
+	{
+		private final View view;
+		private final List<IBookmark> list;
+		private IBookmark currentBookmark;
+		
+		BookmarkPlaylistRunnable(View view, IBookmarkList list, IBookmark bookmark)
+		{
+			this.view = view;
+			this.list = new ArrayList<IBookmark>(list.getBookmarks());
+			this.currentBookmark = this.list.contains(bookmark) ? bookmark : this.list.get(0);
+		}
+		
+		@Override
+		public void run()
+		{
+			view.stopAnimations();
+			view.stopMovement();
+			
+			while (true)
+			{
+				try
+				{
+					// Apply current bookmark and wait for completion
+					doApply(currentBookmark);
+					currentApplicatorTask.get();
+					
+					// Wait for user specified time
+					view.getViewInputHandler().getWorldWindow().getInputHandler().addMouseListener(mouseStopListener);
+					Thread.sleep(preferences.getPlayBookmarksWaitDuration());
+					view.getViewInputHandler().getWorldWindow().getInputHandler().removeMouseListener(mouseStopListener);
+
+					// Proceed to next bookmark
+					int nextIndex = (list.indexOf(currentBookmark) + 1) % list.size();
+					currentBookmark = list.get(nextIndex);
+
+					if (Thread.interrupted())
+					{
+						break;
+					}
+				}
+				catch (InterruptedException e)
+				{
+					// Expected if user cancels playlist during wait phase
+					break;
+				}
+				catch (Exception e)
+				{
+					logger.error("Exception occurred while running playlist.", e); //$NON-NLS-1$
+					break;
+				}
+				
+			}
+			currentPlaylistTask = null;
+		}
+	}
+	
+	/**
 	 * Set the user preferences on this controller
 	 */
 	public void setPreferences(final IBookmarksPreferences preferences)
 	{
 		this.preferences = preferences;
+	}
+	
+	@Override
+	public void setView(BookmarksPart part)
+	{
+		this.part = part;
 	}
 }

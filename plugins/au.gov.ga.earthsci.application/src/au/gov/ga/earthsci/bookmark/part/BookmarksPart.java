@@ -56,6 +56,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.bookmark.model.Bookmarks;
@@ -88,6 +89,8 @@ public class BookmarksPart
 	@PostConstruct
 	public void init(final Composite parent, final MPart part, final EMenuService menuService)
 	{
+		controller.setView(this);
+		
 		parent.setLayout(new GridLayout(1, true));
 		
 		initCombo(parent);
@@ -100,6 +103,22 @@ public class BookmarksPart
 		menuService.registerContextMenu(bookmarkListTableViewer.getTable(), "au.gov.ga.earthsci.application.bookmarks.popupmenu"); //$NON-NLS-1$
 	}
 
+	/**
+	 * Highlight the given bookmark in the part
+	 * 
+	 * @param bookmark The bookmark to highlight. If <code>null</code>, clears any highlighting
+	 */
+	public void highlight(final IBookmark bookmark)
+	{
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run()
+			{
+				bookmarkListTableViewer.setSelection(bookmark == null ? null : new StructuredSelection(bookmark));
+			}
+		});
+	}
+	
 	private void setupBookmarkListInput()
 	{
 		bookmarkListTableViewer.setInput(BeanProperties.list("bookmarks").observe(getSelectedBookmarkList())); //$NON-NLS-1$
@@ -151,7 +170,8 @@ public class BookmarksPart
 		TableColumnLayout layout = new TableColumnLayout();
 		tableHolder.setLayout(layout);
 		
-		bookmarkListTableViewer = new TableViewer(tableHolder, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
+		bookmarkListTableViewer = new TableViewer(tableHolder, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | 
+															   SWT.SINGLE | SWT.FULL_SELECTION);
 		bookmarkListTableViewer.getTable().setHeaderVisible(false);
 		bookmarkListTableViewer.getTable().setLinesVisible(false);
 		
@@ -232,7 +252,8 @@ public class BookmarksPart
 	}
 	
 	/**
-	 * A simple {@link EditingSupport} implementation that provides in-place editing of bookmark names within the list
+	 * A simple {@link EditingSupport} implementation that provides in-place editing of 
+	 * bookmark names within the list
 	 */
 	private static class BookmarkNameEditingSupport extends EditingSupport
 	{

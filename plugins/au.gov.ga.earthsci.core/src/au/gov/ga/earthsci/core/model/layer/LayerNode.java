@@ -36,6 +36,9 @@ import java.util.Set;
 import au.gov.ga.earthsci.core.model.layer.uri.URILayerLoadJob;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.util.IEnableable;
+import au.gov.ga.earthsci.notification.Notification;
+import au.gov.ga.earthsci.notification.NotificationLevel;
+import au.gov.ga.earthsci.notification.NotificationManager;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
@@ -78,6 +81,12 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	 */
 	public void setLayer(Layer layer)
 	{
+		if (layer == null)
+		{
+			firePropertyChange("layer", this.layer, null); //$NON-NLS-1$
+			return;
+		}
+		
 		//set the values from the layer on this node
 		setName(layer.getName());
 
@@ -149,8 +158,10 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 				}
 				catch (Exception e)
 				{
-					//TODO
-					e.printStackTrace();
+					NotificationManager.notify(Notification.create(NotificationLevel.ERROR, 
+												Messages.LayerNode_FailedCopyNotificationTitle, 
+												Messages.LayerNode_FailedCopyNotificationDescription + from)
+												.withThrowable(e).build());
 				}
 			}
 			copyingProperties = false;

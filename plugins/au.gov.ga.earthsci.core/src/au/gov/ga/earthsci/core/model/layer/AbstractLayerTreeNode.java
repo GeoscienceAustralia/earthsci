@@ -25,6 +25,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Set;
 
+import au.gov.ga.earthsci.core.model.IModelStatus;
+import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
@@ -54,7 +56,8 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private URL iconURL;
 	private boolean expanded;
 	private final Object semaphore = new Object();
-
+	private IModelStatus status = ModelStatus.ok(null);
+	
 	protected AbstractLayerTreeNode()
 	{
 		super();
@@ -174,14 +177,18 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		{
 			IEnableable enableable = (IEnableable) this;
 			if (enableable.isEnabled() == enabled)
+			{
 				return true;
+			}
 		}
 		if (hasChildren())
 		{
 			for (ITreeNode<ILayerTreeNode> child : getChildren())
 			{
 				if (child.getValue().anyChildrenEnabledEquals(enabled))
+				{
 					return true;
+				}
 			}
 		}
 		return false;
@@ -413,5 +420,17 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	public void setExpanded(boolean expanded)
 	{
 		firePropertyChange("expanded", isExpanded(), this.expanded = expanded); //$NON-NLS-1$
+	}
+	
+	@Override
+	public IModelStatus getStatus()
+	{
+		return status;
+	}
+	
+	@Override
+	public void setStatus(IModelStatus status)
+	{
+		firePropertyChange("status", getStatus(), this.status = status); //$NON-NLS-1$
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.handlers;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Shell;
-
-import au.gov.ga.earthsci.notification.NotificationManager;
+package au.gov.ga.earthsci.core.model;
 
 /**
- * Handler which shows the About dialog box.
+ * A simple marker interface for model classes that have associated {@link IModelStatus}
+ * instances
  * 
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * @author James Navin (james.navin@ga.gov.au)
  */
-public class AboutHandler
+public interface IStatused
 {
-	@Inject
-	private NotificationManager notifications;
+
+	/**
+	 * @return The status of this object
+	 */
+	IModelStatus getStatus();
 	
-	@Execute
-	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
-	{
-		MessageDialog.openInformation(shell, "About", "e4 Application example.");
-	}
+	/**
+	 * Set the status of this object
+	 * 
+	 * @param s The status to apply to this object
+	 */
+	void setStatus(IModelStatus status);
+	
 }

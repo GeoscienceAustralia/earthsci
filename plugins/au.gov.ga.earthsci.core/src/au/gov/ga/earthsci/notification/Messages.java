@@ -8,6 +8,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.notification.messages"; //$NON-NLS-1$
+	public static String Notification_DefaultActionText;
 	public static String NotificationPreferences_Description;
 	public static String NotificationPreferences_Title;
 	static

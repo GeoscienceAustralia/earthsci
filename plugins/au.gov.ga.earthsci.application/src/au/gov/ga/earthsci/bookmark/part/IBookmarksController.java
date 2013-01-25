@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.bookmark.part;
 
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
+import au.gov.ga.earthsci.bookmark.model.IBookmarkList;
 
 /**
  * A controller interface for the bookmarks feature
@@ -47,4 +48,47 @@ public interface IBookmarksController
 	 * @param bookmark The bookmark to delete
 	 */
 	void delete(IBookmark bookmark);
+	
+	/**
+	 * Return the currently selected bookmark list
+	 * 
+	 * @return The currently selected bookmark list
+	 */
+	IBookmarkList getCurrentList();
+	
+	/**
+	 * Play through the given bookmark list, starting at the given bookmark.
+	 * <p/>
+	 * If the given bookmark does not exist in the list, or is <code>null</code>, play 
+	 * from the start of the given list.
+	 * 
+	 * @param list The bookmark list to play through
+	 * @param bookmark The bookmark to start at
+	 */
+	void play(IBookmarkList list, IBookmark bookmark);
+	
+	/**
+	 * Play through the current bookmark list, starting at the given bookmark.
+	 * <p/>
+	 * If the given bookmark does not exist in the current list, or is <code>null</code>,
+	 * play from the start of the current list.
+	 * 
+	 * @param bookmark The bookmark to start at in the current list
+	 */
+	void play(IBookmark bookmark);
+	
+	/**
+	 * @return Whether there are any actively playing lists
+	 */
+	boolean isPlaying();
+	
+	/**
+	 * Stop any running playlists
+	 */
+	void stop();
+	
+	/**
+	 * Set the UI view this controller links to
+	 */
+	void setView(BookmarksPart part);
 }

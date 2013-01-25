@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.handlers;
+package au.gov.ga.earthsci.bookmark.part.handlers;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Shell;
 
-import au.gov.ga.earthsci.notification.NotificationManager;
+import au.gov.ga.earthsci.bookmark.part.IBookmarksController;
 
 /**
- * Handler which shows the About dialog box.
+ * A command handler used to stop playing of bookmarks lists
  * 
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * @author James Navin (james.navin@ga.gov.au)
  */
-public class AboutHandler
+public class StopBookmarksHandler
 {
+
 	@Inject
-	private NotificationManager notifications;
+	private IBookmarksController controller;
 	
 	@Execute
-	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
+	public void execute()
 	{
-		MessageDialog.openInformation(shell, "About", "e4 Application example.");
+		controller.stop();
 	}
+	
+	@CanExecute
+	public boolean canExecute()
+	{
+		return controller.isPlaying();
+	}
+	
 }

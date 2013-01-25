@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.handlers;
+package au.gov.ga.earthsci.core.model.layer;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Shell;
-
-import au.gov.ga.earthsci.notification.NotificationManager;
+import org.eclipse.osgi.util.NLS;
 
 /**
- * Handler which shows the About dialog box.
- * 
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * @author u09145
+ *
  */
-public class AboutHandler
+public class Messages extends NLS
 {
-	@Inject
-	private NotificationManager notifications;
-	
-	@Execute
-	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
+	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.model.layer.messages"; //$NON-NLS-1$
+	public static String LayerNode_FailedCopyNotificationDescription;
+	public static String LayerNode_FailedCopyNotificationTitle;
+	public static String URILayerLoadJob_FailedLoadNotificationDescription;
+	public static String URILayerLoadJob_FailedLoadNotificationTitle;
+	static
 	{
-		MessageDialog.openInformation(shell, "About", "e4 Application example.");
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+	}
+
+	private Messages()
+	{
 	}
 }

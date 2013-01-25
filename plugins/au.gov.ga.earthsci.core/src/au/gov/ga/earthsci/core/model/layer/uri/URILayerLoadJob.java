@@ -25,7 +25,14 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import au.gov.ga.earthsci.core.Activator;
+import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
+import au.gov.ga.earthsci.core.model.layer.Messages;
+import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
+import au.gov.ga.earthsci.notification.Notification;
+import au.gov.ga.earthsci.notification.NotificationCategory;
+import au.gov.ga.earthsci.notification.NotificationLevel;
+import au.gov.ga.earthsci.notification.NotificationManager;
 
 /**
  * Job used for creating a {@link Layer} from a {@link LayerNode}.
@@ -50,10 +57,20 @@ public class URILayerLoadJob extends Job
 		{
 			Layer layer = URILayerFactory.createLayer(layerNode, uri, monitor);
 			layerNode.setLayer(layer);
+			layerNode.setStatus(ModelStatus.ok());
 		}
 		catch (URILayerFactoryException e)
 		{
-			return new Status(Status.ERROR, Activator.getBundleName(), e.getLocalizedMessage(), e);
+			NotificationManager.notify(Notification.create(NotificationLevel.ERROR, 
+														   Messages.URILayerLoadJob_FailedLoadNotificationTitle, 
+														   Messages.URILayerLoadJob_FailedLoadNotificationDescription + 
+														   UTF8URLEncoder.decode(uri.toString()))
+														   .inCategory(NotificationCategory.FILE_IO)
+														   .requiringAcknowledgement(null)
+														   .build());
+			Status status = new Status(Status.ERROR, Activator.getBundleName(), e.getLocalizedMessage(), e);
+			layerNode.setStatus(ModelStatus.fromIStatus(status));
+			return status;
 		}
 		return Status.OK_STATUS;
 	}
