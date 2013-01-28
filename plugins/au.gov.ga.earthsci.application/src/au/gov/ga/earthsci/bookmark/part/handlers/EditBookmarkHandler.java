@@ -16,12 +16,6 @@
 package au.gov.ga.earthsci.bookmark.part.handlers;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.core.di.annotations.Optional;
-import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.viewers.TableViewer;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.part.IBookmarksController;
@@ -36,9 +30,9 @@ public class EditBookmarkHandler extends AbstractSingleBookmarkHandler
 	@Inject
 	private IBookmarksController controller;
 	
-	@Execute
-	public void execute(TableViewer bookmarkListView, @Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
+	@Override
+	public void doExecute(IBookmark selectedBookmark)
 	{
-		controller.edit(selectedBookmarks[0]);
+		controller.edit(selectedBookmark);
 	}
 }

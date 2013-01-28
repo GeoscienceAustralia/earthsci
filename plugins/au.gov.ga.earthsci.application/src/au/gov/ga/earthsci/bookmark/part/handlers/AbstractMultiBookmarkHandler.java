@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,30 +26,30 @@ import au.gov.ga.earthsci.bookmark.model.IBookmark;
 
 /**
  * An abstract command handler that has a {@link #canExecute(IBookmark[])} method
- * that only enables the command when a single bookmark is selected.
+ * that only enables the command when AT LEAST ONE bookmark is selected.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public abstract class AbstractSingleBookmarkHandler
+public abstract class AbstractMultiBookmarkHandler
 {
 
 	@Execute
 	public void execute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
 	{
-		doExecute(selectedBookmarks[0]);
+		doExecute(selectedBookmarks);
 	}
 	
 	/**
-	 * Perform handler specific logic here
+	 * Implement handler specific execution logic here
 	 * 
-	 * @param selectedBookmark The currently selected bookmark
+	 * @param selectedBookmarks The currently selected bookmarks
 	 */
-	protected abstract void doExecute(IBookmark selectedBookmark);
+	protected abstract void doExecute(IBookmark[] selectedBookmarks);
 	
 	@CanExecute
 	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
 	{
-		return selectedBookmarks != null && selectedBookmarks.length == 1;
-	}
+		return selectedBookmarks != null && selectedBookmarks.length > 0;
+	} 
 	
 }

@@ -59,11 +59,18 @@ public interface IBookmarksController
 	void edit(IBookmark bookmark);
 	
 	/**
-	 * Delete the given bookmark from its list
+	 * Delete the given bookmark from the current list
 	 * 
 	 * @param bookmark The bookmark to delete
 	 */
 	void delete(IBookmark bookmark);
+	
+	/**
+	 * Delete the given bookmarks from the current list
+	 * 
+	 * @param bookmarks The bookmarks to delete
+	 */
+	void delete(IBookmark... bookmarks);
 	
 	/**
 	 * Return the currently selected bookmark list

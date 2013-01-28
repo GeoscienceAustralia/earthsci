@@ -191,10 +191,29 @@ public class BookmarksController implements IBookmarksController
 	@Override
 	public void delete(IBookmark bookmark)
 	{
-		stop();
-		for (IBookmarkList l : bookmarks.getLists())
+		if (bookmark == null)
 		{
-			l.getBookmarks().remove(bookmark);
+			return;
+		}
+		
+		stop();
+		
+		getCurrentList().getBookmarks().remove(bookmark);
+	}
+	
+	@Override
+	public void delete(IBookmark... bookmarks)
+	{
+		if (bookmarks == null || bookmarks.length == 0)
+		{
+			return;
+		}
+		
+		stop();
+		
+		for (IBookmark b : bookmarks)
+		{
+			getCurrentList().getBookmarks().remove(b);
 		}
 	}
 	

@@ -16,11 +16,6 @@
 package au.gov.ga.earthsci.bookmark.part.handlers;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.core.di.annotations.Optional;
-import org.eclipse.e4.ui.services.IServiceConstants;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.part.IBookmarksController;
@@ -30,16 +25,20 @@ import au.gov.ga.earthsci.bookmark.part.IBookmarksController;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class DeleteBookmarkHandler extends AbstractSingleBookmarkHandler
+public class DeleteBookmarkHandler extends AbstractMultiBookmarkHandler
 {
 
 	@Inject
 	private IBookmarksController controller;
-	
-	@Execute
-	public void execute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
+
+	@Override
+	protected void doExecute(IBookmark[] selectedBookmarks)
 	{
-		controller.delete(selectedBookmarks[0]);
+		controller.delete(selectedBookmarks);
 	}
 	
+	public void setController(IBookmarksController controller)
+	{
+		this.controller = controller;
+	}
 }

@@ -171,7 +171,7 @@ public class BookmarksPart
 		tableHolder.setLayout(layout);
 		
 		bookmarkListTableViewer = new TableViewer(tableHolder, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | 
-															   SWT.SINGLE | SWT.FULL_SELECTION);
+															   SWT.MULTI | SWT.FULL_SELECTION);
 		bookmarkListTableViewer.getTable().setHeaderVisible(false);
 		bookmarkListTableViewer.getTable().setLinesVisible(false);
 		
