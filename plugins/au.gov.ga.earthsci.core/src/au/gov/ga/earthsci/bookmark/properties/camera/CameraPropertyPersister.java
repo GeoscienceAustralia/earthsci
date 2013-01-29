@@ -20,8 +20,6 @@ import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -33,7 +31,7 @@ import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.core.persistence.Persister;
 import au.gov.ga.earthsci.core.util.Validate;
 import au.gov.ga.earthsci.core.util.XmlUtil;
-import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
 
 /**
  * An {@link IBookmarkPropertyCreator} that can create a {@link CameraProperty} instance
@@ -49,9 +47,6 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 	private static final Logger logger = LoggerFactory.getLogger(CameraPropertyPersister.class);
 	
 	private Persister persister;
-	
-	@Inject
-	private WorldWindowRegistry registry;
 	
 	public CameraPropertyPersister()
 	{
@@ -70,7 +65,7 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 	@Override
 	public IBookmarkProperty createFromCurrentState(String type)
 	{
-		View view = registry.getLastView();
+		View view = IWorldWindowRegistry.INSTANCE.getActiveView();
 		if (view == null)
 		{
 			return null;

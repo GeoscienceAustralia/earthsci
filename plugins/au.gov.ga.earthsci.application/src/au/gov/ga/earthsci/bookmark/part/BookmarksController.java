@@ -47,7 +47,7 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.model.IBookmarks;
 import au.gov.ga.earthsci.bookmark.part.editor.BookmarkEditorDialog;
 import au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences;
-import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
 
 /**
  * The default implementation of the {@link IBookmarksController} interface
@@ -68,9 +68,6 @@ public class BookmarksController implements IBookmarksController
 	private IBookmarks bookmarks;
 	
 	private IBookmarkList currentList;
-	
-	@Inject
-	private WorldWindowRegistry registry;
 	
 	private BookmarksPart part;
 	
@@ -148,7 +145,7 @@ public class BookmarksController implements IBookmarksController
 	 */
 	private void doApply(final IBookmark bookmark)
 	{
-		View view = registry.getLastView();
+		View view = IWorldWindowRegistry.INSTANCE.getActiveView();
 		if (view != null)
 		{
 			part.highlight(bookmark);
@@ -209,7 +206,7 @@ public class BookmarksController implements IBookmarksController
 			return;
 		}
 		
-		View wwview = registry.getLastView();
+		View wwview = IWorldWindowRegistry.INSTANCE.getActiveView();
 		if (wwview == null)
 		{
 			logger.debug("No view found. Aborting play."); //$NON-NLS-1$

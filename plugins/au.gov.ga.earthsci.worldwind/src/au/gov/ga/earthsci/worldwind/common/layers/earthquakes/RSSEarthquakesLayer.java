@@ -78,7 +78,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Setupable;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class RSSEarthquakesLayer extends RenderableLayer implements Setupable, Loader
+public class RSSEarthquakesLayer extends RenderableLayer implements Setupable, Loader, SelectListener
 {
 	private static final String RSS_URL = "http://www.ga.gov.au/earthquakes/all_recent.rss";
 
@@ -253,30 +253,28 @@ public class RSSEarthquakesLayer extends RenderableLayer implements Setupable, L
 	@Override
 	public void setup(final WorldWindow wwd)
 	{
-		wwd.addSelectListener(new SelectListener()
-		{
-			@Override
-			public void selected(SelectEvent event)
-			{
-				Object o = event.getTopObject();
-				if (event.getEventAction().equals(SelectEvent.ROLLOVER))
-				{
-					highlight(o);
-				}
-				else if (event.getEventAction().equals(SelectEvent.LEFT_CLICK))
-				{
-					click(o);
-				}
+		wwd.addSelectListener(this);
+	}
 
-				if (wwd instanceof Component)
-				{
-					Cursor cursor =
-							(o instanceof SurfaceEarthquakeAnnotation) ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
-									: null;
-					((Component) wwd).setCursor(cursor);
-				}
-			}
-		});
+	@Override
+	public void selected(SelectEvent event)
+	{
+		Object o = event.getTopObject();
+		if (event.getEventAction().equals(SelectEvent.ROLLOVER))
+		{
+			highlight(o);
+		}
+		else if (event.getEventAction().equals(SelectEvent.LEFT_CLICK))
+		{
+			click(o);
+		}
+
+		if (event.getSource() instanceof Component)
+		{
+			Cursor cursor =
+					(o instanceof SurfaceEarthquakeAnnotation) ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) : null;
+			((Component) event.getSource()).setCursor(cursor);
+		}
 	}
 
 	private void highlight(Object o)

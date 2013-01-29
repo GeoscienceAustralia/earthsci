@@ -14,6 +14,7 @@ Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
  org.gdal;bundle-version="1.7.2",
  com.jhlabs.filters;bundle-version="1.0.0"
 Export-Package: au.gov.ga.earthsci.worldwind,
+ au.gov.ga.earthsci.worldwind.common,
  au.gov.ga.earthsci.worldwind.common.downloader,
  au.gov.ga.earthsci.worldwind.common.layers,
  au.gov.ga.earthsci.worldwind.common.layers.borehole,

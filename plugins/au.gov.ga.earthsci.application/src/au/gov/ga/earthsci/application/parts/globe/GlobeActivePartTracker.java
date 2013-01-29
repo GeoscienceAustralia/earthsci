@@ -21,7 +21,8 @@ import org.eclipse.e4.core.contexts.Active;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 
-import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 
 /**
  * Injected class that keeps track of the active WorldWindow, and notifies the
@@ -32,15 +33,12 @@ import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
 public class GlobeActivePartTracker
 {
 	@Inject
-	private WorldWindowRegistry registry;
-
-	@Inject
 	public void execute(@Optional @Active MPart activePart)
 	{
 		if (activePart != null && activePart.getObject() instanceof GlobePart)
 		{
 			GlobePart part = (GlobePart) activePart.getObject();
-			registry.setActiveWindow(part.getWorldWindow());
+			IWorldWindowRegistry.INSTANCE.setActive(part.getWorldWindow());
 		}
 	}
 }

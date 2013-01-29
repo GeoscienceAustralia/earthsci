@@ -66,7 +66,7 @@ import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
-import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 import au.gov.ga.earthsci.worldwind.common.util.FlyToSectorAnimator;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
@@ -81,9 +81,6 @@ public class LayerTreePart
 
 	@Inject
 	private ESelectionService selectionService;
-
-	@Inject
-	private WorldWindowRegistry registry;
 
 	private CheckboxTreeViewer viewer;
 	private LayerTreeLabelProvider labelProvider;
@@ -359,7 +356,7 @@ public class LayerTreePart
 			}
 		}*/
 
-		View view = registry.getLastView();
+		View view = IWorldWindowRegistry.INSTANCE.getActiveView();
 		if (view == null)
 		{
 			return;
