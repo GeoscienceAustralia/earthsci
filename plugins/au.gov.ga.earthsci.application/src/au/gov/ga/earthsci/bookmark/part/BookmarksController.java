@@ -134,6 +134,21 @@ public class BookmarksController implements IBookmarksController
 	private transient Future<?> currentPlaylistTask;
 	
 	@Override
+	public IBookmark createNew()
+	{
+		return createNew(getCurrentList());
+	}
+	
+	@Override
+	public IBookmark createNew(IBookmarkList list)
+	{
+		stop();
+		IBookmark b = BookmarkFactory.createBookmark(preferences.getDefaultPropertyTypes());
+		list.getBookmarks().add(b);
+		return b;
+	}
+	
+	@Override
 	public void apply(final IBookmark bookmark)
 	{
 		stop();
@@ -173,10 +188,29 @@ public class BookmarksController implements IBookmarksController
 	@Override
 	public void delete(IBookmark bookmark)
 	{
-		stop();
-		for (IBookmarkList l : bookmarks.getLists())
+		if (bookmark == null)
 		{
-			l.getBookmarks().remove(bookmark);
+			return;
+		}
+		
+		stop();
+		
+		getCurrentList().getBookmarks().remove(bookmark);
+	}
+	
+	@Override
+	public void delete(IBookmark... bookmarks)
+	{
+		if (bookmarks == null || bookmarks.length == 0)
+		{
+			return;
+		}
+		
+		stop();
+		
+		for (IBookmark b : bookmarks)
+		{
+			getCurrentList().getBookmarks().remove(b);
 		}
 	}
 	

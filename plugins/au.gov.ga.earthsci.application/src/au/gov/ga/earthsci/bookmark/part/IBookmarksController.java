@@ -28,6 +28,22 @@ public interface IBookmarksController
 {
 
 	/**
+	 * Create a new bookmark and append it to the given bookmark list.
+	 * 
+	 * @param list The list append the new bookmark to
+	 * 
+	 * @return The created bookmark
+	 */
+	IBookmark createNew(IBookmarkList list);
+	
+	/**
+	 * Create a new bookmark and append it to the current bookmark list
+	 * 
+	 * @return The created bookmark
+	 */
+	IBookmark createNew();
+	
+	/**
 	 * Apply the given bookmark using appropriate {@link IBookmarkPropertyApplicator}s
 	 * and user preferences.
 	 * 
@@ -43,11 +59,18 @@ public interface IBookmarksController
 	void edit(IBookmark bookmark);
 	
 	/**
-	 * Delete the given bookmark from its list
+	 * Delete the given bookmark from the current list
 	 * 
 	 * @param bookmark The bookmark to delete
 	 */
 	void delete(IBookmark bookmark);
+	
+	/**
+	 * Delete the given bookmarks from the current list
+	 * 
+	 * @param bookmarks The bookmarks to delete
+	 */
+	void delete(IBookmark... bookmarks);
 	
 	/**
 	 * Return the currently selected bookmark list
