@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.volume;
 
+import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
@@ -49,6 +50,7 @@ import javax.media.opengl.GL2;
 
 import org.gdal.osr.CoordinateTransformation;
 
+import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.Wireframeable;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShape;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShapeRenderListener;
@@ -109,7 +111,8 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	protected int dragStartSlice;
 	protected Vec4 dragStartCenter;
 
-	protected WorldWindow wwd;
+	@Deprecated
+	protected DrawContext dc; //TODO remove this (needed for VerticalExaggerationAccessor call
 
 	/**
 	 * Create a new {@link BasicVolumeLayer}, using the provided layer params.
@@ -138,7 +141,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		{
 			coordinateTransformation = CoordinateTransformationUtil.getTransformationToWGS84(s);
 		}
-		
+
 		s = (String) params.getValue(AVKeyMore.PAINTED_VARIABLE);
 		if (s != null)
 		{
@@ -190,6 +193,8 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		Validate.notBlank(url, "Model data url not set");
 		Validate.notBlank(dataCacheName, "Model data cache name not set");
 		Validate.notNull(dataProvider, "Model data provider is null");
+
+		IWorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
 	@Override
@@ -220,13 +225,6 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	public void removeLoadingListener(LoadingListener listener)
 	{
 		dataProvider.removeLoadingListener(listener);
-	}
-
-	@Override
-	public void setup(WorldWindow wwd)
-	{
-		this.wwd = wwd;
-		wwd.addSelectListener(this);
 	}
 
 	@Override
@@ -771,10 +769,11 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	{
 		return paintedVariable;
 	}
-	
+
 	@Override
 	protected void doPick(DrawContext dc, Point point)
 	{
+		this.dc = dc;
 		if (!dataProvider.isSingleSliceVolume())
 		{
 			doRender(dc);
@@ -1009,17 +1008,23 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 
 				if (dragStartCenter != null)
 				{
-					if (top || bottom)
+					WorldWindow wwd = IWorldWindowRegistry.INSTANCE.getRendering();
+					if (wwd != null)
 					{
-						dragElevation(event.getPickPoint(), pickedShape);
-					}
-					else if (minLon || maxLon)
-					{
-						dragLongitude(event.getPickPoint(), pickedShape);
-					}
-					else
-					{
-						dragLatitude(event.getPickPoint(), pickedShape);
+						View view = wwd.getView();
+
+						if (top || bottom)
+						{
+							dragElevation(event.getPickPoint(), pickedShape, view);
+						}
+						else if (minLon || maxLon)
+						{
+							dragLongitude(event.getPickPoint(), pickedShape, view);
+						}
+						else
+						{
+							dragLatitude(event.getPickPoint(), pickedShape, view);
+						}
 					}
 				}
 				dragging = true;
@@ -1036,11 +1041,11 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	 * @param shape
 	 *            Shape to drag
 	 */
-	protected void dragElevation(Point pickPoint, FastShape shape)
+	protected void dragElevation(Point pickPoint, FastShape shape, View view)
 	{
 		// Calculate the plane projected from screen y=pickPoint.y
-		Line screenLeftRay = wwd.getView().computeRayFromScreenPoint(pickPoint.x - 100, pickPoint.y);
-		Line screenRightRay = wwd.getView().computeRayFromScreenPoint(pickPoint.x + 100, pickPoint.y);
+		Line screenLeftRay = view.computeRayFromScreenPoint(pickPoint.x - 100, pickPoint.y);
+		Line screenRightRay = view.computeRayFromScreenPoint(pickPoint.x + 100, pickPoint.y);
 
 		// As the two lines are very close to parallel, use an arbitrary line joining them rather than the two lines to avoid precision problems
 		Line joiner = Line.fromSegment(screenLeftRay.getPointAt(500), screenRightRay.getPointAt(500));
@@ -1051,7 +1056,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		}
 
 		// Calculate the origin-marker ray
-		Globe globe = wwd.getModel().getGlobe();
+		Globe globe = view.getGlobe();
 		Line centreRay = Line.fromSegment(globe.getCenter(), dragStartCenter);
 		Vec4 intersection = screenPlane.intersect(centreRay);
 		if (intersection == null)
@@ -1065,11 +1070,11 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 			dragStartPosition = intersectionPosition.elevation;
 			dragStartSlice = shape == topSurface ? topOffset : bottomOffset;
 		}
-		else
+		else if (dc != null)
 		{
 			double deltaElevation =
-					VerticalExaggerationAccessor.unapplyVerticalExaggeration(wwd.getSceneController().getDrawContext(),
-							dragStartPosition - intersectionPosition.elevation);
+					VerticalExaggerationAccessor.unapplyVerticalExaggeration(dc, dragStartPosition
+							- intersectionPosition.elevation);
 			double deltaPercentage = deltaElevation / dataProvider.getDepth();
 			int sliceMovement = (int) (deltaPercentage * (dataProvider.getZSize() - 1));
 			if (shape == topSurface)
@@ -1093,13 +1098,13 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	 * @param shape
 	 *            Shape to drag
 	 */
-	protected void dragLongitude(Point pickPoint, FastShape shape)
+	protected void dragLongitude(Point pickPoint, FastShape shape, View view)
 	{
-		Globe globe = wwd.getView().getGlobe();
+		Globe globe = view.getGlobe();
 		double centerElevation = globe.computePositionFromPoint(dragStartCenter).elevation;
 
 		// Compute the ray from the screen point
-		Line ray = wwd.getView().computeRayFromScreenPoint(pickPoint.x, pickPoint.y);
+		Line ray = view.computeRayFromScreenPoint(pickPoint.x, pickPoint.y);
 		Intersection[] intersections = globe.intersect(ray, centerElevation);
 		if (intersections == null || intersections.length == 0)
 		{
@@ -1143,13 +1148,13 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	 * @param shape
 	 *            Shape to drag
 	 */
-	protected void dragLatitude(Point pickPoint, FastShape shape)
+	protected void dragLatitude(Point pickPoint, FastShape shape, View view)
 	{
-		Globe globe = wwd.getView().getGlobe();
+		Globe globe = view.getGlobe();
 		double centerElevation = globe.computePositionFromPoint(dragStartCenter).elevation;
 
 		// Compute the ray from the screen point
-		Line ray = wwd.getView().computeRayFromScreenPoint(pickPoint.x, pickPoint.y);
+		Line ray = view.computeRayFromScreenPoint(pickPoint.x, pickPoint.y);
 		Intersection[] intersections = globe.intersect(ray, centerElevation);
 		if (intersections == null || intersections.length == 0)
 		{

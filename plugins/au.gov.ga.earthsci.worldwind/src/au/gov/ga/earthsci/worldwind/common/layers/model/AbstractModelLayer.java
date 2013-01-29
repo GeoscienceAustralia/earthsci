@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.model;
 
-import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.geom.Extent;
 import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.layers.AbstractLayer;
@@ -158,11 +157,6 @@ public abstract class AbstractModelLayer extends AbstractLayer implements ModelL
 				shape.setPointSprite(pointSprite);
 			}
 		}
-	}
-
-	@Override
-	public void setup(WorldWindow wwd)
-	{
 	}
 
 	@Override

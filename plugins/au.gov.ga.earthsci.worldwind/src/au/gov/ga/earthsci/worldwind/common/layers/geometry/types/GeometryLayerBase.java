@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.geometry.types;
 
-import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.avlist.AVListImpl;
@@ -196,12 +195,6 @@ public abstract class GeometryLayerBase extends AbstractLayer implements Geometr
 			points.addAll(shape.getPoints());
 		}
 		return Sector.boundingSector(points);
-	}
-
-	@Override
-	public void setup(WorldWindow wwd)
-	{
-		// Subclasses may override to perform required setup
 	}
 
 	@Override

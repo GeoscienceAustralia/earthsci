@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.earthquakes;
 
-import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.event.SelectEvent;
 import gov.nasa.worldwind.event.SelectListener;
@@ -63,6 +62,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
+import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.downloader.Downloader;
 import au.gov.ga.earthsci.worldwind.common.downloader.RetrievalHandler;
 import au.gov.ga.earthsci.worldwind.common.downloader.RetrievalResult;
@@ -70,7 +70,6 @@ import au.gov.ga.earthsci.worldwind.common.util.DefaultLauncher;
 import au.gov.ga.earthsci.worldwind.common.util.HSLColor;
 import au.gov.ga.earthsci.worldwind.common.util.Loader;
 import au.gov.ga.earthsci.worldwind.common.util.MapBackedNamespaceContext;
-import au.gov.ga.earthsci.worldwind.common.util.Setupable;
 
 /**
  * A {@link RenderableLayer} that displays recent earthquake data sourced from a
@@ -78,7 +77,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Setupable;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class RSSEarthquakesLayer extends RenderableLayer implements Setupable, Loader, SelectListener
+public class RSSEarthquakesLayer extends RenderableLayer implements Loader, SelectListener
 {
 	private static final String RSS_URL = "http://www.ga.gov.au/earthquakes/all_recent.rss";
 
@@ -116,6 +115,8 @@ public class RSSEarthquakesLayer extends RenderableLayer implements Setupable, L
 		});
 		updateTimer.start();
 		startEarthquakeDownload();
+		
+		IWorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
 	/**
@@ -248,12 +249,6 @@ public class RSSEarthquakesLayer extends RenderableLayer implements Setupable, L
 		deepAnnotation.getAttributes().setScale(earthquake.magnitude.doubleValue() / 10);
 		deepAnnotation.setPickEnabled(false);
 		addRenderable(deepAnnotation);
-	}
-
-	@Override
-	public void setup(final WorldWindow wwd)
-	{
-		wwd.addSelectListener(this);
 	}
 
 	@Override
