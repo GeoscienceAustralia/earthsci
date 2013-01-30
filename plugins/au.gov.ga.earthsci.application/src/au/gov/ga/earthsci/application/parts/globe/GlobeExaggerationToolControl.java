@@ -15,16 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.globe;
 
-import gov.nasa.worldwind.WorldWindow;
-
 import java.text.DecimalFormat;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import javax.annotation.PreDestroy;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -43,12 +40,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Scale;
 
+import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationListener;
+import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationService;
+
 /**
  * Tool control used to change globe exaggeration.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class GlobeExaggerationToolControl
+public class GlobeExaggerationToolControl implements VerticalExaggerationListener
 {
 	private final static double SCALE_MIN = 0.1; //must be a power of 10
 	private final static double SCALE_MAX = 100; //must be a power of 10
@@ -66,16 +66,11 @@ public class GlobeExaggerationToolControl
 
 	private static IEclipseContext context;
 
-	private boolean settingScale = false;
 	private Label label;
 	private Scale scale;
 	private Color tickForeground;
 	private String keyString = ""; //$NON-NLS-1$
 	private long lastKeyTime;
-
-	@Inject
-	@Optional
-	private WorldWindow worldWindow;
 
 	/**
 	 * e4 bug workaround, don't call.
@@ -102,6 +97,8 @@ public class GlobeExaggerationToolControl
 		}
 		else
 		{
+			VerticalExaggerationService.INSTANCE.addListener(this);
+
 			RowLayout layout = new RowLayout(SWT.HORIZONTAL);
 			layout.wrap = false;
 			layout.spacing = layout.marginBottom = layout.marginTop = layout.marginLeft = layout.marginRight = 0;
@@ -130,8 +127,8 @@ public class GlobeExaggerationToolControl
 			scale.setToolTipText("Set vertical exaggeration");
 			scale.setIncrement(INCREMENTS_PER_POWER / 100);
 
-			scale.setSelection(exaggerationToScale(worldWindow.getSceneController().getVerticalExaggeration()));
-			updateSelection();
+			scale.setSelection(exaggerationToScale(VerticalExaggerationService.INSTANCE.get()));
+			updateSelection(false);
 
 			tickForeground = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW);
 			scale.addPaintListener(new PaintListener()
@@ -148,7 +145,7 @@ public class GlobeExaggerationToolControl
 				@Override
 				public void widgetSelected(SelectionEvent e)
 				{
-					updateSelection();
+					updateSelection(true);
 				}
 			});
 
@@ -161,6 +158,12 @@ public class GlobeExaggerationToolControl
 				}
 			});
 		}
+	}
+
+	@PreDestroy
+	public void preDestroy()
+	{
+		VerticalExaggerationService.INSTANCE.removeListener(this);
 	}
 
 	private double scaleToExaggeration(int value)
@@ -222,15 +225,13 @@ public class GlobeExaggerationToolControl
 		}
 	}
 
-	private void updateSelection()
+	private void updateSelection(boolean setService)
 	{
-		if (settingScale || worldWindow == null)
-		{
-			return;
-		}
-
 		double exaggeration = scaleToExaggeration(scale.getSelection());
-		worldWindow.getSceneController().setVerticalExaggeration(exaggeration);
+		if (setService)
+		{
+			VerticalExaggerationService.INSTANCE.set(exaggeration);
+		}
 
 		int decimalPlaces = 2 - (exaggeration <= 0 ? 0 : (int) Math.log10(exaggeration));
 		DecimalFormat format = new DecimalFormat();
@@ -278,10 +279,27 @@ public class GlobeExaggerationToolControl
 			if (value != null)
 			{
 				scale.setSelection(exaggerationToScale(value));
-				updateSelection();
+				updateSelection(true);
 				keyString = newString;
 				lastKeyTime = thisKeyTime;
 			}
+		}
+	}
+
+	@Override
+	public void verticalExaggerationChanged(double oldValue, final double newValue)
+	{
+		if (scale != null && !scale.isDisposed())
+		{
+			scale.getDisplay().asyncExec(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					scale.setSelection(exaggerationToScale(newValue));
+					updateSelection(false);
+				}
+			});
 		}
 	}
 }
