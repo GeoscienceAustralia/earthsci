@@ -50,6 +50,9 @@ import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
@@ -98,6 +101,7 @@ public class BookmarksPart
 		
 		context.set(TableViewer.class, bookmarkListTableViewer);
 		
+		setupClipboardDnD();
 		setupBookmarkListInput();
 		
 		menuService.registerContextMenu(bookmarkListTableViewer.getTable(), "au.gov.ga.earthsci.application.bookmarks.popupmenu"); //$NON-NLS-1$
@@ -117,6 +121,34 @@ public class BookmarksPart
 				bookmarkListTableViewer.setSelection(bookmark == null ? null : new StructuredSelection(bookmark));
 			}
 		});
+	}
+	
+	/**
+	 * Refresh the current bookmark list display
+	 */
+	public void refreshList()
+	{
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run()
+			{
+				bookmarkListTableViewer.refresh();
+			}
+		});
+	}
+	
+	private void setupClipboardDnD()
+	{
+		bookmarkListTableViewer.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, 
+				   							   new Transfer[] {BookmarkTransfer.getInstance()}, 
+				   							   new BookmarksDropAdapter(bookmarkListTableViewer, controller));
+
+		bookmarkListTableViewer.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, 
+				   						       new Transfer[] {BookmarkTransfer.getInstance()}, 
+								   			   new BookmarksDragSourceListener(bookmarkListTableViewer));
+		
+		Clipboard clipboard = new Clipboard(Display.getCurrent());
+		context.set(Clipboard.class, clipboard);
 	}
 	
 	private void setupBookmarkListInput()
@@ -190,7 +222,7 @@ public class BookmarksPart
 			public void update(ViewerCell cell)
 			{
 				super.update(cell);
-				cell.setText(" " + cell.getText()); //$NON-NLS-1$
+				cell.setText(" " + ((IBookmark)cell.getElement()).getName()); //$NON-NLS-1$
 				cell.setImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_BOOKMARKS));
 			}
 		});
@@ -241,6 +273,7 @@ public class BookmarksPart
 				}
 			}
 		});
+		
 	}
 	
 	/**
