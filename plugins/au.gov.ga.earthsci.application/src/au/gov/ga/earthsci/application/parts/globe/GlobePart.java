@@ -218,11 +218,6 @@ public class GlobePart
 						parameter.setValue(l.getId());
 						toolItem.getParameters().add(parameter);
 
-						parameter = MCommandsFactory.INSTANCE.createParameter();
-						parameter.setName(ToggleHudHandler.TOOL_ID_PARAMETER_ID);
-						parameter.setValue(toolItemId);
-						toolItem.getParameters().add(parameter);
-
 						toolbar.getChildren().add(index++, toolItem);
 					}
 					catch (Exception e)

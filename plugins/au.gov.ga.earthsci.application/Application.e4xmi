@@ -83,7 +83,10 @@
   <descriptors xmi:id="_OzkNsC1OEeK0vtabFDqVSw" elementId="au.gov.ga.earthsci.application.part.legend" label="Legend" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/legend.gif" allowMultiple="true" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.legend.LegendPart"/>
   <descriptors xmi:id="_q4L6MGA_EeKICM2QMruAHQ" elementId="au.gov.ga.earthsci.application.part.globe" label="Globe" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/world.gif" allowMultiple="true" closeable="true" contributionURI="bundlebundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.GlobePart">
     <handlers xmi:id="_bQfGIGXdEeKxr8W5TdCnMQ" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.handlers.ToggleHudHandler" command="_cdOmEGXdEeKxr8W5TdCnMQ"/>
+    <handlers xmi:id="_KwDXUGqLEeKz-NWw78ViTQ" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.handlers.FullscreenHandler" command="_HJh8kGqLEeKz-NWw78ViTQ"/>
     <toolbar xmi:id="_yleGAGNgEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.part.globe.toolbar">
+      <children xsi:type="menu:HandledToolItem" xmi:id="_OJweEGqLEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.fullscreen" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/monitor.gif" tooltip="Fullscreen" type="Check" command="_HJh8kGqLEeKz-NWw78ViTQ"/>
+      <children xsi:type="menu:ToolBarSeparator" xmi:id="_db7VsGqNEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>
       <children xsi:type="menu:ToolControl" xmi:id="_0F4I0GNgEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.globe.exaggerationcontrol" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.GlobeExaggerationToolControl"/>
     </toolbar>
   </descriptors>
@@ -200,10 +203,10 @@
   <commands xmi:id="_TwF28F9zEeKICM2QMruAHQ" elementId="au.gov.ga.earthsci.application.command.newfolder" commandName="newFolderCommand" description="Create a new folder"/>
   <commands xmi:id="_cdOmEGXdEeKxr8W5TdCnMQ" elementId="au.gov.ga.earthsci.application.command.togglehud" commandName="toggleHudCommand">
     <parameters xmi:id="_hEH4sGXdEeKxr8W5TdCnMQ" elementId="au.gov.ga.earthsci.application.command.togglehud.hudid" name="hudid"/>
-    <parameters xmi:id="_hZuVQGXdEeKxr8W5TdCnMQ" elementId="au.gov.ga.earthsci.application.command.togglehud.toolid" name="toolid"/>
   </commands>
   <commands xmi:id="_TmH-IGW_EeKPwbW-b0EtRg" elementId="au.gov.ga.earthsci.application.command.start" commandName="startCommand"/>
   <commands xmi:id="_Oay10GXMEeKPwbW-b0EtRg" elementId="au.gov.ga.earthsci.application.command.stop" commandName="stopCommand"/>
+  <commands xmi:id="_HJh8kGqLEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.command.fullscreen" commandName="fullscreenCommand"/>
   <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_007tVfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_007tVvsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
