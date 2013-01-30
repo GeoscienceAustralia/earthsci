@@ -38,7 +38,6 @@ import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 public class ToggleHudHandler
 {
 	public final static String HUD_ID_PARAMETER_ID = "au.gov.ga.earthsci.application.command.togglehud.hudid"; //$NON-NLS-1$
-	public final static String TOOL_ID_PARAMETER_ID = "au.gov.ga.earthsci.application.command.togglehud.toolid"; //$NON-NLS-1$
 	public final static String HUD_COMMAND_ID = "au.gov.ga.earthsci.application.command.togglehud"; //$NON-NLS-1$
 
 	@Inject
@@ -51,16 +50,14 @@ public class ToggleHudHandler
 	private ITreeModel model;
 
 	@Execute
-	public void execute(@Optional @Named(HUD_ID_PARAMETER_ID) String hudId,
-			@Optional @Named(TOOL_ID_PARAMETER_ID) String toolId, MPart part, GlobePart globe)
+	public void execute(@Optional @Named(HUD_ID_PARAMETER_ID) String hudId, MPart part, MToolItem toolItem,
+			GlobePart globe)
 	{
-		if (hudId == null || toolId == null)
+		if (hudId == null)
 			return;
 
-		MToolItem toolItem = (MToolItem) service.find(toolId, part.getToolbar());
 		Layer layer = globe.getHudLayerForId(hudId);
-
-		if (toolItem == null || layer == null)
+		if (layer == null)
 			return;
 
 		layer.setEnabled(!layer.isEnabled());

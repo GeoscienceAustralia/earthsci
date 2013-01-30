@@ -13,31 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts.globe;
+package au.gov.ga.earthsci.application.parts.globe.handlers;
 
-import javax.inject.Inject;
-
-import org.eclipse.e4.core.contexts.Active;
-import org.eclipse.e4.core.di.annotations.Optional;
-import org.eclipse.e4.ui.model.application.ui.basic.MPart;
-
-import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
+import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.ui.model.application.ui.menu.MToolItem;
+import org.eclipse.swt.widgets.Composite;
 
 /**
- * Injected class that keeps track of the active WorldWindow, and notifies the
- * {@link WorldWindowRegistry}.
+ * Handler for the fullscreen command.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class GlobeActivePartTracker
+public class FullscreenHandler
 {
-	@Inject
-	public void execute(@Optional @Active MPart activePart)
+	@Execute
+	public void execute(Composite parent, MToolItem item)
 	{
-		if (activePart != null && activePart.getObject() instanceof GlobePart)
-		{
-			GlobePart part = (GlobePart) activePart.getObject();
-			WorldWindowRegistry.INSTANCE.setActive(part.getWorldWindow());
-		}
+		boolean fullscreen = !parent.getShell().getFullScreen();
+		parent.getShell().setFullScreen(fullscreen);
+		item.setSelected(fullscreen);
 	}
 }

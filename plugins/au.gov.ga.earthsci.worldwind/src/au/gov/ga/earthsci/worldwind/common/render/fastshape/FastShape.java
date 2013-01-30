@@ -51,7 +51,6 @@ import javax.media.opengl.GL2;
 
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 import au.gov.ga.earthsci.worldwind.common.layers.Wireframeable;
-import au.gov.ga.earthsci.worldwind.common.util.exaggeration.VerticalExaggerationAccessor;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -66,9 +65,9 @@ import com.jogamp.opengl.util.texture.Texture;
 public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wireframeable
 {
 	protected final static SingleTaskRunner VertexUpdater = new SingleTaskRunner(FastShape.class.getName()
-			+ " VertexUpdater");
+			+ " VertexUpdater"); //$NON-NLS-1$
 	protected final static SingleTaskRunner IndexUpdater = new SingleTaskRunner(FastShape.class.getName()
-			+ " IndexUpdater");
+			+ " IndexUpdater"); //$NON-NLS-1$
 
 	protected final ReadWriteLock positionLock = new ReentrantReadWriteLock();
 	protected final PickSupport pickSupport = new PickSupport();
@@ -107,6 +106,7 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 	protected Globe lastGlobe = null;
 	protected boolean verticesDirty = true;
 	protected Vec4 lastEyePoint = null;
+	protected double lastVerticalExaggeration = -Double.MAX_VALUE;
 
 	protected double elevation = 0d;
 	protected boolean elevationChanged = false;
@@ -214,7 +214,7 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 
 		if (!dc.getGLRuntimeCapabilities().isUseVertexBufferObject())
 		{
-			String message = "Vertex Buffer Objects are disabled or unsupported by your graphics card.";
+			String message = "Vertex Buffer Objects are disabled or unsupported by your graphics card."; //$NON-NLS-1$
 			Logging.logger().severe(message);
 			setEnabled(false);
 			return;
@@ -563,7 +563,7 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 
 		boolean recalculateVertices =
 				followTerrainRecalculationRequired || elevationChanged || verticesDirty || lastGlobe != dc.getGlobe()
-						|| VerticalExaggerationAccessor.isVerticalExaggerationChanged(this, dc);
+						|| lastVerticalExaggeration != dc.getVerticalExaggeration();
 		if (recalculateVertices)
 		{
 			boolean willRecalculate = recalculateVertices(dc, false);
@@ -572,7 +572,7 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 				lastGlobe = dc.getGlobe();
 				verticesDirty = false;
 				elevationChanged = false;
-				VerticalExaggerationAccessor.markVerticalExaggeration(this, dc);
+				lastVerticalExaggeration = dc.getVerticalExaggeration();
 			}
 		}
 
@@ -696,12 +696,10 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 		double elevation = this.elevation;
 		if (followTerrain)
 		{
-			elevation +=
-					VerticalExaggerationAccessor.getUnexaggeratedElevation(dc, position.getLatitude(),
-							position.getLongitude());
+			elevation += dc.getGlobe().getElevation(position.getLatitude(), position.getLongitude());
 		}
 		elevation += calculateElevationOffset(position);
-		elevation = VerticalExaggerationAccessor.applyVerticalExaggeration(dc, elevation);
+		elevation *= dc.getVerticalExaggeration();
 		elevation = Math.max(elevation, -dc.getGlobe().getMaximumRadius());
 		return dc.getGlobe().computePointFromPosition(position.add(calculateLatLonOffset()), elevation);
 	}

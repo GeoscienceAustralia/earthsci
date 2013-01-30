@@ -22,14 +22,15 @@ import gov.nasa.worldwind.util.Logging;
 
 import java.util.logging.Level;
 
-import au.gov.ga.earthsci.core.worldwind.PaintTaskSceneController;
+import au.gov.ga.earthsci.worldwind.common.render.ExtendedSceneController;
 
 /**
- * Injectable SceneController to use for each WorldWindow for the globe part.
+ * SceneController to use for each WorldWindow for the globe part. Provides a
+ * separate list of HUD layers.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class GlobeSceneController extends PaintTaskSceneController
+public class GlobeSceneController extends ExtendedSceneController
 {
 	private final LayerList hudLayers = new LayerList();
 

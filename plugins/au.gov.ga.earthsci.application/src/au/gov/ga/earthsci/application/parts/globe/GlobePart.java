@@ -58,7 +58,7 @@ import au.gov.ga.earthsci.core.worldwind.WorldWindView;
 import au.gov.ga.earthsci.newt.awt.NewtInputHandlerAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtAutoDrawableAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtCanvasAWT;
-import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 
 /**
  * Part which displays a {@link WorldWindow}.
@@ -111,7 +111,7 @@ public class GlobePart
 		wwd.setView(new WorldWindView());
 		context.set(WorldWindow.class, worldWindow);
 
-		IWorldWindowRegistry.INSTANCE.register(worldWindow);
+		WorldWindowRegistry.INSTANCE.register(worldWindow);
 
 		createHudLayers();
 
@@ -136,7 +136,7 @@ public class GlobePart
 	@PreDestroy
 	private void preDestroy()
 	{
-		IWorldWindowRegistry.INSTANCE.unregister(worldWindow);
+		WorldWindowRegistry.INSTANCE.unregister(worldWindow);
 	}
 
 	public WorldWindow getWorldWindow()
@@ -216,11 +216,6 @@ public class GlobePart
 						MParameter parameter = MCommandsFactory.INSTANCE.createParameter();
 						parameter.setName(ToggleHudHandler.HUD_ID_PARAMETER_ID);
 						parameter.setValue(l.getId());
-						toolItem.getParameters().add(parameter);
-
-						parameter = MCommandsFactory.INSTANCE.createParameter();
-						parameter.setName(ToggleHudHandler.TOOL_ID_PARAMETER_ID);
-						parameter.setValue(toolItemId);
 						toolItem.getParameters().add(parameter);
 
 						toolbar.getChildren().add(index++, toolItem);

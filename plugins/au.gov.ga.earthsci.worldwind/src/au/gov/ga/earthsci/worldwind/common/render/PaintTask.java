@@ -18,35 +18,19 @@ package au.gov.ga.earthsci.worldwind.common.render;
 import gov.nasa.worldwind.render.DrawContext;
 
 /**
- * {@link DrawContext} implementation that allows overriding the vertical
- * exaggeration.
+ * Task which can be added to the {@link AnimatorSceneController} to run before
+ * or after a repaint.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * @author James Navin (james.navin@ga.gov.au)
  */
-public class DrawContextDelegateVerticalExaggerationOverride extends DrawContextDelegate
+public interface PaintTask
 {
-	private Double verticalExaggerationOverride = null;
-
-	public DrawContextDelegateVerticalExaggerationOverride(DrawContext delegate)
-	{
-		super(delegate);
-	}
-
-	@Override
-	public double getVerticalExaggeration()
-	{
-		if (verticalExaggerationOverride != null)
-			return verticalExaggerationOverride;
-		return super.getVerticalExaggeration();
-	}
-
-	public void overrideVerticalExaggeration(double verticalExaggerationOverride)
-	{
-		this.verticalExaggerationOverride = verticalExaggerationOverride;
-	}
-
-	public void clearVerticalExaggerationOverride()
-	{
-		this.verticalExaggerationOverride = null;
-	}
+	/**
+	 * Run the task; called by the SceneController.
+	 * 
+	 * @param dc
+	 *            Current {@link DrawContext}
+	 */
+	void run(DrawContext dc);
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.worldwind;
+package au.gov.ga.earthsci.application.parts.globe.handlers;
 
 import gov.nasa.worldwind.render.DrawContext;
 
+import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.ui.model.application.ui.menu.MToolItem;
+
+import au.gov.ga.earthsci.application.parts.globe.GlobePart;
+import au.gov.ga.earthsci.worldwind.common.render.ExtendedDrawContext;
+
 /**
- * Task which can be added to the {@link AnimatorSceneController} to run before
- * or after a repaint.
+ * Handles the wireframe command for the globe.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
- * @author James Navin (james.navin@ga.gov.au)
  */
-public interface PaintTask
+public class WireframeHandler
 {
-	/**
-	 * Run the task; called by the SceneController.
-	 * 
-	 * @param dc
-	 *            Current {@link DrawContext}
-	 */
-	void run(DrawContext dc);
+	@Execute
+	public void execute(MToolItem toolItem, GlobePart globe)
+	{
+		DrawContext dc = globe.getWorldWindow().getSceneController().getDrawContext();
+		if (dc instanceof ExtendedDrawContext)
+		{
+			ExtendedDrawContext edc = (ExtendedDrawContext) dc;
+			edc.setWireframe(!edc.isWireframe());
+			toolItem.setSelected(edc.isWireframe());
+			globe.getWorldWindow().redraw();
+		}
+	}
 }

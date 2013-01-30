@@ -62,7 +62,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.downloader.Downloader;
 import au.gov.ga.earthsci.worldwind.common.downloader.RetrievalHandler;
 import au.gov.ga.earthsci.worldwind.common.downloader.RetrievalResult;
@@ -116,7 +116,7 @@ public class RSSEarthquakesLayer extends RenderableLayer implements Loader, Sele
 		updateTimer.start();
 		startEarthquakeDownload();
 		
-		IWorldWindowRegistry.INSTANCE.addSelectListener(this);
+		WorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
 	/**

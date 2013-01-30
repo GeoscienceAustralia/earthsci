@@ -19,7 +19,7 @@ import gov.nasa.worldwind.View;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 
 /**
  * An {@link IBookmarkPropertyApplicator} used to apply the state of {@link CameraProperty}s
@@ -42,7 +42,7 @@ public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
 			return;
 		}
 		
-		View view = IWorldWindowRegistry.INSTANCE.getActiveView();
+		View view = WorldWindowRegistry.INSTANCE.getActiveView();
 		if (view == null)
 		{
 			return;
@@ -57,7 +57,7 @@ public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
 	@Override
 	public IBookmarkPropertyAnimator createAnimator(IBookmarkProperty start, IBookmarkProperty end, long duration)
 	{
-		View view = IWorldWindowRegistry.INSTANCE.getActiveView();
+		View view = WorldWindowRegistry.INSTANCE.getActiveView();
 		if (view == null)
 		{
 			return null;

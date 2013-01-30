@@ -38,7 +38,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayerHelper;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.StyleAndText;
@@ -77,7 +77,7 @@ public class MarkerPointLayer extends MarkerLayer implements PointLayer, SelectL
 		this.tooltipAnnotation.setPickEnabled(false);
 		this.tooltipAnnotation.setAlwaysOnTop(true);
 		
-		IWorldWindowRegistry.INSTANCE.addSelectListener(this);
+		WorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
 	@Override

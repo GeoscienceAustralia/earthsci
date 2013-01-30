@@ -29,7 +29,7 @@ import gov.nasa.worldwind.render.GlobeAnnotation;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayerHelper;
 import au.gov.ga.earthsci.worldwind.common.layers.point.annotation.EnhancedAnnotation;
@@ -51,7 +51,7 @@ public class AnnotationPointLayer extends AnnotationLayer implements PointLayer,
 	public AnnotationPointLayer(PointLayerHelper helper)
 	{
 		this.helper = helper;
-		IWorldWindowRegistry.INSTANCE.addSelectListener(this);
+		WorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
 	@Override
