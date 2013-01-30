@@ -33,7 +33,7 @@ import au.gov.ga.earthsci.bookmark.model.Bookmark;
 import au.gov.ga.earthsci.bookmark.model.Bookmarks;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarks;
-import au.gov.ga.earthsci.core.test.util.DummyRealm;
+import au.gov.ga.earthsci.test.util.DummyRealm;
 
 /**
  * Unit test for the {@link BookmarksPersister} class

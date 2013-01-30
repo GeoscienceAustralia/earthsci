@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import au.gov.ga.earthsci.core.test.util.DummyRealm;
+import au.gov.ga.earthsci.test.util.DummyRealm;
 
 /**
  * Unit tests for the {@link Bookmarks} class
