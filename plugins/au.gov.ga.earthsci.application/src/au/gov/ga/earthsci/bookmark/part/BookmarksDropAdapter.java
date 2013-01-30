@@ -105,11 +105,6 @@ class BookmarksDropAdapter extends ViewerDropAdapter
 	@Override
 	public boolean validateDrop(Object target, int operation, TransferData transferType)
 	{
-		if (target == null || getCurrentLocation() == LOCATION_ON)
-		{
-			return false;
-		}
-		
 		return BookmarkTransfer.getInstance().isSupportedType(transferType);
 	}
 
