@@ -86,15 +86,20 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	/** The drawable to which {@link WorldWindow} methods are delegated. */
 	protected final WorldWindowNewtDrawableAWT wwd; // WorldWindow interface delegates to wwd
 	protected final GLWindow window;
+	
+	public WorldWindowNewtCanvasAWT()
+	{
+		this(GLWindow.create(getCaps()));
+	}
 
 	/**
 	 * Constructs a new <code>WorldWindowGLCanvas</code> on the default graphics
 	 * device.
 	 */
-	public WorldWindowNewtCanvasAWT()
+	public WorldWindowNewtCanvasAWT(GLWindow window)
 	{
-		super(GLWindow.create(getCaps()));
-		this.window = (GLWindow) getNEWTChild();
+		super(window);
+		this.window = window;
 
 		try
 		{
@@ -114,7 +119,7 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 			throw new WWRuntimeException(message, e);
 		}
 	}
-
+	
 	/**
 	 * Constructs a new <code>WorldWindowGLCanvas</code> on the default graphics
 	 * device and shares graphics resources with another
@@ -130,8 +135,26 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	 */
 	public WorldWindowNewtCanvasAWT(WorldWindow shareWith)
 	{
-		super(GLWindow.create(getCaps()));
-		this.window = (GLWindow) getNEWTChild();
+		this(shareWith, GLWindow.create(getCaps()));
+	}
+
+	/**
+	 * Constructs a new <code>WorldWindowGLCanvas</code> on the default graphics
+	 * device and shares graphics resources with another
+	 * <code>WorldWindow</code>.
+	 * 
+	 * @param shareWith
+	 *            a <code>WorldWindow</code> with which to share graphics
+	 *            resources. May be null, in which case resources are not
+	 *            shared.
+	 * 
+	 * @see GLCanvas#GLCanvas(GLCapabilities, GLCapabilitiesChooser, GLContext,
+	 *      GraphicsDevice)
+	 */
+	public WorldWindowNewtCanvasAWT(WorldWindow shareWith, GLWindow window)
+	{
+		super(window);
+		this.window = window;
 		if (shareWith != null)
 		{
 			this.window.setSharedContext(shareWith.getContext());

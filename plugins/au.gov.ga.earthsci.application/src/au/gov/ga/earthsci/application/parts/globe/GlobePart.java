@@ -55,10 +55,10 @@ import au.gov.ga.earthsci.core.model.layer.HudLayer;
 import au.gov.ga.earthsci.core.model.layer.HudLayers;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.core.worldwind.WorldWindView;
-import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
 import au.gov.ga.earthsci.newt.awt.NewtInputHandlerAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtAutoDrawableAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtCanvasAWT;
+import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
 
 /**
  * Part which displays a {@link WorldWindow}.
@@ -76,9 +76,6 @@ public class GlobePart
 
 	@Inject
 	private IEclipseContext context;
-
-	@Inject
-	private WorldWindowRegistry registry;
 
 	private WorldWindow worldWindow;
 	private GlobeSceneController sceneController;
@@ -114,7 +111,7 @@ public class GlobePart
 		wwd.setView(new WorldWindView());
 		context.set(WorldWindow.class, worldWindow);
 
-		registry.register(worldWindow);
+		IWorldWindowRegistry.INSTANCE.register(worldWindow);
 
 		createHudLayers();
 
@@ -139,7 +136,7 @@ public class GlobePart
 	@PreDestroy
 	private void preDestroy()
 	{
-		registry.unregister(worldWindow);
+		IWorldWindowRegistry.INSTANCE.unregister(worldWindow);
 	}
 
 	public WorldWindow getWorldWindow()
@@ -203,6 +200,7 @@ public class GlobePart
 							layer.setName(l.getLabel());
 						}
 						layer.setEnabled(l.isEnabled());
+						layer.setPickEnabled(true);
 						sceneController.getHudLayers().add(layer);
 
 						String toolItemId = l.getId() + ".toolitem"; //$NON-NLS-1$

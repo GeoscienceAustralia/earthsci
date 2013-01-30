@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.borehole;
 
-import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.event.SelectEvent;
@@ -46,6 +45,7 @@ import java.util.Map;
 
 import javax.media.opengl.GL2;
 
+import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.point.types.MarkerPointLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.Attribute;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.BasicStyleProvider;
@@ -146,6 +146,8 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 
 		markerRenderer.setOverrideMarkerElevation(true);
 		markerRenderer.setElevation(0);
+		
+		IWorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
 	@Override
@@ -276,12 +278,6 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 	public void removeLoadingListener(LoadingListener listener)
 	{
 		boreholeProvider.removeLoadingListener(listener);
-	}
-
-	@Override
-	public void setup(WorldWindow wwd)
-	{
-		wwd.addSelectListener(this);
 	}
 
 	@Override

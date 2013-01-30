@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.earthquakes;
 
-import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.event.SelectEvent;
 import gov.nasa.worldwind.event.SelectListener;
@@ -63,6 +62,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
+import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.downloader.Downloader;
 import au.gov.ga.earthsci.worldwind.common.downloader.RetrievalHandler;
 import au.gov.ga.earthsci.worldwind.common.downloader.RetrievalResult;
@@ -70,7 +70,6 @@ import au.gov.ga.earthsci.worldwind.common.util.DefaultLauncher;
 import au.gov.ga.earthsci.worldwind.common.util.HSLColor;
 import au.gov.ga.earthsci.worldwind.common.util.Loader;
 import au.gov.ga.earthsci.worldwind.common.util.MapBackedNamespaceContext;
-import au.gov.ga.earthsci.worldwind.common.util.Setupable;
 
 /**
  * A {@link RenderableLayer} that displays recent earthquake data sourced from a
@@ -78,7 +77,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Setupable;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class RSSEarthquakesLayer extends RenderableLayer implements Setupable, Loader
+public class RSSEarthquakesLayer extends RenderableLayer implements Loader, SelectListener
 {
 	private static final String RSS_URL = "http://www.ga.gov.au/earthquakes/all_recent.rss";
 
@@ -116,6 +115,8 @@ public class RSSEarthquakesLayer extends RenderableLayer implements Setupable, L
 		});
 		updateTimer.start();
 		startEarthquakeDownload();
+		
+		IWorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
 	/**
@@ -251,32 +252,24 @@ public class RSSEarthquakesLayer extends RenderableLayer implements Setupable, L
 	}
 
 	@Override
-	public void setup(final WorldWindow wwd)
+	public void selected(SelectEvent event)
 	{
-		wwd.addSelectListener(new SelectListener()
+		Object o = event.getTopObject();
+		if (event.getEventAction().equals(SelectEvent.ROLLOVER))
 		{
-			@Override
-			public void selected(SelectEvent event)
-			{
-				Object o = event.getTopObject();
-				if (event.getEventAction().equals(SelectEvent.ROLLOVER))
-				{
-					highlight(o);
-				}
-				else if (event.getEventAction().equals(SelectEvent.LEFT_CLICK))
-				{
-					click(o);
-				}
+			highlight(o);
+		}
+		else if (event.getEventAction().equals(SelectEvent.LEFT_CLICK))
+		{
+			click(o);
+		}
 
-				if (wwd instanceof Component)
-				{
-					Cursor cursor =
-							(o instanceof SurfaceEarthquakeAnnotation) ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
-									: null;
-					((Component) wwd).setCursor(cursor);
-				}
-			}
-		});
+		if (event.getSource() instanceof Component)
+		{
+			Cursor cursor =
+					(o instanceof SurfaceEarthquakeAnnotation) ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) : null;
+			((Component) event.getSource()).setCursor(cursor);
+		}
 	}
 
 	private void highlight(Object o)

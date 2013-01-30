@@ -84,9 +84,6 @@
             class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration">
       </injectable>
       <inject
-            class="au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry">
-      </inject>
-      <inject
             class="au.gov.ga.earthsci.core.retrieve.RetrieverFactory">
          <type
                class="au.gov.ga.earthsci.core.retrieve.IRetrieverFactory">

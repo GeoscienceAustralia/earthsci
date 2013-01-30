@@ -16,13 +16,10 @@
 package au.gov.ga.earthsci.bookmark.properties.camera;
 
 import gov.nasa.worldwind.View;
-
-import javax.inject.Inject;
-
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
 
 /**
  * An {@link IBookmarkPropertyApplicator} used to apply the state of {@link CameraProperty}s
@@ -30,11 +27,7 @@ import au.gov.ga.earthsci.core.worldwind.WorldWindowRegistry;
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
-{
-
-	@Inject
-	private WorldWindowRegistry registry;
-	
+{	
 	@Override
 	public String[] getSupportedTypes()
 	{
@@ -49,7 +42,7 @@ public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
 			return;
 		}
 		
-		View view = registry.getLastView();
+		View view = IWorldWindowRegistry.INSTANCE.getActiveView();
 		if (view == null)
 		{
 			return;
@@ -64,7 +57,7 @@ public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
 	@Override
 	public IBookmarkPropertyAnimator createAnimator(IBookmarkProperty start, IBookmarkProperty end, long duration)
 	{
-		View view = registry.getLastView();
+		View view = IWorldWindowRegistry.INSTANCE.getActiveView();
 		if (view == null)
 		{
 			return null;
