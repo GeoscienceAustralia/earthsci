@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.worldwind;
+package au.gov.ga.earthsci.worldwind.common.render;
 
 import gov.nasa.worldwind.render.DrawContext;
 

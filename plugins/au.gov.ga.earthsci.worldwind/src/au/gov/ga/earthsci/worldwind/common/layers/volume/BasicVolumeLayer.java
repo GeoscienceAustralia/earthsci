@@ -60,7 +60,6 @@ import au.gov.ga.earthsci.worldwind.common.util.CoordinateTransformationUtil;
 import au.gov.ga.earthsci.worldwind.common.util.GeometryUtil;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 import au.gov.ga.earthsci.worldwind.common.util.Validate;
-import au.gov.ga.earthsci.worldwind.common.util.exaggeration.VerticalExaggerationAccessor;
 
 import com.jogamp.opengl.util.awt.TextureRenderer;
 
@@ -95,6 +94,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 			maxLatOffset = 0;
 	protected int lastTopOffset = -1, lastBottomOffset = -1, lastMinLonOffset = -1, lastMaxLonOffset = -1,
 			lastMinLatOffset = -1, lastMaxLatOffset = -1;
+	protected double lastVerticalExaggeration = -Double.MAX_VALUE;
 
 	protected final double[] curtainTextureMatrix = new double[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
 
@@ -110,9 +110,6 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	protected double dragStartPosition;
 	protected int dragStartSlice;
 	protected Vec4 dragStartCenter;
-
-	@Deprecated
-	protected DrawContext dc; //TODO remove this (needed for VerticalExaggerationAccessor call
 
 	/**
 	 * Create a new {@link BasicVolumeLayer}, using the provided layer params.
@@ -307,14 +304,6 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		bottomSurface.setElevation(bottomElevation);
 		bottomSurface.setUseOrderedRendering(useOrderedRendering);
 
-		//create the textures
-		topTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getYSize(), true, true);
-		bottomTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getYSize(), true, true);
-		minLonTexture = new TextureRenderer(dataProvider.getYSize(), dataProvider.getZSize(), true, true);
-		maxLonTexture = new TextureRenderer(dataProvider.getYSize(), dataProvider.getZSize(), true, true);
-		minLatTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getZSize(), true, true);
-		maxLatTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getZSize(), true, true);
-
 		//update each shape's wireframe property so they match the layer's
 		setWireframe(isWireframe());
 	}
@@ -465,8 +454,8 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 			return;
 		}
 
-		boolean verticalExaggerationChanged =
-				VerticalExaggerationAccessor.checkAndMarkVerticalExaggeration(BasicVolumeLayer.this, dc);
+		boolean verticalExaggerationChanged = lastVerticalExaggeration != dc.getVerticalExaggeration();
+		lastVerticalExaggeration = dc.getVerticalExaggeration();
 
 		boolean minLon = minLonClipDirty || verticalExaggerationChanged;
 		boolean maxLon = maxLonClipDirty || verticalExaggerationChanged;
@@ -607,15 +596,9 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 			Position p1, Position p2, Position p3)
 	{
 		Globe globe = dc.getGlobe();
-		Vec4 v1 =
-				globe.computePointFromPosition(p1,
-						VerticalExaggerationAccessor.applyVerticalExaggeration(dc, p1.elevation));
-		Vec4 v2 =
-				globe.computePointFromPosition(p2,
-						VerticalExaggerationAccessor.applyVerticalExaggeration(dc, p2.elevation));
-		Vec4 v3 =
-				globe.computePointFromPosition(p3,
-						VerticalExaggerationAccessor.applyVerticalExaggeration(dc, p3.elevation));
+		Vec4 v1 = globe.computePointFromPosition(p1, p1.getElevation() * dc.getVerticalExaggeration());
+		Vec4 v2 = globe.computePointFromPosition(p2, p2.getElevation() * dc.getVerticalExaggeration());
+		Vec4 v3 = globe.computePointFromPosition(p3, p3.getElevation() * dc.getVerticalExaggeration());
 		insertClippingPlaneForPoints(clippingPlaneArray, arrayOffset, v1, v2, v3);
 	}
 
@@ -642,7 +625,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 			LatLon l1, LatLon l2, LatLon l3, double elevation)
 	{
 		Globe globe = dc.getGlobe();
-		double exaggeratedElevation = VerticalExaggerationAccessor.applyVerticalExaggeration(dc, elevation);
+		double exaggeratedElevation = elevation * dc.getVerticalExaggeration();
 		Vec4 v1 = globe.computePointFromPosition(l1, exaggeratedElevation);
 		Vec4 v2 = globe.computePointFromPosition(l2, exaggeratedElevation);
 		Vec4 v3 = globe.computePointFromPosition(l3, exaggeratedElevation);
@@ -773,7 +756,6 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	@Override
 	protected void doPick(DrawContext dc, Point point)
 	{
-		this.dc = dc;
 		if (!dataProvider.isSingleSliceVolume())
 		{
 			doRender(dc);
@@ -792,6 +774,21 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 
 		synchronized (dataLock)
 		{
+			if (!dataAvailable)
+			{
+				return;
+			}
+
+			if (topTexture == null)
+			{
+				topTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getYSize(), true, true);
+				bottomTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getYSize(), true, true);
+				minLonTexture = new TextureRenderer(dataProvider.getYSize(), dataProvider.getZSize(), true, true);
+				maxLonTexture = new TextureRenderer(dataProvider.getYSize(), dataProvider.getZSize(), true, true);
+				minLatTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getZSize(), true, true);
+				maxLatTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getZSize(), true, true);
+			}
+
 			//recalculate surfaces and clipping planes each frame (in case user drags one of the surfaces)
 			recalculateSurfaces();
 			recalculateClippingPlanes(dc);
@@ -1070,11 +1067,11 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 			dragStartPosition = intersectionPosition.elevation;
 			dragStartSlice = shape == topSurface ? topOffset : bottomOffset;
 		}
-		else if (dc != null)
+		else
 		{
 			double deltaElevation =
-					VerticalExaggerationAccessor.unapplyVerticalExaggeration(dc, dragStartPosition
-							- intersectionPosition.elevation);
+					(dragStartPosition - intersectionPosition.elevation)
+							/ (lastVerticalExaggeration == 0 ? 1 : lastVerticalExaggeration);
 			double deltaPercentage = deltaElevation / dataProvider.getDepth();
 			int sliceMovement = (int) (deltaPercentage * (dataProvider.getZSize() - 1));
 			if (shape == topSurface)

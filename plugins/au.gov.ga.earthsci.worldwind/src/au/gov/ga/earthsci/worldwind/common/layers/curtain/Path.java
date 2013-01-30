@@ -38,8 +38,6 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import au.gov.ga.earthsci.worldwind.common.util.exaggeration.VerticalExaggerationAccessor;
-
 import com.jogamp.common.nio.Buffers;
 
 /**
@@ -58,6 +56,7 @@ public class Path
 
 	protected long updateFrequency = 2000; // milliseconds
 	protected long exaggerationChangeTime = -1;
+	protected double lastVerticalExaggeration = -Double.MAX_VALUE;
 
 	public Path(List<LatLon> positions)
 	{
@@ -157,17 +156,15 @@ public class Path
 	public synchronized Vec4 getSegmentCenterPoint(DrawContext dc, Segment segment, double top, double bottom,
 			boolean followTerrain)
 	{
-		top = VerticalExaggerationAccessor.applyVerticalExaggeration(dc, top);
-		bottom = VerticalExaggerationAccessor.applyVerticalExaggeration(dc, bottom);
+		top *= dc.getVerticalExaggeration();
+		bottom *= dc.getVerticalExaggeration();
 		double height = top - bottom;
 		double e = top - segment.getVerticalCenter() * height;
 		LatLon ll = getPercentLatLon(segment.getHorizontalCenter());
 
 		if (followTerrain)
 		{
-			e +=
-					dc.getGlobe().getElevation(ll.latitude, ll.longitude)
-							* VerticalExaggerationAccessor.getGlobalVerticalExaggeration(dc);
+			e += dc.getGlobe().getElevation(ll.latitude, ll.longitude) * dc.getVerticalExaggeration();
 		}
 
 		return dc.getGlobe().computePointFromPosition(ll, e);
@@ -176,10 +173,10 @@ public class Path
 	public synchronized SegmentGeometry getGeometry(DrawContext dc, CurtainTile tile, double top, double bottom,
 			int subsegments, boolean followTerrain)
 	{
-		boolean exaggerationChanged = VerticalExaggerationAccessor.checkAndMarkVerticalExaggeration(this, dc);
-		if (exaggerationChanged)
+		if (lastVerticalExaggeration != dc.getVerticalExaggeration())
 		{
 			exaggerationChangeTime = System.currentTimeMillis();
+			lastVerticalExaggeration = dc.getVerticalExaggeration();
 		}
 
 		MemoryCache cache = WorldWind.getMemoryCache(CACHE_ID);
@@ -216,8 +213,8 @@ public class Path
 		Vec4 refCenter = getSegmentCenterPoint(dc, segment, top, bottom, followTerrain);
 
 		//calculate exaggerated segment top/bottom elevations
-		top = VerticalExaggerationAccessor.applyVerticalExaggeration(dc, top);
-		bottom = VerticalExaggerationAccessor.applyVerticalExaggeration(dc, bottom);
+		top *= dc.getVerticalExaggeration();
+		bottom *= dc.getVerticalExaggeration();
 		double height = top - bottom;
 		double t = top - segment.getTop() * height;
 		double b = top - segment.getBottom() * height;
@@ -236,9 +233,7 @@ public class Path
 			double e = 0;
 			if (followTerrain)
 			{
-				e =
-						globe.getElevation(ll.latitude, ll.longitude)
-								* VerticalExaggerationAccessor.getGlobalVerticalExaggeration(dc);
+				e = globe.getElevation(ll.latitude, ll.longitude) * dc.getVerticalExaggeration();
 			}
 
 			Vec4 point1 = globe.computePointFromPosition(ll, t + e);
@@ -277,8 +272,8 @@ public class Path
 		Vec4[] points = new Vec4[betweenMap.size() * 2];
 
 		//calculate exaggerated segment top/bottom elevations
-		top = VerticalExaggerationAccessor.applyVerticalExaggeration(dc, top);
-		bottom = VerticalExaggerationAccessor.applyVerticalExaggeration(dc, bottom);
+		top *= dc.getVerticalExaggeration();
+		bottom *= dc.getVerticalExaggeration();
 		double height = top - bottom;
 		double t = top - segment.getTop() * height;
 		double b = top - segment.getBottom() * height;
@@ -291,9 +286,7 @@ public class Path
 			if (followTerrain)
 			{
 				// Note: The elevation model has already applied vertical exaggeration in the case of the VerticalExaggerationElevationModel...
-				e =
-						globe.getElevation(ll.latitude, ll.longitude)
-								* VerticalExaggerationAccessor.getGlobalVerticalExaggeration(dc);
+				e = globe.getElevation(ll.latitude, ll.longitude) * dc.getVerticalExaggeration();
 			}
 
 			points[j++] = globe.computePointFromPosition(ll, t + e);
