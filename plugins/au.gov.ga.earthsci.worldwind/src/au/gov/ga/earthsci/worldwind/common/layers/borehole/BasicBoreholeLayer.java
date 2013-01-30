@@ -45,7 +45,7 @@ import java.util.Map;
 
 import javax.media.opengl.GL2;
 
-import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.point.types.MarkerPointLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.Attribute;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.BasicStyleProvider;
@@ -147,7 +147,7 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 		markerRenderer.setOverrideMarkerElevation(true);
 		markerRenderer.setElevation(0);
 		
-		IWorldWindowRegistry.INSTANCE.addSelectListener(this);
+		WorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
 	@Override

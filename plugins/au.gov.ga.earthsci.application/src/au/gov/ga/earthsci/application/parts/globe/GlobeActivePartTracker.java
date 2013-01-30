@@ -21,11 +21,11 @@ import org.eclipse.e4.core.contexts.Active;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 
-import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 
 /**
  * Injected class that keeps track of the active WorldWindow, and notifies the
- * {@link IWorldWindowRegistry}.
+ * {@link WorldWindowRegistry}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -37,7 +37,7 @@ public class GlobeActivePartTracker
 		if (activePart != null && activePart.getObject() instanceof GlobePart)
 		{
 			GlobePart part = (GlobePart) activePart.getObject();
-			IWorldWindowRegistry.INSTANCE.setActive(part.getWorldWindow());
+			WorldWindowRegistry.INSTANCE.setActive(part.getWorldWindow());
 		}
 	}
 }

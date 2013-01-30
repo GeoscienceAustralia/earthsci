@@ -31,7 +31,7 @@ import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.core.persistence.Persister;
 import au.gov.ga.earthsci.core.util.Validate;
 import au.gov.ga.earthsci.core.util.XmlUtil;
-import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 
 /**
  * An {@link IBookmarkPropertyCreator} that can create a {@link CameraProperty} instance
@@ -65,7 +65,7 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 	@Override
 	public IBookmarkProperty createFromCurrentState(String type)
 	{
-		View view = IWorldWindowRegistry.INSTANCE.getActiveView();
+		View view = WorldWindowRegistry.INSTANCE.getActiveView();
 		if (view == null)
 		{
 			return null;

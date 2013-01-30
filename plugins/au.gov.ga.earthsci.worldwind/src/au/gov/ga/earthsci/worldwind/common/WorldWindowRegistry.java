@@ -17,231 +17,150 @@ package au.gov.ga.earthsci.worldwind.common;
 
 import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.WorldWindow;
-import gov.nasa.worldwind.event.PositionEvent;
 import gov.nasa.worldwind.event.PositionListener;
-import gov.nasa.worldwind.event.RenderingEvent;
 import gov.nasa.worldwind.event.RenderingExceptionListener;
 import gov.nasa.worldwind.event.RenderingListener;
-import gov.nasa.worldwind.event.SelectEvent;
 import gov.nasa.worldwind.event.SelectListener;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
-
-import javax.swing.event.EventListenerList;
 
 /**
- * Basic implementation of {@link IWorldWindowRegistry}.
+ * Helper that keeps track of open {@link WorldWindow}s, and allows for
+ * listening to events on them.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class WorldWindowRegistry implements IWorldWindowRegistry, RenderingListener, RenderingExceptionListener,
-		PositionListener, SelectListener
+public interface WorldWindowRegistry
 {
-	private final Set<WorldWindow> set = new HashSet<WorldWindow>();
-	private final Stack<WorldWindow> stack = new Stack<WorldWindow>();
-	private WorldWindow rendering;
-	private final EventListenerList listeners = new EventListenerList();
+	public final WorldWindowRegistry INSTANCE = new WorldWindowRegistryImpl();
+	
+	/**
+	 * Register a new world window. Should be called when a new world window is
+	 * created.
+	 * 
+	 * @param worldWindow
+	 */
+	void register(WorldWindow worldWindow);
 
-	WorldWindowRegistry()
-	{
-	}
+	/**
+	 * Unregister a registered world window. Should be called when a world
+	 * window is hidden and will not be used again.
+	 * 
+	 * @param worldWindow
+	 */
+	void unregister(WorldWindow worldWindow);
 
-	@Override
-	public void register(WorldWindow worldWindow)
-	{
-		synchronized (stack)
-		{
-			if (set.add(worldWindow))
-			{
-				worldWindow.addPositionListener(this);
-				worldWindow.addRenderingExceptionListener(this);
-				worldWindow.addRenderingListener(this);
-				worldWindow.addSelectListener(this);
-			}
-			else
-			{
-				stack.remove(worldWindow);
-			}
-			stack.add(worldWindow);
-		}
-	}
+	/**
+	 * @return A readonly collection of the registered world windows.
+	 */
+	Collection<WorldWindow> getAll();
 
-	@Override
-	public void unregister(WorldWindow worldWindow)
-	{
-		synchronized (stack)
-		{
-			if (set.remove(worldWindow))
-			{
-				worldWindow.removePositionListener(this);
-				worldWindow.removeRenderingExceptionListener(this);
-				worldWindow.removeRenderingListener(this);
-				worldWindow.removeSelectListener(this);
-				stack.remove(worldWindow);
-			}
-		}
-	}
+	/**
+	 * Get the last world window that was activated (ie received focus) by the
+	 * user.
+	 * <p/>
+	 * Returns null if no world windows are registered, otherwise always returns
+	 * the last active window (or the last registered).
+	 * 
+	 * @return The last active world window.
+	 */
+	WorldWindow getActive();
 
-	@Override
-	public Collection<WorldWindow> getAll()
-	{
-		return Collections.unmodifiableCollection(stack);
-	}
+	/**
+	 * Mark the given world window as activated. Should be called when the user
+	 * gives a world window input focus.
+	 * <p/>
+	 * Calling this on an unregistered world window will register the window.
+	 * 
+	 * @param active
+	 *            World window that was activated
+	 */
+	void setActive(WorldWindow active);
 
-	@Override
-	public WorldWindow getActive()
-	{
-		synchronized (stack)
-		{
-			if (stack.isEmpty())
-				return null;
-			return stack.peek();
-		}
-	}
+	/**
+	 * @return The view of the last active world window.
+	 */
+	View getActiveView();
 
-	@Override
-	public void setActive(WorldWindow active)
-	{
-		register(active);
-	}
+	/**
+	 * Get the world window that is currently being rendered, or the last to be
+	 * rendered. When a world window is registered, a {@link RenderingListener}
+	 * is added to it, which listens for render events and sets the last
+	 * rendering world window.
+	 * 
+	 * @return The world window being rendered, or the last to be rendered.
+	 */
+	WorldWindow getRendering();
 
-	@Override
-	public View getActiveView()
-	{
-		synchronized (stack)
-		{
-			if (stack.isEmpty())
-				return null;
-			return stack.peek().getView();
-		}
-	}
+	/**
+	 * @return The view of the currently rendering or last rendered world
+	 *         window.
+	 */
+	View getRenderingView();
 
-	@Override
-	public WorldWindow getRendering()
-	{
-		return rendering;
-	}
+	/**
+	 * Adds a rendering listener to all registered world windows.
+	 * 
+	 * @see WorldWindow#addRenderingListener(RenderingListener)
+	 */
+	void addRenderingListener(RenderingListener listener);
 
-	@Override
-	public View getRenderingView()
-	{
-		return rendering == null ? null : rendering.getView();
-	}
+	/**
+	 * Removes a rendering listener.
+	 * 
+	 * @see WorldWindow#removeRenderingListener(RenderingListener)
+	 */
+	void removeRenderingListener(RenderingListener listener);
 
-	@Override
-	public void addRenderingListener(RenderingListener listener)
-	{
-		listeners.add(RenderingListener.class, listener);
-	}
+	/**
+	 * Adds a select listener to all registered world windows.
+	 * 
+	 * @see WorldWindow#addSelectListener(SelectListener)
+	 */
+	void addSelectListener(SelectListener listener);
 
-	@Override
-	public void removeRenderingListener(RenderingListener listener)
-	{
-		listeners.remove(RenderingListener.class, listener);
-	}
+	/**
+	 * Removes a select listener.
+	 * 
+	 * @see WorldWindow#removeSelectListener(SelectListener)
+	 */
+	void removeSelectListener(SelectListener listener);
 
-	@Override
-	public void addSelectListener(SelectListener listener)
-	{
-		listeners.add(SelectListener.class, listener);
-	}
+	/**
+	 * Adds a position listener to all registered world windows.
+	 * 
+	 * @see WorldWindow#addPositionListener(PositionListener)
+	 */
+	void addPositionListener(PositionListener listener);
 
-	@Override
-	public void removeSelectListener(SelectListener listener)
-	{
-		listeners.remove(SelectListener.class, listener);
-	}
+	/**
+	 * Removes a position listener.
+	 * 
+	 * @see WorldWindow#removePositionListener(PositionListener)
+	 */
+	void removePositionListener(PositionListener listener);
 
-	@Override
-	public void addPositionListener(PositionListener listener)
-	{
-		listeners.add(PositionListener.class, listener);
-	}
+	/**
+	 * Adds an exception listener to all registered world windows.
+	 * 
+	 * @see WorldWindow#addRenderingExceptionListener(RenderingExceptionListener)
+	 */
+	void addRenderingExceptionListener(RenderingExceptionListener listener);
 
-	@Override
-	public void removePositionListener(PositionListener listener)
-	{
-		listeners.remove(PositionListener.class, listener);
-	}
+	/**
+	 * Removes a rendering exception listener.
+	 * 
+	 * @see WorldWindow#removeRenderingExceptionListener(RenderingExceptionListener)
+	 */
+	void removeRenderingExceptionListener(RenderingExceptionListener listener);
 
-	@Override
-	public void addRenderingExceptionListener(RenderingExceptionListener listener)
-	{
-		listeners.add(RenderingExceptionListener.class, listener);
-	}
+	/**
+	 * Call {@link WorldWindow#redraw()} on all registered world windows.
+	 */
+	void redraw();
 
-	@Override
-	public void removeRenderingExceptionListener(RenderingExceptionListener listener)
-	{
-		listeners.remove(RenderingExceptionListener.class, listener);
-	}
-
-	@Override
-	public void redraw()
-	{
-		synchronized (stack)
-		{
-			for (WorldWindow ww : stack)
-			{
-				ww.redraw();
-			}
-		}
-	}
-
-	@Override
-	public void redrawNow()
-	{
-		synchronized (stack)
-		{
-			for (WorldWindow ww : stack)
-			{
-				ww.redrawNow();
-			}
-		}
-	}
-
-	@Override
-	public void stageChanged(RenderingEvent event)
-	{
-		if (RenderingEvent.BEFORE_RENDERING.equals(event.getStage()) && event.getSource() instanceof WorldWindow)
-		{
-			rendering = (WorldWindow) event.getSource();
-		}
-
-		for (RenderingListener l : listeners.getListeners(RenderingListener.class))
-		{
-			l.stageChanged(event);
-		}
-	}
-
-	@Override
-	public void selected(SelectEvent event)
-	{
-		for (SelectListener l : listeners.getListeners(SelectListener.class))
-		{
-			l.selected(event);
-		}
-	}
-
-	@Override
-	public void moved(PositionEvent event)
-	{
-		for (PositionListener l : listeners.getListeners(PositionListener.class))
-		{
-			l.moved(event);
-		}
-	}
-
-	@Override
-	public void exceptionThrown(Throwable t)
-	{
-		for (RenderingExceptionListener l : listeners.getListeners(RenderingExceptionListener.class))
-		{
-			l.exceptionThrown(t);
-		}
-	}
+	/**
+	 * Call {@link WorldWindow#redrawNow()} on all registered world windows.
+	 */
+	void redrawNow();
 }

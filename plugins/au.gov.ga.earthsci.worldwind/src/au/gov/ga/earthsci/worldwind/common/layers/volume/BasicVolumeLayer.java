@@ -50,7 +50,7 @@ import javax.media.opengl.GL2;
 
 import org.gdal.osr.CoordinateTransformation;
 
-import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.Wireframeable;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShape;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShapeRenderListener;
@@ -191,7 +191,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		Validate.notBlank(dataCacheName, "Model data cache name not set");
 		Validate.notNull(dataProvider, "Model data provider is null");
 
-		IWorldWindowRegistry.INSTANCE.addSelectListener(this);
+		WorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
 	@Override
@@ -1005,7 +1005,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 
 				if (dragStartCenter != null)
 				{
-					WorldWindow wwd = IWorldWindowRegistry.INSTANCE.getRendering();
+					WorldWindow wwd = WorldWindowRegistry.INSTANCE.getRendering();
 					if (wwd != null)
 					{
 						View view = wwd.getView();
