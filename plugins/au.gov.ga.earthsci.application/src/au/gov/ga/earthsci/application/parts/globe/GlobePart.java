@@ -19,6 +19,8 @@ import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.layers.Layer;
+import gov.nasa.worldwind.layers.WorldMapLayer;
+import gov.nasa.worldwindx.examples.ClickAndGoSelectListener;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
@@ -109,6 +111,7 @@ public class GlobePart
 		worldWindow = wwd;
 		wwd.setModel(model);
 		wwd.setView(new WorldWindView());
+		wwd.addSelectListener(new ClickAndGoSelectListener(wwd, WorldMapLayer.class));
 		context.set(WorldWindow.class, worldWindow);
 
 		WorldWindowRegistry.INSTANCE.register(worldWindow);
