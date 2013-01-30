@@ -137,6 +137,21 @@ public class BookmarksPart
 		});
 	}
 	
+	public void refreshDropdown()
+	{
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run()
+			{
+				if (controller.getCurrentList() == getSelectedBookmarkList())
+				{
+					return;
+				}
+				bookmarkListsComboViewer.setSelection(new StructuredSelection(controller.getCurrentList()), true);
+			}
+		});
+	}
+	
 	private void setupClipboardDnD()
 	{
 		bookmarkListTableViewer.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, 
@@ -188,6 +203,15 @@ public class BookmarksPart
 		bookmarkListsComboViewer.setContentProvider(new ObservableListContentProvider());
 		bookmarkListsComboViewer.setInput(BeanProperties.list("lists").observe(bookmarks)); //$NON-NLS-1$
 		bookmarkListsComboViewer.setSelection(new StructuredSelection(bookmarks.getDefaultList()));
+		
+		bookmarkListsComboViewer.addSelectionChangedListener(new ISelectionChangedListener()
+		{
+			@Override
+			public void selectionChanged(SelectionChangedEvent event)
+			{
+				controller.setCurrentList(getSelectedBookmarkList());
+			}
+		});
 	}
 	
 	private void initList(Composite parent)

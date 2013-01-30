@@ -105,6 +105,11 @@ public interface IBookmarksController
 	IBookmarkList getCurrentList();
 	
 	/**
+	 * Set the currently selected bookmark list
+	 */
+	void setCurrentList(IBookmarkList list);
+	
+	/**
 	 * Play through the given bookmark list, starting at the given bookmark.
 	 * <p/>
 	 * If the given bookmark does not exist in the list, or is <code>null</code>, play 
@@ -126,6 +131,15 @@ public interface IBookmarksController
 	void play(IBookmark bookmark);
 	
 	/**
+	 * Create a new bookmark list and add it to the current bookmarks model
+	 * <p/>
+	 * Implementations may prompt the user to provide a name for the list.
+	 * 
+	 * @return The newly created list
+	 */
+	IBookmarkList createNewBookmarkList();
+	
+	/**
 	 * @return Whether there are any actively playing lists
 	 */
 	boolean isPlaying();
@@ -139,4 +153,6 @@ public interface IBookmarksController
 	 * Set the UI view this controller links to
 	 */
 	void setView(BookmarksPart part);
+	
+	
 }

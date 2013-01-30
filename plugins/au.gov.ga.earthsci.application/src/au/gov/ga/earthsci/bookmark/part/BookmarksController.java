@@ -15,6 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.part;
 
+import static au.gov.ga.earthsci.bookmark.part.Messages.BookmarksController_DefaultNewListName;
+import static au.gov.ga.earthsci.bookmark.part.Messages.BookmarksController_NewListDialogMessage;
+import static au.gov.ga.earthsci.bookmark.part.Messages.BookmarksController_NewListDialogTitle;
 import gov.nasa.worldwind.View;
 
 import java.awt.event.MouseAdapter;
@@ -35,6 +38,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +48,7 @@ import au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.Bookmark;
+import au.gov.ga.earthsci.bookmark.model.BookmarkList;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkList;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
@@ -191,6 +196,27 @@ public class BookmarksController implements IBookmarksController
 	}
 	
 	@Override
+	public IBookmarkList createNewBookmarkList()
+	{
+		stop();
+		BookmarkList result;
+		InputDialog dialog = new InputDialog(Display.getDefault().getActiveShell(), 
+											 BookmarksController_NewListDialogTitle,
+											 BookmarksController_NewListDialogMessage, 
+											 BookmarksController_DefaultNewListName, 
+											 null);
+		dialog.open();
+		if (dialog.getReturnCode() != InputDialog.OK)
+		{
+			return null;
+		}
+
+		result = new BookmarkList(dialog.getValue());
+		bookmarks.addList(result);
+		return result;
+	}
+	
+	@Override
 	public void delete(IBookmark bookmark)
 	{
 		if (bookmark == null)
@@ -227,6 +253,14 @@ public class BookmarksController implements IBookmarksController
 			return bookmarks.getDefaultList();
 		}
 		return currentList;
+	}
+	
+	@Override
+	public void setCurrentList(IBookmarkList list)
+	{
+		stop();
+		currentList = list;
+		part.refreshDropdown();
 	}
 	
 	@Override
