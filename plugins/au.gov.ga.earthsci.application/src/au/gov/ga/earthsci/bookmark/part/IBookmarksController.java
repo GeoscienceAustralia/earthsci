@@ -28,6 +28,31 @@ public interface IBookmarksController
 {
 
 	/**
+	 * Move the provided bookmarks to a new index in the current list.
+	 * <p/>
+	 * In the case where the provided bookmarks are not sequential, they will be inserted at the
+	 * target index such that they are sequential and maintain the same relative order.
+	 * <p/>
+	 * If a given bookmark is not part of the current list it will be ignored for the purposes
+	 * of this operation.
+	 * 
+	 * @param bookmarks The bookmarks to move
+	 * @param targetIndex The target index AS IT IS BEFORE THE MOVE
+	 */
+	void moveTo(IBookmark[] bookmarks, int targetIndex);
+	
+	/**
+	 * Copy the selected bookmarks and paste them into the current list at the target index
+	 * <p/>
+	 * In the case where the provided bookmarks are not sequential, they will be inserted at the
+	 * target index such that they are sequential and maintain the same relative order.
+	 * 
+	 * @param bookmarks The bookmarks to copy
+	 * @param targetIndex The target index AS IT IS BEFORE THE COPY
+	 */
+	void copyTo(IBookmark[] bookmarks, int targetIndex);
+	
+	/**
 	 * Create a new bookmark and append it to the given bookmark list.
 	 * 
 	 * @param list The list append the new bookmark to

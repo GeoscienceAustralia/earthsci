@@ -22,6 +22,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -41,6 +43,7 @@ import au.gov.ga.earthsci.bookmark.BookmarkFactory;
 import au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
+import au.gov.ga.earthsci.bookmark.model.Bookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkList;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
@@ -48,6 +51,7 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarks;
 import au.gov.ga.earthsci.bookmark.part.editor.BookmarkEditorDialog;
 import au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences;
 import au.gov.ga.earthsci.worldwind.common.IWorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
  * The default implementation of the {@link IBookmarksController} interface
@@ -267,6 +271,86 @@ public class BookmarksController implements IBookmarksController
 		stopCurrentTransition();
 	}
 	
+	@Override
+	public void moveTo(IBookmark[] bookmarks, int targetIndex)
+	{
+		if (bookmarks == null || bookmarks.length == 0)
+		{
+			return;
+		}
+		
+		stop();
+		
+		targetIndex = Util.clamp(targetIndex, 0, getCurrentList().getBookmarks().size());
+		
+		ArrayList<IBookmark> bookmarksList = new ArrayList<IBookmark>(getCurrentList().getBookmarks());
+		int[] currentIndices = new int[bookmarks.length];
+		for (int i = 0; i < bookmarks.length; i++)
+		{
+			currentIndices[i] = bookmarksList.indexOf(bookmarks[i]);
+		}
+		
+		for (int i = bookmarks.length - 1; i >= 0; i -= 1)
+		{
+			bookmarksList.remove(bookmarks[i]);
+			
+			if (currentIndices[i] < targetIndex)
+			{
+				targetIndex--;
+			}
+			
+			bookmarksList.add(targetIndex, bookmarks[i]);
+		}
+		
+		getCurrentList().setBookmarks(bookmarksList);
+	}
+	
+	@Override
+	public void copyTo(IBookmark[] bookmarks, int targetIndex)
+	{
+		if (bookmarks == null || bookmarks.length == 0)
+		{
+			return;
+		}
+		
+		targetIndex = Util.clamp(targetIndex, 0, getCurrentList().getBookmarks().size());
+		
+		ArrayList<IBookmark> bookmarksList = new ArrayList<IBookmark>(getCurrentList().getBookmarks());
+		
+		IBookmark[] copies = copy(bookmarks);
+		for (int i = copies.length - 1; i >= 0; i -= 1)
+		{
+			bookmarksList.add(targetIndex, copies[i]);
+		}
+		
+		getCurrentList().setBookmarks(bookmarksList);
+	}
+	
+	private IBookmark[] copy(IBookmark... bookmarks)
+	{
+		BookmarkTransferData btd = BookmarkTransferData.fromBookmarks(bookmarks);
+		
+		try
+		{
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			BookmarkTransferData.save(btd, os);
+			btd = BookmarkTransferData.load(new ByteArrayInputStream(os.toByteArray()));
+			
+			IBookmark[] copies = new IBookmark[bookmarks.length];
+			for (int i = 0; i < copies.length; i++)
+			{
+				copies[i] = new Bookmark(btd.getBookmarks()[i]);
+			}
+			return copies;
+		}
+		catch (Exception e)
+		{
+			logger.error("Exception copying bookmarks", e); //$NON-NLS-1$
+		}
+		
+		return btd.getBookmarks();
+	}
+	
 	/**
 	 * Stop any current bookmark transitions that are running
 	 */
@@ -427,5 +511,13 @@ public class BookmarksController implements IBookmarksController
 	public void setView(BookmarksPart part)
 	{
 		this.part = part;
+	}
+	
+	/**
+	 * Set the current bookmarks model on this controller
+	 */
+	public void setBookmarks(IBookmarks bookmarks)
+	{
+		this.bookmarks = bookmarks;
 	}
 }

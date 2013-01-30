@@ -52,6 +52,25 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 		this.id = UUID.randomUUID().toString();
 	}
 	
+	/**
+	 * Copy constructor.
+	 * <p/>
+	 * Performs a shallow copy, with a new ID
+	 * 
+	 * @param other The bookmark to copy
+	 */
+	public Bookmark(IBookmark other)
+	{
+		this.id = UUID.randomUUID().toString();
+		this.name = other.getName();
+		this.transitionDuration = other.getTransitionDuration();
+		for (IBookmarkProperty p : other.getProperties())
+		{
+			doAddProperty(p, false);
+		}
+		this.metadata = other.getMetadata();
+	}
+	
 	@Override
 	public String getId()
 	{
@@ -180,4 +199,32 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 		firePropertyChange("transitionDuration", this.transitionDuration, this.transitionDuration = duration); //$NON-NLS-1$
 	}
 	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == this)
+		{
+			return true;
+		}
+		if (!(obj instanceof IBookmark))
+		{
+			return false;
+		}
+		
+		IBookmark other = (IBookmark)obj;
+		
+		return id.equals(other.getId());
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return id.hashCode();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Bookmark{" + id + ", " + name + "}"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	}
 }
