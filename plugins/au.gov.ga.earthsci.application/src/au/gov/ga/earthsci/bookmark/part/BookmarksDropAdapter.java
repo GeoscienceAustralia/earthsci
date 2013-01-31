@@ -72,12 +72,12 @@ class BookmarksDropAdapter extends ViewerDropAdapter
 		
 		if (getCurrentOperation() == DND.DROP_MOVE)
 		{
-			controller.moveTo(btd.getBookmarks(), index);
+			controller.moveBookmarks(btd.getBookmarks(), index);
 			return true;
 		}
 		else if (getCurrentOperation() == DND.DROP_COPY)
 		{
-			controller.copyTo(btd.getBookmarks(), index);
+			controller.copyBookmarks(btd.getBookmarks(), index);
 			return true;
 		}
 		

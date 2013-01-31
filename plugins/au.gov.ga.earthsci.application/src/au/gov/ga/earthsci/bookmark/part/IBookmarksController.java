@@ -35,11 +35,28 @@ public interface IBookmarksController
 	 * <p/>
 	 * If a given bookmark is not part of the current list it will be ignored for the purposes
 	 * of this operation.
+	 * <p/>
+	 * Equivalent to {@code moveBookmarks(getCurrentList(), bookmarks, getCurrentList(), targetIndex);}
 	 * 
 	 * @param bookmarks The bookmarks to move
 	 * @param targetIndex The target index AS IT IS BEFORE THE MOVE
 	 */
-	void moveTo(IBookmark[] bookmarks, int targetIndex);
+	void moveBookmarks(IBookmark[] bookmarks, int targetIndex);
+	
+	/**
+	 * Move the provided bookmarks between the source and target lists
+	 * <p/>
+	 * Bookmarks will be removed from the source list.
+	 * <p/>
+	 * In the case where the provided bookmarks are not sequential, they will be inserted at the
+	 * target index such that they are sequential and maintain the same relative order.
+	 * 
+	 * @param sourceList The source list
+	 * @param bookmarks The bookmarks to move
+	 * @param targetIndex The target index AS IT IS BEFORE THE MOVE
+	 * @param targetList The target list
+	 */
+	void moveBookmarks(IBookmarkList sourceList, IBookmark[] bookmarks, IBookmarkList targetList, int targetIndex);
 	
 	/**
 	 * Copy the selected bookmarks and paste them into the current list at the target index
@@ -50,7 +67,20 @@ public interface IBookmarksController
 	 * @param bookmarks The bookmarks to copy
 	 * @param targetIndex The target index AS IT IS BEFORE THE COPY
 	 */
-	void copyTo(IBookmark[] bookmarks, int targetIndex);
+	void copyBookmarks(IBookmark[] bookmarks, int targetIndex);
+	
+	/**
+	 * Copy the selected bookmarks and paste them into the target list at the target index
+	 * <p/>
+	 * In the case where the provided bookmarks are not sequential, they will be inserted at the
+	 * target index such that they are sequential and maintain the same relative order.
+	 * 
+	 * @param sourceList The source list
+	 * @param bookmarks The bookmarks to copy
+	 * @param targetList The targetList
+	 * @param targetIndex The target index AS IT IS BEFORE THE COPY
+	 */
+	void copyBookmarks(IBookmarkList sourceList, IBookmark[] bookmarks, IBookmarkList targetList, int targetIndex);
 	
 	/**
 	 * Create a new bookmark and append it to the given bookmark list.
@@ -153,6 +183,5 @@ public interface IBookmarksController
 	 * Set the UI view this controller links to
 	 */
 	void setView(BookmarksPart part);
-	
-	
+
 }

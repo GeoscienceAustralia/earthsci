@@ -307,7 +307,13 @@ public class BookmarksController implements IBookmarksController
 	}
 	
 	@Override
-	public void moveTo(IBookmark[] bookmarks, int targetIndex)
+	public void moveBookmarks(IBookmark[] bookmarks, int targetIndex)
+	{
+		moveBookmarks(getCurrentList(), bookmarks, getCurrentList(), targetIndex);
+	}
+	
+	@Override
+	public void moveBookmarks(IBookmarkList sourceList, IBookmark[] bookmarks, IBookmarkList targetList, int targetIndex)
 	{
 		if (bookmarks == null || bookmarks.length == 0)
 		{
@@ -316,49 +322,66 @@ public class BookmarksController implements IBookmarksController
 		
 		stop();
 		
-		targetIndex = Util.clamp(targetIndex, 0, getCurrentList().getBookmarks().size());
+		targetIndex = Util.clamp(targetIndex, 0, targetList.getBookmarks().size());
 		
-		ArrayList<IBookmark> bookmarksList = new ArrayList<IBookmark>(getCurrentList().getBookmarks());
+		ArrayList<IBookmark> sourceBookmarksList = new ArrayList<IBookmark>(sourceList.getBookmarks());
+		ArrayList<IBookmark> targetBookmarksList;
+		if (sourceList == targetList)
+		{
+			targetBookmarksList = sourceBookmarksList;
+		}
+		else
+		{
+			targetBookmarksList = new ArrayList<IBookmark>(targetList.getBookmarks());
+		}
+		
 		int[] currentIndices = new int[bookmarks.length];
 		for (int i = 0; i < bookmarks.length; i++)
 		{
-			currentIndices[i] = bookmarksList.indexOf(bookmarks[i]);
+			currentIndices[i] = sourceBookmarksList.indexOf(bookmarks[i]);
 		}
 		
 		for (int i = bookmarks.length - 1; i >= 0; i -= 1)
 		{
-			bookmarksList.remove(bookmarks[i]);
+			sourceBookmarksList.remove(bookmarks[i]);
 			
-			if (currentIndices[i] < targetIndex)
+			if (currentIndices[i] < targetIndex && sourceList == targetList)
 			{
 				targetIndex--;
 			}
 			
-			bookmarksList.add(targetIndex, bookmarks[i]);
+			targetBookmarksList.add(targetIndex, bookmarks[i]);
 		}
 		
-		getCurrentList().setBookmarks(bookmarksList);
+		sourceList.setBookmarks(sourceBookmarksList);
+		targetList.setBookmarks(targetBookmarksList);
 	}
 	
 	@Override
-	public void copyTo(IBookmark[] bookmarks, int targetIndex)
+	public void copyBookmarks(IBookmark[] bookmarks, int targetIndex)
+	{
+		copyBookmarks(getCurrentList(), bookmarks, getCurrentList(), targetIndex);
+	}
+	
+	@Override
+	public void copyBookmarks(IBookmarkList sourceList, IBookmark[] bookmarks, IBookmarkList targetList, int targetIndex)
 	{
 		if (bookmarks == null || bookmarks.length == 0)
 		{
 			return;
 		}
 		
-		targetIndex = Util.clamp(targetIndex, 0, getCurrentList().getBookmarks().size());
+		targetIndex = Util.clamp(targetIndex, 0, targetList.getBookmarks().size());
 		
-		ArrayList<IBookmark> bookmarksList = new ArrayList<IBookmark>(getCurrentList().getBookmarks());
+		ArrayList<IBookmark> targetBookmarksList = new ArrayList<IBookmark>(targetList.getBookmarks());
 		
 		IBookmark[] copies = copy(bookmarks);
 		for (int i = copies.length - 1; i >= 0; i -= 1)
 		{
-			bookmarksList.add(targetIndex, copies[i]);
+			targetBookmarksList.add(targetIndex, copies[i]);
 		}
 		
-		getCurrentList().setBookmarks(bookmarksList);
+		targetList.setBookmarks(targetBookmarksList);
 	}
 	
 	private IBookmark[] copy(IBookmark... bookmarks)

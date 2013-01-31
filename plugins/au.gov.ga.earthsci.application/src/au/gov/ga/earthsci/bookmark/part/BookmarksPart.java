@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.part;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -23,8 +25,23 @@ import javax.inject.Inject;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.ui.internal.workbench.swt.AbstractPartRenderer;
+import org.eclipse.e4.ui.model.application.MApplication;
+import org.eclipse.e4.ui.model.application.commands.MCommand;
+import org.eclipse.e4.ui.model.application.commands.MCommandsFactory;
+import org.eclipse.e4.ui.model.application.commands.MParameter;
+import org.eclipse.e4.ui.model.application.ui.MElementContainer;
+import org.eclipse.e4.ui.model.application.ui.MUIElement;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.model.application.ui.menu.ItemType;
+import org.eclipse.e4.ui.model.application.ui.menu.MHandledMenuItem;
+import org.eclipse.e4.ui.model.application.ui.menu.MMenu;
+import org.eclipse.e4.ui.model.application.ui.menu.MMenuElement;
+import org.eclipse.e4.ui.model.application.ui.menu.MMenuFactory;
+import org.eclipse.e4.ui.model.application.ui.menu.MPopupMenu;
+import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
+import org.eclipse.e4.ui.workbench.swt.factories.IRendererFactory;
 import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.databinding.viewers.ObservableMapCellLabelProvider;
@@ -65,6 +82,8 @@ import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.bookmark.model.Bookmarks;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkList;
+import au.gov.ga.earthsci.bookmark.part.handlers.CopyToListHandler;
+import au.gov.ga.earthsci.bookmark.part.handlers.MoveToListHandler;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
@@ -74,6 +93,10 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  */
 public class BookmarksPart
 {
+	private static final String POPUP_MENU_ID = "au.gov.ga.earthsci.application.bookmarks.popupmenu"; //$NON-NLS-1$
+	private static final String MOVE_TO_MENU_ID = "au.gov.ga.earthsci.application.bookmarks.movetomenu"; //$NON-NLS-1$
+	private static final String COPY_TO_MENU_ID = "au.gov.ga.earthsci.application.bookmarks.copytomenu"; //$NON-NLS-1$
+
 	@Inject
 	private Bookmarks bookmarks;
 	
@@ -81,16 +104,28 @@ public class BookmarksPart
 	private ESelectionService selectionService;
 	
 	@Inject
+	private EModelService modelService;
+	
+	@Inject
+	private EMenuService menuService;
+	
+	@Inject 
+	private MApplication application;
+	
+	@Inject
 	private IEclipseContext context;
-
+	
 	@Inject
 	private IBookmarksController controller;
 	
 	private TableViewer bookmarkListTableViewer;
 	private ComboViewer bookmarkListsComboViewer;
+	private MPopupMenu popupMenu;
+	private MMenu copyToMenu;
+	private MMenu moveToMenu;
 	
 	@PostConstruct
-	public void init(final Composite parent, final MPart part, final EMenuService menuService)
+	public void init(final Composite parent, final MPart part)
 	{
 		controller.setView(this);
 		
@@ -103,9 +138,9 @@ public class BookmarksPart
 		
 		setupClipboardDnD();
 		setupBookmarkListInput();
-		
-		menuService.registerContextMenu(bookmarkListTableViewer.getTable(), "au.gov.ga.earthsci.application.bookmarks.popupmenu"); //$NON-NLS-1$
+		setupPopupMenus();
 	}
+
 
 	/**
 	 * Highlight the given bookmark in the part
@@ -298,6 +333,89 @@ public class BookmarksPart
 			}
 		});
 		
+	}
+	
+	private void setupPopupMenus()
+	{
+		popupMenu = menuService.registerContextMenu(bookmarkListTableViewer.getTable(), POPUP_MENU_ID);
+		
+		copyToMenu = (MMenu) modelService.find(COPY_TO_MENU_ID, popupMenu);
+		moveToMenu = (MMenu) modelService.find(MOVE_TO_MENU_ID, popupMenu);
+		
+		updateCopyToMenu();
+		updateMoveToMenu();
+		
+		bookmarks.addPropertyChangeListener("lists", new PropertyChangeListener() //$NON-NLS-1$
+		{
+			@Override
+			public void propertyChange(PropertyChangeEvent evt)
+			{
+				updateCopyToMenu();
+				updateMoveToMenu();
+			}
+		});
+	}
+	
+	private void updateCopyToMenu()
+	{
+		updateMenu(copyToMenu, CopyToListHandler.COMMAND_ID, CopyToListHandler.LIST_PARAMETER_ID);
+	}
+
+	private void updateMoveToMenu()
+	{
+		updateMenu(moveToMenu, MoveToListHandler.COMMAND_ID, MoveToListHandler.LIST_PARAMETER_ID);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void updateMenu(MMenu menu, String commandId, String paramId)
+	{
+		// Remove existing menu items
+		for (MMenuElement child : menu.getChildren())
+		{
+			child.setToBeRendered(false);
+			child.setVisible(false);
+		}
+		menu.getChildren().clear();
+		
+		// Find the appropriate command
+		MCommand command = null;
+		for (MCommand c : application.getCommands())
+		{
+			if (commandId.equals(c.getElementId()))
+			{
+				command = c;
+				break;
+			}
+		}
+		
+		// Add a menu item for each available list
+		for (IBookmarkList b : bookmarks.getLists())
+		{
+			MHandledMenuItem menuItem = MMenuFactory.INSTANCE.createHandledMenuItem();
+			menuItem.setLabel(b.getName());
+			menuItem.setCommand(command);
+			menuItem.setElementId(menu.getElementId() + "." + b.getId()); //$NON-NLS-1$
+			menuItem.setType(ItemType.PUSH);
+			menuItem.setToBeRendered(true);
+			menuItem.setVisible(true);
+			
+			MParameter parameter = MCommandsFactory.INSTANCE.createParameter();
+			parameter.setName(paramId);
+			parameter.setValue(b.getId());
+			
+			menuItem.getParameters().add(parameter);
+			
+			menu.getChildren().add(menuItem);
+		}
+		
+		menu.setToBeRendered(true);
+		menu.setVisible(true);
+		
+		// This is a workaround for Bug 391340 to force the UI to re-sync with the application model
+		IRendererFactory rendererFactory = context.get(IRendererFactory.class);
+		AbstractPartRenderer renderer = rendererFactory.getRenderer(popupMenu, 
+																	bookmarkListTableViewer.getTable());
+		renderer.processContents((MElementContainer<MUIElement>) (Object) popupMenu);
 	}
 	
 	/**

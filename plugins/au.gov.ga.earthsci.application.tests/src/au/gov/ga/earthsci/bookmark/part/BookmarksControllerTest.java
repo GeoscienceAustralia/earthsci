@@ -135,7 +135,7 @@ public class BookmarksControllerTest
 		IBookmark[] toMove = null;
 		int targetIndex = 2;
 		
-		classUnderTest.moveTo(toMove, targetIndex);
+		classUnderTest.moveBookmarks(toMove, targetIndex);
 		
 		assertDefaultBookmarkListCorrect(testBookmarks[0], testBookmarks[1], testBookmarks[2]);
 	}
@@ -146,7 +146,7 @@ public class BookmarksControllerTest
 		IBookmark[] toMove = new IBookmark[0];
 		int targetIndex = 2;
 		
-		classUnderTest.moveTo(toMove, targetIndex);
+		classUnderTest.moveBookmarks(toMove, targetIndex);
 		
 		assertDefaultBookmarkListCorrect(testBookmarks[0], testBookmarks[1], testBookmarks[2]);
 	}
@@ -157,7 +157,7 @@ public class BookmarksControllerTest
 		IBookmark[] toMove = new IBookmark[] {testBookmarks[1], testBookmarks[0]};
 		int targetIndex = 3;
 		
-		classUnderTest.moveTo(toMove, targetIndex);
+		classUnderTest.moveBookmarks(toMove, targetIndex);
 		
 		assertDefaultBookmarkListCorrect(testBookmarks[2], testBookmarks[1], testBookmarks[0]);
 	}
@@ -168,7 +168,7 @@ public class BookmarksControllerTest
 		IBookmark[] toCopy = null;
 		int targetIndex = 3;
 		
-		classUnderTest.copyTo(toCopy, targetIndex);
+		classUnderTest.copyBookmarks(toCopy, targetIndex);
 		
 		assertDefaultBookmarkListCorrect(testBookmarks[0], testBookmarks[1], testBookmarks[2]);
 	}
@@ -179,7 +179,7 @@ public class BookmarksControllerTest
 		IBookmark[] toCopy = new IBookmark[0];
 		int targetIndex = 3;
 		
-		classUnderTest.copyTo(toCopy, targetIndex);
+		classUnderTest.copyBookmarks(toCopy, targetIndex);
 		
 		assertDefaultBookmarkListCorrect(testBookmarks[0], testBookmarks[1], testBookmarks[2]);
 	}
@@ -190,7 +190,7 @@ public class BookmarksControllerTest
 		IBookmark[] toCopy = new IBookmark[] {testBookmarks[0], testBookmarks[1]};
 		int targetIndex = 3;
 		
-		classUnderTest.copyTo(toCopy, targetIndex);
+		classUnderTest.copyBookmarks(toCopy, targetIndex);
 		
 		List<IBookmark> bookmarkList = classUnderTest.getCurrentList().getBookmarks();
 		assertEquals(5, bookmarkList.size());
