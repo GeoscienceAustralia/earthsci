@@ -29,7 +29,7 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarks;
 import au.gov.ga.earthsci.bookmark.part.IBookmarksController;
 
 /**
- * 
+ * Command handler that copies selected bookmarks to a new bookmark list
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
