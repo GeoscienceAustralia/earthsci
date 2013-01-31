@@ -81,13 +81,15 @@
     <children xmi:id="_007tU_sMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
   </rootContext>
   <descriptors xmi:id="_OzkNsC1OEeK0vtabFDqVSw" elementId="au.gov.ga.earthsci.application.part.legend" label="Legend" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/legend.gif" allowMultiple="true" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.legend.LegendPart"/>
-  <descriptors xmi:id="_q4L6MGA_EeKICM2QMruAHQ" elementId="au.gov.ga.earthsci.application.part.globe" label="Globe" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/world.gif" allowMultiple="true" closeable="true" contributionURI="bundlebundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.GlobePart">
+  <descriptors xmi:id="_q4L6MGA_EeKICM2QMruAHQ" elementId="au.gov.ga.earthsci.application.part.globe" label="Globe" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/world.gif" allowMultiple="true" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.GlobePart">
     <handlers xmi:id="_bQfGIGXdEeKxr8W5TdCnMQ" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.handlers.ToggleHudHandler" command="_cdOmEGXdEeKxr8W5TdCnMQ"/>
     <handlers xmi:id="_KwDXUGqLEeKz-NWw78ViTQ" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.handlers.FullscreenHandler" command="_HJh8kGqLEeKz-NWw78ViTQ"/>
     <handlers xmi:id="_4Z0DAGqOEeKz-NWw78ViTQ" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.handlers.WireframeHandler" command="_y_g9gGqOEeKz-NWw78ViTQ"/>
+    <handlers xmi:id="_l0gbIGqWEeKz-NWw78ViTQ" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.handlers.GotoCoordinateHandler" command="_jwoe4GqWEeKz-NWw78ViTQ"/>
     <toolbar xmi:id="_yleGAGNgEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.part.globe.toolbar">
       <children xsi:type="menu:HandledToolItem" xmi:id="_OJweEGqLEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.globe.toolitems.fullscreen" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/monitor.gif" tooltip="Fullscreen" type="Check" command="_HJh8kGqLEeKz-NWw78ViTQ"/>
       <children xsi:type="menu:HandledToolItem" xmi:id="_65aR8GqOEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.globe.toolitems.wireframe" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/wireframe.png" tooltip="Wireframe" type="Check" command="_y_g9gGqOEeKz-NWw78ViTQ"/>
+      <children xsi:type="menu:HandledToolItem" xmi:id="_tHECwGqWEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.globe.toolitems.gotocoordinates" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/crosshair45.gif" tooltip="Go to coordinates..." command="_jwoe4GqWEeKz-NWw78ViTQ"/>
       <children xsi:type="menu:ToolBarSeparator" xmi:id="_db7VsGqNEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>
       <children xsi:type="menu:ToolControl" xmi:id="_0F4I0GNgEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.globe.exaggerationcontrol" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.GlobeExaggerationToolControl"/>
     </toolbar>
@@ -210,6 +212,7 @@
   <commands xmi:id="_Oay10GXMEeKPwbW-b0EtRg" elementId="au.gov.ga.earthsci.application.command.stop" commandName="stopCommand"/>
   <commands xmi:id="_HJh8kGqLEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.command.fullscreen" commandName="fullscreenCommand"/>
   <commands xmi:id="_y_g9gGqOEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.command.wireframe" commandName="wireframeCommand"/>
+  <commands xmi:id="_jwoe4GqWEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.command.gotoCoordinates" commandName="gotoCoordinatesCommand"/>
   <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_007tVfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_007tVvsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
