@@ -165,6 +165,7 @@
     <handlers xmi:id="_7u2JwGBJEeKSqJjlfzm7YA" elementId="au.gov.ga.earthsci.application.bookmark.deletehandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.handlers.DeleteBookmarkHandler" command="_7dKlgCfCEeKGOtKz07iBzg"/>
     <handlers xmi:id="_mY8j8GW_EeKPwbW-b0EtRg" elementId="au.gov.ga.earthsci.application.bookmark.starthandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.handlers.PlayBookmarksHandler" command="_TmH-IGW_EeKPwbW-b0EtRg"/>
     <handlers xmi:id="_Js5jUGXMEeKPwbW-b0EtRg" elementId="au.gov.ga.earthsci.application.bookmark.stophandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.handlers.StopBookmarksHandler" command="_Oay10GXMEeKPwbW-b0EtRg"/>
+    <handlers xmi:id="_fiEdoGqfEeKRPswd9-SBDQ" elementId="au.gov.ga.earthsci.application.bookmark.addlisthandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.bookmark.part.handlers.AddBookmarkListHandler" command="_TRXhAGqfEeKRPswd9-SBDQ"/>
     <menus xsi:type="menu:PopupMenu" xmi:id="_YxPocEPvEeKZ1uCI1kyREA" elementId="au.gov.ga.earthsci.application.bookmarks.popupmenu" label="Bookmark">
       <children xsi:type="menu:HandledMenuItem" xmi:id="_lHNfkEPvEeKZ1uCI1kyREA" elementId="au.gov.ga.earthsci.application.bookmarks.popupmenu.rename" label="Rename" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/rename.gif" tooltip="Rename this bookmark" command="_KVOo0CkqEeKGOtKz07iBzg"/>
       <children xsi:type="menu:HandledMenuItem" xmi:id="_ioWMIEfvEeKRt8yHXSHYtA" elementId="au.gov.ga.earthsci.application.bookmarks.popupmenu.apply" label="Apply" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/apply.gif" tooltip="Apply this bookmark" command="_6LV8YEfvEeKRt8yHXSHYtA"/>
@@ -172,6 +173,8 @@
       <children xsi:type="menu:HandledMenuItem" xmi:id="_IDIl4GBKEeKSqJjlfzm7YA" elementId="au.gov.ga.earthsci.application.bookmarks.popupmenu.delete" label="Delete" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/delete.gif" tooltip="Delete bookmark" command="_7dKlgCfCEeKGOtKz07iBzg"/>
     </menus>
     <toolbar xmi:id="_rd6IQGNyEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.toolbar.0">
+      <children xsi:type="menu:HandledToolItem" xmi:id="_AZxI4GqfEeKRPswd9-SBDQ" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar.addlist" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add_list.gif" tooltip="Create new bookmark list" command="_TRXhAGqfEeKRPswd9-SBDQ"/>
+      <children xsi:type="menu:ToolBarSeparator" xmi:id="_-ETGUGqeEeKRPswd9-SBDQ" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>
       <children xsi:type="menu:HandledToolItem" xmi:id="_PrRO8GW7EeKPwbW-b0EtRg" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar.play" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/start.gif" tooltip="Play bookmarks" command="_TmH-IGW_EeKPwbW-b0EtRg"/>
       <children xsi:type="menu:HandledToolItem" xmi:id="_0uXecGXMEeKPwbW-b0EtRg" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar.stop" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/stop.gif" tooltip="Stop bookmarks" command="_Oay10GXMEeKPwbW-b0EtRg"/>
       <children xsi:type="menu:ToolBarSeparator" xmi:id="_L0pisGW7EeKPwbW-b0EtRg" elementId="au.gov.ga.earthsci.application.bookmarks.toolbar.separator"/>
@@ -213,6 +216,7 @@
   <commands xmi:id="_HJh8kGqLEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.command.fullscreen" commandName="fullscreenCommand"/>
   <commands xmi:id="_y_g9gGqOEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.command.wireframe" commandName="wireframeCommand"/>
   <commands xmi:id="_jwoe4GqWEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.command.gotoCoordinates" commandName="gotoCoordinatesCommand"/>
+  <commands xmi:id="_TRXhAGqfEeKRPswd9-SBDQ" elementId="au.gov.ga.earthsci.application.command.addgroup" commandName="addGroupCommand" description="Add a new group"/>
   <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_007tVfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_007tVvsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

@@ -57,6 +57,7 @@ public class BookmarkList extends AbstractPropertyChangeBean implements IBookmar
 	 */
 	public BookmarkList(String name)
 	{
+		this();
 		this.name = name;
 	}
 	
@@ -65,6 +66,7 @@ public class BookmarkList extends AbstractPropertyChangeBean implements IBookmar
 	 */
 	public BookmarkList(String id, String name)
 	{
+		this();
 		this.id = id;
 		this.name = name;
 	}

@@ -73,6 +73,11 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 	@Override
 	public void okPressed()
 	{
+		if (layerState == null)
+		{
+			return;
+		}
+		
 		Map<URI, Double> filtered = new HashMap<URI, Double>();
 		for (Entry<URI, Double> entry : layerState.entrySet())
 		{
