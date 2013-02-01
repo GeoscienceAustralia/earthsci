@@ -159,6 +159,66 @@ public class BookmarksTest
 	}
 	
 	@Test
+	public void testRemoveListWithNull()
+	{
+		IBookmarkList[] lists = new IBookmarkList[] {new BookmarkList("id0", "name0"),
+													 new BookmarkList("id1", "name1")};
+		
+		classUnderTest.setLists(lists);
+		
+		assertTrue(classUnderTest.getLists().length == 3);
+		
+		assertFalse(classUnderTest.removeList(null));
+		
+		assertTrue(classUnderTest.getLists().length == 3);
+	}
+	
+	@Test
+	public void testRemoveListWithIncluded()
+	{
+		IBookmarkList[] lists = new IBookmarkList[] {new BookmarkList("id0", "name0"),
+													 new BookmarkList("id1", "name1")};
+		
+		classUnderTest.setLists(lists);
+		
+		assertTrue(classUnderTest.getLists().length == 3);
+		
+		assertTrue(classUnderTest.removeList(lists[0]));
+		
+		assertTrue(classUnderTest.getLists().length == 2);
+	}
+	
+	@Test
+	public void testRemoveListWithNonIncluded()
+	{
+		IBookmarkList[] lists = new IBookmarkList[] {new BookmarkList("id0", "name0"),
+													 new BookmarkList("id1", "name1")};
+		
+		classUnderTest.setLists(lists);
+		
+		assertTrue(classUnderTest.getLists().length == 3);
+		
+		assertFalse(classUnderTest.removeList(new BookmarkList("id2", "name2")));
+		
+		assertTrue(classUnderTest.getLists().length == 3);
+	}
+	
+	@Test
+	public void testRemoveListWithDefault()
+	{
+		IBookmarkList[] lists = new IBookmarkList[] {new BookmarkList("id0", "name0"),
+													 new BookmarkList("id1", "name1")};
+		
+		classUnderTest.setLists(lists);
+		
+		assertTrue(classUnderTest.getLists().length == 3);
+		
+		assertFalse(classUnderTest.removeList(classUnderTest.getDefaultList()));
+		
+		assertTrue(classUnderTest.getLists().length == 3);
+	}
+	
+	@Test
 	public void testGetListByIdWithNull()
 	{
 		assertNull(classUnderTest.getListById(null));

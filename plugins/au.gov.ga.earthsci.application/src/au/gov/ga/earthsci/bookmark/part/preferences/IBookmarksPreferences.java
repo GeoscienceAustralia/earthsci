@@ -29,6 +29,7 @@ public interface IBookmarksPreferences
 	String QUALIFIER_ID = "au.gov.ga.earthsci.bookmarks"; //$NON-NLS-1$
 	String DEFAULT_TRANSITION_DURATION = "au.gov.ga.earthsci.bookmarks.preferences.defaultTransitionDuration"; //$NON-NLS-1$
 	String PLAY_BOOKMARKS_WAIT_DURATION = "au.gov.ga.earthsci.bookmarks.preferences.playBookmarksWaitDuration"; //$NON-NLS-1$
+	String ASK_LIST_DELETE_CONFIRM = "au.gov.ga.earthsci.bookmarks.preferences.askListDeleteConfirmation"; //$NON-NLS-1$
 	String DEFAULT_PROPERTIES = "au.gov.ga.earthsci.bookmarks.preferences.defaultProperties"; //$NON-NLS-1$
 	
 	/**
@@ -58,4 +59,18 @@ public interface IBookmarksPreferences
 	 * @see BookmarkFactory#createBookmark(String...)
 	 */
 	String[] getDefaultPropertyTypes();
+	
+	/**
+	 * Returns whether to ask for list deletion confirmation
+	 * 
+	 * @return <code>true</code> if the user wishes to be prompted; <code>false</code> otherwise.
+	 */
+	boolean askForListDeleteConfirmation();
+
+	/**
+	 * Set whether or not to ask for list deletion confirmation
+	 * 
+	 * @param ask whether or not to ask
+	 */
+	void setAskForListDeleteConfirmation(boolean ask);
 }

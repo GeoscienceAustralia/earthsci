@@ -36,6 +36,7 @@ public class BookmarksPreferenceInitializer extends AbstractPreferenceInitialize
 		
 		store.putValue(IBookmarksPreferences.DEFAULT_TRANSITION_DURATION, Long.toString(3000L));
 		store.putValue(IBookmarksPreferences.PLAY_BOOKMARKS_WAIT_DURATION, Long.toString(3000L));
+		store.putValue(IBookmarksPreferences.ASK_LIST_DELETE_CONFIRM, "true"); //$NON-NLS-1$
 	}
 
 }

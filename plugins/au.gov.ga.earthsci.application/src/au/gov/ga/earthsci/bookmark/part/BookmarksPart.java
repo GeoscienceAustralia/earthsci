@@ -23,7 +23,9 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.observable.map.IMapChangeListener;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
+import org.eclipse.core.databinding.observable.map.MapChangeEvent;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.internal.workbench.swt.AbstractPartRenderer;
 import org.eclipse.e4.ui.model.application.MApplication;
@@ -158,20 +160,6 @@ public class BookmarksPart
 		});
 	}
 	
-	/**
-	 * Refresh the current bookmark list display
-	 */
-	public void refreshList()
-	{
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run()
-			{
-				bookmarkListTableViewer.refresh();
-			}
-		});
-	}
-	
 	public void refreshDropdown()
 	{
 		Display.getDefault().asyncExec(new Runnable() {
@@ -235,7 +223,22 @@ public class BookmarksPart
 			}
 		});
 		
-		bookmarkListsComboViewer.setContentProvider(new ObservableListContentProvider());
+		// Trigger a label refresh if a list name changes etc.
+		ObservableListContentProvider contentProvider = new ObservableListContentProvider();
+		IObservableMap nameMap = BeanProperties.value("name").observeDetail(contentProvider.getKnownElements()); //$NON-NLS-1$
+		nameMap.addMapChangeListener(new IMapChangeListener()
+		{
+			@Override
+			public void handleMapChange(MapChangeEvent event)
+			{
+				for (Object key : event.diff.getChangedKeys())
+				{
+					bookmarkListsComboViewer.refresh(key, true);
+				}
+			}
+		});
+		
+		bookmarkListsComboViewer.setContentProvider(contentProvider);
 		bookmarkListsComboViewer.setInput(BeanProperties.list("lists").observe(bookmarks)); //$NON-NLS-1$
 		bookmarkListsComboViewer.setSelection(new StructuredSelection(bookmarks.getDefaultList()));
 		

@@ -19,6 +19,9 @@ import javax.inject.Inject;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.e4.core.di.extensions.Preference;
+import org.osgi.service.prefs.BackingStoreException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory;
 import au.gov.ga.earthsci.core.util.Util;
@@ -31,6 +34,8 @@ import au.gov.ga.earthsci.core.util.Util;
  */
 public class BookmarksPreferences implements IBookmarksPreferences
 {
+	
+	private static final Logger logger = LoggerFactory.getLogger(BookmarksPreferences.class);
 	
 	@Inject
 	@Preference(nodePath=QUALIFIER_ID)
@@ -47,6 +52,10 @@ public class BookmarksPreferences implements IBookmarksPreferences
 	@Inject
 	@Preference(nodePath=QUALIFIER_ID, value=DEFAULT_PROPERTIES)
 	private String defaultProperties;
+	
+	@Inject
+	@Preference(nodePath=QUALIFIER_ID, value=ASK_LIST_DELETE_CONFIRM)
+	private boolean confirmListDelete;
 	
 	@Override
 	public long getDefaultTransitionDuration()
@@ -70,5 +79,30 @@ public class BookmarksPreferences implements IBookmarksPreferences
 			return knownTypes;
 		}
 		return defaultProperties.split(","); //$NON-NLS-1$
+	}
+	
+	@Override
+	public boolean askForListDeleteConfirmation()
+	{
+		return confirmListDelete;
+	}
+	
+	@Override
+	public void setAskForListDeleteConfirmation(boolean ask)
+	{
+		preferenceStore.putBoolean(ASK_LIST_DELETE_CONFIRM, ask);
+		applyPreferences();
+	}
+	
+	private void applyPreferences()
+	{
+		try
+		{
+			preferenceStore.flush();
+		}
+		catch (BackingStoreException e)
+		{
+			logger.error("An exception occurred while applying the catalog browser preference", e); //$NON-NLS-1$
+		}
 	}
 }

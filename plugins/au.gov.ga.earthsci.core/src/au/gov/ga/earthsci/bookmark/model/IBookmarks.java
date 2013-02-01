@@ -72,4 +72,12 @@ public interface IBookmarks
 	 */
 	void setLists(IBookmarkList[] lists);
 	
+	/**
+	 * Remove the given list from the model, if it exists
+	 * 
+	 * @param list The bookmark list to remove
+	 * 
+	 * @return <code>true</code> if the list was removed; <code>false</code> otherwise
+	 */
+	boolean removeList(IBookmarkList list);
 }

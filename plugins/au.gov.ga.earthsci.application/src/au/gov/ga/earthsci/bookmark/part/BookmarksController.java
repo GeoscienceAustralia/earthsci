@@ -15,9 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.part;
 
-import static au.gov.ga.earthsci.bookmark.part.Messages.BookmarksController_DefaultNewListName;
-import static au.gov.ga.earthsci.bookmark.part.Messages.BookmarksController_NewListDialogMessage;
-import static au.gov.ga.earthsci.bookmark.part.Messages.BookmarksController_NewListDialogTitle;
+import static au.gov.ga.earthsci.bookmark.part.Messages.*;
 import gov.nasa.worldwind.View;
 
 import java.awt.event.MouseAdapter;
@@ -39,10 +37,13 @@ import javax.inject.Singleton;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.application.util.EmptyStringInputValidator;
 import au.gov.ga.earthsci.bookmark.BookmarkFactory;
 import au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
@@ -55,6 +56,7 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.model.IBookmarks;
 import au.gov.ga.earthsci.bookmark.part.editor.BookmarkEditorDialog;
 import au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences;
+import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
@@ -66,7 +68,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  */
 @Creatable
 @Singleton
-public class BookmarksController implements IBookmarksController
+public class BookmarksController extends AbstractPropertyChangeBean implements IBookmarksController
 {
 
 	private static final Logger logger = LoggerFactory.getLogger(BookmarksController.class);
@@ -143,6 +145,18 @@ public class BookmarksController implements IBookmarksController
 	 */
 	private transient Future<?> currentPlaylistTask;
 	
+	public BookmarksController()
+	{
+		addPropertyChangeListener("currentList", new PropertyChangeListener() //$NON-NLS-1$
+		{
+			@Override
+			public void propertyChange(PropertyChangeEvent evt)
+			{
+				part.refreshDropdown();
+			}
+		});
+	}
+	
 	@Override
 	public IBookmark createNew()
 	{
@@ -199,21 +213,69 @@ public class BookmarksController implements IBookmarksController
 	public IBookmarkList createNewBookmarkList()
 	{
 		stop();
-		BookmarkList result;
 		InputDialog dialog = new InputDialog(Display.getDefault().getActiveShell(), 
 											 BookmarksController_NewListDialogTitle,
 											 BookmarksController_NewListDialogMessage, 
 											 BookmarksController_DefaultNewListName, 
-											 null);
+											 new EmptyStringInputValidator(BookmarksController_NewListValidationMessage));
 		dialog.open();
+
 		if (dialog.getReturnCode() != InputDialog.OK)
 		{
 			return null;
 		}
 
-		result = new BookmarkList(dialog.getValue());
+		BookmarkList result = new BookmarkList(dialog.getValue());
 		bookmarks.addList(result);
 		return result;
+	}
+	
+	@Override
+	public void renameBookmarkList(IBookmarkList list)
+	{
+		stop();
+		
+		InputDialog dialog = new InputDialog(Display.getDefault().getActiveShell(), 
+				 							 BookmarksController_RenameListDialogTitle,
+				 							 BookmarksController_RenameListDialogMessage, 
+				 							 list.getName(),
+				 							 new EmptyStringInputValidator(BookmarksController_RenameListValidationMessation));
+		dialog.open();
+		
+		if (dialog.getReturnCode() != InputDialog.OK)
+		{
+			return;
+		}
+		
+		list.setName(dialog.getValue());
+	}
+	
+	@Override
+	public boolean deleteBookmarkList(IBookmarkList list)
+	{
+		if (list == null || list == bookmarks.getDefaultList())
+		{
+			return false;
+		}
+		
+		if (preferences.askForListDeleteConfirmation())
+		{
+			MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(Display.getDefault().getActiveShell(), 
+																						 Messages.BookmarksController_BookmarkListDeleteDialogTitle, 
+																						 Messages.BookmarksController_BookmarkListDeleteDialogMessage, 
+																						 Messages.BookmarksController_BookmarkListDeleteDialogToggleMessage,
+																						 preferences.askForListDeleteConfirmation(), 
+																						 null, 
+																						 null);
+			if (dialog.getReturnCode() != MessageDialog.OK)
+			{
+				return false;
+			}
+			
+			preferences.setAskForListDeleteConfirmation(dialog.getToggleState());
+		}
+		
+		return bookmarks.removeList(list);
 	}
 	
 	@Override
@@ -259,8 +321,11 @@ public class BookmarksController implements IBookmarksController
 	public void setCurrentList(IBookmarkList list)
 	{
 		stop();
-		currentList = list;
-		part.refreshDropdown();
+		if (list == currentList)
+		{
+			return;
+		}
+		firePropertyChange("currentList", currentList, currentList = list); //$NON-NLS-1$
 	}
 	
 	@Override

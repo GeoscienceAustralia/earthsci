@@ -170,6 +170,27 @@ public interface IBookmarksController
 	IBookmarkList createNewBookmarkList();
 	
 	/**
+	 * Prompt the user to rename the provided bookmark list
+	 *  
+	 * @param list The list to rename
+	 */
+	void renameBookmarkList(IBookmarkList list);
+	
+	/**
+	 * Delete the bookmark list from the current bookmarks model.
+	 * <p/>
+	 * Implementations may prompt the user to confirm deletion
+	 * <p/>
+	 * If the list being deleted is the current list, will change current
+	 * list to default list. Will not delete the model's default list.
+	 * 
+	 * @param list The list to delete
+	 *  
+	 * @return <code>true</code> if the list was deleted; <code>false</code> otherwise
+	 */
+	boolean deleteBookmarkList(IBookmarkList list);
+	
+	/**
 	 * @return Whether there are any actively playing lists
 	 */
 	boolean isPlaying();

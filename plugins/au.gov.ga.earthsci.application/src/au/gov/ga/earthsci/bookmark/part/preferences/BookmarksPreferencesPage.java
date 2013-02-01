@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -47,6 +48,7 @@ public class BookmarksPreferencesPage extends FieldEditorPreferencePage
 
 	private IntegerFieldEditor transitionDurationEditor;
 	private IntegerFieldEditor playBookmarksWaitDurationEditor;
+	private BooleanFieldEditor askForDeleteConfirmationEditor;
 	private MultiSelectTableListFieldEditor<IBookmarkProperty> defaultProperties;
 	private Map<String, IBookmarkProperty> cachedProperties;
 	
@@ -77,6 +79,13 @@ public class BookmarksPreferencesPage extends FieldEditorPreferencePage
 																 getFieldEditorParent());
 		
 		addField(playBookmarksWaitDurationEditor);
+		
+		addField(new SpacerFieldEditor(getFieldEditorParent()));
+		
+		askForDeleteConfirmationEditor = new BooleanFieldEditor(IBookmarksPreferences.ASK_LIST_DELETE_CONFIRM,
+																Messages.BookmarksPreferencesPage_AskConfirmDeleteLabel, 
+																getFieldEditorParent());
+		addField(askForDeleteConfirmationEditor);
 		
 		addField(new SpacerFieldEditor(getFieldEditorParent()));
 		

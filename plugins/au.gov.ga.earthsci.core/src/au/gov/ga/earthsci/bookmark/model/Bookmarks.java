@@ -160,6 +160,25 @@ public class Bookmarks extends AbstractPropertyChangeBean implements IBookmarks
 		}
 	}
 	
+	@Override
+	public boolean removeList(IBookmarkList list)
+	{
+		if (list == null || 
+				!idToListMap.containsKey(list.getId()) || 
+				list.getId().equals(DEFAULT_LIST_ID))
+		{
+			return false;
+		}
+		
+		IBookmarkList[] oldLists = getLists();
+		
+		idToListMap.remove(list.getId());
+		nameToListMap.removeSingle(list.getName(), list);
+		
+		firePropertyChange("lists", oldLists, getLists()); //$NON-NLS-1$
+		return true;
+	}
+	
 	private void initialiseDefaultList()
 	{
 		BookmarkList defaultList = new BookmarkList();

@@ -28,9 +28,17 @@ public class Messages extends NLS
 	public static String BookmarkEditorDialog_GeneralEditorTitle;
 	public static String BookmarkEditorDialog_IncludeInBookmarkLabel;
 	public static String BookmarkEditorDialog_ResetValuesLabel;
+	public static String BookmarksController_BookmarkListDeleteDialogMessage;
+	public static String BookmarksController_BookmarkListDeleteDialogTitle;
+	public static String BookmarksController_BookmarkListDeleteDialogToggleMessage;
 	public static String BookmarksController_DefaultNewListName;
 	public static String BookmarksController_NewListDialogMessage;
 	public static String BookmarksController_NewListDialogTitle;
+	public static String BookmarksController_NewListValidationMessage;
+	public static String BookmarksController_RenameListDialogMessage;
+	public static String BookmarksController_RenameListDialogTitle;
+	public static String BookmarksController_RenameListValidationMessation;
+	public static String BookmarksPreferencesPage_AskConfirmDeleteLabel;
 	public static String BookmarksPreferencesPage_DefaultPropertiesLabel;
 	public static String BookmarksPreferencesPage_Description;
 	public static String BookmarksPreferencesPage_PlayBookmarksPauseDurationLabel;
