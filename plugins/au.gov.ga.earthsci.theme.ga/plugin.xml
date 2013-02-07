@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+   <extension
+         point="org.eclipse.e4.ui.css.swt.theme">
+      <theme
+            basestylesheeturi="css/ga.css"
+            id="au.gov.ga.earthsci.theme.ga"
+            label="GA Theme">
+      </theme>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.application.defaultTheme">
+      <defaultTheme
+            themeId="au.gov.ga.earthsci.theme.ga">
+      </defaultTheme>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.application.iconReplacementProvider">
+      <idToIconMapping
+            elementID="au.gov.ga.earthsci.application.toolbar.open"
+            icon="icons/info.gif">
+      </idToIconMapping>
+      <idToIconMapping
+            elementID="au.gov.ga.earthsci.application.bookmarks.part"
+            icon="icons/info.gif">
+      </idToIconMapping>
+      <idToIconProperties
+            properties="icons/iconMappings.properties">
+      </idToIconProperties>
+   </extension>
+</plugin>
