@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="au.gov.ga.earthsci.application" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="au.gov.ga.earthsci.application" id="iconReplacementProvider" name="Icon Replacement Provider"/>
+      </appinfo>
+      <documentation>
+         Allows icon replacements to be specified. These replacements are applied to the application model before rendering.
+
+Replacements are specified on a per-element ID basis, allowing individual menu item icons to be replaced by a theme plugin, for example.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+         <documentation>
+            Allows plugins to contribute icon overrides for the main application model.
+
+Plugins can specify one or more mappings and/or properties files.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <choice>
+               <element ref="idToIconMapping"/>
+               <element ref="idToIconProperties"/>
+            </choice>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="idToIconMapping">
+      <annotation>
+         <documentation>
+            Provides a mapping between application model element ID and icon URI to specify icon overrides for a single application model element.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="elementID" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The ID of the element for which the mapping is to apply.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The icon to apply to the element.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="idToIconProperties">
+      <annotation>
+         <documentation>
+            Reference a java properties file that provides application model element ID to icon URI mappings for icon overrides.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="properties" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The properties file containing ID=URI mappings.
+URIs should be relative to the plugin root (e.g. icons/myIcon.gif)
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         0.2
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         &lt;pre&gt;
+&lt;extension point=&quot;au.gov.ga.earthsci.application.iconReplacementProvider&quot;&gt;
+  &lt;idToIconMapping
+    elementID=&quot;au.gov.ga.earthsci.application.toolbar.open&quot;
+    icon=&quot;icons/info.gif&quot;&gt;
+  &lt;/idToIconMapping&gt;
+  &lt;idToIconMapping
+    elementID=&quot;au.gov.ga.earthsci.application.bookmarks.part&quot;
+    icon=&quot;icons/info.gif&quot;&gt;
+  &lt;/idToIconMapping&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+
+
+
+</schema>

@@ -25,7 +25,6 @@
         </children>
       </children>
     </children>
-    <handlers xmi:id="_8ax5sG9SEeKXYJZLlSChrg" elementId="au.gov.ga.earthsci.application.handler.0" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.ThemeTestHandler" command="_007tXvsMEeG36NOaHUgVKA"/>
     <mainMenu xmi:id="_007taPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu">
       <children xsi:type="menu:Menu" xmi:id="_007tafsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.file" label="File">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tavsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.file.open" label="Open" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>

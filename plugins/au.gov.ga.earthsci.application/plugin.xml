@@ -2,6 +2,8 @@
 <plugin>
    <extension-point id="catalogTreeLabelProvider" name="Catalog Tree Label Provider" schema="schema/au.gov.ga.earthsci.catalog.CatalogTreeLabelProvider.exsd"/>
    <extension-point id="bookmarkPropertyEditor" name="Bookmark Property Editor" schema="schema/au.gov.ga.earthsci.bookmark.editor.exsd"/>
+   <extension-point id="defaultTheme" name="Application Default Theme" schema="schema/defaultTheme.exsd"/>
+   <extension-point id="iconReplacementProvider" name="Icon Replacement Provider" schema="schema/iconReplacementProvider.exsd"/>
 
    <extension
          id="product"
@@ -18,12 +20,12 @@
                value="au.gov.ga.earthsci.application/Application.e4xmi">
          </property>
          <property
-               name="applicationCSS"
-               value="platform:/plugin/au.gov.ga.earthsci.application/css/default.css">
-         </property>
-         <property
          	name="lifeCycleURI"
          	value="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.LifeCycleManager">
+         </property>
+         <property
+               name="cssTheme"
+               value="au.gov.ga.earthsci.application.theme.default">
          </property>
       </product>
    </extension>
@@ -96,6 +98,9 @@
       <inject
             class="au.gov.ga.earthsci.application.parts.globe.GlobeActivePartTracker">
       </inject>
+      <inject
+            class="au.gov.ga.earthsci.application.theme.ThemeLoader">
+      </inject>
    </extension>
    <extension
          point="au.gov.ga.earthsci.application.bookmarkPropertyEditor">
@@ -146,6 +151,14 @@
             icon="icons/compass.gif"
             id="au.gov.ga.earthsci.application.hud.compass">
       </hud>
+   </extension>
+   <extension
+         point="org.eclipse.e4.ui.css.swt.theme">
+      <theme
+            basestylesheeturi="css/default.css"
+            id="au.gov.ga.earthsci.application.theme.default"
+            label="Default theme">
+      </theme>
    </extension>
 
 </plugin>
