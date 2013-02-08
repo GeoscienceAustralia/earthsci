@@ -42,6 +42,7 @@
 		<module>gov.nasa.worldwind.jogl2</module>
 		<module>gov.nasa.worldwind.feature</module>
 		
+		<module>org.custommonkey.xmlunit</module>
 		<module>org.hamcrest</module>
 		<module>org.jmock</module>
 	</modules>

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: XMLUnit
+Bundle-SymbolicName: org.custommonkey.xmlunit
+Bundle-Version: 1.4
+Bundle-ClassPath: xmlunit-1.4.jar
+Bundle-Vendor: Sourceforge (Custommonkey)
+Export-Package: org.custommonkey.xmlunit,
+ org.custommonkey.xmlunit.examples,
+ org.custommonkey.xmlunit.exceptions,
+ org.custommonkey.xmlunit.jaxp13,
+ org.custommonkey.xmlunit.util
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
