@@ -17,9 +17,9 @@ package au.gov.ga.earthsci.core.persistence;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import gov.nasa.worldwind.util.WWXML;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,6 +30,9 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import org.custommonkey.xmlunit.DetailedDiff;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -215,40 +218,23 @@ public class PersisterTest
 			document.appendChild(element);
 			persister.save(saved, element, null);
 
-			/*try
-			{
-				File output =
-						new File("src/" + getClass().getPackage().getName().replace('.', '/') + "/"
-								+ expectedResourceName);
-				FileOutputStream os = new FileOutputStream(output);
-				XmlUtil.saveDocumentToFormattedStream(document, os);
-				os.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}*/
-
 			Element child = XmlUtil.getFirstChildElement(element);
 			Object loaded = persister.load(child, null);
 			Assert.assertEquals(saved, loaded);
 
-			InputStream is = this.getClass().getResourceAsStream(expectedResourceName);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			copyLarge(is, baos);
-			String expected = baos.toString();
-			is.close();
-			baos.close();
-
-			baos = new ByteArrayOutputStream();
-			XmlUtil.saveDocumentToFormattedStream(document, baos);
-			String actual = baos.toString();
-			baos.close();
-
-			expected = expected.replace("\r\n", "\n").replace("\r", "\n");
-			actual = actual.replace("\r\n", "\n").replace("\r", "\n");
-
-			Assert.assertEquals(expected, actual);
+			
+			XMLUnit.setIgnoreWhitespace(true);
+			XMLUnit.setIgnoreAttributeOrder(true);
+			Diff diff = new Diff(XmlUtil.openDocument(this.getClass().getResourceAsStream(expectedResourceName)), document);
+			DetailedDiff dd = new DetailedDiff(diff);
+			
+			StringBuffer msg = new StringBuffer();
+			for (Object o : dd.getAllDifferences())
+			{
+				msg.append(o);
+			}
+			assertTrue(msg.toString(), dd.similar());
+			
 		}
 		catch (PersistenceException e)
 		{
@@ -259,6 +245,7 @@ public class PersisterTest
 			throw new RuntimeException(e);
 		}
 	}
+
 
 	protected static long copyLarge(InputStream input, OutputStream output) throws IOException
 	{
