@@ -125,26 +125,6 @@ public class GlobePart
 		WorldWindowRegistry.INSTANCE.register(worldWindow);
 		
 		createHudLayers();
-
-		
-//		
-//		
-//		
-//		parent.getParent().getParent().addListener(SWT.Move, listener);
-//		parent.getParent().getParent().addListener(SWT.Iconify, listener);
-//		parent.getParent().getParent().addListener(SWT.Deiconify, listener);
-//		parent.getParent().getParent().addListener(SWT.Hide, listener);
-//		parent.getParent().getParent().addListener(SWT.Show, listener);
-//		parent.getParent().getParent().addListener(SWT.Close, listener);
-		
-//		frame.addComponentListener(new ComponentAdapter()
-//		{
-//			@Override
-//			public void componentResized(ComponentEvent e)
-//			{
-//				System.out.println("Resized");
-//			}
-//		});
 		
 	}
 
