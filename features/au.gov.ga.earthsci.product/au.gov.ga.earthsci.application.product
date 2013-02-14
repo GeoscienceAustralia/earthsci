@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="au.gov.ga.earthsci.application" uid="au.gov.ga.earthsci.product" id="au.gov.ga.earthsci.application.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="EarthSci" uid="au.gov.ga.earthsci.product" id="au.gov.ga.earthsci.application.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+
 
    <configIni use="default">
    </configIni>
@@ -19,6 +20,7 @@
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
