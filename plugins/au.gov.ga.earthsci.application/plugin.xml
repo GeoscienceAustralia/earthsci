@@ -9,11 +9,11 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            name="au.gov.ga.earthsci.application"
+            name="%product.name"
             application="org.eclipse.e4.ui.workbench.swt.E4Application">
          <property
                name="appName"
-               value="au.gov.ga.earthsci.application">
+               value="%product.name">
          </property>
          <property
                name="applicationXMI"
@@ -27,6 +27,14 @@
                name="cssTheme"
                value="au.gov.ga.earthsci.application.theme.default">
          </property>
+         <property
+               name="aboutImage"
+               value="platform:/plugin/au.gov.ga.earthsci.application/icons/application_icon.png">
+         </property>
+         <property
+               name="aboutText"
+               value="%about.text">
+         </property>
       </product>
    </extension>
    <extension
@@ -34,17 +42,17 @@
       <page
             class="au.gov.ga.earthsci.notification.preferences.NotificationPreferencesPage"
             id="au.gov.ga.earthsci.notifications"
-            name="Notifications">
+            name="%preferences.page.notifications.name">
       </page>
       <page
             class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferencesPage"
             id="au.gov.ga.earthsci.catalogs"
-            name="Catalogs">
+            name="%preferences.page.catalogbrowser.name">
       </page>
       <page
             class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferencesPage"
             id="au.gov.ga.earthsci.bookmarks"
-            name="Bookmarks">
+            name="%preferences.page.bookmarks.name">
       </page>
    </extension>
    <extension

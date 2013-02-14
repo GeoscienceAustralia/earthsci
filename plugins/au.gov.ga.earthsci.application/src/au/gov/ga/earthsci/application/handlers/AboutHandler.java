@@ -15,29 +15,31 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.handlers;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.eclipse.core.runtime.IProduct;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
-import au.gov.ga.earthsci.notification.NotificationManager;
+import au.gov.ga.earthsci.application.about.AboutDialog;
 
 /**
  * Handler which shows the About dialog box.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * @author James Navin (james.navin@ga.gov.au)
  */
 public class AboutHandler
 {
-	@Inject
-	private NotificationManager notifications;
 	
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 	{
-		MessageDialog.openInformation(shell, "About", "e4 Application example.");
+		IProduct product = Platform.getProduct();
+		
+		AboutDialog dialog = new AboutDialog(shell, product);
+		dialog.open();
 	}
 }
