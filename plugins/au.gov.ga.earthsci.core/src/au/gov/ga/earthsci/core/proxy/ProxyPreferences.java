@@ -42,16 +42,6 @@ public class ProxyPreferences extends AbstractPreferenceInitializer
 		return new ScopedPreferenceStore(DefaultScope.INSTANCE, PreferenceConstants.QUALIFIER_ID);
 	}
 
-	public static void preConfigureProxy()
-	{
-		IPreferenceStore store = createStore();
-		String proxyType = store.getString(PreferenceConstants.PROXY_TYPE);
-		String proxyHost = store.getString(PreferenceConstants.PROXY_HOST);
-		int proxyPort = store.getInt(PreferenceConstants.PROXY_PORT);
-		String nonProxyHosts = store.getString(PreferenceConstants.NON_PROXY_HOSTS);
-		configureProxy(proxyType, proxyHost, proxyPort, nonProxyHosts);
-	}
-
 	public static void configureProxy(String proxyType, String proxyHost, int proxyPort, String nonProxyHosts)
 	{
 		boolean system = PreferenceConstants.PROXY_TYPE_SYSTEM.equals(proxyType);
