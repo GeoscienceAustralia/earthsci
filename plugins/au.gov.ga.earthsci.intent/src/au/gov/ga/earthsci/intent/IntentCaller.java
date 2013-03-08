@@ -28,16 +28,20 @@ public interface IntentCaller
 	 * Called when the Intent handler has completed successfully. If the intent
 	 * didn't produce a result, null should be passed.
 	 * 
+	 * @param intent
+	 *            Intent that completed
 	 * @param result
 	 *            Result of the Intent
 	 */
-	void completed(Object result);
+	void completed(Intent intent, Object result);
 
 	/**
 	 * Called when the Intent handler failed with an error.
 	 * 
+	 * @param intent
+	 *            Intent that failed
 	 * @param e
 	 *            Error generated from handling the Intent
 	 */
-	void error(Exception e);
+	void error(Intent intent, Exception e);
 }

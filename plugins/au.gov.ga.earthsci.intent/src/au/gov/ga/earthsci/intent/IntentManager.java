@@ -36,13 +36,30 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class IntentManager
 {
-	private static final String INTENT_ID = "au.gov.ga.earthsci.intent"; //$NON-NLS-1$
+	private static IntentManager instance;
+
+	public static IntentManager getInstance()
+	{
+		return instance;
+	}
+
+	private static final String INTENT_ID = "au.gov.ga.earthsci.intentFilters"; //$NON-NLS-1$
 	private static final Logger logger = LoggerFactory.getLogger(IntentManager.class);
 
 	private final Set<IntentFilter> filters = new HashSet<IntentFilter>();
 
+	/**
+	 * Intent manager constructor, should not be called directly. Instead the
+	 * manager should be injected, or accessed via the static singleton method.
+	 */
 	public IntentManager()
 	{
+		if (instance != null)
+		{
+			throw new IllegalStateException(IntentManager.class.getSimpleName() + " should not be instantiated"); //$NON-NLS-1$
+		}
+		instance = this;
+
 		IConfigurationElement[] config = RegistryFactory.getRegistry().getConfigurationElementsFor(INTENT_ID);
 		for (IConfigurationElement element : config)
 		{
@@ -57,7 +74,7 @@ public class IntentManager
 			}
 			catch (Exception e)
 			{
-				logger.error("Error processing intent", e); //$NON-NLS-1$
+				logger.error("Error processing intent filter", e); //$NON-NLS-1$
 			}
 		}
 	}
@@ -80,6 +97,10 @@ public class IntentManager
 			IEclipseContext child = context.createChild();
 			IntentHandler handler = ContextInjectionFactory.make(filter.getHandler(), child);
 			handler.handle(intent, caller);
+		}
+		else
+		{
+			logger.error("Could not find filter to handle intent: " + intent); //$NON-NLS-1$
 		}
 	}
 
