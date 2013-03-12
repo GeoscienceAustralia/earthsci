@@ -21,10 +21,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
-
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
 
 import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 
@@ -56,7 +55,7 @@ public class IntentFilter
 {
 	private final Set<String> actions = new HashSet<String>();
 	private final Set<String> categories = new HashSet<String>();
-	private final Set<String> dataTypes = new HashSet<String>();
+	private final Set<IContentType> contentTypes = new HashSet<IContentType>();
 	private final Set<String> dataSchemes = new HashSet<String>();
 	private final Set<String> dataAuthorities = new HashSet<String>();
 	private final Set<String> dataPaths = new HashSet<String>();
@@ -68,12 +67,12 @@ public class IntentFilter
 
 	public IntentFilter(IConfigurationElement element) throws ClassNotFoundException
 	{
-		addToSetFromElements(element, "action", actions); //$NON-NLS-1$
-		addToSetFromElements(element, "category", categories); //$NON-NLS-1$
-		addToSetFromElements(element, "type", dataTypes); //$NON-NLS-1$
-		addToSetFromElements(element, "scheme", dataSchemes); //$NON-NLS-1$
-		addToSetFromElements(element, "authority", dataAuthorities); //$NON-NLS-1$
-		addToSetFromElements(element, "path", dataPaths); //$NON-NLS-1$
+		addToSetFromElements(element, "action", "name", actions); //$NON-NLS-1$ //$NON-NLS-2$
+		addToSetFromElements(element, "category", "name", categories); //$NON-NLS-1$ //$NON-NLS-2$
+		addToContentTypeSetFromElements(element, "content-type", "id", contentTypes); //$NON-NLS-1$ //$NON-NLS-2$
+		addToSetFromElements(element, "scheme", "name", dataSchemes); //$NON-NLS-1$ //$NON-NLS-2$
+		addToSetFromElements(element, "authority", "name", dataAuthorities); //$NON-NLS-1$ //$NON-NLS-2$
+		addToSetFromElements(element, "path", "name", dataPaths); //$NON-NLS-1$ //$NON-NLS-2$
 
 		@SuppressWarnings("unchecked")
 		Class<? extends IntentHandler> handler =
@@ -81,13 +80,29 @@ public class IntentFilter
 		setHandler(handler);
 	}
 
-	private void addToSetFromElements(IConfigurationElement element, String childrenName, Set<String> set)
+	private void addToSetFromElements(IConfigurationElement element, String childrenName, String attributeName,
+			Set<String> set)
 	{
 		for (IConfigurationElement child : element.getChildren(childrenName))
 		{
-			String name = child.getAttribute("name"); //$NON-NLS-1$
+			String name = child.getAttribute(attributeName);
 			if (!isEmpty(name))
 				set.add(name);
+		}
+	}
+
+	private void addToContentTypeSetFromElements(IConfigurationElement element, String childrenName,
+			String attributeName, Set<IContentType> set)
+	{
+		for (IConfigurationElement child : element.getChildren(childrenName))
+		{
+			String value = child.getAttribute(attributeName);
+			if (!isEmpty(value))
+			{
+				IContentType contentType = Platform.getContentTypeManager().getContentType(value);
+				if (contentType != null)
+					set.add(contentType);
+			}
 		}
 	}
 
@@ -158,34 +173,34 @@ public class IntentFilter
 	}
 
 	/**
-	 * @return Collection of MIME types that this filter can match against.
+	 * @return Collection of content types that this filter can match against.
 	 */
-	public Set<String> getDataTypes()
+	public Set<IContentType> getContentTypes()
 	{
-		return dataTypes;
+		return contentTypes;
 	}
 
 	/**
-	 * Add a MIME type to this filter.
+	 * Add a content type to this filter.
 	 * 
 	 * @param dataType
 	 * @return this
 	 */
-	public IntentFilter addDataType(String dataType)
+	public IntentFilter addContentType(IContentType contentType)
 	{
-		dataTypes.add(dataType);
+		contentTypes.add(contentType);
 		return this;
 	}
 
 	/**
-	 * Remove a MIME type from this filter.
+	 * Remove a content type from this filter.
 	 * 
 	 * @param dataType
 	 * @return this
 	 */
-	public IntentFilter removeDataType(String dataType)
+	public IntentFilter removeContentType(IContentType contentType)
 	{
-		dataTypes.remove(dataType);
+		contentTypes.remove(contentType);
 		return this;
 	}
 
@@ -194,7 +209,7 @@ public class IntentFilter
 	 */
 	public Set<String> getDataSchemes()
 	{
-		return dataTypes;
+		return dataSchemes;
 	}
 
 	/**
@@ -324,39 +339,31 @@ public class IntentFilter
 		if (!categories.containsAll(intent.getCategories()))
 			return false;
 
-		//if a MIME type is defined by one but not the other, no chance of matching
-		if (isEmpty(intent.getType()) != dataTypes.isEmpty())
+		//if a content type is defined by one but not the other, no chance of matching
+		if ((intent.getContentType() == null) != contentTypes.isEmpty())
 			return false;
 
-		//if a URI is defined by one but not the other, no chance of matching
-		if ((intent.getURI() == null) != dataSchemes.isEmpty())
-			return false;
-
-		//if there are data types defined, check if any match the MIME type of the intent
-		if (!dataTypes.isEmpty())
+		//if there are content types defined, check if any match the content type of the intent
+		if (!contentTypes.isEmpty())
 		{
 			boolean matchFound = false;
-			try
+			for (IContentType contentType : contentTypes)
 			{
-				MimeType mimeType = new MimeType(intent.getType());
-				for (String dataType : dataTypes)
-				{
-					matchFound = mimeType.match(dataType);
-					if (matchFound)
-						break;
-				}
-			}
-			catch (MimeTypeParseException e)
-			{
+				matchFound = intent.getContentType().isKindOf(contentType);
+				if (matchFound)
+					break;
 			}
 			if (!matchFound)
 				return false;
 		}
 
 		//if there are any schemes/authorities/paths defined, check if any match the URI of the intent (in that order)
-		URI uri = intent.getURI();
 		if (!dataSchemes.isEmpty())
 		{
+			URI uri = intent.getURI();
+			if (uri == null)
+				return false;
+
 			if (!anyMatchesUsingWildcards(uri.getScheme(), dataSchemes))
 				return false;
 

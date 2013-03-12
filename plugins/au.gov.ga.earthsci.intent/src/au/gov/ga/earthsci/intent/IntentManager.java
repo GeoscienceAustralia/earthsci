@@ -22,6 +22,7 @@ import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
@@ -114,12 +115,29 @@ public class IntentManager
 	 */
 	public IntentFilter findFilter(Intent intent)
 	{
+		int minDistance = Integer.MAX_VALUE;
+		IntentFilter closest = null;
 		for (IntentFilter filter : filters)
 		{
 			if (filter.matches(intent))
-				return filter;
+			{
+				//if no content type matching, we don't need to find the closest, so just return the first one found
+				if (intent.getContentType() == null)
+					return filter;
+
+				//calculate how close the filter's content type matches the intent's, so we can continue
+				//searching through the filters to find the filter that most closely matches the content type
+				IContentType closestContentType =
+						ContentTypeHelper.closestMatchingContentType(intent.getContentType(), filter.getContentTypes());
+				int distance = ContentTypeHelper.ancestryDistance(intent.getContentType(), closestContentType);
+				if (distance >= 0 && distance < minDistance)
+				{
+					minDistance = distance;
+					closest = filter;
+				}
+			}
 		}
-		return null;
+		return closest;
 	}
 
 	/**

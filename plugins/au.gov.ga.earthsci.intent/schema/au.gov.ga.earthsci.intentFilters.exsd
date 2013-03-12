@@ -52,7 +52,7 @@
          <choice minOccurs="1" maxOccurs="unbounded">
             <element ref="action"/>
             <element ref="category"/>
-            <element ref="type"/>
+            <element ref="content-type"/>
             <element ref="scheme"/>
             <element ref="authority"/>
             <element ref="path"/>
@@ -94,9 +94,9 @@
       </complexType>
    </element>
 
-   <element name="type">
+   <element name="content-type">
       <complexType>
-         <attribute name="name" type="string" use="required">
+         <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
                   

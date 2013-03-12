@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.content.IContentType;
+
 /**
  * Description of an intent to be performed. Plugins can define an
  * {@link IntentFilter} that can handle matching intents.
@@ -33,7 +35,7 @@ public class Intent
 {
 	private String action;
 	private final Set<String> categories = new HashSet<String>();
-	private String type;
+	private IContentType contentType;
 	private URI uri;
 	private Class<? extends IntentHandler> handler;
 	private final Map<String, Object> extras = new HashMap<String, Object>();
@@ -92,22 +94,22 @@ public class Intent
 	}
 
 	/**
-	 * @return Explicit MIME type of the data associated with this intent.
+	 * @return Explicit content type of the data associated with this intent.
 	 */
-	public String getType()
+	public IContentType getContentType()
 	{
-		return type;
+		return contentType;
 	}
 
 	/**
-	 * Set the explicit MIME type of the data associated with this intent.
+	 * Set the explicit content type of the data associated with this intent.
 	 * 
 	 * @param type
 	 * @return this
 	 */
-	public Intent setType(String type)
+	public Intent setContentType(IContentType contentType)
 	{
-		this.type = type;
+		this.contentType = contentType;
 		return this;
 	}
 
