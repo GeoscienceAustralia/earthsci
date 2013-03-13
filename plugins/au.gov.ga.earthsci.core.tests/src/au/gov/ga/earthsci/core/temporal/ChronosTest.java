@@ -32,7 +32,7 @@ import org.junit.Test;
 public class ChronosTest
 {
 	private Chronos classUnderTest;
-	private Temporal temporal;
+	private ITemporal temporal;
 	private PropertyChangeListener pcl;
 	
 	private Mockery mockContext;
@@ -44,7 +44,7 @@ public class ChronosTest
 		
 		mockContext = new Mockery();
 		
-		temporal = mockContext.mock(Temporal.class);
+		temporal = mockContext.mock(ITemporal.class);
 		pcl = mockContext.mock(PropertyChangeListener.class);
 		
 		classUnderTest.addPropertyChangeListener(pcl);

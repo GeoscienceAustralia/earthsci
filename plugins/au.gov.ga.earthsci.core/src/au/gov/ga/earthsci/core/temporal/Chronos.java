@@ -31,8 +31,8 @@ import au.gov.ga.earthsci.worldwind.common.util.LenientReadWriteLock;
  * can also be attached using the standard property change mechanism to listen
  * for changes to the {@value #CURRENT_TIME_PROPERTY_NAME} property. 
  * <p/>
- * This class also maintains a collection of {@link Temporal} objects and notifies them of changes to
- * the current application time. {@link Temporal} objects will be notified of changes to current time 
+ * This class also maintains a collection of {@link ITemporal} objects and notifies them of changes to
+ * the current application time. {@link ITemporal} objects will be notified of changes to current time 
  * <em>before</em> other listeners that have been registered via the property change mechanism.
  * <p/>
  * This class is intended to be used as singleton via the DI mechanism - there should only 
@@ -48,7 +48,7 @@ public class Chronos extends AbstractPropertyChangeBean
 	/** The name of the property event issued when the current time is changed */
 	public static final String CURRENT_TIME_PROPERTY_NAME = "currentTime"; //$NON-NLS-1$
 	
-	private LinkedHashSet<Temporal> temporalObjects = new LinkedHashSet<Temporal>();
+	private LinkedHashSet<ITemporal> temporalObjects = new LinkedHashSet<ITemporal>();
 	private ReadWriteLock temporalObjectsLock = new LenientReadWriteLock();
 	
 	private BigTime currentTime = BigTime.now();
@@ -59,7 +59,7 @@ public class Chronos extends AbstractPropertyChangeBean
 	 * 
 	 * @param t The temporal object to add
 	 */
-	public void addTemporal(Temporal t)
+	public void addTemporal(ITemporal t)
 	{
 		if (t == null)
 		{
@@ -82,7 +82,7 @@ public class Chronos extends AbstractPropertyChangeBean
 	 * 
 	 * @param t The temporal object to remove
 	 */
-	public void removeTemporal(Temporal t)
+	public void removeTemporal(ITemporal t)
 	{
 		try
 		{
@@ -128,7 +128,7 @@ public class Chronos extends AbstractPropertyChangeBean
 		try
 		{
 			temporalObjectsLock.readLock().lock();
-			for (Temporal t : temporalObjects)
+			for (ITemporal t : temporalObjects)
 			{
 				t.apply(currentTime);
 			}

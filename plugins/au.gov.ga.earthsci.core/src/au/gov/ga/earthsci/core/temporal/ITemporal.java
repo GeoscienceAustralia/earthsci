@@ -33,7 +33,7 @@ import au.gov.ga.earthsci.core.util.Range;
  * @author James Navin (james.navin@ga.gov.au)
  *
  */
-public interface Temporal
+public interface ITemporal
 {
 
 	/**
