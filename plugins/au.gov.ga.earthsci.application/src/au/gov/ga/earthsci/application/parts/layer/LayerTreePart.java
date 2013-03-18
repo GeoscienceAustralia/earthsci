@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2012 Geoscience Australia
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer;
 
 import gov.nasa.worldwind.View;
@@ -24,6 +39,8 @@ import org.eclipse.core.databinding.observable.map.MapChangeEvent;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.property.list.IListProperty;
 import org.eclipse.core.databinding.property.list.MultiListProperty;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.services.IServiceConstants;
@@ -62,7 +79,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Shell;
 
+import au.gov.ga.earthsci.application.Activator;
 import au.gov.ga.earthsci.application.ImageRegistry;
+import au.gov.ga.earthsci.application.util.StackTraceDialog;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
@@ -71,6 +90,11 @@ import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 import au.gov.ga.earthsci.worldwind.common.util.FlyToSectorAnimator;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
+/**
+ * Part that shows the hierarchical tree of layers.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ */
 public class LayerTreePart
 {
 	@Inject
@@ -82,12 +106,16 @@ public class LayerTreePart
 	@Inject
 	private ESelectionService selectionService;
 
+	@Inject
+	@Named(IServiceConstants.ACTIVE_SHELL)
+	private Shell shell;
+
 	private CheckboxTreeViewer viewer;
 	private LayerTreeLabelProvider labelProvider;
 	private Clipboard clipboard;
 
 	@PostConstruct
-	public void init(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell, Composite parent, EMenuService menuService)
+	public void init(Composite parent, EMenuService menuService)
 	{
 		LayerOpacityToolControl.setPartContext(context);
 
@@ -111,6 +139,7 @@ public class LayerTreePart
 		IObservableMap opacityMap = BeanProperties.value("opacity").observeDetail(knownElements); //$NON-NLS-1$
 		IObservableMap nameMap = BeanProperties.value("name").observeDetail(knownElements); //$NON-NLS-1$
 		IObservableMap labelMap = BeanProperties.value("label").observeDetail(knownElements); //$NON-NLS-1$
+		IObservableMap statusMap = BeanProperties.value("status").observeDetail(knownElements); //$NON-NLS-1$
 		IObservableMap anyChildrenEnabledMap = BeanProperties.value("anyChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
 		IObservableMap allChildrenEnabledMap = BeanProperties.value("allChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
 		IObservableMap childrenMap = BeanProperties.value("children").observeDetail(knownElements); //$NON-NLS-1$
@@ -118,7 +147,7 @@ public class LayerTreePart
 
 		IObservableMap[] labelAttributeMaps =
 				new IObservableMap[] { enabledMap, opacityMap, nameMap, labelMap, anyChildrenEnabledMap,
-						allChildrenEnabledMap };
+						allChildrenEnabledMap, statusMap };
 
 		labelProvider = new LayerTreeLabelProvider(labelAttributeMaps);
 		viewer.setLabelProvider(labelProvider);
@@ -219,7 +248,7 @@ public class LayerTreePart
 					return;
 
 				ILayerTreeNode layer = (ILayerTreeNode) cell.getElement();
-				flyToLayer(layer);
+				selectLayer(layer);
 			}
 
 			@Override
@@ -244,7 +273,7 @@ public class LayerTreePart
 					if (selection.size() == 1)
 					{
 						ILayerTreeNode layer = (ILayerTreeNode) selection.getFirstElement();
-						flyToLayer(layer);
+						selectLayer(layer);
 					}
 				}
 			}
@@ -333,6 +362,20 @@ public class LayerTreePart
 		for (ITreeNode<ILayerTreeNode> child : parent.getChildren())
 		{
 			addExpandedChildrenToList(child.getValue(), list);
+		}
+	}
+
+	public void selectLayer(ILayerTreeNode layer)
+	{
+		if (layer.getStatus().isError())
+		{
+			Throwable e = layer.getStatus().getThrowable();
+			IStatus status = new Status(IStatus.ERROR, Activator.getBundleName(), e.getLocalizedMessage(), e);
+			StackTraceDialog.openError(shell, "Error", null, status);
+		}
+		else
+		{
+			flyToLayer(layer);
 		}
 	}
 
