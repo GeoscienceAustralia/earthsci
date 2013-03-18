@@ -24,6 +24,8 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 
@@ -53,13 +55,16 @@ import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
  */
 public class IntentFilter
 {
+	private int priority = 0;
 	private final Set<String> actions = new HashSet<String>();
 	private final Set<String> categories = new HashSet<String>();
 	private final Set<IContentType> contentTypes = new HashSet<IContentType>();
+	private final Set<Class<?>> returnTypes = new HashSet<Class<?>>();
 	private final Set<String> dataSchemes = new HashSet<String>();
 	private final Set<String> dataAuthorities = new HashSet<String>();
 	private final Set<String> dataPaths = new HashSet<String>();
 	private Class<? extends IntentHandler> handler;
+	private static final Logger logger = LoggerFactory.getLogger(IntentFilter.class);
 
 	public IntentFilter()
 	{
@@ -70,13 +75,14 @@ public class IntentFilter
 		addToSetFromElements(element, "action", "name", actions); //$NON-NLS-1$ //$NON-NLS-2$
 		addToSetFromElements(element, "category", "name", categories); //$NON-NLS-1$ //$NON-NLS-2$
 		addToContentTypeSetFromElements(element, "content-type", "id", contentTypes); //$NON-NLS-1$ //$NON-NLS-2$
+		addToClassSetFromElements(element, "return-type", "class", returnTypes); //$NON-NLS-1$ //$NON-NLS-2$
 		addToSetFromElements(element, "scheme", "name", dataSchemes); //$NON-NLS-1$ //$NON-NLS-2$
 		addToSetFromElements(element, "authority", "name", dataAuthorities); //$NON-NLS-1$ //$NON-NLS-2$
 		addToSetFromElements(element, "path", "name", dataPaths); //$NON-NLS-1$ //$NON-NLS-2$
 
 		@SuppressWarnings("unchecked")
 		Class<? extends IntentHandler> handler =
-				(Class<? extends IntentHandler>) ExtensionPointHelper.getClassForProperty(element, "handler"); //$NON-NLS-1$
+				(Class<? extends IntentHandler>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
 		setHandler(handler);
 	}
 
@@ -104,6 +110,45 @@ public class IntentFilter
 					set.add(contentType);
 			}
 		}
+	}
+
+	private void addToClassSetFromElements(IConfigurationElement element, String childrenName, String attributeName,
+			Set<Class<?>> set)
+	{
+		for (IConfigurationElement child : element.getChildren(childrenName))
+		{
+			try
+			{
+				Class<?> c = ExtensionPointHelper.getClassForProperty(child, attributeName);
+				if (c != null)
+					set.add(c);
+			}
+			catch (ClassNotFoundException e)
+			{
+				logger.error("Error processing intent filter return type", e); //$NON-NLS-1$
+			}
+		}
+	}
+
+	/**
+	 * @return Priority of this filter.
+	 */
+	public int getPriority()
+	{
+		return priority;
+	}
+
+	/**
+	 * Set the priority of this filter. If two filter's match an Intent exactly,
+	 * the priority is used to determine which one to use.
+	 * 
+	 * @param priority
+	 * @return this
+	 */
+	public IntentFilter setPriority(int priority)
+	{
+		this.priority = priority;
+		return this;
 	}
 
 	/**
@@ -346,14 +391,14 @@ public class IntentFilter
 		//if there are content types defined, check if any match the content type of the intent
 		if (!contentTypes.isEmpty())
 		{
-			boolean matchFound = false;
-			for (IContentType contentType : contentTypes)
-			{
-				matchFound = intent.getContentType().isKindOf(contentType);
-				if (matchFound)
-					break;
-			}
-			if (!matchFound)
+			if (!anyContentTypesMatch(intent.getContentType()))
+				return false;
+		}
+
+		//if both intent and filter have a return type defined, check that at least one matches
+		if (intent.getExpectedReturnType() != null && !returnTypes.isEmpty())
+		{
+			if (!anyReturnTypesMatch(intent.getExpectedReturnType()))
 				return false;
 		}
 
@@ -381,6 +426,24 @@ public class IntentFilter
 		}
 
 		return true;
+	}
+
+	public boolean anyContentTypesMatch(IContentType expectedContentType)
+	{
+		if (expectedContentType != null)
+			for (IContentType contentType : contentTypes)
+				if (expectedContentType.isKindOf(contentType))
+					return true;
+		return false;
+	}
+
+	public boolean anyReturnTypesMatch(Class<?> expectedReturnType)
+	{
+		if (expectedReturnType != null)
+			for (Class<?> returnType : returnTypes)
+				if (expectedReturnType.isAssignableFrom(returnType))
+					return true;
+		return false;
 	}
 
 	private static boolean isEmpty(String s)

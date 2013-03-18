@@ -25,8 +25,11 @@ package au.gov.ga.earthsci.intent;
 public interface IntentCaller
 {
 	/**
-	 * Called when the Intent handler has completed successfully. If the intent
-	 * didn't produce a result, null should be passed.
+	 * Called by the Intent handler when it has completed successfully. If the
+	 * handler didn't produce a result, result will be null.
+	 * <p/>
+	 * If the result is of an unknown type, it should be handled gracefully,
+	 * such as passing it to the dispatch system.
 	 * 
 	 * @param intent
 	 *            Intent that completed

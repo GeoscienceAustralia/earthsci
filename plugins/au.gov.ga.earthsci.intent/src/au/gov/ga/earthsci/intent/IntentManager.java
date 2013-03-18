@@ -15,18 +15,21 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.intent;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import au.gov.ga.earthsci.util.collection.ArrayListTreeMap;
+import au.gov.ga.earthsci.util.collection.ListSortedMap;
 
 /**
  * Injectable {@link Intent} manager, used for starting intents. Contains a
@@ -44,10 +47,19 @@ public class IntentManager
 		return instance;
 	}
 
-	private static final String INTENT_ID = "au.gov.ga.earthsci.intentFilters"; //$NON-NLS-1$
+	private static final String INTENT_FILTERS_ID = "au.gov.ga.earthsci.intentFilters"; //$NON-NLS-1$
 	private static final Logger logger = LoggerFactory.getLogger(IntentManager.class);
 
-	private final Set<IntentFilter> filters = new HashSet<IntentFilter>();
+	//filters, sorted descending by priority
+	private final ListSortedMap<Integer, IntentFilter> filters = new ArrayListTreeMap<Integer, IntentFilter>(
+			new Comparator<Integer>()
+			{
+				@Override
+				public int compare(Integer o1, Integer o2)
+				{
+					return -o1.compareTo(o2);
+				}
+			});
 
 	/**
 	 * Intent manager constructor, should not be called directly. Instead the
@@ -61,7 +73,7 @@ public class IntentManager
 		}
 		instance = this;
 
-		IConfigurationElement[] config = RegistryFactory.getRegistry().getConfigurationElementsFor(INTENT_ID);
+		IConfigurationElement[] config = RegistryFactory.getRegistry().getConfigurationElementsFor(INTENT_FILTERS_ID);
 		for (IConfigurationElement element : config)
 		{
 			try
@@ -70,7 +82,7 @@ public class IntentManager
 				if (isFilter)
 				{
 					IntentFilter filter = new IntentFilter(element);
-					filters.add(filter);
+					filters.putSingle(filter.getPriority(), filter);
 				}
 			}
 			catch (Exception e)
@@ -92,11 +104,20 @@ public class IntentManager
 	 */
 	public void start(Intent intent, IntentCaller caller, IEclipseContext context)
 	{
-		IntentFilter filter = findFilter(intent);
-		if (filter != null)
+		Class<? extends IntentHandler> handlerClass = intent.getHandler();
+		if (handlerClass == null)
+		{
+			IntentFilter filter = findFilter(intent);
+			if (filter != null)
+			{
+				handlerClass = filter.getHandler();
+			}
+		}
+
+		if (handlerClass != null)
 		{
 			IEclipseContext child = context.createChild();
-			IntentHandler handler = ContextInjectionFactory.make(filter.getHandler(), child);
+			IntentHandler handler = ContextInjectionFactory.make(handlerClass, child);
 			handler.handle(intent, caller);
 		}
 		else
@@ -106,8 +127,17 @@ public class IntentManager
 	}
 
 	/**
-	 * Find an intent filter that matches the given intent, or null if none
+	 * Find an intent filter that best matches the given intent, or null if none
 	 * could be found.
+	 * <p/>
+	 * The best match is defined as follows:
+	 * <ul>
+	 * <li>If the intent defines an expected return type, any filters that
+	 * define that return type are preferred over those that don't</li>
+	 * <li>If the intent defines a content type, the filters that define a
+	 * content type closer to the intent's content type are preferred</li>
+	 * <li>Otherwise the first matching filter is returned</li>
+	 * </ul>
 	 * 
 	 * @param intent
 	 *            Intent to find a filter for
@@ -115,26 +145,54 @@ public class IntentManager
 	 */
 	public IntentFilter findFilter(Intent intent)
 	{
+		//add matching filters to a list, prioritising any that have a matching return type
+		List<IntentFilter> matches = new ArrayList<IntentFilter>();
+		boolean anyMatchExpectedReturnType = false;
+		for (List<IntentFilter> list : filters.values())
+		{
+			for (IntentFilter filter : list)
+			{
+				if (filter.matches(intent))
+				{
+					if (filter.anyReturnTypesMatch(intent.getExpectedReturnType()))
+					{
+						if (!anyMatchExpectedReturnType)
+						{
+							//we've found the first filter that matches the intent's return type, so
+							//clear any that we've previously added that don't
+							matches.clear();
+							anyMatchExpectedReturnType = true;
+						}
+						matches.add(filter);
+					}
+					else if (!anyMatchExpectedReturnType)
+					{
+						matches.add(filter);
+					}
+				}
+			}
+		}
+
+		//if no matches, return null
+		if (matches.isEmpty())
+			return null;
+
+		//if no content type matching, we don't need to find the closest, so just return the first one found
+		if (intent.getContentType() == null)
+			return matches.get(0);
+
+		//find the filter in the list of matches that most closely matches the intent's content type
 		int minDistance = Integer.MAX_VALUE;
 		IntentFilter closest = null;
-		for (IntentFilter filter : filters)
+		for (IntentFilter filter : matches)
 		{
-			if (filter.matches(intent))
+			int distance =
+					ContentTypeHelper.distanceToClosestMatchingContentType(intent.getContentType(),
+							filter.getContentTypes());
+			if (distance >= 0 && distance < minDistance)
 			{
-				//if no content type matching, we don't need to find the closest, so just return the first one found
-				if (intent.getContentType() == null)
-					return filter;
-
-				//calculate how close the filter's content type matches the intent's, so we can continue
-				//searching through the filters to find the filter that most closely matches the content type
-				IContentType closestContentType =
-						ContentTypeHelper.closestMatchingContentType(intent.getContentType(), filter.getContentTypes());
-				int distance = ContentTypeHelper.ancestryDistance(intent.getContentType(), closestContentType);
-				if (distance >= 0 && distance < minDistance)
-				{
-					minDistance = distance;
-					closest = filter;
-				}
+				minDistance = distance;
+				closest = filter;
 			}
 		}
 		return closest;
@@ -147,7 +205,7 @@ public class IntentManager
 	 */
 	public void addFilter(IntentFilter filter)
 	{
-		filters.add(filter);
+		filters.putSingle(filter.getPriority(), filter);
 	}
 
 	/**
@@ -157,6 +215,6 @@ public class IntentManager
 	 */
 	public void removeFilter(IntentFilter filter)
 	{
-		filters.remove(filter);
+		filters.removeSingle(filter.getPriority(), filter);
 	}
 }

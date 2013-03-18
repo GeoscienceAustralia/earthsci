@@ -55,8 +55,43 @@ public class ContentTypeHelper
 				closest = test;
 			}
 		}
-
 		return closest;
+	}
+
+	/**
+	 * Search the list of content types for the closest type that is a kind of
+	 * the given content type, and return the ancestry distance to that type.
+	 * Closest means the smallest distance between the given content type and a
+	 * content type in it's ancestry.
+	 * <p/>
+	 * Returns -1 if no matching content type could be found.
+	 * 
+	 * @see #ancestryDistance(IContentType, IContentType)
+	 * 
+	 * @param contentType
+	 *            Content type who's ancestry to search for a content type in
+	 *            the collection
+	 * @param contentTypes
+	 *            Collection of content types to search
+	 * @return Ancestry distance to the closest content type from
+	 *         <code>contentTypes</code> that the <code>contentType</code> is a
+	 *         kind of, or -1 if no matching content type could be found
+	 */
+	public static int distanceToClosestMatchingContentType(IContentType contentType, Iterable<IContentType> contentTypes)
+	{
+		if (contentType == null || contentTypes == null)
+			return -1;
+
+		int minDistance = Integer.MAX_VALUE;
+		for (IContentType test : contentTypes)
+		{
+			int distance = ancestryDistance(contentType, test);
+			if (distance >= 0 && distance < minDistance)
+			{
+				minDistance = distance;
+			}
+		}
+		return minDistance == Integer.MAX_VALUE ? -1 : minDistance;
 	}
 
 	/**

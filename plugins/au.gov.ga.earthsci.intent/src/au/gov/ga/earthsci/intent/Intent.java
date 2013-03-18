@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.intent;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -37,6 +38,7 @@ public class Intent
 	private final Set<String> categories = new HashSet<String>();
 	private IContentType contentType;
 	private URI uri;
+	private Class<?> expectedReturnType;
 	private Class<? extends IntentHandler> handler;
 	private final Map<String, Object> extras = new HashMap<String, Object>();
 	private int flags;
@@ -130,6 +132,26 @@ public class Intent
 	public Intent setURI(URI uri)
 	{
 		this.uri = uri;
+		return this;
+	}
+
+	/**
+	 * @return The expected type of the object returned by the intent handler.
+	 */
+	public Class<?> getExpectedReturnType()
+	{
+		return expectedReturnType;
+	}
+
+	/**
+	 * Set the expected type of the object returned by the intent handler.
+	 * 
+	 * @param expectedReturnType
+	 * @return this
+	 */
+	public Intent setExpectedReturnType(Class<?> expectedReturnType)
+	{
+		this.expectedReturnType = expectedReturnType;
 		return this;
 	}
 
@@ -228,5 +250,28 @@ public class Intent
 	{
 		extras.put(key, value);
 		return this;
+	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+
+		if (action != null)
+			sb.append(String.format(", action: " + action)); //$NON-NLS-1$
+
+		if (!categories.isEmpty())
+			sb.append(String.format(", categories: " + Arrays.toString(categories.toArray()))); //$NON-NLS-1$
+
+		if (uri != null)
+			sb.append(String.format(", URI: " + uri)); //$NON-NLS-1$
+
+		if (contentType != null)
+			sb.append(String.format(", content-type: " + contentType.getId())); //$NON-NLS-1$
+
+		if (expectedReturnType != null)
+			sb.append(String.format(", expected return-type: " + expectedReturnType.getName())); //$NON-NLS-1$
+
+		return String.format("%s [%s]", getClass().getSimpleName(), sb.length() > 0 ? sb.substring(2) : ""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }
