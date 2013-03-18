@@ -50,7 +50,7 @@ public class UTF8URLEncoder
 	}
 
 	/**
-	 * Decodes a application/x-www-form-urlencoded string using hte UTF-8
+	 * Decodes a application/x-www-form-urlencoded string using the UTF-8
 	 * encoding scheme. UTF-8 is used to determine what characters are
 	 * represented by any consecutive sequences of the form "%xy".
 	 * 
