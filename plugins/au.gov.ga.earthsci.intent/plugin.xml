@@ -2,10 +2,16 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="au.gov.ga.earthsci.intentFilters" name="IntentFilters" schema="schema/au.gov.ga.earthsci.intentFilters.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.dispatchFilters" name="DispatchFilters" schema="schema/au.gov.ga.earthsci.dispatchFilters.exsd"/>
    <extension
          point="au.gov.ga.earthsci.injectable">
       <inject
-            class="au.gov.ga.earthsci.intent.IntentManager">
+            class="au.gov.ga.earthsci.intent.IntentManager"
+            priority="10">
+      </inject>
+      <inject
+            class="au.gov.ga.earthsci.dispatch.Dispatcher"
+            priority="10">
       </inject>
    </extension>
 </plugin>
