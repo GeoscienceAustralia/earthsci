@@ -83,22 +83,22 @@
          point="au.gov.ga.earthsci.injectable">
       <bind
             binding="au.gov.ga.earthsci.catalog.part.ICatalogBrowserController"
-            implementation="au.gov.ga.earthsci.catalog.part.CatalogBrowserController"
+            class="au.gov.ga.earthsci.catalog.part.CatalogBrowserController"
             priority="0">
       </bind>
       <bind
             binding="au.gov.ga.earthsci.catalog.part.preferences.ICatalogBrowserPreferences"
-            implementation="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferences"
+            class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferences"
             priority="0">
       </bind>
       <bind
             binding="au.gov.ga.earthsci.bookmark.part.IBookmarksController"
-            implementation="au.gov.ga.earthsci.bookmark.part.BookmarksController"
+            class="au.gov.ga.earthsci.bookmark.part.BookmarksController"
             priority="0">
       </bind>
       <bind
             binding="au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences"
-            implementation="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferences"
+            class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferences"
             priority="0">
       </bind>
       <injectable

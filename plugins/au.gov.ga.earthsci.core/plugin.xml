@@ -131,7 +131,7 @@
       </inject>
       <bind
             binding="au.gov.ga.earthsci.bookmark.model.IBookmarks"
-            implementation="au.gov.ga.earthsci.bookmark.model.Bookmarks"
+            class="au.gov.ga.earthsci.bookmark.model.Bookmarks"
             priority="0">
       </bind>
       <inject
@@ -146,10 +146,23 @@
    <extension
          point="au.gov.ga.earthsci.intentFilters">
       <filter
-            handler="au.gov.ga.earthsci.core.xml.XmlIntentHandler">
+            class="au.gov.ga.earthsci.core.xml.XmlIntentHandler"
+            handler="au.gov.ga.earthsci.core.xml.XmlIntentHandler"
+            priority="0">
          <content-type
                id="org.eclipse.core.runtime.xml">
          </content-type>
+      </filter>
+      <filter
+            class="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
+            handler="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
+            priority="0">
+         <scheme
+               name="class">
+         </scheme>
+         <return-type
+               class="gov.nasa.worldwind.layers.Layer">
+         </return-type>
       </filter>
    </extension>
 
