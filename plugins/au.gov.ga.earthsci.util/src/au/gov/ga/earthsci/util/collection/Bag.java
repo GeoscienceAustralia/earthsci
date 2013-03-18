@@ -13,23 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util.collection;
+package au.gov.ga.earthsci.util.collection;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
 
 /**
- * {@link ListMap} implementation that extends {@link HashMap} and uses
- * {@link ArrayList} values.
+ * Collection that represents a bag, which allows for {@code O(1)} contains and
+ * count operations for any element.
  * 
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * @author James Navin (james.navin@ga.gov.au)
  */
-public class ArrayListHashMap<K, V> extends ListHashMap<K, V>
+public interface Bag<E> extends Collection<E>
 {
-	@Override
-	protected List<V> createCollection(K key)
-	{
-		return new ArrayList<V>();
-	}
+	/**
+	 * Return the count of the given object in this bag
+	 * 
+	 * @param o
+	 *            The object to count
+	 * 
+	 * @return The count of the object in the bag
+	 */
+	int count(Object o);
+
+	/**
+	 * @return The number of unique objects in this bag
+	 */
+	int countUnique();
 }

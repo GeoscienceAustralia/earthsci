@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util.collection;
+package au.gov.ga.earthsci.util.collection;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * An implementation of the {@link CollectionTreeMap} that uses an {@link ArrayList}
- * to store values for each key.
+ * {@link CollectionSortedMap} that uses a {@link List} as the value type.
  * 
- * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ArrayListTreeMap<K,V> extends CollectionTreeMap<K, V, ArrayList<V>>
+public interface ListSortedMap<K, V> extends CollectionSortedMap<K, V, List<V>>
 {
-
-	@Override
-	protected ArrayList<V> createCollection(K key)
-	{
-		return new ArrayList<V>();
-	}
-
 }

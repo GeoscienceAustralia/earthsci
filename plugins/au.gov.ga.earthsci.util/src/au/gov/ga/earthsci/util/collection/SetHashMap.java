@@ -13,15 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util.collection;
+package au.gov.ga.earthsci.util.collection;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * {@link CollectionMap} that uses a {@link List} as the value type.
+ * Abstract {@link SetMap} implementation that extends {@link HashMap}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ListMap<K, V> extends CollectionMap<K, V, List<V>>
+public abstract class SetHashMap<K, V> extends CollectionHashMap<K, V, Set<V>> implements SetMap<K, V>
 {
+	public SetHashMap()
+	{
+		super();
+	}
+
+	public SetHashMap(int initialCapacity, float loadFactor)
+	{
+		super(initialCapacity, loadFactor);
+	}
+
+	public SetHashMap(int initialCapacity)
+	{
+		super(initialCapacity);
+	}
+
+	public SetHashMap(Map<? extends K, ? extends Set<V>> m)
+	{
+		super(m);
+	}
 }

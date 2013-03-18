@@ -13,15 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util.collection;
+package au.gov.ga.earthsci.util.collection;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * {@link CollectionMap} that uses a {@link Set} as the value type.
+ * {@link SetMap} implementation that extends {@link HashMap} and uses
+ * {@link HashSet} values.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface SetMap<K, V> extends CollectionMap<K, V, Set<V>>
+public class HashSetHashMap<K, V> extends SetHashMap<K, V>
 {
+	public HashSetHashMap()
+	{
+		super();
+	}
+
+	public HashSetHashMap(int initialCapacity, float loadFactor)
+	{
+		super(initialCapacity, loadFactor);
+	}
+
+	public HashSetHashMap(int initialCapacity)
+	{
+		super(initialCapacity);
+	}
+
+	public HashSetHashMap(Map<? extends K, ? extends Set<V>> m)
+	{
+		super(m);
+	}
+
+	@Override
+	protected Set<V> createCollection(K key)
+	{
+		return new HashSet<V>();
+	}
 }

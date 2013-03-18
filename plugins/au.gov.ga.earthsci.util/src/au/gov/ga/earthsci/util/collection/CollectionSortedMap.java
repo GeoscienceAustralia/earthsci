@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util.collection;
+package au.gov.ga.earthsci.util.collection;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.SortedMap;
 
 /**
- * {@link SetMap} implementation that extends {@link HashMap} and uses
- * {@link HashSet} values.
+ * {@link SortedMap} that supports adding multiple values for a single key.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class HashSetHashMap<K, V> extends SetHashMap<K, V>
+public interface CollectionSortedMap<K, V, C extends Collection<V>> extends CollectionMap<K, V, C>, SortedMap<K, C>
 {
-	@Override
-	protected Set<V> createCollection(K key)
-	{
-		return new HashSet<V>();
-	}
 }

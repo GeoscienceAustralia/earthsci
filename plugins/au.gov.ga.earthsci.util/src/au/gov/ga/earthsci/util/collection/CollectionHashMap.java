@@ -13,20 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util.collection;
+package au.gov.ga.earthsci.util.collection;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Map;
 
 /**
- * An abstract {@link CollectionMap} that uses a {@link TreeMap}, preserving the natural ordering of keys.
+ * Abstract {@link CollectionMap} implementation using a {@link HashMap}.
  * 
- * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class CollectionTreeMap<K, V, C extends Collection<V>> extends TreeMap<K, C> implements CollectionMap<K, V, C>
+public abstract class CollectionHashMap<K, V, C extends Collection<V>> extends HashMap<K, C> implements
+		CollectionMap<K, V, C>
 {
+	public CollectionHashMap()
+	{
+		super();
+	}
+
+	public CollectionHashMap(int initialCapacity, float loadFactor)
+	{
+		super(initialCapacity, loadFactor);
+	}
+
+	public CollectionHashMap(int initialCapacity)
+	{
+		super(initialCapacity);
+	}
+
+	public CollectionHashMap(Map<? extends K, ? extends C> m)
+	{
+		super(m);
+	}
+
 	protected abstract C createCollection(K key);
 
 	@Override

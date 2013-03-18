@@ -13,21 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util.collection;
+package au.gov.ga.earthsci.util.collection;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
- * Abstract {@link CollectionMap} implementation using a {@link HashMap}.
+ * An abstract {@link CollectionMap} that uses a {@link TreeMap}, preserving the
+ * natural ordering of keys.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class CollectionHashMap<K, V, C extends Collection<V>> extends HashMap<K, C> implements
-		CollectionMap<K, V, C>
+public abstract class CollectionTreeMap<K, V, C extends Collection<V>> extends TreeMap<K, C> implements
+		CollectionSortedMap<K, V, C>
 {
+	public CollectionTreeMap()
+	{
+		super();
+	}
+
+	public CollectionTreeMap(Comparator<? super K> comparator)
+	{
+		super(comparator);
+	}
+
+	public CollectionTreeMap(Map<? extends K, ? extends C> m)
+	{
+		super(m);
+	}
+
+	public CollectionTreeMap(SortedMap<K, ? extends C> m)
+	{
+		super(m);
+	}
+
 	protected abstract C createCollection(K key);
 
 	@Override
@@ -63,7 +87,7 @@ public abstract class CollectionHashMap<K, V, C extends Collection<V>> extends H
 		}
 		return values.size();
 	}
-	
+
 	@Override
 	public List<V> flatValues()
 	{

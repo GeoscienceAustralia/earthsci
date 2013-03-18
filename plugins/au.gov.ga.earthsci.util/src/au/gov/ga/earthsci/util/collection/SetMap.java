@@ -13,30 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util.collection;
+package au.gov.ga.earthsci.util.collection;
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
- * Collection that represents a bag, which allows for {@code O(1)} contains and
- * count operations for any element.
+ * {@link CollectionMap} that uses a {@link Set} as the value type.
  * 
- * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface Bag<E> extends Collection<E>
+public interface SetMap<K, V> extends CollectionMap<K, V, Set<V>>
 {
-	/**
-	 * Return the count of the given object in this bag
-	 * 
-	 * @param o
-	 *            The object to count
-	 * 
-	 * @return The count of the object in the bag
-	 */
-	int count(Object o);
-
-	/**
-	 * @return The number of unique objects in this bag
-	 */
-	int countUnique();
 }

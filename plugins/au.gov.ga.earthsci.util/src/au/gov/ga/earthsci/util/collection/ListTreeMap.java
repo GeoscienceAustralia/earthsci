@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util.collection;
+package au.gov.ga.earthsci.util.collection;
 
-import java.util.Set;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 /**
- * Set that maintains an array of the elements for quick access.
+ * Abstract {@link ListMap} implementation that extends {@link CollectionTreeMap}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface SetAndArray<E> extends Set<E>
+public abstract class ListTreeMap<K, V> extends CollectionTreeMap<K, V, List<V>> implements ListSortedMap<K, V>
 {
-	/**
-	 * The array of elements. This array is lazily created. The returned array
-	 * is the same until this Set is modified, in which case it is recreated
-	 * next time this method is called.
-	 * 
-	 * @return The stored array of elements.
-	 */
-	E[] getArray(Class<E> type);
+	public ListTreeMap()
+	{
+		super();
+	}
+
+	public ListTreeMap(Comparator<? super K> comparator)
+	{
+		super(comparator);
+	}
+
+	public ListTreeMap(Map<? extends K, ? extends List<V>> m)
+	{
+		super(m);
+	}
+
+	public ListTreeMap(SortedMap<K, ? extends List<V>> m)
+	{
+		super(m);
+	}
 }
