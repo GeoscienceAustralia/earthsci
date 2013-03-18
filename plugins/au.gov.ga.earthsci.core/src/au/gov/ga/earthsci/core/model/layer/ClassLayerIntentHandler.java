@@ -15,28 +15,32 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.layer;
 
-import org.eclipse.osgi.util.NLS;
+import gov.nasa.worldwind.layers.Layer;
+import au.gov.ga.earthsci.intent.Intent;
+import au.gov.ga.earthsci.intent.IntentCaller;
+import au.gov.ga.earthsci.intent.IntentHandler;
 
 /**
- * @author u09145
- *
+ * {@link IntentHandler} that handles class:// layer URIs.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class Messages extends NLS
+public class ClassLayerIntentHandler implements IntentHandler
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.model.layer.messages"; //$NON-NLS-1$
-	public static String IntentLayerLoader_FailedLoadNotificationDescription;
-	public static String IntentLayerLoader_FailedLoadNotificationTitle;
-	public static String LayerNode_FailedCopyNotificationDescription;
-	public static String LayerNode_FailedCopyNotificationTitle;
-	public static String URILayerLoadJob_FailedLoadNotificationDescription;
-	public static String URILayerLoadJob_FailedLoadNotificationTitle;
-	static
+	@Override
+	public void handle(Intent intent, IntentCaller caller)
 	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
-
-	private Messages()
-	{
+		String className = intent.getURI().getAuthority();
+		try
+		{
+			@SuppressWarnings("unchecked")
+			Class<? extends Layer> c = (Class<? extends Layer>) Class.forName(className);
+			Layer layer = c.newInstance();
+			caller.completed(intent, layer);
+		}
+		catch (Exception e)
+		{
+			caller.error(intent, e);
+		}
 	}
 }

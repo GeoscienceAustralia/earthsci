@@ -326,7 +326,7 @@ public class LayerTreePart
 		viewer.addDragSupport(ops, new Transfer[] { LayerTransfer.getInstance() }, new LayerTreeDragSourceListener(
 				viewer));
 		viewer.addDropSupport(ops, new Transfer[] { LayerTransfer.getInstance(), FileTransfer.getInstance() },
-				new LayerTreeDropAdapter(viewer, model));
+				new LayerTreeDropAdapter(viewer, model, context));
 
 		//add context menu
 		menuService.registerContextMenu(viewer.getTree(), "au.gov.ga.earthsci.application.layertree.popupmenu"); //$NON-NLS-1$

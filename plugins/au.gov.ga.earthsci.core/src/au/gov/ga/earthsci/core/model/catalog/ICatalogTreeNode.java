@@ -17,6 +17,8 @@ package au.gov.ga.earthsci.core.model.catalog;
 
 import java.net.URI;
 
+import org.eclipse.core.runtime.content.IContentType;
+
 import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
 import au.gov.ga.earthsci.core.tree.LazyTreeJob;
 import au.gov.ga.earthsci.core.util.ILabelable;
@@ -65,4 +67,9 @@ public interface ICatalogTreeNode extends ILazyTreeNode<ICatalogTreeNode>, IProp
 	 * @return the URI of the layer this node represents if {@link #isLayerNode()} returns <code>true</code>
 	 */
 	URI getLayerURI();
+	
+	/**
+	 * @return the content type of the layer this node represents if {@link #isLayerNode()} returns <code>true</code>
+	 */
+	IContentType getLayerContentType();
 }

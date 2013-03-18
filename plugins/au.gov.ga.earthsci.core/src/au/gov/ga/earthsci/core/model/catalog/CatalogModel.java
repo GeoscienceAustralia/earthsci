@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.di.annotations.Creatable;
 
 import au.gov.ga.earthsci.core.tree.ITreeNode;
@@ -146,6 +147,12 @@ public class CatalogModel implements ICatalogModel
 		
 		@Override
 		public URI getLayerURI() 
+		{
+			return null;
+		}
+
+		@Override
+		public IContentType getLayerContentType()
 		{
 			return null;
 		}

@@ -18,6 +18,9 @@ package au.gov.ga.earthsci.core.model.catalog.dataset;
 import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
+
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
@@ -102,5 +105,16 @@ public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 		{
 			return null;
 		}
+	}
+	
+	@Override
+	public IContentType getLayerContentType()
+	{
+		URI uri = getLayerURI();
+		if (uri == null)
+		{
+			return null;
+		}
+		return Platform.getContentTypeManager().findContentTypeFor(uri.getPath());
 	}
 }
