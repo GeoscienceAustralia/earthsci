@@ -75,37 +75,46 @@
    <extension
          point="au.gov.ga.earthsci.injectable">
       <inject
-            class="au.gov.ga.earthsci.core.util.ExtensionRegistryUtil">
+            class="au.gov.ga.earthsci.core.util.ExtensionRegistryUtil"
+            priority="0">
       </inject>
       <injectable
-            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences">
+            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences"
+            priority="0">
       </injectable>
       <injectable
-            class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration">
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration"
+            priority="0">
       </injectable>
       <inject
-            class="au.gov.ga.earthsci.core.retrieve.RetrieverFactory">
+            class="au.gov.ga.earthsci.core.retrieve.RetrieverFactory"
+            priority="0">
          <type
                class="au.gov.ga.earthsci.core.retrieve.IRetrieverFactory">
          </type>
       </inject>
       <inject
-            class="au.gov.ga.earthsci.core.retrieve.RetrievalService">
+            class="au.gov.ga.earthsci.core.retrieve.RetrievalService"
+            priority="0">
          <type
                class="au.gov.ga.earthsci.core.retrieve.IRetrievalService">
          </type>
       </inject>
       <injectable
-            class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory">
+            class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory"
+            priority="0">
       </injectable>
       <injectable
-            class="au.gov.ga.earthsci.core.model.catalog.CatalogFactory">
+            class="au.gov.ga.earthsci.core.model.catalog.CatalogFactory"
+            priority="0">
       </injectable>
       <inject
-            class="au.gov.ga.earthsci.notification.NotificationManager">
+            class="au.gov.ga.earthsci.notification.NotificationManager"
+            priority="0">
       </inject>
       <inject
-            class="au.gov.ga.earthsci.core.worldwind.WorldWindModel">
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindModel"
+            priority="0">
          <type
                class="au.gov.ga.earthsci.core.worldwind.WorldWindModel">
          </type>
@@ -114,21 +123,34 @@
          </type>
       </inject>
       <inject
-            class="au.gov.ga.earthsci.core.model.catalog.CatalogModel">
+            class="au.gov.ga.earthsci.core.model.catalog.CatalogModel"
+            priority="0">
          <type
                class="au.gov.ga.earthsci.core.model.catalog.ICatalogModel">
          </type>
       </inject>
       <bind
             binding="au.gov.ga.earthsci.bookmark.model.IBookmarks"
-            implementation="au.gov.ga.earthsci.bookmark.model.Bookmarks">
+            implementation="au.gov.ga.earthsci.bookmark.model.Bookmarks"
+            priority="0">
       </bind>
       <inject
-            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry">
+            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry"
+            priority="0">
       </inject>
       <inject
-            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory">
+            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory"
+            priority="0">
       </inject>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.intentFilters">
+      <filter
+            handler="au.gov.ga.earthsci.core.xml.XmlIntentHandler">
+         <content-type
+               id="org.eclipse.core.runtime.xml">
+         </content-type>
+      </filter>
    </extension>
 
 </plugin>

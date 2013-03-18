@@ -83,31 +83,39 @@
          point="au.gov.ga.earthsci.injectable">
       <bind
             binding="au.gov.ga.earthsci.catalog.part.ICatalogBrowserController"
-            implementation="au.gov.ga.earthsci.catalog.part.CatalogBrowserController">
+            implementation="au.gov.ga.earthsci.catalog.part.CatalogBrowserController"
+            priority="0">
       </bind>
       <bind
             binding="au.gov.ga.earthsci.catalog.part.preferences.ICatalogBrowserPreferences"
-            implementation="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferences">
+            implementation="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferences"
+            priority="0">
       </bind>
       <bind
             binding="au.gov.ga.earthsci.bookmark.part.IBookmarksController"
-            implementation="au.gov.ga.earthsci.bookmark.part.BookmarksController">
+            implementation="au.gov.ga.earthsci.bookmark.part.BookmarksController"
+            priority="0">
       </bind>
       <bind
             binding="au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences"
-            implementation="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferences">
+            implementation="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferences"
+            priority="0">
       </bind>
       <injectable
-            class="au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry">
+            class="au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry"
+            priority="0">
       </injectable>
       <injectable
-            class="au.gov.ga.earthsci.bookmark.part.editor.BookmarkPropertyEditorFactory">
+            class="au.gov.ga.earthsci.bookmark.part.editor.BookmarkPropertyEditorFactory"
+            priority="0">
       </injectable>
       <inject
-            class="au.gov.ga.earthsci.application.parts.globe.GlobeActivePartTracker">
+            class="au.gov.ga.earthsci.application.parts.globe.GlobeActivePartTracker"
+            priority="0">
       </inject>
       <inject
-            class="au.gov.ga.earthsci.application.theme.ThemeLoader">
+            class="au.gov.ga.earthsci.application.theme.ThemeLoader"
+            priority="0">
       </inject>
    </extension>
    <extension
