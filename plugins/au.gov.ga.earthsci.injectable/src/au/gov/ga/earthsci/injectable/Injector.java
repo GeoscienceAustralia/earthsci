@@ -15,11 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.injectable;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
@@ -28,6 +25,9 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.InjectorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import au.gov.ga.earthsci.util.collection.ArrayListTreeMap;
+import au.gov.ga.earthsci.util.collection.ListSortedMap;
 
 /**
  * Helper class for reading extensions that extend the injectable extension
@@ -48,8 +48,8 @@ public final class Injector
 	{
 		//first sort the configuration elements by priority, descending
 		IConfigurationElement[] config = RegistryFactory.getRegistry().getConfigurationElementsFor(INJECTOR_ID);
-		SortedMap<Integer, List<IConfigurationElement>> sorted =
-				new TreeMap<Integer, List<IConfigurationElement>>(new Comparator<Integer>()
+		ListSortedMap<Integer, IConfigurationElement> sorted =
+				new ArrayListTreeMap<Integer, IConfigurationElement>(new Comparator<Integer>()
 				{
 					@Override
 					public int compare(Integer first, Integer second)
@@ -61,13 +61,7 @@ public final class Injector
 		for (IConfigurationElement element : config)
 		{
 			int priority = ExtensionPointHelper.getIntegerForProperty(element, "priority", 0); //$NON-NLS-1$
-			List<IConfigurationElement> list = sorted.get(priority);
-			if (list == null)
-			{
-				list = new ArrayList<IConfigurationElement>();
-				sorted.put(priority, list);
-			}
-			list.add(element);
+			sorted.putSingle(priority, element);
 		}
 
 		//next iterate through them in sorted order
@@ -82,8 +76,7 @@ public final class Injector
 					boolean injectable = "injectable".equals(element.getName()); //$NON-NLS-1$
 					if (bind)
 					{
-						Class<?> implementationClass =
-								ExtensionPointHelper.getClassForProperty(element, "implementation"); //$NON-NLS-1$
+						Class<?> implementationClass = ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
 						Class<?> bindingClass = ExtensionPointHelper.getClassForProperty(element, "binding"); //$NON-NLS-1$
 						InjectorFactory.getDefault().addBinding(bindingClass).implementedBy(implementationClass);
 					}

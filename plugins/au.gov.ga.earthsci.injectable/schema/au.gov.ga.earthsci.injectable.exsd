@@ -59,7 +59,7 @@
          </documentation>
       </annotation>
       <complexType>
-         <attribute name="implementation" type="string" use="required">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   Class that implements the injectable interfaces/classes. Should be marked @Creatable. Passed to the IBinding.implementedBy() method.
