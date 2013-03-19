@@ -21,13 +21,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 
 import au.gov.ga.earthsci.core.model.ModelStatus;
-import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
-import au.gov.ga.earthsci.dispatch.Dispatcher;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentCaller;
 import au.gov.ga.earthsci.intent.IntentManager;
-import au.gov.ga.earthsci.notification.NotificationCategory;
-import au.gov.ga.earthsci.notification.NotificationManager;
+import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
 
 /**
  * Layer loading helper which uses the Intent system for loading layers from
@@ -74,11 +71,13 @@ public class IntentLayerLoader
 			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
 			layerIntent.layerNode.setStatus(ModelStatus.error(e.getLocalizedMessage(), e));
 
-			NotificationManager.error(
+			//TODO this causes an error on load, and makes all parts fail to display
+			//perhaps because the dialog error window is open when the parts are created?
+			/*NotificationManager.error(
 					Messages.IntentLayerLoader_FailedLoadNotificationTitle,
 					Messages.IntentLayerLoader_FailedLoadNotificationDescription
 							+ UTF8URLEncoder.decode(intent.getURI().toString()) + ": " + e.getLocalizedMessage(), //$NON-NLS-1$
-					NotificationCategory.FILE_IO);
+					NotificationCategory.FILE_IO);*/
 		}
 	};
 
