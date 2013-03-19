@@ -27,6 +27,11 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/releases/juno</url>
 		</repository>
+		<repository>
+			<id>uomo</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/uomo/rc4</url>
+		</repository>
 	</repositories>
 
 	<build>

@@ -21,6 +21,7 @@
 		<module>au.gov.ga.earthsci.testbase</module>
 		<module>au.gov.ga.earthsci.logging</module>
 		<module>au.gov.ga.earthsci.injectable</module>
+		<module>au.gov.ga.earthsci.model</module>
 		<module>au.gov.ga.earthsci.core</module>
 		<module>au.gov.ga.earthsci.core.tests</module>
 		<module>au.gov.ga.earthsci.worldwind</module>
