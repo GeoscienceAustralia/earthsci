@@ -23,7 +23,6 @@ import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +32,7 @@ import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
 import au.gov.ga.earthsci.common.collection.ListSortedMap;
 import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 import au.gov.ga.earthsci.intent.Intent;
+import au.gov.ga.earthsci.intent.util.ContextInjectionFactoryThreadSafe;
 
 /**
  * Injectable {@link IXmlLoader} manager. Provides a centralised mechanism for
@@ -135,7 +135,7 @@ public class XmlLoaderManager
 					document.getDocumentElement().getNodeName(), urlContext));
 		}
 		IEclipseContext child = context.createChild();
-		IXmlLoader loaderInstance = ContextInjectionFactory.make(loader.loaderClass, child);
+		IXmlLoader loaderInstance = ContextInjectionFactoryThreadSafe.make(loader.loaderClass, child);
 		return loaderInstance.load(document, urlContext, intent);
 	}
 

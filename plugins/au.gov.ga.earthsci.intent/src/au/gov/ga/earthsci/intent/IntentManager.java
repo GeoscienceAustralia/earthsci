@@ -23,13 +23,13 @@ import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
 import au.gov.ga.earthsci.common.collection.ListSortedMap;
+import au.gov.ga.earthsci.intent.util.ContextInjectionFactoryThreadSafe;
 
 /**
  * Injectable {@link Intent} manager, used for starting intents. Contains a
@@ -117,7 +117,7 @@ public class IntentManager
 		if (handlerClass != null)
 		{
 			IEclipseContext child = context.createChild();
-			IIntentHandler handler = ContextInjectionFactory.make(handlerClass, child);
+			IIntentHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
 			handler.handle(intent, caller);
 		}
 		else
