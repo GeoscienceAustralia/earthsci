@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.intent.xml;
+package au.gov.ga.earthsci.core.xml;
 
 import java.net.URL;
 import java.util.Comparator;
@@ -51,7 +51,7 @@ public class XmlLoaderManager
 		return instance;
 	}
 
-	private static final String LOADER_FILTER_ID = "au.gov.ga.earthsci.xmlLoaders"; //$NON-NLS-1$
+	private static final String LOADER_FILTER_ID = "au.gov.ga.earthsci.core.xmlLoaders"; //$NON-NLS-1$
 	private static final Logger logger = LoggerFactory.getLogger(XmlLoaderManager.class);
 
 	//filters, sorted descending by priority

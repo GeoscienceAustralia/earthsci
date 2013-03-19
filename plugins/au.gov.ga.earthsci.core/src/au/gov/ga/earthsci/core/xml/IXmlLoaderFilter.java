@@ -13,33 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.intent.xml;
+package au.gov.ga.earthsci.core.xml;
+
+import org.w3c.dom.Document;
+
+import au.gov.ga.earthsci.intent.Intent;
 
 /**
- * Exception thrown by the {@link XmlLoaderManager} if a matching loader to load
- * an XML document could not be found.
+ * Defines a filter that checks if an XML document can be loaded by the
+ * associated {@link IXmlLoader}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class XmlLoaderNotFoundException extends Exception
+public interface IXmlLoaderFilter
 {
-	public XmlLoaderNotFoundException()
-	{
-		super();
-	}
-
-	public XmlLoaderNotFoundException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
-
-	public XmlLoaderNotFoundException(String message)
-	{
-		super(message);
-	}
-
-	public XmlLoaderNotFoundException(Throwable cause)
-	{
-		super(cause);
-	}
+	/**
+	 * Can this document be loaded by this loader?
+	 * 
+	 * @param document
+	 *            Document to check
+	 * @param intent
+	 *            Intent associated with the document
+	 * @return True if this document can be loaded by this loader
+	 */
+	boolean canLoad(Document document, Intent intent);
 }

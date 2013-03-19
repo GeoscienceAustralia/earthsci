@@ -25,10 +25,10 @@ import java.net.URL;
 
 import org.w3c.dom.Document;
 
+import au.gov.ga.earthsci.core.xml.IXmlLoader;
+import au.gov.ga.earthsci.core.xml.IXmlLoaderCallback;
+import au.gov.ga.earthsci.core.xml.IXmlLoaderFilter;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.xml.IXmlLoader;
-import au.gov.ga.earthsci.intent.xml.IXmlLoaderCallback;
-import au.gov.ga.earthsci.intent.xml.IXmlLoaderFilter;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**

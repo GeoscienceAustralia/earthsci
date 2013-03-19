@@ -9,6 +9,7 @@
    <extension-point id="au.gov.ga.earthsci.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.bookmark.creator.exsd"/>
    <extension-point id="au.gov.ga.earthsci.bookmark.exporter" name="Bookmark Property Exporter" schema="schema/au.gov.ga.earthsci.bookmark.exporter.exsd"/>
    <extension-point id="au.gov.ga.earthsci.hud" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.hud.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.core.xmlLoaders.exsd"/>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retriever">
       <retriever
@@ -74,6 +75,10 @@
    </extension>
    <extension
          point="au.gov.ga.earthsci.injectable">
+      <inject
+            class="au.gov.ga.earthsci.core.xml.XmlLoaderManager"
+            priority="10">
+      </inject>
       <inject
             class="au.gov.ga.earthsci.core.util.ExtensionRegistryUtil"
             priority="0">
@@ -147,7 +152,6 @@
          point="au.gov.ga.earthsci.intentFilters">
       <filter
             class="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
-            handler="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
             priority="0">
          <scheme
                name="class">
@@ -172,7 +176,7 @@
       </locator>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.xmlLoaders">
+         point="au.gov.ga.earthsci.core.xmlLoaders">
       <loader
             class="au.gov.ga.earthsci.core.model.layer.LayerXmlLoader"
             filter="au.gov.ga.earthsci.core.model.layer.LayerXmlLoader"

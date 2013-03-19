@@ -26,11 +26,11 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.w3c.dom.Document;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import au.gov.ga.earthsci.core.xml.IXmlLoader;
+import au.gov.ga.earthsci.core.xml.IXmlLoaderCallback;
+import au.gov.ga.earthsci.core.xml.XmlLoaderManager;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.xml.IXmlLoader;
-import au.gov.ga.earthsci.intent.xml.IXmlLoaderCallback;
-import au.gov.ga.earthsci.intent.xml.XmlLoaderManager;
 
 /**
  * IntentHandler that uses the retrieval service to retrieve the Intent's data,

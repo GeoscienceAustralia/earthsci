@@ -18,5 +18,4 @@ Require-Bundle: org.eclipse.e4.core.di;bundle-version="1.1.0",
 Export-Package: au.gov.ga.earthsci.intent,
  au.gov.ga.earthsci.intent.dispatch,
  au.gov.ga.earthsci.intent.locator,
- au.gov.ga.earthsci.intent.util,
- au.gov.ga.earthsci.intent.xml
+ au.gov.ga.earthsci.intent.util
