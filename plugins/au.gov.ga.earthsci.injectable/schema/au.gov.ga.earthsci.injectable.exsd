@@ -59,7 +59,7 @@
          </documentation>
       </annotation>
       <complexType>
-         <attribute name="implementation" type="string" use="required">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   Class that implements the injectable interfaces/classes. Should be marked @Creatable. Passed to the IBinding.implementedBy() method.
@@ -77,6 +77,13 @@
                <appinfo>
                   <meta.attribute kind="java"/>
                </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  Priority of this binding. Bindings with higher priority are processed first.
+               </documentation>
             </annotation>
          </attribute>
       </complexType>
@@ -97,6 +104,13 @@
                <appinfo>
                   <meta.attribute kind="java"/>
                </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  Priority of this injectable. Injectables with higher priority are processed first.
+               </documentation>
             </annotation>
          </attribute>
       </complexType>
@@ -121,6 +135,13 @@
                <appinfo>
                   <meta.attribute kind="java"/>
                </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  Priority of this inject element. Injects with higher priority are processed first.
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

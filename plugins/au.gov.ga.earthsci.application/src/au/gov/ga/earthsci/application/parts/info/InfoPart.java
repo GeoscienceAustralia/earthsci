@@ -44,7 +44,7 @@ import au.gov.ga.earthsci.core.model.layer.LayerNode;
  */
 public class InfoPart
 {
-	public static final String PART_ID = "au.gov.ga.earthsci.application.part.information"; //$NON-NLS-1$
+	public static final String PART_ID = "au.gov.ga.earthsci.application.information.part"; //$NON-NLS-1$
 	public static final String INPUT_NAME = PART_ID + ".input"; //$NON-NLS-1$
 
 	private Browser browser;

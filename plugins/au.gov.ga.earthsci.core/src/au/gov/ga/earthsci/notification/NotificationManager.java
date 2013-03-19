@@ -77,13 +77,13 @@ public class NotificationManager
 			ExtensionRegistryUtil.createFromExtension(NOTIFICATION_RECEIVER_EXTENSION_POINT_ID, 
 													  NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, 
 													  INotificationReceiver.class, 
-													  new Callback() {
+													  new Callback<INotificationReceiver>() {
 
 				@Override
-				public void run(Object object, IConfigurationElement element, IEclipseContext context)
+				public void run(INotificationReceiver receiver, IConfigurationElement element, IEclipseContext context)
 				{
-					context.set(element.getAttribute(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE), object);
-					registerReceiver((INotificationReceiver)object);
+					context.set(element.getAttribute(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE), receiver);
+					registerReceiver(receiver);
 				}
 			});
 		}
@@ -113,12 +113,12 @@ public class NotificationManager
 			ExtensionRegistryUtil.createFromExtension(NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID, 
 													  NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, 
 													  INotificationCategoryProvider.class, 
-													  new Callback() {
+													  new Callback<INotificationCategoryProvider>() {
 
 				@Override
-				public void run(Object object, IConfigurationElement element, IEclipseContext context)
+				public void run(INotificationCategoryProvider provider, IConfigurationElement element, IEclipseContext context)
 				{
-					((INotificationCategoryProvider)object).registerNotificationCategories();
+					provider.registerNotificationCategories();
 				}
 			});
 		}
@@ -223,5 +223,56 @@ public class NotificationManager
 		{
 			receiversLock.writeLock().unlock();
 		}
+	}
+
+	/**
+	 * Create an error level notification with no acknowledgement, and pass it
+	 * to the {@link #notify(INotification)} method.
+	 * 
+	 * @param title
+	 *            Title of the notification
+	 * @param text
+	 *            Text of the notification
+	 * @param category
+	 *            Notification category
+	 */
+	public static void error(String title, String text, NotificationCategory category)
+	{
+		notify(Notification.create(NotificationLevel.ERROR, title, text).inCategory(category)
+				.requiringAcknowledgement(null).build());
+	}
+
+	/**
+	 * Create an warning level notification with no acknowledgement, and pass it
+	 * to the {@link #notify(INotification)} method.
+	 * 
+	 * @param title
+	 *            Title of the notification
+	 * @param text
+	 *            Text of the notification
+	 * @param category
+	 *            Notification category
+	 */
+	public static void warning(String title, String text, NotificationCategory category)
+	{
+		notify(Notification.create(NotificationLevel.WARNING, title, text).inCategory(category)
+				.requiringAcknowledgement(null).build());
+	}
+
+	/**
+	 * Create an information level notification with no acknowledgement, and pass it
+	 * to the {@link #notify(INotification)} method.
+	 * 
+	 * @param title
+	 *            Title of the notification
+	 * @param text
+	 *            Text of the notification
+	 * @param category
+	 *            Notification category
+	 */
+	public static void info(String title, String text, NotificationCategory category)
+	{
+		notify(Notification.create(NotificationLevel.INFORMATION, title, text).inCategory(category)
+				.requiringAcknowledgement(null).build());
 	}
 }

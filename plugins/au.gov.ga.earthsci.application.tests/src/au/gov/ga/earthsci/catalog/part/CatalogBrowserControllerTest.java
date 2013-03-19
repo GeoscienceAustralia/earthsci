@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 
+import org.eclipse.core.runtime.content.IContentType;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Before;
@@ -404,6 +405,12 @@ public class CatalogBrowserControllerTest
 		public String getName()
 		{
 			return name;
+		}
+
+		@Override
+		public IContentType getLayerContentType()
+		{
+			return null;
 		}
 	}
 	

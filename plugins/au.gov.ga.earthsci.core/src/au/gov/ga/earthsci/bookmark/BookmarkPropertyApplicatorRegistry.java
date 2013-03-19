@@ -54,11 +54,11 @@ public class BookmarkPropertyApplicatorRegistry
 		logger.debug("Registering bookmark property applicators"); //$NON-NLS-1$
 		try
 		{
-			ExtensionRegistryUtil.createFromExtension(EXTENSION_POINT_ID, CLASS_ATTRIBUTE, IBookmarkPropertyApplicator.class, new Callback(){
+			ExtensionRegistryUtil.createFromExtension(EXTENSION_POINT_ID, CLASS_ATTRIBUTE, IBookmarkPropertyApplicator.class, new Callback<IBookmarkPropertyApplicator>(){
 				@Override
-				public void run(Object object, IConfigurationElement element, IEclipseContext context)
+				public void run(IBookmarkPropertyApplicator applicator, IConfigurationElement element, IEclipseContext context)
 				{
-					registerApplicator((IBookmarkPropertyApplicator) object);
+					registerApplicator(applicator);
 				}
 			});
 		}

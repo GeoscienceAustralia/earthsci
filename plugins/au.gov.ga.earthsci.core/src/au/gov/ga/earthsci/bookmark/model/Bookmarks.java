@@ -15,8 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -27,10 +27,10 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 
 import au.gov.ga.earthsci.bookmark.Messages;
 import au.gov.ga.earthsci.bookmark.io.BookmarksPersister;
+import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
-import au.gov.ga.earthsci.core.util.collection.ArrayListTreeMap;
 
 
 /**
@@ -72,7 +72,7 @@ public class Bookmarks extends AbstractPropertyChangeBean implements IBookmarks
 	@Override
 	public IBookmarkList getListByName(String name)
 	{
-		ArrayList<IBookmarkList> lists = nameToListMap.get(name);
+		List<IBookmarkList> lists = nameToListMap.get(name);
 		if (lists != null && lists.size() > 0)
 		{
 			return lists.get(0);

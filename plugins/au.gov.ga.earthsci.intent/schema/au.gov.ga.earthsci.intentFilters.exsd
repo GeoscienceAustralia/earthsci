@@ -1,0 +1,248 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="au.gov.ga.earthsci.intent" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="au.gov.ga.earthsci.intent" id="au.gov.ga.earthsci.intentFilters" name="IntentFilters"/>
+      </appinfo>
+      <documentation>
+         [Enter description of this extension point.]
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+         <documentation>
+            Extension points used by the Intent system.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="filter"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="filter">
+      <annotation>
+         <documentation>
+            Allows specification of Intent filters, which link an intent handler implementation to a list of properties that can be matched on an Intent.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="action"/>
+            <element ref="category"/>
+            <element ref="content-type"/>
+            <element ref="return-type"/>
+            <element ref="scheme"/>
+            <element ref="authority"/>
+            <element ref="path"/>
+         </choice>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Class that handles the Intent.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.intent.IntentHandler"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  Priority of this filter. Filters with a higher priority are preferred over those with a lower priority.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="action">
+      <annotation>
+         <documentation>
+            Intent filter&apos;s action. If an Intent defines an action, then this filter must also define the action for it to match the Intent.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Intent filter&apos;s action. If an Intent defines an action, then this filter must also define the action for it to match the Intent.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="category">
+      <annotation>
+         <documentation>
+            Intent filter&apos;s category. The filter must define every category defined in the Intent (if any) for it to match.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Intent filter&apos;s category. The filter must define every category defined in the Intent (if any) for it to match.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="content-type">
+      <annotation>
+         <documentation>
+            Eclipse content type that this filter matches. Custom content types can be defined using the org.eclipse.contenttype.contentTypes extension point.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Id of the Eclipse content type that this filter will match by checking an Intent&apos;s defined content type.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="scheme">
+      <annotation>
+         <documentation>
+            Matches the Intent&apos;s URI&apos;s scheme part.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Matches the Intent&apos;s URI&apos;s scheme part.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="authority">
+      <annotation>
+         <documentation>
+            Matches the Intent&apos;s URI&apos;s authority part, after a scheme part has already been matched.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Matches the Intent&apos;s URI&apos;s authority part, after a scheme part has already been matched.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="path">
+      <annotation>
+         <documentation>
+            Matches the Intent&apos;s URI&apos;s path part, after a authority part has already been matched.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Matches the Intent&apos;s URI&apos;s path part, after a authority part has already been matched.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="return-type">
+      <annotation>
+         <documentation>
+            Class of an object that this filter&apos;s handler can return to the Intent&apos;s caller after completion.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Class of an object that this filter&apos;s handler can return to the Intent&apos;s caller after completion.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         [Enter the first release in which this extension point appears.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+
+</schema>

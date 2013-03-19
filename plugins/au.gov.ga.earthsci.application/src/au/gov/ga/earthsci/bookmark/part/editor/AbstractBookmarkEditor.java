@@ -18,7 +18,7 @@ package au.gov.ga.earthsci.bookmark.part.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.gov.ga.earthsci.core.util.collection.ArrayListTreeMap;
+import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
 
 
 /**

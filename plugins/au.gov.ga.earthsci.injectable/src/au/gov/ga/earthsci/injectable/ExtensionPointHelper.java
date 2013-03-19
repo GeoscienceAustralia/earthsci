@@ -33,6 +33,32 @@ import org.osgi.framework.Bundle;
 public class ExtensionPointHelper
 {
 	/**
+	 * Get an integer value from the extension point configuration element under
+	 * the given property name.
+	 * 
+	 * @param element
+	 *            Extension point configuration element
+	 * @param propertyName
+	 *            Property name in the element that defines the integer value
+	 * @param defaultValue
+	 *            Value to return if the string attribute cannot be parsed as an
+	 *            int
+	 * @return Integer value of the configuration element's attribute for the
+	 *         given property name
+	 */
+	public static int getIntegerForProperty(IConfigurationElement element, String propertyName, int defaultValue)
+	{
+		try
+		{
+			return Integer.parseInt(element.getAttribute(propertyName));
+		}
+		catch (NumberFormatException e)
+		{
+			return defaultValue;
+		}
+	}
+
+	/**
 	 * Load the class defined in the extension point configuration element under
 	 * the given property name.
 	 * 

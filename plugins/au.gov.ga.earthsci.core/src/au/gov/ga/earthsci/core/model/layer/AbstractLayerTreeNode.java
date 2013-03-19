@@ -25,6 +25,11 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
+
+import au.gov.ga.earthsci.common.collection.HashSetHashMap;
+import au.gov.ga.earthsci.common.collection.SetMap;
 import au.gov.ga.earthsci.core.model.IModelStatus;
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.persistence.Exportable;
@@ -32,8 +37,6 @@ import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.IEnableable;
-import au.gov.ga.earthsci.core.util.collection.HashSetHashMap;
-import au.gov.ga.earthsci.core.util.collection.SetMap;
 import au.gov.ga.earthsci.core.worldwind.WorldWindCompoundElevationModel;
 
 /**
@@ -51,13 +54,14 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
 	private String label;
 	private URI uri;
+	private IContentType contentType;
 	private URL infoURL;
 	private URL legendURL;
 	private URL iconURL;
 	private boolean expanded;
 	private final Object semaphore = new Object();
 	private IModelStatus status = ModelStatus.ok(null);
-	
+
 	protected AbstractLayerTreeNode()
 	{
 		super();
@@ -113,6 +117,29 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	public void setURI(URI uri)
 	{
 		firePropertyChange("uRI", getURI(), this.uri = uri); //$NON-NLS-1$
+	}
+
+	@Override
+	public IContentType getContentType()
+	{
+		return contentType;
+	}
+
+	@Override
+	public void setContentType(IContentType contentType)
+	{
+		firePropertyChange("contentType", getContentType(), this.contentType = contentType); //$NON-NLS-1$
+	}
+
+	@Persistent
+	public String getContentTypeId()
+	{
+		return contentType.getId();
+	}
+
+	public void setContentTypeId(String contentTypeId)
+	{
+		contentType = Platform.getContentTypeManager().getContentType(contentTypeId);
 	}
 
 	@Persistent
@@ -421,13 +448,13 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	{
 		firePropertyChange("expanded", isExpanded(), this.expanded = expanded); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public IModelStatus getStatus()
 	{
 		return status;
 	}
-	
+
 	@Override
 	public void setStatus(IModelStatus status)
 	{
