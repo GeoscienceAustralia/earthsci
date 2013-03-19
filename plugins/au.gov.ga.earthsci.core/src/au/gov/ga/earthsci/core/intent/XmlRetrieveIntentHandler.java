@@ -29,6 +29,7 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.xml.IXmlLoader;
+import au.gov.ga.earthsci.intent.xml.IXmlLoaderCallback;
 import au.gov.ga.earthsci.intent.xml.XmlLoaderManager;
 
 /**
@@ -44,14 +45,27 @@ public class XmlRetrieveIntentHandler extends AbstractRetrieveIntentHandler
 	private IEclipseContext context;
 
 	@Override
-	protected void handle(IRetrievalData data, URL url, Intent intent, IIntentCallback callback)
+	protected void handle(IRetrievalData data, URL url, Intent intent, final IIntentCallback callback)
 	{
 		try
 		{
 			DocumentBuilder builder = WWXML.createDocumentBuilder(true);
 			Document document = builder.parse(data.getInputStream());
-			Object loaded = XmlLoaderManager.getInstance().load(document, url, intent, context);
-			callback.completed(loaded, intent);
+			IXmlLoaderCallback loaderCallback = new IXmlLoaderCallback()
+			{
+				@Override
+				public void completed(Object result, Document document, URL url, Intent intent)
+				{
+					callback.completed(result, intent);
+				}
+
+				@Override
+				public void error(Exception e, Document document, URL url, Intent intent)
+				{
+					callback.error(e, intent);
+				}
+			};
+			XmlLoaderManager.getInstance().load(document, url, intent, loaderCallback, context);
 		}
 		catch (Exception e)
 		{

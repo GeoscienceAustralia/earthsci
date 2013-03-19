@@ -17,36 +17,44 @@ package au.gov.ga.earthsci.intent.xml;
 
 import java.net.URL;
 
-import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.w3c.dom.Document;
 
 import au.gov.ga.earthsci.intent.Intent;
 
 /**
- * Loads an XML document to an object. Only called with documents that match
- * this loader's {@link IXmlLoaderFilter}.
- * <p/>
- * Upon instatiation, an {@link IEclipseContext} is used to inject any annotated
- * methods/fields into this object.
+ * Callback used to get a result from the handling of an XML load. This called
+ * by an {@link IXmlLoader} to notify the caller of the result.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IXmlLoader
+public interface IXmlLoaderCallback
 {
 	/**
-	 * Load the given XML document.
-	 * <p/>
-	 * Must notify the callback once the XML loading is completed or has failed.
+	 * Called by the XML loader when it has completed successfully. If the
+	 * loader didn't produce a result, result will be null.
 	 * 
+	 * @param result
+	 *            Result of the XML load
 	 * @param document
-	 *            Document to load
+	 *            Document that was loaded
 	 * @param url
-	 *            URL of the loaded document, can be used as a context for any
-	 *            relative URLs in the XML (can be null)
+	 *            URL of the document that was loaded
 	 * @param intent
-	 *            Intent associated with this load
-	 * @param callback
-	 *            Callback to notify when completed (or failed)
+	 *            Intent that completed
 	 */
-	void load(Document document, URL url, Intent intent, IXmlLoaderCallback callback);
+	void completed(Object result, Document document, URL url, Intent intent);
+
+	/**
+	 * Called when the Intent handler failed with an error.
+	 * 
+	 * @param e
+	 *            Error generated from handling the Intent
+	 * @param document
+	 *            Document that failed
+	 * @param url
+	 *            URL of the document that failed
+	 * @param intent
+	 *            Intent that failed
+	 */
+	void error(Exception e, Document document, URL url, Intent intent);
 }

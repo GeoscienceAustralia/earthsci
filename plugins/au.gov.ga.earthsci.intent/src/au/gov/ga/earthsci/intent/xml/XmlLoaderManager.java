@@ -110,7 +110,7 @@ public class XmlLoaderManager
 	 * 
 	 * @param document
 	 *            Document to load
-	 * @param urlContext
+	 * @param url
 	 *            URL of the document, used to locate relative URLs within the
 	 *            document
 	 * @param intent
@@ -121,22 +121,21 @@ public class XmlLoaderManager
 	 * @throws XmlLoaderNotFoundException
 	 *             If a loader that knows how to load the document cannot be
 	 *             found
-	 * @throws XmlLoaderException
-	 *             Thrown by the matched loader during XML loading if an error
-	 *             occurs
 	 */
-	public Object load(Document document, URL urlContext, Intent intent, IEclipseContext context)
-			throws XmlLoaderNotFoundException, XmlLoaderException
+	public void load(Document document, URL url, Intent intent, IXmlLoaderCallback callback, IEclipseContext context)
+			throws XmlLoaderNotFoundException
 	{
 		XmlLoaderAndFilter loader = findLoader(document, intent);
 		if (loader == null)
 		{
-			throw new XmlLoaderNotFoundException(String.format("XML loader not found for [%s] document from URL: %s", //$NON-NLS-1$
-					document.getDocumentElement().getNodeName(), urlContext));
+			throw new XmlLoaderNotFoundException(String.format(
+					"XML loader not found for [%s] document from URL: %s", //$NON-NLS-1$
+					document == null ? null : document.getDocumentElement().getNodeName(),
+					url == null ? null : url.toString()));
 		}
 		IEclipseContext child = context.createChild();
 		IXmlLoader loaderInstance = ContextInjectionFactoryThreadSafe.make(loader.loaderClass, child);
-		return loaderInstance.load(document, urlContext, intent);
+		loaderInstance.load(document, url, intent, callback);
 	}
 
 	private XmlLoaderAndFilter findLoader(Document document, Intent intent)
@@ -145,9 +144,16 @@ public class XmlLoaderManager
 		{
 			for (XmlLoaderAndFilter loader : list)
 			{
-				if (loader.filter.canLoad(document, intent))
+				try
 				{
-					return loader;
+					if (loader.filter.canLoad(document, intent))
+					{
+						return loader;
+					}
+				}
+				catch (Exception e)
+				{
+					//ignore exception from any loader's canLoad() method
 				}
 			}
 		}

@@ -27,7 +27,7 @@ import org.w3c.dom.Document;
 
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.xml.IXmlLoader;
-import au.gov.ga.earthsci.intent.xml.XmlLoaderException;
+import au.gov.ga.earthsci.intent.xml.IXmlLoaderCallback;
 import au.gov.ga.earthsci.intent.xml.IXmlLoaderFilter;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
@@ -46,18 +46,19 @@ public class LayerXmlLoader implements IXmlLoader, IXmlLoaderFilter
 	}
 
 	@Override
-	public Object load(Document document, URL context, Intent intent) throws XmlLoaderException
+	public void load(Document document, URL url, Intent intent, IXmlLoaderCallback callback)
 	{
 		AVList params = new AVListImpl();
-		params.setValue(AVKeyMore.CONTEXT_URL, context);
+		params.setValue(AVKeyMore.CONTEXT_URL, url);
 		try
 		{
 			Factory factory = (Factory) WorldWind.createConfigurationComponent(AVKey.LAYER_FACTORY);
-			return factory.createFromConfigSource(document.getDocumentElement(), params);
+			Object result = factory.createFromConfigSource(document.getDocumentElement(), params);
+			callback.completed(result, document, url, intent);
 		}
 		catch (Exception e)
 		{
-			throw new XmlLoaderException(e);
+			callback.error(e, document, url, intent);
 		}
 	}
 }
