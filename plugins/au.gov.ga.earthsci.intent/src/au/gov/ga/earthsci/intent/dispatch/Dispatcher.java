@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.dispatch;
+package au.gov.ga.earthsci.intent.dispatch;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -122,7 +122,8 @@ public class Dispatcher
 			logger.error("Could not find dispatch handler for object: " + object); //$NON-NLS-1$
 			return;
 		}
-		DispatchHandler handler = ContextInjectionFactory.make(handlerClass, context);
+		IEclipseContext child = context.createChild();
+		DispatchHandler handler = ContextInjectionFactory.make(handlerClass, child);
 		handler.handle(object);
 	}
 

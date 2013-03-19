@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.dispatch;
+package au.gov.ga.earthsci.intent.dispatch;
 
 import java.util.HashSet;
 import java.util.Set;

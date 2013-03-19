@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.dispatch;
+package au.gov.ga.earthsci.intent.dispatch;
+
+import org.eclipse.e4.core.contexts.IEclipseContext;
 
 /**
  * Handles a dispatched domain object of a particular class.
+ * <p/>
+ * Upon instatiation, an {@link IEclipseContext} is used to inject any annotated
+ * methods/fields into this object.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
