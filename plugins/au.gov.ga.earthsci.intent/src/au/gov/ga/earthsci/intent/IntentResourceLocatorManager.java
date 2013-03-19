@@ -31,7 +31,7 @@ import au.gov.ga.earthsci.util.collection.ArrayListTreeMap;
 import au.gov.ga.earthsci.util.collection.ListSortedMap;
 
 /**
- * Injectable manager of {@link IntentResourceLocator}s. Used to translate an
+ * Injectable manager of {@link IIntentResourceLocator}s. Used to translate an
  * {@link Intent}'s URI to a URL from which the resource can be retrieved.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
@@ -50,8 +50,8 @@ public class IntentResourceLocatorManager
 	private static final Logger logger = LoggerFactory.getLogger(IntentResourceLocatorManager.class);
 
 	//filters, sorted descending by priority
-	private final ListSortedMap<Integer, IntentResourceLocator> locators =
-			new ArrayListTreeMap<Integer, IntentResourceLocator>(new Comparator<Integer>()
+	private final ListSortedMap<Integer, IIntentResourceLocator> locators =
+			new ArrayListTreeMap<Integer, IIntentResourceLocator>(new Comparator<Integer>()
 			{
 				@Override
 				public int compare(Integer o1, Integer o2)
@@ -82,10 +82,10 @@ public class IntentResourceLocatorManager
 				if (isLocator)
 				{
 					@SuppressWarnings("unchecked")
-					Class<? extends IntentResourceLocator> locatorClass =
-							(Class<? extends IntentResourceLocator>) ExtensionPointHelper.getClassForProperty(element,
+					Class<? extends IIntentResourceLocator> locatorClass =
+							(Class<? extends IIntentResourceLocator>) ExtensionPointHelper.getClassForProperty(element,
 									"class"); //$NON-NLS-1$
-					IntentResourceLocator locator = locatorClass.newInstance();
+					IIntentResourceLocator locator = locatorClass.newInstance();
 					int priority = ExtensionPointHelper.getIntegerForProperty(element, "priority", 0); //$NON-NLS-1$
 					locators.putSingle(priority, locator);
 				}
@@ -99,7 +99,7 @@ public class IntentResourceLocatorManager
 
 	/**
 	 * Locate the given Intent's URI as a URL, using the registered
-	 * {@link IntentResourceLocator}s. If no locator can be found that
+	 * {@link IIntentResourceLocator}s. If no locator can be found that
 	 * recognises the Intent's URI, null is returned.
 	 * 
 	 * @param intent
@@ -109,9 +109,9 @@ public class IntentResourceLocatorManager
 	 */
 	public URL locate(Intent intent)
 	{
-		for (List<IntentResourceLocator> list : locators.values())
+		for (List<IIntentResourceLocator> list : locators.values())
 		{
-			for (IntentResourceLocator locator : list)
+			for (IIntentResourceLocator locator : list)
 			{
 				URL url = locator.locate(intent);
 				if (url != null)

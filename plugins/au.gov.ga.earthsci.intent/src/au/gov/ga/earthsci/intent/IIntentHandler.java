@@ -13,24 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.intent.dispatch;
+package au.gov.ga.earthsci.intent;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 
 /**
- * Handles a dispatched domain object of a particular class.
+ * Represents a handler for an intent. This is an implementation that actually
+ * performs the {@link Intent}'s action. Usually associated with an
+ * {@link IntentFilter} for lookup, but can also be associated directly with an
+ * {@link Intent}.
  * <p/>
  * Upon instatiation, an {@link IEclipseContext} is used to inject any annotated
  * methods/fields into this object.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface DispatchHandler
+public interface IIntentHandler
 {
 	/**
-	 * Handle the given dispatched domain object.
+	 * Handle this intent. Must notify the caller when completed (or failed).
 	 * 
-	 * @param object
+	 * @param intent
+	 *            Intent to handle.
+	 * @param caller
+	 *            Caller to notify of completion.
 	 */
-	void handle(Object object);
+	void handle(Intent intent, IIntentCaller caller);
 }

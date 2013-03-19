@@ -24,13 +24,13 @@ import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 
 /**
  * Filter used to match dispatched objects of certain type(s) to a
- * {@link DispatchHandler} implementation.
+ * {@link IDispatchHandler} implementation.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class DispatchFilter
 {
-	private Class<? extends DispatchHandler> handler;
+	private Class<? extends IDispatchHandler> handler;
 	private final Set<Class<?>> types = new HashSet<Class<?>>();
 	private int priority = 0;
 
@@ -41,7 +41,7 @@ public class DispatchFilter
 	@SuppressWarnings("unchecked")
 	public DispatchFilter(IConfigurationElement element) throws ClassNotFoundException
 	{
-		this.handler = (Class<? extends DispatchHandler>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
+		this.handler = (Class<? extends IDispatchHandler>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
 		IConfigurationElement[] types = element.getChildren("type"); //$NON-NLS-1$
 		for (IConfigurationElement type : types)
 		{
@@ -61,7 +61,7 @@ public class DispatchFilter
 	/**
 	 * @return Class that handles dispatched objects for this filter
 	 */
-	public Class<? extends DispatchHandler> getHandler()
+	public Class<? extends IDispatchHandler> getHandler()
 	{
 		return handler;
 	}
@@ -72,7 +72,7 @@ public class DispatchFilter
 	 * @param handler
 	 * @return this
 	 */
-	public DispatchFilter setHandler(Class<? extends DispatchHandler> handler)
+	public DispatchFilter setHandler(Class<? extends IDispatchHandler> handler)
 	{
 		this.handler = handler;
 		return this;

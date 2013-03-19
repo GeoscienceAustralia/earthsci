@@ -42,7 +42,7 @@ import au.gov.ga.earthsci.util.collection.ListSortedMap;
  * layer is returned (eg a catalog node), it can pass the object to the
  * {@link Dispatcher} to attempt to handle the object gracefully.
  * <p/>
- * UI components and plugins can define {@link DispatchHandler}s via an
+ * UI components and plugins can define {@link IDispatchHandler}s via an
  * extension point which handle instances of specific classes.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
@@ -116,14 +116,14 @@ public class Dispatcher
 	public void dispatch(Object object, IEclipseContext context)
 	{
 		DispatchFilter filter = findFilter(object);
-		Class<? extends DispatchHandler> handlerClass = filter == null ? null : filter.getHandler();
+		Class<? extends IDispatchHandler> handlerClass = filter == null ? null : filter.getHandler();
 		if (handlerClass == null)
 		{
 			logger.error("Could not find dispatch handler for object: " + object); //$NON-NLS-1$
 			return;
 		}
 		IEclipseContext child = context.createChild();
-		DispatchHandler handler = ContextInjectionFactory.make(handlerClass, child);
+		IDispatchHandler handler = ContextInjectionFactory.make(handlerClass, child);
 		handler.handle(object);
 	}
 

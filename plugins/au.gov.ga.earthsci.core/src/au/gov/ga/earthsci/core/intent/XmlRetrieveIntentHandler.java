@@ -27,14 +27,14 @@ import org.w3c.dom.Document;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.IntentCaller;
-import au.gov.ga.earthsci.intent.xml.XmlLoader;
+import au.gov.ga.earthsci.intent.IIntentCaller;
+import au.gov.ga.earthsci.intent.xml.IXmlLoader;
 import au.gov.ga.earthsci.intent.xml.XmlLoaderManager;
 
 /**
  * IntentHandler that uses the retrieval service to retrieve the Intent's data,
  * then loads the data as an XML document, and passes the document to the
- * {@link XmlLoader} system.
+ * {@link IXmlLoader} system.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -44,7 +44,7 @@ public class XmlRetrieveIntentHandler extends AbstractRetrieveIntentHandler
 	private IEclipseContext context;
 
 	@Override
-	protected void handle(IRetrievalData data, URL url, Intent intent, IntentCaller caller)
+	protected void handle(IRetrievalData data, URL url, Intent intent, IIntentCaller caller)
 	{
 		try
 		{

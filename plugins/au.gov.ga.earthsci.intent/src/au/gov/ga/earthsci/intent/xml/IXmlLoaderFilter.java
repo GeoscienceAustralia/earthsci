@@ -21,11 +21,11 @@ import au.gov.ga.earthsci.intent.Intent;
 
 /**
  * Defines a filter that checks if an XML document can be loaded by the
- * associated {@link XmlLoader}.
+ * associated {@link IXmlLoader}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface XmlLoaderFilter
+public interface IXmlLoaderFilter
 {
 	/**
 	 * Can this document be loaded by this loader?

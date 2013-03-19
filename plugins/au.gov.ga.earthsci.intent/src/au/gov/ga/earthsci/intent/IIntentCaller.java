@@ -17,12 +17,12 @@ package au.gov.ga.earthsci.intent;
 
 /**
  * The caller of the {@link Intent}, used to get a result from the handling of
- * an Intent. This called by an {@link IntentHandler} to notify the caller of
+ * an Intent. This called by an {@link IIntentHandler} to notify the caller of
  * the result.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IntentCaller
+public interface IIntentCaller
 {
 	/**
 	 * Called by the Intent handler when it has completed successfully. If the

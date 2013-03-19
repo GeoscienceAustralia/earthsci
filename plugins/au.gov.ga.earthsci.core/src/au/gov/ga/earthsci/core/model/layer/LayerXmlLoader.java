@@ -26,17 +26,17 @@ import java.net.URL;
 import org.w3c.dom.Document;
 
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.xml.XmlLoader;
+import au.gov.ga.earthsci.intent.xml.IXmlLoader;
 import au.gov.ga.earthsci.intent.xml.XmlLoaderException;
-import au.gov.ga.earthsci.intent.xml.XmlLoaderFilter;
+import au.gov.ga.earthsci.intent.xml.IXmlLoaderFilter;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
- * {@link XmlLoader} implementation for layer and elevation model documents.
+ * {@link IXmlLoader} implementation for layer and elevation model documents.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerXmlLoader implements XmlLoader, XmlLoaderFilter
+public class LayerXmlLoader implements IXmlLoader, IXmlLoaderFilter
 {
 	@Override
 	public boolean canLoad(Document document, Intent intent)

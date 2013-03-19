@@ -19,14 +19,14 @@ import java.net.URI;
 import java.net.URL;
 
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.IntentResourceLocator;
+import au.gov.ga.earthsci.intent.IIntentResourceLocator;
 
 /**
- * {@link IntentResourceLocator} for classpath:// URIs.
+ * {@link IIntentResourceLocator} for classpath:// URIs.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ClasspathIntentResourceLocator implements IntentResourceLocator
+public class ClasspathIntentResourceLocator implements IIntentResourceLocator
 {
 	@Override
 	public URL locate(Intent intent)

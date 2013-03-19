@@ -63,7 +63,7 @@ public class IntentFilter
 	private final Set<String> dataSchemes = new HashSet<String>();
 	private final Set<String> dataAuthorities = new HashSet<String>();
 	private final Set<String> dataPaths = new HashSet<String>();
-	private Class<? extends IntentHandler> handler;
+	private Class<? extends IIntentHandler> handler;
 	private static final Logger logger = LoggerFactory.getLogger(IntentFilter.class);
 
 	public IntentFilter()
@@ -81,8 +81,8 @@ public class IntentFilter
 		addToSetFromElements(element, "path", "name", dataPaths); //$NON-NLS-1$ //$NON-NLS-2$
 
 		@SuppressWarnings("unchecked")
-		Class<? extends IntentHandler> handler =
-				(Class<? extends IntentHandler>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
+		Class<? extends IIntentHandler> handler =
+				(Class<? extends IIntentHandler>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
 		setHandler(handler);
 	}
 
@@ -349,7 +349,7 @@ public class IntentFilter
 	 * @return Class associated with this filter, used to perform the actual
 	 *         Intent handling.
 	 */
-	public Class<? extends IntentHandler> getHandler()
+	public Class<? extends IIntentHandler> getHandler()
 	{
 		return handler;
 	}
@@ -359,7 +359,7 @@ public class IntentFilter
 	 * 
 	 * @param handler
 	 */
-	public void setHandler(Class<? extends IntentHandler> handler)
+	public void setHandler(Class<? extends IIntentHandler> handler)
 	{
 		this.handler = handler;
 	}

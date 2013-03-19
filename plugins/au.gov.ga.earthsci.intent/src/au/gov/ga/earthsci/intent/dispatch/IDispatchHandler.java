@@ -13,38 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.intent.xml;
-
-import java.net.URL;
+package au.gov.ga.earthsci.intent.dispatch;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.w3c.dom.Document;
-
-import au.gov.ga.earthsci.intent.Intent;
 
 /**
- * Loads an XML document to an object. Only called with documents that match
- * this loader's {@link XmlLoaderFilter}.
+ * Handles a dispatched domain object of a particular class.
  * <p/>
  * Upon instatiation, an {@link IEclipseContext} is used to inject any annotated
  * methods/fields into this object.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface XmlLoader
+public interface IDispatchHandler
 {
 	/**
-	 * Load the given XML document.
+	 * Handle the given dispatched domain object.
 	 * 
-	 * @param document
-	 *            Document to load
-	 * @param context
-	 *            Context to use for any relative URLs in the XML
-	 * @param intent
-	 *            Intent associated with this load
-	 * @return Object loaded from XML
-	 * @throws XmlLoaderException
-	 *             If the load from XML fails
+	 * @param object
 	 */
-	Object load(Document document, URL context, Intent intent) throws XmlLoaderException;
+	void handle(Object object);
 }

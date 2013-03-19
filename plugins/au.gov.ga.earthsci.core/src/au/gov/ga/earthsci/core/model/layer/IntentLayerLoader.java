@@ -22,7 +22,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.IntentCaller;
+import au.gov.ga.earthsci.intent.IIntentCaller;
 import au.gov.ga.earthsci.intent.IntentManager;
 import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
 
@@ -47,7 +47,7 @@ public class IntentLayerLoader
 		IntentManager.getInstance().start(intent, caller, context);
 	}
 
-	protected static IntentCaller caller = new IntentCaller()
+	protected static IIntentCaller caller = new IIntentCaller()
 	{
 		@Override
 		public void completed(Intent intent, Object result)

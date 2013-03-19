@@ -102,9 +102,9 @@ public class IntentManager
 	 * @param context
 	 *            Eclipse context in which to run the intent
 	 */
-	public void start(Intent intent, IntentCaller caller, IEclipseContext context)
+	public void start(Intent intent, IIntentCaller caller, IEclipseContext context)
 	{
-		Class<? extends IntentHandler> handlerClass = intent.getHandler();
+		Class<? extends IIntentHandler> handlerClass = intent.getHandler();
 		if (handlerClass == null)
 		{
 			IntentFilter filter = findFilter(intent);
@@ -117,7 +117,7 @@ public class IntentManager
 		if (handlerClass != null)
 		{
 			IEclipseContext child = context.createChild();
-			IntentHandler handler = ContextInjectionFactory.make(handlerClass, child);
+			IIntentHandler handler = ContextInjectionFactory.make(handlerClass, child);
 			handler.handle(intent, caller);
 		}
 		else

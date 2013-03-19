@@ -41,7 +41,7 @@ public class Intent
 	private IContentType contentType;
 	private URI uri;
 	private Class<?> expectedReturnType;
-	private Class<? extends IntentHandler> handler;
+	private Class<? extends IIntentHandler> handler;
 	private final Map<String, Object> extras = new HashMap<String, Object>();
 	private int flags;
 
@@ -176,7 +176,7 @@ public class Intent
 	/**
 	 * @return The explicit handler class used to handle this intent.
 	 */
-	public Class<? extends IntentHandler> getHandler()
+	public Class<? extends IIntentHandler> getHandler()
 	{
 		return handler;
 	}
@@ -189,7 +189,7 @@ public class Intent
 	 * @param handler
 	 * @return this
 	 */
-	public Intent setHandler(Class<? extends IntentHandler> handler)
+	public Intent setHandler(Class<? extends IIntentHandler> handler)
 	{
 		this.handler = handler;
 		return this;

@@ -17,18 +17,18 @@ package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.layers.Layer;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.IntentCaller;
-import au.gov.ga.earthsci.intent.IntentHandler;
+import au.gov.ga.earthsci.intent.IIntentCaller;
+import au.gov.ga.earthsci.intent.IIntentHandler;
 
 /**
- * {@link IntentHandler} that handles class:// layer URIs.
+ * {@link IIntentHandler} that handles class:// layer URIs.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ClassLayerIntentHandler implements IntentHandler
+public class ClassLayerIntentHandler implements IIntentHandler
 {
 	@Override
-	public void handle(Intent intent, IntentCaller caller)
+	public void handle(Intent intent, IIntentCaller caller)
 	{
 		String className = intent.getURI().getAuthority();
 		try

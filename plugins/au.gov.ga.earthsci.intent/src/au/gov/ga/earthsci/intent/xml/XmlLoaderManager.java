@@ -35,8 +35,8 @@ import au.gov.ga.earthsci.util.collection.ArrayListTreeMap;
 import au.gov.ga.earthsci.util.collection.ListSortedMap;
 
 /**
- * Injectable {@link XmlLoader} manager. Provides a centralised mechanism for
- * loading XML documents to objects. {@link XmlLoader}s can be registered via an
+ * Injectable {@link IXmlLoader} manager. Provides a centralised mechanism for
+ * loading XML documents to objects. {@link IXmlLoader}s can be registered via an
  * extension point.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
@@ -86,13 +86,13 @@ public class XmlLoaderManager
 				if (isLoader)
 				{
 					@SuppressWarnings("unchecked")
-					Class<? extends XmlLoader> loaderClass =
-							(Class<? extends XmlLoader>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
+					Class<? extends IXmlLoader> loaderClass =
+							(Class<? extends IXmlLoader>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
 					@SuppressWarnings("unchecked")
-					Class<? extends XmlLoaderFilter> filterClass =
-							(Class<? extends XmlLoaderFilter>) ExtensionPointHelper.getClassForProperty(element,
+					Class<? extends IXmlLoaderFilter> filterClass =
+							(Class<? extends IXmlLoaderFilter>) ExtensionPointHelper.getClassForProperty(element,
 									"filter"); //$NON-NLS-1$
-					XmlLoaderFilter filter = filterClass.newInstance();
+					IXmlLoaderFilter filter = filterClass.newInstance();
 					XmlLoaderAndFilter loaderAndFilter = new XmlLoaderAndFilter(filter, loaderClass);
 					int priority = ExtensionPointHelper.getIntegerForProperty(element, "priority", 0); //$NON-NLS-1$
 					loaders.putSingle(priority, loaderAndFilter);
@@ -106,7 +106,7 @@ public class XmlLoaderManager
 	}
 
 	/**
-	 * Load the given document using one of the registered {@link XmlLoader}s.
+	 * Load the given document using one of the registered {@link IXmlLoader}s.
 	 * 
 	 * @param document
 	 *            Document to load
@@ -117,7 +117,7 @@ public class XmlLoaderManager
 	 *            Intent associated with the XML loading
 	 * @param context
 	 *            Eclipse context injected into the loader (if found)
-	 * @return Object loaded by a matched {@link XmlLoader}
+	 * @return Object loaded by a matched {@link IXmlLoader}
 	 * @throws XmlLoaderNotFoundException
 	 *             If a loader that knows how to load the document cannot be
 	 *             found
@@ -135,7 +135,7 @@ public class XmlLoaderManager
 					"Could not find XML loader for document: " + document.getDocumentElement()); //$NON-NLS-1$
 		}
 		IEclipseContext child = context.createChild();
-		XmlLoader loaderInstance = ContextInjectionFactory.make(loader.loaderClass, child);
+		IXmlLoader loaderInstance = ContextInjectionFactory.make(loader.loaderClass, child);
 		return loaderInstance.load(document, urlContext, intent);
 	}
 
@@ -156,10 +156,10 @@ public class XmlLoaderManager
 
 	private class XmlLoaderAndFilter
 	{
-		public final XmlLoaderFilter filter;
-		public final Class<? extends XmlLoader> loaderClass;
+		public final IXmlLoaderFilter filter;
+		public final Class<? extends IXmlLoader> loaderClass;
 
-		public XmlLoaderAndFilter(XmlLoaderFilter filter, Class<? extends XmlLoader> loaderClass)
+		public XmlLoaderAndFilter(IXmlLoaderFilter filter, Class<? extends IXmlLoader> loaderClass)
 		{
 			this.filter = filter;
 			this.loaderClass = loaderClass;

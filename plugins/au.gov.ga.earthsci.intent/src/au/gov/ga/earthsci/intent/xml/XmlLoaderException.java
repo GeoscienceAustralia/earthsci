@@ -16,7 +16,7 @@
 package au.gov.ga.earthsci.intent.xml;
 
 /**
- * An exception thrown by {@link XmlLoader}s when loading an object from XML
+ * An exception thrown by {@link IXmlLoader}s when loading an object from XML
  * fails.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)

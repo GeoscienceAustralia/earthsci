@@ -23,7 +23,7 @@ import java.net.URL;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IntentResourceLocator
+public interface IIntentResourceLocator
 {
 	/**
 	 * If possible, convert the given intent's URI to a URL from which the

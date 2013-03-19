@@ -25,8 +25,8 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.IntentCaller;
-import au.gov.ga.earthsci.intent.IntentHandler;
+import au.gov.ga.earthsci.intent.IIntentCaller;
+import au.gov.ga.earthsci.intent.IIntentHandler;
 
 /**
  * Abstract superclass of IntentHandlers that use the IRetrievalService system
@@ -34,13 +34,13 @@ import au.gov.ga.earthsci.intent.IntentHandler;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class AbstractRetrieveIntentHandler implements IntentHandler
+public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 {
 	@Inject
 	private IRetrievalService retrievalService;
 
 	@Override
-	public void handle(final Intent intent, final IntentCaller caller)
+	public void handle(final Intent intent, final IIntentCaller caller)
 	{
 		try
 		{
@@ -99,5 +99,5 @@ public abstract class AbstractRetrieveIntentHandler implements IntentHandler
 	 * @param caller
 	 *            Intent caller to notify once the data has been handled
 	 */
-	protected abstract void handle(IRetrievalData data, URL url, Intent intent, IntentCaller caller);
+	protected abstract void handle(IRetrievalData data, URL url, Intent intent, IIntentCaller caller);
 }
