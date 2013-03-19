@@ -39,7 +39,7 @@ public class ContentTypeHelper
 	 * @return Closest content type from <code>contentTypes</code> that the
 	 *         <code>contentType</code> is a kind of
 	 */
-	public static IContentType closestMatchingContentType(IContentType contentType, Iterable<IContentType> contentTypes)
+	public static IContentType closestMatching(IContentType contentType, Iterable<IContentType> contentTypes)
 	{
 		if (contentType == null || contentTypes == null)
 			return null;
@@ -77,7 +77,7 @@ public class ContentTypeHelper
 	 *         <code>contentTypes</code> that the <code>contentType</code> is a
 	 *         kind of, or -1 if no matching content type could be found
 	 */
-	public static int distanceToClosestMatchingContentType(IContentType contentType, Iterable<IContentType> contentTypes)
+	public static int distanceToClosestMatching(IContentType contentType, Iterable<IContentType> contentTypes)
 	{
 		if (contentType == null || contentTypes == null)
 			return -1;

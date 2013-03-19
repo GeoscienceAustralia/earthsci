@@ -187,7 +187,7 @@ public class IntentManager
 		for (IntentFilter filter : matches)
 		{
 			int distance =
-					ContentTypeHelper.distanceToClosestMatchingContentType(intent.getContentType(),
+					ContentTypeHelper.distanceToClosestMatching(intent.getContentType(),
 							filter.getContentTypes());
 			if (distance >= 0 && distance < minDistance)
 			{
