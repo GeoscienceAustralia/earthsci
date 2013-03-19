@@ -36,8 +36,8 @@ import au.gov.ga.earthsci.util.collection.ListSortedMap;
 
 /**
  * Injectable {@link IXmlLoader} manager. Provides a centralised mechanism for
- * loading XML documents to objects. {@link IXmlLoader}s can be registered via an
- * extension point.
+ * loading XML documents to objects. {@link IXmlLoader}s can be registered via
+ * an extension point.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -131,8 +131,8 @@ public class XmlLoaderManager
 		XmlLoaderAndFilter loader = findLoader(document, intent);
 		if (loader == null)
 		{
-			throw new XmlLoaderNotFoundException(
-					"Could not find XML loader for document: " + document.getDocumentElement()); //$NON-NLS-1$
+			throw new XmlLoaderNotFoundException(String.format("XML loader not found for [%s] document from URL: %s", //$NON-NLS-1$
+					document.getDocumentElement().getNodeName(), urlContext));
 		}
 		IEclipseContext child = context.createChild();
 		IXmlLoader loaderInstance = ContextInjectionFactory.make(loader.loaderClass, child);
