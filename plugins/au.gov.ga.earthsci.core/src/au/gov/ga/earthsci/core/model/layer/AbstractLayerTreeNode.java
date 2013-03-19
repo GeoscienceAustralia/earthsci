@@ -134,12 +134,12 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	@Persistent
 	public String getContentTypeId()
 	{
-		return contentType.getId();
+		return contentType == null ? null : contentType.getId();
 	}
 
 	public void setContentTypeId(String contentTypeId)
 	{
-		contentType = Platform.getContentTypeManager().getContentType(contentTypeId);
+		contentType = contentTypeId == null ? null : Platform.getContentTypeManager().getContentType(contentTypeId);
 	}
 
 	@Persistent
