@@ -26,10 +26,10 @@ import org.eclipse.core.runtime.RegistryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
+import au.gov.ga.earthsci.common.collection.ListSortedMap;
 import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.util.collection.ArrayListTreeMap;
-import au.gov.ga.earthsci.util.collection.ListSortedMap;
 
 /**
  * Injectable manager of {@link IIntentResourceLocator}s. Used to translate an

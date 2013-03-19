@@ -29,10 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
+import au.gov.ga.earthsci.common.collection.ListSortedMap;
 import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.util.collection.ArrayListTreeMap;
-import au.gov.ga.earthsci.util.collection.ListSortedMap;
 
 /**
  * Injectable {@link IXmlLoader} manager. Provides a centralised mechanism for

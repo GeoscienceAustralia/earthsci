@@ -28,8 +28,8 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.util.collection.ArrayListTreeMap;
-import au.gov.ga.earthsci.util.collection.ListSortedMap;
+import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
+import au.gov.ga.earthsci.common.collection.ListSortedMap;
 
 /**
  * Injectable {@link Intent} manager, used for starting intents. Contains a

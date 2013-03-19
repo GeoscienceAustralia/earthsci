@@ -26,8 +26,8 @@ import org.eclipse.e4.core.di.InjectorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.util.collection.ArrayListTreeMap;
-import au.gov.ga.earthsci.util.collection.ListSortedMap;
+import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
+import au.gov.ga.earthsci.common.collection.ListSortedMap;
 
 /**
  * Helper class for reading extensions that extend the injectable extension

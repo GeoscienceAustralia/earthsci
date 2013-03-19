@@ -28,6 +28,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
+import au.gov.ga.earthsci.common.collection.HashSetHashMap;
+import au.gov.ga.earthsci.common.collection.SetMap;
 import au.gov.ga.earthsci.core.model.IModelStatus;
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.persistence.Exportable;
@@ -36,8 +38,6 @@ import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.IEnableable;
 import au.gov.ga.earthsci.core.worldwind.WorldWindCompoundElevationModel;
-import au.gov.ga.earthsci.util.collection.HashSetHashMap;
-import au.gov.ga.earthsci.util.collection.SetMap;
 
 /**
  * Abstract implementation of the {@link ILayerTreeNode} interface.

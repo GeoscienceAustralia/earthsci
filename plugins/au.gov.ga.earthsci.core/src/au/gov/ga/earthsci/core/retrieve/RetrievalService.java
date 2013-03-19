@@ -30,12 +30,12 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.util.collection.ArrayListHashMap;
-import au.gov.ga.earthsci.util.collection.HashSetAndArray;
-import au.gov.ga.earthsci.util.collection.HashSetAndArrayHashMap;
-import au.gov.ga.earthsci.util.collection.ListMap;
-import au.gov.ga.earthsci.util.collection.SetAndArray;
-import au.gov.ga.earthsci.util.collection.SetAndArrayMap;
+import au.gov.ga.earthsci.common.collection.ArrayListHashMap;
+import au.gov.ga.earthsci.common.collection.HashSetAndArray;
+import au.gov.ga.earthsci.common.collection.HashSetAndArrayHashMap;
+import au.gov.ga.earthsci.common.collection.ListMap;
+import au.gov.ga.earthsci.common.collection.SetAndArray;
+import au.gov.ga.earthsci.common.collection.SetAndArrayMap;
 
 /**
  * Basic implementation of {@link IRetrievalService}.

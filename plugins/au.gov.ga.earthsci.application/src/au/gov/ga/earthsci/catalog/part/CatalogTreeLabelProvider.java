@@ -47,14 +47,14 @@ import org.eclipse.swt.widgets.Display;
 import au.gov.ga.earthsci.application.IFireableLabelProvider;
 import au.gov.ga.earthsci.application.IconLoader;
 import au.gov.ga.earthsci.application.ImageRegistry;
+import au.gov.ga.earthsci.common.collection.HashSetHashMap;
+import au.gov.ga.earthsci.common.collection.SetMap;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.ILabeled;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
-import au.gov.ga.earthsci.util.collection.HashSetHashMap;
-import au.gov.ga.earthsci.util.collection.SetMap;
 import au.gov.ga.earthsci.viewers.IControlProvider;
 
 /**

@@ -19,7 +19,7 @@
 
 	<modules>
 		<module>au.gov.ga.earthsci.testbase</module>
-		<module>au.gov.ga.earthsci.util</module>
+		<module>au.gov.ga.earthsci.common</module>
 		<module>au.gov.ga.earthsci.logging</module>
 		<module>au.gov.ga.earthsci.injectable</module>
 		<module>au.gov.ga.earthsci.intent</module>
