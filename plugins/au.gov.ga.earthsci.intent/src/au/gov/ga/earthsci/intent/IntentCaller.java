@@ -30,6 +30,11 @@ public interface IntentCaller
 	 * <p/>
 	 * If the result is of an unknown type, it should be handled gracefully,
 	 * such as passing it to the dispatch system.
+	 * <p/>
+	 * It is possible for this to be called twice. For example, if the Intent
+	 * handler loads a result from a cache, and then the cache is refreshed by
+	 * retrieving a newer version, this will also be called with the newer
+	 * result.
 	 * 
 	 * @param intent
 	 *            Intent that completed
