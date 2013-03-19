@@ -15,7 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.intent;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -133,6 +135,22 @@ public class Intent
 	{
 		this.uri = uri;
 		return this;
+	}
+
+	/**
+	 * @return A URL pointing to the resource identified by this Intent's URI.
+	 *         Uses the {@link IntentResourceLocatorManager} for resolving URLs
+	 *         from the URI.
+	 * @throws MalformedURLException
+	 */
+	public URL getURL() throws MalformedURLException
+	{
+		URL url = IntentResourceLocatorManager.getInstance().locate(this);
+		if (url != null)
+			return url;
+		if (getURI() == null)
+			return null;
+		return uri.toURL();
 	}
 
 	/**
