@@ -72,7 +72,7 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 					}
 					else
 					{
-						callback.error(intent, result.getError());
+						callback.error(result.getError(), intent);
 					}
 				}
 			});
@@ -80,7 +80,7 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 		}
 		catch (Exception e)
 		{
-			callback.error(intent, e);
+			callback.error(e, intent);
 		}
 	}
 

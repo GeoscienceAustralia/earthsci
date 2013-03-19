@@ -50,7 +50,7 @@ public class IntentLayerLoader
 	protected static IIntentCallback callback = new IIntentCallback()
 	{
 		@Override
-		public void completed(Intent intent, Object result)
+		public void completed(Object result, Intent intent)
 		{
 			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
 			if (result instanceof Layer)
@@ -66,7 +66,7 @@ public class IntentLayerLoader
 		}
 
 		@Override
-		public void error(Intent intent, Exception e)
+		public void error(Exception e, Intent intent)
 		{
 			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
 			layerIntent.layerNode.setStatus(ModelStatus.error(e.getLocalizedMessage(), e));

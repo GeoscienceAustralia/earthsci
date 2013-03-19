@@ -51,11 +51,11 @@ public class XmlRetrieveIntentHandler extends AbstractRetrieveIntentHandler
 			DocumentBuilder builder = WWXML.createDocumentBuilder(true);
 			Document document = builder.parse(data.getInputStream());
 			Object loaded = XmlLoaderManager.getInstance().load(document, url, intent, context);
-			callback.completed(intent, loaded);
+			callback.completed(loaded, intent);
 		}
 		catch (Exception e)
 		{
-			callback.error(intent, e);
+			callback.error(e, intent);
 		}
 	}
 }

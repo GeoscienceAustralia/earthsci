@@ -16,7 +16,7 @@
 package au.gov.ga.earthsci.intent;
 
 /**
- * Listens to an {@link Intent}, used to get a result from the handling of an
+ * Callback of an {@link Intent}, used to get a result from the handling of an
  * Intent. This called by an {@link IIntentHandler} to notify the caller of the
  * result.
  * 
@@ -36,20 +36,20 @@ public interface IIntentCallback
 	 * retrieving a newer version, this will also be called with the newer
 	 * result.
 	 * 
-	 * @param intent
-	 *            Intent that completed
 	 * @param result
 	 *            Result of the Intent
+	 * @param intent
+	 *            Intent that completed
 	 */
-	void completed(Intent intent, Object result);
+	void completed(Object result, Intent intent);
 
 	/**
 	 * Called when the Intent handler failed with an error.
 	 * 
-	 * @param intent
-	 *            Intent that failed
 	 * @param e
 	 *            Error generated from handling the Intent
+	 * @param intent
+	 *            Intent that failed
 	 */
-	void error(Intent intent, Exception e);
+	void error(Exception e, Intent intent);
 }

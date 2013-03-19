@@ -36,11 +36,11 @@ public class ClassLayerIntentHandler implements IIntentHandler
 			@SuppressWarnings("unchecked")
 			Class<? extends Layer> c = (Class<? extends Layer>) Class.forName(className);
 			Layer layer = c.newInstance();
-			callback.completed(intent, layer);
+			callback.completed(layer, intent);
 		}
 		catch (Exception e)
 		{
-			callback.error(intent, e);
+			callback.error(e, intent);
 		}
 	}
 }
