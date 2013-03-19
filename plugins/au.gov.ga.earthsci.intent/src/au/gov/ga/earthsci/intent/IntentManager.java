@@ -97,12 +97,12 @@ public class IntentManager
 	 * 
 	 * @param intent
 	 *            Intent to start
-	 * @param caller
-	 *            Caller of the intent that is notified of intent completion
+	 * @param callback
+	 *            Callback of the intent that is notified of intent completion
 	 * @param context
 	 *            Eclipse context in which to run the intent
 	 */
-	public void start(Intent intent, IIntentCaller caller, IEclipseContext context)
+	public void start(Intent intent, IIntentCallback callback, IEclipseContext context)
 	{
 		Class<? extends IIntentHandler> handlerClass = intent.getHandler();
 		if (handlerClass == null)
@@ -118,7 +118,7 @@ public class IntentManager
 		{
 			IEclipseContext child = context.createChild();
 			IIntentHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
-			handler.handle(intent, caller);
+			handler.handle(intent, callback);
 		}
 		else
 		{
@@ -187,8 +187,7 @@ public class IntentManager
 		for (IntentFilter filter : matches)
 		{
 			int distance =
-					ContentTypeHelper.distanceToClosestMatching(intent.getContentType(),
-							filter.getContentTypes());
+					ContentTypeHelper.distanceToClosestMatching(intent.getContentType(), filter.getContentTypes());
 			if (distance >= 0 && distance < minDistance)
 			{
 				minDistance = distance;

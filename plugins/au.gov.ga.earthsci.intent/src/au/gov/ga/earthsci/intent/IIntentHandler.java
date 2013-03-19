@@ -31,12 +31,12 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 public interface IIntentHandler
 {
 	/**
-	 * Handle this intent. Must notify the caller when completed (or failed).
+	 * Handle this intent. Must notify the callback when completed (or failed).
 	 * 
 	 * @param intent
 	 *            Intent to handle.
-	 * @param caller
-	 *            Caller to notify of completion.
+	 * @param callback
+	 *            Callback to notify of completion.
 	 */
-	void handle(Intent intent, IIntentCaller caller);
+	void handle(Intent intent, IIntentCallback callback);
 }

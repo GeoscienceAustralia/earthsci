@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 
 import au.gov.ga.earthsci.core.model.ModelStatus;
+import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.IIntentCaller;
 import au.gov.ga.earthsci.intent.IntentManager;
 import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
 
@@ -44,10 +44,10 @@ public class IntentLayerLoader
 		intent.setURI(layerNode.getURI());
 		intent.setContentType(layerNode.getContentType());
 		intent.setExpectedReturnType(Layer.class);
-		IntentManager.getInstance().start(intent, caller, context);
+		IntentManager.getInstance().start(intent, callback, context);
 	}
 
-	protected static IIntentCaller caller = new IIntentCaller()
+	protected static IIntentCallback callback = new IIntentCallback()
 	{
 		@Override
 		public void completed(Intent intent, Object result)
