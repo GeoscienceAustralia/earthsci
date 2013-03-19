@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.intent;
+package au.gov.ga.earthsci.intent.locator;
 
 import java.net.URL;
 import java.util.Comparator;
@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
+import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.util.collection.ArrayListTreeMap;
 import au.gov.ga.earthsci.util.collection.ListSortedMap;
 

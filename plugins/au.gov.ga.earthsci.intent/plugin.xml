@@ -8,7 +8,7 @@
    <extension
          point="au.gov.ga.earthsci.injectable">
       <inject
-            class="au.gov.ga.earthsci.intent.IntentResourceLocatorManager"
+            class="au.gov.ga.earthsci.intent.locator.IntentResourceLocatorManager"
             priority="10">
       </inject>
       <inject

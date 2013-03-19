@@ -26,6 +26,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
 
+import au.gov.ga.earthsci.intent.locator.IntentResourceLocatorManager;
+
 /**
  * Description of an intent to be performed. Plugins can define an
  * {@link IntentFilter} that can handle matching intents.

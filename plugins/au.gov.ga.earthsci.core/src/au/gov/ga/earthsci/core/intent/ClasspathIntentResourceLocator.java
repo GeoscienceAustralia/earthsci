@@ -19,7 +19,7 @@ import java.net.URI;
 import java.net.URL;
 
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.IIntentResourceLocator;
+import au.gov.ga.earthsci.intent.locator.IIntentResourceLocator;
 
 /**
  * {@link IIntentResourceLocator} for classpath:// URIs.

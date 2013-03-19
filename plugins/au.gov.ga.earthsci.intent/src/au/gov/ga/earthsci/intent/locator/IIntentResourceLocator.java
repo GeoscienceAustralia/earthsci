@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.intent;
+package au.gov.ga.earthsci.intent.locator;
 
 import java.net.URL;
+
+import au.gov.ga.earthsci.intent.Intent;
 
 /**
  * Defines a locator which can translate an {@link Intent}'s URI to a URL from
