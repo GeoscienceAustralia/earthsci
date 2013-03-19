@@ -29,12 +29,15 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.core.model.layer.DefaultLayers;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
+import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.model.layer.LayerPersister;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.ConfigurationUtil;
@@ -73,9 +76,9 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 	}
 
 	@PostConstruct
-	public void loadLayers()
+	public void loadLayers(IEclipseContext context)
 	{
-		loadRootNode(constructionParameters.rootNode);
+		loadRootNode(constructionParameters.rootNode, context);
 	}
 
 	@PreDestroy
@@ -84,7 +87,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		saveRootNode(constructionParameters.rootNode);
 	}
 
-	protected static void loadRootNode(ILayerTreeNode rootNode)
+	protected void loadRootNode(ILayerTreeNode rootNode, IEclipseContext context)
 	{
 		ILayerTreeNode loadedNode = null;
 		try
@@ -114,9 +117,23 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 				rootNode.add(child);
 			}
 		}
+		loadAllLayers(rootNode, context);
 	}
 
-	protected static void saveRootNode(ILayerTreeNode rootNode)
+	public static void loadAllLayers(ILayerTreeNode node, IEclipseContext context)
+	{
+		if (node instanceof LayerNode)
+		{
+			final LayerNode layerNode = (LayerNode) node;
+			IntentLayerLoader.load(layerNode, context);
+		}
+		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
+		{
+			loadAllLayers(child.getValue(), context);
+		}
+	}
+
+	protected void saveRootNode(ILayerTreeNode rootNode)
 	{
 		try
 		{

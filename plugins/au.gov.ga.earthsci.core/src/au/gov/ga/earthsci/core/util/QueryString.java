@@ -18,7 +18,7 @@ package au.gov.ga.earthsci.core.util;
 import java.util.List;
 import java.util.Map;
 
-import au.gov.ga.earthsci.core.util.collection.ArrayListHashMap;
+import au.gov.ga.earthsci.util.collection.ArrayListHashMap;
 
 /**
  * Class that parses a URL query string into a key/value map.

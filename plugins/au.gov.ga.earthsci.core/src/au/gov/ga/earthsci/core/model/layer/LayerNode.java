@@ -26,14 +26,12 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import au.gov.ga.earthsci.core.model.layer.uri.URILayerLoadJob;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.util.IEnableable;
 import au.gov.ga.earthsci.notification.Notification;
@@ -58,14 +56,6 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	private boolean copyingProperties = false;
 	private final Object layerSemaphore = new Object();
 
-	@Override
-	public void setURI(URI uri)
-	{
-		super.setURI(uri);
-		URILayerLoadJob job = new URILayerLoadJob(this);
-		job.schedule();
-	}
-
 	/**
 	 * @return The {@link Layer} that this node delegates to.
 	 */
@@ -83,7 +73,7 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	{
 		if (layer == null)
 		{
-			firePropertyChange("layer", this.layer, null); //$NON-NLS-1$
+			firePropertyChange("layer", this.layer, this.layer = layer); //$NON-NLS-1$
 			return;
 		}
 		

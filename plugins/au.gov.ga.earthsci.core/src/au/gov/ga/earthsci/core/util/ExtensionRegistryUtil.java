@@ -55,10 +55,10 @@ public class ExtensionRegistryUtil
 	 * @param clazz The type of object that is expected (used for validation)
 	 * @param callback The callback to execute once the object has been instantiated
 	 */
-	public static void createFromExtension(String extensionPointId, 
+	public static <T> void createFromExtension(String extensionPointId, 
 										   String classAttribute, 
-										   Class<?> clazz, 
-										   Callback callback) throws CoreException
+										   Class<? extends T> clazz, 
+										   Callback<T> callback) throws CoreException
 	{
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(extensionPointId);
 		for (IConfigurationElement e : config)
@@ -68,17 +68,18 @@ public class ExtensionRegistryUtil
 			{
 				continue;
 			}
-			ContextInjectionFactory.inject(o, context);
+			T t = clazz.cast(o);
+			ContextInjectionFactory.inject(t, context);
 			if (callback != null)
 			{
-				callback.run(o, e, context);
+				callback.run(t, e, context);
 			}
 		}
 	}
 	
 	
-	public static interface Callback
+	public static interface Callback<T>
 	{
-		void run(Object object, IConfigurationElement element, IEclipseContext context);
+		void run(T t, IConfigurationElement element, IEclipseContext context);
 	}
 }
