@@ -1,11 +1,11 @@
 package au.gov.ga.earthsci.model.data;
 
-import java.util.UUID;
+import java.nio.Buffer;
 
 import org.unitsofmeasurement.unit.Unit;
 
 import au.gov.ga.earthsci.core.util.IDescribed;
-import au.gov.ga.earthsci.core.util.IDirtyable;
+import au.gov.ga.earthsci.core.util.IIdentifiable;
 import au.gov.ga.earthsci.core.util.INamed;
 
 /**
@@ -13,37 +13,35 @@ import au.gov.ga.earthsci.core.util.INamed;
  * texture coordinates etc.) or 'physical' data (temperature, fluid flow rates etc.), or any other
  * type of data that may be logically associated with a geometry.
  * 
- * <p/>
- * 
- * @param T The type of data accessed by this instance (Float, Integer etc.)
- * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public interface IModelData<T> extends INamed, IDescribed, IDirtyable
+public interface IModelData extends IIdentifiable, INamed, IDescribed
 {
 	/**
-	 * Return the globally unique ID for this model data, unique across a single application session.
-	 * <p/>
-	 * The result is guaranteed to be unique for a single application session, but should not be
-	 * persisted between sessions.
-	 * 
-	 * @return The unique ID for this model data
-	 */
-	UUID getUUID();
-	
-	/**
 	 * Return the value used to represent 'no data'. May be <code>null</code>.
+	 * <p/>
+	 * The returned type will be 
 	 * 
 	 * @return The no-data value for this instance
 	 */
-	T getNoDataValue();
+	Object getNoDataValue();
 	
 	/**
-	 * Return the data source for this instance.
+	 * Return the data source buffer for this model data.
+	 * <p/>
+	 * The buffer may be cast into appropriate sub-classes of {@link Buffer}
+	 * to access the appropriate data types from the buffer.
 	 * 
-	 * @return The data source for this instance
+	 * @return The source buffer for this instance
 	 */
-	IModelDataSource<T> getSource();
+	Buffer getSource();
+	
+	/**
+	 * Return the type of data stored in the buffer
+	 * 
+	 * @return the type of data stored in the buffer
+	 */
+	BufferType getBufferType();
 	
 	/**
 	 * Return the units the data is expressed in, or <code>null</code> if there are none 
@@ -51,6 +49,13 @@ public interface IModelData<T> extends INamed, IDescribed, IDirtyable
 	 * 
 	 * @return the units the data is expressed in, or <code>null</code> if there are none.
 	 */
-	Unit<?> getUnit();
+	Unit<?> getUnits();
 	
+	/**
+	 * Return whether the data has units associated with it.
+	 * 
+	 * @return <code>true</code> if there are units associated with this data; 
+	 * <code>false</code> otherwise.
+	 */
+	boolean hasUnits();
 }
