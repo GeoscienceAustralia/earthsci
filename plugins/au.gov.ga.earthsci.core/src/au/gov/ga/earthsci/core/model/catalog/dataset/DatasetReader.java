@@ -71,7 +71,7 @@ final public class DatasetReader
 		final Element rootElement = XmlUtil.getElementFromSource(source);
 		if (rootElement == null)
 		{
-			return new DatasetCatalogTreeNode(null, getRootNodeName(source), null, null, true);
+			return new DatasetCatalogTreeNode(null, getRootNodeName(source, context), null, null, true);
 		}
 		
 		// Special case
@@ -81,7 +81,7 @@ final public class DatasetReader
 			theContext = (URL)source;
 		}
 		
-		final ICatalogTreeNode root = new DatasetCatalogTreeNode(theContext.toURI(), getRootNodeName(source), null, null, true);
+		final ICatalogTreeNode root = new DatasetCatalogTreeNode(theContext.toURI(), getRootNodeName(source, context), null, null, true);
 				
 		final Element[] elements = XmlUtil.getElements(rootElement, DATASET_LIST_XPATH, null);
 		if (elements != null)
@@ -95,7 +95,7 @@ final public class DatasetReader
 		return root;
 	}
 
-	private static String getRootNodeName(Object source)
+	private static String getRootNodeName(Object source, URL context)
 	{
 		if (source instanceof File)
 		{
@@ -108,6 +108,10 @@ final public class DatasetReader
 		if (source instanceof URL)
 		{
 			return UTF8URLEncoder.decode(((URL)source).toExternalForm());
+		}
+		if (context != null)
+		{
+			return UTF8URLEncoder.decode(context.toExternalForm());
 		}
 		return Messages.DatasetReader_DefaultRootNodeName;
 	}
