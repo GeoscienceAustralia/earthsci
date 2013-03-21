@@ -97,7 +97,7 @@ public class CatalogBrowserPart
 					//occurs when the selection contains a loading node, which is not an ICatalogTreeNode
 					array = new ICatalogTreeNode[0];
 				}
-				selectionService.setSelection(array.length == 1 ? array[0] : array);
+				selectionService.setSelection(array);
 			}
 		});
 

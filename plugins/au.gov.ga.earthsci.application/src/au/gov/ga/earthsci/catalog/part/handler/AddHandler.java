@@ -37,28 +37,13 @@ public class AddHandler
 	private ICatalogBrowserController controller;
 
 	@Execute
-	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode node)
-	{
-		execute(new ICatalogTreeNode[] { node });
-	}
-
-	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
 	{
 		controller.addToLayerModel(selectedNodes);
 	}
 
 	@CanExecute
-	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode node)
-	{
-		if (node == null)
-			return false;
-
-		return canExecute(new ICatalogTreeNode[] { node });
-	}
-
-	@CanExecute
-	public boolean canExecute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
+	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
 	{
 		return selectedNodes != null && selectedNodes.length > 0 && controller.areAllLayerNodes(selectedNodes);
 	}
