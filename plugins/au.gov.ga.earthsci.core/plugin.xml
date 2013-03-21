@@ -182,6 +182,21 @@
             filter="au.gov.ga.earthsci.core.model.layer.LayerXmlLoader"
             priority="0">
       </loader>
+      <loader
+            class="au.gov.ga.earthsci.core.model.catalog.dataset.DatasetXmlLoader"
+            filter="au.gov.ga.earthsci.core.model.catalog.dataset.DatasetXmlLoader"
+            priority="0">
+      </loader>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.dispatchFilters">
+      <filter
+            class="au.gov.ga.earthsci.core.model.catalog.CatalogTreeNodeDispatchHandler"
+            priority="0">
+         <type
+               class="au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode">
+         </type>
+      </filter>
    </extension>
 
 </plugin>
