@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.content.IContentType;
 public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 {
 	private final Exception error;
+	private boolean removeable = false;
 
 	public ErrorCatalogTreeNode(Exception error)
 	{
@@ -38,7 +39,12 @@ public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 	@Override
 	public boolean isRemoveable()
 	{
-		return false;
+		return removeable;
+	}
+
+	public void setRemoveable(boolean removeable)
+	{
+		this.removeable = removeable;
 	}
 
 	@Override

@@ -360,9 +360,11 @@ public class CatalogPersister
 			ICatalogTreeNode node = CatalogFactory.loadCatalog(dto.catalogs[i].nodeURI);
 			if (node == null)
 			{
-				node =
+				ErrorCatalogTreeNode errorNode =
 						new ErrorCatalogTreeNode(new Exception(
 								"Error loading catalog from URI: " + dto.catalogs[i].nodeURI)); //$NON-NLS-1$
+				errorNode.setRemoveable(true);
+				node = errorNode;
 			}
 			else
 			{
