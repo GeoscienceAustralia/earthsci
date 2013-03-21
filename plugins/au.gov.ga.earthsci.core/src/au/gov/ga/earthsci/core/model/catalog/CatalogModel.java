@@ -27,7 +27,6 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 
-
 /**
  * Default implementation of the {@link ICatalogModel} interface
  * 
@@ -122,21 +121,9 @@ public class CatalogModel implements ICatalogModel
 		}
 
 		@Override
-		public boolean isReloadable()
-		{
-			return true;
-		}
-
-		@Override
 		public String getName()
 		{
 			return "ROOT"; //$NON-NLS-1$
-		}
-		
-		@Override
-		public boolean isLoaded()
-		{
-			return true;
 		}
 		
 		@Override
@@ -157,5 +144,4 @@ public class CatalogModel implements ICatalogModel
 			return null;
 		}
 	}
-	
 }

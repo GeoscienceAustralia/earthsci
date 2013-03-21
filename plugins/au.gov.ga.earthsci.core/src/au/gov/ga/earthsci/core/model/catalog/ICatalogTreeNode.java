@@ -19,8 +19,7 @@ import java.net.URI;
 
 import org.eclipse.core.runtime.content.IContentType;
 
-import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
-import au.gov.ga.earthsci.core.tree.LazyTreeJob;
+import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.ILabelable;
 import au.gov.ga.earthsci.core.util.INamed;
 import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
@@ -33,23 +32,13 @@ import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  * @author James Navin (james.navin@ga.gov.au)
  */
-public interface ICatalogTreeNode extends ILazyTreeNode<ICatalogTreeNode>, IPropertyChangeBean, INamed, ILabelable
+public interface ICatalogTreeNode extends ITreeNode<ICatalogTreeNode>, IPropertyChangeBean, INamed, ILabelable
 {
 	/**
 	 * @return Is this catalog node removeable from the Catalog tree? All user
 	 *         added nodes should also be removeable.
 	 */
 	boolean isRemoveable();
-
-	/**
-	 * @return Is this catalog node's data able to be reloaded?
-	 */
-	boolean isReloadable();
-
-	/**
-	 * Reload this node's data.
-	 */
-	LazyTreeJob reload();
 	
 	/**
 	 * @return A URI that uniquely identifies this node in a catalog model. One should be able to re-create the node from this URI.

@@ -1,37 +1,52 @@
 package au.gov.ga.earthsci.core.tree;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.jobs.Job;
-
-import au.gov.ga.earthsci.core.util.INamed;
+import au.gov.ga.earthsci.core.tree.lazy.AsynchronousLazyTreeNodeHelper;
 
 /**
  * An extension of the {@link ITreeNode} interface that supports lazy loading of
  * children.
+ * <p/>
+ * See {@link AsynchronousLazyTreeNodeHelper} for a simple helper that these
+ * methods can be delegated to.
  * 
  * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILazyTreeNode<E> extends ITreeNode<E>, INamed
+public interface ILazyTreeNode<E> extends ITreeNode<E>
 {
 	/**
-	 * Load this node's children.
+	 * Load this node's children. The callback should be notified once loading
+	 * is complete.
 	 * <p/>
-	 * Loading will be performed in the returned {@link Job}, which takes the name of the node
+	 * Implementations should intelligently handle the case where this is called
+	 * more than once. For example, if called while a load is in progress, this
+	 * shouldn't fire another load job.
+	 * 
+	 * @param callback
+	 *            Callback to notify on loading completion
 	 */
-	LazyTreeJob load();
-	
+	void load(ILazyTreeNodeCallback callback);
+
 	/**
-	 * @return Whether this node's children have been loaded 
+	 * @return Whether this node's children have been loaded (or attempted with
+	 *         an error)
 	 */
 	boolean isLoaded();
-	
+
 	/**
-	 * @return Whether an error has occurred while loading this node's children
+	 * Calculate a list of children that should be displayed to users.
+	 * <p/>
+	 * For example:
+	 * <ul>
+	 * <li>If this node is currently in the process of loading, this method
+	 * could return a single node representing the loading state, or an array
+	 * containing a loading node plus its current children.</li>
+	 * <li>If the load failed for this node, this method could return a single
+	 * node containing the error.</li>
+	 * <li>Otherwise this method should return {@link #getChildren()}.
+	 * </ul>
+	 * 
+	 * @return Array of child elements to display to the user
 	 */
-	boolean hasError();
-	
-	/**
-	 * @return The status associated with the last load of this node's children
-	 */
-	IStatus getStatus();
+	ITreeNode<E>[] getDisplayChildren();
 }

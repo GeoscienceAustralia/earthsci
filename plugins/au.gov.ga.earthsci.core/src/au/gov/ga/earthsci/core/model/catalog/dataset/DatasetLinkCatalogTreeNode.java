@@ -4,101 +4,83 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.osgi.util.NLS;
-
+import au.gov.ga.earthsci.core.model.catalog.ErrorCatalogTreeNode;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.core.retrieve.IRetrieval;
-import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
-import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
-import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
+import au.gov.ga.earthsci.core.model.catalog.LoadingCatalogTreeNode;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import au.gov.ga.earthsci.core.tree.ILazyTreeNodeCallback;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
-import au.gov.ga.earthsci.core.util.Util;
+import au.gov.ga.earthsci.core.tree.lazy.IRetrievalLazyTreeNode;
+import au.gov.ga.earthsci.core.tree.lazy.RetrievalLazyTreeNodeHelper;
 
 /**
  * An {@link ICatalogTreeNode} that represents a {@code Link} element from the
  * legacy {@code dataset.xml}
  * 
  * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class DatasetLinkCatalogTreeNode extends DatasetCatalogTreeNode
+public class DatasetLinkCatalogTreeNode extends DatasetCatalogTreeNode implements
+		IRetrievalLazyTreeNode<ICatalogTreeNode>
 {
-	private static final String LINK_DOWNLOAD_FAILED =
-			Messages.DatasetLinkCatalogTreeNode_GenericLinkDownloadFailedMessage;
-
 	private final URL linkURL;
+	private final RetrievalLazyTreeNodeHelper<ICatalogTreeNode> helper =
+			new RetrievalLazyTreeNodeHelper<ICatalogTreeNode>(this);
 
 	public DatasetLinkCatalogTreeNode(URI nodeURI, String name, URL linkURL, URL infoURL, URL iconURL, boolean base)
 	{
 		super(nodeURI, name, infoURL, iconURL, base);
-
 		this.linkURL = linkURL;
-
-		setLoaded(false);
 	}
 
 	@Override
-	protected IStatus doLoad(IProgressMonitor monitor)
+	public void load(ILazyTreeNodeCallback callback)
 	{
+		helper.load(callback);
+	}
+
+	@Override
+	public boolean isLoaded()
+	{
+		return helper.isLoaded();
+	}
+
+	@Override
+	public ITreeNode<ICatalogTreeNode>[] getDisplayChildren()
+	{
+		return helper.getDisplayChildren();
+	}
+
+	@Override
+	public URL getRetrievalURL()
+	{
+		return linkURL;
+	}
+
+	@Override
+	public ITreeNode<ICatalogTreeNode>[] handleRetrieval(IRetrievalData data, URL url) throws Exception
+	{
+		InputStream is = data.getInputStream();
 		try
 		{
-			monitor.beginTask(
-					NLS.bind(Messages.DatasetLinkCatalogTreeNode_DownloadingLinkMessage, linkURL.toExternalForm()),
-					IProgressMonitor.UNKNOWN);
-
-
-			IRetrievalService retrievalService = RetrievalServiceFactory.getServiceInstance();
-			if (retrievalService == null)
-			{
-				throw new IllegalStateException(Messages.DatasetLinkCatalogTreeNode_NoRetrievalServiceMessage);
-			}
-
-			IRetrieval retrieval = retrievalService.retrieve(this, linkURL);
-			retrieval.start();
-
-			IRetrievalResult retrievalResult = retrieval.waitAndGetResult();
-			if (retrievalResult == null)
-			{
-				return createErrorStatus(
-						NLS.bind(Messages.DatasetLinkCatalogTreeNode_NoRetrieverFoundMessage, linkURL), null);
-			}
-			Exception error = retrievalResult.getError();
-			if (error != null)
-			{
-				return createErrorStatus(error.getLocalizedMessage(), error);
-			}
-
-			InputStream is = retrievalResult.getData().getInputStream();
-			try
-			{
-				ICatalogTreeNode root = DatasetReader.read(is, linkURL);
-				for (ITreeNode<ICatalogTreeNode> child : root.getChildren())
-				{
-					add(child);
-				}
-			}
-			finally
-			{
-				is.close();
-			}
-		}
-		catch (InterruptedException e)
-		{
-			return Status.CANCEL_STATUS;
-		}
-		catch (Exception e)
-		{
-			return createErrorStatus(
-					Util.isEmpty(e.getLocalizedMessage()) ? LINK_DOWNLOAD_FAILED : e.getLocalizedMessage(), e);
+			ICatalogTreeNode root = DatasetReader.read(is, url);
+			return root.getChildren();
 		}
 		finally
 		{
-			monitor.done();
+			is.close();
 		}
-
-		return Status.OK_STATUS;
 	}
 
+	@Override
+	public ITreeNode<ICatalogTreeNode> getLoadingNode()
+	{
+		return new LoadingCatalogTreeNode();
+	}
+
+	@Override
+	public ITreeNode<ICatalogTreeNode> getErrorNode(Exception error)
+	{
+		return new ErrorCatalogTreeNode(error);
+	}
 }

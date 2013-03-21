@@ -371,8 +371,12 @@ public class CatalogBrowserControllerTest
 	
 	private static class DummyCatalogNode extends AbstractCatalogTreeNode
 	{
+		public DummyCatalogNode()
+		{
+			super(null);
+		}
+
 		boolean removable;
-		boolean reloadable;
 		boolean layerNode;
 		URI layerURI;
 		String name;
@@ -381,12 +385,6 @@ public class CatalogBrowserControllerTest
 		public boolean isRemoveable()
 		{
 			return removable;
-		}
-
-		@Override
-		public boolean isReloadable()
-		{
-			return reloadable;
 		}
 
 		@Override

@@ -28,9 +28,6 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 	
 	private boolean base;
 	
-	/** For persistence mechanism only */
-	protected DatasetCatalogTreeNode() {}
-	
 	public DatasetCatalogTreeNode(final URI nodeURI, final String name, final URL infoURL, final URL iconURL, final boolean base)
 	{
 		super(nodeURI);
@@ -39,18 +36,10 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 		this.infoURL = infoURL;
 		this.iconURL = iconURL;
 		this.base = base;
-		
-		setLoaded(true);
 	}
 
 	@Override
 	public boolean isRemoveable()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean isReloadable()
 	{
 		return true;
 	}
@@ -92,5 +81,11 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 	public IContentType getLayerContentType()
 	{
 		return null;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getLabelOrName();
 	}
 }

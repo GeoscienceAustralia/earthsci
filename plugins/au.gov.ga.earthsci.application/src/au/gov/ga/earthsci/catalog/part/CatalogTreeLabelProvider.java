@@ -45,15 +45,20 @@ import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 
 import au.gov.ga.earthsci.application.IFireableLabelProvider;
+import au.gov.ga.earthsci.application.ILoadingIconFrameListener;
 import au.gov.ga.earthsci.application.IconLoader;
 import au.gov.ga.earthsci.application.ImageRegistry;
+import au.gov.ga.earthsci.application.LoadingIconAnimator;
 import au.gov.ga.earthsci.common.collection.HashSetHashMap;
 import au.gov.ga.earthsci.common.collection.SetMap;
+import au.gov.ga.earthsci.core.model.catalog.ErrorCatalogTreeNode;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
 import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.core.model.catalog.LoadingCatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.ILabeled;
+import au.gov.ga.earthsci.core.util.INamed;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.viewers.IControlProvider;
 
@@ -61,6 +66,7 @@ import au.gov.ga.earthsci.viewers.IControlProvider;
  * A {@link IControlProvider} for the catalog browser tree
  * 
  * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 @Creatable
 public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDecorator, IFireableLabelProvider,
@@ -87,7 +93,7 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 	{
 		setupListeners();
 		addListeners();
-		
+
 		informationColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
 		FontData[] fontDatas = Display.getDefault().getSystemFont().getFontData();
 		for (FontData fontData : fontDatas)
@@ -106,14 +112,41 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 	}
 
 	@Override
-	public Image getImage(Object element)
+	public Image getImage(final Object element)
 	{
 		if (!(element instanceof ICatalogTreeNode))
 		{
 			return null;
 		}
-		ICatalogTreeNode node = (ICatalogTreeNode) element;
 
+		if (element instanceof LoadingCatalogTreeNode)
+		{
+			ILoadingIconFrameListener loadingIconFrameListener = new ILoadingIconFrameListener()
+			{
+				@Override
+				public void nextFrame(Image image)
+				{
+					Display.getDefault().asyncExec(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							fireLabelProviderChanged(new LabelProviderChangedEvent(CatalogTreeLabelProvider.this,
+									element));
+						}
+					});
+					LoadingIconAnimator.get().removeListener(this);
+				}
+			};
+			LoadingIconAnimator.get().addListener(loadingIconFrameListener);
+			return LoadingIconAnimator.get().getCurrentFrame();
+		}
+		else if (element instanceof ErrorCatalogTreeNode)
+		{
+			return ImageRegistry.getInstance().get(ImageRegistry.ICON_ERROR);
+		}
+
+		ICatalogTreeNode node = (ICatalogTreeNode) element;
 		URL iconURL = CatalogTreeLabelProviderRegistry.getProvider(node).getIconURL(node);
 		return getImage(element, iconURL);
 	}
@@ -127,7 +160,11 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 			{
 				return ((ILabeled) element).getLabelOrName();
 			}
-			return null;
+			else if (element instanceof INamed)
+			{
+				return ((INamed) element).getName();
+			}
+			return element.toString();
 		}
 		ICatalogTreeNode node = (ICatalogTreeNode) element;
 		return CatalogTreeLabelProviderRegistry.getProvider(node).getLabel(node);
@@ -397,7 +434,7 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		layerModel.getRootNode().removePropertyChangeListener("children", layerModelChildrenListener); //$NON-NLS-1$
 		layerModel.getRootNode().removePropertyChangeListener("uRI", layerModelURIListener); //$NON-NLS-1$
 	}
-	
+
 	private Color informationColor;
 	private Font subscriptFont;
 	private final Styler informationStyler = new Styler()

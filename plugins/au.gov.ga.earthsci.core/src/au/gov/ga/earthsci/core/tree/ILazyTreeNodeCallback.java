@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.tree;
-
-import org.eclipse.osgi.util.NLS;
+package au.gov.ga.earthsci.core.tree;
 
 /**
- * Message bundle for tree components
+ * Callback passed to the {@link ILazyTreeNode#load(ILazyTreeNodeCallback)}
+ * method.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class Messages extends NLS
+public interface ILazyTreeNodeCallback
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.application.tree.messages"; //$NON-NLS-1$
-	public static String LazyTreeNodeContentProvider_LoadingMessage;
-	static
-	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
-
-	private Messages()
-	{
-	}
+	/**
+	 * Called when the node loads its children. Can be called more than once.
+	 * For example, if the node loads children from a cached resource, and then
+	 * from a retrieved resource, this would be called twice.
+	 */
+	void loaded();
 }

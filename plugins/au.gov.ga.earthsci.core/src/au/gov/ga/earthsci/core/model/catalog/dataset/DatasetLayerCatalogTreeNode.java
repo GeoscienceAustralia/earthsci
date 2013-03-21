@@ -51,15 +51,6 @@ public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 		this.def = def;
 		this.enabled = enabled;
 	}
-
-	/** For persistence mechanism only */
-	protected DatasetLayerCatalogTreeNode() {}
-
-	@Override
-	public boolean isLoaded()
-	{
-		return true;
-	}
 	
 	@Override
 	public boolean hasChildren()
