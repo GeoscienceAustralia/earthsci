@@ -49,35 +49,42 @@ import au.gov.ga.earthsci.worldwind.common.util.Validate;
  */
 public class CatalogPersister
 {
-	private CatalogPersister() {}
+	private CatalogPersister()
+	{
+	}
 
 	private static final Logger logger = LoggerFactory.getLogger(CatalogPersister.class);
-	
+
 	private static final String ROOT_NODE_NAME = "catalogModel"; //$NON-NLS-1$
 	private static final String MODEL_ELEMENT_NAME = "model"; //$NON-NLS-1$
 	private static final String CATALOG_NODE_ELEMENT_NAME = "catalog"; //$NON-NLS-1$
-	
+
 	private static final String DEFAULT_WORKSPACE_CATALOG_FILENAME = "catalogs.xml"; //$NON-NLS-1$
-	
+
 	private static final Persister persister;
 	static
 	{
 		persister = new Persister();
 		persister.setIgnoreMissing(true);
 		persister.setIgnoreNulls(true);
-		
+
 		persister.registerNamedExportable(CatalogModelDTO.class, MODEL_ELEMENT_NAME);
 		persister.registerNamedExportable(CatalogNodeDTO.class, CATALOG_NODE_ELEMENT_NAME);
 	}
-	
+
 	/**
-	 * Save the provided catalog model to the current workspace using the default name
+	 * Save the provided catalog model to the current workspace using the
+	 * default name
 	 * 
-	 * @param model The model to save
+	 * @param model
+	 *            The model to save
 	 * 
-	 * @throws IOException If there is a problem writing to the output file
-	 * @throws TransformerException If there is a problem formatting the XML output
-	 * @throws PersistenceException  If there is a problem persisting the model tree
+	 * @throws IOException
+	 *             If there is a problem writing to the output file
+	 * @throws TransformerException
+	 *             If there is a problem formatting the XML output
+	 * @throws PersistenceException
+	 *             If there is a problem persisting the model tree
 	 */
 	public static void saveToWorkspace(ICatalogModel model)
 	{
@@ -85,7 +92,7 @@ public class CatalogPersister
 		{
 			return;
 		}
-		
+
 		try
 		{
 			saveCatalogModel(model, ConfigurationUtil.getWorkspaceFile(DEFAULT_WORKSPACE_CATALOG_FILENAME));
@@ -95,26 +102,34 @@ public class CatalogPersister
 			logger.error("Unable to save catalog model to workspace", e); //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
 	 * Save the provided catalog model to the provided file
 	 * 
-	 * @param model The catalog model to save. If <code>null</code> this method will have no effect.
-	 * @param file The file to save the model to. Cannot be <code>null</code>.
+	 * @param model
+	 *            The catalog model to save. If <code>null</code> this method
+	 *            will have no effect.
+	 * @param file
+	 *            The file to save the model to. Cannot be <code>null</code>.
 	 * 
-	 * @throws IllegalArgumentException If the output file is <code>null</code>
-	 * @throws IOException If there is a problem writing to the output file
-	 * @throws TransformerException If there is a problem formatting the XML output
-	 * @throws PersistenceException  If there is a problem persisting the model tree
+	 * @throws IllegalArgumentException
+	 *             If the output file is <code>null</code>
+	 * @throws IOException
+	 *             If there is a problem writing to the output file
+	 * @throws TransformerException
+	 *             If there is a problem formatting the XML output
+	 * @throws PersistenceException
+	 *             If there is a problem persisting the model tree
 	 */
-	public static void saveCatalogModel(ICatalogModel model, File file) throws IOException, TransformerException, PersistenceException
+	public static void saveCatalogModel(ICatalogModel model, File file) throws IOException, TransformerException,
+			PersistenceException
 	{
 		if (model == null)
 		{
 			return;
 		}
 		Validate.notNull(file, "An output file is required"); //$NON-NLS-1$
-		
+
 		FileOutputStream os = null;
 		try
 		{
@@ -133,40 +148,55 @@ public class CatalogPersister
 	/**
 	 * Save the provided catalog model to the provided output stream
 	 * 
-	 * @param model The catalog model to save. If <code>null</code> this method will have no effect.
-	 * @param os The output stream to save to. Must be non-<code>null</code> and writable.
+	 * @param model
+	 *            The catalog model to save. If <code>null</code> this method
+	 *            will have no effect.
+	 * @param os
+	 *            The output stream to save to. Must be non-<code>null</code>
+	 *            and writable.
 	 * 
-	 * @throws IllegalArgumentException If the output stream is <code>null</code>
-	 * @throws IOException If there is a problem writing to the output stream
-	 * @throws TransformerException If there is a problem formatting the document tree
-	 * @throws PersistenceException If there is a problem persisting the model tree
+	 * @throws IllegalArgumentException
+	 *             If the output stream is <code>null</code>
+	 * @throws IOException
+	 *             If there is a problem writing to the output stream
+	 * @throws TransformerException
+	 *             If there is a problem formatting the document tree
+	 * @throws PersistenceException
+	 *             If there is a problem persisting the model tree
 	 */
-	public static void saveCatalogModel(ICatalogModel model, OutputStream os) throws IOException, TransformerException, PersistenceException
+	public static void saveCatalogModel(ICatalogModel model, OutputStream os) throws IOException, TransformerException,
+			PersistenceException
 	{
 		if (model == null)
 		{
 			return;
 		}
 		Validate.notNull(os, "An output stream is required"); //$NON-NLS-1$
-		
+
 		DocumentBuilder documentBuilder = WWXML.createDocumentBuilder(false);
 		Document document = documentBuilder.newDocument();
 		Element element = document.createElement(ROOT_NODE_NAME);
 		document.appendChild(element);
-		
+
 		saveCatalogModel(model, element);
-		
+
 		XmlUtil.saveDocumentToFormattedStream(document, os);
 	}
-	
+
 	/**
-	 * Save the provided catalog model as XML children of the provided parent element
+	 * Save the provided catalog model as XML children of the provided parent
+	 * element
 	 * 
-	 * @param model The model to save. If <code>null</code>, this method will have no effect.
-	 * @param parentElement The parent XML element to save the model into
+	 * @param model
+	 *            The model to save. If <code>null</code>, this method will have
+	 *            no effect.
+	 * @param parentElement
+	 *            The parent XML element to save the model into
 	 * 
-	 * @throws IllegalArgumentException If the parent element is <code>null</code>
-	 * @throws PersistenceException If there is a problem persisting the model tree
+	 * @throws IllegalArgumentException
+	 *             If the parent element is <code>null</code>
+	 * @throws PersistenceException
+	 *             If there is a problem persisting the model tree
 	 */
 	public static void saveCatalogModel(ICatalogModel model, Element parentElement) throws PersistenceException
 	{
@@ -175,21 +205,29 @@ public class CatalogPersister
 			return;
 		}
 		Validate.notNull(parentElement, "A parent element is required"); //$NON-NLS-1$
-		
+
 		persister.save(new CatalogModelDTO(model), parentElement, null);
 	}
-	
+
 	/**
-	 * Load the catalog model from the current workspace, if it is available, or return a new empty model.
+	 * Load the catalog model from the current workspace, if it is available, or
+	 * return a new empty model.
 	 * 
-	 * @param result The model to add the loaded catalog nodes to and return. If null, a new model is created.
+	 * @param result
+	 *            The model to add the loaded catalog nodes to and return. If
+	 *            null, a new model is created.
 	 * 
 	 * @return The loaded catalog model
 	 * 
-	 * @throws IllegalArgumentException If the provided source file is <code>null</code>
-	 * @throws SAXException If there is a problem parsing the XML document
-	 * @throws IOException If there is a problem reading from the source file
-	 * @throws PersistenceException If there is a problem recreating the model tree from the persistence mechanism
+	 * @throws IllegalArgumentException
+	 *             If the provided source file is <code>null</code>
+	 * @throws SAXException
+	 *             If there is a problem parsing the XML document
+	 * @throws IOException
+	 *             If there is a problem reading from the source file
+	 * @throws PersistenceException
+	 *             If there is a problem recreating the model tree from the
+	 *             persistence mechanism
 	 */
 	public static ICatalogModel loadFromWorkspace(ICatalogModel result)
 	{
@@ -201,33 +239,43 @@ public class CatalogPersister
 		}
 		try
 		{
-			return loadCatalogModel(ConfigurationUtil.getWorkspaceFile(DEFAULT_WORKSPACE_CATALOG_FILENAME), result);
+			return loadCatalogModel(workspaceFile, result);
 		}
 		catch (Exception e)
 		{
 			logger.debug("Unable to load catalog model from workspace", e); //$NON-NLS-1$
 			return new CatalogModel();
 		}
-		
+
 	}
-	
+
 	/**
 	 * Load a catalog model from the provided source file
 	 * 
-	 * @param source The file to load the catalog model from. Must be non-<code>null</code>.
-	 * @param result The model to add the loaded catalog nodes to and return. If null, a new model is created.
+	 * @param source
+	 *            The file to load the catalog model from. Must be non-
+	 *            <code>null</code>.
+	 * @param result
+	 *            The model to add the loaded catalog nodes to and return. If
+	 *            null, a new model is created.
 	 * 
 	 * @return The loaded catalog model
 	 * 
-	 * @throws IllegalArgumentException If the provided source file is <code>null</code>
-	 * @throws SAXException If there is a problem parsing the XML document
-	 * @throws IOException If there is a problem reading from the source file
-	 * @throws PersistenceException If there is a problem recreating the model tree from the persistence mechanism
+	 * @throws IllegalArgumentException
+	 *             If the provided source file is <code>null</code>
+	 * @throws SAXException
+	 *             If there is a problem parsing the XML document
+	 * @throws IOException
+	 *             If there is a problem reading from the source file
+	 * @throws PersistenceException
+	 *             If there is a problem recreating the model tree from the
+	 *             persistence mechanism
 	 */
-	public static ICatalogModel loadCatalogModel(File source, ICatalogModel result) throws SAXException, IOException, PersistenceException
+	public static ICatalogModel loadCatalogModel(File source, ICatalogModel result) throws SAXException, IOException,
+			PersistenceException
 	{
 		Validate.notNull(source, "An input file is required"); //$NON-NLS-1$
-		
+
 		FileInputStream is = null;
 		try
 		{
@@ -242,68 +290,96 @@ public class CatalogPersister
 			}
 		}
 	}
-	
+
 	/**
 	 * Load a previously saved catalog model from the provided input stream.
 	 * 
-	 * @param is The input stream to load from. Must be non-<code>null</code>.
-	 * @param result The model to add the loaded catalog nodes to and return. If null, a new model is created.
+	 * @param is
+	 *            The input stream to load from. Must be non-<code>null</code>.
+	 * @param result
+	 *            The model to add the loaded catalog nodes to and return. If
+	 *            null, a new model is created.
 	 * 
 	 * @return The loaded catalog model
 	 * 
-	 * @throws IllegalArgumentException If the input stream is <code>null</code>
-	 * @throws SAXException If there is a problem parsing the XML
-	 * @throws IOException If there is a problem reading from the input stream
-	 * @throws PersistenceException If there is a problem recreating the model from the persistence mechanism 
+	 * @throws IllegalArgumentException
+	 *             If the input stream is <code>null</code>
+	 * @throws SAXException
+	 *             If there is a problem parsing the XML
+	 * @throws IOException
+	 *             If there is a problem reading from the input stream
+	 * @throws PersistenceException
+	 *             If there is a problem recreating the model from the
+	 *             persistence mechanism
 	 */
-	public static ICatalogModel loadCatalogModel(InputStream is, ICatalogModel result) throws SAXException, IOException, PersistenceException
+	public static ICatalogModel loadCatalogModel(InputStream is, ICatalogModel result) throws SAXException,
+			IOException, PersistenceException
 	{
 		Validate.notNull(is, "An input stream is required"); //$NON-NLS-1$
-		
+
 		Document document = WWXML.createDocumentBuilder(false).parse(is);
 		Element parent = document.getDocumentElement();
 		if (!ROOT_NODE_NAME.equals(parent.getNodeName()))
 		{
-			throw new PersistenceException("Provided document is not a valid catalog model document. Expected root node " + ROOT_NODE_NAME + " but found " + parent.getNodeName());  //$NON-NLS-1$//$NON-NLS-2$
+			throw new PersistenceException(
+					"Provided document is not a valid catalog model document. Expected root node " + ROOT_NODE_NAME + " but found " + parent.getNodeName()); //$NON-NLS-1$//$NON-NLS-2$
 		}
 		Element element = XmlUtil.getFirstChildElement(parent);
 		return loadCatalogModel(element, result);
 	}
-	
+
 	/**
-	 * Load a previously saved catalog model from the provided parent XML element.
+	 * Load a previously saved catalog model from the provided parent XML
+	 * element.
 	 * 
-	 * @param parentElement The parent element to load the catalog model from. Must be non-<code>null</code>.
-	 * @param result The model to add the loaded catalog nodes to and return. If null, a new model is created.
+	 * @param parentElement
+	 *            The parent element to load the catalog model from. Must be
+	 *            non-<code>null</code>.
+	 * @param result
+	 *            The model to add the loaded catalog nodes to and return. If
+	 *            null, a new model is created.
 	 * 
 	 * @return The loaded catalog model
 	 * 
-	 * @throws IllegalArgumentException If the parent element is <code>null</code>
-	 * @throws PersistenceException If there is a problem recreating the model from the persistence mechanism
+	 * @throws IllegalArgumentException
+	 *             If the parent element is <code>null</code>
+	 * @throws PersistenceException
+	 *             If there is a problem recreating the model from the
+	 *             persistence mechanism
 	 */
-	public static ICatalogModel loadCatalogModel(Element parentElement, ICatalogModel result) throws PersistenceException
+	public static ICatalogModel loadCatalogModel(Element parentElement, ICatalogModel result)
+			throws PersistenceException
 	{
 		Validate.notNull(parentElement, "A parent XML element is required"); //$NON-NLS-1$
-		
+
 		CatalogModelDTO dto = (CatalogModelDTO) persister.load(parentElement, null);
-		
+
 		ICatalogTreeNode[] treeNodes = new ICatalogTreeNode[dto.catalogs.length];
 		for (int i = 0; i < treeNodes.length; i++)
 		{
 			ICatalogTreeNode node = CatalogFactory.loadCatalog(dto.catalogs[i].nodeURI);
-			node.setLabel(dto.catalogs[i].label);
+			if (node == null)
+			{
+				node =
+						new ErrorCatalogTreeNode(new Exception(
+								"Error loading catalog from URI: " + dto.catalogs[i].nodeURI)); //$NON-NLS-1$
+			}
+			else
+			{
+				node.setLabel(dto.catalogs[i].label);
+			}
 			treeNodes[i] = node;
 		}
-		
-		if(result == null)
+
+		if (result == null)
 		{
 			result = new CatalogModel();
 		}
 		result.addTopLevelCatalogs(treeNodes);
-	
+
 		return result;
 	}
-	
+
 	/**
 	 * A simple DTO that captures the state of a {@link ICatalogModel} required
 	 * for persistence.
@@ -315,49 +391,49 @@ public class CatalogPersister
 	{
 		@Persistent
 		private CatalogNodeDTO[] catalogs;
-		
+
 		public CatalogModelDTO(final ICatalogModel model)
 		{
-			
+
 			ICatalogTreeNode[] topLevelCatalogs = model.getTopLevelCatalogs();
-			
+
 			catalogs = new CatalogNodeDTO[topLevelCatalogs.length];
 			for (int i = 0; i < topLevelCatalogs.length; i++)
 			{
 				catalogs[i] = new CatalogNodeDTO(topLevelCatalogs[i]);
 			}
 		}
-		
+
 		@SuppressWarnings("unused")
 		public CatalogModelDTO()
 		{
 			// For persistence mechanism only
 		}
 	}
-	
-	
+
+
 	/**
-	 * A simple DTO that captures the state of a {@link ICatalogTreeNode} required
-	 * for persistence.
+	 * A simple DTO that captures the state of a {@link ICatalogTreeNode}
+	 * required for persistence.
 	 * <p/>
 	 * Used to simplify the persisting / restoring of catalogs
 	 */
 	@Exportable
 	private static class CatalogNodeDTO
 	{
-		@Persistent(attribute=true)
+		@Persistent(attribute = true)
 		private String label;
-		
-		@Persistent(attribute=true, name="uri")
+
+		@Persistent(attribute = true, name = "uri")
 		private URI nodeURI;
-		
+
 		public CatalogNodeDTO(final ICatalogTreeNode node)
 		{
 			this.label = node.getLabel();
 			this.nodeURI = node.getURI();
 		}
-		
-		
+
+
 		@SuppressWarnings("unused")
 		public CatalogNodeDTO()
 		{
