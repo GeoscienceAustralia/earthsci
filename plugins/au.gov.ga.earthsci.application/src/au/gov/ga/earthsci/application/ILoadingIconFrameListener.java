@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface LoadingIconFrameListener
+public interface ILoadingIconFrameListener
 {
 	void nextFrame(Image image);
 }

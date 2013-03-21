@@ -40,7 +40,7 @@ import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class IconLoader implements LoadingIconFrameListener
+public class IconLoader implements ILoadingIconFrameListener
 {
 	private static final Logger logger = LoggerFactory.getLogger(IconLoader.class);
 
