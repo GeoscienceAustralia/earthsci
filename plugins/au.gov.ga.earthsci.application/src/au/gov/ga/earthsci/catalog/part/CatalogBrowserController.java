@@ -235,7 +235,8 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		LayerNode layer = new LayerNode();
 		layer.setURI(catalogTreeNode.getLayerURI());
 		layer.setContentType(catalogTreeNode.getLayerContentType());
-		layer.setLabel(catalogTreeNode.getLabelOrName());
+		layer.setName(catalogTreeNode.getName());
+		layer.setLabel(catalogTreeNode.getLabel());
 		layer.setEnabled(true);
 		layer.setIconURL(CatalogTreeLabelProviderRegistry.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
 		layer.setInfoURL(CatalogTreeLabelProviderRegistry.getProvider(catalogTreeNode).getInfoURL(catalogTreeNode));
