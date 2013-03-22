@@ -103,13 +103,14 @@ public class NotificationPart
 	 * Initialise this view with the given parent component
 	 */
 	@Inject
-	public void init(Composite parent, MPart part)
+	public void init(Composite parent, MPart part, NotificationPartReceiver receiver)
 	{
 		GridLayout layout = new GridLayout(1, false);
 		parent.setLayout(layout);
 		
 		createViewer(parent);
 		initialiseCorrectGrouping(part);
+		setReceiver(receiver);
 	}
 
 	/**
@@ -124,18 +125,11 @@ public class NotificationPart
 	/**
 	 * Set the receiver that this view should listen to for notifications 
 	 */
-	@Inject
 	public void setReceiver(NotificationPartReceiver receiver)
 	{
 		this.receiver = receiver;
 		this.receiver.setView(this);
-		
-		// The order of dependency injection is indeterminate here, so init
-		// may be called before/after the receiver is set
-		if (filteredTree != null)
-		{
-			reloadNotificationTree();
-		}
+		reloadNotificationTree();
 	}
 	
 	/**

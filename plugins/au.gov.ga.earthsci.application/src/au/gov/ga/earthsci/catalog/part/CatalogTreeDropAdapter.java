@@ -17,7 +17,6 @@ package au.gov.ga.earthsci.catalog.part;
 
 import java.io.File;
 
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -25,9 +24,9 @@ import org.eclipse.swt.dnd.TransferData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.model.catalog.CatalogFactory;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.CatalogFactory;
+import au.gov.ga.earthsci.catalog.model.ICatalogModel;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 /**
@@ -37,7 +36,6 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
  */
 class CatalogTreeDropAdapter extends ViewerDropAdapter
 {
-
 	private static final Logger logger = LoggerFactory.getLogger(CatalogTreeDropAdapter.class);
 	
 	private final ICatalogModel model;
@@ -97,17 +95,6 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 			if (catalog != null)
 			{
 				model.addTopLevelCatalog(index, catalog);
-				
-				// If this is the only node in the tree, refresh the whole tree. Otherwise just the inserted node
-				if (model.getRoot().getChildCount() == 1)
-				{
-					getTreeViewer().refresh();
-				}
-				else
-				{
-					getTreeViewer().insert(model, catalog, index);
-				}
-				
 				index++;
 			}
 			else
@@ -134,10 +121,4 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 				
 		return location == LOCATION_BEFORE ? target.index() : target.index() + 1;
 	}
-	
-	private TreeViewer getTreeViewer()
-	{
-		return (TreeViewer)getViewer();
-	}
-
 }

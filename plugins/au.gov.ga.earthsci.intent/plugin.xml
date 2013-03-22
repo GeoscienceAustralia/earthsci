@@ -3,16 +3,11 @@
 <plugin>
    <extension-point id="au.gov.ga.earthsci.intentFilters" name="IntentFilters" schema="schema/au.gov.ga.earthsci.intentFilters.exsd"/>
    <extension-point id="au.gov.ga.earthsci.dispatchFilters" name="DispatchFilters" schema="schema/au.gov.ga.earthsci.dispatchFilters.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.xmlLoaders.exsd"/>
    <extension-point id="au.gov.ga.earthsci.intentResourceLocators" name="IntentResourceLocators" schema="schema/au.gov.ga.earthsci.intentResourceLocators.exsd"/>
    <extension
          point="au.gov.ga.earthsci.injectable">
       <inject
             class="au.gov.ga.earthsci.intent.locator.IntentResourceLocatorManager"
-            priority="10">
-      </inject>
-      <inject
-            class="au.gov.ga.earthsci.intent.xml.XmlLoaderManager"
             priority="10">
       </inject>
       <inject

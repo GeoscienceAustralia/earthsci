@@ -9,6 +9,7 @@
    <extension-point id="au.gov.ga.earthsci.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.bookmark.creator.exsd"/>
    <extension-point id="au.gov.ga.earthsci.bookmark.exporter" name="Bookmark Property Exporter" schema="schema/au.gov.ga.earthsci.bookmark.exporter.exsd"/>
    <extension-point id="au.gov.ga.earthsci.hud" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.hud.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.core.xmlLoaders.exsd"/>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retriever">
       <retriever
@@ -27,7 +28,7 @@
    <extension
          point="au.gov.ga.earthsci.core.model.catalog.provider">
       <provider
-            class="au.gov.ga.earthsci.core.model.catalog.dataset.DatasetXMLCatalogProvider">
+            class="au.gov.ga.earthsci.catalog.model.dataset.DatasetXMLCatalogProvider">
       </provider>
    </extension>
    <extension
@@ -75,6 +76,10 @@
    <extension
          point="au.gov.ga.earthsci.injectable">
       <inject
+            class="au.gov.ga.earthsci.core.xml.XmlLoaderManager"
+            priority="10">
+      </inject>
+      <inject
             class="au.gov.ga.earthsci.core.util.ExtensionRegistryUtil"
             priority="0">
       </inject>
@@ -105,7 +110,7 @@
             priority="0">
       </injectable>
       <injectable
-            class="au.gov.ga.earthsci.core.model.catalog.CatalogFactory"
+            class="au.gov.ga.earthsci.catalog.model.CatalogFactory"
             priority="0">
       </injectable>
       <inject
@@ -123,10 +128,10 @@
          </type>
       </inject>
       <inject
-            class="au.gov.ga.earthsci.core.model.catalog.CatalogModel"
+            class="au.gov.ga.earthsci.catalog.model.CatalogModel"
             priority="0">
          <type
-               class="au.gov.ga.earthsci.core.model.catalog.ICatalogModel">
+               class="au.gov.ga.earthsci.catalog.model.ICatalogModel">
          </type>
       </inject>
       <bind
@@ -147,7 +152,6 @@
          point="au.gov.ga.earthsci.intentFilters">
       <filter
             class="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
-            handler="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
             priority="0">
          <scheme
                name="class">
@@ -172,12 +176,27 @@
       </locator>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.xmlLoaders">
+         point="au.gov.ga.earthsci.core.xmlLoaders">
       <loader
             class="au.gov.ga.earthsci.core.model.layer.LayerXmlLoader"
             filter="au.gov.ga.earthsci.core.model.layer.LayerXmlLoader"
             priority="0">
       </loader>
+      <loader
+            class="au.gov.ga.earthsci.catalog.model.dataset.DatasetXmlLoader"
+            filter="au.gov.ga.earthsci.catalog.model.dataset.DatasetXmlLoader"
+            priority="0">
+      </loader>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.dispatchFilters">
+      <filter
+            class="au.gov.ga.earthsci.catalog.model.CatalogTreeNodeDispatchHandler"
+            priority="0">
+         <type
+               class="au.gov.ga.earthsci.catalog.model.ICatalogTreeNode">
+         </type>
+      </filter>
    </extension>
 
 </plugin>

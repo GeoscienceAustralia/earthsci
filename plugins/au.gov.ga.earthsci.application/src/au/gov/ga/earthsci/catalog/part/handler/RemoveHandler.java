@@ -23,8 +23,8 @@ import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
 
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.part.ICatalogBrowserController;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 
 /**
  * An handler that is used for remove operations on the catalog browser tree
@@ -37,28 +37,13 @@ public class RemoveHandler
 	private ICatalogBrowserController controller;
 
 	@Execute
-	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode node)
-	{
-		execute(new ICatalogTreeNode[] { node });
-	}
-
-	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
 	{
 		controller.removeFromLayerModel(selectedNodes);
 	}
 
 	@CanExecute
-	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode node)
-	{
-		if (node == null)
-			return false;
-
-		return canExecute(new ICatalogTreeNode[] { node });
-	}
-
-	@CanExecute
-	public boolean canExecute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
+	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
 	{
 		return selectedNodes != null && selectedNodes.length > 0 && controller.areAllLayerNodes(selectedNodes)
 				&& controller.anyExistInLayerModel(selectedNodes);

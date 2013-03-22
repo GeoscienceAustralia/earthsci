@@ -11,8 +11,8 @@ import org.jmock.Mockery;
 import org.junit.Before;
 import org.junit.Test;
 
-import au.gov.ga.earthsci.core.model.catalog.AbstractCatalogTreeNode;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.AbstractCatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
@@ -371,8 +371,12 @@ public class CatalogBrowserControllerTest
 	
 	private static class DummyCatalogNode extends AbstractCatalogTreeNode
 	{
+		public DummyCatalogNode()
+		{
+			super(null);
+		}
+
 		boolean removable;
-		boolean reloadable;
 		boolean layerNode;
 		URI layerURI;
 		String name;
@@ -381,12 +385,6 @@ public class CatalogBrowserControllerTest
 		public boolean isRemoveable()
 		{
 			return removable;
-		}
-
-		@Override
-		public boolean isReloadable()
-		{
-			return reloadable;
 		}
 
 		@Override

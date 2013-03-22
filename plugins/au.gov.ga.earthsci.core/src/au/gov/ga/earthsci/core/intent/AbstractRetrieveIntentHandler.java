@@ -24,9 +24,9 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
-import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.IIntentCaller;
+import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentHandler;
+import au.gov.ga.earthsci.intent.Intent;
 
 /**
  * Abstract superclass of IntentHandlers that use the IRetrievalService system
@@ -40,7 +40,7 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 	private IRetrievalService retrievalService;
 
 	@Override
-	public void handle(final Intent intent, final IIntentCaller caller)
+	public void handle(final Intent intent, final IIntentCallback callback)
 	{
 		try
 		{
@@ -56,7 +56,7 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 				@Override
 				public void cached(IRetrieval retrieval)
 				{
-					handle(retrieval.getCachedData(), url, intent, caller);
+					handle(retrieval.getCachedData(), url, intent, callback);
 				}
 
 				@Override
@@ -67,12 +67,12 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 					{
 						if (!result.isFromCache())
 						{
-							handle(result.getData(), url, intent, caller);
+							handle(result.getData(), url, intent, callback);
 						}
 					}
 					else
 					{
-						caller.error(intent, result.getError());
+						callback.error(result.getError(), intent);
 					}
 				}
 			});
@@ -80,7 +80,7 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 		}
 		catch (Exception e)
 		{
-			caller.error(intent, e);
+			callback.error(e, intent);
 		}
 	}
 
@@ -89,6 +89,8 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 	 * <p/>
 	 * It is possible that this could be called twice, once for a cached version
 	 * of the data, and once for the updated data.
+	 * <p/>
+	 * Must notify the callback when completed (or failed).
 	 * 
 	 * @param data
 	 *            Retrieved data
@@ -96,8 +98,8 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 	 *            the data was retrieved from
 	 * @param intent
 	 *            Intent for which the data was retrieved
-	 * @param caller
-	 *            Intent caller to notify once the data has been handled
+	 * @param callback
+	 *            Intent callback to notify once the data has been handled
 	 */
-	protected abstract void handle(IRetrievalData data, URL url, Intent intent, IIntentCaller caller);
+	protected abstract void handle(IRetrievalData data, URL url, Intent intent, IIntentCallback callback);
 }

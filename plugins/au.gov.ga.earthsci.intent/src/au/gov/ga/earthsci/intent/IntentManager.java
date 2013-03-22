@@ -23,13 +23,13 @@ import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
 import au.gov.ga.earthsci.common.collection.ListSortedMap;
+import au.gov.ga.earthsci.intent.util.ContextInjectionFactoryThreadSafe;
 
 /**
  * Injectable {@link Intent} manager, used for starting intents. Contains a
@@ -97,12 +97,12 @@ public class IntentManager
 	 * 
 	 * @param intent
 	 *            Intent to start
-	 * @param caller
-	 *            Caller of the intent that is notified of intent completion
+	 * @param callback
+	 *            Callback of the intent that is notified of intent completion
 	 * @param context
 	 *            Eclipse context in which to run the intent
 	 */
-	public void start(Intent intent, IIntentCaller caller, IEclipseContext context)
+	public void start(Intent intent, IIntentCallback callback, IEclipseContext context)
 	{
 		Class<? extends IIntentHandler> handlerClass = intent.getHandler();
 		if (handlerClass == null)
@@ -117,8 +117,8 @@ public class IntentManager
 		if (handlerClass != null)
 		{
 			IEclipseContext child = context.createChild();
-			IIntentHandler handler = ContextInjectionFactory.make(handlerClass, child);
-			handler.handle(intent, caller);
+			IIntentHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
+			handler.handle(intent, callback);
 		}
 		else
 		{
@@ -187,8 +187,7 @@ public class IntentManager
 		for (IntentFilter filter : matches)
 		{
 			int distance =
-					ContentTypeHelper.distanceToClosestMatching(intent.getContentType(),
-							filter.getContentTypes());
+					ContentTypeHelper.distanceToClosestMatching(intent.getContentType(), filter.getContentTypes());
 			if (distance >= 0 && distance < minDistance)
 			{
 				minDistance = distance;

@@ -238,8 +238,7 @@ public class NotificationManager
 	 */
 	public static void error(String title, String text, NotificationCategory category)
 	{
-		notify(Notification.create(NotificationLevel.ERROR, title, text).inCategory(category)
-				.requiringAcknowledgement(null).build());
+		notify(Notification.create(NotificationLevel.ERROR, title, text).inCategory(category).build());
 	}
 
 	/**
@@ -255,13 +254,12 @@ public class NotificationManager
 	 */
 	public static void warning(String title, String text, NotificationCategory category)
 	{
-		notify(Notification.create(NotificationLevel.WARNING, title, text).inCategory(category)
-				.requiringAcknowledgement(null).build());
+		notify(Notification.create(NotificationLevel.WARNING, title, text).inCategory(category).build());
 	}
 
 	/**
-	 * Create an information level notification with no acknowledgement, and pass it
-	 * to the {@link #notify(INotification)} method.
+	 * Create an information level notification with no acknowledgement, and
+	 * pass it to the {@link #notify(INotification)} method.
 	 * 
 	 * @param title
 	 *            Title of the notification
@@ -272,7 +270,6 @@ public class NotificationManager
 	 */
 	public static void info(String title, String text, NotificationCategory category)
 	{
-		notify(Notification.create(NotificationLevel.INFORMATION, title, text).inCategory(category)
-				.requiringAcknowledgement(null).build());
+		notify(Notification.create(NotificationLevel.INFORMATION, title, text).inCategory(category).build());
 	}
 }

@@ -26,8 +26,8 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 
 import au.gov.ga.earthsci.application.util.UserActionPreference;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.part.preferences.ICatalogBrowserPreferences;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
@@ -235,7 +235,8 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		LayerNode layer = new LayerNode();
 		layer.setURI(catalogTreeNode.getLayerURI());
 		layer.setContentType(catalogTreeNode.getLayerContentType());
-		layer.setLabel(catalogTreeNode.getLabelOrName());
+		layer.setName(catalogTreeNode.getName());
+		layer.setLabel(catalogTreeNode.getLabel());
 		layer.setEnabled(true);
 		layer.setIconURL(CatalogTreeLabelProviderRegistry.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
 		layer.setInfoURL(CatalogTreeLabelProviderRegistry.getProvider(catalogTreeNode).getInfoURL(catalogTreeNode));

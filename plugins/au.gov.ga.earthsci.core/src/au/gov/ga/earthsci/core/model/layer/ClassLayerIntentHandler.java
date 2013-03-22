@@ -16,9 +16,9 @@
 package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.layers.Layer;
-import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.IIntentCaller;
+import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentHandler;
+import au.gov.ga.earthsci.intent.Intent;
 
 /**
  * {@link IIntentHandler} that handles class:// layer URIs.
@@ -28,7 +28,7 @@ import au.gov.ga.earthsci.intent.IIntentHandler;
 public class ClassLayerIntentHandler implements IIntentHandler
 {
 	@Override
-	public void handle(Intent intent, IIntentCaller caller)
+	public void handle(Intent intent, IIntentCallback callback)
 	{
 		String className = intent.getURI().getAuthority();
 		try
@@ -36,11 +36,11 @@ public class ClassLayerIntentHandler implements IIntentHandler
 			@SuppressWarnings("unchecked")
 			Class<? extends Layer> c = (Class<? extends Layer>) Class.forName(className);
 			Layer layer = c.newInstance();
-			caller.completed(intent, layer);
+			callback.completed(layer, intent);
 		}
 		catch (Exception e)
 		{
-			caller.error(intent, e);
+			callback.error(e, intent);
 		}
 	}
 }

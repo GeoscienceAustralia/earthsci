@@ -40,9 +40,9 @@ public final class LoadingIconAnimator
 	private static final Logger logger = LoggerFactory.getLogger(LoadingIconAnimator.class);
 	private final Image[] loadingFrames = ImageRegistry.getInstance().getAnimated(ImageRegistry.ICON_LOADING);
 	private int frame = 0;
-	private final Set<LoadingIconFrameListener> listeners = new HashSet<LoadingIconFrameListener>();
+	private final Set<ILoadingIconFrameListener> listeners = new HashSet<ILoadingIconFrameListener>();
 	private boolean dirty = false;
-	private LoadingIconFrameListener[] listenerArray;
+	private ILoadingIconFrameListener[] listenerArray;
 
 	private LoadingIconAnimator()
 	{
@@ -68,11 +68,11 @@ public final class LoadingIconAnimator
 
 						if (dirty)
 						{
-							listenerArray = listeners.toArray(new LoadingIconFrameListener[listeners.size()]);
+							listenerArray = listeners.toArray(new ILoadingIconFrameListener[listeners.size()]);
 							dirty = false;
 						}
 					}
-					for (LoadingIconFrameListener listener : listenerArray)
+					for (ILoadingIconFrameListener listener : listenerArray)
 					{
 						try
 						{
@@ -99,7 +99,7 @@ public final class LoadingIconAnimator
 		thread.start();
 	}
 
-	public void addListener(LoadingIconFrameListener listener)
+	public void addListener(ILoadingIconFrameListener listener)
 	{
 		synchronized (listeners)
 		{
@@ -109,7 +109,7 @@ public final class LoadingIconAnimator
 		}
 	}
 
-	public void removeListener(LoadingIconFrameListener listener)
+	public void removeListener(ILoadingIconFrameListener listener)
 	{
 		synchronized (listeners)
 		{

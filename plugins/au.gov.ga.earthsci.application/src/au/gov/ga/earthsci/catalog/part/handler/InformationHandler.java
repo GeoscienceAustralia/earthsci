@@ -29,8 +29,8 @@ import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
 
 import au.gov.ga.earthsci.application.parts.info.InfoPart;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 
 /**
  * Handler used to show the information related to a catalog tree node.

@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
 import au.gov.ga.earthsci.common.collection.ListSortedMap;
+import au.gov.ga.earthsci.intent.util.ContextInjectionFactoryThreadSafe;
 
 /**
  * Central mechanism for handling unexpected domain objects. This is inherently
@@ -123,7 +124,7 @@ public class Dispatcher
 			return;
 		}
 		IEclipseContext child = context.createChild();
-		IDispatchHandler handler = ContextInjectionFactory.make(handlerClass, child);
+		IDispatchHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
 		handler.handle(object);
 	}
 

@@ -26,10 +26,11 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.w3c.dom.Document;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import au.gov.ga.earthsci.core.xml.IXmlLoader;
+import au.gov.ga.earthsci.core.xml.IXmlLoaderCallback;
+import au.gov.ga.earthsci.core.xml.XmlLoaderManager;
+import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.IIntentCaller;
-import au.gov.ga.earthsci.intent.xml.IXmlLoader;
-import au.gov.ga.earthsci.intent.xml.XmlLoaderManager;
 
 /**
  * IntentHandler that uses the retrieval service to retrieve the Intent's data,
@@ -44,18 +45,31 @@ public class XmlRetrieveIntentHandler extends AbstractRetrieveIntentHandler
 	private IEclipseContext context;
 
 	@Override
-	protected void handle(IRetrievalData data, URL url, Intent intent, IIntentCaller caller)
+	protected void handle(IRetrievalData data, URL url, Intent intent, final IIntentCallback callback)
 	{
 		try
 		{
 			DocumentBuilder builder = WWXML.createDocumentBuilder(true);
 			Document document = builder.parse(data.getInputStream());
-			Object loaded = XmlLoaderManager.getInstance().load(document, url, intent, context);
-			caller.completed(intent, loaded);
+			IXmlLoaderCallback loaderCallback = new IXmlLoaderCallback()
+			{
+				@Override
+				public void completed(Object result, Document document, URL url, Intent intent)
+				{
+					callback.completed(result, intent);
+				}
+
+				@Override
+				public void error(Exception e, Document document, URL url, Intent intent)
+				{
+					callback.error(e, intent);
+				}
+			};
+			XmlLoaderManager.getInstance().load(document, url, intent, loaderCallback, context);
 		}
 		catch (Exception e)
 		{
-			caller.error(intent, e);
+			callback.error(e, intent);
 		}
 	}
 }
