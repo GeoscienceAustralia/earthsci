@@ -1,6 +1,5 @@
 package au.gov.ga.earthsci.core.tree;
 
-import au.gov.ga.earthsci.core.tree.lazy.AsynchronousLazyTreeNodeHelper;
 
 /**
  * An extension of the {@link ITreeNode} interface that supports lazy loading of

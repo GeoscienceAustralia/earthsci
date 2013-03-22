@@ -13,29 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.catalog;
+package au.gov.ga.earthsci.catalog.model;
 
-import javax.inject.Inject;
+import java.net.URI;
 
-import au.gov.ga.earthsci.intent.dispatch.IDispatchHandler;
+import org.eclipse.core.runtime.content.IContentType;
 
 /**
- * {@link IDispatchHandler} implementation for catalog tree nodes.
+ * {@link ICatalogTreeNode} that represents a loading node as a child of a node
+ * that loads its children lazily.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class CatalogTreeNodeDispatchHandler implements IDispatchHandler
+public class LoadingCatalogTreeNode extends AbstractCatalogTreeNode
 {
-	@Inject
-	private ICatalogModel model;
+	public LoadingCatalogTreeNode()
+	{
+		super(null);
+	}
 
 	@Override
-	public void handle(Object object)
+	public boolean isRemoveable()
 	{
-		if (object instanceof ICatalogTreeNode)
-		{
-			ICatalogTreeNode node = (ICatalogTreeNode) object;
-			model.addTopLevelCatalog(node);
-		}
+		return false;
+	}
+
+	@Override
+	public boolean isLayerNode()
+	{
+		return false;
+	}
+
+	@Override
+	public URI getLayerURI()
+	{
+		return null;
+	}
+
+	@Override
+	public IContentType getLayerContentType()
+	{
+		return null;
+	}
+
+	@Override
+	public String getName()
+	{
+		return "Loading...";
 	}
 }

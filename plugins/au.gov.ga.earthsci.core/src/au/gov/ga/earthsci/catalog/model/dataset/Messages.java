@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.catalog.dataset;
+package au.gov.ga.earthsci.catalog.model.dataset;
 
 import org.eclipse.osgi.util.NLS;
 

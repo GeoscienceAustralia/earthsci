@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.application.ImageRegistry;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 
 /**
  * Registry that provides {@link ICatalogTreeLabelProvider}s for

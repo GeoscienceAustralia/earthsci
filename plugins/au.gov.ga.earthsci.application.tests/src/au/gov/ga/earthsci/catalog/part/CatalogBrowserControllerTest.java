@@ -11,8 +11,8 @@ import org.jmock.Mockery;
 import org.junit.Before;
 import org.junit.Test;
 
-import au.gov.ga.earthsci.core.model.catalog.AbstractCatalogTreeNode;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.AbstractCatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;

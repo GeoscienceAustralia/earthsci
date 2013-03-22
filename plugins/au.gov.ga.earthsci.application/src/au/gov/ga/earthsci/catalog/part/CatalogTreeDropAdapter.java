@@ -24,9 +24,9 @@ import org.eclipse.swt.dnd.TransferData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.model.catalog.CatalogFactory;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.CatalogFactory;
+import au.gov.ga.earthsci.catalog.model.ICatalogModel;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 /**

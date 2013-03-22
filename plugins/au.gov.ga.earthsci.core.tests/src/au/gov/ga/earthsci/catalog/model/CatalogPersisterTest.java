@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.catalog;
+package au.gov.ga.earthsci.catalog.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,8 +28,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXParseException;
 
-import au.gov.ga.earthsci.core.model.catalog.dataset.DatasetReader;
-import au.gov.ga.earthsci.core.model.catalog.dataset.DatasetXMLCatalogProvider;
+import au.gov.ga.earthsci.catalog.model.CatalogFactory;
+import au.gov.ga.earthsci.catalog.model.CatalogModel;
+import au.gov.ga.earthsci.catalog.model.CatalogPersister;
+import au.gov.ga.earthsci.catalog.model.ICatalogModel;
+import au.gov.ga.earthsci.catalog.model.dataset.DatasetReader;
+import au.gov.ga.earthsci.catalog.model.dataset.DatasetXMLCatalogProvider;
 import au.gov.ga.earthsci.core.persistence.PersistenceException;
 
 /**

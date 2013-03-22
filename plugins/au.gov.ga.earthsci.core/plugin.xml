@@ -28,7 +28,7 @@
    <extension
          point="au.gov.ga.earthsci.core.model.catalog.provider">
       <provider
-            class="au.gov.ga.earthsci.core.model.catalog.dataset.DatasetXMLCatalogProvider">
+            class="au.gov.ga.earthsci.catalog.model.dataset.DatasetXMLCatalogProvider">
       </provider>
    </extension>
    <extension
@@ -110,7 +110,7 @@
             priority="0">
       </injectable>
       <injectable
-            class="au.gov.ga.earthsci.core.model.catalog.CatalogFactory"
+            class="au.gov.ga.earthsci.catalog.model.CatalogFactory"
             priority="0">
       </injectable>
       <inject
@@ -128,10 +128,10 @@
          </type>
       </inject>
       <inject
-            class="au.gov.ga.earthsci.core.model.catalog.CatalogModel"
+            class="au.gov.ga.earthsci.catalog.model.CatalogModel"
             priority="0">
          <type
-               class="au.gov.ga.earthsci.core.model.catalog.ICatalogModel">
+               class="au.gov.ga.earthsci.catalog.model.ICatalogModel">
          </type>
       </inject>
       <bind
@@ -183,18 +183,18 @@
             priority="0">
       </loader>
       <loader
-            class="au.gov.ga.earthsci.core.model.catalog.dataset.DatasetXmlLoader"
-            filter="au.gov.ga.earthsci.core.model.catalog.dataset.DatasetXmlLoader"
+            class="au.gov.ga.earthsci.catalog.model.dataset.DatasetXmlLoader"
+            filter="au.gov.ga.earthsci.catalog.model.dataset.DatasetXmlLoader"
             priority="0">
       </loader>
    </extension>
    <extension
          point="au.gov.ga.earthsci.dispatchFilters">
       <filter
-            class="au.gov.ga.earthsci.core.model.catalog.CatalogTreeNodeDispatchHandler"
+            class="au.gov.ga.earthsci.catalog.model.CatalogTreeNodeDispatchHandler"
             priority="0">
          <type
-               class="au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode">
+               class="au.gov.ga.earthsci.catalog.model.ICatalogTreeNode">
          </type>
       </filter>
    </extension>

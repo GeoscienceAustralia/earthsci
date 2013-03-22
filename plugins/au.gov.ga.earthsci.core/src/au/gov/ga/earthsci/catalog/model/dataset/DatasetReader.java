@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.catalog.dataset;
+package au.gov.ga.earthsci.catalog.model.dataset;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -23,7 +23,7 @@ import java.net.URL;
 
 import org.w3c.dom.Element;
 
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.core.util.XmlUtil;
 

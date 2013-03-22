@@ -1,12 +1,12 @@
-package au.gov.ga.earthsci.core.model.catalog.dataset;
+package au.gov.ga.earthsci.catalog.model.dataset;
 
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import au.gov.ga.earthsci.core.model.catalog.ErrorCatalogTreeNode;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.core.model.catalog.LoadingCatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ErrorCatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.LoadingCatalogTreeNode;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.tree.ILazyTreeNodeCallback;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
