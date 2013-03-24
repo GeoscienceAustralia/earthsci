@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.core.model.catalog;
+package au.gov.ga.earthsci.catalog.model;
 
 import java.net.URI;
 import java.util.ArrayList;

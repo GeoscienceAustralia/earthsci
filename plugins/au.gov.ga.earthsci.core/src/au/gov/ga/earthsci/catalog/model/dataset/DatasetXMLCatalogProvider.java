@@ -1,12 +1,12 @@
-package au.gov.ga.earthsci.core.model.catalog.dataset;
+package au.gov.ga.earthsci.catalog.model.dataset;
 
 import java.net.URI;
 import java.net.URL;
 
 import org.w3c.dom.Document;
 
-import au.gov.ga.earthsci.core.model.catalog.ICatalogProvider;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ICatalogProvider;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.util.XmlUtil;
 
 /**

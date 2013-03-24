@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.catalog.dataset;
+package au.gov.ga.earthsci.catalog.model.dataset;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -24,7 +24,10 @@ import java.net.URL;
 
 import org.junit.Test;
 
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.dataset.DatasetCatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.dataset.DatasetLayerCatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.dataset.DatasetReader;
 
 /**
  * Unit tests for the {@link DatasetReader} class

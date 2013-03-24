@@ -23,8 +23,8 @@ import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
 
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.part.ICatalogBrowserController;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 
 /**
  * Handles deletion of removeable catalog tree nodes.

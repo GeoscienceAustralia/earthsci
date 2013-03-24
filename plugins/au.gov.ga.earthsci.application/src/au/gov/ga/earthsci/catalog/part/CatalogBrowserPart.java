@@ -25,8 +25,8 @@ import org.eclipse.swt.widgets.Composite;
 
 import au.gov.ga.earthsci.application.parts.layer.LayerTransfer;
 import au.gov.ga.earthsci.application.tree.LazyObservableListTreeContentProvider;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ICatalogModel;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.viewers.ControlTreeViewer;
 
 /**
