@@ -113,19 +113,21 @@ public class Dispatcher
 	 *            Object to dispatch
 	 * @param context
 	 *            Context to use for injection into the handler
+	 * @return True if a dispatch handler was found to handle the object
 	 */
-	public void dispatch(Object object, IEclipseContext context)
+	public boolean dispatch(Object object, IEclipseContext context)
 	{
 		DispatchFilter filter = findFilter(object);
 		Class<? extends IDispatchHandler> handlerClass = filter == null ? null : filter.getHandler();
 		if (handlerClass == null)
 		{
 			logger.error("Could not find dispatch handler for object: " + object); //$NON-NLS-1$
-			return;
+			return false;
 		}
 		IEclipseContext child = context.createChild();
 		IDispatchHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
 		handler.handle(object);
+		return true;
 	}
 
 	/**

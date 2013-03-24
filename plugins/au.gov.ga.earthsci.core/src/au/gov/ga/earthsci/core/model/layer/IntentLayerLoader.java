@@ -19,12 +19,15 @@ import gov.nasa.worldwind.layers.Layer;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentManager;
+import au.gov.ga.earthsci.intent.dispatch.DispatchFilter;
 import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
 import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.NotificationManager;
@@ -53,9 +56,9 @@ public class IntentLayerLoader
 	protected static IIntentCallback callback = new IIntentCallback()
 	{
 		@Override
-		public void completed(Object result, Intent intent)
+		public void completed(final Object result, Intent intent)
 		{
-			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
+			final LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
 			if (result instanceof Layer)
 			{
 				layerIntent.layerNode.setStatus(ModelStatus.ok());
@@ -64,7 +67,32 @@ public class IntentLayerLoader
 			else
 			{
 				layerIntent.layerNode.removeFromParent();
-				Dispatcher.getInstance().dispatch(result, layerIntent.context);
+				final DispatchFilter filter = Dispatcher.getInstance().findFilter(result);
+				if (filter != null)
+				{
+					final Shell shell = layerIntent.context.get(Shell.class);
+					shell.getDisplay().asyncExec(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							MessageDialog dialog =
+									new MessageDialog(shell, "Unknown layer", null,
+											"Not a layer. This object can be handled as a " + filter.getName()
+													+ ". Do you want to continue?", MessageDialog.QUESTION,
+											new String[] { "Yes", "Cancel" }, 0);
+							if (dialog.open() == 0)
+							{
+								Dispatcher.getInstance().dispatch(result, layerIntent.context);
+							}
+						}
+					});
+				}
+				else
+				{
+					error(new Exception("Expected " + Layer.class.getSimpleName() + ", got " //$NON-NLS-1$ //$NON-NLS-2$
+							+ result.getClass().getSimpleName()), intent);
+				}
 			}
 		}
 

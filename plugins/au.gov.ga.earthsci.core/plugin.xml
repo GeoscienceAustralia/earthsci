@@ -192,6 +192,7 @@
          point="au.gov.ga.earthsci.dispatchFilters">
       <filter
             class="au.gov.ga.earthsci.core.model.catalog.CatalogTreeNodeDispatchHandler"
+            name="Catalog"
             priority="0">
          <type
                class="au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode">
