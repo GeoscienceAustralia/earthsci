@@ -27,10 +27,10 @@ import org.eclipse.core.runtime.content.IContentType;
  */
 public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 {
-	private final Exception error;
+	private final Throwable error;
 	private boolean removeable = false;
 
-	public ErrorCatalogTreeNode(Exception error)
+	public ErrorCatalogTreeNode(Throwable error)
 	{
 		super(null);
 		this.error = error;
@@ -71,7 +71,7 @@ public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 		return error.getLocalizedMessage();
 	}
 
-	public Exception getError()
+	public Throwable getError()
 	{
 		return error;
 	}

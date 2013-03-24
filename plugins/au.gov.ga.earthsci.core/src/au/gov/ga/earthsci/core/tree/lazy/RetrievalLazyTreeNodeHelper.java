@@ -41,7 +41,7 @@ public class RetrievalLazyTreeNodeHelper<E>
 	private final IRetrievalLazyTreeNode<E> node;
 	private final AtomicBoolean loaded = new AtomicBoolean(false);
 	private final AtomicBoolean loading = new AtomicBoolean(false);
-	private Exception error;
+	private Throwable error;
 	private final List<ITreeNode<E>> childrenAdded = new ArrayList<ITreeNode<E>>();
 
 	public RetrievalLazyTreeNodeHelper(IRetrievalLazyTreeNode<E> node)

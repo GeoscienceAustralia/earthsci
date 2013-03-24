@@ -25,7 +25,7 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
 /**
  * {@link ILazyTreeNode} extension that uses the {@link IRetrievalService} to
  * retrieve the node's data. Implementors should delegate the
- * {@link ILazyTreeNode} methods to an instance of
+ * {@link ILazyTreeNode} methods to an local instance of
  * {@link RetrievalLazyTreeNodeHelper}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
@@ -74,5 +74,5 @@ public interface IRetrievalLazyTreeNode<E> extends ILazyTreeNode<E>
 	 *            Error to create the node for
 	 * @return A node that displays the given error
 	 */
-	ITreeNode<E> getErrorNode(Exception error);
+	ITreeNode<E> getErrorNode(Throwable error);
 }
