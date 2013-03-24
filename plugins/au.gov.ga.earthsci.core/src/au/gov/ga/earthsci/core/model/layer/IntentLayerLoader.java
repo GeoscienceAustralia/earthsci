@@ -76,12 +76,8 @@ public class IntentLayerLoader
 						@Override
 						public void run()
 						{
-							MessageDialog dialog =
-									new MessageDialog(shell, "Unknown layer", null,
-											"Not a layer. This object can be handled as a " + filter.getName()
-													+ ". Do you want to continue?", MessageDialog.QUESTION,
-											new String[] { "Yes", "Cancel" }, 0);
-							if (dialog.open() == 0)
+							if (MessageDialog.openConfirm(shell, Messages.IntentLayerLoader_UnknownLayerTitle,
+									Messages.bind(Messages.IntentLayerLoader_UnknownLayerMessage, filter.getName())))
 							{
 								Dispatcher.getInstance().dispatch(result, layerIntent.context);
 							}

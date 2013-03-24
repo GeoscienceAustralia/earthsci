@@ -26,6 +26,8 @@ public class Messages extends NLS
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.model.layer.messages"; //$NON-NLS-1$
 	public static String IntentLayerLoader_FailedLoadNotificationDescription;
 	public static String IntentLayerLoader_FailedLoadNotificationTitle;
+	public static String IntentLayerLoader_UnknownLayerMessage;
+	public static String IntentLayerLoader_UnknownLayerTitle;
 	public static String LayerNode_FailedCopyNotificationDescription;
 	public static String LayerNode_FailedCopyNotificationTitle;
 	public static String URILayerLoadJob_FailedLoadNotificationDescription;
