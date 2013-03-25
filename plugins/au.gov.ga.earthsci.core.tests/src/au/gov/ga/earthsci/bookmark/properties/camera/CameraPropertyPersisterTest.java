@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.core.util.XmlUtil;
+import au.gov.ga.earthsci.common.util.XmlUtil;
 
 /**
  * Unit tests for the {@link CameraPropertyPersister} class

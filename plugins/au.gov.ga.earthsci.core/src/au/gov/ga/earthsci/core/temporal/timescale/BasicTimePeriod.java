@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import au.gov.ga.earthsci.common.util.Range;
 import au.gov.ga.earthsci.core.temporal.BigTime;
-import au.gov.ga.earthsci.core.util.Range;
 import au.gov.ga.earthsci.worldwind.common.util.Validate;
 
 /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util;
+package au.gov.ga.earthsci.common.util;
 
 /**
- * Represents an object with a mutable label.
+ * An interface for objects that can provide a localised human-readable
+ * description of themselves.
  * 
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * @author James Navin (james.navin@ga.gov.au)
  */
-public interface ILabelable extends ILabeled
+public interface IDescribed
 {
+
 	/**
-	 * Set this object's label.
+	 * Return the (localised) human-readable description of this instance.
 	 * 
-	 * @param label
+	 * @return the (localised) human-readable description of this instance.
 	 */
-	void setLabel(String label);
+	String getDescription();
 }

@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.core.tree;
 
 import java.util.Arrays;
 
-import au.gov.ga.earthsci.core.util.AbstractTreePropertyChangeBean;
+import au.gov.ga.earthsci.common.util.AbstractTreePropertyChangeBean;
 
 /**
  * Abstract implementation of the {@link ITreeNode} interface.

@@ -30,10 +30,10 @@ import org.w3c.dom.Element;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyCreator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyExporter;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.common.util.Validate;
+import au.gov.ga.earthsci.common.util.XmlUtil;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
-import au.gov.ga.earthsci.core.util.Validate;
-import au.gov.ga.earthsci.core.util.XmlUtil;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 

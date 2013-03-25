@@ -17,8 +17,8 @@ package au.gov.ga.earthsci.core.math.bezier;
 
 import java.io.Serializable;
 
+import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.core.math.vector.Vector;
-import au.gov.ga.earthsci.core.util.Validate;
 
 /**
  * An implementation of a Cubic Bezier curve.

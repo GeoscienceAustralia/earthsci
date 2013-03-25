@@ -34,9 +34,9 @@ import org.w3c.dom.Element;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.properties.PlaceholderBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.properties.PlaceholderBookmarkPropertyExporter;
-import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil;
-import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil.Callback;
-import au.gov.ga.earthsci.core.util.Validate;
+import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil;
+import au.gov.ga.earthsci.common.util.Validate;
+import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil.Callback;
 
 /**
  * A factory class that uses registered {@link IBookmarkPropertyCreator}s to instantiate

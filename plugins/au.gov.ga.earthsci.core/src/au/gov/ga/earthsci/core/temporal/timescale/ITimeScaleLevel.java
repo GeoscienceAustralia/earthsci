@@ -17,9 +17,9 @@ package au.gov.ga.earthsci.core.temporal.timescale;
 
 import java.math.BigInteger;
 
+import au.gov.ga.earthsci.common.util.IDescribed;
+import au.gov.ga.earthsci.common.util.INamed;
 import au.gov.ga.earthsci.core.temporal.BigTime;
-import au.gov.ga.earthsci.core.util.IDescribed;
-import au.gov.ga.earthsci.core.util.INamed;
 
 /**
  * Represents a level in a {@link ITimeScale}.

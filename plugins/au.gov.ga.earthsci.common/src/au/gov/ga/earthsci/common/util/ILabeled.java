@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util;
+package au.gov.ga.earthsci.common.util;
 
 /**
- * Represents an object with a mutable name.
+ * Represents an object that has a label. These objects also have a name, and
+ * the label can override the name.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface INameable extends INamed
+public interface ILabeled extends INamed
 {
 	/**
-	 * Set this object's name.
-	 * 
-	 * @param name
+	 * @return The object's label.
 	 */
-	void setName(String name);
+	String getLabel();
+
+	/**
+	 * @return The object's label, or if null, its name.
+	 */
+	String getLabelOrName();
 }

@@ -25,10 +25,10 @@ import au.gov.ga.earthsci.bookmark.io.BookmarkPropertyPersistentAdapter;
 import au.gov.ga.earthsci.bookmark.model.Bookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.common.util.XmlUtil;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.persistence.Persister;
-import au.gov.ga.earthsci.core.util.XmlUtil;
 import au.gov.ga.earthsci.worldwind.common.util.Validate;
 
 

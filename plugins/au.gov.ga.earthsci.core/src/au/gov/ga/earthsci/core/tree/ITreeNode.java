@@ -15,7 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.tree;
 
-import au.gov.ga.earthsci.core.util.ITreePropertyChangeBean;
+import au.gov.ga.earthsci.common.util.ITreePropertyChangeBean;
 
 /**
  * Represents a tree node, with children and a parent (unless root).

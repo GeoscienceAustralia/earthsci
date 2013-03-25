@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.core.temporal.timescale;
 
 import java.math.BigInteger;
 
-import au.gov.ga.earthsci.core.util.Validate;
+import au.gov.ga.earthsci.common.util.Validate;
 
 /**
  * A basic immutable implementation of the {@link ITimeScaleLevel} interface

@@ -28,9 +28,9 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 import au.gov.ga.earthsci.bookmark.Messages;
 import au.gov.ga.earthsci.bookmark.io.BookmarksPersister;
 import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
+import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
-import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
 
 
 /**

@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 import au.gov.ga.earthsci.common.collection.HashSetAndArray;
 import au.gov.ga.earthsci.common.collection.SetAndArray;
-import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
+import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
 
 /**
  * Basic {@link IRetrieval} implementation.

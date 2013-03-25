@@ -29,8 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil;
-import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil.Callback;
+import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil;
+import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil.Callback;
 
 /**
  * A registry that can be used to retrieve applicators for {@link IBookmarkProperty}s.

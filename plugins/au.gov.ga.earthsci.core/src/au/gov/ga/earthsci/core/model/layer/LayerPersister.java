@@ -33,9 +33,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import au.gov.ga.earthsci.common.util.XmlUtil;
 import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.core.persistence.Persister;
-import au.gov.ga.earthsci.core.util.XmlUtil;
 
 /**
  * Helper class used to save the layer tree hierarchy to an XML file, using the

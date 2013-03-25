@@ -17,10 +17,10 @@ package au.gov.ga.earthsci.core.temporal.timescale;
 
 import java.util.List;
 
+import au.gov.ga.earthsci.common.util.IDescribed;
+import au.gov.ga.earthsci.common.util.INamed;
+import au.gov.ga.earthsci.common.util.Range;
 import au.gov.ga.earthsci.core.temporal.BigTime;
-import au.gov.ga.earthsci.core.util.IDescribed;
-import au.gov.ga.earthsci.core.util.INamed;
-import au.gov.ga.earthsci.core.util.Range;
 
 /**
  * A representation of a time period within a {@link ITimeScale}.

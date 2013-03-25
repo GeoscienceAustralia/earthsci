@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import au.gov.ga.earthsci.core.util.Util;
+import au.gov.ga.earthsci.common.util.Util;
 
 /**
  * Helper class which reads the "LayerList" element from the World Wind

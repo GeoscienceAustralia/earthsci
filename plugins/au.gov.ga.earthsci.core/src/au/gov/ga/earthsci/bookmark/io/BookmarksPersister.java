@@ -38,10 +38,10 @@ import au.gov.ga.earthsci.bookmark.model.BookmarkList;
 import au.gov.ga.earthsci.bookmark.model.Bookmarks;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.model.IBookmarks;
+import au.gov.ga.earthsci.common.util.XmlUtil;
 import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.core.persistence.Persister;
 import au.gov.ga.earthsci.core.util.ConfigurationUtil;
-import au.gov.ga.earthsci.core.util.XmlUtil;
 import au.gov.ga.earthsci.worldwind.common.util.Validate;
 
 /**

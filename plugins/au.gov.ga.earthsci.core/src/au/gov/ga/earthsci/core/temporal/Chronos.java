@@ -20,8 +20,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 
 import javax.inject.Singleton;
 
-import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
-import au.gov.ga.earthsci.core.util.Validate;
+import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
+import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.worldwind.common.util.LenientReadWriteLock;
 
 /**

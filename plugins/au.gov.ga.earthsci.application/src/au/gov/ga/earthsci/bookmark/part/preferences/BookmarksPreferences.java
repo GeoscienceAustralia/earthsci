@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory;
-import au.gov.ga.earthsci.core.util.Util;
+import au.gov.ga.earthsci.common.util.Util;
 
 /**
  * Default implementation of the {@link IBookmarksPreferences} interface that
