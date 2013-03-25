@@ -13,38 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util;
-
-import java.beans.PropertyChangeListener;
+package au.gov.ga.earthsci.common.util;
 
 /**
- * An interface for classes that can change to a 'dirty' state and notify
- * others of that fact.
+ * An interface for objects that can provide a localised human-readable
+ * description of themselves.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public interface IDirtyable
+public interface IDescribed
 {
 
 	/**
-	 * Return whether this object is in a 'dirty' state.
+	 * Return the (localised) human-readable description of this instance.
 	 * 
-	 * @return <code>true</code> if this object is in a dirty state; <code>false</code> otherwise.
+	 * @return the (localised) human-readable description of this instance.
 	 */
-	boolean isDirty();
-	
-	/**
-	 * Add a change listener that will be notified when this object enters a 'dirty' state.
-	 * 
-	 * @param l The change listener to add.
-	 */
-	void addDirtyChangeListener(PropertyChangeListener l);
-	
-	/**
-	 * Remove the change listener from this object. No further 'dirty' events will be sent to 
-	 * the listener.
-	 * 
-	 * @param l The change listener to remove.
-	 */
-	void removeDirtyChangeListener(PropertyChangeListener l);
+	String getDescription();
 }

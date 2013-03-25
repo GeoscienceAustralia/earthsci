@@ -2,10 +2,10 @@ package au.gov.ga.earthsci.model;
 
 import java.util.Collection;
 
-import au.gov.ga.earthsci.core.util.IDescribed;
-import au.gov.ga.earthsci.core.util.IDirtyable;
-import au.gov.ga.earthsci.core.util.IIdentifiable;
-import au.gov.ga.earthsci.core.util.INamed;
+import au.gov.ga.earthsci.common.util.IDescribed;
+import au.gov.ga.earthsci.common.util.IDirtyable;
+import au.gov.ga.earthsci.common.util.IIdentifiable;
+import au.gov.ga.earthsci.common.util.INamed;
 import au.gov.ga.earthsci.model.geometry.IModelGeometry;
 
 /**

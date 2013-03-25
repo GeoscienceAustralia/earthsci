@@ -18,7 +18,7 @@ package au.gov.ga.earthsci.core.temporal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import au.gov.ga.earthsci.core.util.Validate;
+import au.gov.ga.earthsci.common.util.Validate;
 
 /**
  * Represents an immutable time instant with (potentially) nanosecond precision. Time is stored

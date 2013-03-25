@@ -4,9 +4,9 @@ import java.nio.Buffer;
 
 import org.unitsofmeasurement.unit.Unit;
 
-import au.gov.ga.earthsci.core.util.IDescribed;
-import au.gov.ga.earthsci.core.util.IIdentifiable;
-import au.gov.ga.earthsci.core.util.INamed;
+import au.gov.ga.earthsci.common.util.IDescribed;
+import au.gov.ga.earthsci.common.util.IIdentifiable;
+import au.gov.ga.earthsci.common.util.INamed;
 
 /**
  * Represents a single piece of data in a model geometry. This may be 'geometry' data (vertices,

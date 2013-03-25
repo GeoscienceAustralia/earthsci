@@ -19,10 +19,10 @@ import java.net.URI;
 
 import org.eclipse.core.runtime.content.IContentType;
 
+import au.gov.ga.earthsci.common.util.ILabelable;
+import au.gov.ga.earthsci.common.util.INamed;
+import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
-import au.gov.ga.earthsci.core.util.ILabelable;
-import au.gov.ga.earthsci.core.util.INamed;
-import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
 /**
  * Represents tree nodes in the Catalog tree. Implementations of this interface

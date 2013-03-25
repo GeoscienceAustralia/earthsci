@@ -22,9 +22,9 @@ import org.eclipse.core.databinding.observable.list.IListChangeListener;
 import org.eclipse.core.databinding.observable.list.ListChangeEvent;
 import org.eclipse.core.databinding.observable.list.WritableList;
 
+import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
-import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
 
 /**
  * The default {@link IBookmarkList} implementation

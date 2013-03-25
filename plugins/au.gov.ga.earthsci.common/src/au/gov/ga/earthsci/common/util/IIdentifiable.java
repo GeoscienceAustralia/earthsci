@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util;
+package au.gov.ga.earthsci.common.util;
 
 /**
- * An interface for objects that can provide a localised human-readable
- * description of themselves.
+ * An interface for classes that can be uniquely identified by an ID
+ * <p/>
+ * It is up to the implementing class to decide 'how unique' the ID is (e.g. unique per session, 
+ * globally unique, persistable etc.)
  * 
  * @author James Navin (james.navin@ga.gov.au)
+ *
  */
-public interface IDescribed
+public interface IIdentifiable
 {
-
 	/**
-	 * Return the (localised) human-readable description of this instance.
+	 * Return the ID for this object.
 	 * 
-	 * @return the (localised) human-readable description of this instance.
+	 * @return the ID for this object; never <code>null</code>.
 	 */
-	String getDescription();
+	String getId();
 }

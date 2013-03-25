@@ -16,9 +16,9 @@
 package au.gov.ga.earthsci.core.math.interpolation;
 
 import gov.nasa.worldwind.cache.BasicMemoryCache;
+import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.core.math.bezier.Bezier;
 import au.gov.ga.earthsci.core.math.vector.Vector;
-import au.gov.ga.earthsci.core.util.Validate;
 
 
 /**

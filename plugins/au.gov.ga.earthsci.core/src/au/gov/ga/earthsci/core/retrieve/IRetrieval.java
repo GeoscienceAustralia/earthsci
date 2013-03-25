@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.core.retrieve;
 
 import java.net.URL;
 
-import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
+import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
 
 /**
  * Represents the retrieval of a resource.

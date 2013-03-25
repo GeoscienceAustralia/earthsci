@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.core.temporal;
 
 import java.math.BigInteger;
 
-import au.gov.ga.earthsci.core.util.Range;
+import au.gov.ga.earthsci.common.util.Range;
 
 
 /**

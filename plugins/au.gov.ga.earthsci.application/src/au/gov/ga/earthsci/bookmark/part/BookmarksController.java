@@ -56,7 +56,7 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.model.IBookmarks;
 import au.gov.ga.earthsci.bookmark.part.editor.BookmarkEditorDialog;
 import au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences;
-import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
+import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 

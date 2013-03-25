@@ -13,23 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util;
+package au.gov.ga.earthsci.common.util;
+
+import java.beans.PropertyChangeListener;
 
 /**
- * An interface for classes that can be uniquely identified by an ID
- * <p/>
- * It is up to the implementing class to decide 'how unique' the ID is (e.g. unique per session, 
- * globally unique, persistable etc.)
+ * An interface for classes that can change to a 'dirty' state and notify
+ * others of that fact.
  * 
  * @author James Navin (james.navin@ga.gov.au)
- *
  */
-public interface IIdentifiable
+public interface IDirtyable
 {
+
 	/**
-	 * Return the ID for this object.
+	 * Return whether this object is in a 'dirty' state.
 	 * 
-	 * @return the ID for this object; never <code>null</code>.
+	 * @return <code>true</code> if this object is in a dirty state; <code>false</code> otherwise.
 	 */
-	String getId();
+	boolean isDirty();
+	
+	/**
+	 * Add a change listener that will be notified when this object enters a 'dirty' state.
+	 * 
+	 * @param l The change listener to add.
+	 */
+	void addDirtyChangeListener(PropertyChangeListener l);
+	
+	/**
+	 * Remove the change listener from this object. No further 'dirty' events will be sent to 
+	 * the listener.
+	 * 
+	 * @param l The change listener to remove.
+	 */
+	void removeDirtyChangeListener(PropertyChangeListener l);
 }

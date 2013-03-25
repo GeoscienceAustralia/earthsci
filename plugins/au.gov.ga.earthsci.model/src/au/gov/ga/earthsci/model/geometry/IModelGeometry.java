@@ -2,10 +2,10 @@ package au.gov.ga.earthsci.model.geometry;
 
 import java.util.Set;
 
-import au.gov.ga.earthsci.core.util.IDescribed;
-import au.gov.ga.earthsci.core.util.IIdentifiable;
-import au.gov.ga.earthsci.core.util.INamed;
-import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
+import au.gov.ga.earthsci.common.util.IDescribed;
+import au.gov.ga.earthsci.common.util.IIdentifiable;
+import au.gov.ga.earthsci.common.util.INamed;
+import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
 import au.gov.ga.earthsci.model.bounds.IBoundingVolume;
 import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.model.render.IModelGeometryRenderer;

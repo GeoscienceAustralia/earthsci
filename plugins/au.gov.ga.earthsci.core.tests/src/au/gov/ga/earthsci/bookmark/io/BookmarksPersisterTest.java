@@ -15,8 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.io;
 
-import static au.gov.ga.earthsci.core.util.XmlUtil.getChildElementByTagName;
-import static au.gov.ga.earthsci.core.util.XmlUtil.getText;
+import static au.gov.ga.earthsci.common.util.XmlUtil.getChildElementByTagName;
+import static au.gov.ga.earthsci.common.util.XmlUtil.getText;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
-import au.gov.ga.earthsci.core.util.Validate;
+import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
+import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.model.bounds.IBoundingVolume;
 import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.model.render.IModelGeometryRenderer;

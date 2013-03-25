@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.application.util;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 
-import au.gov.ga.earthsci.core.util.Util;
+import au.gov.ga.earthsci.common.util.Util;
 
 
 /**

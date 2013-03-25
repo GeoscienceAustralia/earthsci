@@ -38,8 +38,8 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import au.gov.ga.earthsci.common.util.XmlUtil;
 import au.gov.ga.earthsci.core.persistence.ExportableWithAdapter.Adaptable;
-import au.gov.ga.earthsci.core.util.XmlUtil;
 
 /**
  * JUnit tests for the {@link Persister} class.

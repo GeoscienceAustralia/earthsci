@@ -27,7 +27,8 @@ import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
 
 /**
- * An intent handler that responds to intents that match GDAL-support
+ * An intent handler that responds to intents that match GDAL-supported raster formats
+ * and generates an IModel
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */

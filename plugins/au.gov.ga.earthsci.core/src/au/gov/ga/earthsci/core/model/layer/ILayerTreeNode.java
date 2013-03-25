@@ -23,12 +23,12 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.content.IContentType;
 
+import au.gov.ga.earthsci.common.util.IEnableable;
+import au.gov.ga.earthsci.common.util.ILabelable;
+import au.gov.ga.earthsci.common.util.INameable;
+import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
 import au.gov.ga.earthsci.core.model.IStatused;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
-import au.gov.ga.earthsci.core.util.IEnableable;
-import au.gov.ga.earthsci.core.util.ILabelable;
-import au.gov.ga.earthsci.core.util.INameable;
-import au.gov.ga.earthsci.core.util.IPropertyChangeBean;
 
 /**
  * Represents a tree node value in the layer tree.

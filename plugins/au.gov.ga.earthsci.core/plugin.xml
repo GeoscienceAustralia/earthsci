@@ -83,7 +83,7 @@
             priority="10">
       </inject>
       <inject
-            class="au.gov.ga.earthsci.core.util.ExtensionRegistryUtil"
+            class="au.gov.ga.earthsci.common.util.ExtensionRegistryUtil"
             priority="0">
       </inject>
       <injectable

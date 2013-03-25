@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
-import au.gov.ga.earthsci.core.util.StringInstantiable;
+import au.gov.ga.earthsci.common.util.StringInstantiable;
 
 /**
  * Annotation that marks a field or method as persistable. Getter methods with

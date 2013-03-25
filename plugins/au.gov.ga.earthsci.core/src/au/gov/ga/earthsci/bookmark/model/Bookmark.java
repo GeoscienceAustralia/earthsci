@@ -21,10 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import au.gov.ga.earthsci.bookmark.Messages;
 import au.gov.ga.earthsci.bookmark.io.BookmarkPropertyPersistentAdapter;
+import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
 import au.gov.ga.earthsci.core.persistence.Adapter;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
-import au.gov.ga.earthsci.core.util.AbstractPropertyChangeBean;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**

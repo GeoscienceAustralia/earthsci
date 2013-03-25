@@ -10,8 +10,8 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil;
-import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil.Callback;
+import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil;
+import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil.Callback;
 import au.gov.ga.earthsci.model.geometry.IModelGeometry;
 
 /**

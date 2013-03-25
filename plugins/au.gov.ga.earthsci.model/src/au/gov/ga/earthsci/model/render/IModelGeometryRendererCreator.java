@@ -1,7 +1,7 @@
 package au.gov.ga.earthsci.model.render;
 
-import au.gov.ga.earthsci.core.util.IDescribed;
-import au.gov.ga.earthsci.core.util.INamed;
+import au.gov.ga.earthsci.common.util.IDescribed;
+import au.gov.ga.earthsci.common.util.INamed;
 import au.gov.ga.earthsci.model.geometry.IModelGeometry;
 
 /**
