@@ -41,6 +41,7 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	private long position = 0;
 	private long length = UNKNOWN_LENGTH;
 	private final CompoundRetrievalListener listeners = new CompoundRetrievalListener();
+	private final Object listenersMutex = new Object();
 
 	private final Object jobSemaphore = new Object();
 	private RetrievalJob job;
@@ -72,10 +73,14 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	{
 		if (retrievalProperties.isUseCache())
 		{
-			cachedData = retriever.checkCache(url);
-			if (cachedData != null)
+			IRetrievalData cachedData = retriever.checkCache(url);
+			synchronized (listenersMutex)
 			{
-				listeners.cached(this);
+				this.cachedData = cachedData;
+				if (cachedData != null)
+				{
+					listeners.cached(this);
+				}
 			}
 		}
 		return retriever.retrieve(url, monitor, retrievalProperties, cachedData);
@@ -123,7 +128,22 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	@Override
 	public void addListener(IRetrievalListener listener)
 	{
-		listeners.addListener(listener);
+		synchronized (listenersMutex)
+		{
+			listeners.addListener(listener);
+			if (result != null)
+			{
+				listener.complete(this);
+			}
+			else if (cachedData != null)
+			{
+				listener.cached(this);
+			}
+			if (isPaused())
+			{
+				listener.paused(this);
+			}
+		}
 	}
 
 	@Override
@@ -148,7 +168,6 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 					public void done(IJobChangeEvent event)
 					{
 						RetrieverResult rr = job.getRetrievalResult();
-						result = rr == null ? null : rr.result;
 
 						//ensure the retriever's paused/canceled state matches the result:
 						boolean wasPaused = rr == null ? false : rr.status == RetrieverResultStatus.PAUSED;
@@ -162,14 +181,17 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 							job = null;
 						}
 
-						//if the retrieval wasn't paused, notify the listeners
-						if (wasPaused)
+						synchronized (listenersMutex)
 						{
-							listeners.paused(Retrieval.this);
-						}
-						else
-						{
-							listeners.complete(Retrieval.this);
+							result = rr == null ? null : rr.result;
+							if (wasPaused)
+							{
+								listeners.paused(Retrieval.this);
+							}
+							else
+							{
+								listeners.complete(Retrieval.this);
+							}
 						}
 					}
 				});
