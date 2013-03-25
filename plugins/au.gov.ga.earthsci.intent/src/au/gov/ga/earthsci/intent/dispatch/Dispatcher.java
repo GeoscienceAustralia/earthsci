@@ -140,6 +140,9 @@ public class Dispatcher
 	 */
 	public DispatchFilter findFilter(Object object)
 	{
+		if (object == null)
+			return null;
+
 		int minDistance = Integer.MAX_VALUE;
 		DispatchFilter closest = null;
 		for (List<DispatchFilter> list : filters.values())
