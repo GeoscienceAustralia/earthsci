@@ -149,9 +149,13 @@ public class Intent
 	{
 		URL url = IntentResourceLocatorManager.getInstance().locate(this);
 		if (url != null)
+		{
 			return url;
+		}
 		if (getURI() == null)
+		{
 			return null;
+		}
 		return uri.toURL();
 	}
 
@@ -278,19 +282,29 @@ public class Intent
 		StringBuilder sb = new StringBuilder();
 
 		if (action != null)
-			sb.append(String.format(", action: " + action)); //$NON-NLS-1$
+		 {
+			sb.append(", action: " + action); //$NON-NLS-1$
+		}
 
 		if (!categories.isEmpty())
-			sb.append(String.format(", categories: " + Arrays.toString(categories.toArray()))); //$NON-NLS-1$
+		 {
+			sb.append(", categories: " + Arrays.toString(categories.toArray())); //$NON-NLS-1$
+		}
 
 		if (uri != null)
-			sb.append(String.format(", URI: " + uri)); //$NON-NLS-1$
+		 {
+			sb.append(", URI: " + uri); //$NON-NLS-1$
+		}
 
 		if (contentType != null)
-			sb.append(String.format(", content-type: " + contentType.getId())); //$NON-NLS-1$
+		 {
+			sb.append(", content-type: " + contentType.getId()); //$NON-NLS-1$
+		}
 
 		if (expectedReturnType != null)
-			sb.append(String.format(", expected return-type: " + expectedReturnType.getName())); //$NON-NLS-1$
+		 {
+			sb.append(", expected return-type: " + expectedReturnType.getName()); //$NON-NLS-1$
+		}
 
 		return String.format("%s [%s]", getClass().getSimpleName(), sb.length() > 0 ? sb.substring(2) : ""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
