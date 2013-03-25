@@ -32,7 +32,12 @@ public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 
 	public ErrorCatalogTreeNode(Throwable error)
 	{
-		super(null);
+		this(null, error);
+	}
+	
+	public ErrorCatalogTreeNode(URI nodeURI, Throwable error)
+	{
+		super(nodeURI);
 		this.error = error;
 	}
 

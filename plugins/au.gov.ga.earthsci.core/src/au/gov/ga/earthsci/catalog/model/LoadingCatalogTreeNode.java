@@ -29,7 +29,12 @@ public class LoadingCatalogTreeNode extends AbstractCatalogTreeNode
 {
 	public LoadingCatalogTreeNode()
 	{
-		super(null);
+		this(null);
+	}
+	
+	public LoadingCatalogTreeNode(URI nodeURI)
+	{
+		super(nodeURI);
 	}
 
 	@Override
