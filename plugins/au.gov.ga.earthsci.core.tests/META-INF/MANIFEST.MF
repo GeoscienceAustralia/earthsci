@@ -7,7 +7,8 @@ Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Fragment-Host: au.gov.ga.earthsci.core;bundle-version="1.0.0"
 Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
- au.gov.ga.earthsci.testbase;bundle-version="1.0.0"
+ au.gov.ga.earthsci.testbase;bundle-version="1.0.0",
+ org.junit;bundle-version="4.11.0"
 Eclipse-RegisterBuddy: au.gov.ga.earthsci.core
 Bundle-ClassPath: .
 Import-Package: javax.annotation
