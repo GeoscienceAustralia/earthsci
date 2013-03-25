@@ -44,7 +44,14 @@ public class IntentLayerLoader
 	{
 		if (layerNode.getContentType() == null)
 		{
-			layerNode.setContentType(Platform.getContentTypeManager().findContentTypeFor(layerNode.getURI().getPath()));
+			try
+			{
+				layerNode.setContentType(Platform.getContentTypeManager().findContentTypeFor(layerNode.getURI().getPath()));
+			}
+			catch (Exception e)
+			{
+				//ignore
+			}
 		}
 		LayerLoadIntent intent = new LayerLoadIntent(context, layerNode);
 		intent.setURI(layerNode.getURI());
@@ -104,7 +111,7 @@ public class IntentLayerLoader
 					Messages.IntentLayerLoader_FailedLoadNotificationTitle,
 					Messages.IntentLayerLoader_FailedLoadNotificationDescription
 							+ UTF8URLEncoder.decode(intent.getURI().toString()) + ": " + e.getLocalizedMessage(), //$NON-NLS-1$
-					NotificationCategory.FILE_IO);
+					NotificationCategory.FILE_IO, e);
 		}
 	};
 
