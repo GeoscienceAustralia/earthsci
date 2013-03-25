@@ -77,6 +77,13 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Pretty name of the type(s) handled by this dispatch filter. Used to prompt the user whether they wish to use this dispatch handler to handle an object.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

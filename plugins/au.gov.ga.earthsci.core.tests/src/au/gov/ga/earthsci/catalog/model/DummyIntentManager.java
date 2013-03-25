@@ -15,69 +15,38 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog.model;
 
-import java.net.URI;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 
-import org.eclipse.core.runtime.content.IContentType;
+import au.gov.ga.earthsci.intent.IIntentCallback;
+import au.gov.ga.earthsci.intent.IIntentManager;
+import au.gov.ga.earthsci.intent.Intent;
+import au.gov.ga.earthsci.intent.IntentFilter;
 
 /**
- * {@link ICatalogTreeNode} that represents an error node as a child of a node
- * that has failed to load its children lazily.
+ * Dummy intent manager for testing.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
+public class DummyIntentManager implements IIntentManager
 {
-	private final Throwable error;
-	private boolean removeable = false;
-
-	public ErrorCatalogTreeNode(Throwable error)
+	@Override
+	public void start(Intent intent, IIntentCallback callback, IEclipseContext context)
 	{
-		this(null, error);
-	}
-	
-	public ErrorCatalogTreeNode(URI nodeURI, Throwable error)
-	{
-		super(nodeURI);
-		this.error = error;
 	}
 
 	@Override
-	public boolean isRemoveable()
-	{
-		return removeable;
-	}
-
-	public void setRemoveable(boolean removeable)
-	{
-		this.removeable = removeable;
-	}
-
-	@Override
-	public boolean isLayerNode()
-	{
-		return false;
-	}
-
-	@Override
-	public URI getLayerURI()
+	public IntentFilter findFilter(Intent intent)
 	{
 		return null;
 	}
 
 	@Override
-	public IContentType getLayerContentType()
+	public void addFilter(IntentFilter filter)
 	{
-		return null;
 	}
 
 	@Override
-	public String getName()
+	public void removeFilter(IntentFilter filter)
 	{
-		return error.getLocalizedMessage();
-	}
-
-	public Throwable getError()
-	{
-		return error;
 	}
 }

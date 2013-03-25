@@ -15,100 +15,62 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.tree.lazy;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import au.gov.ga.earthsci.core.retrieve.IRetrieval;
-import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
-import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
-import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
-import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
-import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+
 import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
 import au.gov.ga.earthsci.core.tree.ILazyTreeNodeCallback;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 /**
- * Helper class for the {@link IRetrievalLazyTreeNode}; uses the retrieval
- * service to retrieve the lazily loaded nodes.
+ * Helper class for the {@link IAsynchronousLazyTreeNode}; uses a {@link Job} to
+ * load the lazily loaded nodes.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class RetrievalLazyTreeNodeHelper<E>
+public class AsynchronousLazyTreeNodeHelper<E>
 {
-	private final IRetrievalLazyTreeNode<E> node;
+	private final IAsynchronousLazyTreeNode<E> node;
 	private final AtomicBoolean loaded = new AtomicBoolean(false);
 	private final AtomicBoolean loading = new AtomicBoolean(false);
 	private Throwable error;
-	private final List<ITreeNode<E>> childrenAdded = new ArrayList<ITreeNode<E>>();
 
-	public RetrievalLazyTreeNodeHelper(IRetrievalLazyTreeNode<E> node)
+	public AsynchronousLazyTreeNodeHelper(IAsynchronousLazyTreeNode<E> node)
 	{
 		this.node = node;
 	}
 
-	/**
-	 * @see ILazyTreeNode#load(ILazyTreeNodeCallback)
-	 */
-	public void load(final ILazyTreeNodeCallback callback)
+	public final void load(String jobName, final ILazyTreeNodeCallback callback)
 	{
 		if (!isLoaded() && loading.compareAndSet(false, true))
 		{
-			final URL url = node.getRetrievalURL();
-			IRetrievalService retrievalService = RetrievalServiceFactory.getServiceInstance();
-			IRetrieval retrieval = retrievalService.retrieve(node, url);
-			retrieval.addListener(new RetrievalAdapter()
+			final Job loadJob = new Job(jobName)
 			{
 				@Override
-				public void cached(IRetrieval retrieval)
+				protected IStatus run(IProgressMonitor monitor)
 				{
-					handleRetrieval(retrieval.getCachedData(), url);
-					callback.loaded();
+					return node.doLoad(monitor);
 				}
+			};
 
+			loadJob.addJobChangeListener(new JobChangeAdapter()
+			{
 				@Override
-				public void complete(IRetrieval retrieval)
+				public void done(final IJobChangeEvent event)
 				{
-					IRetrievalResult result = retrieval.getResult();
-					if (!result.isSuccessful())
-					{
-						error = result.getError();
-					}
-					else if (!result.isFromCache())
-					{
-						handleRetrieval(result.getData(), url);
-					}
-					setLoaded(true);
+					setLoaded(event.getResult().getCode() != Status.CANCEL);
+					error = event.getResult().getException();
 					loading.set(false);
 					callback.loaded();
 				}
 			});
-			retrieval.start();
-		}
-	}
-
-	protected void handleRetrieval(IRetrievalData data, URL url)
-	{
-		for (ITreeNode<E> child : childrenAdded)
-		{
-			node.remove(child);
-		}
-		childrenAdded.clear();
-
-		try
-		{
-			ITreeNode<E>[] children = node.handleRetrieval(data, url);
-			for (ITreeNode<E> child : children)
-			{
-				node.add(child);
-				childrenAdded.clear();
-			}
-		}
-		catch (Exception e)
-		{
-			error = e;
+			loadJob.schedule();
 		}
 	}
 

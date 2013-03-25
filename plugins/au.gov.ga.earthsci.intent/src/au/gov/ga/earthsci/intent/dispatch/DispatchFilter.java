@@ -33,6 +33,7 @@ public class DispatchFilter
 	private Class<? extends IDispatchHandler> handler;
 	private final Set<Class<?>> types = new HashSet<Class<?>>();
 	private int priority = 0;
+	private String name;
 
 	public DispatchFilter()
 	{
@@ -42,6 +43,7 @@ public class DispatchFilter
 	public DispatchFilter(IConfigurationElement element) throws ClassNotFoundException
 	{
 		this.handler = (Class<? extends IDispatchHandler>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
+		this.name = element.getAttribute("name"); //$NON-NLS-1$
 		IConfigurationElement[] types = element.getChildren("type"); //$NON-NLS-1$
 		for (IConfigurationElement type : types)
 		{
@@ -135,6 +137,29 @@ public class DispatchFilter
 	public DispatchFilter setPriority(int priority)
 	{
 		this.priority = priority;
+		return this;
+	}
+
+	/**
+	 * @return The name of this dispatch filter
+	 * @see #setName(String)
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * Set the name of this dispatch filter. This should be a pretty name that
+	 * can be displayed to the user to prompt them whether to handle the object
+	 * with this dispatch handler.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public DispatchFilter setName(String name)
+	{
+		this.name = name;
 		return this;
 	}
 }

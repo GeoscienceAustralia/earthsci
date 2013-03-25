@@ -15,45 +15,32 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.tree.lazy;
 
-import java.net.URL;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.Job;
 
-import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
-import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.tree.ILazyTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 /**
- * {@link ILazyTreeNode} extension that uses the {@link IRetrievalService} to
- * retrieve the node's data. Implementors should delegate the
+ * {@link ILazyTreeNode} extension that uses a {@link Job} to load the node's
+ * children asynchronously. Implementors should delegate the
  * {@link ILazyTreeNode} methods to an local instance of
- * {@link RetrievalLazyTreeNodeHelper}.
+ * {@link AsynchronousLazyTreeNodeHelper}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IRetrievalLazyTreeNode<E> extends ILazyTreeNode<E>
+public interface IAsynchronousLazyTreeNode<E> extends ILazyTreeNode<E>
 {
 	/**
-	 * @return URL to retrieve the lazy data from
-	 */
-	URL getRetrievalURL();
-
-	/**
-	 * Handle the retrieved lazy loaded data, and return the loaded children.
-	 * <p/>
-	 * Note: it is possible that this method can be called twice, once for a
-	 * cached retrieval and once for an updated retrieval.
-	 * <p/>
-	 * An exception should be thrown if the data is in an unrecognized format.
+	 * Perform the actual loading of lazy children on the calling thread. Notify
+	 * the monitor of progress.
 	 * 
-	 * @param data
-	 *            Retrieved data
-	 * @param url
-	 *            URL the data was retrieved from
-	 * @throws Exception
-	 *             If the data could not be read
-	 * @return Children nodes loaded from the retrieved data
+	 * @param monitor
+	 *            Monitor to notify of load progress and completion
+	 * @return Status of the load
 	 */
-	ITreeNode<E>[] handleRetrieval(IRetrievalData data, URL url) throws Exception;
+	IStatus doLoad(IProgressMonitor monitor);
 
 	/**
 	 * Return a tree node that represents the current loading state of this lazy

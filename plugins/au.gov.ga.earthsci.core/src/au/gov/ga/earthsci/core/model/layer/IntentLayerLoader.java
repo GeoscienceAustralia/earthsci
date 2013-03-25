@@ -19,12 +19,15 @@ import gov.nasa.worldwind.layers.Layer;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentManager;
+import au.gov.ga.earthsci.intent.dispatch.DispatchFilter;
 import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
 import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.NotificationManager;
@@ -41,7 +44,15 @@ public class IntentLayerLoader
 	{
 		if (layerNode.getContentType() == null)
 		{
-			layerNode.setContentType(Platform.getContentTypeManager().findContentTypeFor(layerNode.getURI().getPath()));
+			try
+			{
+				layerNode.setContentType(Platform.getContentTypeManager().findContentTypeFor(
+						layerNode.getURI().getPath()));
+			}
+			catch (Exception e)
+			{
+				//ignore
+			}
 		}
 		LayerLoadIntent intent = new LayerLoadIntent(context, layerNode);
 		intent.setURI(layerNode.getURI());
@@ -53,18 +64,43 @@ public class IntentLayerLoader
 	protected static IIntentCallback callback = new IIntentCallback()
 	{
 		@Override
-		public void completed(Object result, Intent intent)
+		public void completed(final Object result, Intent intent)
 		{
-			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
+			final LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
 			if (result instanceof Layer)
 			{
 				layerIntent.layerNode.setStatus(ModelStatus.ok());
 				layerIntent.layerNode.setLayer((Layer) result);
 			}
-			else
+			else if (result != null)
 			{
 				layerIntent.layerNode.removeFromParent();
-				Dispatcher.getInstance().dispatch(result, layerIntent.context);
+				final DispatchFilter filter = Dispatcher.getInstance().findFilter(result);
+				if (filter != null)
+				{
+					final Shell shell = layerIntent.context.get(Shell.class);
+					shell.getDisplay().asyncExec(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							if (MessageDialog.openConfirm(shell, Messages.IntentLayerLoader_UnknownLayerTitle,
+									Messages.bind(Messages.IntentLayerLoader_UnknownLayerMessage, filter.getName())))
+							{
+								Dispatcher.getInstance().dispatch(result, layerIntent.context);
+							}
+						}
+					});
+				}
+				else
+				{
+					error(new Exception("Expected " + Layer.class.getSimpleName() + ", got " //$NON-NLS-1$ //$NON-NLS-2$
+							+ result.getClass().getSimpleName()), intent);
+				}
+			}
+			else
+			{
+				error(new Exception("Intent produced null result"), intent); //$NON-NLS-1$
 			}
 		}
 
@@ -80,7 +116,7 @@ public class IntentLayerLoader
 					Messages.IntentLayerLoader_FailedLoadNotificationTitle,
 					Messages.IntentLayerLoader_FailedLoadNotificationDescription
 							+ UTF8URLEncoder.decode(intent.getURI().toString()) + ": " + e.getLocalizedMessage(), //$NON-NLS-1$
-					NotificationCategory.FILE_IO);
+					NotificationCategory.FILE_IO, e);
 		}
 	};
 

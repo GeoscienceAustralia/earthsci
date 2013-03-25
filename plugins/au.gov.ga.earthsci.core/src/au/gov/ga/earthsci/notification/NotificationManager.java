@@ -240,6 +240,24 @@ public class NotificationManager
 	{
 		notify(Notification.create(NotificationLevel.ERROR, title, text).inCategory(category).build());
 	}
+	
+	/**
+	 * Create an error level notification with no acknowledgement, and pass it
+	 * to the {@link #notify(INotification)} method.
+	 * 
+	 * @param title
+	 *            Title of the notification
+	 * @param text
+	 *            Text of the notification
+	 * @param category
+	 *            Notification category
+	 * @param throwable
+	 *            Notification throwable
+	 */
+	public static void error(String title, String text, NotificationCategory category, Throwable throwable)
+	{
+		notify(Notification.create(NotificationLevel.ERROR, title, text).inCategory(category).withThrowable(throwable).build());
+	}
 
 	/**
 	 * Create an warning level notification with no acknowledgement, and pass it

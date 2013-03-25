@@ -66,6 +66,9 @@ public interface IRetrieval extends IPropertyChangeBean
 
 	/**
 	 * Add an object to listen for changes to this retrieval.
+	 * <p/>
+	 * If the retrieval has completed, has a cached version, or is paused, the
+	 * listener is notified immediately.
 	 * 
 	 * @param listener
 	 *            Listener to add

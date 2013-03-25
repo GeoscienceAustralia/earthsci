@@ -17,6 +17,12 @@
       <inject
             class="au.gov.ga.earthsci.intent.IntentManager"
             priority="10">
+         <type
+               class="au.gov.ga.earthsci.intent.IIntentManager">
+         </type>
+         <type
+               class="au.gov.ga.earthsci.intent.IntentManager">
+         </type>
       </inject>
    </extension>
 </plugin>

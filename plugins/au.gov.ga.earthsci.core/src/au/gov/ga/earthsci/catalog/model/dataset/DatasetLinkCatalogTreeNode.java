@@ -79,7 +79,7 @@ public class DatasetLinkCatalogTreeNode extends DatasetCatalogTreeNode implement
 	}
 
 	@Override
-	public ITreeNode<ICatalogTreeNode> getErrorNode(Exception error)
+	public ITreeNode<ICatalogTreeNode> getErrorNode(Throwable error)
 	{
 		return new ErrorCatalogTreeNode(error);
 	}

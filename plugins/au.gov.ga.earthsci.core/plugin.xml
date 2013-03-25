@@ -4,7 +4,6 @@
    <extension-point id="au.gov.ga.earthsci.notification.receiver" name="Notification Receiver" schema="schema/au.gov.ga.earthsci.notification.receiver.exsd"/>
    <extension-point id="au.gov.ga.earthsci.notification.categoryProvider" name="Notification Category Provider" schema="schema/au.gov.ga.earthsci.notification.categoryProvider.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.retrieve.retriever" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retriever.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.core.model.catalog.provider" name="Catalog Provider" schema="schema/au.gov.ga.earthsci.core.model.catalog.provider.exsd"/>
    <extension-point id="au.gov.ga.earthsci.bookmark.applicator" name="Bookmark Property Applicator" schema="schema/au.gov.ga.earthsci.bookmark.applicator.exsd"/>
    <extension-point id="au.gov.ga.earthsci.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.bookmark.creator.exsd"/>
    <extension-point id="au.gov.ga.earthsci.bookmark.exporter" name="Bookmark Property Exporter" schema="schema/au.gov.ga.earthsci.bookmark.exporter.exsd"/>
@@ -34,12 +33,6 @@
       <retriever
             class="au.gov.ga.earthsci.core.retrieve.retriever.JarRetriever">
       </retriever>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.core.model.catalog.provider">
-      <provider
-            class="au.gov.ga.earthsci.catalog.model.dataset.DatasetXMLCatalogProvider">
-      </provider>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -117,10 +110,6 @@
       </inject>
       <injectable
             class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory"
-            priority="0">
-      </injectable>
-      <injectable
-            class="au.gov.ga.earthsci.catalog.model.CatalogFactory"
             priority="0">
       </injectable>
       <inject
@@ -212,6 +201,7 @@
          point="au.gov.ga.earthsci.dispatchFilters">
       <filter
             class="au.gov.ga.earthsci.catalog.model.CatalogTreeNodeDispatchHandler"
+            name="Catalog"
             priority="0">
          <type
                class="au.gov.ga.earthsci.catalog.model.ICatalogTreeNode">

@@ -152,6 +152,17 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	void moveChild(ITreeNode<E> child, int newIndex);
 
 	/**
+	 * Replace the child node with a new child node at the same index.
+	 * 
+	 * @param child
+	 *            Child node to replace
+	 * @param newChild
+	 *            New child node to insert
+	 * @return True if the child was found and replaced, false otherwise.
+	 */
+	boolean replaceChild(ITreeNode<E> child, ITreeNode<E> newChild);
+
+	/**
 	 * @return Array containing all nodes from the root (at index 0) to this
 	 *         node.
 	 */
