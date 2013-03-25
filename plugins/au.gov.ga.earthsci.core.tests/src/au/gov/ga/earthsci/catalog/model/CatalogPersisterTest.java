@@ -23,13 +23,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXParseException;
 
 import au.gov.ga.earthsci.catalog.model.dataset.DatasetReader;
-import au.gov.ga.earthsci.catalog.model.dataset.DatasetXMLCatalogProvider;
 import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.intent.IntentManager;
 
@@ -39,20 +36,7 @@ import au.gov.ga.earthsci.intent.IntentManager;
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class CatalogPersisterTest
-{
-
-	@BeforeClass
-	public static void init()
-	{
-		CatalogFactory.registerProvider(new DatasetXMLCatalogProvider());
-	}
-	
-	@AfterClass
-	public static void destroy()
-	{
-		CatalogFactory.reset();
-	}
-	
+{	
 	@Test
 	public void testSaveModelNullModel() throws Exception
 	{
