@@ -27,8 +27,9 @@ import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
 
 /**
- * @author u09145
- *
+ * An intent handler that responds to intents that match GDAL-support
+ * 
+ * @author James Navin (james.navin@ga.gov.au)
  */
 public class GDALRasterModelIntentHandler implements IIntentHandler
 {
