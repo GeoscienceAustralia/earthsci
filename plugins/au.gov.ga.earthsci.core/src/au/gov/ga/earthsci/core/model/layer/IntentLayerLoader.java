@@ -46,7 +46,8 @@ public class IntentLayerLoader
 		{
 			try
 			{
-				layerNode.setContentType(Platform.getContentTypeManager().findContentTypeFor(layerNode.getURI().getPath()));
+				layerNode.setContentType(Platform.getContentTypeManager().findContentTypeFor(
+						layerNode.getURI().getPath()));
 			}
 			catch (Exception e)
 			{
@@ -71,7 +72,7 @@ public class IntentLayerLoader
 				layerIntent.layerNode.setStatus(ModelStatus.ok());
 				layerIntent.layerNode.setLayer((Layer) result);
 			}
-			else
+			else if (result != null)
 			{
 				layerIntent.layerNode.removeFromParent();
 				final DispatchFilter filter = Dispatcher.getInstance().findFilter(result);
@@ -96,6 +97,10 @@ public class IntentLayerLoader
 					error(new Exception("Expected " + Layer.class.getSimpleName() + ", got " //$NON-NLS-1$ //$NON-NLS-2$
 							+ result.getClass().getSimpleName()), intent);
 				}
+			}
+			else
+			{
+				error(new Exception("Intent produced null result"), intent); //$NON-NLS-1$
 			}
 		}
 
