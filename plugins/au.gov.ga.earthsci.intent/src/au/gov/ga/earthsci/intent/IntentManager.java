@@ -38,13 +38,27 @@ import au.gov.ga.earthsci.intent.util.ContextInjectionFactoryThreadSafe;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 @Singleton
-public class IntentManager
+public class IntentManager implements IIntentManager
 {
-	private static IntentManager instance;
+	private static IIntentManager instance;
 
-	public static IntentManager getInstance()
+	/**
+	 * @return An instance of the intent manager
+	 */
+	public static IIntentManager getInstance()
 	{
 		return instance;
+	}
+
+	/**
+	 * Set the singleton instance of the intent manager. Generally should not be
+	 * called, but handy for inserting implementations for unit testing.
+	 * 
+	 * @param instance
+	 */
+	public static void setInstance(IIntentManager instance)
+	{
+		IntentManager.instance = instance;
 	}
 
 	private static final String INTENT_FILTERS_ID = "au.gov.ga.earthsci.intentFilters"; //$NON-NLS-1$
@@ -92,16 +106,7 @@ public class IntentManager
 		}
 	}
 
-	/**
-	 * Start the given Intent.
-	 * 
-	 * @param intent
-	 *            Intent to start
-	 * @param callback
-	 *            Callback of the intent that is notified of intent completion
-	 * @param context
-	 *            Eclipse context in which to run the intent
-	 */
+	@Override
 	public void start(Intent intent, IIntentCallback callback, IEclipseContext context)
 	{
 		Class<? extends IIntentHandler> handlerClass = intent.getHandler();
@@ -126,23 +131,7 @@ public class IntentManager
 		}
 	}
 
-	/**
-	 * Find an intent filter that best matches the given intent, or null if none
-	 * could be found.
-	 * <p/>
-	 * The best match is defined as follows:
-	 * <ul>
-	 * <li>If the intent defines an expected return type, any filters that
-	 * define that return type are preferred over those that don't</li>
-	 * <li>If the intent defines a content type, the filters that define a
-	 * content type closer to the intent's content type are preferred</li>
-	 * <li>Otherwise the first matching filter is returned</li>
-	 * </ul>
-	 * 
-	 * @param intent
-	 *            Intent to find a filter for
-	 * @return Intent filter that matches the given intent
-	 */
+	@Override
 	public IntentFilter findFilter(Intent intent)
 	{
 		//add matching filters to a list, prioritising any that have a matching return type
@@ -197,21 +186,13 @@ public class IntentManager
 		return closest;
 	}
 
-	/**
-	 * Add an intent filter.
-	 * 
-	 * @param filter
-	 */
+	@Override
 	public void addFilter(IntentFilter filter)
 	{
 		filters.putSingle(filter.getPriority(), filter);
 	}
 
-	/**
-	 * Remove an intent filter.
-	 * 
-	 * @param filter
-	 */
+	@Override
 	public void removeFilter(IntentFilter filter)
 	{
 		filters.removeSingle(filter.getPriority(), filter);
