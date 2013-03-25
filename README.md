@@ -36,7 +36,12 @@ The overall project structure is as follows:
 		<tr><td>au.gov.ga.earthsci.core</td><td>The core, non-UI components of the EarthSci platform</td></tr>
 		<tr><td>au.gov.ga.earthsci.core.tests</td><td>Tests for the core plugin</td></tr>
 		<tr><td>au.gov.ga.earthsci.application</td><td>The core UI components of the EarthSci platform</td></tr>
+		<tr><td>au.gov.ga.earthsci.application.tests</td><td>Tests for the application UI plugin</td></tr>
 		<tr><td>au.gov.ga.earthsci.notification.popup</td><td>A plugin that provides a popup notification receiver</td></tr>
+		<tr><td>au.gov.ga.earthsci.injectable</td><td>A plugin used to easily incorporate object created outside the application lifecycle manager in the Eclipse E4 dependency injection mechanism</td></tr>
+		<tr><td>au.gov.ga.earthsci.logging</td><td>Configures the SLF4J logging framework for the EarthSci application</td></tr>
+		<tr><td>au.gov.ga.earthsci.worldwind</td><td>Extensions and utilities for the NASA WorldWind SDK, used to provided additional layer types etc.</td></tr>
+		<tr><td>au.gov.ga.earthsci.worldwind</td><td>Tests for the au.gov.ga.earthsci.worldwind plugin</td></tr>
 	</tbody>
 </table>
 

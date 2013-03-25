@@ -16,8 +16,9 @@
 package au.gov.ga.earthsci.catalog.part;
 
 import java.io.File;
+import java.net.URI;
 
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -25,9 +26,10 @@ import org.eclipse.swt.dnd.TransferData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.model.catalog.CatalogFactory;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogModel;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ICatalogModel;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.IntentCatalogLoader;
+import au.gov.ga.earthsci.catalog.model.LoadingCatalogTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 /**
@@ -37,15 +39,16 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
  */
 class CatalogTreeDropAdapter extends ViewerDropAdapter
 {
-
 	private static final Logger logger = LoggerFactory.getLogger(CatalogTreeDropAdapter.class);
 	
 	private final ICatalogModel model;
+	private final IEclipseContext context;
 	
-	protected CatalogTreeDropAdapter(Viewer viewer, ICatalogModel model)
+	protected CatalogTreeDropAdapter(Viewer viewer, ICatalogModel model, IEclipseContext context)
 	{
 		super(viewer);
 		this.model = model;
+		this.context = context;
 	}
 
 	@Override
@@ -92,28 +95,10 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 		for (String filename : filenames)
 		{
 			File file = new File(filename);
-			
-			ICatalogTreeNode catalog = CatalogFactory.loadCatalog(file.toURI());
-			if (catalog != null)
-			{
-				model.addTopLevelCatalog(index, catalog);
-				
-				// If this is the only node in the tree, refresh the whole tree. Otherwise just the inserted node
-				if (model.getRoot().getChildCount() == 1)
-				{
-					getTreeViewer().refresh();
-				}
-				else
-				{
-					getTreeViewer().insert(model, catalog, index);
-				}
-				
-				index++;
-			}
-			else
-			{
-				logger.debug("Failed to create catalog from source {}", file); //$NON-NLS-1$
-			}
+			URI uri = file.toURI();
+			LoadingCatalogTreeNode loadingNode = new LoadingCatalogTreeNode(uri);
+			model.addTopLevelCatalog(index++, loadingNode);
+			IntentCatalogLoader.load(uri, loadingNode, context);
 		}
 		return true;
 	}
@@ -134,10 +119,4 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 				
 		return location == LOCATION_BEFORE ? target.index() : target.index() + 1;
 	}
-	
-	private TreeViewer getTreeViewer()
-	{
-		return (TreeViewer)getViewer();
-	}
-
 }

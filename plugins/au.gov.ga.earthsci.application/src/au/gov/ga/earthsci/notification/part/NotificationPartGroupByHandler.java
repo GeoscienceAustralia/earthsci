@@ -22,9 +22,9 @@ public class NotificationPartGroupByHandler
 {
 	public static final String ID = "au.gov.ga.earthsci.notification.part.groupby"; //$NON-NLS-1$
 	
-	public static final String GROUP_BY_NONE_MENU_ID = "au.gov.ga.earthsci.notification.part.NotificationPart.group.none"; //$NON-NLS-1$
-	public static final String GROUP_BY_LEVEL_MENU_ID = "au.gov.ga.earthsci.notification.part.NotificationPart.group.level"; //$NON-NLS-1$
-	public static final String GROUP_BY_CATEGORY_MENU_ID = "au.gov.ga.earthsci.notification.part.NotificationPart.group.category"; //$NON-NLS-1$
+	public static final String GROUP_BY_NONE_MENU_ID = "au.gov.ga.earthsci.notification.notifications.viewmenu.group.none"; //$NON-NLS-1$
+	public static final String GROUP_BY_LEVEL_MENU_ID = "au.gov.ga.earthsci.notification.notifications.viewmenu.group.level"; //$NON-NLS-1$
+	public static final String GROUP_BY_CATEGORY_MENU_ID = "au.gov.ga.earthsci.notification.notifications.viewmenu.group.category"; //$NON-NLS-1$
 
 	private static final Map<String, Grouping> idToGrouping = new HashMap<String, Grouping>();
 	static

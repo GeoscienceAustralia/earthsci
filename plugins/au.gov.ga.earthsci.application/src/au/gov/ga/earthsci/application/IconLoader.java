@@ -15,14 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Image;
@@ -30,7 +29,9 @@ import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.retrieve.RetrievalJob;
+import au.gov.ga.earthsci.core.retrieve.IRetrieval;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 
 /**
@@ -39,7 +40,7 @@ import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class IconLoader implements LoadingIconFrameListener
+public class IconLoader implements ILoadingIconFrameListener
 {
 	private static final Logger logger = LoggerFactory.getLogger(IconLoader.class);
 
@@ -106,21 +107,30 @@ public class IconLoader implements LoadingIconFrameListener
 		if (!urlElements.containsKey(url))
 		{
 			urlElements.put(url, new HashSet<Object>());
-			final RetrievalJob job = RetrievalServiceFactory.getServiceInstance().retrieve(url);
-			job.addJobChangeListener(new JobChangeAdapter()
+			final IRetrieval retrieval = RetrievalServiceFactory.getServiceInstance().retrieve(this, url);
+			retrieval.addListener(new RetrievalAdapter()
 			{
 				@Override
-				public void done(IJobChangeEvent event)
+				public void cached(IRetrieval retrieval)
 				{
-					retrievalJobDone(job, url);
+					retrievalDone(retrieval.getData(), url);
+				}
+
+				@Override
+				public void complete(IRetrieval retrieval)
+				{
+					if (retrieval.hasResult() && !retrieval.getResult().isFromCache())
+					{
+						retrievalDone(retrieval.getData(), url);
+					}
 				}
 			});
-			job.schedule();
+			retrieval.start();
 		}
 		urlElements.get(url).add(element);
 	}
 
-	private void retrievalJobDone(RetrievalJob job, URL url)
+	private void retrievalDone(IRetrievalData data, URL url)
 	{
 		synchronized (semaphore)
 		{
@@ -130,13 +140,21 @@ public class IconLoader implements LoadingIconFrameListener
 				setLoading(element, false);
 			}
 			boolean success = false;
-			if (job.getRetrievalResult().hasData())
+			if (data != null)
 			{
 				try
 				{
-					Image image = new Image(Display.getDefault(), job.getRetrievalResult().getAsInputStream());
-					setImageForURL(url, image);
-					success = true;
+					InputStream is = data.getInputStream();
+					try
+					{
+						Image image = new Image(Display.getDefault(), is);
+						setImageForURL(url, image);
+						success = true;
+					}
+					finally
+					{
+						is.close();
+					}
 				}
 				catch (Exception e)
 				{

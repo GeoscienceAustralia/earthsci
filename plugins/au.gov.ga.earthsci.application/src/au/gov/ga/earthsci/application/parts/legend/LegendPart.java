@@ -45,7 +45,7 @@ import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
  */
 public class LegendPart
 {
-	public static final String PART_ID = "au.gov.ga.earthsci.application.part.legend"; //$NON-NLS-1$
+	public static final String PART_ID = "au.gov.ga.earthsci.application.legend.part"; //$NON-NLS-1$
 	public static final String WINDOW_ID = PART_ID + ".window"; //$NON-NLS-1$
 	public static final String STACK_ID = PART_ID + ".stack"; //$NON-NLS-1$
 	public static final String INPUT_NAME = PART_ID + ".input"; //$NON-NLS-1$

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="au.gov.ga.earthsci.application" uid="au.gov.ga.earthsci.product" id="au.gov.ga.earthsci.application.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="EarthSci" uid="au.gov.ga.earthsci.product" id="au.gov.ga.earthsci.application.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
+      <vmArgs>-Dosgi.classloader.lock=classname</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -19,16 +21,17 @@
       </win>
    </launcher>
 
+
    <vm>
    </vm>
 
    <plugins>
    </plugins>
-   
+
    <features>
       <feature id="au.gov.ga.earthsci.feature"/>
    </features>
-   
+
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />

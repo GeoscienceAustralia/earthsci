@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -41,7 +42,8 @@ public class ConfigurationUtil
 	{
 		try
 		{
-			return new URL(Platform.getConfigurationLocation().getDataArea(subpath).toString().replace(" ", "%20")); //$NON-NLS-1$ //$NON-NLS-2$
+			URL url = ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().toURI().toURL();
+			return new URL(url, subpath);
 		}
 		catch (IOException e)
 		{

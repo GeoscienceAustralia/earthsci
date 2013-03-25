@@ -15,30 +15,15 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer.handlers;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TreeEditor;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
 
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.worldwind.ITreeModel;
-import au.gov.ga.earthsci.viewers.IControlViewer;
 
 /**
  * Handles rename commands for the layer tree.
@@ -47,186 +32,15 @@ import au.gov.ga.earthsci.viewers.IControlViewer;
  */
 public class RenameHandler
 {
-	@Inject
-	private ITreeModel model;
-
-	private IControlViewer controlViewer;
-	private Tree tree;
-	private TreeEditor treeEditor;
-	private ILayerTreeNode layerNode;
-	private TreeItem treeItem;
-	private Text textEditor;
-	private Composite textEditorParent;
-	private boolean saving = false;
-
 	@Execute
-	public void execute(TreeViewer viewer)
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer, TreeViewer viewer)
 	{
-		if (viewer instanceof IControlViewer)
-		{
-			this.controlViewer = (IControlViewer) viewer;
-		}
-		tree = viewer.getTree();
-		treeEditor = new TreeEditor(tree);
-
-		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-		if (selection.size() != 1)
-			return;
-
-		layerNode = (ILayerTreeNode) selection.getFirstElement();
-		if (layerNode == null)
-			return;
-
-		createTextEditor();
-		textEditor.setText(layerNode.getLabelOrName());
-
-		showTextEditor();
+		viewer.editElement(layer, 0);
 	}
-	
+
 	@CanExecute
 	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
 		return layer != null;
-	}
-
-	private int getInset()
-	{
-		return 1;
-	}
-
-	private void createTextEditor()
-	{
-		if (textEditorParent != null)
-			return;
-
-		textEditorParent = new Composite(tree, SWT.NONE);
-		TreeItem[] selectedItems = tree.getSelection();
-		treeItem = selectedItems[0];
-		treeEditor.horizontalAlignment = SWT.LEFT;
-		treeEditor.grabHorizontal = true;
-		treeEditor.setEditor(textEditorParent, treeItem);
-
-		textEditorParent.setVisible(false);
-		final int inset = 1;
-
-		// Create inner text editor.
-		textEditor = new Text(textEditorParent, SWT.NONE);
-		textEditor.setFont(tree.getFont());
-		textEditorParent.setBackground(textEditor.getBackground());
-		textEditor.addListener(SWT.Modify, new Listener()
-		{
-			@Override
-			public void handleEvent(Event e)
-			{
-				Point textSize = textEditor.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-				textSize.x += textSize.y; // Add extra space for new
-				// characters.
-				Point parentSize = textEditorParent.getSize();
-				textEditor.setBounds(2, inset, Math.min(textSize.x, parentSize.x - 4), parentSize.y - 2 * inset);
-				textEditorParent.redraw();
-			}
-		});
-
-		if (inset > 0)
-		{
-			textEditorParent.addListener(SWT.Paint, new Listener()
-			{
-				@Override
-				public void handleEvent(Event e)
-				{
-					Point textSize = textEditor.getSize();
-					Point parentSize = textEditorParent.getSize();
-					e.gc.drawRectangle(0, 0, Math.min(textSize.x + 4, parentSize.x - 1), parentSize.y - 1);
-				}
-			});
-		}
-
-		textEditor.addListener(SWT.Traverse, new Listener()
-		{
-			@Override
-			public void handleEvent(Event event)
-			{
-				switch (event.detail)
-				{
-				case SWT.TRAVERSE_ESCAPE:
-					// Do nothing in this case
-					disposeTextWidget();
-					event.doit = true;
-					event.detail = SWT.TRAVERSE_NONE;
-					break;
-				case SWT.TRAVERSE_RETURN:
-					saveChangesAndDispose();
-					event.doit = true;
-					event.detail = SWT.TRAVERSE_NONE;
-					break;
-				}
-			}
-		});
-		textEditor.addFocusListener(new FocusAdapter()
-		{
-			@Override
-			public void focusLost(FocusEvent fe)
-			{
-				saveChangesAndDispose();
-			}
-		});
-	}
-
-	private void showTextEditor()
-	{
-		//Open text editor with initial size.
-		int inset = getInset();
-		textEditorParent.setVisible(true);
-		Point textSize = textEditor.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-		textSize.x += textSize.y; // Add extra space for new characters.
-		Point parentSize = textEditorParent.getSize();
-		textEditor.setBounds(2, inset, Math.min(textSize.x, parentSize.x - 4), parentSize.y - 2 * inset);
-		textEditorParent.redraw();
-		textEditor.selectAll();
-		textEditor.setFocus();
-
-		if (controlViewer != null)
-		{
-			Composite control = controlViewer.getControlForItem(treeItem);
-			if (control != null)
-			{
-				control.setVisible(false);
-			}
-		}
-	}
-
-	private void disposeTextWidget()
-	{
-		if (textEditorParent != null)
-		{
-			textEditorParent.dispose();
-			textEditorParent = null;
-			textEditor.dispose();
-			textEditor = null;
-			treeEditor.setEditor(null, null);
-			treeEditor.dispose();
-			treeEditor = null;
-		}
-
-		if (controlViewer != null)
-		{
-			Composite control = controlViewer.getControlForItem(treeItem);
-			if (control != null)
-			{
-				control.setVisible(true);
-			}
-		}
-	}
-
-	private void saveChangesAndDispose()
-	{
-		if (saving == true)
-			return;
-
-		saving = true;
-		final String newLabel = textEditor.getText();
-		layerNode.setLabel(newLabel);
-		disposeTextWidget();
-		saving = false;
 	}
 }

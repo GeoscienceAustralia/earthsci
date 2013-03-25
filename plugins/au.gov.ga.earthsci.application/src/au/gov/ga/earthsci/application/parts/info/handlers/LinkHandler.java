@@ -16,12 +16,12 @@
 package au.gov.ga.earthsci.application.parts.info.handlers;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
-import org.eclipse.e4.ui.model.application.ui.menu.MToolBar;
-import org.eclipse.e4.ui.model.application.ui.menu.MToolBarElement;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolItem;
+import org.eclipse.e4.ui.workbench.modeling.EModelService;
 
 import au.gov.ga.earthsci.application.parts.info.InfoPart;
 
@@ -35,18 +35,16 @@ public class LinkHandler
 	private static final String TOOL_ITEM_ID = "au.gov.ga.earthsci.application.info.toolitems.link"; //$NON-NLS-1$
 	private static final String PERSISTED_STATE_KEY = "au.gov.ga.earthsci.application.info.toolitems.link.persist"; //$NON-NLS-1$
 
+	@Inject
+	private EModelService service;
+	
 	@PostConstruct
 	public void init(MPart part)
 	{
-		MToolBar toolbar = part.getToolbar();
-		for (MToolBarElement element : toolbar.getChildren())
+		MToolItem toolItem = (MToolItem) service.find(TOOL_ITEM_ID, part.getToolbar());
+		if(toolItem != null)
 		{
-			if (TOOL_ITEM_ID.equals(element.getElementId()))
-			{
-				MToolItem item = (MToolItem) element;
-				item.setSelected(isLink(part));
-				break;
-			}
+			toolItem.setSelected(isLink(part));
 		}
 	}
 

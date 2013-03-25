@@ -18,36 +18,52 @@ package au.gov.ga.earthsci.core.retrieve;
 import java.net.URL;
 
 /**
- * A strategy interface for classes able to retrieve resources from specific URL types.
- * <p/>
- * Normally clients will not interact with this class. Instead they will use an instance of {@link IRetrievalService} which
- * provides integration with the Jobs API etc.
+ * An object that can retrieve a resource from a supported URL.
  * 
- * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public interface IRetriever
 {
 	/**
-	 * Returns whether or not this retriever supports retrieving resources from the provided URL.
-	 * <p/>
-	 * If this method returns <code>true</code>, {@link #retrieve(URL)} will return a result.
+	 * Does this retriever know how to retrieve a resource from the given URL?
 	 * 
-	 * @param url The URL to test
-	 * 
-	 * @return <code>true</code> if this retriever supports the provided URL, <code>false</code> otherwise.
+	 * @param url
+	 *            URL to test
+	 * @return True if this retriever can retrieve a resource from the URL
 	 */
 	boolean supports(URL url);
-	
+
 	/**
-	 * Retrieves the resource from the provided URL on the current thread and returns the result.
+	 * Check this retriever's cache for a cached resource for the given URL.
 	 * 
-	 * @param url The URL to retrieve
-	 * @param monitor A monitor to report progress on
-	 * 
-	 * @return The result of the retrieval
-	 * 
-	 * @throws IllegalArgumentException if this retriever does not support the provided URL. 
-	 * Use {@link #supports(URL)} to determine if this retriever supports the provided URL.
+	 * @param url
+	 *            URL to check the cache for
+	 * @return A result if the cached resource exists, or null.
 	 */
-	IRetrievalResult retrieve(URL url, IRetrievalMonitor monitor);
+	IRetrievalData checkCache(URL url);
+
+	/**
+	 * Retrieve the resource from the given URL, and return a result. The
+	 * retrieval should be performed synchronously on the calling thread.
+	 * <p/>
+	 * The returned result cannot be null; however, the {@link IRetrievalResult}
+	 * in the return value can be null if the monitor indicated that the
+	 * retrieval should be paused or cancelled.
+	 * 
+	 * @param url
+	 *            URL to retrieve
+	 * @param monitor
+	 *            Monitor to update during retrieval
+	 * @param retrievalProperties
+	 *            Properties to use when retrieving the resource
+	 * @param cachedData
+	 *            The data returned from an earlier call to
+	 *            {@link #checkCache(URL)}, for inserting into the returned
+	 *            result
+	 * @return The result of the retrieval, cannot be null.
+	 * @throws Exception
+	 *             If the retrieval could not be completed
+	 */
+	RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, IRetrievalProperties retrievalProperties,
+			IRetrievalData cachedData) throws Exception;
 }

@@ -26,16 +26,17 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import au.gov.ga.earthsci.core.model.layer.uri.URILayerLoadJob;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.util.IEnableable;
+import au.gov.ga.earthsci.notification.Notification;
+import au.gov.ga.earthsci.notification.NotificationLevel;
+import au.gov.ga.earthsci.notification.NotificationManager;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
@@ -55,14 +56,6 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	private boolean copyingProperties = false;
 	private final Object layerSemaphore = new Object();
 
-	@Override
-	public void setURI(URI uri)
-	{
-		super.setURI(uri);
-		URILayerLoadJob job = new URILayerLoadJob(this);
-		job.schedule();
-	}
-
 	/**
 	 * @return The {@link Layer} that this node delegates to.
 	 */
@@ -78,6 +71,12 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	 */
 	public void setLayer(Layer layer)
 	{
+		if (layer == null)
+		{
+			firePropertyChange("layer", this.layer, this.layer = layer); //$NON-NLS-1$
+			return;
+		}
+		
 		//set the values from the layer on this node
 		setName(layer.getName());
 
@@ -104,6 +103,13 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 			this.layer = layer;
 		}
 		firePropertyChange("layer", oldValue, layer); //$NON-NLS-1$
+
+		//TODO rethink this
+		//we need to update the root's elevation models if this layer is an elevation model layer
+		if (layer instanceof IElevationModelLayer)
+		{
+			childrenChanged(getChildren(), getChildren());
+		}
 	}
 
 	/**
@@ -142,8 +148,10 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 				}
 				catch (Exception e)
 				{
-					//TODO
-					e.printStackTrace();
+					NotificationManager.notify(Notification.create(NotificationLevel.ERROR, 
+												Messages.LayerNode_FailedCopyNotificationTitle, 
+												Messages.LayerNode_FailedCopyNotificationDescription + from)
+												.withThrowable(e).build());
 				}
 			}
 			copyingProperties = false;

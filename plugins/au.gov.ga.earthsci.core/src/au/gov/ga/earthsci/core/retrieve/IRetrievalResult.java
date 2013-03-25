@@ -15,72 +15,64 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve;
 
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-
 /**
- * Represents the result of a resource retrieval.
- * <p/>
- * Contains methods for accessing the result in a variety of useful
- * ways.
+ * Result of a {@link IRetrieval} after the retrieval is completed.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
- * @author James Navin (james.navin@ga.gov.au)
  */
 public interface IRetrievalResult
 {
-
 	/**
-	 * Returns whether there is any data available in this result.
+	 * The success status of this retrieval.
 	 * <p/>
-	 * Typically there will always be data available if {@link #isSuccessful()} returns <code>true</code>, 
-	 * but this is not guaranteed and client code should be able to handle that scenario. 
+	 * <ul>
+	 * <li>If this function returns <code>true</code>, {@link #getError()} will
+	 * return null.</li>
+	 * <li>If this function returns <code>false</code>, {@link #getError()} will
+	 * return the error that occurred.</li>
+	 * </ul>
 	 * 
-	 * @return <code>true</code> if data is available in this result.
-	 */
-	boolean hasData();
-	
-	/**
-	 * Get the result content as a byte buffer.
-	 * 
-	 * @return The result content as a byte buffer
-	 */
-	ByteBuffer getAsBuffer();
-	
-	/**
-	 * Get the result content as a String.
-	 * 
-	 * @return The result content as a String
-	 */
-	String getAsString();
-	
-	/**
-	 * Get the result content as an input stream.
-	 * 
-	 * @return The result content as an input stream
-	 */
-	InputStream getAsInputStream();
-	
-	/**
-	 * Return whether this result represents a successful retrieval or not
-	 * 
-	 * @return <code>true</code> if this result represents a successful retrieval; <code>false</code> otherwise.
+	 * @return True if the retrieval was successful
 	 */
 	boolean isSuccessful();
-	
-	/**
-	 * Get any exception associated with this result.
-	 * <p/>
-	 * Generally <code>null</code> if {@link #isSuccessful()} returns <code>true</code>.
-	 * 
-	 * @return Any exception associated with this result.
-	 */
-	Exception getException();
 
 	/**
-	 * Return a user friendly (human readable) error message in the case of an unsuccessful result.
+	 * If an error occurs during resource retrieval, it is available via this
+	 * method. If the retrieval was successful, this method will return null.
 	 * 
-	 * @return A user friendly message to describe any problems with the result
+	 * @return The Exception thrown during resource retrieval if there was an
+	 *         error.
 	 */
-	String getMessage();
+	Exception getError();
+
+	/**
+	 * Whether this data's content was read from a cached version of the
+	 * resource. If there's no cached version of the resource, this returns
+	 * false.
+	 * <p/>
+	 * If a previous result was read from a cache, and the remote resource has
+	 * not been modified since the cached version was last updated, the cached
+	 * version is not updated, and this returns true.
+	 * <p/>
+	 * If this method returns false, either the resource was not available in
+	 * the cache, or the cached version was updated by this retrieval. The
+	 * latest resource data is available via {@link #getData()}.
+	 * <p/>
+	 * If the retrieval caller has already used a version of the resource read
+	 * from the cache, and this returns true, then there's no reason to use the
+	 * data in this result.
+	 * 
+	 * @return True if this data is from a cache.
+	 */
+	boolean isFromCache();
+
+	/**
+	 * The best, most up-to-date data to use when reading the retrieved
+	 * resource. If a cached version is available and was not modified, this
+	 * returns the cached data. Otherwise it returns the retrieved data if
+	 * available.
+	 * 
+	 * @return The resource data, if available.
+	 */
+	IRetrievalData getData();
 }

@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.catalog.part;
 
 import java.net.URL;
 
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 
 /**
  * A pluggable strategy interface used to provide UI elements to display

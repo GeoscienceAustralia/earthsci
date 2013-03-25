@@ -20,21 +20,24 @@ import java.net.URI;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 
 import au.gov.ga.earthsci.application.util.UserActionPreference;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.part.preferences.ICatalogBrowserPreferences;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
- * The default implementation of the {@link ICatalogBrowserController} interface.
+ * The default implementation of the {@link ICatalogBrowserController}
+ * interface.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -44,16 +47,19 @@ public class CatalogBrowserController implements ICatalogBrowserController
 {
 	@Inject
 	private ITreeModel currentLayerModel;
-	
+
 	@Inject
 	private ICatalogBrowserPreferences preferences;
-	
+
+	@Inject
+	private IEclipseContext context;
+
 	@Override
 	public boolean existsInLayerModel(URI layerURI)
 	{
 		return currentLayerModel.getRootNode().hasNodesForURI(layerURI);
 	}
-	
+
 	@Override
 	public boolean allExistInLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
 	{
@@ -83,7 +89,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		}
 		return allExistInModel;
 	}
-	
+
 	@Override
 	public boolean anyExistInLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
 	{
@@ -113,7 +119,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		}
 		return anyExistInModel;
 	}
-	
+
 	@Override
 	public boolean areAllLayerNodes(ITreeNode<ICatalogTreeNode>... nodes)
 	{
@@ -144,18 +150,20 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	}
 
 	/**
-	 * Initialises (if required) the node path in the current layer model into which the given node
-	 * and its children should be inserted. The parent node into which the given catalog node should be inserted
-	 * is returned.
+	 * Initialises (if required) the node path in the current layer model into
+	 * which the given node and its children should be inserted. The parent node
+	 * into which the given catalog node should be inserted is returned.
 	 * <p/>
 	 * If the node path does not yet exist, it will be created.
 	 * <p/>
 	 * If the node path does exist, it will be reused.
 	 * 
-	 * @param node The catalog being inserted into the layer model
+	 * @param node
+	 *            The catalog being inserted into the layer model
 	 * 
-	 * @return The node into which the given catalog node (and its children) should be inserted. This may be an existing node, or a new node
-	 * as required.
+	 * @return The node into which the given catalog node (and its children)
+	 *         should be inserted. This may be an existing node, or a new node
+	 *         as required.
 	 */
 	private ILayerTreeNode createNodePath(ITreeNode<ICatalogTreeNode> node)
 	{
@@ -163,39 +171,43 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		{
 			return currentLayerModel.getRootNode();
 		}
-		
+
 		ILayerTreeNode[] folders = currentLayerModel.getRootNode().getNodesForURI(node.getValue().getURI());
 		if (folders.length != 0)
 		{
 			return folders[0];
 		}
-		
+
 		ILayerTreeNode parent = createNodePath(node.getParent());
-		
+
 		if (!node.getValue().isLayerNode())
 		{
 			ILayerTreeNode folder = createFolderNode(node.getValue());
 			parent.add(folder);
 			return folder;
 		}
-		
+
 		return parent;
 	}
 
 	/**
-	 * Insert the given catalog node (and it's subtree) into the child list of the given parent layer tree node
+	 * Insert the given catalog node (and it's subtree) into the child list of
+	 * the given parent layer tree node
 	 * 
-	 * @param parent The parent layer tree node to insert into
-	 * @param node The catalog node to  insert
+	 * @param parent
+	 *            The parent layer tree node to insert into
+	 * @param node
+	 *            The catalog node to insert
 	 */
 	private void insertIntoLayerModel(ILayerTreeNode parent, ITreeNode<ICatalogTreeNode> node)
 	{
 		ICatalogTreeNode catalogTreeNode = node.getValue();
-		
+
 		if (catalogTreeNode.isLayerNode())
 		{
 			LayerNode layer = createLayerNode(catalogTreeNode);
 			parent.add(layer);
+			IntentLayerLoader.load(layer, context);
 		}
 		else
 		{
@@ -217,14 +229,17 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		}
 		return createFolderNode(catalogTreeNode);
 	}
-	
+
 	private LayerNode createLayerNode(ICatalogTreeNode catalogTreeNode)
 	{
 		LayerNode layer = new LayerNode();
 		layer.setURI(catalogTreeNode.getLayerURI());
-		layer.setLabel(catalogTreeNode.getLabelOrName());
+		layer.setContentType(catalogTreeNode.getLayerContentType());
+		layer.setName(catalogTreeNode.getName());
+		layer.setLabel(catalogTreeNode.getLabel());
 		layer.setEnabled(true);
 		layer.setIconURL(CatalogTreeLabelProviderRegistry.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
+		layer.setInfoURL(CatalogTreeLabelProviderRegistry.getProvider(catalogTreeNode).getInfoURL(catalogTreeNode));
 		return layer;
 	}
 
@@ -236,6 +251,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		folder.setURI(catalogTreeNode.getURI());
 		folder.setExpanded(true);
 		folder.setIconURL(CatalogTreeLabelProviderRegistry.getProvider(catalogTreeNode).getIconURL(catalogTreeNode));
+		folder.setInfoURL(CatalogTreeLabelProviderRegistry.getProvider(catalogTreeNode).getInfoURL(catalogTreeNode));
 		return folder;
 	}
 
@@ -245,18 +261,21 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		{
 			return preferences.getAddNodeStructureMode() == UserActionPreference.ALWAYS;
 		}
-		
-		MessageDialogWithToggle message = MessageDialogWithToggle.openYesNoQuestion(null, Messages.CatalogBrowserController_AddNodePathDialogTitle, 
-																						  Messages.CatalogBrowserController_AddNodePathDialogMessage, 
-																						  Messages.CatalogBrowserController_DialogDontAsk, 
-																						  false, null, null);
 
-		UserActionPreference preference = (message.getReturnCode() == IDialogConstants.YES_ID) ? UserActionPreference.ALWAYS : UserActionPreference.NEVER;
+		MessageDialogWithToggle message =
+				MessageDialogWithToggle.openYesNoQuestion(null,
+						Messages.CatalogBrowserController_AddNodePathDialogTitle,
+						Messages.CatalogBrowserController_AddNodePathDialogMessage,
+						Messages.CatalogBrowserController_DialogDontAsk, false, null, null);
+
+		UserActionPreference preference =
+				(message.getReturnCode() == IDialogConstants.YES_ID) ? UserActionPreference.ALWAYS
+						: UserActionPreference.NEVER;
 		preferences.setAddNodeStructureMode(message.getToggleState() ? preference : UserActionPreference.ASK);
-		
+
 		return preference == UserActionPreference.ALWAYS;
 	}
-	
+
 	@Override
 	public void removeFromLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
 	{
@@ -265,11 +284,12 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		{
 			if (node.getValue().isLayerNode())
 			{
-				for (ILayerTreeNode layer : currentLayerModel.getRootNode().getNodesForURI(node.getValue().getLayerURI()))
+				for (ILayerTreeNode layer : currentLayerModel.getRootNode().getNodesForURI(
+						node.getValue().getLayerURI()))
 				{
 					ITreeNode<ILayerTreeNode> parent = layer.getParent();
 					layer.removeFromParent();
-					
+
 					// If the removal will create an empty folder, determine whether to remove it
 					if ((parent instanceof FolderNode) && !parent.hasChildren())
 					{
@@ -286,7 +306,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 			}
 		}
 	}
-	
+
 	private void deleteEmptyFolders(ITreeNode<ILayerTreeNode> node)
 	{
 		if (node.isRoot())
@@ -300,25 +320,28 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		}
 		deleteEmptyFolders(node.getParent());
 	}
-	
+
 	private boolean isEmptyFolderDeletionRequiredOnRemoval()
 	{
 		if (preferences.getDeleteEmptyFoldersMode() != UserActionPreference.ASK)
 		{
 			return preferences.getDeleteEmptyFoldersMode() == UserActionPreference.ALWAYS;
 		}
-		
-		MessageDialogWithToggle message = MessageDialogWithToggle.openYesNoQuestion(null, Messages.CatalogBrowserController_DeleteEmptyFoldersDialogTitle, 
-																						  Messages.CatalogBrowserController_DeleteEmptyFoldersMessage, 
-																						  Messages.CatalogBrowserController_DialogDontAsk, 
-																						  false, null, null);
 
-		UserActionPreference preference = (message.getReturnCode() == IDialogConstants.YES_ID) ? UserActionPreference.ALWAYS : UserActionPreference.NEVER;
+		MessageDialogWithToggle message =
+				MessageDialogWithToggle.openYesNoQuestion(null,
+						Messages.CatalogBrowserController_DeleteEmptyFoldersDialogTitle,
+						Messages.CatalogBrowserController_DeleteEmptyFoldersMessage,
+						Messages.CatalogBrowserController_DialogDontAsk, false, null, null);
+
+		UserActionPreference preference =
+				(message.getReturnCode() == IDialogConstants.YES_ID) ? UserActionPreference.ALWAYS
+						: UserActionPreference.NEVER;
 		preferences.setDeleteEmptyFoldersMode(message.getToggleState() ? preference : UserActionPreference.ASK);
-		
+
 		return preference == UserActionPreference.ALWAYS;
 	}
-	
+
 	public void setCurrentLayerModel(ITreeModel currentLayerModel)
 	{
 		this.currentLayerModel = currentLayerModel;

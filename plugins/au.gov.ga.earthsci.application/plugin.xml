@@ -1,28 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
    <extension-point id="catalogTreeLabelProvider" name="Catalog Tree Label Provider" schema="schema/au.gov.ga.earthsci.catalog.CatalogTreeLabelProvider.exsd"/>
+   <extension-point id="bookmarkPropertyEditor" name="Bookmark Property Editor" schema="schema/au.gov.ga.earthsci.bookmark.editor.exsd"/>
+   <extension-point id="defaultTheme" name="Application Default Theme" schema="schema/defaultTheme.exsd"/>
+   <extension-point id="iconReplacementProvider" name="Icon Replacement Provider" schema="schema/iconReplacementProvider.exsd"/>
 
    <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            name="au.gov.ga.earthsci.application"
+            name="%product.name"
             application="org.eclipse.e4.ui.workbench.swt.E4Application">
          <property
                name="appName"
-               value="au.gov.ga.earthsci.application">
+               value="%product.name">
          </property>
          <property
                name="applicationXMI"
                value="au.gov.ga.earthsci.application/Application.e4xmi">
          </property>
          <property
-               name="applicationCSS"
-               value="platform:/plugin/au.gov.ga.earthsci.application/css/default.css">
-         </property>
-         <property
          	name="lifeCycleURI"
          	value="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.LifeCycleManager">
+         </property>
+         <property
+               name="cssTheme"
+               value="au.gov.ga.earthsci.application.theme.default">
+         </property>
+         <property
+               name="aboutImage"
+               value="platform:/plugin/au.gov.ga.earthsci.application/icons/application_icon.png">
+         </property>
+         <property
+               name="aboutText"
+               value="%about.text">
          </property>
       </product>
    </extension>
@@ -31,18 +42,26 @@
       <page
             class="au.gov.ga.earthsci.notification.preferences.NotificationPreferencesPage"
             id="au.gov.ga.earthsci.notifications"
-            name="Notifications">
+            name="%preferences.page.notifications.name">
       </page>
       <page
             class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferencesPage"
             id="au.gov.ga.earthsci.catalogs"
-            name="Catalogs">
+            name="%preferences.page.catalogbrowser.name">
+      </page>
+      <page
+            class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferencesPage"
+            id="au.gov.ga.earthsci.bookmarks"
+            name="%preferences.page.bookmarks.name">
       </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferenceInitializer">
+      </initializer>
+      <initializer
+            class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferenceInitializer">
       </initializer>
    </extension>
    <extension
@@ -64,15 +83,98 @@
          point="au.gov.ga.earthsci.injectable">
       <bind
             binding="au.gov.ga.earthsci.catalog.part.ICatalogBrowserController"
-            implementation="au.gov.ga.earthsci.catalog.part.CatalogBrowserController">
+            class="au.gov.ga.earthsci.catalog.part.CatalogBrowserController"
+            priority="0">
       </bind>
       <bind
             binding="au.gov.ga.earthsci.catalog.part.preferences.ICatalogBrowserPreferences"
-            implementation="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferences">
+            class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferences"
+            priority="0">
+      </bind>
+      <bind
+            binding="au.gov.ga.earthsci.bookmark.part.IBookmarksController"
+            class="au.gov.ga.earthsci.bookmark.part.BookmarksController"
+            priority="0">
+      </bind>
+      <bind
+            binding="au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences"
+            class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferences"
+            priority="0">
       </bind>
       <injectable
-            class="au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry">
+            class="au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry"
+            priority="0">
       </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.bookmark.part.editor.BookmarkPropertyEditorFactory"
+            priority="0">
+      </injectable>
+      <inject
+            class="au.gov.ga.earthsci.application.parts.globe.GlobeActivePartTracker"
+            priority="0">
+      </inject>
+      <inject
+            class="au.gov.ga.earthsci.application.theme.ThemeLoader"
+            priority="0">
+      </inject>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.application.bookmarkPropertyEditor">
+      <editor
+            class="au.gov.ga.earthsci.bookmark.part.editor.CameraPropertyEditor"
+            type="au.gov.ga.earthsci.bookmark.properties.camera">
+      </editor>
+      <editor
+            class="au.gov.ga.earthsci.bookmark.part.editor.LayersPropertyEditor"
+            type="au.gov.ga.earthsci.bookmark.properties.layers">
+      </editor>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.hud">
+      <hud
+            class="gov.nasa.worldwind.layers.ScalebarLayer"
+            enabled="true"
+            icon="icons/scalebar.gif"
+            id="au.gov.ga.earthsci.application.hud.scalebar">
+      </hud>
+      <hud
+            class="gov.nasa.worldwind.layers.WorldMapLayer"
+            enabled="true"
+            icon="icons/world.gif"
+            id="au.gov.ga.earthsci.application.hud.worldmap">
+      </hud>
+      <hud
+            class="au.gov.ga.earthsci.worldwind.common.layers.controls.ControlsLayer"
+            enabled="true"
+            icon="icons/navigation.png"
+            id="au.gov.ga.earthsci.application.hud.controls">
+      </hud>
+      <hud
+            class="gov.nasa.worldwind.layers.CrosshairLayer"
+            enabled="false"
+            icon="icons/crosshair.gif"
+            id="au.gov.ga.earthsci.application.hud.crosshair">
+      </hud>
+      <hud
+            class="gov.nasa.worldwind.layers.LatLonGraticuleLayer"
+            enabled="false"
+            icon="icons/graticule.png"
+            id="au.gov.ga.earthsci.application.hud.graticule">
+      </hud>
+      <hud
+            class="gov.nasa.worldwind.layers.CompassLayer"
+            enabled="true"
+            icon="icons/compass.gif"
+            id="au.gov.ga.earthsci.application.hud.compass">
+      </hud>
+   </extension>
+   <extension
+         point="org.eclipse.e4.ui.css.swt.theme">
+      <theme
+            basestylesheeturi="css/default.css"
+            id="au.gov.ga.earthsci.application.theme.default"
+            label="Default theme">
+      </theme>
    </extension>
 
 </plugin>

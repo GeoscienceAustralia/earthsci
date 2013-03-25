@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.volume;
 
+import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
@@ -49,6 +50,7 @@ import javax.media.opengl.GL2;
 
 import org.gdal.osr.CoordinateTransformation;
 
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.Wireframeable;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShape;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShapeRenderListener;
@@ -58,7 +60,6 @@ import au.gov.ga.earthsci.worldwind.common.util.CoordinateTransformationUtil;
 import au.gov.ga.earthsci.worldwind.common.util.GeometryUtil;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 import au.gov.ga.earthsci.worldwind.common.util.Validate;
-import au.gov.ga.earthsci.worldwind.common.util.exaggeration.VerticalExaggerationAccessor;
 
 import com.jogamp.opengl.util.awt.TextureRenderer;
 
@@ -93,6 +94,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 			maxLatOffset = 0;
 	protected int lastTopOffset = -1, lastBottomOffset = -1, lastMinLonOffset = -1, lastMaxLonOffset = -1,
 			lastMinLatOffset = -1, lastMaxLatOffset = -1;
+	protected double lastVerticalExaggeration = -Double.MAX_VALUE;
 
 	protected final double[] curtainTextureMatrix = new double[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
 
@@ -108,8 +110,6 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	protected double dragStartPosition;
 	protected int dragStartSlice;
 	protected Vec4 dragStartCenter;
-
-	protected WorldWindow wwd;
 
 	/**
 	 * Create a new {@link BasicVolumeLayer}, using the provided layer params.
@@ -138,7 +138,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		{
 			coordinateTransformation = CoordinateTransformationUtil.getTransformationToWGS84(s);
 		}
-		
+
 		s = (String) params.getValue(AVKeyMore.PAINTED_VARIABLE);
 		if (s != null)
 		{
@@ -190,6 +190,8 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		Validate.notBlank(url, "Model data url not set");
 		Validate.notBlank(dataCacheName, "Model data cache name not set");
 		Validate.notNull(dataProvider, "Model data provider is null");
+
+		WorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
 	@Override
@@ -220,13 +222,6 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	public void removeLoadingListener(LoadingListener listener)
 	{
 		dataProvider.removeLoadingListener(listener);
-	}
-
-	@Override
-	public void setup(WorldWindow wwd)
-	{
-		this.wwd = wwd;
-		wwd.addSelectListener(this);
 	}
 
 	@Override
@@ -308,14 +303,6 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		bottomSurface.setReverseNormals(!reverseNormals);
 		bottomSurface.setElevation(bottomElevation);
 		bottomSurface.setUseOrderedRendering(useOrderedRendering);
-
-		//create the textures
-		topTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getYSize(), true, true);
-		bottomTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getYSize(), true, true);
-		minLonTexture = new TextureRenderer(dataProvider.getYSize(), dataProvider.getZSize(), true, true);
-		maxLonTexture = new TextureRenderer(dataProvider.getYSize(), dataProvider.getZSize(), true, true);
-		minLatTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getZSize(), true, true);
-		maxLatTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getZSize(), true, true);
 
 		//update each shape's wireframe property so they match the layer's
 		setWireframe(isWireframe());
@@ -467,8 +454,8 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 			return;
 		}
 
-		boolean verticalExaggerationChanged =
-				VerticalExaggerationAccessor.checkAndMarkVerticalExaggeration(BasicVolumeLayer.this, dc);
+		boolean verticalExaggerationChanged = lastVerticalExaggeration != dc.getVerticalExaggeration();
+		lastVerticalExaggeration = dc.getVerticalExaggeration();
 
 		boolean minLon = minLonClipDirty || verticalExaggerationChanged;
 		boolean maxLon = maxLonClipDirty || verticalExaggerationChanged;
@@ -609,15 +596,9 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 			Position p1, Position p2, Position p3)
 	{
 		Globe globe = dc.getGlobe();
-		Vec4 v1 =
-				globe.computePointFromPosition(p1,
-						VerticalExaggerationAccessor.applyVerticalExaggeration(dc, p1.elevation));
-		Vec4 v2 =
-				globe.computePointFromPosition(p2,
-						VerticalExaggerationAccessor.applyVerticalExaggeration(dc, p2.elevation));
-		Vec4 v3 =
-				globe.computePointFromPosition(p3,
-						VerticalExaggerationAccessor.applyVerticalExaggeration(dc, p3.elevation));
+		Vec4 v1 = globe.computePointFromPosition(p1, p1.getElevation() * dc.getVerticalExaggeration());
+		Vec4 v2 = globe.computePointFromPosition(p2, p2.getElevation() * dc.getVerticalExaggeration());
+		Vec4 v3 = globe.computePointFromPosition(p3, p3.getElevation() * dc.getVerticalExaggeration());
 		insertClippingPlaneForPoints(clippingPlaneArray, arrayOffset, v1, v2, v3);
 	}
 
@@ -644,7 +625,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 			LatLon l1, LatLon l2, LatLon l3, double elevation)
 	{
 		Globe globe = dc.getGlobe();
-		double exaggeratedElevation = VerticalExaggerationAccessor.applyVerticalExaggeration(dc, elevation);
+		double exaggeratedElevation = elevation * dc.getVerticalExaggeration();
 		Vec4 v1 = globe.computePointFromPosition(l1, exaggeratedElevation);
 		Vec4 v2 = globe.computePointFromPosition(l2, exaggeratedElevation);
 		Vec4 v3 = globe.computePointFromPosition(l3, exaggeratedElevation);
@@ -771,7 +752,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	{
 		return paintedVariable;
 	}
-	
+
 	@Override
 	protected void doPick(DrawContext dc, Point point)
 	{
@@ -793,6 +774,21 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 
 		synchronized (dataLock)
 		{
+			if (!dataAvailable)
+			{
+				return;
+			}
+
+			if (topTexture == null)
+			{
+				topTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getYSize(), true, true);
+				bottomTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getYSize(), true, true);
+				minLonTexture = new TextureRenderer(dataProvider.getYSize(), dataProvider.getZSize(), true, true);
+				maxLonTexture = new TextureRenderer(dataProvider.getYSize(), dataProvider.getZSize(), true, true);
+				minLatTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getZSize(), true, true);
+				maxLatTexture = new TextureRenderer(dataProvider.getXSize(), dataProvider.getZSize(), true, true);
+			}
+
 			//recalculate surfaces and clipping planes each frame (in case user drags one of the surfaces)
 			recalculateSurfaces();
 			recalculateClippingPlanes(dc);
@@ -1009,17 +1005,23 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 
 				if (dragStartCenter != null)
 				{
-					if (top || bottom)
+					WorldWindow wwd = WorldWindowRegistry.INSTANCE.getRendering();
+					if (wwd != null)
 					{
-						dragElevation(event.getPickPoint(), pickedShape);
-					}
-					else if (minLon || maxLon)
-					{
-						dragLongitude(event.getPickPoint(), pickedShape);
-					}
-					else
-					{
-						dragLatitude(event.getPickPoint(), pickedShape);
+						View view = wwd.getView();
+
+						if (top || bottom)
+						{
+							dragElevation(event.getPickPoint(), pickedShape, view);
+						}
+						else if (minLon || maxLon)
+						{
+							dragLongitude(event.getPickPoint(), pickedShape, view);
+						}
+						else
+						{
+							dragLatitude(event.getPickPoint(), pickedShape, view);
+						}
 					}
 				}
 				dragging = true;
@@ -1036,11 +1038,11 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	 * @param shape
 	 *            Shape to drag
 	 */
-	protected void dragElevation(Point pickPoint, FastShape shape)
+	protected void dragElevation(Point pickPoint, FastShape shape, View view)
 	{
 		// Calculate the plane projected from screen y=pickPoint.y
-		Line screenLeftRay = wwd.getView().computeRayFromScreenPoint(pickPoint.x - 100, pickPoint.y);
-		Line screenRightRay = wwd.getView().computeRayFromScreenPoint(pickPoint.x + 100, pickPoint.y);
+		Line screenLeftRay = view.computeRayFromScreenPoint(pickPoint.x - 100, pickPoint.y);
+		Line screenRightRay = view.computeRayFromScreenPoint(pickPoint.x + 100, pickPoint.y);
 
 		// As the two lines are very close to parallel, use an arbitrary line joining them rather than the two lines to avoid precision problems
 		Line joiner = Line.fromSegment(screenLeftRay.getPointAt(500), screenRightRay.getPointAt(500));
@@ -1051,7 +1053,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		}
 
 		// Calculate the origin-marker ray
-		Globe globe = wwd.getModel().getGlobe();
+		Globe globe = view.getGlobe();
 		Line centreRay = Line.fromSegment(globe.getCenter(), dragStartCenter);
 		Vec4 intersection = screenPlane.intersect(centreRay);
 		if (intersection == null)
@@ -1068,8 +1070,8 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		else
 		{
 			double deltaElevation =
-					VerticalExaggerationAccessor.unapplyVerticalExaggeration(wwd.getSceneController().getDrawContext(),
-							dragStartPosition - intersectionPosition.elevation);
+					(dragStartPosition - intersectionPosition.elevation)
+							/ (lastVerticalExaggeration == 0 ? 1 : lastVerticalExaggeration);
 			double deltaPercentage = deltaElevation / dataProvider.getDepth();
 			int sliceMovement = (int) (deltaPercentage * (dataProvider.getZSize() - 1));
 			if (shape == topSurface)
@@ -1093,13 +1095,13 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	 * @param shape
 	 *            Shape to drag
 	 */
-	protected void dragLongitude(Point pickPoint, FastShape shape)
+	protected void dragLongitude(Point pickPoint, FastShape shape, View view)
 	{
-		Globe globe = wwd.getView().getGlobe();
+		Globe globe = view.getGlobe();
 		double centerElevation = globe.computePositionFromPoint(dragStartCenter).elevation;
 
 		// Compute the ray from the screen point
-		Line ray = wwd.getView().computeRayFromScreenPoint(pickPoint.x, pickPoint.y);
+		Line ray = view.computeRayFromScreenPoint(pickPoint.x, pickPoint.y);
 		Intersection[] intersections = globe.intersect(ray, centerElevation);
 		if (intersections == null || intersections.length == 0)
 		{
@@ -1143,13 +1145,13 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	 * @param shape
 	 *            Shape to drag
 	 */
-	protected void dragLatitude(Point pickPoint, FastShape shape)
+	protected void dragLatitude(Point pickPoint, FastShape shape, View view)
 	{
-		Globe globe = wwd.getView().getGlobe();
+		Globe globe = view.getGlobe();
 		double centerElevation = globe.computePositionFromPoint(dragStartCenter).elevation;
 
 		// Compute the ray from the screen point
-		Line ray = wwd.getView().computeRayFromScreenPoint(pickPoint.x, pickPoint.y);
+		Line ray = view.computeRayFromScreenPoint(pickPoint.x, pickPoint.y);
 		Intersection[] intersections = globe.intersect(ray, centerElevation);
 		if (intersections == null || intersections.length == 0)
 		{

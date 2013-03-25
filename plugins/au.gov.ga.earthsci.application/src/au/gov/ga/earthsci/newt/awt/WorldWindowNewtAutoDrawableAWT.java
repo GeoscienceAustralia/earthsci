@@ -17,6 +17,9 @@ package au.gov.ga.earthsci.newt.awt;
 
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.WorldWindowGLAutoDrawable;
+import gov.nasa.worldwind.event.PositionEvent;
+import gov.nasa.worldwind.event.RenderingEvent;
+import gov.nasa.worldwind.event.SelectEvent;
 import gov.nasa.worldwind.render.ScreenCreditController;
 import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.util.dashboard.DashboardController;
@@ -26,6 +29,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
+import java.util.EventObject;
 
 import javax.media.opengl.GLAutoDrawable;
 import javax.swing.Timer;
@@ -43,6 +47,7 @@ import com.jogamp.newt.opengl.GLWindow;
  */
 public class WorldWindowNewtAutoDrawableAWT extends WorldWindowGLAutoDrawable implements WorldWindowNewtDrawableAWT
 {
+	protected GLWindow window;
 	protected Component awtComponent;
 
 	protected DashboardController dashboard; //wish this wasn't private in the superclass
@@ -52,13 +57,14 @@ public class WorldWindowNewtAutoDrawableAWT extends WorldWindowGLAutoDrawable im
 	@Override
 	public void initDrawable(GLAutoDrawable glAutoDrawable)
 	{
-		throw new IllegalStateException("WorldWindowNewtDrawable.initDrawable(GLAutoDrawable) should not be invoked");
+		throw new IllegalStateException("WorldWindowNewtDrawable.initDrawable(GLAutoDrawable) should not be invoked"); //$NON-NLS-1$
 	}
 
 	@Override
 	public void initDrawable(GLWindow window, Component awtComponent)
 	{
 		super.initDrawable(window);
+		this.window = window;
 		this.awtComponent = awtComponent;
 	}
 
@@ -132,6 +138,40 @@ public class WorldWindowNewtAutoDrawableAWT extends WorldWindowGLAutoDrawable im
 				redrawTimer.start();
 			}
 		}
-		return 0;
+		return 0; //don't let the super schedule a redrawTimer too
+	}
+
+	@Override
+	protected void callRenderingListeners(RenderingEvent event)
+	{
+		//event source should be the world window, not the drawable
+		super.callRenderingListeners(new RenderingEvent(translateEventSource(event), event.getStage()));
+	}
+
+	@Override
+	protected void callPositionListeners(PositionEvent event)
+	{
+		//event source should be the world window, not the drawable
+		super.callPositionListeners(new PositionEvent(translateEventSource(event), event.getScreenPoint(), event
+				.getPreviousPosition(), event.getPosition()));
+	}
+
+	@Override
+	protected void callSelectListeners(SelectEvent event)
+	{
+		//event source should be the world window, not the drawable
+		Object source = translateEventSource(event);
+		SelectEvent newEvent =
+				event.getMouseEvent() != null ? new SelectEvent(source, event.getEventAction(), event.getMouseEvent(),
+						event.getObjects()) : event.getPickRectangle() != null ? new SelectEvent(source,
+						event.getEventAction(), event.getPickRectangle(), event.getObjects()) : new SelectEvent(source,
+						event.getEventAction(), event.getPickPoint(), event.getObjects());
+		super.callSelectListeners(newEvent);
+	}
+
+	protected Object translateEventSource(EventObject event)
+	{
+		//event source should be the world window, not the drawable
+		return event.getSource() == window ? awtComponent : event.getSource();
 	}
 }

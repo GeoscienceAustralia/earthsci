@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.point.types;
 
-import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.event.SelectEvent;
 import gov.nasa.worldwind.event.SelectListener;
@@ -39,6 +38,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayerHelper;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.StyleAndText;
@@ -76,6 +76,8 @@ public class MarkerPointLayer extends MarkerLayer implements PointLayer, SelectL
 		this.tooltipAnnotation.getAttributes().setVisible(false);
 		this.tooltipAnnotation.setPickEnabled(false);
 		this.tooltipAnnotation.setAlwaysOnTop(true);
+		
+		WorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
 	@Override
@@ -87,12 +89,6 @@ public class MarkerPointLayer extends MarkerLayer implements PointLayer, SelectL
 		}
 		this.tooltipAnnotation.render(dc);
 		super.render(dc);
-	}
-
-	@Override
-	public void setup(WorldWindow wwd)
-	{
-		wwd.addSelectListener(this);
 	}
 
 	@Override

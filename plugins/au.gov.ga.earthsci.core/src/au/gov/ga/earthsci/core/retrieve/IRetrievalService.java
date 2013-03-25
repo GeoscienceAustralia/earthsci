@@ -18,49 +18,102 @@ package au.gov.ga.earthsci.core.retrieve;
 import java.net.URL;
 
 /**
- * A service interface for classes that are able to retrieve resources from
- * provided URLs.
- * <p/>
- * Service implementations should yield a {@link RetrievalJob} that performs the actual resource
- * retrieval. This job should not be scheduled, but scheduling is left up to the user.
- * <p/>
- * The basic {@link #retrieve(URL)} method performs background, non-blocking retrieval and takes advantage
- * of any caching provided by implementations. If more control is required by clients, other forms of the method
- * allow these options to be modified.
- * <p/>
- * In general there will be a single service per application, and clients will access
- * the current instance through dependency injection or via the current Eclipse context.
+ * A service for retrieving resources.
  * 
- * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public interface IRetrievalService
 {
 	/**
-	 * Create a job to retrieve a resource identified by the provided URL.
-	 * Any caching provided by implementing classes will be used.
+	 * Retrieve the given URL. If the URL is already currently being retrieved,
+	 * the caller is added to the old {@link IRetrieval}.
 	 * <p/>
-	 * The returned job is NOT scheduled, the user must schedule it manually. If the service is
-	 * unable to handle the specified URL, <code>null</code> will be returned.
+	 * The {@link IRetriever} used to retrieve the URL is asked to cache the
+	 * result if supported.
 	 * <p/>
-	 * Equivalent to:
-	 * <pre>retrieve(url, false);</pre>
+	 * The returned retrieval object is not automatically started;
+	 * {@link IRetrieval#start()} should be called to begin retrieval.
 	 * 
-	 * @param url The URL of the resource to retrieve.
-	 *  
-	 * @return The job used to retrieve the resource, or <code>null</code> if the provided URL is unsupported.
+	 * @param caller
+	 *            Object requesting the retrieval
+	 * @param url
+	 *            URL to retrieve
+	 * @return IRetrieval used to retrieve the resource from the URL
 	 */
-	RetrievalJob retrieve(URL url);
-	
+	IRetrieval retrieve(Object caller, URL url);
+
 	/**
-	 * Create a job to retrieve a resource from the provided URL. This flavour allows more control over how
-	 * the retrieval is performed.
+	 * Retrieve the given URL. If the URL is already currently being retrieved,
+	 * the caller is added to the old {@link IRetrieval}.
 	 * <p/>
-	 * The returned job is NOT scheduled, the user must schedule it manually.
+	 * The returned retrieval object is not automatically started;
+	 * {@link IRetrieval#start()} should be called to begin retrieval.
 	 * 
-	 * @param url The URL of the resource to retrieve 
-	 * @param forceRefresh Whether or not to force a refresh of any caching provided by implementations.
-	 * 
-	 * @return The job used to retrieve the resource, or <code>null</code> if the provided URL is unsupported.
+	 * @param caller
+	 *            Object requesting the retrieval
+	 * @param url
+	 *            URL to retrieve
+	 * @param retrievalProperties
+	 *            Properties to use when retrieving the URL
+	 * @return {@link IRetrieval} used to retrieve the resource from the URL
 	 */
-	RetrievalJob retrieve(URL url, boolean forceRefresh);
+	IRetrieval retrieve(Object caller, URL url, IRetrievalProperties retrievalProperties);
+
+	/**
+	 * Get the {@link IRetrieval} that is currently retrieving the given URL, if
+	 * it exists.
+	 * 
+	 * @param url
+	 *            URL to get the retrieval for
+	 * @return {@link IRetrieval} being used to retrieve the resource from the
+	 *         URL, or null if it doesn't exist.
+	 */
+	IRetrieval getRetrieval(URL url);
+
+	/**
+	 * Get an array of {@link IRetrieval}s that the given caller has requested.
+	 * 
+	 * @param caller
+	 *            Caller to get retrievals for
+	 * @return {@link IRetrieval}s requested by the caller, empty array if none.
+	 */
+	IRetrieval[] getRetrievals(Object caller);
+
+	/**
+	 * Add a listener to the service.
+	 * 
+	 * @param listener
+	 *            Listener to add
+	 */
+	void addListener(IRetrievalServiceListener listener);
+
+	/**
+	 * Add a listener to the service, listening for added/removed retrievals for
+	 * the given caller.
+	 * 
+	 * @param listener
+	 *            Listener to add
+	 * @param caller
+	 *            Caller to listen for
+	 */
+	void addListener(IRetrievalServiceListener listener, Object caller);
+
+	/**
+	 * Remove a listener from the service.
+	 * 
+	 * @param listener
+	 *            Listener to remove
+	 */
+	void removeListener(IRetrievalServiceListener listener);
+
+	/**
+	 * Remove a listener from the service that was listening for added/removed
+	 * retrievals for the given caller.
+	 * 
+	 * @param listener
+	 *            Listener to remove
+	 * @param caller
+	 *            Caller that was being listened for
+	 */
+	void removeListener(IRetrievalServiceListener listener, Object caller);
 }

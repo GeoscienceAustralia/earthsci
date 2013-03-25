@@ -14,11 +14,13 @@ import javax.inject.Singleton;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil;
+import au.gov.ga.earthsci.core.util.ExtensionRegistryUtil.Callback;
 
 
 /**
@@ -39,12 +41,6 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class NotificationManager
 {
-	@Inject
-	public void setup(IExtensionRegistry registry, IEclipseContext context)
-	{
-		loadReceivers(registry, context);
-	}
-	
 	public static final String NOTIFICATION_RECEIVER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.receiver"; //$NON-NLS-1$
 	public static final String NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.categoryProvider"; //$NON-NLS-1$
 	public static final String NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
@@ -71,23 +67,25 @@ public class NotificationManager
 	 * @param registry The extension registry to search for notification receivers
 	 * @param context The context to use for dependency injection etc.
 	 */
-	public static void loadReceivers(IExtensionRegistry registry, IEclipseContext context)
+	@Inject
+	public static void loadReceiversFromExtensions()
 	{
 		logger.info("Registering notification receivers"); //$NON-NLS-1$
 		
-		IConfigurationElement[] config = registry.getConfigurationElementsFor(NOTIFICATION_RECEIVER_EXTENSION_POINT_ID);
 		try
 		{
-			for (IConfigurationElement e : config)
-			{
-				final Object o = e.createExecutableExtension(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE); 
-				if (o instanceof INotificationReceiver)
+			ExtensionRegistryUtil.createFromExtension(NOTIFICATION_RECEIVER_EXTENSION_POINT_ID, 
+													  NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, 
+													  INotificationReceiver.class, 
+													  new Callback<INotificationReceiver>() {
+
+				@Override
+				public void run(INotificationReceiver receiver, IConfigurationElement element, IEclipseContext context)
 				{
-					ContextInjectionFactory.inject(o, context);
-					context.set(e.getAttribute(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE), o);
-					registerReceiver((INotificationReceiver)o);
+					context.set(element.getAttribute(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE), receiver);
+					registerReceiver(receiver);
 				}
-			}
+			});
 		}
 		catch (CoreException e)
 		{
@@ -110,35 +108,24 @@ public class NotificationManager
 	{
 		logger.info("Registering notification categories"); //$NON-NLS-1$
 		
-		IConfigurationElement[] config = registry.getConfigurationElementsFor(NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID);
 		try
 		{
-			for (IConfigurationElement e : config)
-			{
-				final Object o = e.createExecutableExtension(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE); 
-				if (o instanceof INotificationCategoryProvider)
+			ExtensionRegistryUtil.createFromExtension(NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID, 
+													  NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, 
+													  INotificationCategoryProvider.class, 
+													  new Callback<INotificationCategoryProvider>() {
+
+				@Override
+				public void run(INotificationCategoryProvider provider, IConfigurationElement element, IEclipseContext context)
 				{
-					ContextInjectionFactory.inject(o, context);
-					((INotificationCategoryProvider)o).registerNotificationCategories();
+					provider.registerNotificationCategories();
 				}
-			}
+			});
 		}
 		catch (CoreException e)
 		{
-			logger.error("Exception while registering categories", e); //$NON-NLS-1$
+			logger.error("Exception while loading categories", e); //$NON-NLS-1$
 		}
-	}
-	
-	/**
-	 * Send the provided notification to all registered receivers
-	 * 
-	 * @param notification The notification to send.
-	 * 
-	 * @see #notify(INotification)
-	 */
-	public static void sendNotification(INotification notification)
-	{
-		notify(notification);
 	}
 	
 	/**
@@ -236,5 +223,71 @@ public class NotificationManager
 		{
 			receiversLock.writeLock().unlock();
 		}
+	}
+
+	/**
+	 * Create an error level notification with no acknowledgement, and pass it
+	 * to the {@link #notify(INotification)} method.
+	 * 
+	 * @param title
+	 *            Title of the notification
+	 * @param text
+	 *            Text of the notification
+	 * @param category
+	 *            Notification category
+	 */
+	public static void error(String title, String text, NotificationCategory category)
+	{
+		notify(Notification.create(NotificationLevel.ERROR, title, text).inCategory(category).build());
+	}
+	
+	/**
+	 * Create an error level notification with no acknowledgement, and pass it
+	 * to the {@link #notify(INotification)} method.
+	 * 
+	 * @param title
+	 *            Title of the notification
+	 * @param text
+	 *            Text of the notification
+	 * @param category
+	 *            Notification category
+	 * @param throwable
+	 *            Notification throwable
+	 */
+	public static void error(String title, String text, NotificationCategory category, Throwable throwable)
+	{
+		notify(Notification.create(NotificationLevel.ERROR, title, text).inCategory(category).withThrowable(throwable).build());
+	}
+
+	/**
+	 * Create an warning level notification with no acknowledgement, and pass it
+	 * to the {@link #notify(INotification)} method.
+	 * 
+	 * @param title
+	 *            Title of the notification
+	 * @param text
+	 *            Text of the notification
+	 * @param category
+	 *            Notification category
+	 */
+	public static void warning(String title, String text, NotificationCategory category)
+	{
+		notify(Notification.create(NotificationLevel.WARNING, title, text).inCategory(category).build());
+	}
+
+	/**
+	 * Create an information level notification with no acknowledgement, and
+	 * pass it to the {@link #notify(INotification)} method.
+	 * 
+	 * @param title
+	 *            Title of the notification
+	 * @param text
+	 *            Text of the notification
+	 * @param category
+	 *            Notification category
+	 */
+	public static void info(String title, String text, NotificationCategory category)
+	{
+		notify(Notification.create(NotificationLevel.INFORMATION, title, text).inCategory(category).build());
 	}
 }

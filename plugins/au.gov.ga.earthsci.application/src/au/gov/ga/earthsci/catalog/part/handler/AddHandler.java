@@ -23,8 +23,8 @@ import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
 
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.part.ICatalogBrowserController;
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
 
 /**
  * An handler that is used for add operations on the catalog browser tree
@@ -33,20 +33,18 @@ import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
  */
 public class AddHandler
 {
-
 	@Inject
 	private ICatalogBrowserController controller;
-	
+
 	@Execute
-	public void execute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
 	{
 		controller.addToLayerModel(selectedNodes);
 	}
-	
+
 	@CanExecute
 	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
 	{
 		return selectedNodes != null && selectedNodes.length > 0 && controller.areAllLayerNodes(selectedNodes);
 	}
-	
 }

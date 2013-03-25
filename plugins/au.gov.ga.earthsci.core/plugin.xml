@@ -4,11 +4,15 @@
    <extension-point id="au.gov.ga.earthsci.notification.receiver" name="Notification Receiver" schema="schema/au.gov.ga.earthsci.notification.receiver.exsd"/>
    <extension-point id="au.gov.ga.earthsci.notification.categoryProvider" name="Notification Category Provider" schema="schema/au.gov.ga.earthsci.notification.categoryProvider.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.retrieve.retriever" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retriever.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.core.model.catalog.provider" name="Catalog Provider" schema="schema/au.gov.ga.earthsci.core.model.catalog.provider.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.applicator" name="Bookmark Property Applicator" schema="schema/au.gov.ga.earthsci.bookmark.applicator.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.bookmark.creator.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.exporter" name="Bookmark Property Exporter" schema="schema/au.gov.ga.earthsci.bookmark.exporter.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.hud" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.hud.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.core.xmlLoaders.exsd"/>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retriever">
       <retriever
-            class="au.gov.ga.earthsci.core.retrieve.retriever.HTTPRetriever">
+            class="au.gov.ga.earthsci.core.retrieve.retriever.HttpRetriever">
       </retriever>
       <retriever
             class="au.gov.ga.earthsci.core.retrieve.retriever.FileRetriever">
@@ -16,12 +20,9 @@
       <retriever
             class="au.gov.ga.earthsci.core.retrieve.retriever.BundleResourceRetriever">
       </retriever>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.core.model.catalog.provider">
-      <provider
-            class="au.gov.ga.earthsci.core.model.catalog.dataset.DatasetXMLCatalogProvider">
-      </provider>
+      <retriever
+            class="au.gov.ga.earthsci.core.retrieve.retriever.JarRetriever">
+      </retriever>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -38,30 +39,76 @@
       </initializer>
    </extension>
    <extension
+         point="au.gov.ga.earthsci.bookmark.creator">
+      <creator
+            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
+      </creator>
+      <creator
+            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
+      </creator>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.bookmark.exporter">
+      <exporter
+            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
+         exporter body text
+      </exporter>
+      <exporter
+            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
+      </exporter>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.bookmark.applicator">
+      <applicator
+            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyApplicator">
+      </applicator>
+      <applicator
+            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyApplicator">
+      </applicator>
+   </extension>
+   <extension
          point="au.gov.ga.earthsci.injectable">
+      <inject
+            class="au.gov.ga.earthsci.core.xml.XmlLoaderManager"
+            priority="10">
+      </inject>
+      <inject
+            class="au.gov.ga.earthsci.core.util.ExtensionRegistryUtil"
+            priority="0">
+      </inject>
       <injectable
-            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences">
+            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences"
+            priority="0">
       </injectable>
       <injectable
-            class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration">
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration"
+            priority="0">
       </injectable>
       <inject
-            class="au.gov.ga.earthsci.core.retrieve.RetrievalService">
+            class="au.gov.ga.earthsci.core.retrieve.RetrieverFactory"
+            priority="0">
+         <type
+               class="au.gov.ga.earthsci.core.retrieve.IRetrieverFactory">
+         </type>
+      </inject>
+      <inject
+            class="au.gov.ga.earthsci.core.retrieve.RetrievalService"
+            priority="0">
          <type
                class="au.gov.ga.earthsci.core.retrieve.IRetrievalService">
          </type>
       </inject>
       <injectable
-            class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory">
-      </injectable>
-      <injectable
-            class="au.gov.ga.earthsci.core.model.catalog.CatalogFactory">
+            class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory"
+            priority="0">
       </injectable>
       <inject
-            class="au.gov.ga.earthsci.notification.NotificationManager">
+            class="au.gov.ga.earthsci.notification.NotificationManager"
+            priority="0">
       </inject>
       <inject
-            class="au.gov.ga.earthsci.core.worldwind.WorldWindModel">
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindModel"
+            priority="0">
          <type
                class="au.gov.ga.earthsci.core.worldwind.WorldWindModel">
          </type>
@@ -70,23 +117,76 @@
          </type>
       </inject>
       <inject
-            class="au.gov.ga.earthsci.core.model.catalog.CatalogModel">
+            class="au.gov.ga.earthsci.catalog.model.CatalogModel"
+            priority="0">
          <type
-               class="au.gov.ga.earthsci.core.model.catalog.ICatalogModel">
+               class="au.gov.ga.earthsci.catalog.model.ICatalogModel">
          </type>
+      </inject>
+      <bind
+            binding="au.gov.ga.earthsci.bookmark.model.IBookmarks"
+            class="au.gov.ga.earthsci.bookmark.model.Bookmarks"
+            priority="0">
+      </bind>
+      <inject
+            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry"
+            priority="0">
       </inject>
       <inject
-            class="au.gov.ga.earthsci.core.worldwind.WorldWindView">
-         <type
-               class="au.gov.ga.earthsci.core.worldwind.WorldWindView">
-         </type>
-         <type
-               class="gov.nasa.worldwind.view.orbit.OrbitView">
-         </type>
-         <type
-               class="gov.nasa.worldwind.View">
-         </type>
+            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory"
+            priority="0">
       </inject>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.intentFilters">
+      <filter
+            class="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
+            priority="0">
+         <scheme
+               name="class">
+         </scheme>
+         <return-type
+               class="gov.nasa.worldwind.layers.Layer">
+         </return-type>
+      </filter>
+      <filter
+            class="au.gov.ga.earthsci.core.intent.XmlRetrieveIntentHandler"
+            priority="0">
+         <content-type
+               id="org.eclipse.core.runtime.xml">
+         </content-type>
+      </filter>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.intentResourceLocators">
+      <locator
+            class="au.gov.ga.earthsci.core.intent.ClasspathIntentResourceLocator"
+            priority="0">
+      </locator>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.core.xmlLoaders">
+      <loader
+            class="au.gov.ga.earthsci.core.model.layer.LayerXmlLoader"
+            filter="au.gov.ga.earthsci.core.model.layer.LayerXmlLoader"
+            priority="0">
+      </loader>
+      <loader
+            class="au.gov.ga.earthsci.catalog.model.dataset.DatasetXmlLoader"
+            filter="au.gov.ga.earthsci.catalog.model.dataset.DatasetXmlLoader"
+            priority="0">
+      </loader>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.dispatchFilters">
+      <filter
+            class="au.gov.ga.earthsci.catalog.model.CatalogTreeNodeDispatchHandler"
+            name="Catalog"
+            priority="0">
+         <type
+               class="au.gov.ga.earthsci.catalog.model.ICatalogTreeNode">
+         </type>
+      </filter>
    </extension>
 
 </plugin>

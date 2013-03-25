@@ -15,8 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.swt.graphics.Image;
 import org.slf4j.Logger;
@@ -40,7 +40,9 @@ public final class LoadingIconAnimator
 	private static final Logger logger = LoggerFactory.getLogger(LoadingIconAnimator.class);
 	private final Image[] loadingFrames = ImageRegistry.getInstance().getAnimated(ImageRegistry.ICON_LOADING);
 	private int frame = 0;
-	private final List<LoadingIconFrameListener> listeners = new ArrayList<LoadingIconFrameListener>();
+	private final Set<ILoadingIconFrameListener> listeners = new HashSet<ILoadingIconFrameListener>();
+	private boolean dirty = false;
+	private ILoadingIconFrameListener[] listenerArray;
 
 	private LoadingIconAnimator()
 	{
@@ -63,19 +65,25 @@ public final class LoadingIconAnimator
 							{
 							}
 						}
-						for (int i = listeners.size() - 1; i >= 0; i--)
+
+						if (dirty)
 						{
-							try
-							{
-								listeners.get(i).nextFrame(getCurrentFrame());
-							}
-							catch (Exception e)
-							{
-								logger.warn("Error calling loading icon frame listener", e); //$NON-NLS-1$
-							}
+							listenerArray = listeners.toArray(new ILoadingIconFrameListener[listeners.size()]);
+							dirty = false;
 						}
-						frame = (frame + 1) % loadingFrames.length;
 					}
+					for (ILoadingIconFrameListener listener : listenerArray)
+					{
+						try
+						{
+							listener.nextFrame(getCurrentFrame());
+						}
+						catch (Exception e)
+						{
+							logger.warn("Error calling loading icon frame listener", e); //$NON-NLS-1$
+						}
+					}
+					frame = (frame + 1) % loadingFrames.length;
 					try
 					{
 						Thread.sleep(100);
@@ -91,20 +99,22 @@ public final class LoadingIconAnimator
 		thread.start();
 	}
 
-	public void addListener(LoadingIconFrameListener listener)
+	public void addListener(ILoadingIconFrameListener listener)
 	{
 		synchronized (listeners)
 		{
 			listeners.add(listener);
+			dirty = true;
 			listeners.notifyAll();
 		}
 	}
 
-	public void removeListener(LoadingIconFrameListener listener)
+	public void removeListener(ILoadingIconFrameListener listener)
 	{
 		synchronized (listeners)
 		{
 			listeners.remove(listener);
+			dirty = true;
 		}
 	}
 

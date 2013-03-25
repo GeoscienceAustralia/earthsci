@@ -52,11 +52,15 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_WARNING = "icon.warning"; //$NON-NLS-1$
 	public static final String ICON_REPOSITORY = "icon.repo"; //$NON-NLS-1$
 	public static final String ICON_FOLDER = "icon.folder"; //$NON-NLS-1$
-	public static final String ICON_LAYER_NODE = "icon.layer_node"; //$NON-NLS-1$
+	public static final String ICON_LAYER = "icon.layer"; //$NON-NLS-1$
+	public static final String ICON_FILE = "icon.file"; //$NON-NLS-1$
 	public static final String ICON_ADD = "icon.add"; //$NON-NLS-1$
 	public static final String ICON_REMOVE = "icon.remove"; //$NON-NLS-1$
 	public static final String ICON_TRANSPARENT = "icon.transparent"; //$NON-NLS-1$
+	public static final String ICON_APPLY = "icon.apply"; //$NON-NLS-1$
+	public static final String ICON_EDIT = "icon.edit"; //$NON-NLS-1$
 	public static final String ICON_LOADING = "icon.loading"; //$NON-NLS-1$
+	public static final String ICON_BOOKMARKS = "icon.bookmarks"; //$NON-NLS-1$
 	public static final String DECORATION_INCLUDED = "decoration.included"; //$NON-NLS-1$
 	
 	private final Map<String, URL> urlMap = new ConcurrentHashMap<String, URL>(); 
@@ -81,13 +85,19 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 		putResource(ICON_REPOSITORY, "/icons/repo.gif"); //$NON-NLS-1$
 
 		putResource(ICON_FOLDER, "/icons/folder.gif"); //$NON-NLS-1$
-
-		putResource(ICON_LAYER_NODE, "/icons/file_obj.gif"); //$NON-NLS-1$
+		putResource(ICON_FILE, "/icons/file_obj.gif"); //$NON-NLS-1$
+		putResource(ICON_LAYER, "/icons/layer.png"); //$NON-NLS-1$
 
 		putResource(ICON_ADD, "/icons/add.gif"); //$NON-NLS-1$
 		putResource(ICON_REMOVE, "/icons/remove.gif"); //$NON-NLS-1$
+		
+		putResource(ICON_APPLY, "/icons/apply.gif"); //$NON-NLS-1$
 
+		putResource(ICON_EDIT, "/icons/edit.gif"); //$NON-NLS-1$
+		
 		putResource(ICON_TRANSPARENT, "/icons/transparent.gif"); //$NON-NLS-1$
+		
+		putResource(ICON_BOOKMARKS, "/icons/bookmarks.gif"); //$NON-NLS-1$
 
 		putResource(DECORATION_INCLUDED, "/icons/included_dec.gif"); //$NON-NLS-1$
 

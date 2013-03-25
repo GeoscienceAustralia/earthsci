@@ -15,7 +15,12 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.retrieve.retriever;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import gov.nasa.worldwind.util.WWIO;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -26,8 +31,10 @@ import org.jmock.Mockery;
 import org.junit.Before;
 import org.junit.Test;
 
-import au.gov.ga.earthsci.core.retrieve.IRetrievalMonitor;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
+import au.gov.ga.earthsci.core.retrieve.IRetrieverMonitor;
+import au.gov.ga.earthsci.core.retrieve.RetrievalProperties;
+import au.gov.ga.earthsci.core.retrieve.RetrievalStatus;
 import au.gov.ga.earthsci.core.retrieve.retriever.FileRetriever;
 
 /**
@@ -40,7 +47,7 @@ public class FileRetrieverTest
 	
 	private final FileRetriever classUnderTest = new FileRetriever();
 	
-	private IRetrievalMonitor monitor;
+	private IRetrieverMonitor monitor;
 	
 	private Mockery mockContext;
 	
@@ -49,14 +56,7 @@ public class FileRetrieverTest
 	{
 		mockContext = new Mockery();
 		
-		monitor = mockContext.mock(IRetrievalMonitor.class);
-	}
-	
-	@Test
-	public void testSupportsWithNull() throws Exception
-	{
-		URL url = null;
-		assertFalse(classUnderTest.supports(url));
+		monitor = mockContext.mock(IRetrieverMonitor.class);
 	}
 	
 	@Test
@@ -73,20 +73,24 @@ public class FileRetrieverTest
 		assertTrue(classUnderTest.supports(url));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
 	public void testRetrieveWithNullUrl() throws Exception
 	{
 		URL url = null;
 		
-		classUnderTest.retrieve(url, monitor);
+		mockContext.checking(new Expectations() {{{
+			oneOf(monitor).updateStatus(RetrievalStatus.READING);
+		}}});
+		
+		IRetrievalResult result = classUnderTest.retrieve(url, monitor, new RetrievalProperties(), null).result;
+		assertEquals(result.getError().getClass(), NullPointerException.class);
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = NullPointerException.class)
 	public void testRetrieveWithNullMonitor() throws Exception
 	{
 		URL url = new URL("file:///file.txt");
 		
-		classUnderTest.retrieve(url, null);
+		classUnderTest.retrieve(url, null, new RetrievalProperties(), null);
 	}
 	
 	@Test
@@ -96,20 +100,15 @@ public class FileRetrieverTest
 		File tmpFile = createTmpFile(expectedContent);
 		
 		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).notifyStarted();
-			oneOf(monitor).notifyConnecting();
-			oneOf(monitor).notifyConnected();
-			oneOf(monitor).notifyReading();
-			oneOf(monitor).notifyCompleted(with(true));
+			oneOf(monitor).updateStatus(RetrievalStatus.READING);
 		}}});
 		
-		IRetrievalResult result = classUnderTest.retrieve(tmpFile.toURI().toURL(), monitor);
+		IRetrievalResult result = classUnderTest.retrieve(tmpFile.toURI().toURL(), monitor, new RetrievalProperties(), null).result;
 		
 		assertNotNull(result);
-		assertTrue(result.isSuccessful());
-		assertEquals(expectedContent, result.getAsString());
-		assertNull(result.getException());
-		assertNull(result.getMessage());
+		String string = WWIO.readStreamToString(result.getData().getInputStream(), "UTF-8");
+		assertEquals(expectedContent, string);
+		assertNull(result.getError());
 	}
 	
 	@Test
@@ -118,20 +117,14 @@ public class FileRetrieverTest
 		URL url = new URL("file:///nonexistant.file");
 		
 		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).notifyStarted();
-			oneOf(monitor).notifyConnecting();
-			oneOf(monitor).notifyConnected();
-			never(monitor).notifyReading();
-			oneOf(monitor).notifyCompleted(with(false));
+			oneOf(monitor).updateStatus(RetrievalStatus.READING);
 		}}});
 		
-		IRetrievalResult result = classUnderTest.retrieve(url, monitor);
+		IRetrievalResult result = classUnderTest.retrieve(url, monitor, new RetrievalProperties(), null).result;
 		
 		assertNotNull(result);
-		assertFalse(result.isSuccessful());
-		assertEquals(null, result.getAsString());
-		assertNotNull(result.getException());
-		assertNotNull(result.getMessage());
+		assertEquals(null, result.getData());
+		assertNotNull(result.getError());
 	}
 
 	private File createTmpFile(String content) throws Exception

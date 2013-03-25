@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.application.parts.layer;
 
 import java.io.File;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DND;
@@ -25,8 +26,10 @@ import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
+import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.application.parts.layer.LayerTransferData.TransferredLayer;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
@@ -38,11 +41,13 @@ import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 public class LayerTreeDropAdapter extends ViewerDropAdapter
 {
 	private final ITreeModel model;
+	private final IEclipseContext context;
 
-	public LayerTreeDropAdapter(TreeViewer viewer, ITreeModel model)
+	public LayerTreeDropAdapter(TreeViewer viewer, ITreeModel model, IEclipseContext context)
 	{
 		super(viewer);
 		this.model = model;
+		this.context = context;
 	}
 
 	@Override
@@ -108,13 +113,17 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 				File file = new File(filename);
 				if (file.isFile())
 				{
-					LayerNode node = new LayerNode();
+					final LayerNode node = new LayerNode();
 					node.setName(file.getName());
 					node.setEnabled(true);
+					node.setIconURL(ImageRegistry.getInstance().getURL(ImageRegistry.ICON_FILE));
 					node.setURI(file.toURI());
+
 					target.add(index, node);
 					getViewer().add(target, node);
 					getViewer().reveal(node);
+
+					IntentLayerLoader.load(node, context);
 				}
 			}
 		}
@@ -144,16 +153,16 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 	{
 		return LayerTransfer.getInstance().isSupportedType(type) || FileTransfer.getInstance().isSupportedType(type);
 	}
-	
+
 	@Override
 	public void dragEnter(DropTargetEvent event)
 	{
-		if (event.detail == DND.DROP_DEFAULT || FileTransfer.getInstance().isSupportedType(event.currentDataType) )
+		if (event.detail == DND.DROP_DEFAULT || FileTransfer.getInstance().isSupportedType(event.currentDataType))
 		{
 			event.detail = DND.DROP_COPY;
 		}
 	}
-	
+
 	@Override
 	public void dragOperationChanged(DropTargetEvent event)
 	{

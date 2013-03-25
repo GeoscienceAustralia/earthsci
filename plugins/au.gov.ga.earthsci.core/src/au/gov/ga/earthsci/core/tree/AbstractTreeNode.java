@@ -91,7 +91,7 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 	 * @param children
 	 *            Node's children, cannot be null
 	 */
-	protected void setChildren(ITreeNode<E>[] children)
+	public void setChildren(ITreeNode<E>[] children)
 	{
 		ITreeNode<E>[] oldValue = getChildren();
 		this.children = Arrays.copyOf(children, children.length);
@@ -312,6 +312,26 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 			return;
 		}
 		getParent().remove(this);
+	}
+
+	@Override
+	public boolean replaceChild(ITreeNode<E> child, ITreeNode<E> newChild)
+	{
+		int index = child.index();
+		if (index < 0)
+		{
+			return false;
+		}
+		if (getChild(index) != child)
+		{
+			return false;
+		}
+		@SuppressWarnings("unchecked")
+		ITreeNode<E>[] newChildren = new ITreeNode[children.length];
+		System.arraycopy(children, 0, newChildren, 0, children.length);
+		newChildren[index] = newChild;
+		setChildren(newChildren);
+		return true;
 	}
 
 	@Override

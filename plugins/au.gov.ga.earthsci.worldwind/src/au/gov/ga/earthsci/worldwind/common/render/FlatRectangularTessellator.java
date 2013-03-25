@@ -37,10 +37,15 @@ public class FlatRectangularTessellator extends WireframeRectangularTessellator
 		try
 		{
 			Configuration.setValue(AVKey.RECTANGULAR_TESSELLATOR_MAX_LEVEL, 4);
-			DrawContextDelegateVerticalExaggerationOverride odc =
-					new DrawContextDelegateVerticalExaggerationOverride(dc);
-			odc.overrideVerticalExaggeration(0);
-			return super.tessellate(odc);
+			dc = new DrawContextDelegate(dc)
+			{
+				@Override
+				public double getVerticalExaggeration()
+				{
+					return 0;
+				}
+			};
+			return super.tessellate(dc);
 		}
 		finally
 		{

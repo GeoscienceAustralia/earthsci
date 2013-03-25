@@ -22,7 +22,6 @@ import java.net.URL;
 
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 import au.gov.ga.earthsci.worldwind.common.util.Loader;
-import au.gov.ga.earthsci.worldwind.common.util.Setupable;
 
 /**
  * {@link Layer} which reads it's data from a single URL, using a
@@ -30,7 +29,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Setupable;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface DataLayer extends Layer, Loader, Setupable, Bounded
+public interface DataLayer extends Layer, Loader, Bounded
 {
 	/**
 	 * @return The download url for this layer's data

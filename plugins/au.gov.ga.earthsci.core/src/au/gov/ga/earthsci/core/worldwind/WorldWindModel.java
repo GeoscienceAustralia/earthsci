@@ -19,6 +19,7 @@ import gov.nasa.worldwind.BasicModel;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.globes.Globe;
+import gov.nasa.worldwind.layers.LayerList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,13 +29,16 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.core.model.layer.DefaultLayers;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
+import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.model.layer.LayerPersister;
-import au.gov.ga.earthsci.core.model.layer.uri.DefaultLayers;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 
@@ -47,7 +51,7 @@ import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 @Singleton
 public class WorldWindModel extends BasicModel implements ITreeModel
 {
-	private final ILayerTreeNode rootNode;
+	private final ConstructionParameters constructionParameters;
 	private final static Logger logger = LoggerFactory.getLogger(WorldWindModel.class);
 	private static final String layerFilename = "layers.xml"; //$NON-NLS-1$
 	private static final File layerFile = ConfigurationUtil.getWorkspaceFile(layerFilename);
@@ -55,48 +59,35 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 	@Inject
 	public WorldWindModel()
 	{
-		this(createRootNode());
+		this(new ConstructionParameters());
 		logger.info("Using layer file: " + layerFile); //$NON-NLS-1$
 	}
 
-	private WorldWindModel(FolderNode rootNode)
+	private WorldWindModel(ConstructionParameters constructionParameters)
 	{
-		super(createGlobe(), rootNode.getLayerList());
-		this.rootNode = rootNode;
-	}
-
-	protected static FolderNode createRootNode()
-	{
-		FolderNode rootNode = new FolderNode();
-		rootNode.setName("root"); //$NON-NLS-1$
-		rootNode.setExpanded(true);
-		return rootNode;
-	}
-
-	protected static Globe createGlobe()
-	{
-		return (Globe) WorldWind.createConfigurationComponent(AVKey.GLOBE_CLASS_NAME);
+		super(constructionParameters.createGlobe(), constructionParameters.createLayerList());
+		this.constructionParameters = constructionParameters;
 	}
 
 	@Override
 	public ILayerTreeNode getRootNode()
 	{
-		return rootNode;
+		return constructionParameters.rootNode;
 	}
 
 	@PostConstruct
-	public void loadLayers()
+	public void loadLayers(IEclipseContext context)
 	{
-		loadRootNode(rootNode);
+		loadRootNode(constructionParameters.rootNode, context);
 	}
 
 	@PreDestroy
 	public void saveLayers()
 	{
-		saveRootNode(rootNode);
+		saveRootNode(constructionParameters.rootNode);
 	}
 
-	protected static void loadRootNode(ILayerTreeNode rootNode)
+	protected void loadRootNode(ILayerTreeNode rootNode, IEclipseContext context)
 	{
 		ILayerTreeNode loadedNode = null;
 		try
@@ -109,7 +100,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace(); //TODO
+			logger.error("Error loading layer file", e); //$NON-NLS-1$
 		}
 		if (loadedNode == null)
 		{
@@ -126,9 +117,23 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 				rootNode.add(child);
 			}
 		}
+		loadAllLayers(rootNode, context);
 	}
 
-	protected static void saveRootNode(ILayerTreeNode rootNode)
+	public static void loadAllLayers(ILayerTreeNode node, IEclipseContext context)
+	{
+		if (node instanceof LayerNode)
+		{
+			final LayerNode layerNode = (LayerNode) node;
+			IntentLayerLoader.load(layerNode, context);
+		}
+		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
+		{
+			loadAllLayers(child.getValue(), context);
+		}
+	}
+
+	protected void saveRootNode(ILayerTreeNode rootNode)
 	{
 		try
 		{
@@ -136,7 +141,31 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace(); //TODO
+			logger.error("Error saving layer file", e); //$NON-NLS-1$
+		}
+	}
+
+	private static class ConstructionParameters
+	{
+		public FolderNode rootNode;
+
+		public ConstructionParameters()
+		{
+			rootNode = new FolderNode();
+			rootNode.setName("root"); //$NON-NLS-1$
+			rootNode.setExpanded(true);
+		}
+
+		public Globe createGlobe()
+		{
+			Globe globe = (Globe) WorldWind.createConfigurationComponent(AVKey.GLOBE_CLASS_NAME);
+			globe.setElevationModel(rootNode.getElevationModels());
+			return globe;
+		}
+
+		public LayerList createLayerList()
+		{
+			return rootNode.getLayerList();
 		}
 	}
 }

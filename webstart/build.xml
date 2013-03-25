@@ -110,6 +110,7 @@
 	<target name="generate-jnlp" depends="pack-jars">
 		<taskdef name="jnlpresources" classname="au.gov.ga.earthsci.ant.JnlpResources" classpath="${ant.task.jar}" />
 		<taskdef name="osgibundles" classname="au.gov.ga.earthsci.ant.OsgiBundles" classpath="${ant.task.jar}" />
+		<typedef name="startlevel" classname="au.gov.ga.earthsci.ant.StartLevel" classpath="${ant.task.jar}" />
 
 		<jnlpresources property="jnlp.resources.string" prefix="signed/">
 			<fileset dir="${signed.dir}" id="signed.fileset.id">
@@ -119,6 +120,9 @@
 
 		<osgibundles property="osgi.bundles.string">
 			<fileset refid="signed.fileset.id" />
+			<startlevel bundle="org.eclipse.osgi" level="-1" />
+			<startlevel bundle="org.eclipse.equinox.ds" level="1" />
+			<startlevel bundle="org.eclipse.equinox.common" level="2" />
 		</osgibundles>
 
 		<copy file="${jnlp.template}" tofile="${jnlp.file}" overwrite="true">

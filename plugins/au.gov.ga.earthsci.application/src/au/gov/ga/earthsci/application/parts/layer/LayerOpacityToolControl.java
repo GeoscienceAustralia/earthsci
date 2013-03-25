@@ -102,6 +102,11 @@ public class LayerOpacityToolControl
 					setOpacity(selection, opacity);
 				}
 			});
+
+			if (selection != null)
+			{
+				setSelection(selection);
+			}
 		}
 	}
 
@@ -126,6 +131,9 @@ public class LayerOpacityToolControl
 	private void setSelection(ILayerTreeNode[] selection)
 	{
 		this.selection = selection;
+
+		if (scale == null)
+			return;
 
 		settingScale = true;
 		double opacity = scale.getSelection() / 100d;

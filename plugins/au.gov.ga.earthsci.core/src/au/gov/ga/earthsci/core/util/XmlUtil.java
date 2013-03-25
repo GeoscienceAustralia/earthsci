@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -604,6 +605,15 @@ public class XmlUtil
 	 */
 	public static Element[] getElements(Element context, String path, XPath xpath)
 	{
-		return WWXML.getElements(context, path, xpath);
+		Element[] elements = WWXML.getElements(context, path, xpath);
+		return elements == null ? new Element[0] : elements;
+	}
+	
+	/**
+	 * Create and return a new document builder
+	 */
+	public static DocumentBuilder createDocumentBuilder()
+	{
+		return WWXML.createDocumentBuilder(false);
 	}
 }

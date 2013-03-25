@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.info;
 
+import java.net.URL;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -29,6 +31,8 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 
 import au.gov.ga.earthsci.application.parts.info.handlers.LinkHandler;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
@@ -40,11 +44,12 @@ import au.gov.ga.earthsci.core.model.layer.LayerNode;
  */
 public class InfoPart
 {
-	public static final String PART_ID = "au.gov.ga.earthsci.application.part.information"; //$NON-NLS-1$
+	public static final String PART_ID = "au.gov.ga.earthsci.application.information.part"; //$NON-NLS-1$
 	public static final String INPUT_NAME = PART_ID + ".input"; //$NON-NLS-1$
 
 	private Browser browser;
 	private ILayerTreeNode selectedLayer;
+	private ICatalogTreeNode selectedCatalog;
 	private boolean link;
 
 	@Inject
@@ -77,16 +82,33 @@ public class InfoPart
 	public void setLink(boolean link)
 	{
 		this.link = link;
-		selectLayer(selectedLayer);
+		
+		if(selectedCatalog != null)
+			selectCatalog(selectedCatalog);
+		else
+			selectLayer(selectedLayer);
 	}
 
 	@Inject
 	private void selectLayer(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
 		this.selectedLayer = layer;
+		this.selectedCatalog = null;
 		if (isLink())
 		{
 			context.modify(INPUT_NAME, layer);
+			context.declareModifiable(INPUT_NAME);
+		}
+	}
+	
+	@Inject
+	private void selectCatalog(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode catalog)
+	{
+		this.selectedCatalog = catalog;
+		this.selectedLayer = null;
+		if (isLink())
+		{
+			context.modify(INPUT_NAME, catalog);
 			context.declareModifiable(INPUT_NAME);
 		}
 	}
@@ -96,6 +118,13 @@ public class InfoPart
 	private void setPartInput(@Named(INPUT_NAME) ILayerTreeNode layer)
 	{
 		showInfo(layer);
+	}
+	
+	@Inject
+	@Optional
+	private void setPartInput(@Named(INPUT_NAME) ICatalogTreeNode catalog)
+	{
+		showInfo(catalog);
 	}
 
 	public void showInfo(ILayerTreeNode layer)
@@ -110,6 +139,18 @@ public class InfoPart
 			{
 				String html = generateInfoHtml(layer);
 				browser.setText(html);
+			}
+		}
+	}
+	
+	public void showInfo(ICatalogTreeNode catalog)
+	{
+		if (catalog != null)
+		{
+			URL infoURL = CatalogTreeLabelProviderRegistry.getProvider(catalog).getInfoURL(catalog);
+			if (infoURL != null)
+			{
+				browser.setUrl(infoURL.toString());
 			}
 		}
 	}

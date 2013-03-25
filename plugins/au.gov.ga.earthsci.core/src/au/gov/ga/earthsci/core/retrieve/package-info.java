@@ -6,15 +6,17 @@
  * into the Eclipse Jobs API, as well as the EarthSci Notification API. 
  *
  * <dl>
- * 	<dt>{@link au.gov.ga.earthsci.core.retrieve.IRetrievalService}</dt> 
+ * 	<dt>{@link IRetrievalService}</dt> 
  * 	<dd>The primary service interface to use for retrieving resources</dd>
- *  <dt>{@link au.gov.ga.earthsci.core.retrieve.RetrievalJob}</dt>
+ *  <dt>{@link IRetrieval}</dt>
  *  <dd>
- *  	A {@link org.eclipse.core.runtime.jobs.Job} that performs the resource retrieval. 
- *  	Clients can use standard listening mechanisms to be informed of retrieval completion etc.
+ *  	An object that performs the resource retrieval. 
+ *  	Clients can add listeners to this to be informed of retrieval completion etc.
  * 	</dd>
- *  <dt>{@link au.gov.ga.earthsci.core.retrieve.IRetrievalResult}</dt>
+ *  <dt>{@link IRetrievalResult}</dt>
  *  <dd>The result of a retrieval. Contains convenience methods to access the result in a number of formats.</dd>
+ *  <dt>{@link IRetriever}</dt>
+ *  <dd>Implementations of this interface provide retrieval of particular URL protocols.</dd>
  * </dl>
  * 
  * A common pattern for using the API is as follows:
@@ -23,12 +25,9 @@
  * &#64Inject
  * IRetrievalService retrievalService;
  * ...
- * RetrievalJob job = retrievalService.retrieve(resourceUrl);
- * IRetrievalResult result = job.waitAndGetResult();
- * if (result.isSuccessful())
- * {
- *     // do something
- * }
+ * IRetrieval retrieval = retrievalService.retrieve(this, resourceUrl);
+ * IRetrievalResult result = retrieval.waitAndGetResult();
+ * //do something
  * </pre>
  * 
  * This will block the current thread until a result is available, which might take some time depending on resource size, caching policies and
@@ -38,22 +37,16 @@
  * &#64Inject
  * IRetrievalService retrievalService;
  * ...
- * RetrievalJob job = retrievalService.retrieve(resourceUrl);
- * job.addJobChangeListener(new JobChangeAdapter(){
- * 		private void done(JobChangeEvent e)
- * 		{
- *          if (event.getResult() != Status.OK_STATUS)
- *          {
- *          	// do something
- *          }
- *          
- * 			IRetrievalResult result = job.getResult();
- * 			if (result.isSuccessful())
- * 			{
- * 			    // do something
- *			}
- * 		}
- * });
+ * IRetrieval retrieval = retrievalService.retrieve(this, resourceUrl);
+ * retrieval.addListener(new RetrievalAdapter()
+ * {
+ *     public void complete(IRetrieval retrieval)
+ *     {
+ *         IRetrievalResult result = retrieval.getResult();
+ *         //do something
+ *     }
+ * }
+ * retrieval.start();
  * </pre>
  */
 package au.gov.ga.earthsci.core.retrieve;

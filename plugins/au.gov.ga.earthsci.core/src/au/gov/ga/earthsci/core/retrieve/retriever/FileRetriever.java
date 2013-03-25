@@ -15,42 +15,22 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve.retriever;
 
-import java.io.FileNotFoundException;
 import java.net.URL;
-import java.net.URLConnection;
-
-import org.eclipse.osgi.util.NLS;
 
 import au.gov.ga.earthsci.core.retrieve.IRetriever;
 
 /**
- * An {@link IRetriever} that can handle requests for {@code file://} URLs
+ * {@link IRetriever} implementation for retrieving resources from file URLs.
  * 
- * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FileRetriever extends AbstractRetriever implements IRetriever
+public class FileRetriever extends AbstractLocalURLRetriever
 {
-	
-	public static final String FILE_PROTOCOL = "file"; //$NON-NLS-1$
+	public static final String FILE_RESOURCE_PROTOCOL = "file"; //$NON-NLS-1$
 
 	@Override
 	public boolean supports(URL url)
 	{
-		if (url == null)
-		{
-			return false;
-		}
-		return url.getProtocol().equalsIgnoreCase(FILE_PROTOCOL);
+		return FILE_RESOURCE_PROTOCOL.equalsIgnoreCase(url.getProtocol());
 	}
-	
-	@Override
-	protected String getMessageForRetrievalException(URLConnection connection, Exception e)
-	{
-		if (e instanceof FileNotFoundException)
-		{
-			return NLS.bind(Messages.FileRetriever_FileNotFoundMessage, connection.getURL().getPath());
-		}
-		return super.getMessageForRetrievalException(connection, e);
-	}
-
 }

@@ -20,8 +20,8 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.model.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.core.model.catalog.dataset.DatasetCatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
+import au.gov.ga.earthsci.catalog.model.dataset.DatasetCatalogTreeNode;
 
 /**
  * An {@link ICatalogTreeLabelProvider} that supports {@link DatasetCatalogTreeNode}s

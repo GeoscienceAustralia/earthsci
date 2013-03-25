@@ -15,15 +15,11 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.layer.handlers;
 
-import java.util.List;
-
 import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.Transfer;
 
@@ -39,14 +35,17 @@ import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 public class CutHandler
 {
 	@Execute
-	public void execute(TreeViewer viewer, Clipboard clipboard)
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer, Clipboard clipboard)
 	{
-		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-		List<?> selectionList = selection.toList();
-		ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
-		LayerTransferData data = LayerTransferData.fromNodes(nodes);
+		execute(new ILayerTreeNode[] { layer }, clipboard);
+	}
+	
+	@Execute
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode[] layers, Clipboard clipboard)
+	{
+		LayerTransferData data = LayerTransferData.fromNodes(layers);
 		clipboard.setContents(new Object[] { data }, new Transfer[] { LayerTransfer.getInstance() });
-		for (ILayerTreeNode node : nodes)
+		for (ILayerTreeNode node : layers)
 		{
 			node.removeFromParent();
 		}

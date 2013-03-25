@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
+import gov.nasa.worldwind.terrain.CompoundElevationModel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -24,12 +25,19 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
+
+import au.gov.ga.earthsci.common.collection.HashSetHashMap;
+import au.gov.ga.earthsci.common.collection.SetMap;
+import au.gov.ga.earthsci.core.model.IModelStatus;
+import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.util.IEnableable;
-import au.gov.ga.earthsci.core.util.SetMap;
+import au.gov.ga.earthsci.core.worldwind.WorldWindCompoundElevationModel;
 
 /**
  * Abstract implementation of the {@link ILayerTreeNode} interface.
@@ -41,15 +49,18 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 {
 	private String name;
 	private LayerList layerList;
+	private WorldWindCompoundElevationModel elevationModels;
 	private SetMap<URI, ILayerTreeNode> uriMap;
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
 	private String label;
 	private URI uri;
+	private IContentType contentType;
 	private URL infoURL;
 	private URL legendURL;
 	private URL iconURL;
 	private boolean expanded;
 	private final Object semaphore = new Object();
+	private IModelStatus status = ModelStatus.ok(null);
 
 	protected AbstractLayerTreeNode()
 	{
@@ -106,6 +117,29 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	public void setURI(URI uri)
 	{
 		firePropertyChange("uRI", getURI(), this.uri = uri); //$NON-NLS-1$
+	}
+
+	@Override
+	public IContentType getContentType()
+	{
+		return contentType;
+	}
+
+	@Override
+	public void setContentType(IContentType contentType)
+	{
+		firePropertyChange("contentType", getContentType(), this.contentType = contentType); //$NON-NLS-1$
+	}
+
+	@Persistent
+	public String getContentTypeId()
+	{
+		return contentType == null ? null : contentType.getId();
+	}
+
+	public void setContentTypeId(String contentTypeId)
+	{
+		contentType = contentTypeId == null ? null : Platform.getContentTypeManager().getContentType(contentTypeId);
 	}
 
 	@Persistent
@@ -170,14 +204,18 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		{
 			IEnableable enableable = (IEnableable) this;
 			if (enableable.isEnabled() == enabled)
+			{
 				return true;
+			}
 		}
 		if (hasChildren())
 		{
 			for (ITreeNode<ILayerTreeNode> child : getChildren())
 			{
 				if (child.getValue().anyChildrenEnabledEquals(enabled))
+				{
 					return true;
+				}
 			}
 		}
 		return false;
@@ -245,7 +283,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		{
 			if (uriMap == null)
 			{
-				uriMap = new SetMap<URI, ILayerTreeNode>();
+				uriMap = new HashSetHashMap<URI, ILayerTreeNode>();
 				updateURIMap();
 			}
 			return uriMap.containsKey(uri);
@@ -259,7 +297,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		{
 			if (uriMap == null)
 			{
-				uriMap = new SetMap<URI, ILayerTreeNode>();
+				uriMap = new HashSetHashMap<URI, ILayerTreeNode>();
 				updateURIMap();
 			}
 			Set<ILayerTreeNode> nodes = uriMap.get(uri);
@@ -268,6 +306,49 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 				return nodes.toArray(new ILayerTreeNode[nodes.size()]);
 			}
 			return new ILayerTreeNode[0];
+		}
+	}
+
+	@Override
+	public CompoundElevationModel getElevationModels()
+	{
+		synchronized (semaphore)
+		{
+			if (elevationModels == null)
+			{
+				elevationModels = new WorldWindCompoundElevationModel();
+				updateElevationModels();
+			}
+			return elevationModels;
+		}
+	}
+
+	protected void updateElevationModels()
+	{
+		synchronized (semaphore)
+		{
+			if (elevationModels != null)
+			{
+				elevationModels.removeAll();
+				addNodesToElevationModels(this);
+			}
+		}
+	}
+
+	private void addNodesToElevationModels(ILayerTreeNode node)
+	{
+		if (node instanceof LayerNode)
+		{
+			LayerNode layerNode = (LayerNode) node;
+			if (layerNode.getLayer() instanceof IElevationModelLayer)
+			{
+				IElevationModelLayer elevationModelLayer = (IElevationModelLayer) layerNode.getLayer();
+				elevationModels.addElevationModel(elevationModelLayer.getElevationModel());
+			}
+		}
+		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
+		{
+			addNodesToElevationModels(child.getValue());
 		}
 	}
 
@@ -306,6 +387,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		//TODO should we implement a (more efficient?) modification of these collections according to changed children?
 		//update the collections if they exist
 		updateLayerList();
+		updateElevationModels();
 		updateURIMap();
 
 		//fire property changes
@@ -365,5 +447,17 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	public void setExpanded(boolean expanded)
 	{
 		firePropertyChange("expanded", isExpanded(), this.expanded = expanded); //$NON-NLS-1$
+	}
+
+	@Override
+	public IModelStatus getStatus()
+	{
+		return status;
+	}
+
+	@Override
+	public void setStatus(IModelStatus status)
+	{
+		firePropertyChange("status", getStatus(), this.status = status); //$NON-NLS-1$
 	}
 }

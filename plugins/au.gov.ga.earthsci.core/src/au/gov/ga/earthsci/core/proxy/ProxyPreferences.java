@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.proxy;
 
+import java.net.ProxySelector;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -27,6 +29,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import au.gov.ga.earthsci.core.preferences.PreferenceConstants;
 import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 
+import com.btr.proxy.search.ProxySearch;
+
 /**
  * Class used to initialize default preference values, and configure the proxy
  * when the preferences change.
@@ -37,19 +41,11 @@ import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 @Singleton
 public class ProxyPreferences extends AbstractPreferenceInitializer
 {
+	private static ProxySelector defaultProxySelector = null;
+
 	private static IPreferenceStore createStore()
 	{
 		return new ScopedPreferenceStore(DefaultScope.INSTANCE, PreferenceConstants.QUALIFIER_ID);
-	}
-
-	public static void preConfigureProxy()
-	{
-		IPreferenceStore store = createStore();
-		String proxyType = store.getString(PreferenceConstants.PROXY_TYPE);
-		String proxyHost = store.getString(PreferenceConstants.PROXY_HOST);
-		int proxyPort = store.getInt(PreferenceConstants.PROXY_PORT);
-		String nonProxyHosts = store.getString(PreferenceConstants.NON_PROXY_HOSTS);
-		configureProxy(proxyType, proxyHost, proxyPort, nonProxyHosts);
 	}
 
 	public static void configureProxy(String proxyType, String proxyHost, int proxyPort, String nonProxyHosts)
@@ -67,6 +63,21 @@ public class ProxyPreferences extends AbstractPreferenceInitializer
 
 		System.setProperty("http.nonProxyHosts", "" + nonProxyHosts); //$NON-NLS-1$ //$NON-NLS-2$
 		System.setProperty("ftp.nonProxyHosts", "" + nonProxyHosts); //$NON-NLS-1$ //$NON-NLS-2$
+
+		if (system)
+		{
+			if (defaultProxySelector == null)
+			{
+				defaultProxySelector = ProxySelector.getDefault();
+			}
+			ProxySearch proxySearch = ProxySearch.getDefaultProxySearch();
+			ProxySelector myProxySelector = proxySearch.getProxySelector();
+			ProxySelector.setDefault(myProxySelector);
+		}
+		else if (defaultProxySelector != null)
+		{
+			ProxySelector.setDefault(defaultProxySelector);
+		}
 	}
 
 	@Override
