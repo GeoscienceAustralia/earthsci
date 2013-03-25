@@ -88,7 +88,6 @@ public class ThemeLoader
 	@Inject
 	public void setupTheme(IThemeEngine engine)
 	{
-		logger.debug("Loading plugin contributed theme"); //$NON-NLS-1$
 		if (engine == null)
 		{
 			return;
@@ -99,6 +98,7 @@ public class ThemeLoader
 		// The DI engine invokes the setter only once the engine is available 
 		// (vs. a PostConstruct method which is invoked immediately after the object is instantiated).
 		
+		logger.debug("Loading plugin contributed theme"); //$NON-NLS-1$
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(DEFAULT_THEME_EXTENSION_POINT_ID);
 		if (config.length == 0)
 		{

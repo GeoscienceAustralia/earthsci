@@ -14,18 +14,4 @@
             themeId="au.gov.ga.earthsci.theme.ga">
       </defaultTheme>
    </extension>
-   <extension
-         point="au.gov.ga.earthsci.application.iconReplacementProvider">
-      <idToIconMapping
-            elementID="au.gov.ga.earthsci.application.toolbar.open"
-            icon="icons/info.gif">
-      </idToIconMapping>
-      <idToIconMapping
-            elementID="au.gov.ga.earthsci.application.bookmarks.part"
-            icon="icons/info.gif">
-      </idToIconMapping>
-      <idToIconProperties
-            properties="icons/iconMappings.properties">
-      </idToIconProperties>
-   </extension>
 </plugin>
