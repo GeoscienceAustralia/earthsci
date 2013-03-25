@@ -20,9 +20,11 @@ import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
 
 import au.gov.ga.earthsci.core.tree.ITreeNode;
@@ -38,10 +40,13 @@ public class CatalogModel implements ICatalogModel
 {
 	private final ICatalogTreeNode root = new RootNode();
 	
+	@Inject
+	private IEclipseContext context;
+	
 	@PostConstruct
 	public void load()
 	{
-		CatalogPersister.loadFromWorkspace(this);
+		CatalogPersister.loadFromWorkspace(this, context);
 	}
 	
 	@PreDestroy

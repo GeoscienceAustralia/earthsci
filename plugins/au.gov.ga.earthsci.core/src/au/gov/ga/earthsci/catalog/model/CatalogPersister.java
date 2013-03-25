@@ -28,6 +28,7 @@ import java.net.URI;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -216,6 +217,8 @@ public class CatalogPersister
 	 * @param result
 	 *            The model to add the loaded catalog nodes to and return. If
 	 *            null, a new model is created.
+	 * @param context
+	 *            An Eclipse context
 	 * 
 	 * @return The loaded catalog model
 	 * 
@@ -229,7 +232,7 @@ public class CatalogPersister
 	 *             If there is a problem recreating the model tree from the
 	 *             persistence mechanism
 	 */
-	public static ICatalogModel loadFromWorkspace(ICatalogModel result)
+	public static ICatalogModel loadFromWorkspace(ICatalogModel result, IEclipseContext context)
 	{
 		File workspaceFile = ConfigurationUtil.getWorkspaceFile(DEFAULT_WORKSPACE_CATALOG_FILENAME);
 		if (!workspaceFile.exists())
@@ -239,7 +242,7 @@ public class CatalogPersister
 		}
 		try
 		{
-			return loadCatalogModel(workspaceFile, result);
+			return loadCatalogModel(workspaceFile, result, context);
 		}
 		catch (Exception e)
 		{
@@ -258,6 +261,8 @@ public class CatalogPersister
 	 * @param result
 	 *            The model to add the loaded catalog nodes to and return. If
 	 *            null, a new model is created.
+	 * @param context
+	 *            An Eclipse context
 	 * 
 	 * @return The loaded catalog model
 	 * 
@@ -271,8 +276,8 @@ public class CatalogPersister
 	 *             If there is a problem recreating the model tree from the
 	 *             persistence mechanism
 	 */
-	public static ICatalogModel loadCatalogModel(File source, ICatalogModel result) throws SAXException, IOException,
-			PersistenceException
+	public static ICatalogModel loadCatalogModel(File source, ICatalogModel result, IEclipseContext context)
+			throws SAXException, IOException, PersistenceException
 	{
 		Validate.notNull(source, "An input file is required"); //$NON-NLS-1$
 
@@ -280,7 +285,7 @@ public class CatalogPersister
 		try
 		{
 			is = new FileInputStream(source);
-			return loadCatalogModel(is, result);
+			return loadCatalogModel(is, result, context);
 		}
 		finally
 		{
@@ -299,6 +304,8 @@ public class CatalogPersister
 	 * @param result
 	 *            The model to add the loaded catalog nodes to and return. If
 	 *            null, a new model is created.
+	 * @param context
+	 *            An Eclipse context
 	 * 
 	 * @return The loaded catalog model
 	 * 
@@ -312,8 +319,8 @@ public class CatalogPersister
 	 *             If there is a problem recreating the model from the
 	 *             persistence mechanism
 	 */
-	public static ICatalogModel loadCatalogModel(InputStream is, ICatalogModel result) throws SAXException,
-			IOException, PersistenceException
+	public static ICatalogModel loadCatalogModel(InputStream is, ICatalogModel result, IEclipseContext context)
+			throws SAXException, IOException, PersistenceException
 	{
 		Validate.notNull(is, "An input stream is required"); //$NON-NLS-1$
 
@@ -325,7 +332,7 @@ public class CatalogPersister
 					"Provided document is not a valid catalog model document. Expected root node " + ROOT_NODE_NAME + " but found " + parent.getNodeName()); //$NON-NLS-1$//$NON-NLS-2$
 		}
 		Element element = XmlUtil.getFirstChildElement(parent);
-		return loadCatalogModel(element, result);
+		return loadCatalogModel(element, result, context);
 	}
 
 	/**
@@ -338,6 +345,8 @@ public class CatalogPersister
 	 * @param result
 	 *            The model to add the loaded catalog nodes to and return. If
 	 *            null, a new model is created.
+	 * @param context
+	 *            An Eclipse context
 	 * 
 	 * @return The loaded catalog model
 	 * 
@@ -347,37 +356,26 @@ public class CatalogPersister
 	 *             If there is a problem recreating the model from the
 	 *             persistence mechanism
 	 */
-	public static ICatalogModel loadCatalogModel(Element parentElement, ICatalogModel result)
+	public static ICatalogModel loadCatalogModel(Element parentElement, ICatalogModel result, IEclipseContext context)
 			throws PersistenceException
 	{
 		Validate.notNull(parentElement, "A parent XML element is required"); //$NON-NLS-1$
 
 		CatalogModelDTO dto = (CatalogModelDTO) persister.load(parentElement, null);
 
-		ICatalogTreeNode[] treeNodes = new ICatalogTreeNode[dto.catalogs.length];
-		for (int i = 0; i < treeNodes.length; i++)
-		{
-			ICatalogTreeNode node = CatalogFactory.loadCatalog(dto.catalogs[i].nodeURI);
-			if (node == null)
-			{
-				ErrorCatalogTreeNode errorNode =
-						new ErrorCatalogTreeNode(new Exception(
-								"Error loading catalog from URI: " + dto.catalogs[i].nodeURI)); //$NON-NLS-1$
-				errorNode.setRemoveable(true);
-				node = errorNode;
-			}
-			else
-			{
-				node.setLabel(dto.catalogs[i].label);
-			}
-			treeNodes[i] = node;
-		}
-
 		if (result == null)
 		{
 			result = new CatalogModel();
 		}
-		result.addTopLevelCatalogs(treeNodes);
+
+		for (int i = 0; i < dto.catalogs.length; i++)
+		{
+			URI uri = dto.catalogs[i].nodeURI;
+			LoadingCatalogTreeNode loadingNode = new LoadingCatalogTreeNode(uri);
+			loadingNode.setLabel(dto.catalogs[i].label);
+			result.addTopLevelCatalog(loadingNode);
+			IntentCatalogLoader.load(uri, loadingNode, context);
+		}
 
 		return result;
 	}

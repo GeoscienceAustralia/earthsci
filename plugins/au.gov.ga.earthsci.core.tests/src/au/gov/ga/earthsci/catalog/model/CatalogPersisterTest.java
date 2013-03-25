@@ -28,13 +28,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXParseException;
 
-import au.gov.ga.earthsci.catalog.model.CatalogFactory;
-import au.gov.ga.earthsci.catalog.model.CatalogModel;
-import au.gov.ga.earthsci.catalog.model.CatalogPersister;
-import au.gov.ga.earthsci.catalog.model.ICatalogModel;
 import au.gov.ga.earthsci.catalog.model.dataset.DatasetReader;
 import au.gov.ga.earthsci.catalog.model.dataset.DatasetXMLCatalogProvider;
 import au.gov.ga.earthsci.core.persistence.PersistenceException;
+import au.gov.ga.earthsci.intent.IntentManager;
 
 /**
  * Unit tests for the {@link CatalogPersister} class
@@ -103,7 +100,7 @@ public class CatalogPersisterTest
 	{
 		InputStream is = null;
 		
-		CatalogPersister.loadCatalogModel(is, null);
+		CatalogPersister.loadCatalogModel(is, null, null);
 	}
 	
 	@Test(expected=SAXParseException.class)
@@ -113,7 +110,7 @@ public class CatalogPersisterTest
 		
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 		
-		CatalogPersister.loadCatalogModel(is, null);
+		CatalogPersister.loadCatalogModel(is, null, null);
 	}
 	
 	@Test(expected=PersistenceException.class)
@@ -123,7 +120,7 @@ public class CatalogPersisterTest
 		
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 		
-		CatalogPersister.loadCatalogModel(is, null);
+		CatalogPersister.loadCatalogModel(is, null, null);
 	}
 	
 	@Test
@@ -133,7 +130,7 @@ public class CatalogPersisterTest
 		
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 		
-		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is, null);
+		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is, null, null);
 		
 		assertNotNull(catalogModel);
 		assertNotNull(catalogModel.getRoot());
@@ -149,7 +146,8 @@ public class CatalogPersisterTest
 		
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 		
-		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is, null);
+		IntentManager.setInstance(new DummyIntentManager());
+		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is, null, null);
 		
 		assertNotNull(catalogModel);
 		assertNotNull(catalogModel.getRoot());
