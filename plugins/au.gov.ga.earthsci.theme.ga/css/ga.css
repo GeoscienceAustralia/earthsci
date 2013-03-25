@@ -1,106 +1,110 @@
-.MTrimmedWindow {
-	background-color: #444444;
+.MTrimmedWindow.topLevel {
+	margin-top: 7px;
+	margin-bottom: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
 }
 
 .MPartStack {
-	font-size: 12;
-	swt-simple: false;
-	swt-mru-visible: false;
+	font-size: 9;
+	font-family: 'Microsoft Sans Serif';
+	swt-simple: true;
 	swt-tab-renderer:
-		url(bundleclass://org.eclipse.e4.ui.workbench.renderers.swt/org.eclipse.e4.ui.workbench.renderers.swt.CTabRendering);
-	swt-unselected-tabs-color: #333333 #333333 #333333 100% 100%;
-	swt-outer-keyline-color: #333333;
-	swt-inner-keyline-color: #333333;
-	swt-mru-visible: false;
-	swt-shadow-visible: false;
-	swt-tab-outline: #444444;
-}
+		url('bundleclass://au.gov.ga.earthsci.theme.ga/net.jeeeyul.eclipse.themes.rendering.ChromeTabRendering');
 
-.MPlaceholder {
-	background-color: #333;
-	color: #FFF;
-}
-
-.MTrimBar {
-	background-color: #333;
-}
-
-.MTrimBar CLabel {
-	color: #999999;
-}
-
-.MToolControl CLabel {
-	color: #999999;
-}
-
-.MPart Composite {
-	background-color: #333;
-	color: #DDD;
-}
-
-.MTrimBar#org-eclipse-ui-main-toolbar {
-	background-color: #444444 #111111 100%;
+	padding: 1px 6px 8px 6px; /* top left bottom right */
+	swt-tab-outline: #b8becc;
+	swt-outer-keyline-color: #b8becc;
+	swt-unselected-tabs-color: #ededed #dbdbdb #ffffff 99% 100%;
+	swt-shadow-visible: true;
+	
+	swt-selected-tab-fill: #ffffff;
+	chrome-selected-tab-fill-highlight: #ffffff;
+	
+	chrome-selected-tab-color: #000000;
+	chrome-unselected-tab-color: #000000;
+	
+	swt-shadow-color: #a8a8a8;
+	
+	chrome-shiney-shadow: true;
+	swt-mru-visible: true;
+	
+	swt-corner-radius: 14px;
 }
 
 .MPartStack.active {
-	swt-unselected-tabs-color: #333333 #444444 100% 100%;
-	swt-outer-keyline-color: #222222;
-	swt-inner-keyline-color: #222222;
-	swt-shadow-visible: false;
-	swt-tab-outline: #222222;
+	swt-inner-keyline-color: #FFFFFF;
+	swt-tab-outline: #7888ab;
+	swt-outer-keyline-color: #7888ab;
+	swt-unselected-tabs-color: #dfe6f7 #d1d9eb #ffffff 99% 100%;
+	
+	swt-selected-tab-fill: #ffffff;
+	chrome-selected-tab-fill-highlight: #ffffff;
+	
+	chrome-selected-tab-color: #000000;
+	chrome-unselected-tab-color: #000000;
+	chrome-shiney-shadow: true;
 }
 
-#PerspectiveSwitcher {
-	background-color: #444444 #111111 100%;
-	eclipse-perspective-keyline-color: #000;
-	color: #FFF;
+.MPartStack.empty {
+	swt-unselected-tabs-color: #dedede #dedede #dedede 99% 100%;
+	swt-tab-outline: #b8becc;
+	swt-outer-keyline-color: #b8becc;
+}
+
+.MTrimmedWindow {
+  	margin-top: 2px;
+	margin-bottom: 2px;
+	margin-left: 0px;
+	margin-right: 0px;
+	background-color: #ededed;
+}
+
+.MTrimBar {
+	background-color: #ededed;
+}
+
+.MTrimBar#org-eclipse-ui-main-toolbar {
+	background-color: #ededed #dbdbdb;
+}
+
+CTabFolder.MArea .MPartStack,CTabFolder.MArea .MPartStack.active {
+	swt-shadow-visible: false;
+}
+
+CTabFolder Canvas {
+	background-color: #F8F8F8;
 }
 
 #org-eclipse-ui-editorss {
-	swt-unselected-tabs-color: #444 #333 #111 100% 100%;
-	swt-outer-keyline-color: #444444;
-	swt-inner-keyline-color: #444444;
-	swt-tab-outline: #000;
-	color: #FFF;
+	swt-tab-renderer: url('bundleclass://org.eclipse.e4.ui.workbench.renderers.swt/org.eclipse.e4.ui.workbench.renderers.swt.CTabRendering');
+	swt-unselected-tabs-color: #F0F0F0 #F0F0F0 #F0F0F0 100% 100%;
+	swt-outer-keyline-color: #B4B4B4;
+	swt-inner-keyline-color: #F0F0F0;
+	swt-tab-outline: #F0F0F0;
+	color: #F0F0F0;
 	swt-tab-height: 8px;
 	padding: 0px 5px 7px;
 }
 
-#org-eclipse-jdt-ui-PackageExplorer {
-	background-color: #333;
-	color: #FFF;
+#org-eclipse-ui-trim-status{
+	chrome-border-top-visible: false;
+	chrome-padding-top: 0;
 }
 
-CTabFolder {
-	swt-tab-renderer:
-		url(bundleclass://org.eclipse.e4.ui.workbench.renderers.swt/org.eclipse.e4.ui.workbench.renderers.swt.CTabRendering);
-	swt-unselected-tabs-color: #444444;
-	swt-outer-keyline-color: #444444;
-	swt-inner-keyline-color: #444444;
-	swt-tab-outline: #444444;
-	swt-selected-tab-fill: #222222;
-	swt-shadow-visible: false;
+.MToolControl.TrimStack {
+	frame-cuts: 5px 1px 5px 16px;
 }
 
-CTabFolder Tree {
-	background-color: #333;
-	color: #FFF;
+#org-eclipse-ui-main-toolbar #PerspectiveSwitcher {
+	eclipse-perspective-keyline-color: #aaafbd;
+	background-color: #f5f6fa #ededed 100%;
+	handle-image: none;
+	chrome-show-perspective-name: false;
 }
 
-CTabFolder Canvas {
-	background-color: #333;
-	color: #FFF;
-}
 
-CTabItem {
-	background-color: #333;
-	color: #DDD;
-}
-
-CTabItem:selected {
-	color: #FFF;
-}
-
-Label {
-	color: #999999;
+.MPart.Editor StyledText{
+	chrome-line-style: none;
+	chrome-line-color: #f0f0f0;
 }
