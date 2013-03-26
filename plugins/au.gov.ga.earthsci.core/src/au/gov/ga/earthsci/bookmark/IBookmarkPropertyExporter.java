@@ -20,9 +20,9 @@ import org.w3c.dom.Element;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 
 /**
- * An interface for classes that are able to export an IBookmarkProperty to a map
- * of key-value pairs that can then be used by a corresponding {@link IBookmarkPropertyCreator}
- * to re-create the property.
+ * An interface for classes that are able to export an IBookmarkProperty to a
+ * map of key-value pairs that can then be used by a corresponding
+ * {@link IBookmarkPropertyCreator} to re-create the property.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -35,12 +35,15 @@ public interface IBookmarkPropertyExporter
 	 * @return The property types supported by this creator
 	 */
 	String[] getSupportedTypes();
-	
+
 	/**
 	 * Export the given property to XML
 	 * 
-	 * @param property The property to export
-	 * @param parent A parent XML element onto which the property XML can be attached
+	 * @param property
+	 *            The property to export
+	 * @param parent
+	 *            A parent XML element onto which the property XML can be
+	 *            attached
 	 */
 	void exportToXML(IBookmarkProperty property, Element parent);
 }

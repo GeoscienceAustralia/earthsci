@@ -37,17 +37,18 @@ public class PlayBookmarksHandler
 {
 	@Inject
 	private IBookmarks bookmarks;
-	
+
 	@Inject
 	private IBookmarksController controller;
-	
+
 	@Execute
-	public void execute(TableViewer bookmarkListView, @Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
+	public void execute(TableViewer bookmarkListView,
+			@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
 	{
 		controller.stop();
 		controller.play((selectedBookmarks == null || selectedBookmarks.length == 0) ? null : selectedBookmarks[0]);
 	}
-	
+
 	@CanExecute
 	public boolean canExecute()
 	{

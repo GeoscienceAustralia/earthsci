@@ -19,7 +19,8 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
- * A base class for {@link IBookmarkPropertyAnimator} implementations that provides convenience implementations of some methods.
+ * A base class for {@link IBookmarkPropertyAnimator} implementations that
+ * provides convenience implementations of some methods.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -29,17 +30,18 @@ public abstract class AbstractBookmarkPropertyAnimator implements IBookmarkPrope
 	private final IBookmarkProperty start;
 	private final IBookmarkProperty end;
 	private final long duration;
-	
+
 	private long startTime;
 	private long endTime;
-	
-	public AbstractBookmarkPropertyAnimator(final IBookmarkProperty start, final IBookmarkProperty end, final long duration)
+
+	public AbstractBookmarkPropertyAnimator(final IBookmarkProperty start, final IBookmarkProperty end,
+			final long duration)
 	{
 		this.start = start;
 		this.end = end;
 		this.duration = duration;
 	}
-	
+
 	@Override
 	public IBookmarkProperty getStart()
 	{
@@ -64,12 +66,12 @@ public abstract class AbstractBookmarkPropertyAnimator implements IBookmarkPrope
 		startTime = System.currentTimeMillis();
 		endTime = startTime + duration;
 	}
-	
+
 	protected double getCurrentTimeAsPercent()
 	{
 		return Util.percentDouble(System.currentTimeMillis(), startTime, endTime);
 	}
-	
+
 	@Override
 	public void applyFrame()
 	{
@@ -81,5 +83,5 @@ public abstract class AbstractBookmarkPropertyAnimator implements IBookmarkPrope
 	{
 		// For subclasses to override as needed
 	}
-	
+
 }

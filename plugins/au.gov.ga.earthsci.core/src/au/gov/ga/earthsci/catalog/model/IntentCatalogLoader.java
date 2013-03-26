@@ -44,7 +44,7 @@ public class IntentCatalogLoader
 	{
 		load(uri, null, placeholder, context);
 	}
-	
+
 	public static void load(URI uri, IContentType contentType, ICatalogTreeNode placeholder, IEclipseContext context)
 	{
 		if (contentType == null)
@@ -74,7 +74,7 @@ public class IntentCatalogLoader
 			if (result instanceof ICatalogTreeNode)
 			{
 				ICatalogTreeNode node = (ICatalogTreeNode) result;
-				if(catalogIntent.placeholder.getLabel() != null)
+				if (catalogIntent.placeholder.getLabel() != null)
 				{
 					node.setLabel(catalogIntent.placeholder.getLabel());
 				}

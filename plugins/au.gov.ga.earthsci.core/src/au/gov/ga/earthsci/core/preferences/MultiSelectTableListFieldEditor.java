@@ -41,7 +41,7 @@ public class MultiSelectTableListFieldEditor<E> extends FieldEditor
 			"au.gov.ga.earthsci.application.preferences.fieldeditor.MultiSelectTableListFieldEditor.sourceItem"; //$NON-NLS-1$
 
 	private static final String NONE_SELECTED = "none"; //$NON-NLS-1$
-	
+
 	private final ITableItemCreator<E> DEFAULT_TABLE_ITEM_CREATOR = new ITableItemCreator<E>()
 	{
 		@Override
@@ -80,13 +80,13 @@ public class MultiSelectTableListFieldEditor<E> extends FieldEditor
 
 	/** Composite containing select all/none buttons */
 	private Composite buttonBox;
-	
+
 	/** Select all elements in the list */
 	private Button selectAllButton;
-	
+
 	/** Deselect all elements in the list */
 	private Button selectNoneButton;
-	
+
 	/**
 	 * Creates a table backed by the provided list. The list item toString()
 	 * method will be used to render values.
@@ -132,11 +132,11 @@ public class MultiSelectTableListFieldEditor<E> extends FieldEditor
 		gd.horizontalAlignment = GridData.FILL;
 		gd.grabExcessHorizontalSpace = true;
 		table.setLayoutData(gd);
-		
+
 		buttonBox = getButtonBoxControl(parent);
-        gd = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
-        gd.horizontalAlignment = SWT.CENTER;
-        buttonBox.setLayoutData(gd);
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
+		gd.horizontalAlignment = SWT.CENTER;
+		buttonBox.setLayoutData(gd);
 	}
 
 	@Override
@@ -179,7 +179,7 @@ public class MultiSelectTableListFieldEditor<E> extends FieldEditor
 			i.setChecked(true);
 		}
 	}
-	
+
 	private void selectNone()
 	{
 		for (TableItem i : table.getItems())
@@ -196,7 +196,7 @@ public class MultiSelectTableListFieldEditor<E> extends FieldEditor
 			selectNone();
 			return;
 		}
-		
+
 		String[] selected = csv.split(","); //$NON-NLS-1$
 
 		for (String s : selected)
@@ -246,7 +246,7 @@ public class MultiSelectTableListFieldEditor<E> extends FieldEditor
 			{
 				result.append(NONE_SELECTED);
 			}
-			
+
 			getPreferenceStore().setValue(getPreferenceName(), result.toString());
 		}
 		catch (Exception e)
@@ -336,53 +336,58 @@ public class MultiSelectTableListFieldEditor<E> extends FieldEditor
 
 		return buttonBox;
 	}
-    
-    /**
-     * Creates the Add, Remove, Up, and Down button in the given button box.
-     *
-     * @param box the box for the buttons
-     */
-    private void createButtons(Composite box) {
-        selectAllButton = createPushButton(box, "All");
-        selectAllButton.addSelectionListener(new SelectionAdapter()
-		{
-        	@Override
-        	public void widgetSelected(SelectionEvent e)
-        	{
-        		selectAll();
-        	}
-		});
-        
-        selectNoneButton = createPushButton(box, "None");
-        selectNoneButton.addSelectionListener(new SelectionAdapter()
-		{
-        	@Override
-        	public void widgetSelected(SelectionEvent e)
-        	{
-        		selectNone();
-        	}
-		});
-    }
 
-    /**
-     * Helper method to create a push button.
-     * 
-     * @param parent the parent control
-     * @param key the resource name used to supply the button's label text
-     * @return Button
-     */
-    private Button createPushButton(Composite parent, String label) {
-        Button button = new Button(parent, SWT.PUSH);
-        button.setText(label);
-        button.setFont(parent.getFont());
-        GridData data = new GridData(GridData.FILL_HORIZONTAL);
-        int widthHint = convertHorizontalDLUsToPixels(button, IDialogConstants.BUTTON_WIDTH);
-        data.widthHint = Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
-        button.setLayoutData(data);
-        //button.addSelectionListener(getSelectionListener());
-        return button;
-    }
-	
+	/**
+	 * Creates the Add, Remove, Up, and Down button in the given button box.
+	 * 
+	 * @param box
+	 *            the box for the buttons
+	 */
+	private void createButtons(Composite box)
+	{
+		selectAllButton = createPushButton(box, "All");
+		selectAllButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				selectAll();
+			}
+		});
+
+		selectNoneButton = createPushButton(box, "None");
+		selectNoneButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				selectNone();
+			}
+		});
+	}
+
+	/**
+	 * Helper method to create a push button.
+	 * 
+	 * @param parent
+	 *            the parent control
+	 * @param key
+	 *            the resource name used to supply the button's label text
+	 * @return Button
+	 */
+	private Button createPushButton(Composite parent, String label)
+	{
+		Button button = new Button(parent, SWT.PUSH);
+		button.setText(label);
+		button.setFont(parent.getFont());
+		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		int widthHint = convertHorizontalDLUsToPixels(button, IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		button.setLayoutData(data);
+		//button.addSelectionListener(getSelectionListener());
+		return button;
+	}
+
 	/**
 	 * A strategy interface used to create a table item from the provided
 	 * object.

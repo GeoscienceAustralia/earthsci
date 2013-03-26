@@ -22,16 +22,17 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 
 /**
- * An {@link IBookmarkPropertyApplicator} used to apply the state of {@link CameraProperty}s
+ * An {@link IBookmarkPropertyApplicator} used to apply the state of
+ * {@link CameraProperty}s
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
-{	
+{
 	@Override
 	public String[] getSupportedTypes()
 	{
-		return new String[] {CameraProperty.TYPE};
+		return new String[] { CameraProperty.TYPE };
 	}
 
 	@Override
@@ -41,15 +42,15 @@ public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
 		{
 			return;
 		}
-		
+
 		View view = WorldWindowRegistry.INSTANCE.getActiveView();
 		if (view == null)
 		{
 			return;
 		}
-	
-		CameraProperty cameraProperty = (CameraProperty)property;
-		
+
+		CameraProperty cameraProperty = (CameraProperty) property;
+
 		view.stopMovement();
 		view.setOrientation(cameraProperty.getEyePosition(), cameraProperty.getLookatPosition());
 	}
@@ -62,7 +63,7 @@ public class CameraPropertyApplicator implements IBookmarkPropertyApplicator
 		{
 			return null;
 		}
-		
-		return new CameraPropertyAnimator(view, (CameraProperty)start, (CameraProperty)end, duration);
+
+		return new CameraPropertyAnimator(view, (CameraProperty) start, (CameraProperty) end, duration);
 	}
 }

@@ -245,7 +245,9 @@ public class LayerTreePart
 			{
 				ViewerCell cell = viewer.getCell(new Point(e.x, e.y));
 				if (cell == null)
+				{
 					return;
+				}
 
 				ILayerTreeNode layer = (ILayerTreeNode) cell.getElement();
 				selectLayer(layer);

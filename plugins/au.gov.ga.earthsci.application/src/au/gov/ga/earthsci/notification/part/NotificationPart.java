@@ -45,29 +45,32 @@ import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.NotificationLevel;
 
 /**
- * A view that displays a filtered and/or grouped table of historic {@link INotification}s
+ * A view that displays a filtered and/or grouped table of historic
+ * {@link INotification}s
  * <p/>
- * The model for this view is maintained by an injected {@link NotificationPartReceiver} instance, which
- * can be changed at any time using the {@link #setReceiver(NotificationPartReceiver)} method
+ * The model for this view is maintained by an injected
+ * {@link NotificationPartReceiver} instance, which can be changed at any time
+ * using the {@link #setReceiver(NotificationPartReceiver)} method
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class NotificationPart
 {
-	
+
 	private static final int TITLE_COLUMN_INDEX = 0;
 	private static final int DESCRIPTION_COLUMN_INDEX = 1;
 	private static final int CATEGORY_COLUMN_INDEX = 2;
 	private static final int CREATED_COLUMN_INDEX = 3;
 	private static final int ACKNOWLEDGED_COLUMN_INDEX = 4;
-	
+
 	private static final int ASCENDING = 1;
 	private static final int DESCENDING = -1;
-	
+
 	private static ImageRegistry imageRegistry;
-	
+
 	/**
-	 * A simple enumeration of possible groupings for content in the {@link NotificationPart}
+	 * A simple enumeration of possible groupings for content in the
+	 * {@link NotificationPart}
 	 */
 	public enum Grouping
 	{
@@ -75,30 +78,31 @@ public class NotificationPart
 		LEVEL,
 		CATEGORY
 	}
+
 	private Grouping groupBy = Grouping.NONE;
-	
+
 	private NotificationPartReceiver receiver;
-	
+
 	private Tree tree;
 	private FilteredTree filteredTree;
 	private List<Object> root = new ArrayList<Object>();
-	
+
 	// Table columns
 	private int titleOrder = ASCENDING;
 	private TreeColumn titleColumn;
-	
+
 	private int descriptionOrder = ASCENDING;
 	private TreeColumn descriptionColumn;
-	
+
 	private int categoryOrder = ASCENDING;
 	private TreeColumn categoryColumn;
-	
+
 	private int createdOrder = DESCENDING;
 	private TreeColumn createdColumn;
-	
+
 	private int acknowledgedOrder = DESCENDING;
 	private TreeColumn acknowledgedColumn;
-	
+
 	/**
 	 * Initialise this view with the given parent component
 	 */
@@ -107,23 +111,24 @@ public class NotificationPart
 	{
 		GridLayout layout = new GridLayout(1, false);
 		parent.setLayout(layout);
-		
+
 		createViewer(parent);
 		initialiseCorrectGrouping(part);
 		setReceiver(receiver);
 	}
 
 	/**
-	 * Set the handler to use when receiving user menu events to control grouping in this view
+	 * Set the handler to use when receiving user menu events to control
+	 * grouping in this view
 	 */
 	@Inject
 	public void setNotificationViewGroupByHandler(NotificationPartGroupByHandler handler)
 	{
 		handler.setView(this);
 	}
-	
+
 	/**
-	 * Set the receiver that this view should listen to for notifications 
+	 * Set the receiver that this view should listen to for notifications
 	 */
 	public void setReceiver(NotificationPartReceiver receiver)
 	{
@@ -131,12 +136,12 @@ public class NotificationPart
 		this.receiver.setView(this);
 		reloadNotificationTree();
 	}
-	
+
 	/**
 	 * Set the grouping to use for this view.
 	 * <p/>
-	 * Note that this will usually cause the view to reload all historic notifications
-	 * from the attached receiver.
+	 * Note that this will usually cause the view to reload all historic
+	 * notifications from the attached receiver.
 	 */
 	public void setGrouping(Grouping g)
 	{
@@ -144,30 +149,32 @@ public class NotificationPart
 		{
 			return;
 		}
-		
+
 		this.groupBy = g;
 		reloadNotificationTree();
 	}
-	
+
 	private void createViewer(Composite parent)
 	{
-		PatternFilter filter = new PatternFilter() {
+		PatternFilter filter = new PatternFilter()
+		{
 			@Override
-			protected boolean isLeafMatch(Viewer viewer, Object element) {
-				if (element instanceof INotification) {
+			protected boolean isLeafMatch(Viewer viewer, Object element)
+			{
+				if (element instanceof INotification)
+				{
 					INotification n = (INotification) element;
-					return wordMatches(n.getLevel().name()) || 
-						   wordMatches(n.getTitle()) || 
-						   wordMatches(n.getText()) ||
-						   wordMatches(n.getCategory().getLabel());
+					return wordMatches(n.getLevel().name()) || wordMatches(n.getTitle()) || wordMatches(n.getText())
+							|| wordMatches(n.getCategory().getLabel());
 				}
 				return false;
 			}
 		};
 		filter.setIncludeLeadingWildcard(true);
-		
+
 		filteredTree = new FilteredTree(parent, SWT.FULL_SELECTION, filter, true);
-		if (filteredTree.getFilterControl() != null) {
+		if (filteredTree.getFilterControl() != null)
+		{
 			Composite filterComposite = filteredTree.getFilterControl().getParent();
 			GridData gd = (GridData) filterComposite.getLayoutData();
 			gd.verticalIndent = 2;
@@ -179,7 +186,7 @@ public class NotificationPart
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
 		createColumns(tree);
-		
+
 		filteredTree.getViewer().setAutoExpandLevel(2);
 		filteredTree.getViewer().setContentProvider(new NotificationViewContentProvider(this));
 		filteredTree.getViewer().setLabelProvider(new NotificationViewTreeLabelProvider());
@@ -188,13 +195,12 @@ public class NotificationPart
 
 	private void createColumns(Tree tree)
 	{
-		String[] titles = { Messages.NotificationView_TitleColumnLabel, 
-							Messages.NotificationView_DescriptionColumnLabel, 
-							Messages.NotificationView_CategoryColumnLabel, 
-							Messages.NotificationView_CreateColumnLabel, 
-							Messages.NotificationView_AcknowledgedColumnLabel };
-		
-		int[] widths = {300, 300, 100, 100, 100};
+		String[] titles =
+				{ Messages.NotificationView_TitleColumnLabel, Messages.NotificationView_DescriptionColumnLabel,
+						Messages.NotificationView_CategoryColumnLabel, Messages.NotificationView_CreateColumnLabel,
+						Messages.NotificationView_AcknowledgedColumnLabel };
+
+		int[] widths = { 300, 300, 100, 100, 100 };
 
 		titleColumn = createTreeColumn(titles[TITLE_COLUMN_INDEX], widths[TITLE_COLUMN_INDEX]);
 		titleColumn.addSelectionListener(new SelectionAdapter()
@@ -203,7 +209,8 @@ public class NotificationPart
 			public void widgetSelected(SelectionEvent e)
 			{
 				titleOrder *= -1;
-				filteredTree.getViewer().setComparator(new ViewerComparator() {
+				filteredTree.getViewer().setComparator(new ViewerComparator()
+				{
 					@Override
 					public int compare(Viewer viewer, Object e1, Object e2)
 					{
@@ -211,13 +218,14 @@ public class NotificationPart
 						{
 							return 0;
 						}
-						return String.CASE_INSENSITIVE_ORDER.compare(((INotification)e1).getTitle(), ((INotification)e2).getTitle()) * titleOrder;
+						return String.CASE_INSENSITIVE_ORDER.compare(((INotification) e1).getTitle(),
+								((INotification) e2).getTitle()) * titleOrder;
 					}
 				});
 				setColumnSorting(TITLE_COLUMN_INDEX, titleOrder);
 			}
 		});
-		
+
 		descriptionColumn = createTreeColumn(titles[DESCRIPTION_COLUMN_INDEX], widths[DESCRIPTION_COLUMN_INDEX]);
 		descriptionColumn.addSelectionListener(new SelectionAdapter()
 		{
@@ -225,7 +233,8 @@ public class NotificationPart
 			public void widgetSelected(SelectionEvent e)
 			{
 				descriptionOrder *= -1;
-				filteredTree.getViewer().setComparator(new ViewerComparator() {
+				filteredTree.getViewer().setComparator(new ViewerComparator()
+				{
 					@Override
 					public int compare(Viewer viewer, Object e1, Object e2)
 					{
@@ -233,13 +242,14 @@ public class NotificationPart
 						{
 							return 0;
 						}
-						return String.CASE_INSENSITIVE_ORDER.compare(((INotification)e1).getText(), ((INotification)e2).getText()) * descriptionOrder;
+						return String.CASE_INSENSITIVE_ORDER.compare(((INotification) e1).getText(),
+								((INotification) e2).getText()) * descriptionOrder;
 					}
 				});
 				setColumnSorting(DESCRIPTION_COLUMN_INDEX, descriptionOrder);
 			}
 		});
-		
+
 		categoryColumn = createTreeColumn(titles[CATEGORY_COLUMN_INDEX], widths[CATEGORY_COLUMN_INDEX]);
 		categoryColumn.addSelectionListener(new SelectionAdapter()
 		{
@@ -247,7 +257,8 @@ public class NotificationPart
 			public void widgetSelected(SelectionEvent e)
 			{
 				categoryOrder *= -1;
-				filteredTree.getViewer().setComparator(new ViewerComparator() {
+				filteredTree.getViewer().setComparator(new ViewerComparator()
+				{
 					@Override
 					public int compare(Viewer viewer, Object e1, Object e2)
 					{
@@ -255,13 +266,14 @@ public class NotificationPart
 						{
 							return 0;
 						}
-						return String.CASE_INSENSITIVE_ORDER.compare(((INotification)e1).getCategory().getLabel(), ((INotification)e2).getCategory().getLabel()) * categoryOrder;
+						return String.CASE_INSENSITIVE_ORDER.compare(((INotification) e1).getCategory().getLabel(),
+								((INotification) e2).getCategory().getLabel()) * categoryOrder;
 					}
 				});
 				setColumnSorting(CATEGORY_COLUMN_INDEX, categoryOrder);
 			}
 		});
-		
+
 		createdColumn = createTreeColumn(titles[CREATED_COLUMN_INDEX], widths[CREATED_COLUMN_INDEX]);
 		createdColumn.addSelectionListener(new SelectionAdapter()
 		{
@@ -269,7 +281,8 @@ public class NotificationPart
 			public void widgetSelected(SelectionEvent e)
 			{
 				createdOrder *= -1;
-				filteredTree.getViewer().setComparator(new ViewerComparator() {
+				filteredTree.getViewer().setComparator(new ViewerComparator()
+				{
 					@Override
 					public int compare(Viewer viewer, Object e1, Object e2)
 					{
@@ -277,13 +290,15 @@ public class NotificationPart
 						{
 							return 0;
 						}
-						return ((INotification)e1).getCreationTimestamp().compareTo(((INotification)e2).getCreationTimestamp()) * createdOrder;
+						return ((INotification) e1).getCreationTimestamp().compareTo(
+								((INotification) e2).getCreationTimestamp())
+								* createdOrder;
 					}
 				});
 				setColumnSorting(CREATED_COLUMN_INDEX, createdOrder);
 			}
 		});
-		
+
 		acknowledgedColumn = createTreeColumn(titles[ACKNOWLEDGED_COLUMN_INDEX], widths[ACKNOWLEDGED_COLUMN_INDEX]);
 		acknowledgedColumn.addSelectionListener(new SelectionAdapter()
 		{
@@ -291,7 +306,8 @@ public class NotificationPart
 			public void widgetSelected(SelectionEvent e)
 			{
 				acknowledgedOrder *= -1;
-				filteredTree.getViewer().setComparator(new ViewerComparator() {
+				filteredTree.getViewer().setComparator(new ViewerComparator()
+				{
 					@Override
 					public int compare(Viewer viewer, Object e1, Object e2)
 					{
@@ -299,8 +315,8 @@ public class NotificationPart
 						{
 							return 0;
 						}
-						INotification n1 = (INotification)e1;
-						INotification n2 = (INotification)e2;
+						INotification n1 = (INotification) e1;
+						INotification n2 = (INotification) e2;
 						if (n1.getAcknowledgementTimestamp() == null && n2.getAcknowledgementTimestamp() == null)
 						{
 							return 0;
@@ -313,7 +329,8 @@ public class NotificationPart
 						{
 							return DESCENDING;
 						}
-						return n1.getAcknowledgementTimestamp().compareTo(n2.getAcknowledgementTimestamp()) * acknowledgedOrder;
+						return n1.getAcknowledgementTimestamp().compareTo(n2.getAcknowledgementTimestamp())
+								* acknowledgedOrder;
 					}
 				});
 				setColumnSorting(ACKNOWLEDGED_COLUMN_INDEX, acknowledgedOrder);
@@ -328,15 +345,16 @@ public class NotificationPart
 		c.setWidth(width);
 		return c;
 	}
-	
-	private void setColumnSorting(int index, int order) {
+
+	private void setColumnSorting(int index, int order)
+	{
 		tree.setSortColumn(tree.getColumn(index));
 		tree.setSortDirection(order == ASCENDING ? SWT.UP : SWT.DOWN);
 	}
-	
+
 	/**
-	 * Re-build the notification tree from the notification list on the attached receiver
-	 * using the current grouping/filtering settings.
+	 * Re-build the notification tree from the notification list on the attached
+	 * receiver using the current grouping/filtering settings.
 	 */
 	private void reloadNotificationTree()
 	{
@@ -344,14 +362,16 @@ public class NotificationPart
 		{
 			return;
 		}
-		
-		final IRunnableWithProgress op = new IRunnableWithProgress() {
+
+		final IRunnableWithProgress op = new IRunnableWithProgress()
+		{
 			@Override
-			public void run(IProgressMonitor monitor) {
+			public void run(IProgressMonitor monitor)
+			{
 				monitor.beginTask(Messages.NotificationView_ProgressDescription, IProgressMonitor.UNKNOWN);
-				
+
 				root.clear();
-				
+
 				// Build a flat list - easy!
 				if (groupBy == Grouping.NONE)
 				{
@@ -359,7 +379,8 @@ public class NotificationPart
 				}
 				else if (groupBy == Grouping.LEVEL)
 				{
-					Map<NotificationLevel, Group> groups = new EnumMap<NotificationLevel, Group>(NotificationLevel.class);
+					Map<NotificationLevel, Group> groups =
+							new EnumMap<NotificationLevel, Group>(NotificationLevel.class);
 					for (INotification n : receiver.getNotifications())
 					{
 						Group g = groups.get(n.getLevel());
@@ -391,7 +412,8 @@ public class NotificationPart
 				}
 			}
 		};
-		Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable()
+		{
 			@Override
 			public void run()
 			{
@@ -401,11 +423,11 @@ public class NotificationPart
 					pmd.run(true, true, op);
 				}
 				catch (InvocationTargetException e)
-				{ 
+				{
 					// do nothing
 				}
 				catch (InterruptedException e)
-				{ 
+				{
 					// do nothing
 				}
 				finally
@@ -415,7 +437,7 @@ public class NotificationPart
 			}
 		});
 	}
-	
+
 	/**
 	 * Refresh the view upon receiving a new (given) notification
 	 * <p/>
@@ -426,57 +448,58 @@ public class NotificationPart
 		// Insert the new notification into the correct place in the tree model
 		switch (groupBy)
 		{
-			case NONE:
-			{
-				root.add(n);
-				break;
-			}
-			case LEVEL:
-			{
-				Group targetGroup = null;
-				for (int i = 0; i < root.size(); i++)
-				{
-					Group g = (Group)root.get(i);
-					if (g.grouping.equals(n.getLevel()))
-					{
-						targetGroup = g;
-						break;
-					}
-				}
-				if (targetGroup == null)
-				{
-					targetGroup = new Group(n.getLevel(), n.getLevel().getLabel());
-					root.add(targetGroup);
-					Collections.sort(root, levelGroupComparator);
-				}
-				targetGroup.children.add(n);
-				break;
-			}
-			case CATEGORY:
-			{
-				Group targetGroup = null;
-				for (int i = 0; i < root.size(); i++)
-				{
-					Group g = (Group)root.get(i);
-					if (g.grouping.equals(n.getCategory()))
-					{
-						targetGroup = g;
-						break;
-					}
-				}
-				if (targetGroup == null)
-				{
-					targetGroup = new Group(n.getCategory(), n.getCategory().getLabel());
-					root.add(targetGroup);
-					Collections.sort(root, categoryGroupComparator);
-				}
-				targetGroup.children.add(n);
-				break;
-			}
+		case NONE:
+		{
+			root.add(n);
+			break;
 		}
-		
+		case LEVEL:
+		{
+			Group targetGroup = null;
+			for (int i = 0; i < root.size(); i++)
+			{
+				Group g = (Group) root.get(i);
+				if (g.grouping.equals(n.getLevel()))
+				{
+					targetGroup = g;
+					break;
+				}
+			}
+			if (targetGroup == null)
+			{
+				targetGroup = new Group(n.getLevel(), n.getLevel().getLabel());
+				root.add(targetGroup);
+				Collections.sort(root, levelGroupComparator);
+			}
+			targetGroup.children.add(n);
+			break;
+		}
+		case CATEGORY:
+		{
+			Group targetGroup = null;
+			for (int i = 0; i < root.size(); i++)
+			{
+				Group g = (Group) root.get(i);
+				if (g.grouping.equals(n.getCategory()))
+				{
+					targetGroup = g;
+					break;
+				}
+			}
+			if (targetGroup == null)
+			{
+				targetGroup = new Group(n.getCategory(), n.getCategory().getLabel());
+				root.add(targetGroup);
+				Collections.sort(root, categoryGroupComparator);
+			}
+			targetGroup.children.add(n);
+			break;
+		}
+		}
+
 		// Refresh the tree
-		Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable()
+		{
 			@Override
 			public void run()
 			{
@@ -484,23 +507,24 @@ public class NotificationPart
 			}
 		});
 	}
-	
-	
+
+
 	/**
 	 * Refresh the tree view on the appropriate display thread
 	 */
-	private void asyncRefresh() {
+	private void asyncRefresh()
+	{
 		if (tree.isDisposed())
 		{
 			return;
 		}
-		
+
 		Display display = tree.getDisplay();
 		if (display == null)
 		{
 			return;
 		}
-		
+
 		display.asyncExec(new Runnable()
 		{
 			@Override
@@ -515,7 +539,7 @@ public class NotificationPart
 			}
 		});
 	}
-	
+
 	/**
 	 * Initialise the grouping as per the persisted menu selection on startup
 	 */
@@ -533,7 +557,7 @@ public class NotificationPart
 					{
 						continue;
 					}
-					for (MMenuElement child : ((MMenu)element).getChildren())
+					for (MMenuElement child : ((MMenu) element).getChildren())
 					{
 						if (((MMenuItem) child).isSelected())
 						{
@@ -543,11 +567,11 @@ public class NotificationPart
 				}
 			}
 		}
-		
+
 		Grouping grouping = NotificationPartGroupByHandler.getGroupingForMenuItemId(selectedId);
 		setGrouping(grouping);
 	}
-	
+
 	/**
 	 * @return the imageRegistry
 	 */
@@ -556,10 +580,13 @@ public class NotificationPart
 		if (imageRegistry == null)
 		{
 			ImageRegistry imageRegistry = new ImageRegistry();
-			imageRegistry.put(NotificationLevel.INFORMATION.name(), ImageDescriptor.createFromURL(NotificationPart.class.getResource("/icons/information.gif"))); //$NON-NLS-1$
-			imageRegistry.put(NotificationLevel.WARNING.name(), ImageDescriptor.createFromURL(NotificationPart.class.getResource("/icons/warning.gif"))); //$NON-NLS-1$
-			imageRegistry.put(NotificationLevel.ERROR.name(), ImageDescriptor.createFromURL(NotificationPart.class.getResource("/icons/error.gif"))); //$NON-NLS-1$
-			
+			imageRegistry.put(NotificationLevel.INFORMATION.name(),
+					ImageDescriptor.createFromURL(NotificationPart.class.getResource("/icons/information.gif"))); //$NON-NLS-1$
+			imageRegistry.put(NotificationLevel.WARNING.name(),
+					ImageDescriptor.createFromURL(NotificationPart.class.getResource("/icons/warning.gif"))); //$NON-NLS-1$
+			imageRegistry.put(NotificationLevel.ERROR.name(),
+					ImageDescriptor.createFromURL(NotificationPart.class.getResource("/icons/error.gif"))); //$NON-NLS-1$
+
 			NotificationPart.imageRegistry = imageRegistry;
 		}
 		return imageRegistry;
@@ -574,50 +601,51 @@ public class NotificationPart
 	{
 		private String label;
 		private Object grouping;
-		
+
 		private List<INotification> children = new ArrayList<INotification>();
-		
+
 		public Group(Object grouping, String label)
 		{
 			this.label = label;
 			this.grouping = grouping;
 		}
 	}
-	
+
 	/** A comparator for ordering level groups in the view */
 	private static final Comparator<Object> levelGroupComparator = new Comparator<Object>()
 	{
 		@Override
 		public int compare(Object o1, Object o2)
 		{
-			return NotificationLevel.SEVERITY_DESCENDING.compare((NotificationLevel)((Group)o1).grouping, 
-																 (NotificationLevel)((Group)o2).grouping);
+			return NotificationLevel.SEVERITY_DESCENDING.compare((NotificationLevel) ((Group) o1).grouping,
+					(NotificationLevel) ((Group) o2).grouping);
 		}
 	};
-	
+
 	/** A comparator for ordering category groups in the view */
 	private static final Comparator<Object> categoryGroupComparator = new Comparator<Object>()
 	{
 		@Override
 		public int compare(Object o1, Object o2)
 		{
-			return String.CASE_INSENSITIVE_ORDER.compare(((Group)o1).label, ((Group)o2).label); 
+			return String.CASE_INSENSITIVE_ORDER.compare(((Group) o1).label, ((Group) o2).label);
 		}
 	};
-	
+
 	/**
-	 * A label provider that renders appropriate labels for the notification tree
+	 * A label provider that renders appropriate labels for the notification
+	 * tree
 	 */
 	private static class NotificationViewTreeLabelProvider extends LabelProvider implements ITableLabelProvider
 	{
 		private static final String DATE_FORMAT = "dd MMM yyyy HH:mm:ss"; //$NON-NLS-1$
-		
+
 		@Override
 		public Image getColumnImage(Object element, int columnIndex)
 		{
-			if (element instanceof INotification && columnIndex == TITLE_COLUMN_INDEX) 
+			if (element instanceof INotification && columnIndex == TITLE_COLUMN_INDEX)
 			{
-				return getImageRegistry().get(((INotification)element).getLevel().name());
+				return getImageRegistry().get(((INotification) element).getLevel().name());
 			}
 			return null;
 		}
@@ -627,36 +655,43 @@ public class NotificationPart
 		{
 			if (element instanceof INotification)
 			{
-				INotification n = (INotification)element;
+				INotification n = (INotification) element;
 				switch (columnIndex)
 				{
-					case TITLE_COLUMN_INDEX: return n.getTitle();
-					case DESCRIPTION_COLUMN_INDEX: return n.getText();
-					case CATEGORY_COLUMN_INDEX: return n.getCategory().getLabel();
-					case CREATED_COLUMN_INDEX: return new SimpleDateFormat(DATE_FORMAT).format(n.getCreationTimestamp());
-					case ACKNOWLEDGED_COLUMN_INDEX: return n.isAcknowledged() ? new SimpleDateFormat(DATE_FORMAT).format(n.getAcknowledgementTimestamp()) : ""; //$NON-NLS-1$
+				case TITLE_COLUMN_INDEX:
+					return n.getTitle();
+				case DESCRIPTION_COLUMN_INDEX:
+					return n.getText();
+				case CATEGORY_COLUMN_INDEX:
+					return n.getCategory().getLabel();
+				case CREATED_COLUMN_INDEX:
+					return new SimpleDateFormat(DATE_FORMAT).format(n.getCreationTimestamp());
+				case ACKNOWLEDGED_COLUMN_INDEX:
+					return n.isAcknowledged() ? new SimpleDateFormat(DATE_FORMAT).format(n
+							.getAcknowledgementTimestamp()) : ""; //$NON-NLS-1$
 				}
 			}
 			if (element instanceof Group && columnIndex == 0)
 			{
-				return ((Group)element).label;
+				return ((Group) element).label;
 			}
 			return ""; //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
-	 * An {@link ITreeContentProvider} that understands grouping within the notification view 
+	 * An {@link ITreeContentProvider} that understands grouping within the
+	 * notification view
 	 */
 	private static class NotificationViewContentProvider implements ITreeContentProvider
 	{
 		private final NotificationPart view;
-		
+
 		public NotificationViewContentProvider(NotificationPart view)
 		{
 			this.view = view;
 		}
-		
+
 		@Override
 		public void dispose()
 		{
@@ -681,11 +716,11 @@ public class NotificationPart
 		{
 			if (parentElement instanceof Group)
 			{
-				return ((Group)parentElement).children.toArray();
+				return ((Group) parentElement).children.toArray();
 			}
 			else if (parentElement instanceof List)
 			{
-				return ((List<Object>)parentElement).toArray();
+				return ((List<Object>) parentElement).toArray();
 			}
 			return null;
 		}
@@ -705,20 +740,20 @@ public class NotificationPart
 			{
 				return view.root;
 			}
-			
+
 			INotification n = (INotification) element;
 			for (Object o : view.root)
 			{
-				if (view.groupBy == Grouping.LEVEL && ((Group)o).grouping.equals(n.getLevel()))
+				if (view.groupBy == Grouping.LEVEL && ((Group) o).grouping.equals(n.getLevel()))
 				{
 					return o;
 				}
-				if (view.groupBy == Grouping.CATEGORY && ((Group)o).grouping.equals(n.getCategory()))
+				if (view.groupBy == Grouping.CATEGORY && ((Group) o).grouping.equals(n.getCategory()))
 				{
 					return o;
 				}
 			}
-			
+
 			return null;
 		}
 
@@ -727,6 +762,6 @@ public class NotificationPart
 		{
 			return !(element instanceof INotification);
 		}
-		
+
 	}
 }

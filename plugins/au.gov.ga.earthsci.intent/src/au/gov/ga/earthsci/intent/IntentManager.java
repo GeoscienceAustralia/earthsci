@@ -164,11 +164,15 @@ public class IntentManager implements IIntentManager
 
 		//if no matches, return null
 		if (matches.isEmpty())
+		{
 			return null;
+		}
 
 		//if no content type matching, we don't need to find the closest, so just return the first one found
 		if (intent.getContentType() == null)
+		{
 			return matches.get(0);
+		}
 
 		//find the filter in the list of matches that most closely matches the intent's content type
 		int minDistance = Integer.MAX_VALUE;

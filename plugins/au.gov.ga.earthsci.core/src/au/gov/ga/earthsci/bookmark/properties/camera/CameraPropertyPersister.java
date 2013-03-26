@@ -34,7 +34,8 @@ import au.gov.ga.earthsci.core.persistence.Persister;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 
 /**
- * An {@link IBookmarkPropertyCreator} that can create a {@link CameraProperty} instance
+ * An {@link IBookmarkPropertyCreator} that can create a {@link CameraProperty}
+ * instance
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -42,12 +43,12 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 {
 	private static final String CAMERA_ELEMENT_NAME = "camera"; //$NON-NLS-1$
 
-	private static final String[] SUPPORTED_TYPES = new String[] {CameraProperty.TYPE};
+	private static final String[] SUPPORTED_TYPES = new String[] { CameraProperty.TYPE };
 
 	private static final Logger logger = LoggerFactory.getLogger(CameraPropertyPersister.class);
-	
+
 	private Persister persister;
-	
+
 	public CameraPropertyPersister()
 	{
 		persister = new Persister();
@@ -55,13 +56,13 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 		persister.setIgnoreNulls(false);
 		persister.registerNamedExportable(CameraProperty.class, CAMERA_ELEMENT_NAME);
 	}
-	
+
 	@Override
 	public String[] getSupportedTypes()
 	{
 		return SUPPORTED_TYPES;
 	}
-	
+
 	@Override
 	public IBookmarkProperty createFromCurrentState(String type)
 	{
@@ -70,18 +71,18 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 		{
 			return null;
 		}
-		
+
 		Position eyePosition = view.getCurrentEyePosition();
-		
+
 		Vec4 center = view.getCenterPoint();
 		Globe globe = view.getGlobe();
 		Position lookatPosition = globe.computePositionFromPoint(center);
-		
+
 		Vec4 upVector = view.getUpVector();
-		
+
 		return new CameraProperty(eyePosition, lookatPosition, upVector);
 	}
-	
+
 	@Override
 	public void exportToXML(IBookmarkProperty property, Element propertyElement)
 	{
@@ -89,7 +90,8 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 		{
 			return;
 		}
-		Validate.isTrue(property.getType().equals(CameraProperty.TYPE), "CameraPropertyPersister can only be used for camera properties"); //$NON-NLS-1$
+		Validate.isTrue(property.getType().equals(CameraProperty.TYPE),
+				"CameraPropertyPersister can only be used for camera properties"); //$NON-NLS-1$
 		Validate.notNull(propertyElement, "A property element is required"); //$NON-NLS-1$
 		try
 		{
@@ -100,18 +102,20 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 			logger.error("Exception while saving camera bookmark property", e); //$NON-NLS-1$
 		}
 	}
-	
+
 	@Override
 	public IBookmarkProperty createFromXML(String type, Element propertyElement)
 	{
-		Validate.isTrue(CameraProperty.TYPE.equals(type), "CameraPropertyPersister can only be used for camera properties"); //$NON-NLS-1$
+		Validate.isTrue(CameraProperty.TYPE.equals(type),
+				"CameraPropertyPersister can only be used for camera properties"); //$NON-NLS-1$
 		if (propertyElement == null)
 		{
 			return null;
 		}
 		try
 		{
-			return (CameraProperty)persister.load(XmlUtil.getChildElementByTagName(0, CAMERA_ELEMENT_NAME, propertyElement), null);
+			return (CameraProperty) persister.load(
+					XmlUtil.getChildElementByTagName(0, CAMERA_ELEMENT_NAME, propertyElement), null);
 		}
 		catch (PersistenceException e)
 		{

@@ -21,7 +21,8 @@ import au.gov.ga.earthsci.common.util.Util;
 
 
 /**
- * An {@link IInputValidator} that validates the input text is not null or blank.
+ * An {@link IInputValidator} that validates the input text is not null or
+ * blank.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -29,7 +30,7 @@ public class EmptyStringInputValidator implements IInputValidator
 {
 
 	private String message;
-	
+
 	public EmptyStringInputValidator(String message)
 	{
 		this.message = message;
@@ -44,5 +45,5 @@ public class EmptyStringInputValidator implements IInputValidator
 		}
 		return null;
 	}
-	
+
 }

@@ -26,14 +26,20 @@ import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil.Callback;
 /**
  * A threadsafe manager that gives access to the user notification mechanism.
  * <p/>
- * The manager maintains a list of {@link INotificationReceiver}s which can register to receive user notifications.
- * The manager invokes each of these handlers when a new user notification is received.  
+ * The manager maintains a list of {@link INotificationReceiver}s which can
+ * register to receive user notifications. The manager invokes each of these
+ * handlers when a new user notification is received.
  * <p/>
- * Plugins can provide additional {@link INotificationReceiver} implementations using the {@value #NOTIFICATION_RECEIVER_EXTENSION_POINT_ID} extension point.
- * These can be discovered at runtime and registered with the manager via the {@link #loadReceivers(IExtensionRegistry, IEclipseContext)} method. 
+ * Plugins can provide additional {@link INotificationReceiver} implementations
+ * using the {@value #NOTIFICATION_RECEIVER_EXTENSION_POINT_ID} extension point.
+ * These can be discovered at runtime and registered with the manager via the
+ * {@link #loadReceivers(IExtensionRegistry, IEclipseContext)} method.
  * <p/>
- * Additionally, notification categories can be registered using the {@value #NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID} extension point.
- * These can be discovered at runtime and registered with the manager via the {@link #registerNotificationCategories(IExtensionRegistry, IEclipseContext)} method. 
+ * Additionally, notification categories can be registered using the
+ * {@value #NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID} extension point.
+ * These can be discovered at runtime and registered with the manager via the
+ * {@link #registerNotificationCategories(IExtensionRegistry, IEclipseContext)}
+ * method.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -42,92 +48,103 @@ import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil.Callback;
 public class NotificationManager
 {
 	public static final String NOTIFICATION_RECEIVER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.receiver"; //$NON-NLS-1$
-	public static final String NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.categoryProvider"; //$NON-NLS-1$
+	public static final String NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID =
+			"au.gov.ga.earthsci.notification.categoryProvider"; //$NON-NLS-1$
 	public static final String NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
-	
+
 	private static Set<INotificationReceiver> receivers = new LinkedHashSet<INotificationReceiver>();
 	private static ReadWriteLock receiversLock = new ReentrantReadWriteLock();
-	
-	private static ExecutorService notifier = Executors.newSingleThreadExecutor(new ThreadFactory(){
+
+	private static ExecutorService notifier = Executors.newSingleThreadExecutor(new ThreadFactory()
+	{
 		@Override
 		public Thread newThread(Runnable r)
 		{
 			return new Thread(r, "NotificationManager notifier thread"); //$NON-NLS-1$
 		}
 	});
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(NotificationManager.class);
-	
+
 	/**
-	 * Load registered notification receivers from the provided extension registry.
+	 * Load registered notification receivers from the provided extension
+	 * registry.
 	 * <p/>
-	 * This method will inject dependencies on retrieved receivers using the provided 
-	 * eclipse context, as appropriate.
+	 * This method will inject dependencies on retrieved receivers using the
+	 * provided eclipse context, as appropriate.
 	 * 
-	 * @param registry The extension registry to search for notification receivers
-	 * @param context The context to use for dependency injection etc.
+	 * @param registry
+	 *            The extension registry to search for notification receivers
+	 * @param context
+	 *            The context to use for dependency injection etc.
 	 */
 	@Inject
 	public static void loadReceiversFromExtensions()
 	{
 		logger.info("Registering notification receivers"); //$NON-NLS-1$
-		
+
 		try
 		{
-			ExtensionRegistryUtil.createFromExtension(NOTIFICATION_RECEIVER_EXTENSION_POINT_ID, 
-													  NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, 
-													  INotificationReceiver.class, 
-													  new Callback<INotificationReceiver>() {
+			ExtensionRegistryUtil.createFromExtension(NOTIFICATION_RECEIVER_EXTENSION_POINT_ID,
+					NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, INotificationReceiver.class,
+					new Callback<INotificationReceiver>()
+					{
 
-				@Override
-				public void run(INotificationReceiver receiver, IConfigurationElement element, IEclipseContext context)
-				{
-					context.set(element.getAttribute(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE), receiver);
-					registerReceiver(receiver);
-				}
-			});
+						@Override
+						public void run(INotificationReceiver receiver, IConfigurationElement element,
+								IEclipseContext context)
+						{
+							context.set(element.getAttribute(NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE), receiver);
+							registerReceiver(receiver);
+						}
+					});
 		}
 		catch (CoreException e)
 		{
 			logger.error("Exception while loading receivers", e); //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
-	 * Registered additional {@link NotificationCategory}s from {@link INotificationCategoryProvider}s registered against the
-	 * {@value #NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID} extension point.
+	 * Registered additional {@link NotificationCategory}s from
+	 * {@link INotificationCategoryProvider}s registered against the
+	 * {@value #NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID} extension
+	 * point.
 	 * <p/>
-	 * This method will inject dependencies on retrieved receivers using the provided 
-	 * eclipse context, as appropriate.
+	 * This method will inject dependencies on retrieved receivers using the
+	 * provided eclipse context, as appropriate.
 	 * 
-	 * @param registry The extension registry to search for notification receivers
-	 * @param context The context to use for dependency injection etc.
+	 * @param registry
+	 *            The extension registry to search for notification receivers
+	 * @param context
+	 *            The context to use for dependency injection etc.
 	 */
 	@Inject
 	public static void registerNotificationCategories(IExtensionRegistry registry, IEclipseContext context)
 	{
 		logger.info("Registering notification categories"); //$NON-NLS-1$
-		
+
 		try
 		{
-			ExtensionRegistryUtil.createFromExtension(NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID, 
-													  NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, 
-													  INotificationCategoryProvider.class, 
-													  new Callback<INotificationCategoryProvider>() {
+			ExtensionRegistryUtil.createFromExtension(NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID,
+					NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, INotificationCategoryProvider.class,
+					new Callback<INotificationCategoryProvider>()
+					{
 
-				@Override
-				public void run(INotificationCategoryProvider provider, IConfigurationElement element, IEclipseContext context)
-				{
-					provider.registerNotificationCategories();
-				}
-			});
+						@Override
+						public void run(INotificationCategoryProvider provider, IConfigurationElement element,
+								IEclipseContext context)
+						{
+							provider.registerNotificationCategories();
+						}
+					});
 		}
 		catch (CoreException e)
 		{
 			logger.error("Exception while loading categories", e); //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
 	 * Notify the user with the provided notification object
 	 * 
@@ -139,8 +156,9 @@ public class NotificationManager
 		{
 			return;
 		}
-		
-		notifier.execute(new Runnable(){
+
+		notifier.execute(new Runnable()
+		{
 			@Override
 			public void run()
 			{
@@ -159,11 +177,13 @@ public class NotificationManager
 			}
 		});
 	}
-	
+
 	/**
-	 * Register the provided notification receiver so that it is able to receive user notifications as they are generated.
+	 * Register the provided notification receiver so that it is able to receive
+	 * user notifications as they are generated.
 	 * 
-	 * @param receiver The receiver to register
+	 * @param receiver
+	 *            The receiver to register
 	 */
 	public static void registerReceiver(INotificationReceiver receiver)
 	{
@@ -183,11 +203,13 @@ public class NotificationManager
 			receiversLock.writeLock().unlock();
 		}
 	}
-	
+
 	/**
-	 * Remove the provided notification receiver so that it no longer receives user notifications as they are generated.
+	 * Remove the provided notification receiver so that it no longer receives
+	 * user notifications as they are generated.
 	 * 
-	 * @param receiver The receiver to register
+	 * @param receiver
+	 *            The receiver to register
 	 */
 	public static void removeReceiver(INotificationReceiver receiver)
 	{
@@ -195,9 +217,9 @@ public class NotificationManager
 		{
 			return;
 		}
-		
+
 		logger.debug("Removed notification receiver {0}", receiver.getClass()); //$NON-NLS-1$
-		
+
 		receiversLock.writeLock().lock();
 		try
 		{
@@ -208,9 +230,9 @@ public class NotificationManager
 			receiversLock.writeLock().unlock();
 		}
 	}
-	
+
 	/**
-	 * Remove all registered receivers from this manager 
+	 * Remove all registered receivers from this manager
 	 */
 	public static void removeAllRecievers()
 	{
@@ -240,7 +262,7 @@ public class NotificationManager
 	{
 		notify(Notification.create(NotificationLevel.ERROR, title, text).inCategory(category).build());
 	}
-	
+
 	/**
 	 * Create an error level notification with no acknowledgement, and pass it
 	 * to the {@link #notify(INotification)} method.
@@ -256,7 +278,8 @@ public class NotificationManager
 	 */
 	public static void error(String title, String text, NotificationCategory category, Throwable throwable)
 	{
-		notify(Notification.create(NotificationLevel.ERROR, title, text).inCategory(category).withThrowable(throwable).build());
+		notify(Notification.create(NotificationLevel.ERROR, title, text).inCategory(category).withThrowable(throwable)
+				.build());
 	}
 
 	/**

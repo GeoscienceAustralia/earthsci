@@ -19,8 +19,8 @@ import au.gov.ga.earthsci.bookmark.BookmarkFactory;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 
 /**
- * An interface for object that can provide user preferences for
- * the bookmarks feature and its components. 
+ * An interface for object that can provide user preferences for the bookmarks
+ * feature and its components.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -31,25 +31,26 @@ public interface IBookmarksPreferences
 	String PLAY_BOOKMARKS_WAIT_DURATION = "au.gov.ga.earthsci.bookmarks.preferences.playBookmarksWaitDuration"; //$NON-NLS-1$
 	String ASK_LIST_DELETE_CONFIRM = "au.gov.ga.earthsci.bookmarks.preferences.askListDeleteConfirmation"; //$NON-NLS-1$
 	String DEFAULT_PROPERTIES = "au.gov.ga.earthsci.bookmarks.preferences.defaultProperties"; //$NON-NLS-1$
-	
+
 	/**
-	 * Returns the default duration to be used when transitioning
-	 * from the current world state to the saved state of a bookmark.
+	 * Returns the default duration to be used when transitioning from the
+	 * current world state to the saved state of a bookmark.
 	 * 
 	 * @return The transition duration in milliseconds
 	 * 
 	 * @see IBookmark#getTransitionDuration()
 	 */
 	long getDefaultTransitionDuration();
-	
+
 	/**
-	 * Returns the duration (in milliseconds) that bookmarks are paused at during playback
-	 * of a bookmarks list
+	 * Returns the duration (in milliseconds) that bookmarks are paused at
+	 * during playback of a bookmarks list
 	 * 
-	 * @return The duration (in milliseconds) to wait on a bookmark during playback
+	 * @return The duration (in milliseconds) to wait on a bookmark during
+	 *         playback
 	 */
 	long getPlayBookmarksWaitDuration();
-	
+
 	/**
 	 * Returns the default list of bookmark properties that are to be included
 	 * when new bookmarks are created.
@@ -59,18 +60,20 @@ public interface IBookmarksPreferences
 	 * @see BookmarkFactory#createBookmark(String...)
 	 */
 	String[] getDefaultPropertyTypes();
-	
+
 	/**
 	 * Returns whether to ask for list deletion confirmation
 	 * 
-	 * @return <code>true</code> if the user wishes to be prompted; <code>false</code> otherwise.
+	 * @return <code>true</code> if the user wishes to be prompted;
+	 *         <code>false</code> otherwise.
 	 */
 	boolean askForListDeleteConfirmation();
 
 	/**
 	 * Set whether or not to ask for list deletion confirmation
 	 * 
-	 * @param ask whether or not to ask
+	 * @param ask
+	 *            whether or not to ask
 	 */
 	void setAskForListDeleteConfirmation(boolean ask);
 }

@@ -27,15 +27,18 @@ public interface IBookmarkEditorListener
 	/**
 	 * Notified when the editor detects it is in an invalid state.
 	 * 
-	 * @param editor The editor that is invalid
-	 * @param messages Message associated with the validation failure
+	 * @param editor
+	 *            The editor that is invalid
+	 * @param messages
+	 *            Message associated with the validation failure
 	 */
 	void editorInvalid(IBookmarkEditor editor, IBookmarkEditorMessage[] messages);
-	
+
 	/**
 	 * Notified when the editor detects it has entered a valid state.
 	 * 
-	 * @param editor The editor that is now valid
+	 * @param editor
+	 *            The editor that is now valid
 	 */
 	void editorValid(IBookmarkEditor editor);
 }

@@ -24,148 +24,195 @@ public class AbstractBookmarkEditorTest
 	private AbstractBookmarkEditor classUnderTest;
 	private Mockery mockContext;
 	private IBookmarkEditorListener listener;
-	
+
 	@Before
 	public void setup()
 	{
 		classUnderTest = new DummyBookmarkEditor();
-		
+
 		mockContext = new Mockery();
-		
+
 		listener = mockContext.mock(IBookmarkEditorListener.class);
 		classUnderTest.addListener(listener);
 	}
-	
+
 	@Test
 	public void testValidateWithSingleValid()
 	{
-		mockContext.checking(new Expectations() {{{
-			never(listener).editorInvalid(with(any(IBookmarkEditor.class)), with(any(IBookmarkEditorMessage[].class)));
-			never(listener).editorValid(with(any(IBookmarkEditor.class)));
-		}}});
-		
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					never(listener).editorInvalid(with(any(IBookmarkEditor.class)),
+							with(any(IBookmarkEditorMessage[].class)));
+					never(listener).editorValid(with(any(IBookmarkEditor.class)));
+				}
+			}
+		});
+
 		classUnderTest.validate("field1", true, new BookmarkEditorMessage(Level.ERROR, "error1", "error message"));
-		
+
 		assertTrue(classUnderTest.isValid());
 		assertEquals(0, classUnderTest.getMessages().length);
 	}
-	
+
 	@Test
 	public void testValidateWithMultipleValid()
 	{
-		mockContext.checking(new Expectations() {{{
-			never(listener).editorInvalid(with(any(IBookmarkEditor.class)), with(any(IBookmarkEditorMessage[].class)));
-			never(listener).editorValid(with(any(IBookmarkEditor.class)));
-		}}});
-		
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					never(listener).editorInvalid(with(any(IBookmarkEditor.class)),
+							with(any(IBookmarkEditorMessage[].class)));
+					never(listener).editorValid(with(any(IBookmarkEditor.class)));
+				}
+			}
+		});
+
 		classUnderTest.validate("field1", true, new BookmarkEditorMessage(Level.ERROR, "error1", "error1"));
 		classUnderTest.validate("field1", true, new BookmarkEditorMessage(Level.ERROR, "error2", "error2"));
-		
+
 		assertTrue(classUnderTest.isValid());
 		assertEquals(0, classUnderTest.getMessages().length);
 	}
-	
+
 	@Test
 	public void testValidateWithSingleInvalid()
 	{
-		mockContext.checking(new Expectations() {{{
-			oneOf(listener).editorInvalid(with(classUnderTest), with(any(IBookmarkEditorMessage[].class)));
-			never(listener).editorValid(with(any(IBookmarkEditor.class)));
-		}}});
-		
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					oneOf(listener).editorInvalid(with(classUnderTest), with(any(IBookmarkEditorMessage[].class)));
+					never(listener).editorValid(with(any(IBookmarkEditor.class)));
+				}
+			}
+		});
+
 		classUnderTest.validate("field1", false, new BookmarkEditorMessage(Level.ERROR, "error1", "error1"));
-		
+
 		assertFalse(classUnderTest.isValid());
 		assertEquals(1, classUnderTest.getMessages().length);
-		
+
 		assertEquals(new BookmarkEditorMessage(Level.ERROR, "error1", "error1"), classUnderTest.getMessages()[0]);
 	}
-	
+
 	@Test
 	public void testValidateWithMultipleInvalid()
 	{
-		mockContext.checking(new Expectations() {{{
-			exactly(2).of(listener).editorInvalid(with(classUnderTest), with(any(IBookmarkEditorMessage[].class)));
-			never(listener).editorValid(with(any(IBookmarkEditor.class)));
-		}}});
-		
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					exactly(2).of(listener).editorInvalid(with(classUnderTest),
+							with(any(IBookmarkEditorMessage[].class)));
+					never(listener).editorValid(with(any(IBookmarkEditor.class)));
+				}
+			}
+		});
+
 		classUnderTest.validate("field1", false, new BookmarkEditorMessage(Level.ERROR, "error1", "error1"));
 		classUnderTest.validate("field1", false, new BookmarkEditorMessage(Level.ERROR, "error2", "error2"));
-		
+
 		assertFalse(classUnderTest.isValid());
 		assertEquals(2, classUnderTest.getMessages().length);
-		
+
 		assertEquals(new BookmarkEditorMessage(Level.ERROR, "error1", "error1"), classUnderTest.getMessages()[0]);
 		assertEquals(new BookmarkEditorMessage(Level.ERROR, "error2", "error2"), classUnderTest.getMessages()[1]);
 	}
-	
+
 	@Test
 	public void testValidateWithInvalidFollowedByValidSameError()
 	{
-		mockContext.checking(new Expectations() {{{
-			exactly(1).of(listener).editorInvalid(with(classUnderTest), with(any(IBookmarkEditorMessage[].class)));
-			exactly(1).of(listener).editorValid(with(classUnderTest));
-		}}});
-		
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					exactly(1).of(listener).editorInvalid(with(classUnderTest),
+							with(any(IBookmarkEditorMessage[].class)));
+					exactly(1).of(listener).editorValid(with(classUnderTest));
+				}
+			}
+		});
+
 		classUnderTest.validate("field1", false, new BookmarkEditorMessage(Level.ERROR, "error1", "error1"));
 		classUnderTest.validate("field1", true, new BookmarkEditorMessage(Level.ERROR, "error1", "error1"));
-		
+
 		assertTrue(classUnderTest.isValid());
 		assertEquals(0, classUnderTest.getMessages().length);
 	}
-	
+
 	@Test
 	public void testValidateWithInvalidFollowedByValidDifferentError()
 	{
-		mockContext.checking(new Expectations() {{{
-			exactly(1).of(listener).editorInvalid(with(classUnderTest), with(any(IBookmarkEditorMessage[].class)));
-			never(listener).editorValid(with(classUnderTest));
-		}}});
-		
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					exactly(1).of(listener).editorInvalid(with(classUnderTest),
+							with(any(IBookmarkEditorMessage[].class)));
+					never(listener).editorValid(with(classUnderTest));
+				}
+			}
+		});
+
 		classUnderTest.validate("field1", false, new BookmarkEditorMessage(Level.ERROR, "error1", "error1"));
 		classUnderTest.validate("field1", true, new BookmarkEditorMessage(Level.ERROR, "error2", "error2"));
-		
+
 		assertFalse(classUnderTest.isValid());
 		assertEquals(1, classUnderTest.getMessages().length);
-		
+
 		assertEquals(new BookmarkEditorMessage(Level.ERROR, "error1", "error1"), classUnderTest.getMessages()[0]);
 	}
-	
+
 	@Test
 	public void testValidateWithInvalidFollowedByValidDifferentField()
 	{
-		mockContext.checking(new Expectations() {{{
-			exactly(1).of(listener).editorInvalid(with(classUnderTest), with(any(IBookmarkEditorMessage[].class)));
-			never(listener).editorValid(with(classUnderTest));
-		}}});
-		
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					exactly(1).of(listener).editorInvalid(with(classUnderTest),
+							with(any(IBookmarkEditorMessage[].class)));
+					never(listener).editorValid(with(classUnderTest));
+				}
+			}
+		});
+
 		classUnderTest.validate("field1", false, new BookmarkEditorMessage(Level.ERROR, "error1", "error1"));
 		classUnderTest.validate("field2", true, new BookmarkEditorMessage(Level.ERROR, "error1", "error1"));
-		
+
 		assertFalse(classUnderTest.isValid());
 		assertEquals(1, classUnderTest.getMessages().length);
-		
+
 		assertEquals(new BookmarkEditorMessage(Level.ERROR, "error1", "error1"), classUnderTest.getMessages()[0]);
 	}
-	
+
 	@Test
 	public void testValidateWithInvalidFollowedByInvalidDifferentField()
 	{
-		mockContext.checking(new Expectations() {{{
-			exactly(2).of(listener).editorInvalid(with(classUnderTest), with(any(IBookmarkEditorMessage[].class)));
-			never(listener).editorValid(with(classUnderTest));
-		}}});
-		
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					exactly(2).of(listener).editorInvalid(with(classUnderTest),
+							with(any(IBookmarkEditorMessage[].class)));
+					never(listener).editorValid(with(classUnderTest));
+				}
+			}
+		});
+
 		classUnderTest.validate("field1", false, new BookmarkEditorMessage(Level.ERROR, "error1", "error1"));
 		classUnderTest.validate("field2", false, new BookmarkEditorMessage(Level.ERROR, "error2", "error2"));
-		
+
 		assertFalse(classUnderTest.isValid());
 		assertEquals(2, classUnderTest.getMessages().length);
-		
+
 		assertEquals(new BookmarkEditorMessage(Level.ERROR, "error1", "error1"), classUnderTest.getMessages()[0]);
 		assertEquals(new BookmarkEditorMessage(Level.ERROR, "error2", "error2"), classUnderTest.getMessages()[1]);
 	}
-	
+
 	private class DummyBookmarkEditor extends AbstractBookmarkEditor
 	{
 
@@ -207,7 +254,7 @@ public class AbstractBookmarkEditorTest
 		{
 			return null;
 		}
-		
+
 	}
-	
+
 }

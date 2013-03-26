@@ -26,18 +26,18 @@ import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
- * An {@link IBookmarkPropertyApplicator} used to apply layer state captured in a
- * {@link LayersProperty} instance.
+ * An {@link IBookmarkPropertyApplicator} used to apply layer state captured in
+ * a {@link LayersProperty} instance.
  * <p/>
  * The semantics of the application are as follows:
  * <ol>
- * 	<li> Layers are matched purely on URI
- * 	<li> All layers that are in both the current layer model and the bookmark property 
- * 		 will be enabled, and the opacity from the property applied
- * 	<li> Any layer in the current layer model that does not appear in the bookmark property
- * 		 will be disabled
- * 	<li> Any layer in the bookmark property that does not exist in the current layer model
- * 		 will be ignored
+ * <li>Layers are matched purely on URI
+ * <li>All layers that are in both the current layer model and the bookmark
+ * property will be enabled, and the opacity from the property applied
+ * <li>Any layer in the current layer model that does not appear in the bookmark
+ * property will be disabled
+ * <li>Any layer in the bookmark property that does not exist in the current
+ * layer model will be ignored
  * </ol>
  * 
  * @author James Navin (james.navin@ga.gov.au)
@@ -45,11 +45,11 @@ import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 public class LayersPropertyApplicator implements IBookmarkPropertyApplicator
 {
 
-	private static final String[] SUPPORTED_TYPES = new String[] {LayersProperty.TYPE};
-	
+	private static final String[] SUPPORTED_TYPES = new String[] { LayersProperty.TYPE };
+
 	@Inject
 	private ITreeModel currentModel;
-	
+
 	@Override
 	public String[] getSupportedTypes()
 	{
@@ -63,17 +63,17 @@ public class LayersPropertyApplicator implements IBookmarkPropertyApplicator
 		{
 			return;
 		}
-		
-		LayersProperty layersProperty = (LayersProperty)property;
-		
+
+		LayersProperty layersProperty = (LayersProperty) property;
+
 		for (Layer l : currentModel.getLayers())
 		{
 			if (!(l instanceof LayerNode))
 			{
 				continue;
 			}
-			
-			LayerNode layerNode = (LayerNode)l;
+
+			LayerNode layerNode = (LayerNode) l;
 			if (layersProperty.getLayerState().containsKey(layerNode.getURI()))
 			{
 				layerNode.setEnabled(true);
@@ -89,7 +89,7 @@ public class LayersPropertyApplicator implements IBookmarkPropertyApplicator
 	@Override
 	public IBookmarkPropertyAnimator createAnimator(IBookmarkProperty start, IBookmarkProperty end, long duration)
 	{
-		return new LayersPropertyAnimator(currentModel, (LayersProperty)start, (LayersProperty)end, duration);
+		return new LayersPropertyAnimator(currentModel, (LayersProperty) start, (LayersProperty) end, duration);
 	}
 
 }

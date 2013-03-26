@@ -33,16 +33,16 @@ public class DeleteBookmarkListHandler
 
 	@Inject
 	private IBookmarksController controller;
-	
+
 	@Inject
 	private IBookmarks bookmarks;
-	
+
 	@Execute
 	public void execute()
 	{
 		controller.deleteBookmarkList(controller.getCurrentList());
 	}
-	
+
 	@CanExecute
 	public boolean canExecute()
 	{

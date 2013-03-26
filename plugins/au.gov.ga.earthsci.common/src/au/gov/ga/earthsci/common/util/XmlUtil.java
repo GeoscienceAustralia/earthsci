@@ -608,7 +608,7 @@ public class XmlUtil
 		Element[] elements = WWXML.getElements(context, path, xpath);
 		return elements == null ? new Element[0] : elements;
 	}
-	
+
 	/**
 	 * Create and return a new document builder
 	 */

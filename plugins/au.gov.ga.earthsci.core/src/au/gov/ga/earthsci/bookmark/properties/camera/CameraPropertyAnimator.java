@@ -37,38 +37,37 @@ public class CameraPropertyAnimator extends AbstractBookmarkPropertyAnimator imp
 	private final CameraProperty start;
 	private final CameraProperty end;
 	private final View view;
-	
+
 	private Animator animator;
-	
-	public CameraPropertyAnimator(final View view, final CameraProperty start, final CameraProperty end, final long duration)
+
+	public CameraPropertyAnimator(final View view, final CameraProperty start, final CameraProperty end,
+			final long duration)
 	{
 		super(start, end, duration);
 		this.start = start;
 		this.end = end;
 		this.view = view;
 	}
-	
+
 	@Override
 	public void init()
 	{
 		if (view instanceof OrbitView)
 		{
-			final AccessibleOrbitViewState startOVS = AccessibleOrbitViewInputSupport.computeOrbitViewState(view.getGlobe(), 
-																									  view.getGlobe().computePointFromPosition(start.getEyePosition()), 
-																									  view.getGlobe().computePointFromPosition(start.getLookatPosition()),
-																									  start.getUpVector());
-			
-			final AccessibleOrbitViewState endOVS = AccessibleOrbitViewInputSupport.computeOrbitViewState(view.getGlobe(), 
-																								    view.getGlobe().computePointFromPosition(end.getEyePosition()), 
-																								    view.getGlobe().computePointFromPosition(end.getLookatPosition()),
-																								    end.getUpVector());
-			
-			animator = FlyToOrbitViewAnimator.createFlyToOrbitViewAnimator((OrbitView)view, 
-																			start.getLookatPosition(), end.getLookatPosition(), 
-																			startOVS.getHeading(), endOVS.getHeading(), 
-																			startOVS.getPitch(), endOVS.getPitch(),
-																			startOVS.getZoom(), endOVS.getZoom(), 
-																			getDuration(), WorldWind.ABSOLUTE);
+			final AccessibleOrbitViewState startOVS =
+					AccessibleOrbitViewInputSupport.computeOrbitViewState(view.getGlobe(), view.getGlobe()
+							.computePointFromPosition(start.getEyePosition()), view.getGlobe()
+							.computePointFromPosition(start.getLookatPosition()), start.getUpVector());
+
+			final AccessibleOrbitViewState endOVS =
+					AccessibleOrbitViewInputSupport.computeOrbitViewState(view.getGlobe(), view.getGlobe()
+							.computePointFromPosition(end.getEyePosition()),
+							view.getGlobe().computePointFromPosition(end.getLookatPosition()), end.getUpVector());
+
+			animator =
+					FlyToOrbitViewAnimator.createFlyToOrbitViewAnimator((OrbitView) view, start.getLookatPosition(),
+							end.getLookatPosition(), startOVS.getHeading(), endOVS.getHeading(), startOVS.getPitch(),
+							endOVS.getPitch(), startOVS.getZoom(), endOVS.getZoom(), getDuration(), WorldWind.ABSOLUTE);
 		}
 		else
 		{
@@ -81,7 +80,7 @@ public class CameraPropertyAnimator extends AbstractBookmarkPropertyAnimator imp
 	{
 		return animator != null;
 	}
-	
+
 	@Override
 	public void applyFrame()
 	{
@@ -89,7 +88,7 @@ public class CameraPropertyAnimator extends AbstractBookmarkPropertyAnimator imp
 		{
 			throw new IllegalStateException("init() must be called before attempting to apply frames"); //$NON-NLS-1$
 		}
-		
+
 		animator.next();
 	}
 

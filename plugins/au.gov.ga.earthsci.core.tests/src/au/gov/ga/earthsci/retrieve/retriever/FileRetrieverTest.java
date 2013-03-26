@@ -15,11 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.retrieve.retriever;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import gov.nasa.worldwind.util.WWIO;
 
 import java.io.File;
@@ -44,84 +40,100 @@ import au.gov.ga.earthsci.core.retrieve.retriever.FileRetriever;
  */
 public class FileRetrieverTest
 {
-	
+
 	private final FileRetriever classUnderTest = new FileRetriever();
-	
+
 	private IRetrieverMonitor monitor;
-	
+
 	private Mockery mockContext;
-	
+
 	@Before
 	public void setup()
 	{
 		mockContext = new Mockery();
-		
+
 		monitor = mockContext.mock(IRetrieverMonitor.class);
 	}
-	
+
 	@Test
 	public void testSupportsWithNonFileProtocol() throws Exception
 	{
 		URL url = new URL("http://somewhere.com/something");
 		assertFalse(classUnderTest.supports(url));
 	}
-	
+
 	@Test
 	public void testSupportsWithFile() throws Exception
 	{
 		URL url = new URL("FilE:///file.txt");
 		assertTrue(classUnderTest.supports(url));
 	}
-	
+
 	public void testRetrieveWithNullUrl() throws Exception
 	{
 		URL url = null;
-		
-		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).updateStatus(RetrievalStatus.READING);
-		}}});
-		
+
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					oneOf(monitor).updateStatus(RetrievalStatus.READING);
+				}
+			}
+		});
+
 		IRetrievalResult result = classUnderTest.retrieve(url, monitor, new RetrievalProperties(), null).result;
 		assertEquals(result.getError().getClass(), NullPointerException.class);
 	}
-	
+
 	@Test(expected = NullPointerException.class)
 	public void testRetrieveWithNullMonitor() throws Exception
 	{
 		URL url = new URL("file:///file.txt");
-		
+
 		classUnderTest.retrieve(url, null, new RetrievalProperties(), null);
 	}
-	
+
 	@Test
 	public void testRetrieveWithValidFile() throws Exception
 	{
 		String expectedContent = "success!";
 		File tmpFile = createTmpFile(expectedContent);
-		
-		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).updateStatus(RetrievalStatus.READING);
-		}}});
-		
-		IRetrievalResult result = classUnderTest.retrieve(tmpFile.toURI().toURL(), monitor, new RetrievalProperties(), null).result;
-		
+
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					oneOf(monitor).updateStatus(RetrievalStatus.READING);
+				}
+			}
+		});
+
+		IRetrievalResult result =
+				classUnderTest.retrieve(tmpFile.toURI().toURL(), monitor, new RetrievalProperties(), null).result;
+
 		assertNotNull(result);
 		String string = WWIO.readStreamToString(result.getData().getInputStream(), "UTF-8");
 		assertEquals(expectedContent, string);
 		assertNull(result.getError());
 	}
-	
+
 	@Test
 	public void testRetrieveWithInvalidFile() throws Exception
 	{
 		URL url = new URL("file:///nonexistant.file");
-		
-		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).updateStatus(RetrievalStatus.READING);
-		}}});
-		
+
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					oneOf(monitor).updateStatus(RetrievalStatus.READING);
+				}
+			}
+		});
+
 		IRetrievalResult result = classUnderTest.retrieve(url, monitor, new RetrievalProperties(), null).result;
-		
+
 		assertNotNull(result);
 		assertEquals(null, result.getData());
 		assertNotNull(result.getError());
@@ -130,14 +142,14 @@ public class FileRetrieverTest
 	private File createTmpFile(String content) throws Exception
 	{
 		File tempFile = File.createTempFile("FileRetrieverTest", ".txt");
-		
+
 		FileWriter writer = new FileWriter(tempFile);
 		writer.write(content);
 		writer.close();
-		
+
 		tempFile.deleteOnExit();
-		
+
 		return tempFile;
 	}
-	
+
 }

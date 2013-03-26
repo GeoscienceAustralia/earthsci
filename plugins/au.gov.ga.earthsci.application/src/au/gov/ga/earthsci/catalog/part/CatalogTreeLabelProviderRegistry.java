@@ -33,8 +33,8 @@ import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 
 /**
- * Registry that provides {@link ICatalogTreeLabelProvider}s for
- * initializing the UI for catalog tree nodes.
+ * Registry that provides {@link ICatalogTreeLabelProvider}s for initializing
+ * the UI for catalog tree nodes.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -45,13 +45,14 @@ public class CatalogTreeLabelProviderRegistry
 	{
 		loadProviders(registry);
 	}
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(CatalogTreeLabelProviderRegistry.class);
 
 	private static final Set<ICatalogTreeLabelProvider> labelProviders = new LinkedHashSet<ICatalogTreeLabelProvider>();
 	private static final ReadWriteLock labelProvidersLock = new ReentrantReadWriteLock();
 
-	public static final String CATALOG_NODE_CONTROL_PROVIDER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.application.catalogTreeLabelProvider"; //$NON-NLS-1$
+	public static final String CATALOG_NODE_CONTROL_PROVIDER_EXTENSION_POINT_ID =
+			"au.gov.ga.earthsci.application.catalogTreeLabelProvider"; //$NON-NLS-1$
 	public static final String CONTROL_PROVIDER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
 	/**
@@ -103,7 +104,7 @@ public class CatalogTreeLabelProviderRegistry
 		{
 		};
 	};
-	
+
 	/**
 	 * @return The default label provider to use if no others are available
 	 */
@@ -122,7 +123,8 @@ public class CatalogTreeLabelProviderRegistry
 	{
 		logger.debug("Registering catalog tree label providers"); //$NON-NLS-1$
 
-		IConfigurationElement[] config = registry.getConfigurationElementsFor(CATALOG_NODE_CONTROL_PROVIDER_EXTENSION_POINT_ID);
+		IConfigurationElement[] config =
+				registry.getConfigurationElementsFor(CATALOG_NODE_CONTROL_PROVIDER_EXTENSION_POINT_ID);
 		try
 		{
 			for (IConfigurationElement e : config)

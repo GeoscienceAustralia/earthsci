@@ -50,135 +50,151 @@ public class HTTPRetrieverTest
 {
 
 	private final HttpRetriever classUnderTest = new HttpRetriever();
-	
+
 	private IRetrieverMonitor monitor;
-	
+
 	private Mockery mockContext;
-	
+
 	@BeforeClass
 	public static void initialise()
 	{
 		createHttpServer();
 		startServer();
 	}
-	
+
 	@AfterClass
 	public static void destroy()
 	{
 		stopServer();
 	}
-	
+
 	@Before
 	public void setup()
 	{
 		mockContext = new Mockery();
-		
+
 		monitor = mockContext.mock(IRetrieverMonitor.class);
-		
-		mockContext.checking(new Expectations() {{{
-			// Monitor 
-			allowing(monitor);
-		}}});
+
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					// Monitor 
+					allowing(monitor);
+				}
+			}
+		});
 	}
-	
+
 	@Test
 	public void testSupportsFileURL() throws Exception
 	{
 		URL url = new URL("file://somefile.txt");
 		assertFalse(classUnderTest.supports(url));
 	}
-	
+
 	@Test
 	public void testSupportsHttpURL() throws Exception
 	{
 		URL url = new URL("http://somewhere.com/somefile.txt");
 		assertTrue(classUnderTest.supports(url));
 	}
-	
+
 	@Test
 	public void testSupportsHttpsURL() throws Exception
 	{
 		URL url = new URL("https://somewhere.com/somefile.txt");
 		assertTrue(classUnderTest.supports(url));
 	}
-	
+
 	@Test(expected = NullPointerException.class)
 	public void testRetrieveNullURL() throws Exception
 	{
 		URL url = null;
-		
-		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
-		}}});
-		
+
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
+				}
+			}
+		});
+
 		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
 	}
-	
+
 	@Test(expected = NullPointerException.class)
 	public void testRetrieveFileURL() throws Exception
 	{
 		URL url = new URL("file://somefile.txt");
-		
-		mockContext.checking(new Expectations() {{{
-			oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
-		}}});
-		
+
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					oneOf(monitor).updateStatus(RetrievalStatus.STARTED);
+				}
+			}
+		});
+
 		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
 	}
-	
+
 	@Test
 	public void testRetrieveHttpURLWithSuccessKnownLength() throws Exception
 	{
 		Assume.assumeTrue(httpServerIsAvailable());
-		
+
 		final String expectedResult = "success!";
-		
+
 		setServerResponse("/success", 200, expectedResult, false);
 
 		URL url = createHttpURL("/success");
-		
-		IRetrievalResult result = classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null).result;
-		
+
+		IRetrievalResult result =
+				classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null).result;
+
 		assertNotNull(result);
 		assertNull(result.getError());
 		String string = WWIO.readStreamToString(result.getData().getInputStream(), "UTF-8");
 		assertEquals(expectedResult, string);
 	}
-	
+
 	@Test(expected = IOException.class)
 	public void testRetrieveHttpURLWithFail404() throws Exception
 	{
 		Assume.assumeTrue(httpServerIsAvailable());
-		
+
 		URL url = createHttpURL("/404");
 		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
 	}
-	
+
 	@Test(expected = IOException.class)
 	public void testRetrieveHttpURLWithFail403() throws Exception
 	{
 		Assume.assumeTrue(httpServerIsAvailable());
-		
+
 		String expectedResult = "success!";
-		
+
 		setServerResponse("/fail", 403, expectedResult, true);
 
 		URL url = createHttpURL("/fail");
 		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
 	}
-	
+
 	// TODO: Move this code somewhere more reusable
-	
+
 	private static InetSocketAddress serverAddress;
 	private static Class<?> serverClass;
 	private static Object serverInstance;
-	
+
 	private static URL createHttpURL(String relativePath) throws Exception
 	{
 		URL url = new URL("http://" + serverAddress.getHostName() + ":" + serverAddress.getPort() + relativePath);
 		return url;
 	}
-	
+
 	/**
 	 * Check that the Sun JVM HttpServer class is present. Used to filter tests
 	 * that depend on this class.
@@ -198,26 +214,28 @@ public class HTTPRetrieverTest
 			return false;
 		}
 	}
-	
+
 	private static void createHttpServer()
 	{
 		if (!httpServerIsAvailable())
 		{
 			return;
 		}
-		
+
 		try
 		{
 			serverAddress = new InetSocketAddress("localhost", chooseAvailablePort());
 			serverClass = Class.forName("com.sun.net.httpserver.HttpServer");
-			serverInstance = serverClass.getMethod("create", InetSocketAddress.class, int.class).invoke(serverClass, serverAddress, 0);
+			serverInstance =
+					serverClass.getMethod("create", InetSocketAddress.class, int.class).invoke(serverClass,
+							serverAddress, 0);
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static int chooseAvailablePort()
 	{
 		for (int port = 8796; port < 9000; port++)
@@ -231,12 +249,12 @@ public class HTTPRetrieverTest
 			}
 			catch (Exception e)
 			{
-				
+
 			}
 		}
 		return -1;
 	}
-	
+
 	private static void startServer()
 	{
 		try
@@ -248,7 +266,7 @@ public class HTTPRetrieverTest
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static void stopServer()
 	{
 		try
@@ -260,53 +278,62 @@ public class HTTPRetrieverTest
 			e.printStackTrace();
 		}
 	}
-	
-	private static void setServerResponse(final String path, final int responseCode, final String response, final boolean unknownContentLength)
+
+	private static void setServerResponse(final String path, final int responseCode, final String response,
+			final boolean unknownContentLength)
 	{
 		if (!httpServerIsAvailable())
 		{
 			return;
 		}
-		
+
 		try
 		{
 			final Class<?> handlerClass = Class.forName("com.sun.net.httpserver.HttpHandler");
 			final Class<?> exchangeClass = Class.forName("com.sun.net.httpserver.HttpExchange");
-			
-			Object handler = Proxy.newProxyInstance(HttpRetriever.class.getClassLoader(), new Class[] {handlerClass}, new InvocationHandler() {
-				@Override
-				public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-				{
-					try
-					{
-						if (!method.getName().equalsIgnoreCase("handle"))
-						{
-							return null;
-						}
-						
-						Object httpExchange = args[0];
-						
-						// Send headers
-						long responseLength = unknownContentLength ? 0 : response == null ? -1 : response.getBytes().length;
-						exchangeClass.getMethod("sendResponseHeaders", int.class, long.class).invoke(httpExchange, responseCode, responseLength);
-						
-						// Write response
-						OutputStream responseBody = (OutputStream)exchangeClass.getMethod("getResponseBody").invoke(httpExchange);
-						responseBody.write(response.getBytes());
-						
-						exchangeClass.getMethod("close").invoke(httpExchange);
-					}
-					catch (Exception e)
-					{
-						// Should never get here
-						e.printStackTrace();
-					}
-					
-					return null;
-				}
-				
-			});
-			
+
+			Object handler =
+					Proxy.newProxyInstance(HttpRetriever.class.getClassLoader(), new Class[] { handlerClass },
+							new InvocationHandler()
+							{
+								@Override
+								public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+								{
+									try
+									{
+										if (!method.getName().equalsIgnoreCase("handle"))
+										{
+											return null;
+										}
+
+										Object httpExchange = args[0];
+
+										// Send headers
+										long responseLength =
+												unknownContentLength ? 0 : response == null ? -1
+														: response.getBytes().length;
+										exchangeClass.getMethod("sendResponseHeaders", int.class, long.class).invoke(
+												httpExchange, responseCode, responseLength);
+
+										// Write response
+										OutputStream responseBody =
+												(OutputStream) exchangeClass.getMethod("getResponseBody").invoke(
+														httpExchange);
+										responseBody.write(response.getBytes());
+
+										exchangeClass.getMethod("close").invoke(httpExchange);
+									}
+									catch (Exception e)
+									{
+										// Should never get here
+										e.printStackTrace();
+									}
+
+									return null;
+								}
+
+							});
+
 			serverClass.getMethod("createContext", String.class, handlerClass).invoke(serverInstance, path, handler);
 		}
 		catch (Exception e)
@@ -314,5 +341,5 @@ public class HTTPRetrieverTest
 			e.printStackTrace();
 		}
 	}
-	
+
 }

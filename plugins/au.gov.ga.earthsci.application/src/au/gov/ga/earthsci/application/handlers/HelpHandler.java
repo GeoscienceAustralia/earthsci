@@ -21,7 +21,8 @@ import org.eclipse.ui.help.AbstractHelpUI;
 /**
  * A handler responsible for launching the help mechanism.
  * <p/>
- * Note that this is currently a placeholder required until the help mechanism is ported to the Eclipse 4 platform.
+ * Note that this is currently a placeholder required until the help mechanism
+ * is ported to the Eclipse 4 platform.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -32,14 +33,14 @@ public class HelpHandler
 
 	@Inject
 	private IExtensionRegistry extensionRegistry;
-	
+
 	private AbstractHelpUI pluggableHelpUI;
-	
+
 	static
 	{
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_INFOCENTER);
 	}
-	
+
 	public void initializePluggableHelpUI()
 	{
 		logger.info("Initialising help UI"); //$NON-NLS-1$

@@ -16,8 +16,8 @@
 package au.gov.ga.earthsci.core.model;
 
 /**
- * A simple marker interface for model classes that have associated {@link IModelStatus}
- * instances
+ * A simple marker interface for model classes that have associated
+ * {@link IModelStatus} instances
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -28,12 +28,13 @@ public interface IStatused
 	 * @return The status of this object
 	 */
 	IModelStatus getStatus();
-	
+
 	/**
 	 * Set the status of this object
 	 * 
-	 * @param s The status to apply to this object
+	 * @param s
+	 *            The status to apply to this object
 	 */
 	void setStatus(IModelStatus status);
-	
+
 }

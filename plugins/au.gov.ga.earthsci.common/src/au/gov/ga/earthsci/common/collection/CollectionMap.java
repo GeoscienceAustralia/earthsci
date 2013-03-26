@@ -52,11 +52,12 @@ public interface CollectionMap<K, V, C extends Collection<V>> extends Map<K, C>
 	 * @return The number of entries stored for the given key
 	 */
 	int count(K key);
-	
+
 	/**
-	 * Return a flattened view of the values in this map. This list will be ordered on the key order followed by the 
-	 * ordering of the collection stored at that key.
-	 *  
+	 * Return a flattened view of the values in this map. This list will be
+	 * ordered on the key order followed by the ordering of the collection
+	 * stored at that key.
+	 * 
 	 * @return A flattened view of the values in this map.
 	 */
 	List<V> flatValues();

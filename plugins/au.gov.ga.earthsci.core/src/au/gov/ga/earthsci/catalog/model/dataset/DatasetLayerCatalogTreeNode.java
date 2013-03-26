@@ -26,8 +26,8 @@ import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 
 /**
- * An {@link ICatalogTreeNode} that represents a {@code Layer} element from the legacy
- * {@code dataset.xml} 
+ * An {@link ICatalogTreeNode} that represents a {@code Layer} element from the
+ * legacy {@code dataset.xml}
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -37,27 +37,26 @@ public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 
 	@Persistent
 	private URL layerURL;
-	
+
 	private boolean def;
 	private boolean enabled;
-	
-	public DatasetLayerCatalogTreeNode(final URI nodeURI, final String name, final URL url, 
-									  final URL infoURL, final URL iconURL, 
-									  final boolean base, final boolean def, final boolean enabled)
+
+	public DatasetLayerCatalogTreeNode(final URI nodeURI, final String name, final URL url, final URL infoURL,
+			final URL iconURL, final boolean base, final boolean def, final boolean enabled)
 	{
 		super(nodeURI, name, infoURL, iconURL, base);
-		
+
 		this.layerURL = url;
 		this.def = def;
 		this.enabled = enabled;
 	}
-	
+
 	@Override
 	public boolean hasChildren()
 	{
 		return false;
 	}
-	
+
 	@Override
 	public int getChildCount()
 	{
@@ -68,7 +67,7 @@ public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 	{
 		return def;
 	}
-	
+
 	public boolean isEnabled()
 	{
 		return enabled;
@@ -78,13 +77,13 @@ public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 	{
 		return layerURL;
 	}
-	
+
 	@Override
 	public boolean isLayerNode()
 	{
 		return true;
 	}
-	
+
 	@Override
 	public URI getLayerURI()
 	{
@@ -97,7 +96,7 @@ public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 			return null;
 		}
 	}
-	
+
 	@Override
 	public IContentType getLayerContentType()
 	{

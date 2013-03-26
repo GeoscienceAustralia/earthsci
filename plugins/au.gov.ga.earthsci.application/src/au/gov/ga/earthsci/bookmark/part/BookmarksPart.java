@@ -89,7 +89,8 @@ import au.gov.ga.earthsci.bookmark.part.handlers.MoveToListHandler;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
- * A part used to display current bookmarks, and to allow the user to interact with them.
+ * A part used to display current bookmarks, and to allow the user to interact
+ * with them.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -101,43 +102,43 @@ public class BookmarksPart
 
 	@Inject
 	private Bookmarks bookmarks;
-	
+
 	@Inject
 	private ESelectionService selectionService;
-	
+
 	@Inject
 	private EModelService modelService;
-	
+
 	@Inject
 	private EMenuService menuService;
-	
-	@Inject 
+
+	@Inject
 	private MApplication application;
-	
+
 	@Inject
 	private IEclipseContext context;
-	
+
 	@Inject
 	private IBookmarksController controller;
-	
+
 	private TableViewer bookmarkListTableViewer;
 	private ComboViewer bookmarkListsComboViewer;
 	private MPopupMenu popupMenu;
 	private MMenu copyToMenu;
 	private MMenu moveToMenu;
-	
+
 	@PostConstruct
 	public void init(final Composite parent, final MPart part)
 	{
 		controller.setView(this);
-		
+
 		parent.setLayout(new GridLayout(1, true));
-		
+
 		initCombo(parent);
 		initList(parent);
-		
+
 		context.set(TableViewer.class, bookmarkListTableViewer);
-		
+
 		setupClipboardDnD();
 		setupBookmarkListInput();
 		setupPopupMenus();
@@ -147,11 +148,14 @@ public class BookmarksPart
 	/**
 	 * Highlight the given bookmark in the part
 	 * 
-	 * @param bookmark The bookmark to highlight. If <code>null</code>, clears any highlighting
+	 * @param bookmark
+	 *            The bookmark to highlight. If <code>null</code>, clears any
+	 *            highlighting
 	 */
 	public void highlight(final IBookmark bookmark)
 	{
-		Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable()
+		{
 			@Override
 			public void run()
 			{
@@ -159,10 +163,11 @@ public class BookmarksPart
 			}
 		});
 	}
-	
+
 	public void refreshDropdown()
 	{
-		Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable()
+		{
 			@Override
 			public void run()
 			{
@@ -174,21 +179,19 @@ public class BookmarksPart
 			}
 		});
 	}
-	
+
 	private void setupClipboardDnD()
 	{
-		bookmarkListTableViewer.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, 
-				   							   new Transfer[] {BookmarkTransfer.getInstance()}, 
-				   							   new BookmarksDropAdapter(bookmarkListTableViewer, controller));
+		bookmarkListTableViewer.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { BookmarkTransfer
+				.getInstance() }, new BookmarksDropAdapter(bookmarkListTableViewer, controller));
 
-		bookmarkListTableViewer.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, 
-				   						       new Transfer[] {BookmarkTransfer.getInstance()}, 
-								   			   new BookmarksDragSourceListener(bookmarkListTableViewer));
-		
+		bookmarkListTableViewer.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { BookmarkTransfer
+				.getInstance() }, new BookmarksDragSourceListener(bookmarkListTableViewer));
+
 		Clipboard clipboard = new Clipboard(Display.getCurrent());
 		context.set(Clipboard.class, clipboard);
 	}
-	
+
 	private void setupBookmarkListInput()
 	{
 		bookmarkListTableViewer.setInput(BeanProperties.list("bookmarks").observe(getSelectedBookmarkList())); //$NON-NLS-1$
@@ -205,13 +208,14 @@ public class BookmarksPart
 	private void initCombo(Composite parent)
 	{
 		bookmarkListsComboViewer = new ComboViewer(parent, SWT.READ_ONLY | SWT.DROP_DOWN);
-		
+
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.grabExcessHorizontalSpace = true;
 		gd.grabExcessVerticalSpace = false;
 		bookmarkListsComboViewer.getCombo().setLayoutData(gd);
-		
-		bookmarkListsComboViewer.setLabelProvider(new LabelProvider() {
+
+		bookmarkListsComboViewer.setLabelProvider(new LabelProvider()
+		{
 			@Override
 			public String getText(Object element)
 			{
@@ -219,10 +223,10 @@ public class BookmarksPart
 				{
 					return super.getText(element);
 				}
-				return ((IBookmarkList)element).getName();
+				return ((IBookmarkList) element).getName();
 			}
 		});
-		
+
 		// Trigger a label refresh if a list name changes etc.
 		ObservableListContentProvider contentProvider = new ObservableListContentProvider();
 		IObservableMap nameMap = BeanProperties.value("name").observeDetail(contentProvider.getKnownElements()); //$NON-NLS-1$
@@ -237,11 +241,11 @@ public class BookmarksPart
 				}
 			}
 		});
-		
+
 		bookmarkListsComboViewer.setContentProvider(contentProvider);
 		bookmarkListsComboViewer.setInput(BeanProperties.list("lists").observe(bookmarks)); //$NON-NLS-1$
 		bookmarkListsComboViewer.setSelection(new StructuredSelection(bookmarks.getDefaultList()));
-		
+
 		bookmarkListsComboViewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
 			@Override
@@ -251,7 +255,7 @@ public class BookmarksPart
 			}
 		});
 	}
-	
+
 	private void initList(Composite parent)
 	{
 		Composite tableHolder = new Composite(parent, SWT.NONE);
@@ -260,22 +264,22 @@ public class BookmarksPart
 		gd.grabExcessVerticalSpace = true;
 		gd.horizontalAlignment = GridData.FILL;
 		tableHolder.setLayoutData(gd);
-		
+
 		TableColumnLayout layout = new TableColumnLayout();
 		tableHolder.setLayout(layout);
-		
-		bookmarkListTableViewer = new TableViewer(tableHolder, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | 
-															   SWT.MULTI | SWT.FULL_SELECTION);
+
+		bookmarkListTableViewer =
+				new TableViewer(tableHolder, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		bookmarkListTableViewer.getTable().setHeaderVisible(false);
 		bookmarkListTableViewer.getTable().setLinesVisible(false);
-		
+
 		bookmarkListTableViewer.getTable().setLayoutData(gd);
-		
+
 		ObservableListContentProvider contentProvider = new ObservableListContentProvider();
 		bookmarkListTableViewer.setContentProvider(contentProvider);
-		
+
 		IObservableMap labelMap = BeanProperties.value("name").observeDetail(contentProvider.getKnownElements()); //$NON-NLS-1$
-		
+
 		TableViewerColumn column = new TableViewerColumn(bookmarkListTableViewer, SWT.LEFT);
 		column.setEditingSupport(new BookmarkNameEditingSupport(bookmarkListTableViewer));
 		column.setLabelProvider(new ObservableMapCellLabelProvider(labelMap)
@@ -284,23 +288,25 @@ public class BookmarksPart
 			public void update(ViewerCell cell)
 			{
 				super.update(cell);
-				cell.setText(" " + ((IBookmark)cell.getElement()).getName()); //$NON-NLS-1$
+				cell.setText(" " + ((IBookmark) cell.getElement()).getName()); //$NON-NLS-1$
 				cell.setImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_BOOKMARKS));
 			}
 		});
 		ColumnLayoutData cld = new ColumnWeightData(12);
 		layout.setColumnData(column.getColumn(), cld);
-		
+
 		// Allow edit (rename) only via programmatic access (rename command) 
-		ColumnViewerEditorActivationStrategy activationStrategy = new ColumnViewerEditorActivationStrategy(bookmarkListTableViewer) {
-			@Override
-			protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event)
-			{
-				return event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
-			}
-		};
+		ColumnViewerEditorActivationStrategy activationStrategy =
+				new ColumnViewerEditorActivationStrategy(bookmarkListTableViewer)
+				{
+					@Override
+					protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event)
+					{
+						return event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
+					}
+				};
 		TableViewerEditor.create(bookmarkListTableViewer, activationStrategy, ColumnViewerEditor.KEYBOARD_ACTIVATION);
-		
+
 		// Populate the current selection with the actual bookmark items
 		bookmarkListTableViewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
@@ -312,17 +318,17 @@ public class BookmarksPart
 				selectionService.setSelection(list.toArray(new IBookmark[list.size()]));
 			}
 		});
-		
+
 		// Apply the bookmark on double click
 		bookmarkListTableViewer.addDoubleClickListener(new IDoubleClickListener()
 		{
 			@Override
 			public void doubleClick(DoubleClickEvent event)
 			{
-				controller.apply((IBookmark)((IStructuredSelection)event.getSelection()).getFirstElement());
+				controller.apply((IBookmark) ((IStructuredSelection) event.getSelection()).getFirstElement());
 			}
 		});
-		
+
 		// Deselect when clicking outside a valid row
 		bookmarkListTableViewer.getTable().addMouseListener(new MouseAdapter()
 		{
@@ -335,30 +341,30 @@ public class BookmarksPart
 				}
 			}
 		});
-		
+
 	}
-	
+
 	private void setupPopupMenus()
 	{
 		popupMenu = menuService.registerContextMenu(bookmarkListTableViewer.getTable(), POPUP_MENU_ID);
-		
+
 		copyToMenu = (MMenu) modelService.find(COPY_TO_MENU_ID, popupMenu);
 		moveToMenu = (MMenu) modelService.find(MOVE_TO_MENU_ID, popupMenu);
-		
+
 		updateCopyToMenu();
 		updateMoveToMenu();
-		
+
 		bookmarks.addPropertyChangeListener("lists", new PropertyChangeListener() //$NON-NLS-1$
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				updateCopyToMenu();
-				updateMoveToMenu();
-			}
-		});
+				{
+					@Override
+					public void propertyChange(PropertyChangeEvent evt)
+					{
+						updateCopyToMenu();
+						updateMoveToMenu();
+					}
+				});
 	}
-	
+
 	private void updateCopyToMenu()
 	{
 		updateMenu(copyToMenu, CopyToListHandler.COMMAND_ID, CopyToListHandler.LIST_PARAMETER_ID);
@@ -368,7 +374,7 @@ public class BookmarksPart
 	{
 		updateMenu(moveToMenu, MoveToListHandler.COMMAND_ID, MoveToListHandler.LIST_PARAMETER_ID);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void updateMenu(MMenu menu, String commandId, String paramId)
 	{
@@ -379,7 +385,7 @@ public class BookmarksPart
 			child.setVisible(false);
 		}
 		menu.getChildren().clear();
-		
+
 		// Find the appropriate command
 		MCommand command = null;
 		for (MCommand c : application.getCommands())
@@ -390,7 +396,7 @@ public class BookmarksPart
 				break;
 			}
 		}
-		
+
 		// Add a menu item for each available list
 		for (IBookmarkList b : bookmarks.getLists())
 		{
@@ -401,42 +407,41 @@ public class BookmarksPart
 			menuItem.setType(ItemType.PUSH);
 			menuItem.setToBeRendered(true);
 			menuItem.setVisible(true);
-			
+
 			MParameter parameter = MCommandsFactory.INSTANCE.createParameter();
 			parameter.setName(paramId);
 			parameter.setValue(b.getId());
-			
+
 			menuItem.getParameters().add(parameter);
-			
+
 			menu.getChildren().add(menuItem);
 		}
-		
+
 		menu.setToBeRendered(true);
 		menu.setVisible(true);
-		
+
 		// This is a workaround for Bug 391340 to force the UI to re-sync with the application model
 		IRendererFactory rendererFactory = context.get(IRendererFactory.class);
-		AbstractPartRenderer renderer = rendererFactory.getRenderer(popupMenu, 
-																	bookmarkListTableViewer.getTable());
+		AbstractPartRenderer renderer = rendererFactory.getRenderer(popupMenu, bookmarkListTableViewer.getTable());
 		renderer.processContents((MElementContainer<MUIElement>) (Object) popupMenu);
 	}
-	
+
 	/**
 	 * @return The currently selected bookmark list from the combo box
 	 */
 	private IBookmarkList getSelectedBookmarkList()
 	{
-		return (IBookmarkList)((StructuredSelection)bookmarkListsComboViewer.getSelection()).getFirstElement();
+		return (IBookmarkList) ((StructuredSelection) bookmarkListsComboViewer.getSelection()).getFirstElement();
 	}
-	
+
 	/**
-	 * A simple {@link EditingSupport} implementation that provides in-place editing of 
-	 * bookmark names within the list
+	 * A simple {@link EditingSupport} implementation that provides in-place
+	 * editing of bookmark names within the list
 	 */
 	private static class BookmarkNameEditingSupport extends EditingSupport
 	{
 		private TableViewer viewer;
-		
+
 		public BookmarkNameEditingSupport(TableViewer viewer)
 		{
 			super(viewer);
@@ -458,19 +463,19 @@ public class BookmarksPart
 		@Override
 		protected Object getValue(Object element)
 		{
-			return ((IBookmark)element).getName();
+			return ((IBookmark) element).getName();
 		}
 
 		@Override
 		protected void setValue(Object element, Object value)
 		{
-			String stringValue = (String)value;
+			String stringValue = (String) value;
 			if (!Util.isBlank(stringValue))
 			{
-				((IBookmark)element).setName(stringValue);
+				((IBookmark) element).setName(stringValue);
 			}
 			viewer.update(element, null);
 		}
-		
+
 	}
 }

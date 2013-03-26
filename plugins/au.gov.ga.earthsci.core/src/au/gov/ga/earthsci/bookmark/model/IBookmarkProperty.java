@@ -16,12 +16,12 @@
 package au.gov.ga.earthsci.bookmark.model;
 
 /**
- * Represents a single property stored on a bookmark. A bookmark property stores state
- * about a specific aspect of the model/view that can be persisted between application invocations
- * and later re-applied. 
+ * Represents a single property stored on a bookmark. A bookmark property stores
+ * state about a specific aspect of the model/view that can be persisted between
+ * application invocations and later re-applied.
  * <p/>
- * Types of properties are uniquely identified by a type, and a bookmark may have at most one property
- * of each type.
+ * Types of properties are uniquely identified by a type, and a bookmark may
+ * have at most one property of each type.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -33,11 +33,13 @@ public interface IBookmarkProperty
 	 * @return The key that identifies the type of this property
 	 */
 	String getType();
-	
+
 	/**
-	 * Return the key to use for looking up the name for this property; or the name itself.
+	 * Return the key to use for looking up the name for this property; or the
+	 * name itself.
 	 * 
-	 * @return the key to use for looking up the name for this property; or the name itself.
+	 * @return the key to use for looking up the name for this property; or the
+	 *         name itself.
 	 */
 	String getName();
 }

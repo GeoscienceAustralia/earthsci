@@ -19,7 +19,7 @@ package au.gov.ga.earthsci.bookmark.part.editor;
  * A simple message interface for the bookmark editor mechanism
  * 
  * @author James Navin (james.navin@ga.gov.au)
- *
+ * 
  */
 public interface IBookmarkEditorMessage
 {
@@ -29,11 +29,11 @@ public interface IBookmarkEditorMessage
 		WARNING,
 		INFO
 	}
-	
+
 	String getCode();
-	
+
 	Level getLevel();
-	
+
 	String getMessage();
-	
+
 }

@@ -441,7 +441,7 @@ public class AbstractTreeNodeTest
 		assertEquals(classUnderTest, child0.getParent());
 		assertEquals(classUnderTest, child1.getParent());
 	}
-	
+
 	@Test
 	public void testMoveChildToInvalidIndex()
 	{

@@ -29,7 +29,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
  * The default {@link IBookmark} implementation
- *
+ * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 @Exportable
@@ -38,26 +38,27 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 
 	@Persistent
 	private String id;
-	
+
 	private String name;
 	private IBookmarkMetadata metadata = new BookmarkMetadata();
-	
+
 	private Long transitionDuration = null;
-	
+
 	private Map<String, IBookmarkProperty> properties = new ConcurrentHashMap<String, IBookmarkProperty>();
-	
+
 	public Bookmark()
 	{
 		this.name = Messages.Bookmark_DefaultBookmarkName;
 		this.id = UUID.randomUUID().toString();
 	}
-	
+
 	/**
 	 * Copy constructor.
 	 * <p/>
 	 * Performs a shallow copy, with a new ID
 	 * 
-	 * @param other The bookmark to copy
+	 * @param other
+	 *            The bookmark to copy
 	 */
 	public Bookmark(IBookmark other)
 	{
@@ -70,13 +71,13 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 		}
 		this.metadata = other.getMetadata();
 	}
-	
+
 	@Override
 	public String getId()
 	{
 		return id;
 	}
-	
+
 	@Override
 	@Persistent
 	public String getName()
@@ -89,14 +90,14 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 	{
 		firePropertyChange("name", this.name, this.name = name); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public IBookmarkMetadata getMetadata()
 	{
 		return metadata;
 	}
 
-	@Persistent(elementName="property")
+	@Persistent(elementName = "property")
 	@Override
 	@Adapter(BookmarkPropertyPersistentAdapter.class)
 	public IBookmarkProperty[] getProperties()
@@ -107,22 +108,22 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 	public void setProperties(IBookmarkProperty[] properties)
 	{
 		IBookmarkProperty[] oldProperties = getProperties();
-		
+
 		this.properties.clear();
 		for (IBookmarkProperty property : properties)
 		{
 			doAddProperty(property, false);
 		}
-		
+
 		firePropertyChange("properties", oldProperties, getProperties()); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public IBookmarkProperty getProperty(String type)
 	{
 		return properties.get(type);
 	}
-	
+
 	@Override
 	public void addProperty(IBookmarkProperty property)
 	{
@@ -135,21 +136,21 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 		{
 			return;
 		}
-		
+
 		IBookmarkProperty[] oldProperties = null;
 		if (fireEvent)
 		{
 			oldProperties = getProperties();
 		}
-		
+
 		this.properties.put(property.getType(), property);
-		
+
 		if (fireEvent)
 		{
 			firePropertyChange("properties", oldProperties, getProperties()); //$NON-NLS-1$
 		}
 	}
-	
+
 	@Override
 	public boolean removeProperty(IBookmarkProperty p)
 	{
@@ -157,10 +158,10 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 		{
 			return false;
 		}
-		
+
 		return removeProperty(p.getType()) != null;
 	}
-	
+
 	@Override
 	public IBookmarkProperty removeProperty(String type)
 	{
@@ -168,19 +169,19 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 		{
 			return null;
 		}
-		
+
 		IBookmarkProperty[] oldProperties = getProperties();
-		
+
 		IBookmarkProperty p = this.properties.remove(type);
-		
+
 		if (p != null)
 		{
 			firePropertyChange("properties", oldProperties, getProperties()); //$NON-NLS-1$
 		}
-		
+
 		return p;
 	}
-	
+
 	@Override
 	public boolean hasProperty(String type)
 	{
@@ -198,7 +199,7 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 	{
 		firePropertyChange("transitionDuration", this.transitionDuration, this.transitionDuration = duration); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -210,18 +211,18 @@ public class Bookmark extends AbstractPropertyChangeBean implements IBookmark
 		{
 			return false;
 		}
-		
-		IBookmark other = (IBookmark)obj;
-		
+
+		IBookmark other = (IBookmark) obj;
+
 		return id.equals(other.getId());
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
 		return id.hashCode();
 	}
-	
+
 	@Override
 	public String toString()
 	{

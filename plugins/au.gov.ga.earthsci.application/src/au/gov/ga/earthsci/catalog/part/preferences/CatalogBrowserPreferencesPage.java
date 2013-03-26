@@ -26,7 +26,7 @@ import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 import au.gov.ga.earthsci.core.preferences.SpacerFieldEditor;
 
 /**
- * The preference page for the 
+ * The preference page for the
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -35,37 +35,42 @@ public class CatalogBrowserPreferencesPage extends FieldEditorPreferencePage
 
 	private RadioGroupFieldEditor addNodeStructureModeEditor;
 	private RadioGroupFieldEditor deleteEmptyFoldersModeEditor;
-	
+
 	public CatalogBrowserPreferencesPage()
 	{
 		super(FLAT);
 		setTitle(Messages.CatalogBrowserPreferencesPage_PageTitle);
 		setDescription(Messages.CatalogBrowserPreferencesPage_PageDescription);
-		
-		IPreferenceStore store = new ScopedPreferenceStore(InstanceScope.INSTANCE, ICatalogBrowserPreferences.QUALIFIER_ID);
-		
+
+		IPreferenceStore store =
+				new ScopedPreferenceStore(InstanceScope.INSTANCE, ICatalogBrowserPreferences.QUALIFIER_ID);
+
 		setPreferenceStore(store);
 	}
-	
+
 	@Override
 	protected void createFieldEditors()
 	{
 		addField(new SpacerFieldEditor(getFieldEditorParent()));
-		
-		String[][] userActionPreferenceLabelValues = new String[][] {{Messages.CatalogBrowserPreferencesPage_AwlaysOptionLabel, UserActionPreference.ALWAYS.name()},
-																	 {Messages.CatalogBrowserPreferencesPage_NeverOptionLabel, UserActionPreference.NEVER.name()},
-																	 {Messages.CatalogBrowserPreferencesPage_AskOptionLabel, UserActionPreference.ASK.name()}};
-		
-		addNodeStructureModeEditor = new RadioGroupFieldEditor(ICatalogBrowserPreferences.ADD_NODE_STRUCTURE_MODE, Messages.CatalogBrowserPreferencesPage_AddNodeStructureMessage, 3, 
-															   userActionPreferenceLabelValues, 
-															   getFieldEditorParent(), false);
+
+		String[][] userActionPreferenceLabelValues =
+				new String[][] {
+						{ Messages.CatalogBrowserPreferencesPage_AwlaysOptionLabel, UserActionPreference.ALWAYS.name() },
+						{ Messages.CatalogBrowserPreferencesPage_NeverOptionLabel, UserActionPreference.NEVER.name() },
+						{ Messages.CatalogBrowserPreferencesPage_AskOptionLabel, UserActionPreference.ASK.name() } };
+
+		addNodeStructureModeEditor =
+				new RadioGroupFieldEditor(ICatalogBrowserPreferences.ADD_NODE_STRUCTURE_MODE,
+						Messages.CatalogBrowserPreferencesPage_AddNodeStructureMessage, 3,
+						userActionPreferenceLabelValues, getFieldEditorParent(), false);
 		addField(addNodeStructureModeEditor);
-		
+
 		addField(new SpacerFieldEditor(getFieldEditorParent()));
-		
-		deleteEmptyFoldersModeEditor = new RadioGroupFieldEditor(ICatalogBrowserPreferences.DELETE_EMPTY_FOLDERS_MODE, Messages.CatalogBrowserPreferencesPage_DeleteEmptyFoldersMessage, 3, 
-				   											     userActionPreferenceLabelValues, 
-				   											     getFieldEditorParent(), false);
+
+		deleteEmptyFoldersModeEditor =
+				new RadioGroupFieldEditor(ICatalogBrowserPreferences.DELETE_EMPTY_FOLDERS_MODE,
+						Messages.CatalogBrowserPreferencesPage_DeleteEmptyFoldersMessage, 3,
+						userActionPreferenceLabelValues, getFieldEditorParent(), false);
 		addField(deleteEmptyFoldersModeEditor);
 	}
 

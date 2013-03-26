@@ -40,7 +40,7 @@ public class Activator implements BundleActivator
 	{
 		Activator.context = bundleContext;
 		KeyboardFocusManagerFix.initialize();
-		
+
 		//create the preference initializers
 		DefaultScope.INSTANCE.getNode(getBundleName());
 	}
@@ -50,7 +50,7 @@ public class Activator implements BundleActivator
 	{
 		Activator.context = null;
 	}
-	
+
 	public static String getBundleName()
 	{
 		return context.getBundle().getSymbolicName();

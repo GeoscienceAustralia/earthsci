@@ -94,21 +94,37 @@ public class NewtEventConverterAWT
 	{
 		int awtMods = 0;
 		if ((newtMods & com.jogamp.newt.event.InputEvent.SHIFT_MASK) != 0)
+		{
 			awtMods |= java.awt.event.InputEvent.SHIFT_DOWN_MASK;
+		}
 		if ((newtMods & com.jogamp.newt.event.InputEvent.CTRL_MASK) != 0)
+		{
 			awtMods |= java.awt.event.InputEvent.CTRL_DOWN_MASK;
+		}
 		if ((newtMods & com.jogamp.newt.event.InputEvent.META_MASK) != 0)
+		{
 			awtMods |= java.awt.event.InputEvent.META_DOWN_MASK;
+		}
 		if ((newtMods & com.jogamp.newt.event.InputEvent.ALT_MASK) != 0)
+		{
 			awtMods |= java.awt.event.InputEvent.ALT_DOWN_MASK;
+		}
 		if ((newtMods & com.jogamp.newt.event.InputEvent.ALT_GRAPH_MASK) != 0)
+		{
 			awtMods |= java.awt.event.InputEvent.ALT_GRAPH_MASK;
+		}
 		if ((newtMods & com.jogamp.newt.event.InputEvent.BUTTON1_MASK) != 0)
+		{
 			awtMods |= java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
+		}
 		if ((newtMods & com.jogamp.newt.event.InputEvent.BUTTON2_MASK) != 0)
+		{
 			awtMods |= java.awt.event.InputEvent.BUTTON2_DOWN_MASK;
+		}
 		if ((newtMods & com.jogamp.newt.event.InputEvent.BUTTON3_MASK) != 0)
+		{
 			awtMods |= java.awt.event.InputEvent.BUTTON3_DOWN_MASK;
+		}
 		return awtMods;
 	}
 

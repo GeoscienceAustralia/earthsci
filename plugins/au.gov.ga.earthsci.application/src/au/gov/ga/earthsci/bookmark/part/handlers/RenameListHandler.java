@@ -33,16 +33,16 @@ public class RenameListHandler
 
 	@Inject
 	private IBookmarksController controller;
-	
+
 	@Inject
 	private IBookmarks bookmarks;
-	
+
 	@Execute
 	public void execute()
 	{
 		controller.renameBookmarkList(controller.getCurrentList());
 	}
-	
+
 	@CanExecute
 	public boolean canExecute()
 	{

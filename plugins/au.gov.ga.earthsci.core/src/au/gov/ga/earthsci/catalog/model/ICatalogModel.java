@@ -18,7 +18,7 @@ package au.gov.ga.earthsci.catalog.model;
 /**
  * Represents the model of the available catalogs.
  * <p/>
- * The catalog model contains a single root node which acts as a 
+ * The catalog model contains a single root node which acts as a
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -27,46 +27,52 @@ public interface ICatalogModel
 	/**
 	 * Return the root node of this model.
 	 * <p/>
-	 * The root node contains each of the top-level catalogs in the model. It
-	 * is a special-case node that will not usually be displayed to the user, instead
-	 * acting as a container for other catalog trees.
+	 * The root node contains each of the top-level catalogs in the model. It is
+	 * a special-case node that will not usually be displayed to the user,
+	 * instead acting as a container for other catalog trees.
 	 * 
 	 * @return The root node of the current model.
 	 * 
 	 * @see #getTopLevelCatalogs()
 	 */
 	ICatalogTreeNode getRoot();
-	
+
 	/**
-	 * Return the top-level catalogs present in this model. May be empty if
-	 * no catalogs are present.
+	 * Return the top-level catalogs present in this model. May be empty if no
+	 * catalogs are present.
 	 * <p/>
-	 * In most cases this will be equivalent to calling {@code getRoot().getChildren()}
+	 * In most cases this will be equivalent to calling
+	 * {@code getRoot().getChildren()}
 	 * 
 	 * @return The ordered list of top-level catalogs in this model
 	 */
 	ICatalogTreeNode[] getTopLevelCatalogs();
-	
+
 	/**
 	 * Add the provided catalog tree as a top-level catalog to this model.
 	 * 
-	 * @param catalog The root node of the catalog tree to add to this model.
+	 * @param catalog
+	 *            The root node of the catalog tree to add to this model.
 	 */
 	void addTopLevelCatalog(ICatalogTreeNode catalog);
-	
+
 	/**
 	 * Add the provided catalog tree nodes as top-level catalogs to this model.
 	 * 
-	 * @param catalogs The root nodes of the catalog tree to add to this model.
+	 * @param catalogs
+	 *            The root nodes of the catalog tree to add to this model.
 	 */
 	void addTopLevelCatalogs(ICatalogTreeNode[] catalogs);
-	
+
 	/**
-	 * Add the provided catalog tree node at the given index. If index is out of bounds, insertion will
-	 * occur at the start/end of the child list as appropriate.
+	 * Add the provided catalog tree node at the given index. If index is out of
+	 * bounds, insertion will occur at the start/end of the child list as
+	 * appropriate.
 	 * 
-	 * @param index The index at which to insert the catalog
-	 * @param catalog The catalog to insert
+	 * @param index
+	 *            The index at which to insert the catalog
+	 * @param catalog
+	 *            The catalog to insert
 	 */
 	void addTopLevelCatalog(int index, ICatalogTreeNode catalog);
 }

@@ -93,7 +93,9 @@ public class IntentFilter
 		{
 			String name = child.getAttribute(attributeName);
 			if (!isEmpty(name))
+			{
 				set.add(name);
+			}
 		}
 	}
 
@@ -107,7 +109,9 @@ public class IntentFilter
 			{
 				IContentType contentType = Platform.getContentTypeManager().getContentType(value);
 				if (contentType != null)
+				{
 					set.add(contentType);
+				}
 			}
 		}
 	}
@@ -121,7 +125,9 @@ public class IntentFilter
 			{
 				Class<?> c = ExtensionPointHelper.getClassForProperty(child, attributeName);
 				if (c != null)
+				{
 					set.add(c);
+				}
 			}
 			catch (ClassNotFoundException e)
 			{
@@ -374,32 +380,44 @@ public class IntentFilter
 	public boolean matches(Intent intent)
 	{
 		if (intent == null)
+		{
 			return false;
+		}
 
 		//first check intent action
 		if (!actions.isEmpty() && !actions.contains(intent.getAction()))
+		{
 			return false;
+		}
 
 		//next check that this contains all intent categories
 		if (!categories.containsAll(intent.getCategories()))
+		{
 			return false;
+		}
 
 		//if a content type is defined by one but not the other, no chance of matching
 		if ((intent.getContentType() == null) != contentTypes.isEmpty())
+		{
 			return false;
+		}
 
 		//if there are content types defined, check if any match the content type of the intent
 		if (!contentTypes.isEmpty())
 		{
 			if (!anyContentTypesMatch(intent.getContentType()))
+			{
 				return false;
+			}
 		}
 
 		//if both intent and filter have a return type defined, check that at least one matches
 		if (intent.getExpectedReturnType() != null && !returnTypes.isEmpty())
 		{
 			if (!anyReturnTypesMatch(intent.getExpectedReturnType()))
+			{
 				return false;
+			}
 		}
 
 		//if there are any schemes/authorities/paths defined, check if any match the URI of the intent (in that order)
@@ -407,20 +425,28 @@ public class IntentFilter
 		{
 			URI uri = intent.getURI();
 			if (uri == null)
+			{
 				return false;
+			}
 
 			if (!anyMatchesUsingWildcards(uri.getScheme(), dataSchemes))
+			{
 				return false;
+			}
 
 			if (!dataAuthorities.isEmpty())
 			{
 				if (!anyMatchesUsingWildcards(uri.getAuthority(), dataAuthorities))
+				{
 					return false;
+				}
 
 				if (!dataPaths.isEmpty())
 				{
 					if (!anyMatchesUsingWildcards(uri.getPath(), dataPaths))
+					{
 						return false;
+					}
 				}
 			}
 		}
@@ -431,18 +457,30 @@ public class IntentFilter
 	public boolean anyContentTypesMatch(IContentType expectedContentType)
 	{
 		if (expectedContentType != null)
+		{
 			for (IContentType contentType : contentTypes)
+			{
 				if (expectedContentType.isKindOf(contentType))
+				{
 					return true;
+				}
+			}
+		}
 		return false;
 	}
 
 	public boolean anyReturnTypesMatch(Class<?> expectedReturnType)
 	{
 		if (expectedReturnType != null)
+		{
 			for (Class<?> returnType : returnTypes)
+			{
 				if (expectedReturnType.isAssignableFrom(returnType))
+				{
 					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -458,7 +496,9 @@ public class IntentFilter
 			String quoted = Pattern.quote(pattern);
 			String regex = quoted.replace("*", "\\E.*\\Q"); //$NON-NLS-1$ //$NON-NLS-2$
 			if (Pattern.matches(regex, input))
+			{
 				return true;
+			}
 		}
 		return false;
 	}

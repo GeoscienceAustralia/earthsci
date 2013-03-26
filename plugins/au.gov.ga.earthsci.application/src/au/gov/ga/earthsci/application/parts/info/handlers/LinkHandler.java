@@ -37,12 +37,12 @@ public class LinkHandler
 
 	@Inject
 	private EModelService service;
-	
+
 	@PostConstruct
 	public void init(MPart part)
 	{
 		MToolItem toolItem = (MToolItem) service.find(TOOL_ITEM_ID, part.getToolbar());
-		if(toolItem != null)
+		if (toolItem != null)
 		{
 			toolItem.setSelected(isLink(part));
 		}

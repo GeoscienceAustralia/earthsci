@@ -48,13 +48,13 @@ public class ShowPreferencesHandler
 
 	@Inject
 	private Logger logger;
-	
+
 	@PostConstruct
 	public void postInitialise(IEclipseContext context)
 	{
 		PreferenceUtil.setLogger(logger);
 	}
-	
+
 	@Execute
 	public void execute(IEclipseContext context, @Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 			throws InvocationTargetException, InterruptedException

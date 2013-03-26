@@ -23,11 +23,11 @@ import au.gov.ga.earthsci.core.math.vector.Vector;
 /**
  * An implementation of a Cubic Bezier curve.
  * <p/>
- * This class provides helper methods for retrieving the value of the 
- * curve at a point along the curve.
+ * This class provides helper methods for retrieving the value of the curve at a
+ * point along the curve.
  * <p/>
- * This implementation is immutable and discretises the curve by sampling 
- * at a specified number of points along the curve.
+ * This implementation is immutable and discretises the curve by sampling at a
+ * specified number of points along the curve.
  * 
  * @see http://en.wikipedia.org/wiki/B%C3%A9zier_curve
  * 
@@ -45,34 +45,43 @@ public class Bezier<V extends Vector<V>> implements Serializable
 
 	/** The number of points to sample along the curve */
 	private final int numSubdivisions;
-	
+
 	// The 4 control points needed to define the cubic bezier
-	/** The beginning value of the bezier. The curve will pass through this point. */
+	/**
+	 * The beginning value of the bezier. The curve will pass through this
+	 * point.
+	 */
 	private final V begin;
-	
+
 	/** The control point to use when exiting the beginning point. */
 	private final V out;
-	
+
 	/** The control point to use when entering the end point. */
 	private final V in;
-	
+
 	/** The end value of the bezier. The curve will pass through this point. */
 	private final V end;
 
 	/** The sampled points along the curve */
 	private double[] percents;
-	
+
 	/** The length of the curve */
 	private double length;
 
 	/**
-	 * Construct a new Bezier with the provided control points, using the default number of
-	 * subdivisions to sample the curve.
+	 * Construct a new Bezier with the provided control points, using the
+	 * default number of subdivisions to sample the curve.
 	 * 
-	 * @param begin The beginning value of the bezier. The curve will pass through this point.
-	 * @param out The control point to use when exiting the beginning point
-	 * @param in The control point to use when entering the end point
-	 * @param end The end value of the bezier. The curve will pass through this point.
+	 * @param begin
+	 *            The beginning value of the bezier. The curve will pass through
+	 *            this point.
+	 * @param out
+	 *            The control point to use when exiting the beginning point
+	 * @param in
+	 *            The control point to use when entering the end point
+	 * @param end
+	 *            The end value of the bezier. The curve will pass through this
+	 *            point.
 	 */
 	public Bezier(V begin, V out, V in, V end)
 	{
@@ -80,14 +89,21 @@ public class Bezier<V extends Vector<V>> implements Serializable
 	}
 
 	/**
-	 * Construct a new Bezier with the provided control points, using the provided number of subdivisions to 
-	 * sample the curve.
+	 * Construct a new Bezier with the provided control points, using the
+	 * provided number of subdivisions to sample the curve.
 	 * 
-	 * @param begin The beginning value of the bezier. The curve will pass through this point.
-	 * @param out The control point to use when exiting the beginning point
-	 * @param in The control point to use when entering the end point
-	 * @param end The end value of the bezier. The curve will pass through this point.
-	 * @param numSubdivisions The number of subdivisions to use to sample the curve
+	 * @param begin
+	 *            The beginning value of the bezier. The curve will pass through
+	 *            this point.
+	 * @param out
+	 *            The control point to use when exiting the beginning point
+	 * @param in
+	 *            The control point to use when entering the end point
+	 * @param end
+	 *            The end value of the bezier. The curve will pass through this
+	 *            point.
+	 * @param numSubdivisions
+	 *            The number of subdivisions to use to sample the curve
 	 */
 	public Bezier(V begin, V out, V in, V end, int numSubdivisions)
 	{
@@ -95,7 +111,7 @@ public class Bezier<V extends Vector<V>> implements Serializable
 		Validate.notNull(out, "An out value is required"); //$NON-NLS-1$
 		Validate.notNull(in, "A in value is required"); //$NON-NLS-1$
 		Validate.notNull(end, "A end value is required"); //$NON-NLS-1$
-		
+
 		this.begin = begin;
 		this.end = end;
 		this.out = out;
@@ -103,10 +119,10 @@ public class Bezier<V extends Vector<V>> implements Serializable
 		this.numSubdivisions = numSubdivisions;
 		subdivide();
 	}
-	
+
 	/**
-	 * Samples the bezier curve at {@link #numSubdivisions} points and populates the
-	 * {@link #percents} array.
+	 * Samples the bezier curve at {@link #numSubdivisions} points and populates
+	 * the {@link #percents} array.
 	 */
 	private void subdivide()
 	{
@@ -115,7 +131,7 @@ public class Bezier<V extends Vector<V>> implements Serializable
 
 		V begin = this.begin.clone();
 		V end;
-		
+
 		for (int i = 0; i < numSubdivisions; i++)
 		{
 			double t = (i + 1) / (double) numSubdivisions;
@@ -144,9 +160,12 @@ public class Bezier<V extends Vector<V>> implements Serializable
 	}
 
 	/**
-	 * Obtain the point on the curve that is <code>percent</code> of the way along the curve
+	 * Obtain the point on the curve that is <code>percent</code> of the way
+	 * along the curve
 	 * 
-	 * @param percent The percent along the curve to sample. In range <code>[0,1]</code>
+	 * @param percent
+	 *            The percent along the curve to sample. In range
+	 *            <code>[0,1]</code>
 	 * 
 	 * @return The value at the given percentage along the curve
 	 */
@@ -201,7 +220,7 @@ public class Bezier<V extends Vector<V>> implements Serializable
 
 		return v3.subtractLocal(v2).multLocal(t).addLocal(v2);
 	}
-	
+
 	/**
 	 * @return The number or subdivisions used in this bezier
 	 */

@@ -153,7 +153,7 @@ public class PersisterTest
 		named.setField(3254235);
 		performTest(named, "testNamedPersistant.xml");
 	}
-	
+
 	@Test
 	public void testNamedMethodPersistant() throws PersistenceException
 	{
@@ -181,25 +181,29 @@ public class PersisterTest
 		IPersistentAdapter<Date> adapter = new IPersistentAdapter<Date>()
 		{
 			@Override
-			public void toXML(Date object, Element element, URI context){}
-			
+			public void toXML(Date object, Element element, URI context)
+			{
+			}
+
 			@Override
 			public Date fromXML(Element element, URI context)
 			{
 				return new Date(123456);
 			}
 		};
-		
+
 		Persister p = new Persister();
 		p.registerAdapter(Date.class, adapter);
 		p.registerNamedExportable(Date.class, "myDate");
-		
-		Object loaded = p.load(WWXML.openDocument(this.getClass().getResourceAsStream("testNamedNonExportableWithAdapter.xml")).getDocumentElement(), null);
-		
+
+		Object loaded =
+				p.load(WWXML.openDocument(this.getClass().getResourceAsStream("testNamedNonExportableWithAdapter.xml"))
+						.getDocumentElement(), null);
+
 		assertNotNull(loaded);
 		assertEquals(new Date(123456), loaded);
 	}
-	
+
 	protected void performTest(Object o, String expectedResourceName) throws PersistenceException
 	{
 		performTest(o, new Persister(), expectedResourceName);
@@ -222,19 +226,20 @@ public class PersisterTest
 			Object loaded = persister.load(child, null);
 			Assert.assertEquals(saved, loaded);
 
-			
+
 			XMLUnit.setIgnoreWhitespace(true);
 			XMLUnit.setIgnoreAttributeOrder(true);
-			Diff diff = new Diff(XmlUtil.openDocument(this.getClass().getResourceAsStream(expectedResourceName)), document);
+			Diff diff =
+					new Diff(XmlUtil.openDocument(this.getClass().getResourceAsStream(expectedResourceName)), document);
 			DetailedDiff dd = new DetailedDiff(diff);
-			
+
 			StringBuffer msg = new StringBuffer();
 			for (Object o : dd.getAllDifferences())
 			{
 				msg.append(o);
 			}
 			assertTrue(msg.toString(), dd.similar());
-			
+
 		}
 		catch (PersistenceException e)
 		{

@@ -32,10 +32,13 @@ public class LayersProperty implements IBookmarkProperty
 {
 
 	public static final String TYPE = "au.gov.ga.earthsci.bookmark.properties.layers"; //$NON-NLS-1$
-	
-	/** Map of {@code Layer URI -> opacity}. Inclusion in the map implies enabled. */
+
+	/**
+	 * Map of {@code Layer URI -> opacity}. Inclusion in the map implies
+	 * enabled.
+	 */
 	private Map<URI, Double> layerState = new ConcurrentHashMap<URI, Double>();
-	
+
 	@Override
 	public String getType()
 	{
@@ -47,11 +50,11 @@ public class LayersProperty implements IBookmarkProperty
 	{
 		return Messages.LayersProperty_Name;
 	}
-	
+
 	/**
 	 * Return the (unmodifiable) layer state recorded on this property.
 	 * <p/>
-	 * To add additional layer state, use {@link #addLayer}. 
+	 * To add additional layer state, use {@link #addLayer}.
 	 */
 	public Map<URI, Double> getLayerState()
 	{
@@ -66,16 +69,18 @@ public class LayersProperty implements IBookmarkProperty
 		layerState.clear();
 		layerState.putAll(newLayerState);
 	}
-	
+
 	/**
 	 * Add additional layer state to this property.
 	 * 
-	 * @param uri The URI of the layer
-	 * @param opacity The opacity of the layer
+	 * @param uri
+	 *            The URI of the layer
+	 * @param opacity
+	 *            The opacity of the layer
 	 */
 	public void addLayer(URI uri, Double opacity)
 	{
 		layerState.put(uri, opacity);
 	}
-	
+
 }

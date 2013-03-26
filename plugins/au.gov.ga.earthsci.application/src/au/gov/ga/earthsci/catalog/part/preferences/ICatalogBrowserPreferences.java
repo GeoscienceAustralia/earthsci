@@ -18,8 +18,8 @@ package au.gov.ga.earthsci.catalog.part.preferences;
 import au.gov.ga.earthsci.application.util.UserActionPreference;
 
 /**
- * An interface for objects that can provide user preferences to the 
- * catalog browser and its components.
+ * An interface for objects that can provide user preferences to the catalog
+ * browser and its components.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -28,27 +28,28 @@ public interface ICatalogBrowserPreferences
 	String QUALIFIER_ID = "au.gov.ga.earthsci.catalog"; //$NON-NLS-1$
 	String ADD_NODE_STRUCTURE_MODE = "au.gov.ga.earthsci.catalog.preferences.addNodeStructure"; //$NON-NLS-1$
 	String DELETE_EMPTY_FOLDERS_MODE = "au.gov.ga.earthsci.catalog.preferences.deleteEmptyFolders"; //$NON-NLS-1$
-	
+
 	/**
-	 * Return the user's preference for adding the complete tree structure
-	 * when a leaf (layer) node is added.
+	 * Return the user's preference for adding the complete tree structure when
+	 * a leaf (layer) node is added.
 	 */
 	UserActionPreference getAddNodeStructureMode();
 
 	/**
-	 * Set the user's preference for adding the complete tree structure when a leaf node is added.
+	 * Set the user's preference for adding the complete tree structure when a
+	 * leaf node is added.
 	 */
 	void setAddNodeStructureMode(UserActionPreference mode);
-	
+
 	/**
-	 * Return the user's preference for removing empty folder nodes from the layer tree
-	 * when all children are removed using the catalog browser.
+	 * Return the user's preference for removing empty folder nodes from the
+	 * layer tree when all children are removed using the catalog browser.
 	 */
 	UserActionPreference getDeleteEmptyFoldersMode();
-	
+
 	/**
-	 * Set the user's preference for removing empty folder nodes from the layer tree
-	 * when all children are removed using the catalog browser
+	 * Set the user's preference for removing empty folder nodes from the layer
+	 * tree when all children are removed using the catalog browser
 	 */
 	void setDeleteEmptyFoldersMode(UserActionPreference mode);
 }

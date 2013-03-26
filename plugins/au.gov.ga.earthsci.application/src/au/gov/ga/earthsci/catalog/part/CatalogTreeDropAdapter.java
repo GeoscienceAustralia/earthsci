@@ -33,17 +33,18 @@ import au.gov.ga.earthsci.catalog.model.LoadingCatalogTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 /**
- * A {@link ViewerDropAdapter} that provides drag-and-drop support for the catalog browser part.
+ * A {@link ViewerDropAdapter} that provides drag-and-drop support for the
+ * catalog browser part.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 class CatalogTreeDropAdapter extends ViewerDropAdapter
 {
 	private static final Logger logger = LoggerFactory.getLogger(CatalogTreeDropAdapter.class);
-	
+
 	private final ICatalogModel model;
 	private final IEclipseContext context;
-	
+
 	protected CatalogTreeDropAdapter(Viewer viewer, ICatalogModel model, IEclipseContext context)
 	{
 		super(viewer);
@@ -55,28 +56,29 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 	public boolean validateDrop(Object target, int operation, TransferData transferType)
 	{
 		// Only allow drops at the top level
-		if (target != null && (((ICatalogTreeNode)target).getParent() != model.getRoot() || getCurrentLocation() == LOCATION_ON))
+		if (target != null
+				&& (((ICatalogTreeNode) target).getParent() != model.getRoot() || getCurrentLocation() == LOCATION_ON))
 		{
 			return false;
 		}
 		return FileTransfer.getInstance().isSupportedType(transferType);
 	}
-	
+
 	@Override
 	public boolean performDrop(Object data)
 	{
 		logger.trace("Received drop: {}", data); //$NON-NLS-1$
-		
+
 		if (data == null)
 		{
 			return false;
 		}
-		
+
 		if (isFileDrop())
 		{
 			return doFileDrop(data);
 		}
-		
+
 		return false;
 	}
 
@@ -84,13 +86,13 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 	{
 		return FileTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType);
 	}
-	
+
 	private boolean doFileDrop(Object data)
 	{
 		logger.trace("Processing drop as file data", data); //$NON-NLS-1$
-		
-		String[] filenames = (String[])data;
-		
+
+		String[] filenames = (String[]) data;
+
 		int index = getDropIndex();
 		for (String filename : filenames)
 		{
@@ -102,7 +104,7 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 		}
 		return true;
 	}
-	
+
 	private int getDropIndex()
 	{
 		ITreeNode<?> target = (ITreeNode<?>) getCurrentTarget();
@@ -110,13 +112,13 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 		{
 			return model.getRoot().getChildCount();
 		}
-		
+
 		int location = getCurrentLocation();
 		if (location == LOCATION_NONE)
 		{
 			return model.getRoot().getChildCount();
 		}
-				
+
 		return location == LOCATION_BEFORE ? target.index() : target.index() + 1;
 	}
 }

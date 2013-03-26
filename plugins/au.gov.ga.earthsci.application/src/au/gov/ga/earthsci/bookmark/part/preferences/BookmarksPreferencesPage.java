@@ -51,49 +51,50 @@ public class BookmarksPreferencesPage extends FieldEditorPreferencePage
 	private BooleanFieldEditor askForDeleteConfirmationEditor;
 	private MultiSelectTableListFieldEditor<IBookmarkProperty> defaultProperties;
 	private Map<String, IBookmarkProperty> cachedProperties;
-	
+
 	public BookmarksPreferencesPage()
 	{
 		super(GRID);
 		setTitle(Messages.BookmarksPreferencesPage_Title);
 		setDescription(Messages.BookmarksPreferencesPage_Description);
-		
+
 		IPreferenceStore store = new ScopedPreferenceStore(InstanceScope.INSTANCE, IBookmarksPreferences.QUALIFIER_ID);
-		
+
 		setPreferenceStore(store);
 	}
-	
+
 	@Override
 	protected void createFieldEditors()
 	{
 		addField(new SpacerFieldEditor(getFieldEditorParent()));
-		
-		transitionDurationEditor = new IntegerFieldEditor(IBookmarksPreferences.DEFAULT_TRANSITION_DURATION, 
-														  Messages.BookmarksPreferencesPage_TransitionDurationFieldTitle, 
-														  getFieldEditorParent());
+
+		transitionDurationEditor =
+				new IntegerFieldEditor(IBookmarksPreferences.DEFAULT_TRANSITION_DURATION,
+						Messages.BookmarksPreferencesPage_TransitionDurationFieldTitle, getFieldEditorParent());
 		addField(transitionDurationEditor);
-		
-		
-		playBookmarksWaitDurationEditor = new IntegerFieldEditor(IBookmarksPreferences.PLAY_BOOKMARKS_WAIT_DURATION, 
-																 Messages.BookmarksPreferencesPage_PlayBookmarksPauseDurationLabel, 
-																 getFieldEditorParent());
-		
+
+
+		playBookmarksWaitDurationEditor =
+				new IntegerFieldEditor(IBookmarksPreferences.PLAY_BOOKMARKS_WAIT_DURATION,
+						Messages.BookmarksPreferencesPage_PlayBookmarksPauseDurationLabel, getFieldEditorParent());
+
 		addField(playBookmarksWaitDurationEditor);
-		
+
 		addField(new SpacerFieldEditor(getFieldEditorParent()));
-		
-		askForDeleteConfirmationEditor = new BooleanFieldEditor(IBookmarksPreferences.ASK_LIST_DELETE_CONFIRM,
-																Messages.BookmarksPreferencesPage_AskConfirmDeleteLabel, 
-																getFieldEditorParent());
+
+		askForDeleteConfirmationEditor =
+				new BooleanFieldEditor(IBookmarksPreferences.ASK_LIST_DELETE_CONFIRM,
+						Messages.BookmarksPreferencesPage_AskConfirmDeleteLabel, getFieldEditorParent());
 		addField(askForDeleteConfirmationEditor);
-		
+
 		addField(new SpacerFieldEditor(getFieldEditorParent()));
-		
-		LabelFieldEditor defaultPropertiesLabel = new LabelFieldEditor(Messages.BookmarksPreferencesPage_DefaultPropertiesLabel, getFieldEditorParent());
+
+		LabelFieldEditor defaultPropertiesLabel =
+				new LabelFieldEditor(Messages.BookmarksPreferencesPage_DefaultPropertiesLabel, getFieldEditorParent());
 		addField(defaultPropertiesLabel);
-		
+
 		loadAvailableBookmarkProperties();
-		
+
 		ITableItemCreator<IBookmarkProperty> tableItemCreator = new ITableItemCreator<IBookmarkProperty>()
 		{
 			@Override
@@ -104,8 +105,9 @@ public class BookmarksPreferencesPage extends FieldEditorPreferencePage
 				return item;
 			}
 		};
-		
-		IItemSerializer<IBookmarkProperty> itemSerializer = new IItemSerializer<IBookmarkProperty>() {
+
+		IItemSerializer<IBookmarkProperty> itemSerializer = new IItemSerializer<IBookmarkProperty>()
+		{
 
 			@Override
 			public String asString(IBookmarkProperty object)
@@ -120,13 +122,12 @@ public class BookmarksPreferencesPage extends FieldEditorPreferencePage
 			}
 
 		};
-		
-		defaultProperties = new MultiSelectTableListFieldEditor<IBookmarkProperty>(IBookmarksPreferences.DEFAULT_PROPERTIES, 
-																		new ArrayList<IBookmarkProperty>(cachedProperties.values()),
-																		new String[] {Messages.BookmarksPreferencesPage_PropertyColumn},
-																		tableItemCreator,
-																		itemSerializer, 
-																		getFieldEditorParent());
+
+		defaultProperties =
+				new MultiSelectTableListFieldEditor<IBookmarkProperty>(IBookmarksPreferences.DEFAULT_PROPERTIES,
+						new ArrayList<IBookmarkProperty>(cachedProperties.values()),
+						new String[] { Messages.BookmarksPreferencesPage_PropertyColumn }, tableItemCreator,
+						itemSerializer, getFieldEditorParent());
 		addField(defaultProperties);
 	}
 

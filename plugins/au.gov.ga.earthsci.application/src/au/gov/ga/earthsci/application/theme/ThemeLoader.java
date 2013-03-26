@@ -45,13 +45,14 @@ import au.gov.ga.earthsci.application.Activator;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
- * Sets the theme on the current theme engine to that specified in the 
- * {@value #DEFAULT_THEME_EXTENSION_POINT_ID} extension, and loads icon overrides
- * specified in the {@value #ICON_PROVIDER_EXTENSION_POINT_ID} extension.
+ * Sets the theme on the current theme engine to that specified in the
+ * {@value #DEFAULT_THEME_EXTENSION_POINT_ID} extension, and loads icon
+ * overrides specified in the {@value #ICON_PROVIDER_EXTENSION_POINT_ID}
+ * extension.
  * <p/>
- * Allows plugins to provide a complete theme replacement for the application without the need
- * for user-controlled switching. If no contributions are found in the extension points, the default
- * platform look-and-feel is used.
+ * Allows plugins to provide a complete theme replacement for the application
+ * without the need for user-controlled switching. If no contributions are found
+ * in the extension points, the default platform look-and-feel is used.
  * <p/>
  * Uses extension points:
  * <ul>
@@ -69,21 +70,22 @@ public class ThemeLoader
 
 	public static final String DEFAULT_THEME_EXTENSION_POINT_ID = "au.gov.ga.earthsci.application.defaultTheme"; //$NON-NLS-1$
 	public static final String DEFAULT_THEME_ID_ATTRIBUTE = "themeId"; //$NON-NLS-1$
-	
-	public static final String ICON_PROVIDER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.application.iconReplacementProvider"; //$NON-NLS-1$
-	
+
+	public static final String ICON_PROVIDER_EXTENSION_POINT_ID =
+			"au.gov.ga.earthsci.application.iconReplacementProvider"; //$NON-NLS-1$
+
 	public static final String ID_TO_ICON_MAPPING_ELEMENT = "idToIconMapping"; //$NON-NLS-1$
 	public static final String ID_ATTRIBUTE = "elementID"; //$NON-NLS-1$
 	public static final String ICON_ATTRIBUTE = "icon"; //$NON-NLS-1$
-	
+
 	public static final String ID_TO_ICON_PROPERTIES_ELEMENT = "idToIconProperties"; //$NON-NLS-1$
 	public static final String PROPERTIES_ATTRIBUTE = "properties"; //$NON-NLS-1$
 
 	private static final Logger logger = LoggerFactory.getLogger(ThemeLoader.class);
-	
+
 	@Inject
 	private IExtensionRegistry registry;
-	
+
 	@Optional
 	@Inject
 	public void setupTheme(IThemeEngine engine)
@@ -92,12 +94,12 @@ public class ThemeLoader
 		{
 			return;
 		}
-		
+
 		// This is done in the setter to ensure that the theme engine is available
 		// (the engine only becomes available once the part renderer is instantiated)
 		// The DI engine invokes the setter only once the engine is available 
 		// (vs. a PostConstruct method which is invoked immediately after the object is instantiated).
-		
+
 		logger.debug("Loading plugin contributed theme"); //$NON-NLS-1$
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(DEFAULT_THEME_EXTENSION_POINT_ID);
 		if (config.length == 0)
@@ -105,12 +107,12 @@ public class ThemeLoader
 			logger.debug("No plugin contributed theme found"); //$NON-NLS-1$
 			return;
 		}
-		
+
 		String themeId = config[0].getAttribute(DEFAULT_THEME_ID_ATTRIBUTE);
 		engine.setTheme(themeId, true);
 		logger.debug("Switched to theme {} from plugin {}", themeId, config[0].getContributor().getName()); //$NON-NLS-1$
 	}
-	
+
 	@Optional
 	@Inject
 	public void setupIcons(MApplication application, EModelService modelService)
@@ -119,10 +121,10 @@ public class ThemeLoader
 		{
 			return;
 		}
-	
+
 		logger.debug("Loading plugin contributed icons"); //$NON-NLS-1$
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(ICON_PROVIDER_EXTENSION_POINT_ID);
-		
+
 		Set<MUILabel> elements = findAllLabels(application, modelService);
 		Map<String, URI> iconOverrides = findIdToIconMappings(config);
 
@@ -137,9 +139,9 @@ public class ThemeLoader
 		// Apply the icon overrides
 		for (MUILabel l : elements)
 		{
-			String elementId = ((MUIElement)l).getElementId();
+			String elementId = ((MUIElement) l).getElementId();
 			URI icon = iconOverrides.get(elementId);
-			
+
 			// A mapping to null means no icon
 			// Absence of a mapping means leave as-is
 			if (icon != null)
@@ -154,55 +156,54 @@ public class ThemeLoader
 	}
 
 	/**
-	 * Extract all of the {@code elementID->Icon} mappings from the provided configuration elements
+	 * Extract all of the {@code elementID->Icon} mappings from the provided
+	 * configuration elements
 	 */
 	private Map<String, URI> findIdToIconMappings(IConfigurationElement[] config)
 	{
 		Map<String, URI> elementMappings = new HashMap<String, URI>();
-		
+
 		// Load the mappings from the config elements
 		for (IConfigurationElement element : config)
 		{
 			String contributingPlugin = element.getContributor().getName();
-			
+
 			logger.debug("Loading icons from plugin {}", contributingPlugin); //$NON-NLS-1$
-			
+
 			if (ID_TO_ICON_MAPPING_ELEMENT.equals(element.getName()))
 			{
 				String iconRelativePath = element.getAttribute(ICON_ATTRIBUTE);
 				String elementID = element.getAttribute(ID_ATTRIBUTE);
-				
+
 				addMapping(elementMappings, elementID, contributingPlugin, iconRelativePath);
 			}
 			if (ID_TO_ICON_PROPERTIES_ELEMENT.equals(element.getName()))
 			{
 				String propertiesRelativePath = element.getAttribute(PROPERTIES_ATTRIBUTE);
-				
+
 				addMappingsFromProperties(elementMappings, contributingPlugin, propertiesRelativePath);
 			}
 		}
-		
+
 		if (config.length == 0)
 		{
 			logger.debug("Loading default icons"); //$NON-NLS-1$
 			addMappingsFromProperties(elementMappings, Activator.getBundleName(), DEFAULT_ICONS_PROPERTIES);
 		}
-		
+
 		return elementMappings;
 	}
 
 	/**
 	 * Add a single mapping to the provided map
 	 */
-	private void addMapping(Map<String, URI> elementMappings, 
-							String elementID, 
-							String contributingPlugin,
-							String iconRelativePath)
+	private void addMapping(Map<String, URI> elementMappings, String elementID, String contributingPlugin,
+			String iconRelativePath)
 	{
 		try
 		{
 			URI iconURI = makePluginUri(contributingPlugin, iconRelativePath);
-			
+
 			elementMappings.put(elementID, iconURI);
 		}
 		catch (Exception e)
@@ -214,9 +215,8 @@ public class ThemeLoader
 	/**
 	 * Add all mappings from the provided properties file
 	 */
-	private void addMappingsFromProperties(Map<String, URI> elementMappings, 
-										   String contributingPlugin, 
-										   String propertiesRelativePath)
+	private void addMappingsFromProperties(Map<String, URI> elementMappings, String contributingPlugin,
+			String propertiesRelativePath)
 	{
 		URI propertiesURI = null;
 		try
@@ -228,7 +228,7 @@ public class ThemeLoader
 			logger.error("Invalid properties URI " + propertiesRelativePath); //$NON-NLS-1$
 			return;
 		}
-		
+
 		Properties properties = new Properties();
 		try
 		{
@@ -239,12 +239,12 @@ public class ThemeLoader
 			logger.error("Unable to open properties file " + propertiesURI.toString(), e); //$NON-NLS-1$
 			return;
 		}
-		
+
 		for (String key : properties.stringPropertyNames())
 		{
 			try
 			{
-			
+
 				String iconPath = properties.getProperty(key);
 				if (Util.isBlank(iconPath))
 				{
@@ -264,8 +264,8 @@ public class ThemeLoader
 	}
 
 	/**
-	 * Search the application model from the top-level application and find all elements that 
-	 * can have icons set on them.
+	 * Search the application model from the top-level application and find all
+	 * elements that can have icons set on them.
 	 */
 	private Set<MUILabel> findAllLabels(MApplication application, EModelService modelService)
 	{
@@ -287,7 +287,7 @@ public class ThemeLoader
 				labels.addAll(modelService.findElements(d.getToolbar(), null, MUILabel.class, null));
 			}
 		}
-		
+
 		// Model service does not include menus and toolbars - need to find them ourselves
 		List<MPart> parts = modelService.findElements(application, null, MPart.class, null);
 		for (MPart part : parts)
@@ -304,14 +304,15 @@ public class ThemeLoader
 				labels.addAll(modelService.findElements(part.getToolbar(), null, MUILabel.class, null));
 			}
 		}
-		
+
 		return labels;
 	}
-	
+
 	/**
 	 * Create a plugin URI for the given resource located in the given plugin
 	 * <p/>
-	 * Plugin URIs have the form {@code platform:/plugin/[plugin name]/[resource path]}
+	 * Plugin URIs have the form
+	 * {@code platform:/plugin/[plugin name]/[resource path]}
 	 */
 	private URI makePluginUri(String pluginName, String resourcePath) throws Exception
 	{
@@ -321,5 +322,5 @@ public class ThemeLoader
 		}
 		return new URI("platform:/plugin/" + pluginName + "/" + resourcePath); //$NON-NLS-1$ //$NON-NLS-2$
 	}
-	
+
 }

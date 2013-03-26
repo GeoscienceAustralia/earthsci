@@ -36,9 +36,9 @@ public class BookmarksDragSourceListener implements DragSourceListener
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(BookmarksDragSourceListener.class);
-	
+
 	private TableViewer bookmarkListView;
-	
+
 	public BookmarksDragSourceListener(TableViewer bookmarkListView)
 	{
 		this.bookmarkListView = bookmarkListView;
@@ -59,7 +59,7 @@ public class BookmarksDragSourceListener implements DragSourceListener
 			return;
 		}
 	}
-	
+
 	private void doBookmarkTransfer(DragSourceEvent event)
 	{
 		BookmarkTransferData data = BookmarkTransferData.fromBookmarks(getSelectedBookmarks());
@@ -74,7 +74,7 @@ public class BookmarksDragSourceListener implements DragSourceListener
 			return;
 		}
 	}
-	
+
 	private IBookmark[] getSelectedBookmarks()
 	{
 		IStructuredSelection selection = (IStructuredSelection) bookmarkListView.getSelection();

@@ -24,31 +24,29 @@ public class BookmarkTransferDataTest
 	public void testSaveLoadEmpty() throws Exception
 	{
 		IBookmark[] bookmarks = new IBookmark[0];
-		
+
 		BookmarkTransferData loadedData = doSaveLoad(bookmarks);
-		
+
 		assertLoadedDataCorrect(loadedData, bookmarks);
 	}
-	
+
 	@Test
 	public void testSaveLoadSingle() throws Exception
 	{
-		IBookmark[] bookmarks = new IBookmark[] {createBookmark("b1")};
-		
+		IBookmark[] bookmarks = new IBookmark[] { createBookmark("b1") };
+
 		BookmarkTransferData loadedData = doSaveLoad(bookmarks);
-		
+
 		assertLoadedDataCorrect(loadedData, bookmarks);
 	}
-	
+
 	@Test
 	public void testSaveLoadMulti() throws Exception
 	{
-		IBookmark[] bookmarks = new IBookmark[] {createBookmark("b1"),
-												 createBookmark("b2"),
-												 createBookmark("b3")};
-		
+		IBookmark[] bookmarks = new IBookmark[] { createBookmark("b1"), createBookmark("b2"), createBookmark("b3") };
+
 		BookmarkTransferData loadedData = doSaveLoad(bookmarks);
-		
+
 		assertLoadedDataCorrect(loadedData, bookmarks);
 	}
 
@@ -59,7 +57,7 @@ public class BookmarkTransferDataTest
 		BookmarkTransferData.save(data, os);
 		return BookmarkTransferData.load(new ByteArrayInputStream(os.toByteArray()));
 	}
-	
+
 	private void assertLoadedDataCorrect(BookmarkTransferData loadedData, IBookmark[] bookmarks)
 	{
 		assertNotNull(loadedData);
@@ -67,14 +65,14 @@ public class BookmarkTransferDataTest
 		assertEquals(bookmarks.length, loadedData.getBookmarks().length);
 		assertArrayEquals(bookmarks, loadedData.getBookmarks());
 	}
-	
+
 	private IBookmark createBookmark(String name)
 	{
 		Bookmark result = new Bookmark();
-		
+
 		result.setName(name);
-		
+
 		return result;
 	}
-	
+
 }

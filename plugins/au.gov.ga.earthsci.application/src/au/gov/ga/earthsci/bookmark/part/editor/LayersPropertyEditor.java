@@ -53,11 +53,11 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 {
 
 	private Composite container;
-	
+
 	private CheckboxTableViewer layerTable;
-	
+
 	private Map<URI, Double> layerState;
-	
+
 	@Override
 	public String getName()
 	{
@@ -77,7 +77,7 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 		{
 			return;
 		}
-		
+
 		Map<URI, Double> filtered = new HashMap<URI, Double>();
 		for (Entry<URI, Double> entry : layerState.entrySet())
 		{
@@ -96,34 +96,31 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 		container = new Composite(parent, SWT.NONE);
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 		container.setLayout(new GridLayout(1, false));
-		
+
 		Label l = new Label(container, SWT.TITLE);
 		l.setText(Messages.LayersPropertyEditor_LayerStateLabel);
-		
-		Table table = new Table(container, SWT.BORDER | 
-										   SWT.H_SCROLL | 
-										   SWT.V_SCROLL |
-										   SWT.FULL_SELECTION |
-										   SWT.CHECK);
-		
+
+		Table table = new Table(container, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.CHECK);
+
 		layerTable = new CheckboxTableViewer(table);
 		layerTable.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 		layerTable.setContentProvider(ArrayContentProvider.getInstance());
 		layerTable.getTable().setHeaderVisible(true);
 		layerTable.getTable().setLinesVisible(true);
-		
+
 		TableViewerColumn col = new TableViewerColumn(layerTable, SWT.NONE);
 		col.getColumn().setWidth(200);
 		col.getColumn().setText(Messages.LayersPropertyEditor_LayerStateLabelColumnLabel);
 		col.getColumn().setResizable(true);
 		col.getColumn().setMoveable(false);
-		
+
 		col = new TableViewerColumn(layerTable, SWT.NONE);
 		col.getColumn().setWidth(100);
 		col.getColumn().setText(Messages.LayersPropertyEditor_LayerStateOpacityColumnLabel);
 		col.getColumn().setResizable(true);
 		col.getColumn().setMoveable(false);
-		col.setEditingSupport(new EditingSupport(col.getViewer()) {
+		col.setEditingSupport(new EditingSupport(col.getViewer())
+		{
 
 			@Override
 			protected CellEditor getCellEditor(Object element)
@@ -136,7 +133,7 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 					{
 						try
 						{
-							Double.parseDouble((String)value);
+							Double.parseDouble((String) value);
 							return null;
 						}
 						catch (Exception e)
@@ -158,26 +155,26 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 			@Override
 			protected Object getValue(Object element)
 			{
-				return Double.toString(((Entry<URI, Double>)element).getValue());
+				return Double.toString(((Entry<URI, Double>) element).getValue());
 			}
 
 			@SuppressWarnings("unchecked")
 			@Override
 			protected void setValue(Object element, Object value)
 			{
-				((Entry<URI, Double>)element).setValue(Util.clamp(Double.parseDouble((String)value), 0, 1));
+				((Entry<URI, Double>) element).setValue(Util.clamp(Double.parseDouble((String) value), 0, 1));
 				layerTable.refresh(element, true);
 			}
-			
+
 		});
-		
+
 		layerTable.setLabelProvider(new CellLabelProvider()
 		{
 			@Override
 			public void update(ViewerCell cell)
 			{
 				@SuppressWarnings("unchecked")
-				Entry<URI, Double> entry = (Entry<URI, Double>)cell.getElement();
+				Entry<URI, Double> entry = (Entry<URI, Double>) cell.getElement();
 				if (cell.getColumnIndex() == 0)
 				{
 					cell.setText(entry.getKey().toString());
@@ -188,9 +185,9 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 				}
 			}
 		});
-		
+
 		fillFieldsFromProperty(getProperty());
-		
+
 		return container;
 	}
 
@@ -215,7 +212,7 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 		}
 		else
 		{
-			layerState = new TreeMap<URI, Double>(((LayersProperty)property).getLayerState());
+			layerState = new TreeMap<URI, Double>(((LayersProperty) property).getLayerState());
 		}
 		layerTable.setInput(layerState.entrySet());
 		layerTable.setAllChecked(true);
@@ -223,6 +220,6 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 
 	private LayersProperty getLayersProperty()
 	{
-		return (LayersProperty)getProperty();
+		return (LayersProperty) getProperty();
 	}
 }

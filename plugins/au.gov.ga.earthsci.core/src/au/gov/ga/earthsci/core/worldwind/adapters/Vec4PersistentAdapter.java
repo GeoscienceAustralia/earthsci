@@ -44,5 +44,5 @@ public class Vec4PersistentAdapter implements IPersistentAdapter<Vec4>
 	{
 		return XMLUtil.getVec4(element, ELEMENT_NAME, null);
 	}
-	
+
 }

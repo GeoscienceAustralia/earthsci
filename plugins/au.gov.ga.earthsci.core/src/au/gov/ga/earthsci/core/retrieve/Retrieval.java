@@ -287,7 +287,9 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 		synchronized (jobSemaphore)
 		{
 			if (result != null && result.getData() != null)
+			{
 				return result.getData();
+			}
 			return cachedData;
 		}
 	}
@@ -296,7 +298,9 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	public IRetrievalResult waitAndGetResult() throws InterruptedException
 	{
 		while (checkAndWaitIfPaused() || joinJob())
+		{
 			;
+		}
 		return getResult();
 	}
 

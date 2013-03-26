@@ -33,230 +33,239 @@ public class BigTimeTest
 {
 
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
-	
+
 	@Test
 	public void testCreateFromDateWithNull() throws Exception
 	{
 		Date d = null;
 		BigTime result = BigTime.fromDate(d);
-		
+
 		assertNull(result);
 	}
-	
+
 	@Test
 	public void testCreateFromDateWithPast() throws Exception
 	{
 		Date d = dateFormat.parse("1900-01-01 12:00:00:000");
 		BigTime result = BigTime.fromDate(d);
-		
+
 		assertNotNull(result);
 		assertEquals(d.getTime() * 1000000, result.getNansecondsSinceEpoch().longValue());
 		assertEquals(BigTime.MILLISECOND_RESOLUTION, result.getResolution());
 	}
-	
+
 	@Test
 	public void testCreateFromDateWithFuture() throws Exception
 	{
 		Date d = dateFormat.parse("2100-01-01 12:00:00:123");
 		BigTime result = BigTime.fromDate(d);
-		
+
 		assertNotNull(result);
 		assertEquals(d.getTime() * 1000000, result.getNansecondsSinceEpoch().longValue());
 		assertEquals(BigTime.MILLISECOND_RESOLUTION, result.getResolution());
 	}
-	
+
 	@Test
 	public void testCreateFromNow() throws Exception
 	{
 		BigTime result = BigTime.now();
-		
+
 		assertNotNull(result);
 		// No real way to test accuracy of time - have to assume its ok 
 		assertEquals(BigTime.MILLISECOND_RESOLUTION, result.getResolution());
 	}
-	
+
 	@Test
 	public void testEqualsWithNull() throws Exception
 	{
 		BigTime t1 = new BigTime(1000, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = null;
-		
+
 		assertFalse(t1.equals(t2));
 	}
-	
+
 	@Test
 	public void testEqualsWithSelf() throws Exception
 	{
 		BigTime t1 = new BigTime(1000, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = t1;
-		
+
 		assertTrue(t1.equals(t2));
 	}
-	
+
 	@Test
 	public void testEqualsWithSameTimeSameResolution() throws Exception
 	{
 		BigTime t1 = new BigTime(1000, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = new BigTime(1000, BigTime.NANOSECOND_RESOLUTION);
-		
+
 		assertTrue(t1.equals(t2));
 	}
-	
+
 	@Test
 	public void testEqualsWithDifferentTimeSameResolution() throws Exception
 	{
 		BigTime t1 = new BigTime(1000, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = new BigTime(1001, BigTime.NANOSECOND_RESOLUTION);
-		
+
 		assertFalse(t1.equals(t2));
 	}
-	
+
 	@Test
 	public void testEqualsWithSameTimeDifferentResolution() throws Exception
 	{
 		BigTime t1 = new BigTime(1000, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = new BigTime(1000, BigTime.MICROSECOND_RESOLUTION);
-		
+
 		assertFalse(t1.equals(t2));
 	}
-	
+
 	@Test
 	public void testEqualsWithDifferentTimeDifferentResolution() throws Exception
 	{
 		BigTime t1 = new BigTime(1000, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = new BigTime(1001, BigTime.MICROSECOND_RESOLUTION);
-		
+
 		assertFalse(t1.equals(t2));
 	}
-	
+
 	@Test
 	public void testNormaliseSimplePowerOfTen()
 	{
 		BigTime t = new BigTime(1999999, BigTime.MILLISECOND_RESOLUTION);
-		
+
 		BigTime normalised = t.normalise();
-		
+
 		assertNotNull(normalised);
-		
+
 		assertEquals(BigInteger.valueOf(1000000), normalised.getNansecondsSinceEpoch());
 		assertEquals(BigTime.MILLISECOND_RESOLUTION, normalised.getResolution());
 	}
-	
+
 	@Test
 	public void testNormaliseComplexResolution()
 	{
-		BigTime t = new BigTime(BigInteger.valueOf((long)1e9).multiply(BigTime.NANOS_IN_YEAR).add(BigInteger.ONE), BigTime.BA_RESOLUTION);
-		
+		BigTime t =
+				new BigTime(BigInteger.valueOf((long) 1e9).multiply(BigTime.NANOS_IN_YEAR).add(BigInteger.ONE),
+						BigTime.BA_RESOLUTION);
+
 		BigTime normalised = t.normalise();
-		
+
 		assertNotNull(normalised);
-		
-		assertEquals(BigInteger.valueOf((long)1e9).multiply(BigTime.NANOS_IN_YEAR), normalised.getNansecondsSinceEpoch());
+
+		assertEquals(BigInteger.valueOf((long) 1e9).multiply(BigTime.NANOS_IN_YEAR),
+				normalised.getNansecondsSinceEpoch());
 		assertEquals(BigTime.BA_RESOLUTION, normalised.getResolution());
 	}
-	
-	@Test (expected = NullPointerException.class)
+
+	@Test(expected = NullPointerException.class)
 	public void testCompareToWithNull()
 	{
 		BigTime t1 = new BigTime(1000, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = null;
-		
+
 		t1.compareTo(t2);
 	}
-	
+
 	@Test
 	public void testCompareToWithSame()
 	{
 		BigTime t1 = new BigTime(1000, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = t1;
-		
+
 		assertTrue(t1.compareTo(t2) == 0);
 	}
-	
+
 	@Test
 	public void testCompareToWithSameInstantSameResolutions()
 	{
 		BigTime t1 = new BigTime(1000, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = new BigTime(1000, BigTime.NANOSECOND_RESOLUTION);
-		
+
 		assertTrue(t1.compareTo(t2) == 0);
 	}
-	
+
 	@Test
 	public void testCompareToWithSameInstantDifferentResolutions()
 	{
 		BigTime t1 = new BigTime(1234567, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = new BigTime(1234323, BigTime.MICROSECOND_RESOLUTION);
-		
+
 		assertTrue(t1.compareTo(t2) == 0);
 	}
-	
+
 	@Test
 	public void testCompareToWithLessThanSameResolution()
 	{
 		BigTime t1 = new BigTime(-1000000, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = new BigTime(1000000, BigTime.NANOSECOND_RESOLUTION);
-		
+
 		assertTrue(t1.compareTo(t2) < 0);
 	}
-	
+
 	@Test
 	public void testCompareToWithGreaterThanSameResolution()
 	{
 		BigTime t1 = new BigTime(1000000, BigTime.NANOSECOND_RESOLUTION);
 		BigTime t2 = new BigTime(-1000000, BigTime.NANOSECOND_RESOLUTION);
-		
+
 		assertTrue(t1.compareTo(t2) > 0);
 	}
-	
+
 	@Test
 	public void testInDateRangeMinDate()
 	{
 		BigTime t = BigTime.fromDate(new Date(Long.MIN_VALUE));
-		
+
 		assertTrue(t.isInDateRange());
 	}
-	
+
 	@Test
 	public void testInDateRangeBeforeMinDate()
 	{
-		BigTime t = new BigTime(BigInteger.valueOf(Long.MIN_VALUE).multiply(BigTime.NANOS_IN_MILLISECOND).subtract(BigInteger.ONE));
-		
+		BigTime t =
+				new BigTime(BigInteger.valueOf(Long.MIN_VALUE).multiply(BigTime.NANOS_IN_MILLISECOND)
+						.subtract(BigInteger.ONE));
+
 		assertFalse(t.isInDateRange());
 	}
-	
+
 	@Test
 	public void testInDateRangeMaxDate()
 	{
 		BigTime t = BigTime.fromDate(new Date(Long.MAX_VALUE));
-		
+
 		assertTrue(t.isInDateRange());
 	}
-	
+
 	@Test
 	public void testInDateRangeAfterMaxDate()
 	{
-		BigTime t = new BigTime(BigInteger.valueOf(Long.MAX_VALUE).multiply(BigTime.NANOS_IN_MILLISECOND).add(BigInteger.ONE));
-		
+		BigTime t =
+				new BigTime(BigInteger.valueOf(Long.MAX_VALUE).multiply(BigTime.NANOS_IN_MILLISECOND)
+						.add(BigInteger.ONE));
+
 		assertFalse(t.isInDateRange());
 	}
-	
+
 	@Test
 	public void testGetDateInDateRange()
 	{
 		Date source = new Date(1000);
 		BigTime t = BigTime.fromDate(source);
-		
+
 		Date result = t.getDate();
-		
+
 		assertEquals(source, result);
 	}
-	
+
 	@Test
 	public void testGetDateOutsideDateRange()
 	{
-		BigTime t = new BigTime(BigInteger.valueOf(Long.MAX_VALUE).multiply(BigTime.NANOS_IN_MILLISECOND).add(BigInteger.ONE));
-		
+		BigTime t =
+				new BigTime(BigInteger.valueOf(Long.MAX_VALUE).multiply(BigTime.NANOS_IN_MILLISECOND)
+						.add(BigInteger.ONE));
+
 		assertNull(t.getDate());
 	}
 }

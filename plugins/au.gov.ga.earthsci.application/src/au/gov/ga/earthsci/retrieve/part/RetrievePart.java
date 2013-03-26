@@ -292,7 +292,9 @@ public class RetrievePart implements IRetrievalServiceListener
 	{
 		//don't queue multiple updates for each retrieval, so we don't flood the UI thread with asyncExec's
 		if (updatingElements.contains(element))
+		{
 			return;
+		}
 
 		if (!viewer.getControl().isDisposed())
 		{

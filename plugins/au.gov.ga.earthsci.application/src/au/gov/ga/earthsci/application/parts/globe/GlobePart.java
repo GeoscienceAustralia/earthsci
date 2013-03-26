@@ -116,19 +116,19 @@ public class GlobePart
 		{
 			worldWindow = doInitOther(parent);
 		}
-		
+
 		worldWindow.setModel(model);
 		worldWindow.setView(new WorldWindView());
 		worldWindow.addSelectListener(new ClickAndGoSelectListener(worldWindow, WorldMapLayer.class));
 		context.set(WorldWindow.class, worldWindow);
 
 		WorldWindowRegistry.INSTANCE.register(worldWindow);
-		
+
 		createHudLayers();
-		
+
 	}
 
-	
+
 	/**
 	 * Perform part initialisation for Windows, Linux etc.
 	 */
@@ -160,10 +160,10 @@ public class GlobePart
 		{
 			SwingUtilities.invokeLater(task);
 		}
-		
+
 		return wwd;
 	}
-	
+
 	/**
 	 * Perform part iniatialisation for Mac OSX
 	 */
@@ -174,10 +174,10 @@ public class GlobePart
 		Configuration.setValue(AVKey.SCENE_CONTROLLER_CLASS_NAME, GlobeSceneController.class.getName());
 		final WorldWindowNewtCanvasSWT wwd = new WorldWindowNewtCanvasSWT(parent, SWT.NONE, null);
 		sceneController = (GlobeSceneController) wwd.getSceneController();
-		
+
 		// XXX These are hacks to try and make the GL Canvas behave under MacOSX. They do not work properly.
 		// If the bugs are fixed upstream, remove these hacks.
-		
+
 		// Keep the GL canvas in sync with the position of its parent
 		parent.addControlListener(new ControlAdapter()
 		{
@@ -186,14 +186,14 @@ public class GlobePart
 			{
 				updateGLCanvasLocation(parent, wwd);
 			}
-			
+
 			@Override
 			public void controlMoved(ControlEvent e)
 			{
 				updateGLCanvasLocation(parent, wwd);
 			}
 		});
-		
+
 		// For minimisation, update canvas location again
 		Listener listener = new Listener()
 		{
@@ -205,12 +205,12 @@ public class GlobePart
 		};
 		parent.getParent().getParent().addListener(SWT.Resize, listener);
 		parent.getParent().addListener(SWT.Resize, listener);
-		
+
 		// Hook into the first paint call to update the location at a point where all
 		// Required parents have been initialised correctly
 		wwd.addPaintListener(new PaintListener()
 		{
-			
+
 			@Override
 			public void paintControl(PaintEvent e)
 			{
@@ -218,10 +218,10 @@ public class GlobePart
 				wwd.removePaintListener(this);
 			}
 		});
-		
+
 		parent.getParent().addPaintListener(new PaintListener()
 		{
-			
+
 			@Override
 			public void paintControl(PaintEvent e)
 			{
@@ -229,19 +229,23 @@ public class GlobePart
 				parent.getParent().removePaintListener(this);
 			}
 		});
-		
+
 		updateGLCanvasLocation(parent, wwd);
-		
+
 		return wwd;
 	}
-	
+
 	private void updateGLCanvasLocation(final Composite parent, final WorldWindowNewtCanvasSWT wwd)
 	{
-		int x = parent.toDisplay(parent.getLocation()).x - wwd.getWindow().getLocationOnScreen(null).getX() - parent.getLocation().x;
-		int y = parent.toDisplay(parent.getLocation()).y - wwd.getWindow().getLocationOnScreen(null).getY() - parent.getLocation().y;
+		int x =
+				parent.toDisplay(parent.getLocation()).x - wwd.getWindow().getLocationOnScreen(null).getX()
+						- parent.getLocation().x;
+		int y =
+				parent.toDisplay(parent.getLocation()).y - wwd.getWindow().getLocationOnScreen(null).getY()
+						- parent.getLocation().y;
 		wwd.getWindow().setPosition(x, y);
 	}
-	
+
 	@PreDestroy
 	private void preDestroy()
 	{

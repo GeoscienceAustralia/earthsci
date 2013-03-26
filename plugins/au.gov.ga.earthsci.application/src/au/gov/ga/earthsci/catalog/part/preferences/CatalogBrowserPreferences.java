@@ -32,40 +32,40 @@ import au.gov.ga.earthsci.application.util.UserActionPreference;
  */
 public class CatalogBrowserPreferences implements ICatalogBrowserPreferences
 {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(CatalogBrowserPreferences.class);
-	
+
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID)
+	@Preference(nodePath = QUALIFIER_ID)
 	private IEclipsePreferences preferenceStore;
-	
+
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=ADD_NODE_STRUCTURE_MODE)
+	@Preference(nodePath = QUALIFIER_ID, value = ADD_NODE_STRUCTURE_MODE)
 	private String addNodeStructureMode;
-	
+
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=DELETE_EMPTY_FOLDERS_MODE)
+	@Preference(nodePath = QUALIFIER_ID, value = DELETE_EMPTY_FOLDERS_MODE)
 	private String deleteEmptyFoldersMode;
-	
+
 	@Override
 	public UserActionPreference getAddNodeStructureMode()
 	{
 		return UserActionPreference.valueOf(addNodeStructureMode);
 	}
-	
+
 	@Override
 	public void setAddNodeStructureMode(UserActionPreference mode)
 	{
 		preferenceStore.put(ADD_NODE_STRUCTURE_MODE, mode == null ? UserActionPreference.ASK.name() : mode.name());
 		applyPreferences();
 	}
-	
+
 	@Override
 	public UserActionPreference getDeleteEmptyFoldersMode()
 	{
 		return UserActionPreference.valueOf(deleteEmptyFoldersMode);
 	}
-	
+
 	@Override
 	public void setDeleteEmptyFoldersMode(UserActionPreference mode)
 	{

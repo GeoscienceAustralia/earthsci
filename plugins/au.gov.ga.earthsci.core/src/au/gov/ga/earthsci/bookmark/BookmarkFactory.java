@@ -28,11 +28,14 @@ public class BookmarkFactory
 {
 
 	/**
-	 * Create a new {@link IBookmark} instance from the current world state containing the provided property types.
+	 * Create a new {@link IBookmark} instance from the current world state
+	 * containing the provided property types.
 	 * <p/>
-	 * If no types are provided, a bookmark instance will be created with all known property types.
-	 *  
-	 * @param propertyTypes The types of properties to include in the new bookmark
+	 * If no types are provided, a bookmark instance will be created with all
+	 * known property types.
+	 * 
+	 * @param propertyTypes
+	 *            The types of properties to include in the new bookmark
 	 * 
 	 * @return The newly created bookmark
 	 */
@@ -42,7 +45,7 @@ public class BookmarkFactory
 		{
 			propertyTypes = BookmarkPropertyFactory.getKnownPropertyTypes();
 		}
-		
+
 		Bookmark result = new Bookmark();
 		for (String propertyType : propertyTypes)
 		{
@@ -54,5 +57,5 @@ public class BookmarkFactory
 		}
 		return result;
 	}
-	
+
 }

@@ -22,34 +22,34 @@ import au.gov.ga.earthsci.bookmark.io.BookmarkPropertyPersistentAdapter;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 
 /**
- * A special placeholder property which serves to hold the XML representation
- * of an {@link IBookmarkProperty} in the case where no {@link IBookmarkPropertyCreator}
- * has been registered for the property type.
+ * A special placeholder property which serves to hold the XML representation of
+ * an {@link IBookmarkProperty} in the case where no
+ * {@link IBookmarkPropertyCreator} has been registered for the property type.
  * <p/>
- * This is used in the edge case where bookmarks have been persisted with a plugin
- * loaded that provides additional bookmark properties, then on next load that plugin
- * is no longer available. It serves to ensure that the property information is not
- * lost between invocations of the application.
+ * This is used in the edge case where bookmarks have been persisted with a
+ * plugin loaded that provides additional bookmark properties, then on next load
+ * that plugin is no longer available. It serves to ensure that the property
+ * information is not lost between invocations of the application.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class PlaceholderBookmarkProperty implements IBookmarkProperty
 {
 	public static final String TYPE = "au.gov.ga.earthsci.bookmark.properties.placeholder"; //$NON-NLS-1$
-	
+
 	private Element propertyXml;
-	
+
 	public PlaceholderBookmarkProperty(Element xml)
 	{
 		this.propertyXml = xml;
 	}
-	
+
 	@Override
 	public String getType()
 	{
 		return TYPE;
 	}
-	
+
 	@Override
 	public String getName()
 	{
@@ -62,15 +62,16 @@ public class PlaceholderBookmarkProperty implements IBookmarkProperty
 	 */
 	public String getWrappedType()
 	{
-		return propertyXml.getAttribute(BookmarkPropertyPersistentAdapter.PROPERTY_TYPE_ATTRIBUTE); 
+		return propertyXml.getAttribute(BookmarkPropertyPersistentAdapter.PROPERTY_TYPE_ATTRIBUTE);
 	}
-	
+
 	/**
-	 * Return the XML structure for the property this placeholder is representing
+	 * Return the XML structure for the property this placeholder is
+	 * representing
 	 */
 	public Element getXML()
 	{
 		return propertyXml;
 	}
-	
+
 }

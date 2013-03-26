@@ -72,19 +72,20 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 {
 
 	private static final Logger logger = LoggerFactory.getLogger(BookmarksController.class);
-	
+
 	@Inject
 	private IBookmarksPreferences preferences;
-	
+
 	@Inject
 	private IBookmarks bookmarks;
-	
+
 	private IBookmarkList currentList;
-	
+
 	private BookmarksPart part;
-	
+
 	/**
-	 * A property change listener used to stop the bookmark applicator thread on {@link View#VIEW_STOPPED} events.
+	 * A property change listener used to stop the bookmark applicator thread on
+	 * {@link View#VIEW_STOPPED} events.
 	 */
 	private final PropertyChangeListener viewStopListener = new PropertyChangeListener()
 	{
@@ -97,9 +98,10 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 			}
 		}
 	};
-	
+
 	/**
-	 * A mouse listener used to stop the bookmark applicator thread on mouse pressed events
+	 * A mouse listener used to stop the bookmark applicator thread on mouse
+	 * pressed events
 	 */
 	private final MouseListener mouseStopListener = new MouseAdapter()
 	{
@@ -111,7 +113,8 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 	};
 
 	/**
-	 * An executor service used to execute the application of a single bookmark state to the world
+	 * An executor service used to execute the application of a single bookmark
+	 * state to the world
 	 */
 	private final ExecutorService applicatorService = Executors.newSingleThreadExecutor(new ThreadFactory()
 	{
@@ -121,48 +124,49 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 			return new Thread(runnable, "Bookmark Applicator Thread"); //$NON-NLS-1$
 		}
 	});
-	
+
 	/**
-	 * The currently executing bookmark applicator. 
-	 * <code>null</code> implies no running application.
+	 * The currently executing bookmark applicator. <code>null</code> implies no
+	 * running application.
 	 */
 	private transient Future<?> currentApplicatorTask;
-	
+
 	/**
 	 * An executor service used to play through a bookmark list
 	 */
-	private final ExecutorService playlistService = Executors.newSingleThreadExecutor(new ThreadFactory() {
+	private final ExecutorService playlistService = Executors.newSingleThreadExecutor(new ThreadFactory()
+	{
 		@Override
 		public Thread newThread(Runnable r)
 		{
 			return new Thread(r, "Bookmark Playlist Thread"); //$NON-NLS-1$
 		}
 	});
-	
+
 	/**
-	 * The currently executing playlist applicator.
-	 * <code>null</code> implies no running playlist.
+	 * The currently executing playlist applicator. <code>null</code> implies no
+	 * running playlist.
 	 */
 	private transient Future<?> currentPlaylistTask;
-	
+
 	public BookmarksController()
 	{
 		addPropertyChangeListener("currentList", new PropertyChangeListener() //$NON-NLS-1$
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				part.refreshDropdown();
-			}
-		});
+				{
+					@Override
+					public void propertyChange(PropertyChangeEvent evt)
+					{
+						part.refreshDropdown();
+					}
+				});
 	}
-	
+
 	@Override
 	public IBookmark createNew()
 	{
 		return createNew(getCurrentList());
 	}
-	
+
 	@Override
 	public IBookmark createNew(IBookmarkList list)
 	{
@@ -171,16 +175,17 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		list.getBookmarks().add(b);
 		return b;
 	}
-	
+
 	@Override
 	public void apply(final IBookmark bookmark)
 	{
 		stop();
 		doApply(bookmark);
 	}
-	
+
 	/**
-	 * Perform the application of the bookmark to the world, without stopping any running animations
+	 * Perform the application of the bookmark to the world, without stopping
+	 * any running animations
 	 */
 	private void doApply(final IBookmark bookmark)
 	{
@@ -188,36 +193,34 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		if (view != null)
 		{
 			part.highlight(bookmark);
-			currentApplicatorTask = applicatorService.submit(new BookmarkApplicatorRunnable(view, 
-																						    bookmark, 
-																						    getDuration(bookmark)));
+			currentApplicatorTask =
+					applicatorService.submit(new BookmarkApplicatorRunnable(view, bookmark, getDuration(bookmark)));
 		}
 	}
-	
+
 	@Override
 	public void edit(final IBookmark bookmark)
 	{
 		stop();
-		Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				BookmarkEditorDialog dialog = new BookmarkEditorDialog(bookmark, 
-																	   Display.getDefault().getActiveShell());
+				BookmarkEditorDialog dialog = new BookmarkEditorDialog(bookmark, Display.getDefault().getActiveShell());
 				dialog.open();
 			}
 		});
 	}
-	
+
 	@Override
 	public IBookmarkList createNewBookmarkList()
 	{
 		stop();
-		InputDialog dialog = new InputDialog(Display.getDefault().getActiveShell(), 
-											 BookmarksController_NewListDialogTitle,
-											 BookmarksController_NewListDialogMessage, 
-											 BookmarksController_DefaultNewListName, 
-											 new EmptyStringInputValidator(BookmarksController_NewListValidationMessage));
+		InputDialog dialog =
+				new InputDialog(Display.getDefault().getActiveShell(), BookmarksController_NewListDialogTitle,
+						BookmarksController_NewListDialogMessage, BookmarksController_DefaultNewListName,
+						new EmptyStringInputValidator(BookmarksController_NewListValidationMessage));
 		dialog.open();
 
 		if (dialog.getReturnCode() != InputDialog.OK)
@@ -229,27 +232,26 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		bookmarks.addList(result);
 		return result;
 	}
-	
+
 	@Override
 	public void renameBookmarkList(IBookmarkList list)
 	{
 		stop();
-		
-		InputDialog dialog = new InputDialog(Display.getDefault().getActiveShell(), 
-				 							 BookmarksController_RenameListDialogTitle,
-				 							 BookmarksController_RenameListDialogMessage, 
-				 							 list.getName(),
-				 							 new EmptyStringInputValidator(BookmarksController_RenameListValidationMessation));
+
+		InputDialog dialog =
+				new InputDialog(Display.getDefault().getActiveShell(), BookmarksController_RenameListDialogTitle,
+						BookmarksController_RenameListDialogMessage, list.getName(), new EmptyStringInputValidator(
+								BookmarksController_RenameListValidationMessation));
 		dialog.open();
-		
+
 		if (dialog.getReturnCode() != InputDialog.OK)
 		{
 			return;
 		}
-		
+
 		list.setName(dialog.getValue());
 	}
-	
+
 	@Override
 	public boolean deleteBookmarkList(IBookmarkList list)
 	{
@@ -257,27 +259,26 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		{
 			return false;
 		}
-		
+
 		if (preferences.askForListDeleteConfirmation())
 		{
-			MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(Display.getDefault().getActiveShell(), 
-																						 Messages.BookmarksController_BookmarkListDeleteDialogTitle, 
-																						 Messages.BookmarksController_BookmarkListDeleteDialogMessage, 
-																						 Messages.BookmarksController_BookmarkListDeleteDialogToggleMessage,
-																						 preferences.askForListDeleteConfirmation(), 
-																						 null, 
-																						 null);
+			MessageDialogWithToggle dialog =
+					MessageDialogWithToggle.openOkCancelConfirm(Display.getDefault().getActiveShell(),
+							Messages.BookmarksController_BookmarkListDeleteDialogTitle,
+							Messages.BookmarksController_BookmarkListDeleteDialogMessage,
+							Messages.BookmarksController_BookmarkListDeleteDialogToggleMessage,
+							preferences.askForListDeleteConfirmation(), null, null);
 			if (dialog.getReturnCode() != MessageDialog.OK)
 			{
 				return false;
 			}
-			
+
 			preferences.setAskForListDeleteConfirmation(dialog.getToggleState());
 		}
-		
+
 		return bookmarks.removeList(list);
 	}
-	
+
 	@Override
 	public void delete(IBookmark bookmark)
 	{
@@ -285,12 +286,12 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		{
 			return;
 		}
-		
+
 		stop();
-		
+
 		getCurrentList().getBookmarks().remove(bookmark);
 	}
-	
+
 	@Override
 	public void delete(IBookmark... bookmarks)
 	{
@@ -298,15 +299,15 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		{
 			return;
 		}
-		
+
 		stop();
-		
+
 		for (IBookmark b : bookmarks)
 		{
 			getCurrentList().getBookmarks().remove(b);
 		}
 	}
-	
+
 	@Override
 	public IBookmarkList getCurrentList()
 	{
@@ -316,7 +317,7 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		}
 		return currentList;
 	}
-	
+
 	@Override
 	public void setCurrentList(IBookmarkList list)
 	{
@@ -327,13 +328,13 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		}
 		firePropertyChange("currentList", currentList, currentList = list); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public void play(IBookmark bookmark)
 	{
 		play(getCurrentList(), bookmark);
 	}
-	
+
 	@Override
 	public void play(IBookmarkList list, IBookmark bookmark)
 	{
@@ -343,23 +344,23 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 			logger.debug("No bookmark list provided. Aborting play."); //$NON-NLS-1$
 			return;
 		}
-		
+
 		View wwview = WorldWindowRegistry.INSTANCE.getActiveView();
 		if (wwview == null)
 		{
 			logger.debug("No view found. Aborting play."); //$NON-NLS-1$
 			return;
 		}
-		
+
 		currentPlaylistTask = playlistService.submit(new BookmarkPlaylistRunnable(wwview, list, bookmark));
 	}
-	
+
 	@Override
 	public boolean isPlaying()
 	{
 		return currentPlaylistTask != null;
 	}
-	
+
 	@Override
 	public void stop()
 	{
@@ -370,13 +371,13 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		}
 		stopCurrentTransition();
 	}
-	
+
 	@Override
 	public void moveBookmarks(IBookmark[] bookmarks, int targetIndex)
 	{
 		moveBookmarks(getCurrentList(), bookmarks, getCurrentList(), targetIndex);
 	}
-	
+
 	@Override
 	public void moveBookmarks(IBookmarkList sourceList, IBookmark[] bookmarks, IBookmarkList targetList, int targetIndex)
 	{
@@ -384,11 +385,11 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		{
 			return;
 		}
-		
+
 		stop();
-		
+
 		targetIndex = Util.clamp(targetIndex, 0, targetList.getBookmarks().size());
-		
+
 		ArrayList<IBookmark> sourceBookmarksList = new ArrayList<IBookmark>(sourceList.getBookmarks());
 		ArrayList<IBookmark> targetBookmarksList;
 		if (sourceList == targetList)
@@ -399,35 +400,35 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		{
 			targetBookmarksList = new ArrayList<IBookmark>(targetList.getBookmarks());
 		}
-		
+
 		int[] currentIndices = new int[bookmarks.length];
 		for (int i = 0; i < bookmarks.length; i++)
 		{
 			currentIndices[i] = sourceBookmarksList.indexOf(bookmarks[i]);
 		}
-		
+
 		for (int i = bookmarks.length - 1; i >= 0; i -= 1)
 		{
 			sourceBookmarksList.remove(bookmarks[i]);
-			
+
 			if (currentIndices[i] < targetIndex && sourceList == targetList)
 			{
 				targetIndex--;
 			}
-			
+
 			targetBookmarksList.add(targetIndex, bookmarks[i]);
 		}
-		
+
 		sourceList.setBookmarks(sourceBookmarksList);
 		targetList.setBookmarks(targetBookmarksList);
 	}
-	
+
 	@Override
 	public void copyBookmarks(IBookmark[] bookmarks, int targetIndex)
 	{
 		copyBookmarks(getCurrentList(), bookmarks, getCurrentList(), targetIndex);
 	}
-	
+
 	@Override
 	public void copyBookmarks(IBookmarkList sourceList, IBookmark[] bookmarks, IBookmarkList targetList, int targetIndex)
 	{
@@ -435,30 +436,30 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		{
 			return;
 		}
-		
+
 		targetIndex = Util.clamp(targetIndex, 0, targetList.getBookmarks().size());
-		
+
 		ArrayList<IBookmark> targetBookmarksList = new ArrayList<IBookmark>(targetList.getBookmarks());
-		
+
 		IBookmark[] copies = copy(bookmarks);
 		for (int i = copies.length - 1; i >= 0; i -= 1)
 		{
 			targetBookmarksList.add(targetIndex, copies[i]);
 		}
-		
+
 		targetList.setBookmarks(targetBookmarksList);
 	}
-	
+
 	private IBookmark[] copy(IBookmark... bookmarks)
 	{
 		BookmarkTransferData btd = BookmarkTransferData.fromBookmarks(bookmarks);
-		
+
 		try
 		{
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			BookmarkTransferData.save(btd, os);
 			btd = BookmarkTransferData.load(new ByteArrayInputStream(os.toByteArray()));
-			
+
 			IBookmark[] copies = new IBookmark[bookmarks.length];
 			for (int i = 0; i < copies.length; i++)
 			{
@@ -470,10 +471,10 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 		{
 			logger.error("Exception copying bookmarks", e); //$NON-NLS-1$
 		}
-		
+
 		return btd.getBookmarks();
 	}
-	
+
 	/**
 	 * Stop any current bookmark transitions that are running
 	 */
@@ -485,40 +486,41 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 			currentApplicatorTask = null;
 		}
 	}
-	
+
 	/**
-	 * Return the duration (in milliseconds) to be used for transitioning to the given bookmark 
+	 * Return the duration (in milliseconds) to be used for transitioning to the
+	 * given bookmark
 	 */
 	private long getDuration(final IBookmark bookmark)
 	{
-		return bookmark.getTransitionDuration() == null ? 
-				preferences.getDefaultTransitionDuration() : 
-				bookmark.getTransitionDuration();
+		return bookmark.getTransitionDuration() == null ? preferences.getDefaultTransitionDuration() : bookmark
+				.getTransitionDuration();
 	}
-	
+
 	/**
-	 * A {@link Runnable} that triggers the animation between the current world state and the selected
-	 * bookmark. 
+	 * A {@link Runnable} that triggers the animation between the current world
+	 * state and the selected bookmark.
 	 */
 	private class BookmarkApplicatorRunnable implements Runnable
 	{
 		private final long duration;
 		private final View view;
 		private final List<IBookmarkPropertyAnimator> animators;
-		
+
 		private long endTime;
-		
+
 		BookmarkApplicatorRunnable(final View view, final IBookmark bookmark, final long duration)
 		{
 			this.duration = duration;
 			this.view = view;
-			
+
 			this.animators = new ArrayList<IBookmarkPropertyAnimator>();
 			final IBookmark currentState = BookmarkFactory.createBookmark();
 			for (IBookmarkProperty property : bookmark.getProperties())
 			{
 				final IBookmarkProperty currentProperty = currentState.getProperty(property.getType());
-				final IBookmarkPropertyApplicator applicator = BookmarkPropertyApplicatorRegistry.getApplicator(property);
+				final IBookmarkPropertyApplicator applicator =
+						BookmarkPropertyApplicatorRegistry.getApplicator(property);
 				if (applicator != null)
 				{
 					IBookmarkPropertyAnimator animator = applicator.createAnimator(currentProperty, property, duration);
@@ -529,16 +531,16 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 				}
 			}
 		}
-		
+
 		@Override
 		public void run()
 		{
 			view.stopMovement();
 			view.stopAnimations();
-			
+
 			view.addPropertyChangeListener(View.VIEW_STOPPED, viewStopListener);
 			view.getViewInputHandler().getWorldWindow().getInputHandler().addMouseListener(mouseStopListener);
-			
+
 			endTime = System.currentTimeMillis() + duration;
 			while (System.currentTimeMillis() <= endTime)
 			{
@@ -556,34 +558,35 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 				}
 				view.getViewInputHandler().getWorldWindow().redraw();
 			}
-			
+
 			view.getViewInputHandler().getWorldWindow().getInputHandler().removeMouseListener(mouseStopListener);
 			view.removePropertyChangeListener(View.VIEW_STOPPED, viewStopListener);
 		}
 	}
-	
+
 	/**
-	 * A runnable that loops through the provided bookmark list and applies each bookmark in turn
+	 * A runnable that loops through the provided bookmark list and applies each
+	 * bookmark in turn
 	 */
 	private class BookmarkPlaylistRunnable implements Runnable
 	{
 		private final View view;
 		private final List<IBookmark> list;
 		private IBookmark currentBookmark;
-		
+
 		BookmarkPlaylistRunnable(View view, IBookmarkList list, IBookmark bookmark)
 		{
 			this.view = view;
 			this.list = new ArrayList<IBookmark>(list.getBookmarks());
 			this.currentBookmark = this.list.contains(bookmark) ? bookmark : this.list.get(0);
 		}
-		
+
 		@Override
 		public void run()
 		{
 			view.stopAnimations();
 			view.stopMovement();
-			
+
 			while (true)
 			{
 				try
@@ -591,11 +594,12 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 					// Apply current bookmark and wait for completion
 					doApply(currentBookmark);
 					currentApplicatorTask.get();
-					
+
 					// Wait for user specified time
 					view.getViewInputHandler().getWorldWindow().getInputHandler().addMouseListener(mouseStopListener);
 					Thread.sleep(preferences.getPlayBookmarksWaitDuration());
-					view.getViewInputHandler().getWorldWindow().getInputHandler().removeMouseListener(mouseStopListener);
+					view.getViewInputHandler().getWorldWindow().getInputHandler()
+							.removeMouseListener(mouseStopListener);
 
 					// Proceed to next bookmark
 					int nextIndex = (list.indexOf(currentBookmark) + 1) % list.size();
@@ -616,12 +620,12 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 					logger.error("Exception occurred while running playlist.", e); //$NON-NLS-1$
 					break;
 				}
-				
+
 			}
 			currentPlaylistTask = null;
 		}
 	}
-	
+
 	/**
 	 * Set the user preferences on this controller
 	 */
@@ -629,13 +633,13 @@ public class BookmarksController extends AbstractPropertyChangeBean implements I
 	{
 		this.preferences = preferences;
 	}
-	
+
 	@Override
 	public void setView(BookmarksPart part)
 	{
 		this.part = part;
 	}
-	
+
 	/**
 	 * Set the current bookmarks model on this controller
 	 */

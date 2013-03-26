@@ -36,22 +36,22 @@ public class BookmarkList extends AbstractPropertyChangeBean implements IBookmar
 {
 	@Persistent(attribute = true)
 	private String id;
-	
+
 	@Persistent
 	private String name;
-	
+
 	private WritableList bookmarks;
-	
+
 	/**
 	 * Create a new unnamed bookmark list with a unique randome ID.
 	 */
 	public BookmarkList()
 	{
 		this.id = UUID.randomUUID().toString();
-		
+
 		doSetBookmarks(new WritableList());
 	}
-	
+
 	/**
 	 * Create a new bookmark list with the given name and a unique random ID.
 	 */
@@ -60,7 +60,7 @@ public class BookmarkList extends AbstractPropertyChangeBean implements IBookmar
 		this();
 		this.name = name;
 	}
-	
+
 	/**
 	 * Create a new bookmark list with the given name and ID.
 	 */
@@ -70,18 +70,18 @@ public class BookmarkList extends AbstractPropertyChangeBean implements IBookmar
 		this.id = id;
 		this.name = name;
 	}
-	
+
 	@Override
 	public String getId()
 	{
 		return id;
 	}
-	
+
 	public void setId(String id)
 	{
 		firePropertyChange("id", this.id, this.id = id); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public String getName()
 	{
@@ -93,7 +93,7 @@ public class BookmarkList extends AbstractPropertyChangeBean implements IBookmar
 	{
 		firePropertyChange("name", this.name, this.name = name); //$NON-NLS-1$
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	@Persistent
@@ -106,22 +106,22 @@ public class BookmarkList extends AbstractPropertyChangeBean implements IBookmar
 	public void setBookmarks(List<IBookmark> bookmarks)
 	{
 		WritableList oldList = this.bookmarks;
-		
+
 		WritableList newList = new WritableList();
 		newList.addAll(bookmarks);
-		
+
 		doSetBookmarks(newList);
-		
+
 		firePropertyChange("bookmarks", oldList, this.bookmarks); //$NON-NLS-1$
 	}
-	
+
 	private void doSetBookmarks(WritableList newBookmarks)
 	{
 		if (newBookmarks == this.bookmarks)
 		{
 			return;
 		}
-		
+
 		this.bookmarks = newBookmarks;
 		this.bookmarks.addListChangeListener(new IListChangeListener()
 		{
@@ -132,5 +132,5 @@ public class BookmarkList extends AbstractPropertyChangeBean implements IBookmar
 			}
 		});
 	}
-	
+
 }

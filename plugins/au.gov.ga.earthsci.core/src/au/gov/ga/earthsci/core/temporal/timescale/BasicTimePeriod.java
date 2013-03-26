@@ -29,53 +29,56 @@ import au.gov.ga.earthsci.core.temporal.BigTime;
 import au.gov.ga.earthsci.worldwind.common.util.Validate;
 
 /**
- * A basic (mostly) immutable implementation of the {@link ITimePeriod} interface that
- * provides a builder mechanism for populating fields.
+ * A basic (mostly) immutable implementation of the {@link ITimePeriod}
+ * interface that provides a builder mechanism for populating fields.
  * <p/>
- * Enforces the requirement that all sub-periods have a level greater than the level
- * of this period.
+ * Enforces the requirement that all sub-periods have a level greater than the
+ * level of this period.
  * <p/>
- * Provides the ability to plug in filters used to resolve overlapping sub-periods in the
- * {@link #getSubPeriod(BigTime)} method. The default filter will return all sub-periods with a 
- * range that contains the given time.
+ * Provides the ability to plug in filters used to resolve overlapping
+ * sub-periods in the {@link #getSubPeriod(BigTime)} method. The default filter
+ * will return all sub-periods with a range that contains the given time.
  * <p/>
- * Additionally, label generator strategies can be provided to create labels for time instants
- * that fall in this period. The default strategy is to return the name of the most specific
- * period the time falls into. 
+ * Additionally, label generator strategies can be provided to create labels for
+ * time instants that fall in this period. The default strategy is to return the
+ * name of the most specific period the time falls into.
  * <p/>
- * The only mutable field is the parent {@link ITimeScale}, which must be mutable to establish a
- * back-reference to the time scale this period belongs to. This field is not intended to be set
- * by client code.
+ * The only mutable field is the parent {@link ITimeScale}, which must be
+ * mutable to establish a back-reference to the time scale this period belongs
+ * to. This field is not intended to be set by client code.
  * <p/>
- * Equality is tested solely on the unique {@link #getId()}, and the natural order implemented in
- * {@link #compareTo(ITimePeriod)} is based on the start of the period range, from earliest to latest.
+ * Equality is tested solely on the unique {@link #getId()}, and the natural
+ * order implemented in {@link #compareTo(ITimePeriod)} is based on the start of
+ * the period range, from earliest to latest.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class BasicTimePeriod implements ITimePeriod
 {
-	
+
 	/**
 	 * An filter interface that can be used to resolve overlapping sub-periods
-	 * for a specified time instant. 
+	 * for a specified time instant.
 	 */
 	public static interface SubPeriodFilter
 	{
-		
+
 		/**
-		 * Filter the provided list of candidate sub-periods to select appropriate sub-period(s)
-		 * for the given time instant.
+		 * Filter the provided list of candidate sub-periods to select
+		 * appropriate sub-period(s) for the given time instant.
 		 */
 		List<ITimePeriod> filter(BigTime t, List<ITimePeriod> candidates);
 	}
-	
+
 	/**
-	 * A strategy interface for classes able to generate labels for a given time instant.
+	 * A strategy interface for classes able to generate labels for a given time
+	 * instant.
 	 */
 	public static interface LabelGenerator
 	{
 		/**
-		 * Create and return a label for the given time instant in the given time period.
+		 * Create and return a label for the given time instant in the given
+		 * time period.
 		 */
 		String createLabel(BigTime t, ITimePeriod thisPeriod);
 	}
@@ -88,7 +91,7 @@ public class BasicTimePeriod implements ITimePeriod
 			return candidates;
 		}
 	};
-	
+
 	private static final LabelGenerator DEFAULT_LABEL_GENERATOR = new LabelGenerator()
 	{
 		@Override
@@ -98,16 +101,16 @@ public class BasicTimePeriod implements ITimePeriod
 			{
 				return thisPeriod.getName();
 			}
-			
+
 			List<ITimePeriod> subPeriods = thisPeriod.getSubPeriod(t);
 			if (subPeriods == null || subPeriods.isEmpty())
 			{
 				return thisPeriod.getName();
 			}
-			
+
 			StringBuffer buffer = new StringBuffer();
 			Iterator<ITimePeriod> subPeriodIt = subPeriods.iterator();
-			while(subPeriodIt.hasNext())
+			while (subPeriodIt.hasNext())
 			{
 				buffer.append(subPeriodIt.next().getLabel(t));
 				if (subPeriodIt.hasNext())
@@ -118,29 +121,23 @@ public class BasicTimePeriod implements ITimePeriod
 			return buffer.toString();
 		}
 	};
-	
+
 	private final SubPeriodFilter subPeriodFilter;
 	private final LabelGenerator labelGenerator;
-	
+
 	private final String id;
 	private final String name;
 	private final String description;
-	
+
 	private final ITimeScaleLevel level;
 	private final Range<BigTime> range;
 	private final List<ITimePeriod> subPeriods;
-	
-	
-	
+
+
+
 	@SuppressWarnings("unchecked")
-	public BasicTimePeriod(String id, 
-						   String name, 
-						   String description, 
-						   ITimeScaleLevel level, 
-						   Range<BigTime> range,
-						   List<ITimePeriod> subPeriods, 
-						   SubPeriodFilter subPeriodFilter, 
-						   LabelGenerator labelGenerator)
+	public BasicTimePeriod(String id, String name, String description, ITimeScaleLevel level, Range<BigTime> range,
+			List<ITimePeriod> subPeriods, SubPeriodFilter subPeriodFilter, LabelGenerator labelGenerator)
 	{
 		super();
 		this.id = id;
@@ -148,7 +145,9 @@ public class BasicTimePeriod implements ITimePeriod
 		this.description = description;
 		this.level = level;
 		this.range = range;
-		this.subPeriods = (List<ITimePeriod>) (subPeriods == null ? Collections.emptyList() : Collections.unmodifiableList(subPeriods));
+		this.subPeriods =
+				(List<ITimePeriod>) (subPeriods == null ? Collections.emptyList() : Collections
+						.unmodifiableList(subPeriods));
 		this.subPeriodFilter = subPeriodFilter;
 		this.labelGenerator = labelGenerator;
 	}
@@ -158,7 +157,7 @@ public class BasicTimePeriod implements ITimePeriod
 	{
 		return id;
 	}
-	
+
 	@Override
 	public String getName()
 	{
@@ -190,10 +189,10 @@ public class BasicTimePeriod implements ITimePeriod
 		{
 			return 1;
 		}
-		
+
 		return thisRange.getMinValue().compareTo(o.getRange().getMinValue());
 	}
-	
+
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -205,11 +204,11 @@ public class BasicTimePeriod implements ITimePeriod
 		{
 			return false;
 		}
-		
-		ITimePeriod other = (ITimePeriod)obj;
+
+		ITimePeriod other = (ITimePeriod) obj;
 		return id.equals(other.getId());
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
@@ -235,7 +234,7 @@ public class BasicTimePeriod implements ITimePeriod
 		{
 			return false;
 		}
-		
+
 		for (ITimePeriod sub : subPeriods)
 		{
 			if (sub.equals(p) || sub.hasSubPeriod(p))
@@ -245,7 +244,7 @@ public class BasicTimePeriod implements ITimePeriod
 		}
 		return false;
 	}
-	
+
 	@Override
 	public List<ITimePeriod> getSubPeriods()
 	{
@@ -289,7 +288,7 @@ public class BasicTimePeriod implements ITimePeriod
 		{
 			return null;
 		}
-		
+
 		if (labelGenerator != null)
 		{
 			return labelGenerator.createLabel(t, this);
@@ -298,65 +297,60 @@ public class BasicTimePeriod implements ITimePeriod
 	}
 
 	/**
-	 * A builder class for creating instances of {@link BasicTimePeriod}s from collected values.
+	 * A builder class for creating instances of {@link BasicTimePeriod}s from
+	 * collected values.
 	 */
 	public static class Builder
 	{
-		
+
 		private String id;
 		private String name;
 		private String description;
-		
+
 		private ITimeScaleLevel level;
 		private Range<BigTime> range;
 		private List<ITimePeriod> subPeriods = new ArrayList<ITimePeriod>();
-		
+
 		private SubPeriodFilter subPeriodFilter = null;
 		private LabelGenerator labelGenerator = null;
-		
+
 		private Builder(String id, String name, String description)
 		{
 			this.id = id;
 			this.name = name;
 			this.description = description;
 		}
-		
+
 		/**
-		 * Create and return a new {@link Builder} instance that can be used to create a new 
-		 * {@link BasicTimePeriod}
+		 * Create and return a new {@link Builder} instance that can be used to
+		 * create a new {@link BasicTimePeriod}
 		 */
 		public static Builder buildTimePeriod(String id, String name, String description)
 		{
 			return new Builder(id, name, description);
 		}
-		
+
 		public BasicTimePeriod build()
 		{
 			validate();
-			
+
 			Collections.sort(subPeriods);
-			
-			return new BasicTimePeriod(id, 
-									   name, 
-									   description, 
-									   level, 
-									   range == null ? new Range<BigTime>(null, null) : range, 
-									   Collections.unmodifiableList(subPeriods), 
-									   subPeriodFilter, 
-									   labelGenerator);
+
+			return new BasicTimePeriod(id, name, description, level, range == null ? new Range<BigTime>(null, null)
+					: range, Collections.unmodifiableList(subPeriods), subPeriodFilter, labelGenerator);
 		}
-		
+
 		private void validate()
 		{
 			Validate.notBlank(id, "An ID is required"); //$NON-NLS-1$
 			Validate.notBlank(name, "A name is required"); //$NON-NLS-1$
 			Validate.notNull(level, "A level is required"); //$NON-NLS-1$
-		
+
 			// Look for duplicate IDs in the sub-tree below this node.
 			// This is not the most efficient way to do this (would be better to validate
 			// once from the top-level periods), but the period structure is unlikely to be
 			// very deep, and so it shouldn't be too expensive.
-			
+
 			Set<String> ids = new HashSet<String>();
 			ids.add(id);
 			int count = 1;
@@ -368,10 +362,10 @@ public class BasicTimePeriod implements ITimePeriod
 				}
 				count += collectSubPeriodIds(sub, ids);
 			}
-			
+
 			Validate.isTrue(ids.size() == count, "Cannot have duplicate IDs in period hierarchy"); //$NON-NLS-1$
 		}
-		
+
 		private int collectSubPeriodIds(ITimePeriod p, Set<String> ids)
 		{
 			ids.add(p.getId());
@@ -382,10 +376,10 @@ public class BasicTimePeriod implements ITimePeriod
 			}
 			return count;
 		}
-		
+
 		/**
-		 * Provide an (inclusive) range for the period. A <code>null</code> parameter will imply 
-		 * an open end to the range.
+		 * Provide an (inclusive) range for the period. A <code>null</code>
+		 * parameter will imply an open end to the range.
 		 */
 		public Builder withRange(BigTime start, BigTime end)
 		{
@@ -408,7 +402,7 @@ public class BasicTimePeriod implements ITimePeriod
 			}
 			return this;
 		}
-		
+
 		/**
 		 * Set the end date of the range of the period
 		 */
@@ -424,7 +418,7 @@ public class BasicTimePeriod implements ITimePeriod
 			}
 			return this;
 		}
-		
+
 		/**
 		 * Add all provided sub-periods to the period
 		 */
@@ -434,7 +428,7 @@ public class BasicTimePeriod implements ITimePeriod
 			{
 				return this;
 			}
-			
+
 			this.subPeriods.addAll(Arrays.asList(subPeriods));
 			return this;
 		}
@@ -448,11 +442,11 @@ public class BasicTimePeriod implements ITimePeriod
 			{
 				return this;
 			}
-			
+
 			this.subPeriods.addAll(subPeriods);
 			return this;
 		}
-		
+
 		/**
 		 * Add all provided sub-periods to the period
 		 */
@@ -462,11 +456,11 @@ public class BasicTimePeriod implements ITimePeriod
 			{
 				return this;
 			}
-			
+
 			this.subPeriods.add(subPeriod);
 			return this;
 		}
-		
+
 		/**
 		 * Set a label generation strategy on the created period
 		 */
@@ -475,7 +469,7 @@ public class BasicTimePeriod implements ITimePeriod
 			this.labelGenerator = g;
 			return this;
 		}
-		
+
 		/**
 		 * Set a sub-period filter on the created period
 		 */
@@ -484,7 +478,7 @@ public class BasicTimePeriod implements ITimePeriod
 			this.subPeriodFilter = f;
 			return this;
 		}
-		
+
 		/**
 		 * Set the time scale level of this period
 		 */
@@ -494,5 +488,5 @@ public class BasicTimePeriod implements ITimePeriod
 			return this;
 		}
 	}
-	
+
 }

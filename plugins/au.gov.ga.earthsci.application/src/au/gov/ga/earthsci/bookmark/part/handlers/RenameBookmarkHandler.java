@@ -26,18 +26,20 @@ import org.eclipse.jface.viewers.TableViewer;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 
 /**
- * A command handler for triggering the renaming of the currently selected bookmark
+ * A command handler for triggering the renaming of the currently selected
+ * bookmark
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class RenameBookmarkHandler
 {
 	@Execute
-	public void execute(TableViewer bookmarkListView, @Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
+	public void execute(TableViewer bookmarkListView,
+			@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
 	{
 		bookmarkListView.editElement(selectedBookmarks[0], 0);
 	}
-	
+
 	@CanExecute
 	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
 	{

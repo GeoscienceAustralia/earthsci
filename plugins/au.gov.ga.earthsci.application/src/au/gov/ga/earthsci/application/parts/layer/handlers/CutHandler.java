@@ -39,7 +39,7 @@ public class CutHandler
 	{
 		execute(new ILayerTreeNode[] { layer }, clipboard);
 	}
-	
+
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode[] layers, Clipboard clipboard)
 	{
@@ -50,7 +50,7 @@ public class CutHandler
 			node.removeFromParent();
 		}
 	}
-	
+
 	@CanExecute
 	public boolean canExecute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{

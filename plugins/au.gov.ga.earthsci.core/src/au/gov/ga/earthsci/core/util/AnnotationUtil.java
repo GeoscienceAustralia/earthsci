@@ -46,10 +46,16 @@ public class AnnotationUtil
 	{
 		T t = type.getAnnotation(annotationClass);
 		if (t != null)
+		{
 			return t;
+		}
 		for (Class<?> i : type.getInterfaces())
+		{
 			if ((t = getAnnotation(i, annotationClass)) != null)
+			{
 				return t;
+			}
+		}
 		return null;
 	}
 
@@ -71,7 +77,9 @@ public class AnnotationUtil
 	{
 		T t = method.getAnnotation(annotationClass);
 		if (t != null)
+		{
 			return t;
+		}
 
 		Class<?> type = method.getDeclaringClass();
 		for (Class<?> i : type.getInterfaces())
@@ -80,7 +88,9 @@ public class AnnotationUtil
 			{
 				Method m = i.getDeclaredMethod(method.getName(), method.getParameterTypes());
 				if (m.getReturnType().equals(method.getReturnType()) && (t = getAnnotation(m, annotationClass)) != null)
+				{
 					return t;
+				}
 			}
 			catch (NoSuchMethodException e)
 			{

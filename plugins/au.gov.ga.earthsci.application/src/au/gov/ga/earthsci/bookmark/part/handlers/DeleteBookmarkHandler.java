@@ -36,7 +36,7 @@ public class DeleteBookmarkHandler extends AbstractMultiBookmarkHandler
 	{
 		controller.delete(selectedBookmarks);
 	}
-	
+
 	public void setController(IBookmarksController controller)
 	{
 		this.controller = controller;

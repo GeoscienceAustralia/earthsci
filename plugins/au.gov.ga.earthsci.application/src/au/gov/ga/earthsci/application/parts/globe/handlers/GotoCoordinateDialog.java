@@ -55,7 +55,7 @@ public class GotoCoordinateDialog extends Dialog
 		super(parentShell);
 		this.wwd = wwd;
 	}
-	
+
 	@Override
 	protected void configureShell(Shell shell)
 	{

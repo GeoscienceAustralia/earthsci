@@ -39,8 +39,7 @@ public class MessageSourceAccessor
 	{
 		if (messageSource == null)
 		{
-			throw new IllegalStateException(
-					"Message source not set. Call set() first to set the message source."); //$NON-NLS-1$
+			throw new IllegalStateException("Message source not set. Call set() first to set the message source."); //$NON-NLS-1$
 		}
 
 		return messageSource;
@@ -83,7 +82,7 @@ public class MessageSourceAccessor
 	{
 		return get().getMessage(key);
 	}
-	
+
 	/**
 	 * Helper function that calls getMessage() on the {@link IMessageSource}
 	 * stored in this accessor.
@@ -91,7 +90,7 @@ public class MessageSourceAccessor
 	 * @param key
 	 *            The key for the message to return
 	 * @param params
-	 * 			  Parameters to use in message substitution
+	 *            Parameters to use in message substitution
 	 * 
 	 * @return The message with the provided key, or <code>null</code> if a
 	 *         message with the provided key cannot be found
@@ -100,7 +99,7 @@ public class MessageSourceAccessor
 	{
 		return get().getMessage(key, params);
 	}
-	
+
 	/**
 	 * Helper function that calls getMessage() on the {@link IMessageSource}
 	 * stored in this accessor.
@@ -117,7 +116,7 @@ public class MessageSourceAccessor
 	{
 		return get().getMessage(key, defaultMsg);
 	}
-	
+
 	/**
 	 * Helper function that calls getMessage() on the {@link IMessageSource}
 	 * stored in this accessor.

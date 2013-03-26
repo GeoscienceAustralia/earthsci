@@ -46,19 +46,20 @@ public class BookmarkTransferData
 		persister = new Persister();
 		persister.setIgnoreMissing(true);
 		persister.setIgnoreNulls(true);
-		
+
 		persister.registerNamedExportable(BookmarkTransferData.class, "transferData"); //$NON-NLS-1$
 		persister.registerNamedExportable(Bookmark.class, "bookmark"); //$NON-NLS-1$
-		
+
 		persister.registerAdapter(IBookmarkProperty.class, new BookmarkPropertyPersistentAdapter());
 		persister.registerNamedExportable(IBookmarkProperty.class, "property"); //$NON-NLS-1$
-		
+
 	}
-	
+
 	/**
 	 * Create a new transfer data object that can transfer the given bookmarks
 	 * 
-	 * @param bookmarks The bookmarks to transfer
+	 * @param bookmarks
+	 *            The bookmarks to transfer
 	 * 
 	 * @return The new transfer data object
 	 */
@@ -68,30 +69,33 @@ public class BookmarkTransferData
 		result.bookmarks = bookmarks;
 		return result;
 	}
-	
+
 	/**
 	 * Load transfer data from an input stream
 	 * 
-	 * @param is The stream to load from
+	 * @param is
+	 *            The stream to load from
 	 * 
 	 * @return The transfer data
 	 */
 	public static BookmarkTransferData load(InputStream is) throws Exception
 	{
 		Document d = XmlUtil.openDocument(is);
-		
+
 		Element root = XmlUtil.getFirstChildElement(d.getDocumentElement());
-		
+
 		BookmarkTransferData result = (BookmarkTransferData) persister.load(root, null);
-		
+
 		return result;
 	}
 
 	/**
 	 * Save the given transfer data object into the given output stream
 	 * 
-	 * @param data The transfer data to save
-	 * @param os The output stream to save to
+	 * @param data
+	 *            The transfer data to save
+	 * @param os
+	 *            The output stream to save to
 	 */
 	public static void save(BookmarkTransferData data, OutputStream os) throws Exception
 	{
@@ -99,22 +103,24 @@ public class BookmarkTransferData
 		{
 			return;
 		}
-		
+
 		Validate.notNull(os, "An output stream is required"); //$NON-NLS-1$
-		
+
 		Document document = XmlUtil.createDocumentBuilder().newDocument();
 		Element element = document.createElement("transfer"); //$NON-NLS-1$
 		document.appendChild(element);
-		
+
 		persister.save(data, element, null);
-		
+
 		XmlUtil.saveDocumentToFormattedStream(document, os);
 	}
-	
+
 	@Persistent
 	private IBookmark[] bookmarks;
-	
-	private BookmarkTransferData() {}
+
+	private BookmarkTransferData()
+	{
+	}
 
 	public IBookmark[] getBookmarks()
 	{

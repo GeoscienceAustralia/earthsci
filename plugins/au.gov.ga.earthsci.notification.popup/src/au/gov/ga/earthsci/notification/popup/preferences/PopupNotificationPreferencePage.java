@@ -1,12 +1,6 @@
 package au.gov.ga.earthsci.notification.popup.preferences;
 
-import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.CATEGORY_FILTER;
-import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.ENABLE_POPUPS;
-import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.POPUP_DURATION;
-import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.QUALIFIER_ID;
-import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.SHOW_ERROR_NOTIFICATIONS;
-import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.SHOW_INFO_NOTIFICATIONS;
-import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.SHOW_WARNING_NOTIFICATIONS;
+import static au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -36,8 +30,8 @@ import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.popup.Messages;
 
 /**
- * {@link PreferencePage} which allows configuration of how popup notifications behave
- * in the application
+ * {@link PreferencePage} which allows configuration of how popup notifications
+ * behave in the application
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -51,49 +45,62 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 	private IntegerFieldEditor showDurationEditor;
 	private LabelFieldEditor categoryFilterLabelEditor;
 	private MultiSelectTableListFieldEditor<NotificationCategory> categoryFilterEditor;
-	
+
 	@SuppressWarnings("restriction")
 	public PopupNotificationPreferencePage()
 	{
 		super(GRID);
-		
+
 		IPreferenceStore store = new ScopedPreferenceStore(InstanceScope.INSTANCE, QUALIFIER_ID);
-		
+
 		setPreferenceStore(store);
 		setDescription(Messages.PopupNotificationPreferences_Description);
 	}
-	
+
 	@Override
 	protected void createFieldEditors()
 	{
-		enabledEditor = new EnableNotificationsFieldEditor(ENABLE_POPUPS, Messages.PopupNotificationPreferences_EnablePopupsLabel, getFieldEditorParent());
+		enabledEditor =
+				new EnableNotificationsFieldEditor(ENABLE_POPUPS,
+						Messages.PopupNotificationPreferences_EnablePopupsLabel, getFieldEditorParent());
 		addField(enabledEditor);
-		
+
 		addField(new SpacerFieldEditor(getFieldEditorParent()));
-		
-		notificationLabelEditor = new LabelFieldEditor(Messages.PopupNotificationPreferences_NotificationLevelsLabel, getFieldEditorParent());
+
+		notificationLabelEditor =
+				new LabelFieldEditor(Messages.PopupNotificationPreferences_NotificationLevelsLabel,
+						getFieldEditorParent());
 		addField(notificationLabelEditor);
-		
-		showInfoEditor = new BooleanFieldEditor(SHOW_INFO_NOTIFICATIONS, Messages.PopupNotificationPreferences_InformationLevelLabel, getFieldEditorParent());
-		showWarningEditor = new BooleanFieldEditor(SHOW_WARNING_NOTIFICATIONS, Messages.PopupNotificationPreferences_WarningLevelLabel, getFieldEditorParent());
-		showErrorEditor = new BooleanFieldEditor(SHOW_ERROR_NOTIFICATIONS, Messages.PopupNotificationPreferences_ErrorLevelLabel, getFieldEditorParent());
-		
+
+		showInfoEditor =
+				new BooleanFieldEditor(SHOW_INFO_NOTIFICATIONS,
+						Messages.PopupNotificationPreferences_InformationLevelLabel, getFieldEditorParent());
+		showWarningEditor =
+				new BooleanFieldEditor(SHOW_WARNING_NOTIFICATIONS,
+						Messages.PopupNotificationPreferences_WarningLevelLabel, getFieldEditorParent());
+		showErrorEditor =
+				new BooleanFieldEditor(SHOW_ERROR_NOTIFICATIONS, Messages.PopupNotificationPreferences_ErrorLevelLabel,
+						getFieldEditorParent());
+
 		addField(showInfoEditor);
 		addField(showWarningEditor);
 		addField(showErrorEditor);
-		
+
 		addField(new SpacerFieldEditor(getFieldEditorParent()));
-		
-		showDurationEditor = new IntegerFieldEditor(POPUP_DURATION, Messages.PopupNotificationPreferences_DurationLabel, getFieldEditorParent(), 5);
+
+		showDurationEditor =
+				new IntegerFieldEditor(POPUP_DURATION, Messages.PopupNotificationPreferences_DurationLabel,
+						getFieldEditorParent(), 5);
 		showDurationEditor.setValidRange(100, 10000);
 		addField(showDurationEditor);
-		
+
 		addField(new SpacerFieldEditor(getFieldEditorParent()));
-		
+
 		categoryFilterLabelEditor = new LabelFieldEditor("Notification categories:", getFieldEditorParent());
 		addField(categoryFilterLabelEditor);
-		
-		ITableItemCreator<NotificationCategory> categoryItemCreator = new ITableItemCreator<NotificationCategory>() {
+
+		ITableItemCreator<NotificationCategory> categoryItemCreator = new ITableItemCreator<NotificationCategory>()
+		{
 			@Override
 			public TableItem createTableItem(Table parent, NotificationCategory object)
 			{
@@ -102,7 +109,7 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 				return item;
 			}
 		};
-		
+
 		IItemSerializer<NotificationCategory> categoryItemSerialiser = new IItemSerializer<NotificationCategory>()
 		{
 			@Override
@@ -117,24 +124,23 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 				return NotificationCategory.get(string);
 			}
 		};
-		
-		categoryFilterEditor = new MultiSelectTableListFieldEditor<NotificationCategory>(CATEGORY_FILTER,
-																						 new ArrayList<NotificationCategory>(NotificationCategory.getRegisteredCategories()),
-																						 new String[] {Messages.PopupNotificationPreferencePage_NotificationCategoryColumnLabel},
-																						 categoryItemCreator,
-																						 categoryItemSerialiser,
-																						 getFieldEditorParent());
-		
+
+		categoryFilterEditor =
+				new MultiSelectTableListFieldEditor<NotificationCategory>(CATEGORY_FILTER,
+						new ArrayList<NotificationCategory>(NotificationCategory.getRegisteredCategories()),
+						new String[] { Messages.PopupNotificationPreferencePage_NotificationCategoryColumnLabel },
+						categoryItemCreator, categoryItemSerialiser, getFieldEditorParent());
+
 		addField(categoryFilterEditor);
 	}
-	
+
 	private void updateEnableFields(boolean enable)
 	{
 		if (notificationLabelEditor == null)
 		{
 			return;
 		}
-		
+
 		try
 		{
 			for (Field f : getClass().getDeclaredFields())
@@ -153,8 +159,8 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 	}
 
 	/**
-	 * A simple extension of the boolean field editor that allows detection of changes to the 
-	 * boolean state from various sources
+	 * A simple extension of the boolean field editor that allows detection of
+	 * changes to the boolean state from various sources
 	 */
 	private class EnableNotificationsFieldEditor extends BooleanFieldEditor
 	{
@@ -164,15 +170,17 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 			super(name, label, parent);
 			getChangeControl(parent).addSelectionListener(new SelectionListener()
 			{
-				
+
 				@Override
 				public void widgetSelected(SelectionEvent e)
 				{
 					updateEnableFields(enabledEditor.getBooleanValue());
 				}
-				
+
 				@Override
-				public void widgetDefaultSelected(SelectionEvent e){}
+				public void widgetDefaultSelected(SelectionEvent e)
+				{
+				}
 			});
 		}
 
@@ -182,7 +190,7 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 			super.doLoad();
 			updateEnableFields(getBooleanValue());
 		}
-		
+
 		@Override
 		protected void doLoadDefault()
 		{
@@ -191,6 +199,6 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 		}
 	}
 
-	
-	
+
+
 }

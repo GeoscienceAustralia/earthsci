@@ -111,7 +111,7 @@ public class HttpRetriever implements IRetriever
 					closeableConnection.disconnect();
 				}
 			});
-			
+
 			checkMonitor(monitor);
 
 			long position = 0;
@@ -140,13 +140,13 @@ public class HttpRetriever implements IRetriever
 					connection.setRequestProperty("Range", "bytes=" + position + "-"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 			}
-			
+
 			checkMonitor(monitor);
 
 			//connect
 			monitor.updateStatus(RetrievalStatus.CONNECTING);
 			connection.connect();
-			
+
 			checkMonitor(monitor);
 
 			//read the response code
@@ -190,7 +190,7 @@ public class HttpRetriever implements IRetriever
 
 			String contentType = connection.getContentType();
 			long lastModified = connection.getLastModified();
-			
+
 			checkMonitor(monitor);
 
 			monitor.updateStatus(RetrievalStatus.READING);

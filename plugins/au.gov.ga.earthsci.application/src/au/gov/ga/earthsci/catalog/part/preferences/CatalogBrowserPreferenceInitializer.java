@@ -33,8 +33,9 @@ public class CatalogBrowserPreferenceInitializer extends AbstractPreferenceIniti
 	@Override
 	public void initializeDefaultPreferences()
 	{
-		IPreferenceStore store = new ScopedPreferenceStore(DefaultScope.INSTANCE, ICatalogBrowserPreferences.QUALIFIER_ID);
-		
+		IPreferenceStore store =
+				new ScopedPreferenceStore(DefaultScope.INSTANCE, ICatalogBrowserPreferences.QUALIFIER_ID);
+
 		store.putValue(ICatalogBrowserPreferences.ADD_NODE_STRUCTURE_MODE, UserActionPreference.ASK.name());
 		store.putValue(ICatalogBrowserPreferences.DELETE_EMPTY_FOLDERS_MODE, UserActionPreference.ASK.name());
 	}

@@ -34,7 +34,7 @@ public class ControlCheckboxTreeViewer extends CheckboxTreeViewer implements ICo
 	public ControlCheckboxTreeViewer(Composite parent, int style)
 	{
 		super(parent, style);
-		
+
 		// XXX: This is a workaround to reduce the flicker that occurs when tree item controls are redrawn
 		getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
 	}

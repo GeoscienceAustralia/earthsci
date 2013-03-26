@@ -28,13 +28,13 @@ public abstract class AbstractBookmarkPropertyEditor extends AbstractBookmarkEdi
 {
 	private IBookmarkProperty property;
 	private boolean includedInBookmark;
-	
+
 	@Override
-	public void setProperty(IBookmarkProperty property) 
+	public void setProperty(IBookmarkProperty property)
 	{
 		this.property = property;
 	};
-	
+
 	/**
 	 * @return the property this editor is backed by
 	 */
@@ -43,7 +43,7 @@ public abstract class AbstractBookmarkPropertyEditor extends AbstractBookmarkEdi
 	{
 		return property;
 	}
-	
+
 	@Override
 	public void setIncludedInBookmark(boolean included)
 	{
@@ -54,13 +54,13 @@ public abstract class AbstractBookmarkPropertyEditor extends AbstractBookmarkEdi
 			fillFromCurrent();
 		}
 	}
-	
+
 	@Override
 	public boolean isIncludedInBookmark()
 	{
 		return includedInBookmark;
 	}
-	
+
 	@Override
 	public void restoreOriginalValues()
 	{
@@ -72,15 +72,15 @@ public abstract class AbstractBookmarkPropertyEditor extends AbstractBookmarkEdi
 	{
 		fillFieldsFromProperty(createPropertyFromCurrent());
 	}
-	
+
 	/**
 	 * Create and return a new property from the current world state
 	 */
 	protected abstract IBookmarkProperty createPropertyFromCurrent();
 
 	/**
-	 * Fill this editor's fields with the values in the given property, or clear the fields
-	 * if <code>null</code>
+	 * Fill this editor's fields with the values in the given property, or clear
+	 * the fields if <code>null</code>
 	 */
 	protected abstract void fillFieldsFromProperty(IBookmarkProperty property);
 }

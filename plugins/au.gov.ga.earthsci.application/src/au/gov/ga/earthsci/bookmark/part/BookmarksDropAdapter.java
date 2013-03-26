@@ -34,9 +34,9 @@ class BookmarksDropAdapter extends ViewerDropAdapter
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(BookmarksDropAdapter.class);
-	
+
 	private IBookmarksController controller;
-	
+
 	protected BookmarksDropAdapter(Viewer viewer, IBookmarksController controller)
 	{
 		super(viewer);
@@ -50,12 +50,12 @@ class BookmarksDropAdapter extends ViewerDropAdapter
 		{
 			return false;
 		}
-		
+
 		if (isBookmarkDrop())
 		{
 			return doBookmarkDrop(data);
 		}
-		
+
 		return false;
 	}
 
@@ -63,13 +63,13 @@ class BookmarksDropAdapter extends ViewerDropAdapter
 	{
 		return BookmarkTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType);
 	}
-	
+
 	private boolean doBookmarkDrop(Object data)
 	{
-		BookmarkTransferData btd = (BookmarkTransferData)data;
-		
+		BookmarkTransferData btd = (BookmarkTransferData) data;
+
 		int index = getDropIndex();
-		
+
 		if (getCurrentOperation() == DND.DROP_MOVE)
 		{
 			controller.moveBookmarks(btd.getBookmarks(), index);
@@ -80,10 +80,10 @@ class BookmarksDropAdapter extends ViewerDropAdapter
 			controller.copyBookmarks(btd.getBookmarks(), index);
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private int getDropIndex()
 	{
 		IBookmark target = (IBookmark) getCurrentTarget();
@@ -91,17 +91,17 @@ class BookmarksDropAdapter extends ViewerDropAdapter
 		{
 			return controller.getCurrentList().getBookmarks().size();
 		}
-		
+
 		int location = getCurrentLocation();
 		if (location == LOCATION_NONE)
 		{
 			return controller.getCurrentList().getBookmarks().size();
 		}
-				
+
 		int indexOf = controller.getCurrentList().getBookmarks().indexOf(target);
 		return location == LOCATION_BEFORE ? indexOf : indexOf + 1;
 	}
-	
+
 	@Override
 	public boolean validateDrop(Object target, int operation, TransferData transferType)
 	{

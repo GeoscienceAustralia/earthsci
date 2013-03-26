@@ -17,10 +17,11 @@ package au.gov.ga.earthsci.bookmark.model;
 
 
 /**
- * Represents a bookmark, used to store state that can be re-applied at a later date.
+ * Represents a bookmark, used to store state that can be re-applied at a later
+ * date.
  * <p/>
- * Bookmarks contain zero or more {@link IBookmarkProperty}s, which capture the state stored by the
- * bookmark. 
+ * Bookmarks contain zero or more {@link IBookmarkProperty}s, which capture the
+ * state stored by the bookmark.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -33,83 +34,94 @@ public interface IBookmark
 	 * @return The ID of this bookmark
 	 */
 	String getId();
-	
-	/** 
+
+	/**
 	 * Return the name of this bookmark
 	 * 
-	 * @return The name of this bookmark 
+	 * @return The name of this bookmark
 	 */
 	String getName();
-	
+
 	/**
 	 * Set the name of this bookmark, to allow for user edits etc.
 	 */
 	void setName(String name);
-	
+
 	/**
-	 * Return any metadata associated with this bookmark as a map of display strings keyed by 
-	 *   
-	 * @return The metadata associated with 
+	 * Return any metadata associated with this bookmark as a map of display
+	 * strings keyed by
+	 * 
+	 * @return The metadata associated with
 	 */
 	IBookmarkMetadata getMetadata();
-	
+
 	/**
 	 * Return the set of properties associated with this bookmark.
 	 * 
 	 * @return The set of properties associated with this bookmark.
 	 */
-	IBookmarkProperty[] getProperties(); 
-	
+	IBookmarkProperty[] getProperties();
+
 	/**
 	 * Return the property with the given type (if any).
 	 * 
-	 * @param type The key for the type of property to return
+	 * @param type
+	 *            The key for the type of property to return
 	 * 
-	 * @return The property of the given type, or <code>null</code> if none exists.
+	 * @return The property of the given type, or <code>null</code> if none
+	 *         exists.
 	 */
 	IBookmarkProperty getProperty(String type);
-	
+
 	/**
 	 * Add the given property to this bookmark.
 	 * 
-	 * @param property The property to add.
+	 * @param property
+	 *            The property to add.
 	 */
 	void addProperty(IBookmarkProperty property);
-	
+
 	/**
 	 * Remove the property of the given type from this bookmark, if it exists
 	 * 
-	 * @param type The type of the property to remove
+	 * @param type
+	 *            The type of the property to remove
 	 * 
 	 * @return The removed property, or <code>null</code> if none is removed
 	 */
 	IBookmarkProperty removeProperty(String type);
-	
+
 	/**
 	 * Remove the given property from this bookmark, if it exists
 	 * 
-	 * @param p The property to remove
+	 * @param p
+	 *            The property to remove
 	 * 
-	 * @return <code>true</code> if the property was removed; <code>false</code> otherwise
+	 * @return <code>true</code> if the property was removed; <code>false</code>
+	 *         otherwise
 	 */
 	boolean removeProperty(IBookmarkProperty p);
-	
+
 	/**
 	 * Return whether a property exists in this bookmark with the given type
 	 * 
-	 * @param type The property type to check for existence 
+	 * @param type
+	 *            The property type to check for existence
 	 * 
-	 * @return <code>true</code> if the property exists on this bookmark; <code>false</code> otherwise.
+	 * @return <code>true</code> if the property exists on this bookmark;
+	 *         <code>false</code> otherwise.
 	 */
 	boolean hasProperty(String type);
-	
+
 	/**
-	 * Return the duration (in milliseconds) that the system should take when transitioning 
-	 * to this bookmark state from the current world state.
+	 * Return the duration (in milliseconds) that the system should take when
+	 * transitioning to this bookmark state from the current world state.
 	 * <p/>
-	 * If the global default is to be used, this method will return <code>null</code>.
+	 * If the global default is to be used, this method will return
+	 * <code>null</code>.
 	 * 
-	 * @return The duration (in milliseconds) that the system should take when transitioning to this bookmark
+	 * @return The duration (in milliseconds) that the system should take when
+	 *         transitioning to this bookmark
 	 */
 	Long getTransitionDuration();
 }

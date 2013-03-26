@@ -53,7 +53,9 @@ final public class LayerTransfer extends ByteArrayTransfer
 	protected LayerTransferData fromByteArray(byte[] bytes)
 	{
 		if (bytes == null)
+		{
 			return null;
+		}
 
 		InputStream is = new ByteArrayInputStream(bytes);
 		try
@@ -118,7 +120,9 @@ final public class LayerTransfer extends ByteArrayTransfer
 	{
 		byte[] bytes = toByteArray((LayerTransferData) object);
 		if (bytes != null)
+		{
 			super.javaToNative(bytes, transferData);
+		}
 	}
 
 	@Override

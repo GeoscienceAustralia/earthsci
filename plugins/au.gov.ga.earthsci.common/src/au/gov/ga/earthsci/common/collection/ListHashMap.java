@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Abstract {@link ListMap} implementation that extends {@link CollectionHashMap}.
+ * Abstract {@link ListMap} implementation that extends
+ * {@link CollectionHashMap}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */

@@ -78,12 +78,13 @@ public class CatalogTreeDragSourceListener implements DragSourceListener
 			{
 				continue;
 			}
-			
+
 			ILayerTreeNode layerTreeNode = controller.createLayerTreeNode(node);
 			layerTreeNodes.add(layerTreeNode);
 		}
-		
-		LayerTransferData transferData = LayerTransferData.fromNodes(layerTreeNodes.toArray(new ILayerTreeNode[layerTreeNodes.size()]));
+
+		LayerTransferData transferData =
+				LayerTransferData.fromNodes(layerTreeNodes.toArray(new ILayerTreeNode[layerTreeNodes.size()]));
 		event.data = transferData;
 	}
 

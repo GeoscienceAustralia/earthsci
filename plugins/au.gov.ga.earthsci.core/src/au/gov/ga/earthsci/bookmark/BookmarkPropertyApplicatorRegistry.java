@@ -33,7 +33,8 @@ import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil;
 import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil.Callback;
 
 /**
- * A registry that can be used to retrieve applicators for {@link IBookmarkProperty}s.
+ * A registry that can be used to retrieve applicators for
+ * {@link IBookmarkProperty}s.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -43,35 +44,40 @@ public class BookmarkPropertyApplicatorRegistry
 {
 	private static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.applicator"; //$NON-NLS-1$
 	private static final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
-	
-	private static Map<String, IBookmarkPropertyApplicator> applicators = new ConcurrentHashMap<String, IBookmarkPropertyApplicator>();
-	
+
+	private static Map<String, IBookmarkPropertyApplicator> applicators =
+			new ConcurrentHashMap<String, IBookmarkPropertyApplicator>();
+
 	private static final Logger logger = LoggerFactory.getLogger(BookmarkPropertyApplicatorRegistry.class);
-	
+
 	@Inject
 	public static void loadFromExtensions()
 	{
 		logger.debug("Registering bookmark property applicators"); //$NON-NLS-1$
 		try
 		{
-			ExtensionRegistryUtil.createFromExtension(EXTENSION_POINT_ID, CLASS_ATTRIBUTE, IBookmarkPropertyApplicator.class, new Callback<IBookmarkPropertyApplicator>(){
-				@Override
-				public void run(IBookmarkPropertyApplicator applicator, IConfigurationElement element, IEclipseContext context)
-				{
-					registerApplicator(applicator);
-				}
-			});
+			ExtensionRegistryUtil.createFromExtension(EXTENSION_POINT_ID, CLASS_ATTRIBUTE,
+					IBookmarkPropertyApplicator.class, new Callback<IBookmarkPropertyApplicator>()
+					{
+						@Override
+						public void run(IBookmarkPropertyApplicator applicator, IConfigurationElement element,
+								IEclipseContext context)
+						{
+							registerApplicator(applicator);
+						}
+					});
 		}
 		catch (CoreException e)
 		{
 			logger.error("Exception occurred while loading applicator from extension", e); //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
 	 * Return the applicator to use for the given property, if one exists.
 	 * 
-	 * @param property The property an applicator is required for
+	 * @param property
+	 *            The property an applicator is required for
 	 * 
 	 * @return The applicator to use for the given property, if one is available
 	 */
@@ -81,14 +87,15 @@ public class BookmarkPropertyApplicatorRegistry
 		{
 			return null;
 		}
-		
+
 		return applicators.get(property.getType());
 	}
-	
+
 	/**
 	 * Register the given applicator in the registry
 	 * 
-	 * @param applicator The applicator to register
+	 * @param applicator
+	 *            The applicator to register
 	 */
 	public static void registerApplicator(IBookmarkPropertyApplicator applicator)
 	{
@@ -96,9 +103,9 @@ public class BookmarkPropertyApplicatorRegistry
 		{
 			return;
 		}
-		
+
 		logger.debug("Registeried applicator: {}", applicator.getClass()); //$NON-NLS-1$
-		
+
 		for (String supportedType : applicator.getSupportedTypes())
 		{
 			applicators.put(supportedType, applicator);

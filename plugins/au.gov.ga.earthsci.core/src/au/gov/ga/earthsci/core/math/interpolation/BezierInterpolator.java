@@ -22,36 +22,40 @@ import au.gov.ga.earthsci.core.math.vector.Vector;
 
 
 /**
- * An implementation of the {@link Interpolator} interface that performs interpolation
- * using cubic bezier curves.
+ * An implementation of the {@link Interpolator} interface that performs
+ * interpolation using cubic bezier curves.
  * <p/>
- * This interpolator needs to be primed with the four control points needed to define the bezier curve to use
- * for interpolation
- *
+ * This interpolator needs to be primed with the four control points needed to
+ * define the bezier curve to use for interpolation
+ * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class BezierInterpolator<V extends Vector<V>> implements Interpolator<V>
 {
 	/** A cache for computed beziers */
 	private static final int DEFAULT_CACHE_SIZE = 30000000;
-	private static final BasicMemoryCache BEZIER_CACHE = new BasicMemoryCache((int)0.85*DEFAULT_CACHE_SIZE, DEFAULT_CACHE_SIZE);
-	
+	private static final BasicMemoryCache BEZIER_CACHE = new BasicMemoryCache((int) 0.85 * DEFAULT_CACHE_SIZE,
+			DEFAULT_CACHE_SIZE);
+
 	// The four points needed to describe the cubic bezier control curve
-	/** The beginning value of the bezier. The curve will pass through this point. */
+	/**
+	 * The beginning value of the bezier. The curve will pass through this
+	 * point.
+	 */
 	private V begin;
-	
+
 	/** The control point to use when exiting the beginning point. */
 	private V out;
-	
+
 	/** The control point to use when entering the end point. */
 	private V in;
-	
+
 	/** The end value of the bezier. The curve will pass through this point. */
 	private V end;
-	
+
 	/** The bezier curve to use to calculate the interpolation */
 	private Bezier<V> bezier;
-	
+
 	/**
 	 * Constructor. Initialises the control points.
 	 */
@@ -59,11 +63,11 @@ public class BezierInterpolator<V extends Vector<V>> implements Interpolator<V>
 	{
 		setControlPoints(begin, out, in, end);
 	}
-	
+
 	@Override
 	public V computeValue(double percent)
 	{
-		if (bezier == null) 
+		if (bezier == null)
 		{
 			bezier = getBezier();
 		}
@@ -77,12 +81,12 @@ public class BezierInterpolator<V extends Vector<V>> implements Interpolator<V>
 	private Bezier<V> getBezier()
 	{
 		String cacheKey = createCacheKey();
-		Bezier<V> result = (Bezier<V>)BEZIER_CACHE.getObject(cacheKey);
+		Bezier<V> result = (Bezier<V>) BEZIER_CACHE.getObject(cacheKey);
 		if (result != null)
 		{
 			return result;
 		}
-		 
+
 		result = new Bezier<V>(begin, out, in, end);
 		BEZIER_CACHE.add(cacheKey, result, result.getNumSubdivisions() * (Double.SIZE / 8));
 		return result;
@@ -93,16 +97,22 @@ public class BezierInterpolator<V extends Vector<V>> implements Interpolator<V>
 	 */
 	private String createCacheKey()
 	{
-		return "[" + begin + out + in + end + "]";  //$NON-NLS-1$//$NON-NLS-2$
+		return "[" + begin + out + in + end + "]"; //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	/**
 	 * Set the four control points needed to define the bezier curve
 	 * 
-	 * @param begin The beginning value of the bezier. The curve will pass through this point.
-	 * @param out The control point to use when exiting the beginning point
-	 * @param in The control point to use when entering the end point
-	 * @param end The end value of the bezier. The curve will pass through this point.
+	 * @param begin
+	 *            The beginning value of the bezier. The curve will pass through
+	 *            this point.
+	 * @param out
+	 *            The control point to use when exiting the beginning point
+	 * @param in
+	 *            The control point to use when entering the end point
+	 * @param end
+	 *            The end value of the bezier. The curve will pass through this
+	 *            point.
 	 */
 	public void setControlPoints(V begin, V out, V in, V end)
 	{
@@ -113,7 +123,8 @@ public class BezierInterpolator<V extends Vector<V>> implements Interpolator<V>
 	}
 
 	/**
-	 * @return The beginning value of the bezier. The curve will pass through this point.
+	 * @return The beginning value of the bezier. The curve will pass through
+	 *         this point.
 	 */
 	public V getBegin()
 	{
@@ -121,12 +132,14 @@ public class BezierInterpolator<V extends Vector<V>> implements Interpolator<V>
 	}
 
 	/**
-	 * @param begin the begin value to set
+	 * @param begin
+	 *            the begin value to set
 	 */
 	public void setBegin(V begin)
 	{
 		Validate.notNull(begin, "A begin value is required"); //$NON-NLS-1$
-		if (this.begin == null || !this.begin.equals(begin)) {
+		if (this.begin == null || !this.begin.equals(begin))
+		{
 			this.begin = begin;
 			this.bezier = null;
 		}
@@ -141,12 +154,14 @@ public class BezierInterpolator<V extends Vector<V>> implements Interpolator<V>
 	}
 
 	/**
-	 * @param out the out value to set
+	 * @param out
+	 *            the out value to set
 	 */
 	public void setOut(V out)
 	{
 		Validate.notNull(out, "An out value is required"); //$NON-NLS-1$
-		if (this.out == null || !this.out.equals(out)) {
+		if (this.out == null || !this.out.equals(out))
+		{
 			this.out = out;
 			this.bezier = null;
 		}
@@ -161,19 +176,22 @@ public class BezierInterpolator<V extends Vector<V>> implements Interpolator<V>
 	}
 
 	/**
-	 * @param in the in value to set
+	 * @param in
+	 *            the in value to set
 	 */
 	public void setIn(V in)
 	{
 		Validate.notNull(in, "An in value is required"); //$NON-NLS-1$
-		if (this.in == null || !this.in.equals(in)) {
+		if (this.in == null || !this.in.equals(in))
+		{
 			this.in = in;
 			this.bezier = null;
 		}
 	}
 
 	/**
-	 * @return The end value of the bezier. The curve will pass through this point.
+	 * @return The end value of the bezier. The curve will pass through this
+	 *         point.
 	 */
 	public V getEnd()
 	{
@@ -181,15 +199,17 @@ public class BezierInterpolator<V extends Vector<V>> implements Interpolator<V>
 	}
 
 	/**
-	 * @param end the end value to set
+	 * @param end
+	 *            the end value to set
 	 */
 	public void setEnd(V end)
 	{
 		Validate.notNull(end, "An end value is required"); //$NON-NLS-1$
-		if (this.end == null || !this.end.equals(end)) {
+		if (this.end == null || !this.end.equals(end))
+		{
 			this.end = end;
 			this.bezier = null;
 		}
 	}
-	
+
 }

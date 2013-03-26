@@ -16,7 +16,8 @@
 package au.gov.ga.earthsci.bookmark.part.editor;
 
 /**
- * A simple immutable implementation of the {@link IBookmarkEditorMessage} interface
+ * A simple immutable implementation of the {@link IBookmarkEditorMessage}
+ * interface
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -25,7 +26,7 @@ public class BookmarkEditorMessage implements IBookmarkEditorMessage
 	private final Level level;
 	private final String code;
 	private final String message;
-	
+
 	public BookmarkEditorMessage(Level level, String code, String message)
 	{
 		super();
@@ -46,7 +47,7 @@ public class BookmarkEditorMessage implements IBookmarkEditorMessage
 	{
 		return code;
 	}
-	
+
 	@Override
 	public String getMessage()
 	{
@@ -64,13 +65,13 @@ public class BookmarkEditorMessage implements IBookmarkEditorMessage
 		{
 			return false;
 		}
-		return code.equals(((IBookmarkEditorMessage)obj).getCode());
+		return code.equals(((IBookmarkEditorMessage) obj).getCode());
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
 		return code.hashCode();
 	}
-	
+
 }

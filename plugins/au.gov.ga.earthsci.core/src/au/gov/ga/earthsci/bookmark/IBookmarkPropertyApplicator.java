@@ -18,8 +18,8 @@ package au.gov.ga.earthsci.bookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 
 /**
- * An interface for classes that are able to apply the state stored in an {@link IBookmarkProperty}
- * to the world.
+ * An interface for classes that are able to apply the state stored in an
+ * {@link IBookmarkProperty} to the world.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -31,25 +31,33 @@ public interface IBookmarkPropertyApplicator
 	 * @return The property types this applicator supports
 	 */
 	String[] getSupportedTypes();
-	
+
 	/**
 	 * Apply the given property to the current system state
 	 * 
-	 * @param property The property to apply.
+	 * @param property
+	 *            The property to apply.
 	 * 
-	 * @throws IllegalArgumentException If this applicator cannot be used for the given property. See {@link #supports(String)}.
+	 * @throws IllegalArgumentException
+	 *             If this applicator cannot be used for the given property. See
+	 *             {@link #supports(String)}.
 	 */
 	void apply(IBookmarkProperty property);
-	
+
 	/**
-	 * Creates and returns a new {@link IBookmarkPropertyAnimator} that animates between the given start and end property states
-	 * over the given amount of time.
+	 * Creates and returns a new {@link IBookmarkPropertyAnimator} that animates
+	 * between the given start and end property states over the given amount of
+	 * time.
 	 * 
-	 * @param start The start property state
-	 * @param end The end property state
-	 * @param duration The duration over which to animate
+	 * @param start
+	 *            The start property state
+	 * @param end
+	 *            The end property state
+	 * @param duration
+	 *            The duration over which to animate
 	 * 
-	 * @throws IllegalArgumentException If this applicator cannot be used for the given properties
+	 * @throws IllegalArgumentException
+	 *             If this applicator cannot be used for the given properties
 	 */
 	IBookmarkPropertyAnimator createAnimator(IBookmarkProperty start, IBookmarkProperty end, long duration);
 }

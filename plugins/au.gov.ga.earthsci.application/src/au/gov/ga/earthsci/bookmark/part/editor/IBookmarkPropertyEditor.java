@@ -29,41 +29,46 @@ public interface IBookmarkPropertyEditor extends IBookmarkEditor
 	/**
 	 * Set the property that this editor is editing.
 	 * <p/>
-	 * Calling this method will re-populate the controls etc. with the new values and abandon any
-	 * user edits.
-	 *  
-	 * @param property The property to edit with this editor
+	 * Calling this method will re-populate the controls etc. with the new
+	 * values and abandon any user edits.
+	 * 
+	 * @param property
+	 *            The property to edit with this editor
 	 */
 	void setProperty(IBookmarkProperty property);
-	
+
 	/**
 	 * Retrieve the property this editor is editing
 	 * 
 	 * @return The property being edited, or <code>null</code> if none exist
 	 */
 	IBookmarkProperty getProperty();
-	
+
 	/**
-	 * Fill the fields of this editor from the current world state (as appropriate),
-	 * but (importantly) do not apply them to the backing property.
+	 * Fill the fields of this editor from the current world state (as
+	 * appropriate), but (importantly) do not apply them to the backing
+	 * property.
 	 * <p/>
-	 * Actual binding to the backing property should be done in {@link #okPressed()}
+	 * Actual binding to the backing property should be done in
+	 * {@link #okPressed()}
 	 */
 	void fillFromCurrent();
-	
+
 	/**
-	 * Return whether the property being edited by this editor should be included in
-	 * the current bookmark.
+	 * Return whether the property being edited by this editor should be
+	 * included in the current bookmark.
 	 * 
-	 * @return <code>true</code> if the property is to be included; <code>false</code> otherwise.
+	 * @return <code>true</code> if the property is to be included;
+	 *         <code>false</code> otherwise.
 	 */
 	boolean isIncludedInBookmark();
-	
+
 	/**
-	 * Set whether the property being edited by this editor should be included in the
-	 * current bookmark
+	 * Set whether the property being edited by this editor should be included
+	 * in the current bookmark
 	 * 
-	 * @param included Whether or not to include the property in the current bookmark
+	 * @param included
+	 *            Whether or not to include the property in the current bookmark
 	 */
 	void setIncludedInBookmark(boolean included);
 }

@@ -68,10 +68,11 @@ public class NewtInputHandlerSWT extends AWTInputHandler
 			this.wwd.getSceneController().addPropertyChangeListener(AVKey.VIEW, this);
 		}
 
-		
+
 		if (newWorldWindow != null && !(newWorldWindow instanceof WorldWindowNewtCanvasSWT))
 		{
-			throw new IllegalArgumentException("newWorldWindow must be an instanceof " + WorldWindowNewtCanvasSWT.class.getSimpleName()); //$NON-NLS-1$
+			throw new IllegalArgumentException(
+					"newWorldWindow must be an instanceof " + WorldWindowNewtCanvasSWT.class.getSimpleName()); //$NON-NLS-1$
 		}
 		WorldWindowNewtCanvasSWT swtWorldWindow = (WorldWindowNewtCanvasSWT) newWorldWindow;
 

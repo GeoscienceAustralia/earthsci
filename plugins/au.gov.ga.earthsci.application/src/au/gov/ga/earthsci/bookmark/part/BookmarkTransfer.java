@@ -36,35 +36,37 @@ public class BookmarkTransfer extends ByteArrayTransfer
 {
 
 	private static final Logger logger = LoggerFactory.getLogger(BookmarkTransfer.class);
-	
+
 	private static final String TYPE_NAME = "layer-node-transfer-format"; //$NON-NLS-1$
 	private static final int TYPE_ID = registerType(TYPE_NAME);
-	
+
 	private static final BookmarkTransfer INSTANCE;
 	static
 	{
 		INSTANCE = new BookmarkTransfer();
 	}
-	
+
 	public static BookmarkTransfer getInstance()
 	{
 		return INSTANCE;
 	}
-	
-	private BookmarkTransfer() {}
-	
+
+	private BookmarkTransfer()
+	{
+	}
+
 	@Override
 	protected int[] getTypeIds()
 	{
-		return new int[] {TYPE_ID};
+		return new int[] { TYPE_ID };
 	}
 
 	@Override
 	protected String[] getTypeNames()
 	{
-		return new String[] {TYPE_NAME};
+		return new String[] { TYPE_NAME };
 	}
-	
+
 	@Override
 	protected void javaToNative(Object object, TransferData transferData)
 	{
@@ -81,7 +83,7 @@ public class BookmarkTransfer extends ByteArrayTransfer
 		byte[] bytes = (byte[]) super.nativeToJava(transferData);
 		return fromByteArray(bytes);
 	}
-	
+
 	protected BookmarkTransferData fromByteArray(byte[] bytes)
 	{
 		if (bytes == null)
@@ -134,5 +136,5 @@ public class BookmarkTransfer extends ByteArrayTransfer
 			}
 		}
 	}
-	
+
 }

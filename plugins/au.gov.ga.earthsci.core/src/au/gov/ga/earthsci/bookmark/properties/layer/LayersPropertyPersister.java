@@ -38,8 +38,8 @@ import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
 /**
- * A {@link IBookmarkPropertyCreator} and {@link IBookmarkPropertyExporter} for the
- * {@link LayersProperty}. Handles creation and persistence of the property.
+ * A {@link IBookmarkPropertyCreator} and {@link IBookmarkPropertyExporter} for
+ * the {@link LayersProperty}. Handles creation and persistence of the property.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -53,16 +53,16 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 	private static final String LAYER_XPATH = "./layerState/layer"; //$NON-NLS-1$
 
 	private static final String INVALID_TYPE_MSG = "LayersPropertyPersister can only be used for layers properties"; //$NON-NLS-1$
-	
+
 	private static Logger logger = LoggerFactory.getLogger(LayersPropertyPersister.class);
-	
+
 	@Inject
 	private ITreeModel currentLayersModel;
-	
+
 	@Override
 	public String[] getSupportedTypes()
 	{
-		return new String[] {LayersProperty.TYPE};
+		return new String[] { LayersProperty.TYPE };
 	}
 
 	@Override
@@ -76,10 +76,10 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 			{
 				continue;
 			}
-			
-			result.addLayer(((ILayerTreeNode)l).getURI(), l.getOpacity());
+
+			result.addLayer(((ILayerTreeNode) l).getURI(), l.getOpacity());
 		}
-		
+
 		return result;
 	}
 
@@ -88,11 +88,11 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 	{
 		Validate.isTrue(LayersProperty.TYPE.equals(type), INVALID_TYPE_MSG);
 		Validate.notNull(propertyElement, "A property element is required"); //$NON-NLS-1$
-		
-		LayersProperty result = new LayersProperty(); 
+
+		LayersProperty result = new LayersProperty();
 		for (Element state : XmlUtil.getElements(propertyElement, LAYER_XPATH, null))
 		{
-			
+
 			URI uri = null;
 			try
 			{
@@ -103,13 +103,13 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 				logger.error("Layer URI {} is not a valid URI", XMLUtil.getText(state, URI_ATTRIBUTE_XPATH, "")); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			Double opacity = XMLUtil.getDouble(state, OPACITY_ATTRIBUTE_XPATH, 1.0d);
-			
+
 			result.addLayer(uri, opacity);
 		}
-		
+
 		return result;
 	}
-	
+
 	@Override
 	public void exportToXML(IBookmarkProperty property, Element parent)
 	{
@@ -117,11 +117,11 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 		{
 			return;
 		}
-		Validate.isTrue(property.getType().equals(LayersProperty.TYPE), INVALID_TYPE_MSG); 
+		Validate.isTrue(property.getType().equals(LayersProperty.TYPE), INVALID_TYPE_MSG);
 		Validate.notNull(parent, "A property element is required"); //$NON-NLS-1$
-		
+
 		Element layerStateElement = XMLUtil.appendElement(parent, "layerState"); //$NON-NLS-1$
-		for (Entry<URI, Double> e : ((LayersProperty)property).getLayerState().entrySet())
+		for (Entry<URI, Double> e : ((LayersProperty) property).getLayerState().entrySet())
 		{
 			Element state = XMLUtil.appendElement(layerStateElement, LAYER_ELEMENT_NAME);
 			state.setAttribute(URI_ATTRIBUTE_NAME, UTF8URLEncoder.encode(e.getKey().toString()));

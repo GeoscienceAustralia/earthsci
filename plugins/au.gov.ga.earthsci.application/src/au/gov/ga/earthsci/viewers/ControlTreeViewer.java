@@ -30,11 +30,11 @@ import au.gov.ga.earthsci.application.ImageRegistry;
 public class ControlTreeViewer extends TreeViewer implements IControlViewer
 {
 	private final ControlTreeViewerHelper helper = new ControlTreeViewerHelper(this);
-	
+
 	public ControlTreeViewer(Composite parent, int style)
 	{
 		super(parent, style);
-		
+
 		// XXX: This is a workaround to reduce the flicker that occurs when tree item controls are redrawn 
 		getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
 	}
@@ -75,7 +75,7 @@ public class ControlTreeViewer extends TreeViewer implements IControlViewer
 		super.associate(element, item);
 		helper.associate(element, item);
 	}
-	
+
 	@Override
 	protected void disassociate(Item item)
 	{

@@ -1,4 +1,3 @@
-
 /**
  * The root package for the bookmark feature.
  * 

@@ -10,75 +10,90 @@ import java.util.UUID;
  * The default implementation of the {@link INotification} interface
  * <p/>
  * Provides a threadsafe implementation that is essentially immutable. Only the
- * acknowledgement indicators may change after object creation, and they can only be changed 
- * through a call {@link #acknowledge()}, which is an idempotent operation.
+ * acknowledgement indicators may change after object creation, and they can
+ * only be changed through a call {@link #acknowledge()}, which is an idempotent
+ * operation.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class Notification implements INotification
 {
-	
+
 	private long id;
 	private NotificationLevel level;
 	private NotificationCategory category;
-	
+
 	private long creationTimestamp;
-	
+
 	private String title;
 	private String text;
-	
+
 	private INotificationAction[] actions;
-	
+
 	private boolean requiresAcknowledgement = false;
 	private boolean acknowledged = false;
 	private INotificationAction acknowledgementAction;
 	private long acknowledgementTimestamp = -1;
-	
+
 	private Throwable throwable;
-	
+
 	/**
-	 * Create a basic general notification that has no associated actions and does not require user acknowledgement
+	 * Create a basic general notification that has no associated actions and
+	 * does not require user acknowledgement
 	 * 
-	 * @param level The level of the notification
-	 * @param title The title for the notification
-	 * @param text The text to include in the notification
+	 * @param level
+	 *            The level of the notification
+	 * @param title
+	 *            The title for the notification
+	 * @param text
+	 *            The text to include in the notification
 	 */
-	public Notification(NotificationLevel level, String title, String text) 
+	public Notification(NotificationLevel level, String title, String text)
 	{
 		this(level, NotificationCategory.GENERAL, title, text, null, false, null, null);
 	}
-	
+
 	/**
-	 * Create a notification that has associated actions, but does not require user acknowledgement
+	 * Create a notification that has associated actions, but does not require
+	 * user acknowledgement
 	 * 
-	 * @param level The level of the notification
-	 * @param category The category of the notification
-	 * @param title The title for the notification
-	 * @param text The text to include in the notification
-	 * @param actions The list of actions to include in the notification
+	 * @param level
+	 *            The level of the notification
+	 * @param category
+	 *            The category of the notification
+	 * @param title
+	 *            The title for the notification
+	 * @param text
+	 *            The text to include in the notification
+	 * @param actions
+	 *            The list of actions to include in the notification
 	 */
-	public Notification(NotificationLevel level, NotificationCategory category, 
-						String title, String text, 
-						INotificationAction... actions)
+	public Notification(NotificationLevel level, NotificationCategory category, String title, String text,
+			INotificationAction... actions)
 	{
 		this(level, category, title, text, actions, false, null, null);
 	}
-	
+
 	/**
 	 * Create a fully configured notification
 	 * 
-	 * @param level The level of the notification
-	 * @param title The title for the notification
-	 * @param text The text to include in the notification
-	 * @param actions The list of actions to include in the notification
-	 * @param requiresAcknowledgement Whether or not this notification requires acknowledgement from the user
-	 * @param acknowledgementAction The action to associate with user acknowledgement
+	 * @param level
+	 *            The level of the notification
+	 * @param title
+	 *            The title for the notification
+	 * @param text
+	 *            The text to include in the notification
+	 * @param actions
+	 *            The list of actions to include in the notification
+	 * @param requiresAcknowledgement
+	 *            Whether or not this notification requires acknowledgement from
+	 *            the user
+	 * @param acknowledgementAction
+	 *            The action to associate with user acknowledgement
 	 */
-	public Notification(NotificationLevel level, NotificationCategory category, 
-						String title, String text, 
-						INotificationAction[] actions, 
-						boolean requiresAcknowledgement, INotificationAction acknowledgementAction,
-						Throwable throwable)
+	public Notification(NotificationLevel level, NotificationCategory category, String title, String text,
+			INotificationAction[] actions, boolean requiresAcknowledgement, INotificationAction acknowledgementAction,
+			Throwable throwable)
 	{
 		this.level = level;
 		this.category = category;
@@ -87,14 +102,14 @@ public class Notification implements INotification
 		this.actions = actions == null ? null : Arrays.copyOf(actions, actions.length);
 		this.requiresAcknowledgement = requiresAcknowledgement;
 		this.acknowledgementAction = acknowledgementAction;
-		
+
 		this.creationTimestamp = new Date().getTime();
-		
+
 		this.id = UUID.randomUUID().getLeastSignificantBits();
-		
+
 		this.throwable = throwable;
 	}
-	
+
 	@Override
 	public NotificationLevel getLevel()
 	{
@@ -106,7 +121,7 @@ public class Notification implements INotification
 	{
 		return category;
 	}
-	
+
 	@Override
 	public long getId()
 	{
@@ -148,7 +163,7 @@ public class Notification implements INotification
 	{
 		return acknowledged;
 	}
-	
+
 	@Override
 	public Date getCreationTimestamp()
 	{
@@ -164,7 +179,7 @@ public class Notification implements INotification
 		}
 		return new Date(acknowledgementTimestamp);
 	}
-	
+
 	@Override
 	public synchronized void acknowledge()
 	{
@@ -172,37 +187,40 @@ public class Notification implements INotification
 		{
 			return;
 		}
-		
+
 		acknowledged = true;
 		acknowledgementTimestamp = new Date().getTime();
-		
+
 		if (acknowledgementAction != null)
 		{
 			acknowledgementAction.run();
 		}
 	}
-	
+
 	@Override
 	public Throwable getThrowable()
 	{
 		return throwable;
 	}
-	
+
 	/**
 	 * Create a new {@link Notification} instance using a builder
 	 * 
-	 * @param level The level of the notification
-	 * @param title The title for the notification
-	 * @param text The text to include in the notification
+	 * @param level
+	 *            The level of the notification
+	 * @param title
+	 *            The title for the notification
+	 * @param text
+	 *            The text to include in the notification
 	 */
 	public static Builder create(NotificationLevel level, String title, String text)
 	{
 		return new Builder(level, title, text);
 	}
-	
+
 	/**
-	 * A builder class for Notification instances that provides 
-	 * a convenient fluent interface
+	 * A builder class for Notification instances that provides a convenient
+	 * fluent interface
 	 */
 	public static class Builder
 	{
@@ -214,7 +232,7 @@ public class Notification implements INotification
 		private boolean requiresAcknowledgement = false;
 		private INotificationAction acknowledgementAction;
 		private Throwable throwable;
-		
+
 		/**
 		 * @see INotification#getLevel()
 		 * @see INotification#getTitle()
@@ -226,7 +244,7 @@ public class Notification implements INotification
 			this.title = title;
 			this.text = text;
 		}
-		
+
 		/**
 		 * @see INotification#getCategory()
 		 */
@@ -235,7 +253,7 @@ public class Notification implements INotification
 			this.category = category;
 			return this;
 		}
-		
+
 		/**
 		 * @see INotification#getActions()
 		 */
@@ -248,7 +266,7 @@ public class Notification implements INotification
 			this.actions.add(action);
 			return this;
 		}
-		
+
 		/**
 		 * @see INotification#getActions()
 		 */
@@ -261,7 +279,7 @@ public class Notification implements INotification
 			this.actions.addAll(Arrays.asList(actions));
 			return this;
 		}
-		
+
 		/**
 		 * @see INotification#requiresAcknowledgment()
 		 * @see INotification#getAcknowledgementAction()
@@ -272,8 +290,8 @@ public class Notification implements INotification
 			this.acknowledgementAction = new DefaultAcknowledgementAction();
 			return this;
 		}
-		
-		
+
+
 		/**
 		 * @see INotification#requiresAcknowledgment()
 		 * @see INotification#getAcknowledgementAction()
@@ -284,7 +302,7 @@ public class Notification implements INotification
 			this.acknowledgementAction = acknowledgementAction;
 			return this;
 		}
-		
+
 		/**
 		 * @see INotification#getThrowable()
 		 */
@@ -293,21 +311,19 @@ public class Notification implements INotification
 			this.throwable = t;
 			return this;
 		}
-		
+
 		public Notification build()
 		{
 			if (requiresAcknowledgement && acknowledgementAction == null)
 			{
 				acknowledgementAction = new DefaultAcknowledgementAction();
 			}
-			return new Notification(level, category, title, text, 
-									actions.toArray(new INotificationAction[actions.size()]), 
-									requiresAcknowledgement, acknowledgementAction,
-									throwable);
+			return new Notification(level, category, title, text, actions.toArray(new INotificationAction[actions
+					.size()]), requiresAcknowledgement, acknowledgementAction, throwable);
 		}
-		
+
 	}
-	
+
 	private static class DefaultAcknowledgementAction implements INotificationAction
 	{
 
@@ -328,6 +344,6 @@ public class Notification implements INotification
 		{
 			// NOOP
 		}
-		
+
 	}
 }

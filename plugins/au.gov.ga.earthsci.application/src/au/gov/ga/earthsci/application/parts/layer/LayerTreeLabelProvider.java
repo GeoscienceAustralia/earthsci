@@ -326,13 +326,13 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 			if (element instanceof ILayerTreeNode)
 			{
 				ILayerTreeNode node = (ILayerTreeNode) element;
-				
+
 				if (!node.getStatus().isOk())
 				{
 					return ImageRegistry.getInstance().get(ImageRegistry.ICON_ERROR);
 				}
-				
-				
+
+
 				URL imageURL = node.getIconURL();
 				if (imageURL != null)
 				{

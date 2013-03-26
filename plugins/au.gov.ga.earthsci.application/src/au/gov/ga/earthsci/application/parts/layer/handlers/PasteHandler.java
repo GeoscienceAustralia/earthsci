@@ -50,7 +50,9 @@ public class PasteHandler
 			Clipboard clipboard)
 	{
 		if (target == null)
+		{
 			target = model.getRootNode();
+		}
 
 		LayerTransferData data = (LayerTransferData) clipboard.getContents(LayerTransfer.getInstance());
 		if (data != null)

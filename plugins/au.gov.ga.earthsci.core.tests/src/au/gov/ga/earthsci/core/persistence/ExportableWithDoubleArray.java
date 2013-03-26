@@ -38,11 +38,15 @@ public class ExportableWithDoubleArray
 	{
 		ExportableWithDoubleArray ewda = (ExportableWithDoubleArray) obj;
 		if (ewda.collectionArray.length != collectionArray.length)
+		{
 			return false;
+		}
 		for (int i = 0; i < collectionArray.length; i++)
 		{
 			if (!Arrays.equals(collectionArray[i], ewda.collectionArray[i]))
+			{
 				return false;
+			}
 		}
 		return true;
 	}

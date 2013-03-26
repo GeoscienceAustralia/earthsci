@@ -25,9 +25,6 @@ import java.net.URL;
 import org.junit.Test;
 
 import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
-import au.gov.ga.earthsci.catalog.model.dataset.DatasetCatalogTreeNode;
-import au.gov.ga.earthsci.catalog.model.dataset.DatasetLayerCatalogTreeNode;
-import au.gov.ga.earthsci.catalog.model.dataset.DatasetReader;
 
 /**
  * Unit tests for the {@link DatasetReader} class
@@ -41,58 +38,58 @@ public class DatasetReaderTest
 	public void testReadNullSourceNullContext() throws Exception
 	{
 		ICatalogTreeNode result = DatasetReader.read(null, null);
-		
+
 		assertNotNull(result);
 		assertFalse(result.hasChildren());
 	}
-	
+
 	@Test
 	public void testReadNonexistantSource() throws Exception
 	{
 		URL source = new URL("file:/somefile.nnn");
-		
+
 		ICatalogTreeNode result = DatasetReader.read(source, null);
-		
+
 		assertNotNull(result);
 		assertFalse(result.hasChildren());
 	}
-	
+
 	@Test
 	public void testReadValidSource() throws Exception
 	{
 		URL source = getClass().getResource("validdataset.xml");
-		
+
 		ICatalogTreeNode result = DatasetReader.read(source, null);
-		
+
 		assertNotNull(result);
 		assertTrue(result.hasChildren());
-		
+
 		assertEquals(2, result.getChildCount());
-		
+
 		assertTrue(result.getChild(0) instanceof DatasetLayerCatalogTreeNode);
 		assertTrue(result.getChild(1) instanceof DatasetCatalogTreeNode);
 	}
-	
+
 	@Test
 	public void testReadInvalidSource() throws Exception
 	{
 		URL source = getClass().getResource("invaliddataset.xml");
-		
+
 		ICatalogTreeNode result = DatasetReader.read(source, null);
-		
+
 		assertNotNull(result);
 		assertFalse(result.hasChildren());
 	}
-	
+
 	@Test
 	public void testReadEmptySource() throws Exception
 	{
 		URL source = getClass().getResource("emptydataset.xml");
-		
+
 		ICatalogTreeNode result = DatasetReader.read(source, null);
-		
+
 		assertNotNull(result);
 		assertFalse(result.hasChildren());
 	}
-	
+
 }

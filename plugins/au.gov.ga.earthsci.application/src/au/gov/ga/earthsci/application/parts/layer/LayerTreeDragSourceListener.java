@@ -47,7 +47,9 @@ public class LayerTreeDragSourceListener implements DragSourceListener
 	public void dragFinished(DragSourceEvent event)
 	{
 		if (!event.doit)
+		{
 			return;
+		}
 		//if the gadget was moved, remove it from the source viewer
 		if (event.detail == DND.DROP_MOVE)
 		{

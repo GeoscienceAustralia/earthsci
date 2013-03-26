@@ -32,17 +32,17 @@ public class StopBookmarksHandler
 
 	@Inject
 	private IBookmarksController controller;
-	
+
 	@Execute
 	public void execute()
 	{
 		controller.stop();
 	}
-	
+
 	@CanExecute
 	public boolean canExecute()
 	{
 		return controller.isPlaying();
 	}
-	
+
 }

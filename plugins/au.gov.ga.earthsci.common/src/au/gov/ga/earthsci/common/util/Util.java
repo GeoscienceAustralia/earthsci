@@ -29,8 +29,10 @@ import java.util.Map.Entry;
  */
 public class Util
 {
-	private Util() {}
-	
+	private Util()
+	{
+	}
+
 	private static final Map<Class<?>, Class<?>> primitiveToBoxed;
 	private static final Map<Class<?>, Class<?>> boxedToPrimitive;
 	static
@@ -120,11 +122,11 @@ public class Util
 	public static String concatInts(int[] array, String separator)
 	{
 		if (array == null || array.length == 0)
-		 {
+		{
 			return ""; //$NON-NLS-1$
 		}
 		if (separator == null)
-		 {
+		{
 			separator = ""; //$NON-NLS-1$
 		}
 		StringBuilder sb = new StringBuilder();
@@ -137,26 +139,29 @@ public class Util
 	}
 
 	/**
-	 * Concatenate an array of objects in a single string, separated by
-	 * the provided separator.
+	 * Concatenate an array of objects in a single string, separated by the
+	 * provided separator.
 	 * <p/>
-	 * If an object is <code>null</code>, the provided {@code nullValue} will
-	 * be used.
+	 * If an object is <code>null</code>, the provided {@code nullValue} will be
+	 * used.
 	 * 
-	 * @param array The array of values to concatenate
-	 * @param separator The separator to use when concatenating
-	 * @param nullValue The value to use in the case of a null element
+	 * @param array
+	 *            The array of values to concatenate
+	 * @param separator
+	 *            The separator to use when concatenating
+	 * @param nullValue
+	 *            The value to use in the case of a null element
 	 * 
 	 * @return The concatenated string
 	 */
 	public static String concat(Object[] array, String separator, String nullValue)
 	{
 		if (array == null || array.length == 0)
-		 {
+		{
 			return ""; //$NON-NLS-1$
 		}
 		if (separator == null)
-		 {
+		{
 			separator = ""; //$NON-NLS-1$
 		}
 		StringBuilder sb = new StringBuilder();
@@ -167,7 +172,7 @@ public class Util
 		}
 		return sb.substring(separator.length());
 	}
-	
+
 	/**
 	 * Is the given string empty (null, or of length 0)?
 	 * 

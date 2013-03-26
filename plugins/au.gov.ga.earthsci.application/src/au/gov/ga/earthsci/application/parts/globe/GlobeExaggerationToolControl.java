@@ -169,7 +169,9 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 	private double scaleToExaggeration(int value)
 	{
 		if (value <= 0)
+		{
 			return 0;
+		}
 
 		double exponent = (value / (double) INCREMENTS_PER_POWER) + SCALE_LOG_MIN;
 		return Math.pow(10, exponent);
@@ -178,7 +180,9 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 	private int exaggerationToScale(double value)
 	{
 		if (value <= 0)
+		{
 			return 0;
+		}
 
 		double log10 = Math.max(SCALE_LOG_MIN, Math.min(SCALE_LOG_MAX, Math.log10(value)));
 		return (int) Math.round((log10 - SCALE_LOG_MIN) * INCREMENTS_PER_POWER);

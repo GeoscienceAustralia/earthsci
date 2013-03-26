@@ -25,8 +25,8 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 
 /**
- * An abstract command handler that has a {@link #canExecute(IBookmark[])} method
- * that only enables the command when a single bookmark is selected.
+ * An abstract command handler that has a {@link #canExecute(IBookmark[])}
+ * method that only enables the command when a single bookmark is selected.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -38,18 +38,19 @@ public abstract class AbstractSingleBookmarkHandler
 	{
 		doExecute(selectedBookmarks[0]);
 	}
-	
+
 	/**
 	 * Perform handler specific logic here
 	 * 
-	 * @param selectedBookmark The currently selected bookmark
+	 * @param selectedBookmark
+	 *            The currently selected bookmark
 	 */
 	protected abstract void doExecute(IBookmark selectedBookmark);
-	
+
 	@CanExecute
 	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
 	{
 		return selectedBookmarks != null && selectedBookmarks.length == 1;
 	}
-	
+
 }

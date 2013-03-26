@@ -20,46 +20,49 @@ import java.util.List;
 /**
  * An interface for an ordered list of bookmarks with a given name.
  * <p/>
- * Bookmark lists are used to group bookmarks into a logical collection. This can be used to tell a 'story'
- * about a set of data, to sort bookmarks, or to create a presentation, for example.
+ * Bookmark lists are used to group bookmarks into a logical collection. This
+ * can be used to tell a 'story' about a set of data, to sort bookmarks, or to
+ * create a presentation, for example.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public interface IBookmarkList
 {
 	/**
-	 * Return the ID of this list. This will uniquely identify a list
-	 * in a session.
+	 * Return the ID of this list. This will uniquely identify a list in a
+	 * session.
 	 * 
 	 * @return The ID of this bookmark list
 	 */
 	String getId();
-	
+
 	/**
 	 * Return the human readable name of this bookmark list.
 	 * 
 	 * @return The name of this bookmark list.
 	 */
 	String getName();
-	
+
 	/**
 	 * Set the name for this list
 	 * 
-	 * @param name The name to set on this list
+	 * @param name
+	 *            The name to set on this list
 	 */
 	void setName(String name);
-	
+
 	/**
 	 * Return the list of bookmarks in this bookmark list.
 	 * 
 	 * @return The ordered list of bookmarks in this bookmark list.
 	 */
 	List<IBookmark> getBookmarks();
-	
+
 	/**
 	 * Set the bookmarks on this list
 	 * 
-	 * @param bookmarks The bookmarks to set on this list
+	 * @param bookmarks
+	 *            The bookmarks to set on this list
 	 */
 	void setBookmarks(List<IBookmark> bookmarks);
 }

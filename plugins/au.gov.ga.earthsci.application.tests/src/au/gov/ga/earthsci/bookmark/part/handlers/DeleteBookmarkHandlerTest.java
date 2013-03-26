@@ -23,64 +23,65 @@ public class DeleteBookmarkHandlerTest
 	private DeleteBookmarkHandler classUnderTest;
 	private Mockery mockContext;
 	private IBookmarksController controller;
-	
+
 	@Before
 	public void setup()
 	{
 		classUnderTest = new DeleteBookmarkHandler();
-		
+
 		mockContext = new Mockery();
-		
+
 		controller = mockContext.mock(IBookmarksController.class);
 		classUnderTest.setController(controller);
 	}
-	
+
 	@Test
 	public void testCanExecuteNullSelection()
 	{
-		final IBookmark[] selection =  null;
-		
+		final IBookmark[] selection = null;
+
 		assertFalse(classUnderTest.canExecute(selection));
 	}
-	
+
 	@Test
 	public void testCanExecuteEmptySelection()
 	{
-		final IBookmark[] selection =  new IBookmark[] {};
-		
+		final IBookmark[] selection = new IBookmark[] {};
+
 		assertFalse(classUnderTest.canExecute(selection));
 	}
-	
+
 	@Test
 	public void testCanExecuteSingleSelection()
 	{
-		final IBookmark[] selection =  new IBookmark[] {new Bookmark()};
-		
+		final IBookmark[] selection = new IBookmark[] { new Bookmark() };
+
 		assertTrue(classUnderTest.canExecute(selection));
 	}
-	
+
 	@Test
 	public void testCanExecuteMultiSelection()
 	{
-		final IBookmark[] selection =  new IBookmark[] {new Bookmark(), 
-												  		new Bookmark(),
-												  		new Bookmark()};
-		
+		final IBookmark[] selection = new IBookmark[] { new Bookmark(), new Bookmark(), new Bookmark() };
+
 		assertTrue(classUnderTest.canExecute(selection));
 	}
-	
+
 	@Test
 	public void testExecute()
 	{
-		final IBookmark[] selection =  new IBookmark[] {new Bookmark(), 
-												  		new Bookmark(),
-												  		new Bookmark()};
-		
-		mockContext.checking(new Expectations() {{{
-			oneOf(controller).delete(with(selection));
-		}}});
-		
+		final IBookmark[] selection = new IBookmark[] { new Bookmark(), new Bookmark(), new Bookmark() };
+
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					oneOf(controller).delete(with(selection));
+				}
+			}
+		});
+
 		classUnderTest.execute(selection);
 	}
-	
+
 }

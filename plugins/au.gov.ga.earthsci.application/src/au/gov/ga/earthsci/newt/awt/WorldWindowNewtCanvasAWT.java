@@ -77,8 +77,10 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 
 		// Determine whether we should request a stereo canvas
 		String stereo = System.getProperty(AVKey.STEREO_MODE);
-		if ("device".equals(stereo)) //$NON-NLS-1$
+		if ("device".equals(stereo))
+		{
 			caps.setStereo(true);
+		}
 
 		return caps;
 	}
@@ -86,7 +88,7 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	/** The drawable to which {@link WorldWindow} methods are delegated. */
 	protected final WorldWindowNewtDrawableAWT wwd; // WorldWindow interface delegates to wwd
 	protected final GLWindow window;
-	
+
 	public WorldWindowNewtCanvasAWT()
 	{
 		this(GLWindow.create(getCaps()));
@@ -119,7 +121,7 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 			throw new WWRuntimeException(message, e);
 		}
 	}
-	
+
 	/**
 	 * Constructs a new <code>WorldWindowGLCanvas</code> on the default graphics
 	 * device and shares graphics resources with another
@@ -166,9 +168,13 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 					((WorldWindowNewtDrawableAWT) WorldWind.createConfigurationComponent(AVKey.WORLD_WINDOW_CLASS_NAME));
 			this.wwd.initDrawable(window, this);
 			if (shareWith != null)
+			{
 				this.wwd.initGpuResourceCache(shareWith.getGpuResourceCache());
+			}
 			else
+			{
 				this.wwd.initGpuResourceCache(WorldWindowImpl.createGpuResourceCache());
+			}
 			this.createView();
 			this.createDefaultInputHandler();
 			WorldWind.addPropertyChangeListener(WorldWind.SHUTDOWN_EVENT, this);
@@ -187,7 +193,9 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	{
 		//noinspection StringEquality
 		if (evt.getPropertyName() == WorldWind.SHUTDOWN_EVENT)
+		{
 			this.shutdown();
+		}
 	}
 
 	@Override
@@ -225,11 +233,15 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	public void setInputHandler(InputHandler inputHandler)
 	{
 		if (this.wwd.getInputHandler() != null)
+		{
 			this.wwd.getInputHandler().setEventSource(null); // remove this window as a source of events
+		}
 
 		this.wwd.setInputHandler(inputHandler != null ? inputHandler : new NoOpInputHandler());
 		if (inputHandler != null)
+		{
 			inputHandler.setEventSource(this);
+		}
 	}
 
 	@Override
@@ -280,7 +292,9 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	{
 		// null views are permissible
 		if (view != null)
+		{
 			this.wwd.setView(view);
+		}
 	}
 
 	@Override

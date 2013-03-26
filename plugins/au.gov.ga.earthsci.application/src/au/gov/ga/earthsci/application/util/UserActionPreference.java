@@ -16,11 +16,11 @@
 package au.gov.ga.earthsci.application.util;
 
 /**
- * An enumeration used to reflect a user's preference on when to perform a
- * given action (Always, Never, or Ask)
+ * An enumeration used to reflect a user's preference on when to perform a given
+ * action (Always, Never, or Ask)
  * 
  * @author James Navin (james.navin@ga.gov.au)
- *
+ * 
  */
 public enum UserActionPreference
 {

@@ -84,7 +84,7 @@ public abstract class CollectionHashMap<K, V, C extends Collection<V>> extends H
 		}
 		return values.size();
 	}
-	
+
 	@Override
 	public List<V> flatValues()
 	{

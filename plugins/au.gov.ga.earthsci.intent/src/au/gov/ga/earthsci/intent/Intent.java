@@ -282,27 +282,27 @@ public class Intent
 		StringBuilder sb = new StringBuilder();
 
 		if (action != null)
-		 {
+		{
 			sb.append(", action: " + action); //$NON-NLS-1$
 		}
 
 		if (!categories.isEmpty())
-		 {
+		{
 			sb.append(", categories: " + Arrays.toString(categories.toArray())); //$NON-NLS-1$
 		}
 
 		if (uri != null)
-		 {
+		{
 			sb.append(", URI: " + uri); //$NON-NLS-1$
 		}
 
 		if (contentType != null)
-		 {
+		{
 			sb.append(", content-type: " + contentType.getId()); //$NON-NLS-1$
 		}
 
 		if (expectedReturnType != null)
-		 {
+		{
 			sb.append(", expected return-type: " + expectedReturnType.getName()); //$NON-NLS-1$
 		}
 

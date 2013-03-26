@@ -46,24 +46,24 @@ import au.gov.ga.earthsci.core.persistence.Persistent;
 public class Bookmarks extends AbstractPropertyChangeBean implements IBookmarks
 {
 	private static final String DEFAULT_LIST_ID = "au.gov.ga.earthsci.bookmark.list.default"; //$NON-NLS-1$
-	
+
 	private ArrayListTreeMap<String, IBookmarkList> nameToListMap = new ArrayListTreeMap<String, IBookmarkList>();
 	private Map<String, IBookmarkList> idToListMap = new HashMap<String, IBookmarkList>();
 
 	private IBookmarkList defaultList;
-	
+
 	@PostConstruct
 	public void load()
 	{
 		BookmarksPersister.loadFromWorkspace(this);
 	}
-	
+
 	@PreDestroy
 	public void save()
 	{
 		BookmarksPersister.saveToWorkspace(this);
 	}
-	
+
 	public Bookmarks()
 	{
 		initialiseDefaultList();
@@ -103,11 +103,11 @@ public class Bookmarks extends AbstractPropertyChangeBean implements IBookmarks
 	public void setLists(IBookmarkList[] lists)
 	{
 		IBookmarkList[] oldLists = getLists();
-		
+
 		idToListMap.clear();
 		nameToListMap.clear();
 		defaultList = null;
-		
+
 		if (lists != null)
 		{
 			for (IBookmarkList list : lists)
@@ -115,30 +115,30 @@ public class Bookmarks extends AbstractPropertyChangeBean implements IBookmarks
 				doAddList(list, false);
 			}
 		}
-		
+
 		if (defaultList == null)
 		{
 			initialiseDefaultList();
 		}
-		
+
 		firePropertyChange("lists", oldLists, getLists()); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public void addList(IBookmarkList list)
 	{
 		doAddList(list, true);
 	}
-	
+
 	private void doAddList(IBookmarkList list, boolean raiseEvent)
 	{
 		if (list == null)
 		{
 			return;
 		}
-		
+
 		IBookmarkList[] oldLists = getLists();
-		
+
 		if (idToListMap.containsKey(list.getId()))
 		{
 			IBookmarkList toRemove = idToListMap.get(list.getId());
@@ -146,46 +146,44 @@ public class Bookmarks extends AbstractPropertyChangeBean implements IBookmarks
 		}
 		idToListMap.put(list.getId(), list);
 		nameToListMap.putSingle(list.getName(), list);
-		
+
 		if (list.getId().equals(DEFAULT_LIST_ID))
 		{
 			defaultList = list;
-			
+
 			firePropertyChange("defaultList", this.defaultList, this.defaultList = list); //$NON-NLS-1$
 		}
-		
+
 		if (raiseEvent)
 		{
 			firePropertyChange("lists", oldLists, getLists()); //$NON-NLS-1$
 		}
 	}
-	
+
 	@Override
 	public boolean removeList(IBookmarkList list)
 	{
-		if (list == null || 
-				!idToListMap.containsKey(list.getId()) || 
-				list.getId().equals(DEFAULT_LIST_ID))
+		if (list == null || !idToListMap.containsKey(list.getId()) || list.getId().equals(DEFAULT_LIST_ID))
 		{
 			return false;
 		}
-		
+
 		IBookmarkList[] oldLists = getLists();
-		
+
 		idToListMap.remove(list.getId());
 		nameToListMap.removeSingle(list.getName(), list);
-		
+
 		firePropertyChange("lists", oldLists, getLists()); //$NON-NLS-1$
 		return true;
 	}
-	
+
 	private void initialiseDefaultList()
 	{
 		BookmarkList defaultList = new BookmarkList();
 		defaultList.setId(DEFAULT_LIST_ID);
-		defaultList.setName(Messages.Bookmarks_DefaultListName); 
-		
+		defaultList.setName(Messages.Bookmarks_DefaultListName);
+
 		addList(defaultList);
 	}
-	
+
 }

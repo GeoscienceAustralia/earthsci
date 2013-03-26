@@ -18,12 +18,15 @@ package au.gov.ga.earthsci.bookmark.model;
 import java.util.Map;
 
 /**
- * An interface for storing and retrieving metadata about an {@link IBookmark}. This is a dictionary
- * into which metadata can be stored relating to the associated bookmark.
+ * An interface for storing and retrieving metadata about an {@link IBookmark}.
+ * This is a dictionary into which metadata can be stored relating to the
+ * associated bookmark.
  * <p/>
- * A number of standard keys are defined which can be used to store common pieces of information (description etc.).
+ * A number of standard keys are defined which can be used to store common
+ * pieces of information (description etc.).
  * <p/>
- * Where appropriate, data can be stored as HTML formatted strings for display purposes.
+ * Where appropriate, data can be stored as HTML formatted strings for display
+ * purposes.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */

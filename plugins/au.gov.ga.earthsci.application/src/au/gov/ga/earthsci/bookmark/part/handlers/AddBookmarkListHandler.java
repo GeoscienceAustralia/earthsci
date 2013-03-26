@@ -33,18 +33,18 @@ public class AddBookmarkListHandler
 
 	@Inject
 	private IBookmarksController controller;
-	
+
 	@Execute
 	public void execute()
 	{
 		IBookmarkList newList = controller.createNewBookmarkList();
 		controller.setCurrentList(newList);
 	}
-	
+
 	@CanExecute
 	public boolean canExecute()
 	{
 		return true;
 	}
-	
+
 }

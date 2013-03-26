@@ -29,7 +29,7 @@ public class EditBookmarkHandler extends AbstractSingleBookmarkHandler
 {
 	@Inject
 	private IBookmarksController controller;
-	
+
 	@Override
 	public void doExecute(IBookmark selectedBookmark)
 	{

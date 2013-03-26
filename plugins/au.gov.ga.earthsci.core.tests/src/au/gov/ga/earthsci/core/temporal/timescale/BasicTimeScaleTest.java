@@ -40,287 +40,235 @@ public class BasicTimeScaleTest
 		String id = "id";
 		String name = "name";
 		String description = "description";
-		
-		ITimeScaleLevel[] levels = new ITimeScaleLevel[] {
-			new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),	
-			new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0),	
-		};
-		
-		ITimePeriod period = BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1")
-													.atLevel(levels[0])
-													.build();
-		
-		BasicTimeScale classUnderTest = Builder.buildTimeScale(id, name, description)
-											   .withTopLevelPeriod(period)
-											   .withLevels(levels)
-											   .build();
-		
+
+		ITimeScaleLevel[] levels =
+				new ITimeScaleLevel[] { new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),
+						new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0), };
+
+		ITimePeriod period =
+				BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1").atLevel(levels[0]).build();
+
+		BasicTimeScale classUnderTest =
+				Builder.buildTimeScale(id, name, description).withTopLevelPeriod(period).withLevels(levels).build();
+
 		assertNotNull(classUnderTest);
 		assertEquals(id, classUnderTest.getId());
 		assertEquals(name, classUnderTest.getName());
 		assertEquals(description, classUnderTest.getDescription());
-		
+
 		assertEquals(2, classUnderTest.getLevels().size());
 		assertEquals(levels[1], classUnderTest.getLevels().get(0));
 		assertEquals(levels[0], classUnderTest.getLevels().get(1));
-		
+
 		assertEquals(1, classUnderTest.getPeriods().size());
 		assertEquals(period, classUnderTest.getPeriods().get(0));
 	}
-	
-	
-	@Test (expected = IllegalArgumentException.class)
+
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testBuilderWithNoId()
 	{
 		String id = "";
 		String name = "name";
 		String description = "description";
-		
-		ITimeScaleLevel[] levels = new ITimeScaleLevel[] {
-			new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),	
-			new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0),	
-		};
-		
-		ITimePeriod period = BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1")
-													.atLevel(levels[0])
-													.build();
-		
-		Builder.buildTimeScale(id, name, description)
-			   .withTopLevelPeriod(period)
-			   .withLevels(levels)
-			   .build();
+
+		ITimeScaleLevel[] levels =
+				new ITimeScaleLevel[] { new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),
+						new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0), };
+
+		ITimePeriod period =
+				BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1").atLevel(levels[0]).build();
+
+		Builder.buildTimeScale(id, name, description).withTopLevelPeriod(period).withLevels(levels).build();
 	}
-	
-	@Test (expected = IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testBuilderWithNoName()
 	{
 		String id = "id";
 		String name = "";
 		String description = "description";
-		
-		ITimeScaleLevel[] levels = new ITimeScaleLevel[] {
-			new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),	
-			new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0),	
-		};
-		
-		ITimePeriod period = BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1")
-													.atLevel(levels[0])
-													.build();
-		
-		Builder.buildTimeScale(id, name, description)
-			   .withTopLevelPeriod(period)
-			   .withLevels(levels)
-			   .build();
+
+		ITimeScaleLevel[] levels =
+				new ITimeScaleLevel[] { new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),
+						new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0), };
+
+		ITimePeriod period =
+				BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1").atLevel(levels[0]).build();
+
+		Builder.buildTimeScale(id, name, description).withTopLevelPeriod(period).withLevels(levels).build();
 	}
-	
+
 	@Test
 	public void testBuilderWithNoDescription()
 	{
 		String id = "id";
 		String name = "name";
 		String description = "";
-		
-		ITimeScaleLevel[] levels = new ITimeScaleLevel[] {
-			new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),	
-			new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0),	
-		};
-		
-		ITimePeriod period = BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1")
-													.atLevel(levels[0])
-													.build();
-		
-		BasicTimeScale classUnderTest = Builder.buildTimeScale(id, name, description)
-											   .withTopLevelPeriod(period)
-											   .withLevels(levels)
-											   .build();
+
+		ITimeScaleLevel[] levels =
+				new ITimeScaleLevel[] { new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),
+						new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0), };
+
+		ITimePeriod period =
+				BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1").atLevel(levels[0]).build();
+
+		BasicTimeScale classUnderTest =
+				Builder.buildTimeScale(id, name, description).withTopLevelPeriod(period).withLevels(levels).build();
 		assertNotNull(classUnderTest);
 	}
-	
-	@Test (expected = IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testBuilderWithNoLevels()
 	{
 		String id = "id";
 		String name = "name";
 		String description = "description";
-		
-		ITimeScaleLevel[] levels = new ITimeScaleLevel[] {
-			new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),	
-			new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0),	
-		};
-		
-		ITimePeriod period = BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1")
-													.atLevel(levels[0])
-													.build();
-		
-		Builder.buildTimeScale(id, name, description)
-			   .withTopLevelPeriod(period)
-			   .build();
+
+		ITimeScaleLevel[] levels =
+				new ITimeScaleLevel[] { new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),
+						new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0), };
+
+		ITimePeriod period =
+				BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1").atLevel(levels[0]).build();
+
+		Builder.buildTimeScale(id, name, description).withTopLevelPeriod(period).build();
 	}
-	
-	@Test (expected = IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testBuilderWithNoPeriods()
 	{
 		String id = "id";
 		String name = "name";
 		String description = "description";
-		
-		ITimeScaleLevel[] levels = new ITimeScaleLevel[] {
-			new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),	
-			new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0),	
-		};
-		
-		Builder.buildTimeScale(id, name, description)
-			   .withLevels(levels)
-			   .build();
+
+		ITimeScaleLevel[] levels =
+				new ITimeScaleLevel[] { new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),
+						new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0), };
+
+		Builder.buildTimeScale(id, name, description).withLevels(levels).build();
 	}
-	
-	@Test (expected = IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testBuilderWithPeriodContainingInvalidLevel()
 	{
 		String id = "id";
 		String name = "name";
 		String description = "description";
-		
-		ITimeScaleLevel[] levels = new ITimeScaleLevel[] {
-			new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),	
-			new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0),	
-		};
-		
+
+		ITimeScaleLevel[] levels =
+				new ITimeScaleLevel[] { new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),
+						new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0), };
+
 		ITimeScaleLevel invalidLevel = new BasicTimeScaleLevel("bad", "bad", BigInteger.TEN, 2);
-		
-		ITimePeriod subPeriod = BasicTimePeriod.Builder.buildTimePeriod("sub1", "sub1", "sub1")
-													   .atLevel(invalidLevel)
-													   .build();
-		
-		ITimePeriod period = BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1")
-												    .atLevel(levels[0])
-												    .withSubPeriod(subPeriod)
-												    .build();
-		
-		Builder.buildTimeScale(id, name, description)
-			   .withLevels(levels)
-			   .withTopLevelPeriod(period)
-			   .build();
+
+		ITimePeriod subPeriod =
+				BasicTimePeriod.Builder.buildTimePeriod("sub1", "sub1", "sub1").atLevel(invalidLevel).build();
+
+		ITimePeriod period =
+				BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1").atLevel(levels[0])
+						.withSubPeriod(subPeriod).build();
+
+		Builder.buildTimeScale(id, name, description).withLevels(levels).withTopLevelPeriod(period).build();
 	}
-	
+
 	@Test
 	public void testHasPeriodWithNull()
 	{
 		String id = "id";
 		String name = "name";
 		String description = "description";
-		
-		ITimeScaleLevel[] levels = new ITimeScaleLevel[] {
-			new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),	
-			new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0),	
-		};
-		
-		ITimePeriod subPeriod = BasicTimePeriod.Builder.buildTimePeriod("sub1", "sub1", "sub1")
-													   .atLevel(levels[0])
-													   .build();
-		
-		ITimePeriod period = BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1")
-												    .atLevel(levels[1])
-												    .withSubPeriod(subPeriod)
-												    .build();
-		
-		BasicTimeScale classUnderTest = Builder.buildTimeScale(id, name, description)
-											   .withLevels(levels)
-											   .withTopLevelPeriod(period)
-											   .build();
-		
+
+		ITimeScaleLevel[] levels =
+				new ITimeScaleLevel[] { new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),
+						new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0), };
+
+		ITimePeriod subPeriod =
+				BasicTimePeriod.Builder.buildTimePeriod("sub1", "sub1", "sub1").atLevel(levels[0]).build();
+
+		ITimePeriod period =
+				BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1").atLevel(levels[1])
+						.withSubPeriod(subPeriod).build();
+
+		BasicTimeScale classUnderTest =
+				Builder.buildTimeScale(id, name, description).withLevels(levels).withTopLevelPeriod(period).build();
+
 		assertFalse(classUnderTest.hasPeriod(null));
 	}
-	
+
 	@Test
 	public void testHasPeriodWithTopLevelPeriod()
 	{
 		String id = "id";
 		String name = "name";
 		String description = "description";
-		
-		ITimeScaleLevel[] levels = new ITimeScaleLevel[] {
-			new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),	
-			new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0),	
-		};
-		
-		ITimePeriod subPeriod = BasicTimePeriod.Builder.buildTimePeriod("sub1", "sub1", "sub1")
-													   .atLevel(levels[0])
-													   .build();
-		
-		ITimePeriod period = BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1")
-												    .atLevel(levels[1])
-												    .withSubPeriod(subPeriod)
-												    .build();
-		
-		BasicTimeScale classUnderTest = Builder.buildTimeScale(id, name, description)
-											   .withLevels(levels)
-											   .withTopLevelPeriod(period)
-											   .build();
-		
+
+		ITimeScaleLevel[] levels =
+				new ITimeScaleLevel[] { new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),
+						new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0), };
+
+		ITimePeriod subPeriod =
+				BasicTimePeriod.Builder.buildTimePeriod("sub1", "sub1", "sub1").atLevel(levels[0]).build();
+
+		ITimePeriod period =
+				BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1").atLevel(levels[1])
+						.withSubPeriod(subPeriod).build();
+
+		BasicTimeScale classUnderTest =
+				Builder.buildTimeScale(id, name, description).withLevels(levels).withTopLevelPeriod(period).build();
+
 		assertTrue(classUnderTest.hasPeriod(period));
 	}
-	
+
 	@Test
 	public void testHasPeriodWithSubPeriod()
 	{
 		String id = "id";
 		String name = "name";
 		String description = "description";
-		
-		ITimeScaleLevel[] levels = new ITimeScaleLevel[] {
-			new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),	
-			new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0),	
-		};
-		
-		ITimePeriod subPeriod = BasicTimePeriod.Builder.buildTimePeriod("sub1", "sub1", "sub1")
-													   .atLevel(levels[0])
-													   .build();
-		
-		ITimePeriod period = BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1")
-												    .atLevel(levels[1])
-												    .withSubPeriod(subPeriod)
-												    .build();
-		
-		BasicTimeScale classUnderTest = Builder.buildTimeScale(id, name, description)
-											   .withLevels(levels)
-											   .withTopLevelPeriod(period)
-											   .build();
-		
+
+		ITimeScaleLevel[] levels =
+				new ITimeScaleLevel[] { new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),
+						new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0), };
+
+		ITimePeriod subPeriod =
+				BasicTimePeriod.Builder.buildTimePeriod("sub1", "sub1", "sub1").atLevel(levels[0]).build();
+
+		ITimePeriod period =
+				BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1").atLevel(levels[1])
+						.withSubPeriod(subPeriod).build();
+
+		BasicTimeScale classUnderTest =
+				Builder.buildTimeScale(id, name, description).withLevels(levels).withTopLevelPeriod(period).build();
+
 		assertTrue(classUnderTest.hasPeriod(subPeriod));
 	}
-	
+
 	@Test
 	public void testHasPeriodWithNonChildPeriod()
 	{
 		String id = "id";
 		String name = "name";
 		String description = "description";
-		
-		ITimeScaleLevel[] levels = new ITimeScaleLevel[] {
-			new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),	
-			new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0),	
-		};
-		
-		ITimePeriod subPeriod = BasicTimePeriod.Builder.buildTimePeriod("sub1", "sub1", "sub1")
-													   .atLevel(levels[0])
-													   .build();
-		
-		ITimePeriod period = BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1")
-												    .atLevel(levels[1])
-												    .withSubPeriod(subPeriod)
-												    .build();
-		
-		ITimePeriod nonChildPeriod = BasicTimePeriod.Builder.buildTimePeriod("odd", "odd", "odd")
-				   											.atLevel(levels[0])
-				   											.build();
-		
-		BasicTimeScale classUnderTest = Builder.buildTimeScale(id, name, description)
-											   .withLevels(levels)
-											   .withTopLevelPeriod(period)
-											   .build();
-		
+
+		ITimeScaleLevel[] levels =
+				new ITimeScaleLevel[] { new BasicTimeScaleLevel("level2", "level2", BigInteger.ONE, 1),
+						new BasicTimeScaleLevel("level1", "level1", BigInteger.TEN, 0), };
+
+		ITimePeriod subPeriod =
+				BasicTimePeriod.Builder.buildTimePeriod("sub1", "sub1", "sub1").atLevel(levels[0]).build();
+
+		ITimePeriod period =
+				BasicTimePeriod.Builder.buildTimePeriod("period1", "period1", "period1").atLevel(levels[1])
+						.withSubPeriod(subPeriod).build();
+
+		ITimePeriod nonChildPeriod =
+				BasicTimePeriod.Builder.buildTimePeriod("odd", "odd", "odd").atLevel(levels[0]).build();
+
+		BasicTimeScale classUnderTest =
+				Builder.buildTimeScale(id, name, description).withLevels(levels).withTopLevelPeriod(period).build();
+
 		assertFalse(classUnderTest.hasPeriod(nonChildPeriod));
 	}
-	
+
 }

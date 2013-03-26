@@ -54,11 +54,15 @@ public class ToggleHudHandler
 			GlobePart globe)
 	{
 		if (hudId == null)
+		{
 			return;
+		}
 
 		Layer layer = globe.getHudLayerForId(hudId);
 		if (layer == null)
+		{
 			return;
+		}
 
 		layer.setEnabled(!layer.isEnabled());
 		toolItem.setSelected(layer.isEnabled());

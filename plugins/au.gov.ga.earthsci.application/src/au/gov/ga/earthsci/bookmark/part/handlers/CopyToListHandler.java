@@ -35,36 +35,36 @@ import au.gov.ga.earthsci.bookmark.part.IBookmarksController;
  */
 public class CopyToListHandler
 {
-	
+
 	public static final String COMMAND_ID = "au.gov.ga.earthsci.application.command.copytogroup"; //$NON-NLS-1$
-	public static final String LIST_PARAMETER_ID = "au.gov.ga.earthsci.application.command.copytogroup.parameter.groupid"; //$NON-NLS-1$
-	
+	public static final String LIST_PARAMETER_ID =
+			"au.gov.ga.earthsci.application.command.copytogroup.parameter.groupid"; //$NON-NLS-1$
+
 	@Inject
 	public IBookmarksController controller;
-	
+
 	@Inject
 	public IBookmarks bookmarks;
-	
+
 	@Execute
-	public void execute(@Optional @Named(LIST_PARAMETER_ID) String listId, 
-						@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
+	public void execute(@Optional @Named(LIST_PARAMETER_ID) String listId,
+			@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
 	{
 		IBookmarkList targetList = bookmarks.getListById(listId);
 		if (targetList == null)
 		{
 			return;
 		}
-		controller.copyBookmarks(controller.getCurrentList(), 
-						  	     selectedBookmarks, 
-						  	     targetList,
-						  	     targetList.getBookmarks().size());
+		controller.copyBookmarks(controller.getCurrentList(), selectedBookmarks, targetList, targetList.getBookmarks()
+				.size());
 	}
-	
+
 	@CanExecute
 	public boolean canExecute(@Optional @Named(LIST_PARAMETER_ID) String listId,
-							  @Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
+			@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IBookmark[] selectedBookmarks)
 	{
-		return selectedBookmarks != null && selectedBookmarks.length > 0 && !listId.equals(controller.getCurrentList().getId());
+		return selectedBookmarks != null && selectedBookmarks.length > 0
+				&& !listId.equals(controller.getCurrentList().getId());
 	}
 
 }

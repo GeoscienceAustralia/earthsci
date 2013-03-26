@@ -35,8 +35,10 @@ import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
  */
 final public class DatasetReader
 {
-	private DatasetReader() {}
-	
+	private DatasetReader()
+	{
+	}
+
 	private static final String NAME_ATTRIBUTE = "@name"; //$NON-NLS-1$
 	private static final String INFO_ATTRIBUTE = "@info"; //$NON-NLS-1$
 	private static final String ICON_ATTRIBUTE = "@icon"; //$NON-NLS-1$
@@ -44,28 +46,36 @@ final public class DatasetReader
 	private static final String BASE_ATTRIBUTE = "@base"; //$NON-NLS-1$
 	private static final String DEFAULT_ATTRIBUTE = "@default"; //$NON-NLS-1$
 	private static final String ENABLED_ATTRIBUTE = "@enabled"; //$NON-NLS-1$
-	
+
 	private static final String DATASET_NODE_NAME = "Dataset"; //$NON-NLS-1$
 	private static final String LINK_NODE_NAME = "Link"; //$NON-NLS-1$
 	private static final String LAYER_NODE_NAME = "Layer"; //$NON-NLS-1$
-	
-	private static final String VALID_NODES_XPATH = DATASET_NODE_NAME + "|" + LINK_NODE_NAME + "|" + LAYER_NODE_NAME;  //$NON-NLS-1$//$NON-NLS-2$
+
+	private static final String VALID_NODES_XPATH = DATASET_NODE_NAME + "|" + LINK_NODE_NAME + "|" + LAYER_NODE_NAME; //$NON-NLS-1$//$NON-NLS-2$
 	private static final String DATASET_LIST_XPATH = "//DatasetList"; //$NON-NLS-1$
-	
+
 	/**
-	 * Read a dataset file from the given source and return the root node of the dataset
-	 * tree defined by the provided source.
+	 * Read a dataset file from the given source and return the root node of the
+	 * dataset tree defined by the provided source.
 	 * <p/>
-	 * Note that {@code link} nodes will not be expanded - they will be returned as {@link DatasetLinkCatalogTreeNode}s which can be lazy-expanded.
+	 * Note that {@code link} nodes will not be expanded - they will be returned
+	 * as {@link DatasetLinkCatalogTreeNode}s which can be lazy-expanded.
 	 * 
-	 * @param source The source to read the dataset structure from. See {@link XmlUtil#getElementFromSource(Object)} for supported sources.
-	 * @param context The context URL to use when resolving relative paths. May be <code>null</code>.
+	 * @param source
+	 *            The source to read the dataset structure from. See
+	 *            {@link XmlUtil#getElementFromSource(Object)} for supported
+	 *            sources.
+	 * @param context
+	 *            The context URL to use when resolving relative paths. May be
+	 *            <code>null</code>.
 	 * 
-	 * @return The root node of the dataset tree structure defined in the given source.
+	 * @return The root node of the dataset tree structure defined in the given
+	 *         source.
 	 * 
 	 * @throws MalformedURLException
 	 */
-	public static ICatalogTreeNode read(final Object source, final URL context) throws MalformedURLException, URISyntaxException
+	public static ICatalogTreeNode read(final Object source, final URL context) throws MalformedURLException,
+			URISyntaxException
 	{
 
 		final Element rootElement = XmlUtil.getElementFromSource(source);
@@ -73,16 +83,17 @@ final public class DatasetReader
 		{
 			return new DatasetCatalogTreeNode(null, getRootNodeName(source, context), null, null, true);
 		}
-		
+
 		// Special case
 		URL theContext = context;
 		if (context == null && source instanceof URL)
 		{
-			theContext = (URL)source;
+			theContext = (URL) source;
 		}
-		
-		final ICatalogTreeNode root = new DatasetCatalogTreeNode(theContext.toURI(), getRootNodeName(source, context), null, null, true);
-				
+
+		final ICatalogTreeNode root =
+				new DatasetCatalogTreeNode(theContext.toURI(), getRootNodeName(source, context), null, null, true);
+
 		final Element[] elements = XmlUtil.getElements(rootElement, DATASET_LIST_XPATH, null);
 		if (elements != null)
 		{
@@ -91,7 +102,7 @@ final public class DatasetReader
 				addChildren(element, root, theContext);
 			}
 		}
-		
+
 		return root;
 	}
 
@@ -99,15 +110,15 @@ final public class DatasetReader
 	{
 		if (source instanceof File)
 		{
-			return ((File)source).getAbsolutePath(); 
+			return ((File) source).getAbsolutePath();
 		}
 		if (source instanceof URI)
 		{
-			return UTF8URLEncoder.decode(((URI)source).toASCIIString()); 
+			return UTF8URLEncoder.decode(((URI) source).toASCIIString());
 		}
 		if (source instanceof URL)
 		{
-			return UTF8URLEncoder.decode(((URL)source).toExternalForm());
+			return UTF8URLEncoder.decode(((URL) source).toExternalForm());
 		}
 		if (context != null)
 		{
@@ -115,15 +126,16 @@ final public class DatasetReader
 		}
 		return Messages.DatasetReader_DefaultRootNodeName;
 	}
-	
-	private static void addChildren(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException, URISyntaxException
+
+	private static void addChildren(final Element element, final ICatalogTreeNode parent, final URL context)
+			throws MalformedURLException, URISyntaxException
 	{
 		final Element[] elements = XmlUtil.getElements(element, VALID_NODES_XPATH, null);
 		if (elements == null)
 		{
 			return;
 		}
-		
+
 		for (Element e : elements)
 		{
 			if (isDatasetNode(e))
@@ -157,52 +169,56 @@ final public class DatasetReader
 		return element.getNodeName().equalsIgnoreCase(DATASET_NODE_NAME);
 	}
 
-	private static ICatalogTreeNode addDataset(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException, URISyntaxException
+	private static ICatalogTreeNode addDataset(final Element element, final ICatalogTreeNode parent, final URL context)
+			throws MalformedURLException, URISyntaxException
 	{
 		final String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
 		final URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
 		final URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
 		final boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
-		
+
 		URI nodeURI = buildChildURI(parent.getURI(), UTF8URLEncoder.encode(name));
-		
+
 		final ICatalogTreeNode dataset = new DatasetCatalogTreeNode(nodeURI, name, info, icon, base);
 		parent.add(dataset);
-		
+
 		return dataset;
 	}
 
-	private static void addLink(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException, URISyntaxException
+	private static void addLink(final Element element, final ICatalogTreeNode parent, final URL context)
+			throws MalformedURLException, URISyntaxException
 	{
 		final String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
 		final URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
 		final URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
 		final URL url = XmlUtil.getURL(element, URL_ATTRIBUTE, context);
 		final boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
-		
+
 		URI nodeURI = buildChildURI(parent.getURI(), url.toExternalForm());
-		
+
 		final ICatalogTreeNode link = new DatasetLinkCatalogTreeNode(nodeURI, name, url, info, icon, base);
 		parent.add(link);
 	}
 
-	private static void addLayer(final Element element, final ICatalogTreeNode parent, final URL context) throws MalformedURLException, URISyntaxException
+	private static void addLayer(final Element element, final ICatalogTreeNode parent, final URL context)
+			throws MalformedURLException, URISyntaxException
 	{
 		final String name = XmlUtil.getText(element, NAME_ATTRIBUTE);
 		final URL info = XmlUtil.getURL(element, INFO_ATTRIBUTE, context);
 		final URL icon = XmlUtil.getURL(element, ICON_ATTRIBUTE, context);
 		final URL url = XmlUtil.getURL(element, URL_ATTRIBUTE, context);
-		
+
 		final boolean base = XmlUtil.getBoolean(element, BASE_ATTRIBUTE, false);
 		final boolean def = XmlUtil.getBoolean(element, DEFAULT_ATTRIBUTE, false);
 		final boolean enabled = XmlUtil.getBoolean(element, ENABLED_ATTRIBUTE, true);
-		
+
 		URI nodeURI = buildChildURI(parent.getURI(), url.toExternalForm());
-		
-		final DatasetLayerCatalogTreeNode layer = new DatasetLayerCatalogTreeNode(nodeURI, name, url, info, icon, base, def, enabled);
+
+		final DatasetLayerCatalogTreeNode layer =
+				new DatasetLayerCatalogTreeNode(nodeURI, name, url, info, icon, base, def, enabled);
 		parent.add(layer);
 	}
-	
+
 	private static URI buildChildURI(URI parentURI, String childPath) throws URISyntaxException
 	{
 		return new URI(parentURI.toASCIIString() + "/" + childPath); //$NON-NLS-1$

@@ -34,60 +34,75 @@ public class ChronosTest
 	private Chronos classUnderTest;
 	private ITemporal temporal;
 	private PropertyChangeListener pcl;
-	
+
 	private Mockery mockContext;
-	
+
 	@Before
 	public void setup()
 	{
 		classUnderTest = new Chronos();
-		
+
 		mockContext = new Mockery();
-		
+
 		temporal = mockContext.mock(ITemporal.class);
 		pcl = mockContext.mock(PropertyChangeListener.class);
-		
+
 		classUnderTest.addPropertyChangeListener(pcl);
 		classUnderTest.addTemporal(temporal);
 	}
-	
-	@Test (expected = IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testSetCurrentTimeWithNull()
 	{
 		final BigTime currentTime = null;
-		
-		mockContext.checking(new Expectations(){{{
-			never(temporal).apply(with(currentTime));
-			never(pcl).propertyChange(with(any(PropertyChangeEvent.class)));
-		}}});
-		
+
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					never(temporal).apply(with(currentTime));
+					never(pcl).propertyChange(with(any(PropertyChangeEvent.class)));
+				}
+			}
+		});
+
 		classUnderTest.setCurrentTime(currentTime);
 	}
-	
+
 	@Test
 	public void testSetCurrentTimeWithNonNull()
 	{
 		final BigTime currentTime = BigTime.now();
-		
-		mockContext.checking(new Expectations(){{{
-			oneOf(temporal).apply(with(currentTime));
-			oneOf(pcl).propertyChange(with(any(PropertyChangeEvent.class)));
-		}}});
-		
+
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					oneOf(temporal).apply(with(currentTime));
+					oneOf(pcl).propertyChange(with(any(PropertyChangeEvent.class)));
+				}
+			}
+		});
+
 		classUnderTest.setCurrentTime(currentTime);
 	}
-	
+
 	@Test
 	public void testSetCurrentTimeWithSameTime()
 	{
 		final BigTime currentTime = new BigTime(BigInteger.valueOf(1000));
 		classUnderTest.setCurrentTime(currentTime);
-		
-		mockContext.checking(new Expectations(){{{
-			never(temporal).apply(with(any(BigTime.class)));
-			never(pcl).propertyChange(with(any(PropertyChangeEvent.class)));
-		}}});
-		
+
+		mockContext.checking(new Expectations()
+		{
+			{
+				{
+					never(temporal).apply(with(any(BigTime.class)));
+					never(pcl).propertyChange(with(any(PropertyChangeEvent.class)));
+				}
+			}
+		});
+
 		final BigTime newTime = new BigTime(BigInteger.valueOf(1000));
 		classUnderTest.setCurrentTime(newTime);
 	}

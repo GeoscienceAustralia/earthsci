@@ -32,7 +32,8 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 
 /**
- * A factory class used to obtain a new {@link IBookmarkPropertyEditor} instance for use with a given {@link IBookmarkProperty}.
+ * A factory class used to obtain a new {@link IBookmarkPropertyEditor} instance
+ * for use with a given {@link IBookmarkProperty}.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -43,11 +44,12 @@ public class BookmarkPropertyEditorFactory
 	private static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.application.bookmarkPropertyEditor"; //$NON-NLS-1$
 	private static final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 	private static final String TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
-	
-	private static Map<String, Class<? extends IBookmarkPropertyEditor>> editors = new ConcurrentHashMap<String, Class<? extends IBookmarkPropertyEditor>>();
-	
+
+	private static Map<String, Class<? extends IBookmarkPropertyEditor>> editors =
+			new ConcurrentHashMap<String, Class<? extends IBookmarkPropertyEditor>>();
+
 	private static final Logger logger = LoggerFactory.getLogger(BookmarkPropertyApplicatorRegistry.class);
-	
+
 	@Inject
 	public static void loadFromExtensions(IExtensionRegistry registry)
 	{
@@ -58,9 +60,11 @@ public class BookmarkPropertyEditorFactory
 			for (IConfigurationElement e : config)
 			{
 				@SuppressWarnings("unchecked")
-				Class<? extends IBookmarkPropertyEditor> clazz = (Class<? extends IBookmarkPropertyEditor>)ExtensionPointHelper.getClassForProperty(e, CLASS_ATTRIBUTE);
+				Class<? extends IBookmarkPropertyEditor> clazz =
+						(Class<? extends IBookmarkPropertyEditor>) ExtensionPointHelper.getClassForProperty(e,
+								CLASS_ATTRIBUTE);
 				String typeName = e.getAttribute(TYPE_ATTRIBUTE);
-				
+
 				registerEditor(typeName, clazz);
 			}
 		}
@@ -69,13 +73,15 @@ public class BookmarkPropertyEditorFactory
 			logger.error("Exception occurred while loading editor from extension", e); //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
 	 * Return a new editor to use for the given property, if one exists.
 	 * <p/>
-	 * The returned editor will be primed with the given property using {@link IBookmarkPropertyEditor#setProperty(IBookmarkProperty)}
+	 * The returned editor will be primed with the given property using
+	 * {@link IBookmarkPropertyEditor#setProperty(IBookmarkProperty)}
 	 * 
-	 * @param property The property an editor is required for
+	 * @param property
+	 *            The property an editor is required for
 	 * 
 	 * @return The editor to use for the given property, if one is available
 	 */
@@ -85,7 +91,7 @@ public class BookmarkPropertyEditorFactory
 		{
 			return null;
 		}
-		
+
 		IBookmarkPropertyEditor result = createEditor(property.getType());
 		if (result != null)
 		{
@@ -93,11 +99,12 @@ public class BookmarkPropertyEditorFactory
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Return a new editor to use for the given property type, if one exists.
 	 * 
-	 * @param property The property an editor is required for
+	 * @param property
+	 *            The property an editor is required for
 	 * 
 	 * @return The editor to use for the given property, if one is available
 	 */
@@ -107,7 +114,7 @@ public class BookmarkPropertyEditorFactory
 		{
 			return null;
 		}
-		
+
 		try
 		{
 			IBookmarkPropertyEditor editor = editors.get(propertyType).newInstance();
@@ -119,12 +126,14 @@ public class BookmarkPropertyEditorFactory
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Register the given editor with the factory
 	 * 
-	 * @param editor The editor to register
-	 * @param type The type of bookmark property to register this editor for
+	 * @param editor
+	 *            The editor to register
+	 * @param type
+	 *            The type of bookmark property to register this editor for
 	 */
 	public static void registerEditor(String propertyType, Class<? extends IBookmarkPropertyEditor> editor)
 	{
@@ -132,13 +141,14 @@ public class BookmarkPropertyEditorFactory
 		{
 			return;
 		}
-		
+
 		logger.debug("Registered editor: {}", editor); //$NON-NLS-1$
 		editors.put(propertyType, editor);
 	}
-	
+
 	/**
-	 * Return the types of {@link IBookmarkProperty}s for which {@link IBookmarkPropertyEditor}s are available
+	 * Return the types of {@link IBookmarkProperty}s for which
+	 * {@link IBookmarkPropertyEditor}s are available
 	 * 
 	 * @return The types of properties for which editors are available.
 	 */

@@ -1,4 +1,3 @@
-
 /**
  * Contains the core catalog model for the platform.
  * <p/>

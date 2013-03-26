@@ -21,7 +21,8 @@ import java.util.Map;
 import java.util.SortedMap;
 
 /**
- * Abstract {@link ListMap} implementation that extends {@link CollectionTreeMap}.
+ * Abstract {@link ListMap} implementation that extends
+ * {@link CollectionTreeMap}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */

@@ -34,41 +34,41 @@ import au.gov.ga.earthsci.common.util.Util;
  */
 public class BookmarksPreferences implements IBookmarksPreferences
 {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(BookmarksPreferences.class);
-	
+
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID)
+	@Preference(nodePath = QUALIFIER_ID)
 	private IEclipsePreferences preferenceStore;
 
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=DEFAULT_TRANSITION_DURATION)
+	@Preference(nodePath = QUALIFIER_ID, value = DEFAULT_TRANSITION_DURATION)
 	private long defaultTransitionDuration;
-	
+
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=PLAY_BOOKMARKS_WAIT_DURATION)
+	@Preference(nodePath = QUALIFIER_ID, value = PLAY_BOOKMARKS_WAIT_DURATION)
 	private long playBookmarksWaitDuration;
-	
+
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=DEFAULT_PROPERTIES)
+	@Preference(nodePath = QUALIFIER_ID, value = DEFAULT_PROPERTIES)
 	private String defaultProperties;
-	
+
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=ASK_LIST_DELETE_CONFIRM)
+	@Preference(nodePath = QUALIFIER_ID, value = ASK_LIST_DELETE_CONFIRM)
 	private boolean confirmListDelete;
-	
+
 	@Override
 	public long getDefaultTransitionDuration()
 	{
 		return defaultTransitionDuration;
 	}
-	
+
 	@Override
 	public long getPlayBookmarksWaitDuration()
 	{
 		return playBookmarksWaitDuration;
 	}
-	
+
 	@Override
 	public String[] getDefaultPropertyTypes()
 	{
@@ -80,20 +80,20 @@ public class BookmarksPreferences implements IBookmarksPreferences
 		}
 		return defaultProperties.split(","); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public boolean askForListDeleteConfirmation()
 	{
 		return confirmListDelete;
 	}
-	
+
 	@Override
 	public void setAskForListDeleteConfirmation(boolean ask)
 	{
 		preferenceStore.putBoolean(ASK_LIST_DELETE_CONFIRM, ask);
 		applyPreferences();
 	}
-	
+
 	private void applyPreferences()
 	{
 		try

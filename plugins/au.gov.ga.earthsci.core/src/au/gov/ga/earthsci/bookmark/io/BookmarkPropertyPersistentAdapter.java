@@ -26,15 +26,16 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.core.persistence.IPersistentAdapter;
 
 /**
- * An {@link IPersistentAdapter} that uses registered {@link IBookmarkPropertyCreator}s and {@link IBookmarkPropertyExporter}s
- * to store/load {@link IBookmarkProperty}s to/from XML.
+ * An {@link IPersistentAdapter} that uses registered
+ * {@link IBookmarkPropertyCreator}s and {@link IBookmarkPropertyExporter}s to
+ * store/load {@link IBookmarkProperty}s to/from XML.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class BookmarkPropertyPersistentAdapter implements IPersistentAdapter<IBookmarkProperty>
 {
 	public static final String PROPERTY_TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
-	
+
 	@Override
 	public void toXML(IBookmarkProperty property, Element propertyElement, URI context)
 	{

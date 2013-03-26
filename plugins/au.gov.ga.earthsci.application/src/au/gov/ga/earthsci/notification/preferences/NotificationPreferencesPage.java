@@ -20,11 +20,11 @@ public class NotificationPreferencesPage extends FieldEditorPreferencePage
 		setTitle(Messages.NotificationPreferences_Title);
 		setDescription(Messages.NotificationPreferences_Description);
 	}
-	
+
 	@Override
 	protected void createFieldEditors()
 	{
-		
+
 	}
 
 }

@@ -29,17 +29,27 @@ public class SLF4JOSGiLogServiceBridge implements LogService
 {
 
 	private static final Logger logger = LoggerFactory.getLogger("e4"); //$NON-NLS-1$
-	
+
 	@Override
 	public void log(int level, String message)
 	{
 		switch (level)
 		{
-			case LogService.LOG_DEBUG: logger.debug(message); break;
-			case LogService.LOG_INFO: logger.info(message); break;
-			case LogService.LOG_WARNING: logger.warn(message); break;
-			case LogService.LOG_ERROR: logger.error(message); break;
-			default: logger.trace(message); break; 
+		case LogService.LOG_DEBUG:
+			logger.debug(message);
+			break;
+		case LogService.LOG_INFO:
+			logger.info(message);
+			break;
+		case LogService.LOG_WARNING:
+			logger.warn(message);
+			break;
+		case LogService.LOG_ERROR:
+			logger.error(message);
+			break;
+		default:
+			logger.trace(message);
+			break;
 		}
 	}
 
@@ -48,11 +58,21 @@ public class SLF4JOSGiLogServiceBridge implements LogService
 	{
 		switch (level)
 		{
-			case LogService.LOG_DEBUG: logger.debug(message, exception); break;
-			case LogService.LOG_INFO: logger.info(message, exception); break;
-			case LogService.LOG_WARNING: logger.warn(message, exception); break;
-			case LogService.LOG_ERROR: logger.error(message, exception); break;
-			default: logger.trace(message); break; 
+		case LogService.LOG_DEBUG:
+			logger.debug(message, exception);
+			break;
+		case LogService.LOG_INFO:
+			logger.info(message, exception);
+			break;
+		case LogService.LOG_WARNING:
+			logger.warn(message, exception);
+			break;
+		case LogService.LOG_ERROR:
+			logger.error(message, exception);
+			break;
+		default:
+			logger.trace(message);
+			break;
 		}
 	}
 

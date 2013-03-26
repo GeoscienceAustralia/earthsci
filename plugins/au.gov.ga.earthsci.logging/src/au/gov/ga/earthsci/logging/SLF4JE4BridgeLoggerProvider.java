@@ -19,8 +19,8 @@ import org.eclipse.e4.core.services.log.ILoggerProvider;
 import org.eclipse.e4.core.services.log.Logger;
 
 /**
- * An {@link ILoggerProvider} that yields the {@link SLF4JE4LoggerBridge} used to divert logging messages to
- * the SLF4J framework.
+ * An {@link ILoggerProvider} that yields the {@link SLF4JE4LoggerBridge} used
+ * to divert logging messages to the SLF4J framework.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */

@@ -42,7 +42,7 @@ import au.gov.ga.earthsci.test.util.DummyRealm;
  */
 public class BookmarksPersisterTest
 {
-	
+
 	@BeforeClass
 	public static void init()
 	{
@@ -51,58 +51,58 @@ public class BookmarksPersisterTest
 			DummyRealm.init();
 		}
 	}
-	
+
 	@Before
 	public void setup()
 	{
-		
+
 	}
-	
+
 	@Test
 	public void testSaveBookmarksToXMLNullBookmarks() throws Exception
 	{
 		IBookmarks bookmarks = null;
 		Element parent = createDocument();
-		
+
 		BookmarksPersister.saveBookmarks(bookmarks, parent);
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testSaveBookmarksToXMLNullElement() throws Exception
 	{
 		IBookmarks bookmarks = new Bookmarks();
 		Element parent = null;
-		
+
 		BookmarksPersister.saveBookmarks(bookmarks, parent);
 	}
-	
+
 	@Test
 	public void testSaveBookmarksToXMLEmptyBookmarks() throws Exception
 	{
 		IBookmarks bookmarks = new Bookmarks();
 		Element parent = createDocument();
-		
+
 		BookmarksPersister.saveBookmarks(bookmarks, parent);
-		
+
 		assertEquals(1, parent.getChildNodes().getLength());
-		
+
 		// Expect single bookmarks element
 		Element element = getChildElementByTagName(0, "bookmarks", parent);
 		assertNotNull(element);
 		assertEquals(1, element.getChildNodes().getLength());
-		
+
 		// With a single lists element
 		element = getChildElementByTagName(0, "lists", element);
 		assertNotNull(element);
 		assertEquals(1, element.getChildNodes().getLength());
-		
+
 		// Containing a single (default) list
 		element = getChildElementByTagName(0, "element", element);
 		assertNotNull(element);
 		element = getChildElementByTagName(0, "bookmarkList", element);
 		assertNotNull(element);
 		assertEquals(bookmarks.getDefaultList().getId(), element.getAttribute("id"));
-		
+
 		// With no bookmarks
 		element = getChildElementByTagName(0, "bookmarks", element);
 		assertNotNull(element);
@@ -115,44 +115,44 @@ public class BookmarksPersisterTest
 		IBookmarks bookmarks = new Bookmarks();
 		IBookmark bookmark = new Bookmark();
 		bookmarks.getDefaultList().getBookmarks().add(bookmark);
-		
+
 		Element parent = createDocument();
-		
+
 		BookmarksPersister.saveBookmarks(bookmarks, parent);
-		
+
 		// Expect single bookmarks element
 		Element element = getChildElementByTagName(0, "bookmarks", parent);
 		assertNotNull(element);
 		assertEquals(1, element.getChildNodes().getLength());
-		
+
 		// With a single lists element
 		element = getChildElementByTagName(0, "lists", element);
 		assertNotNull(element);
 		assertEquals(1, element.getChildNodes().getLength());
-		
+
 		// Containing a single (default) list
 		element = getChildElementByTagName(0, "element", element);
 		assertNotNull(element);
 		element = getChildElementByTagName(0, "bookmarkList", element);
 		assertNotNull(element);
 		assertEquals(bookmarks.getDefaultList().getId(), element.getAttribute("id"));
-		
+
 		// With a single bookmark
 		element = getChildElementByTagName(0, "bookmarks", element);
 		assertNotNull(element);
 		assertEquals(1, element.getChildNodes().getLength());
-		
+
 		element = getChildElementByTagName(0, "element", element);
 		element = getChildElementByTagName(0, "bookmark", element);
-		
+
 		assertEquals(bookmark.getId(), getText(element, "id"));
 		assertEquals(bookmark.getName(), getText(element, "name"));
 	}
-	
+
 	private Element createDocument() throws Exception
 	{
 		Document d = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		return d.createElement("document");
 	}
-	
+
 }

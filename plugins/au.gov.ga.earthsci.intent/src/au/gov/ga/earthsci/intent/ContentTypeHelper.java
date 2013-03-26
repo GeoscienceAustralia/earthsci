@@ -42,7 +42,9 @@ public class ContentTypeHelper
 	public static IContentType closestMatching(IContentType contentType, Iterable<IContentType> contentTypes)
 	{
 		if (contentType == null || contentTypes == null)
+		{
 			return null;
+		}
 
 		int minDistance = Integer.MAX_VALUE;
 		IContentType closest = null;
@@ -80,7 +82,9 @@ public class ContentTypeHelper
 	public static int distanceToClosestMatching(IContentType contentType, Iterable<IContentType> contentTypes)
 	{
 		if (contentType == null || contentTypes == null)
+		{
 			return -1;
+		}
 
 		int minDistance = Integer.MAX_VALUE;
 		for (IContentType test : contentTypes)
@@ -120,9 +124,13 @@ public class ContentTypeHelper
 	private static int ancestryDistance(IContentType child, IContentType parent, int position)
 	{
 		if (child == null || parent == null)
+		{
 			return -1;
+		}
 		if (child.equals(parent))
+		{
 			return position;
+		}
 		return ancestryDistance(child.getBaseType(), parent, position++);
 	}
 }

@@ -25,18 +25,18 @@ import au.gov.ga.earthsci.bookmark.part.IBookmarksController;
  * A command handler used to apply a selected bookmark to the world
  * 
  * @author James Navin (james.navin@ga.gov.au)
- *
+ * 
  */
 public class ApplyBookmarkHandler extends AbstractSingleBookmarkHandler
 {
-	
+
 	@Inject
 	private IBookmarksController controller;
-	
+
 	@Override
 	protected void doExecute(IBookmark selectedBookmark)
 	{
 		controller.apply(selectedBookmark);
 	}
-	
+
 }

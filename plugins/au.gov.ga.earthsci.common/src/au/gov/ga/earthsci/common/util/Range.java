@@ -16,7 +16,8 @@
 package au.gov.ga.earthsci.common.util;
 
 /**
- * Represents an immutable range of comparable values (eg. <code>[minValue, maxValue]</code>)
+ * Represents an immutable range of comparable values (eg.
+ * <code>[minValue, maxValue]</code>)
  * <p/>
  * The range may have open ends.
  * 
@@ -26,7 +27,7 @@ public class Range<C extends Comparable<C>> extends au.gov.ga.earthsci.worldwind
 {
 
 	// Delegate to the plugin version - this is done to reduce coupling between core and ww plugins
-	
+
 	public Range(C minValue, boolean includeMin, C maxValue, boolean includeMax)
 	{
 		super(minValue, includeMin, maxValue, includeMax);

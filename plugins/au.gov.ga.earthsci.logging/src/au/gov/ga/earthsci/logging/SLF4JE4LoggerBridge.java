@@ -24,8 +24,8 @@ import org.eclipse.e4.core.services.log.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A bridge class that diverts log messages sent to an E4 Logger instance
- * to the SLF4J framework.
+ * A bridge class that diverts log messages sent to an E4 Logger instance to the
+ * SLF4J framework.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -35,26 +35,26 @@ public class SLF4JE4LoggerBridge extends Logger
 {
 
 	private static final String DEFAULT_NAME = "e4"; //$NON-NLS-1$
-	
+
 	private final org.slf4j.Logger logger;
-	
+
 	public SLF4JE4LoggerBridge(String name)
 	{
 		logger = LoggerFactory.getLogger(name == null ? DEFAULT_NAME : name);
 	}
-	
+
 	@Inject
 	public SLF4JE4LoggerBridge(IEclipseContext context)
 	{
 		this(DEFAULT_NAME);
 		context.set(Logger.class, this);
 	}
-	
+
 	public SLF4JE4LoggerBridge(Class<?> clazz)
 	{
 		this(clazz == null ? null : clazz.getCanonicalName());
 	}
-	
+
 	@Override
 	public boolean isErrorEnabled()
 	{

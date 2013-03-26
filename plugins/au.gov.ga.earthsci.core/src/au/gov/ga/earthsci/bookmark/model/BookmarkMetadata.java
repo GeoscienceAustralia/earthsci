@@ -18,8 +18,8 @@ package au.gov.ga.earthsci.bookmark.model;
 import java.util.HashMap;
 
 /**
- * The default {@link IBookmarkMetadata} implementation which uses a {@link HashMap} for storing metadata
- * entries.
+ * The default {@link IBookmarkMetadata} implementation which uses a
+ * {@link HashMap} for storing metadata entries.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */

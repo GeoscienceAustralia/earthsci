@@ -16,8 +16,8 @@
 package au.gov.ga.earthsci.bookmark.model;
 
 /**
- * The core entry point to the bookmarks model. Gives access to named {@link IBookmarkList}s
- * and a default list to use in the absence of any other.
+ * The core entry point to the bookmarks model. Gives access to named
+ * {@link IBookmarkList}s and a default list to use in the absence of any other.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -29,55 +29,63 @@ public interface IBookmarks
 	 * having the same name, the result is implementation specific but may be
 	 * undefined.
 	 * 
-	 * @param name The name of the bookmark list to return.
+	 * @param name
+	 *            The name of the bookmark list to return.
 	 * 
-	 * @return The named bookmark list, or <code>null</code> if one does not exist.
+	 * @return The named bookmark list, or <code>null</code> if one does not
+	 *         exist.
 	 */
 	IBookmarkList getListByName(String name);
-	
+
 	/**
 	 * Retrieve a bookmark list by ID.
 	 * 
-	 * @param id The ID of the bookmark list to return.
+	 * @param id
+	 *            The ID of the bookmark list to return.
 	 * 
 	 * @return The bookmark list, or <code>null</code> if one does not exist.
 	 */
 	IBookmarkList getListById(String id);
-	
+
 	/**
 	 * Return the default bookmark list which is present in every model.
-	 *  
+	 * 
 	 * @return The default bookmark list
 	 */
 	IBookmarkList getDefaultList();
-	
+
 	/**
 	 * Return all of the bookmarks lists currently present.
 	 * 
 	 * @return All of the bookmark lists currently present.
 	 */
 	IBookmarkList[] getLists();
-	
+
 	/**
-	 * Add the given bookmark list to this model. If one already exists with the same ID it will be replaced.
+	 * Add the given bookmark list to this model. If one already exists with the
+	 * same ID it will be replaced.
 	 * 
-	 * @param list The new list to add.
+	 * @param list
+	 *            The new list to add.
 	 */
 	void addList(IBookmarkList list);
 
 	/**
 	 * Set the given bookmarks liss on this model.
 	 * 
-	 * @param lists The lists to add.
+	 * @param lists
+	 *            The lists to add.
 	 */
 	void setLists(IBookmarkList[] lists);
-	
+
 	/**
 	 * Remove the given list from the model, if it exists
 	 * 
-	 * @param list The bookmark list to remove
+	 * @param list
+	 *            The bookmark list to remove
 	 * 
-	 * @return <code>true</code> if the list was removed; <code>false</code> otherwise
+	 * @return <code>true</code> if the list was removed; <code>false</code>
+	 *         otherwise
 	 */
 	boolean removeList(IBookmarkList list);
 }

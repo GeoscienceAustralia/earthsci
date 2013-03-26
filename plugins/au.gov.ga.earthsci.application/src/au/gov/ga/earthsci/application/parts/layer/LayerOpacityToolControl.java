@@ -133,7 +133,9 @@ public class LayerOpacityToolControl
 		this.selection = selection;
 
 		if (scale == null)
+		{
 			return;
+		}
 
 		settingScale = true;
 		double opacity = scale.getSelection() / 100d;

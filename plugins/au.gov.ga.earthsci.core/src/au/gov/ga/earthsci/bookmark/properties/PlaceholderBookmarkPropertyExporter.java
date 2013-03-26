@@ -33,14 +33,14 @@ public class PlaceholderBookmarkPropertyExporter implements IBookmarkPropertyExp
 	@Override
 	public String[] getSupportedTypes()
 	{
-		return new String[] {PlaceholderBookmarkProperty.TYPE};
+		return new String[] { PlaceholderBookmarkProperty.TYPE };
 	}
 
 	@Override
 	public void exportToXML(IBookmarkProperty property, Element parent)
 	{
-		PlaceholderBookmarkProperty placeholder = (PlaceholderBookmarkProperty)property;
-		parent.setAttribute(BookmarkPropertyPersistentAdapter.PROPERTY_TYPE_ATTRIBUTE, placeholder.getWrappedType()); 
+		PlaceholderBookmarkProperty placeholder = (PlaceholderBookmarkProperty) property;
+		parent.setAttribute(BookmarkPropertyPersistentAdapter.PROPERTY_TYPE_ATTRIBUTE, placeholder.getWrappedType());
 		for (int i = 0; i < placeholder.getXML().getChildNodes().getLength(); i++)
 		{
 			Node newChild = placeholder.getXML().getChildNodes().item(i).cloneNode(true);

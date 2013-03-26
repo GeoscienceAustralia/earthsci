@@ -40,30 +40,30 @@ public class CameraProperty implements IBookmarkProperty
 	@Persistent
 	@Adapter(PositionPersistentAdapter.class)
 	private Position eyePosition = null;
-	
+
 	/** The position of the camera lookat target */
 	@Persistent
 	@Adapter(PositionPersistentAdapter.class)
 	private Position lookatPosition = null;
-	
+
 	/** The up vector used to resolve camera orientation in the orbit camera */
 	@Persistent
 	@Adapter(Vec4PersistentAdapter.class)
 	private Vec4 upVector = null;
-	
+
 	/**
 	 * For DI use only
 	 */
 	public CameraProperty()
 	{
 	}
-	
+
 	public CameraProperty(Position eyePosition, Position lookatPosition, Vec4 upVector)
 	{
 		Validate.notNull(eyePosition, "An eye position is required"); //$NON-NLS-1$
 		Validate.notNull(lookatPosition, "A look at position is required"); //$NON-NLS-1$
 		Validate.notNull(upVector, "An up vector is required"); //$NON-NLS-1$
-		
+
 		this.eyePosition = eyePosition;
 		this.lookatPosition = lookatPosition;
 		this.upVector = upVector;
@@ -113,11 +113,12 @@ public class CameraProperty implements IBookmarkProperty
 		Validate.notNull(upVector, "An up vector is required"); //$NON-NLS-1$
 		this.upVector = upVector;
 	}
-	
+
 	@SuppressWarnings("nls")
 	@Override
 	public String toString()
 	{
-		return "CameraProperty {type: " + TYPE + ", eyePosition: " + eyePosition + ", lookat: " + lookatPosition + ", upVector: " + upVector + "}";
+		return "CameraProperty {type: " + TYPE + ", eyePosition: " + eyePosition + ", lookat: " + lookatPosition
+				+ ", upVector: " + upVector + "}";
 	}
 }

@@ -23,7 +23,7 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 
 /**
- * A controller class that coordinates interactions between the catalog browser 
+ * A controller class that coordinates interactions between the catalog browser
  * and the current layer model
  * 
  * @author James Navin (james.navin@ga.gov.au)
@@ -32,64 +32,82 @@ public interface ICatalogBrowserController
 {
 
 	/**
-	 * Determine whether the provided layer URI exists in the current layer model.
+	 * Determine whether the provided layer URI exists in the current layer
+	 * model.
 	 * 
-	 * @param layerURI The layer URI to test for
+	 * @param layerURI
+	 *            The layer URI to test for
 	 * 
-	 * @return <code>true</code> if the provided layer URI exists in the current layer model. <code>false</code> otherwise.
+	 * @return <code>true</code> if the provided layer URI exists in the current
+	 *         layer model. <code>false</code> otherwise.
 	 */
 	boolean existsInLayerModel(URI layerURI);
-	
+
 	/**
-	 * Determine whether <em>all</em> of the nodes in the provided list (and their children) that represent layer nodes
-	 * represent layers that exist in the current layer model.
+	 * Determine whether <em>all</em> of the nodes in the provided list (and
+	 * their children) that represent layer nodes represent layers that exist in
+	 * the current layer model.
 	 * 
-	 * @param nodes The list of parent nodes to inspect.
+	 * @param nodes
+	 *            The list of parent nodes to inspect.
 	 * 
-	 * @return <code>true</code> if all of the layer nodes in the provided trees exist in the the layer model; <code>false</code> otherwise.
+	 * @return <code>true</code> if all of the layer nodes in the provided trees
+	 *         exist in the the layer model; <code>false</code> otherwise.
 	 */
 	boolean allExistInLayerModel(ITreeNode<ICatalogTreeNode>... nodes);
-	
+
 	/**
-	 * Determine whether <em>any</em> of the nodes in the provided list (and their children) that represent layer nodes
-	 * represent layers that exist in the current layer model.
+	 * Determine whether <em>any</em> of the nodes in the provided list (and
+	 * their children) that represent layer nodes represent layers that exist in
+	 * the current layer model.
 	 * 
-	 * @param nodes The list of parent nodes to inspect.
+	 * @param nodes
+	 *            The list of parent nodes to inspect.
 	 * 
-	 * @return <code>true</code> if any of the layer nodes in the provided trees exist in the the layer model; <code>false</code> otherwise.
+	 * @return <code>true</code> if any of the layer nodes in the provided trees
+	 *         exist in the the layer model; <code>false</code> otherwise.
 	 */
 	boolean anyExistInLayerModel(ITreeNode<ICatalogTreeNode>... nodes);
-	
+
 	/**
-	 * Add the provided catalog nodes (and their children, as appropriate) to the current layer model
+	 * Add the provided catalog nodes (and their children, as appropriate) to
+	 * the current layer model
 	 * 
-	 * @param nodes The nodes to add to the layer model
+	 * @param nodes
+	 *            The nodes to add to the layer model
 	 */
 	void addToLayerModel(ITreeNode<ICatalogTreeNode>... nodes);
-	
+
 	/**
 	 * Remove the provided layer nodes from the current layer model
 	 * 
-	 * @param nodes the nodes to remove from the layer model
+	 * @param nodes
+	 *            the nodes to remove from the layer model
 	 */
 	void removeFromLayerModel(ITreeNode<ICatalogTreeNode>... nodes);
 
 	/**
-	 * Determine whether all of the provided nodes are layer nodes (e.g. ones that can be added to the current layer model)
+	 * Determine whether all of the provided nodes are layer nodes (e.g. ones
+	 * that can be added to the current layer model)
 	 * 
-	 * @param nodes The list of nodes to inspect
+	 * @param nodes
+	 *            The list of nodes to inspect
 	 * 
-	 * @return <code>true</code> if all nodes are layer nodes; <code>false</code> otherwise.
+	 * @return <code>true</code> if all nodes are layer nodes;
+	 *         <code>false</code> otherwise.
 	 */
 	boolean areAllLayerNodes(ITreeNode<ICatalogTreeNode>... nodes);
 
 	/**
-	 * Create and return an {@link ILayerTreeNode} that is the equivalent of the given {@link ICatalogTreeNode}.
+	 * Create and return an {@link ILayerTreeNode} that is the equivalent of the
+	 * given {@link ICatalogTreeNode}.
 	 * 
-	 * @param catalogTreeNode The catalog tree node to transform
+	 * @param catalogTreeNode
+	 *            The catalog tree node to transform
 	 * 
-	 * @return A new {@link ILayerTreeNode} that is the equivalent of the given {@link ICatalogTreeNode}
+	 * @return A new {@link ILayerTreeNode} that is the equivalent of the given
+	 *         {@link ICatalogTreeNode}
 	 */
 	ILayerTreeNode createLayerTreeNode(ICatalogTreeNode catalogTreeNode);
-	
+
 }

@@ -36,7 +36,7 @@ public class ExceptionFormatter
 			sb.append("<br/>");
 			sb.append("&nbsp;&nbsp;&nbsp;&nbsp;");
 			sb.append(element.toString());
-			
+
 		}
 		sb.append("</body></html>");
 		return sb.toString();

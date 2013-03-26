@@ -34,13 +34,13 @@ public class AddBookmarkHandler
 {
 	@Inject
 	private IBookmarks bookmarks;
-	
+
 	@Inject
 	private IBookmarksPreferences preferences;
-	
+
 	@Inject
 	private IBookmarksController controller;
-	
+
 	@Execute
 	public void execute(TableViewer viewer)
 	{
