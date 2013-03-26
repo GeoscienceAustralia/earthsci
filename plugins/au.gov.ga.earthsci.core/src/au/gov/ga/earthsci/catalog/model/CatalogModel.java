@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.catalog.model;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
@@ -39,22 +40,22 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
 public class CatalogModel implements ICatalogModel
 {
 	private final ICatalogTreeNode root = new RootNode();
-	
+
 	@Inject
 	private IEclipseContext context;
-	
+
 	@PostConstruct
 	public void load()
 	{
 		CatalogPersister.loadFromWorkspace(this, context);
 	}
-	
+
 	@PreDestroy
 	public void save()
 	{
 		CatalogPersister.saveToWorkspace(this);
 	}
-	
+
 	@Override
 	public ICatalogTreeNode getRoot()
 	{
@@ -75,7 +76,7 @@ public class CatalogModel implements ICatalogModel
 			root.add(node);
 		}
 	}
-	
+
 	@Override
 	public void addTopLevelCatalog(final ICatalogTreeNode catalog)
 	{
@@ -83,10 +84,10 @@ public class CatalogModel implements ICatalogModel
 		{
 			return;
 		}
-		
+
 		root.add(catalog);
 	}
-	
+
 	@Override
 	public void addTopLevelCatalogs(final ICatalogTreeNode[] catalogs)
 	{
@@ -94,13 +95,13 @@ public class CatalogModel implements ICatalogModel
 		{
 			return;
 		}
-		
+
 		for (ICatalogTreeNode catalog : catalogs)
 		{
 			addTopLevelCatalog(catalog);
 		}
 	}
-	
+
 	@Override
 	public void addTopLevelCatalog(int index, ICatalogTreeNode catalog)
 	{
@@ -108,10 +109,10 @@ public class CatalogModel implements ICatalogModel
 		{
 			return;
 		}
-		
+
 		root.add(index, catalog);
 	}
-	
+
 	private static class RootNode extends AbstractCatalogTreeNode
 	{
 		public RootNode()
@@ -130,21 +131,33 @@ public class CatalogModel implements ICatalogModel
 		{
 			return "ROOT"; //$NON-NLS-1$
 		}
-		
+
 		@Override
 		public boolean isLayerNode()
 		{
 			return false;
 		}
-		
+
 		@Override
-		public URI getLayerURI() 
+		public URI getLayerURI()
 		{
 			return null;
 		}
 
 		@Override
 		public IContentType getLayerContentType()
+		{
+			return null;
+		}
+
+		@Override
+		public URL getInformationURL()
+		{
+			return null;
+		}
+
+		@Override
+		public String getInformationString()
 		{
 			return null;
 		}

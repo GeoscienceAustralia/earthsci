@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.catalog.model;
 
 import java.net.URI;
+import java.net.URL;
 
 import org.eclipse.core.runtime.content.IContentType;
 
@@ -31,7 +32,7 @@ public class LoadingCatalogTreeNode extends AbstractCatalogTreeNode
 	{
 		this(null);
 	}
-	
+
 	public LoadingCatalogTreeNode(URI nodeURI)
 	{
 		super(nodeURI);
@@ -65,5 +66,17 @@ public class LoadingCatalogTreeNode extends AbstractCatalogTreeNode
 	public String getName()
 	{
 		return "Loading...";
+	}
+
+	@Override
+	public URL getInformationURL()
+	{
+		return null;
+	}
+
+	@Override
+	public String getInformationString()
+	{
+		return null;
 	}
 }

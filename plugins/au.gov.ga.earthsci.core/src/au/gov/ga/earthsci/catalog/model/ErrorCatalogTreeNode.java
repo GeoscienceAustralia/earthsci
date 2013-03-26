@@ -16,8 +16,11 @@
 package au.gov.ga.earthsci.catalog.model;
 
 import java.net.URI;
+import java.net.URL;
 
 import org.eclipse.core.runtime.content.IContentType;
+
+import au.gov.ga.earthsci.common.util.ExceptionFormatter;
 
 /**
  * {@link ICatalogTreeNode} that represents an error node as a child of a node
@@ -34,7 +37,7 @@ public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 	{
 		this(null, error);
 	}
-	
+
 	public ErrorCatalogTreeNode(URI nodeURI, Throwable error)
 	{
 		super(nodeURI);
@@ -79,5 +82,17 @@ public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 	public Throwable getError()
 	{
 		return error;
+	}
+
+	@Override
+	public URL getInformationURL()
+	{
+		return null;
+	}
+
+	@Override
+	public String getInformationString()
+	{
+		return ExceptionFormatter.toHTML(error);
 	}
 }

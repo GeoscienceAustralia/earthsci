@@ -19,6 +19,7 @@ import java.net.URI;
 
 import org.eclipse.core.runtime.content.IContentType;
 
+import au.gov.ga.earthsci.common.util.IInformationed;
 import au.gov.ga.earthsci.common.util.ILabelable;
 import au.gov.ga.earthsci.common.util.INamed;
 import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
@@ -32,33 +33,39 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  * @author James Navin (james.navin@ga.gov.au)
  */
-public interface ICatalogTreeNode extends ITreeNode<ICatalogTreeNode>, IPropertyChangeBean, INamed, ILabelable
+public interface ICatalogTreeNode extends ITreeNode<ICatalogTreeNode>, IPropertyChangeBean, INamed, ILabelable,
+		IInformationed
 {
 	/**
 	 * @return Is this catalog node removeable from the Catalog tree? All user
 	 *         added nodes should also be removeable.
 	 */
 	boolean isRemoveable();
-	
+
 	/**
-	 * @return A URI that uniquely identifies this node in a catalog model. One should be able to re-create the node from this URI.
+	 * @return A URI that uniquely identifies this node in a catalog model. One
+	 *         should be able to re-create the node from this URI.
 	 */
 	URI getURI();
-	
+
 	/**
-	 * Return whether this node represents a layer that can be applied to the layer model
+	 * Return whether this node represents a layer that can be applied to the
+	 * layer model
 	 * 
-	 * @return whether this node represents a layer that can be applied to the layer model
+	 * @return whether this node represents a layer that can be applied to the
+	 *         layer model
 	 */
 	boolean isLayerNode();
-	
+
 	/**
-	 * @return the URI of the layer this node represents if {@link #isLayerNode()} returns <code>true</code>
+	 * @return the URI of the layer this node represents if
+	 *         {@link #isLayerNode()} returns <code>true</code>
 	 */
 	URI getLayerURI();
-	
+
 	/**
-	 * @return the content type of the layer this node represents if {@link #isLayerNode()} returns <code>true</code>
+	 * @return the content type of the layer this node represents if
+	 *         {@link #isLayerNode()} returns <code>true</code>
 	 */
 	IContentType getLayerContentType();
 }
