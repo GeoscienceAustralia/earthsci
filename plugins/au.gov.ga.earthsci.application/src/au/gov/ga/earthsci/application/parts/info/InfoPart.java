@@ -92,6 +92,15 @@ public class InfoPart
 	}
 
 	@Inject
+	private void select(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IInformationed[] informationed)
+	{
+		if (informationed != null && informationed.length == 1)
+		{
+			select(informationed[0]);
+		}
+	}
+
+	@Inject
 	@Optional
 	private void setPartInput(@Named(INPUT_NAME) IInformationed informationed)
 	{
@@ -110,6 +119,10 @@ public class InfoPart
 			else
 			{
 				String html = informationed.getInformationString();
+				if (html == null)
+				{
+					html = ""; //$NON-NLS-1$
+				}
 				browser.setText(html);
 			}
 		}
