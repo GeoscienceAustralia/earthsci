@@ -24,6 +24,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.content.IContentType;
 
 import au.gov.ga.earthsci.common.util.IEnableable;
+import au.gov.ga.earthsci.common.util.IInformationed;
 import au.gov.ga.earthsci.common.util.ILabelable;
 import au.gov.ga.earthsci.common.util.INameable;
 import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
@@ -36,7 +37,7 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChangeBean, ILabelable, INameable,
-		IStatused
+		IStatused, IInformationed
 {
 	/**
 	 * @return A {@link LayerList} that contains all layers in the tree at and
