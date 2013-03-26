@@ -43,19 +43,22 @@ public class InformationHandler
 	private EPartService partService;
 
 	@Execute
-	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode node)
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] nodes)
 	{
 		MPart part = partService.showPart(InfoPart.PART_ID, PartState.VISIBLE);
-		part.getContext().modify(InfoPart.INPUT_NAME, node);
+		part.getContext().modify(InfoPart.INPUT_NAME, nodes[0]);
 		part.getContext().declareModifiable(InfoPart.INPUT_NAME);
 	}
 
 	@CanExecute
-	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode node)
+	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] nodes)
 	{
-		if (node == null)
+		if (nodes == null || nodes.length != 1)
+		{
 			return false;
+		}
 
+		ICatalogTreeNode node = nodes[0];
 		URL infoURL = CatalogTreeLabelProviderRegistry.getProvider(node).getInfoURL(node);
 		return infoURL != null;
 	}
