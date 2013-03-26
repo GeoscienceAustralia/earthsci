@@ -24,7 +24,8 @@ import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.model.dataset.DatasetCatalogTreeNode;
 
 /**
- * An {@link ICatalogTreeLabelProvider} that supports {@link DatasetCatalogTreeNode}s
+ * An {@link ICatalogTreeLabelProvider} that supports
+ * {@link DatasetCatalogTreeNode}s
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -43,9 +44,10 @@ public class DatasetCatalogTreeLabelProvider implements ICatalogTreeLabelProvide
 	@Override
 	public URL getIconURL(ICatalogTreeNode node)
 	{
-		DatasetCatalogTreeNode datasetNode = (DatasetCatalogTreeNode)node;
-		
-		return datasetNode.getIconURL() == null ? CatalogTreeLabelProviderRegistry.getDefaultProvider().getIconURL(datasetNode) : datasetNode.getIconURL();
+		DatasetCatalogTreeNode datasetNode = (DatasetCatalogTreeNode) node;
+
+		return datasetNode.getIconURL() == null ? CatalogTreeLabelProviderRegistry.getDefaultProvider().getIconURL(
+				datasetNode) : datasetNode.getIconURL();
 	}
 
 	@Override
@@ -57,12 +59,12 @@ public class DatasetCatalogTreeLabelProvider implements ICatalogTreeLabelProvide
 	@Override
 	public URL getInfoURL(ICatalogTreeNode node)
 	{
-		return ((DatasetCatalogTreeNode)node).getInfoURL();
+		return ((DatasetCatalogTreeNode) node).getInformationURL();
 	}
 
 	@Override
 	public void dispose()
 	{
 	}
-	
+
 }
