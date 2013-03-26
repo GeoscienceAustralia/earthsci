@@ -157,7 +157,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	@Override
 	public URL getInformationURL()
 	{
-		return getIconURL();
+		return getInfoURL();
 	}
 
 	@Override
@@ -386,7 +386,8 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	}
 
 	@Override
-	protected void fireChildrenPropertyChange(ITreeNode<ILayerTreeNode>[] oldChildren, ITreeNode<ILayerTreeNode>[] newChildren)
+	protected void fireChildrenPropertyChange(ITreeNode<ILayerTreeNode>[] oldChildren,
+			ITreeNode<ILayerTreeNode>[] newChildren)
 	{
 		childrenChanged(oldChildren, children);
 		super.fireChildrenPropertyChange(oldChildren, newChildren);
@@ -426,8 +427,10 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 
 	private void fireAnyAllChildrenEnabledChanged()
 	{
-		firePropertyChange("allChildrenEnabled", lastAllChildrenEnabled, lastAllChildrenEnabled = isAllChildrenEnabled()); //$NON-NLS-1$
-		firePropertyChange("anyChildrenEnabled", lastAnyChildrenEnabled, lastAnyChildrenEnabled = isAnyChildrenEnabled()); //$NON-NLS-1$
+		firePropertyChange(
+				"allChildrenEnabled", lastAllChildrenEnabled, lastAllChildrenEnabled = isAllChildrenEnabled()); //$NON-NLS-1$
+		firePropertyChange(
+				"anyChildrenEnabled", lastAnyChildrenEnabled, lastAnyChildrenEnabled = isAnyChildrenEnabled()); //$NON-NLS-1$
 	}
 
 	private class EnabledChangeListener implements PropertyChangeListener
