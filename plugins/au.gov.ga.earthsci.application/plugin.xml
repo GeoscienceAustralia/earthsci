@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
-   <extension-point id="catalogTreeLabelProvider" name="Catalog Tree Label Provider" schema="schema/au.gov.ga.earthsci.catalog.CatalogTreeLabelProvider.exsd"/>
    <extension-point id="bookmarkPropertyEditor" name="Bookmark Property Editor" schema="schema/au.gov.ga.earthsci.bookmark.editor.exsd"/>
    <extension-point id="defaultTheme" name="Application Default Theme" schema="schema/defaultTheme.exsd"/>
    <extension-point id="iconReplacementProvider" name="Icon Replacement Provider" schema="schema/iconReplacementProvider.exsd"/>
@@ -45,11 +44,6 @@
             name="%preferences.page.notifications.name">
       </page>
       <page
-            class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferencesPage"
-            id="au.gov.ga.earthsci.catalogs"
-            name="%preferences.page.catalogbrowser.name">
-      </page>
-      <page
             class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferencesPage"
             id="au.gov.ga.earthsci.bookmarks"
             name="%preferences.page.bookmarks.name">
@@ -57,9 +51,6 @@
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferenceInitializer">
-      </initializer>
       <initializer
             class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferenceInitializer">
       </initializer>
@@ -74,23 +65,7 @@
       </receiver>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.application.catalogTreeLabelProvider">
-      <provider
-            class="au.gov.ga.earthsci.catalog.part.DatasetCatalogTreeLabelProvider">
-      </provider>
-   </extension>
-   <extension
          point="au.gov.ga.earthsci.injectable">
-      <bind
-            binding="au.gov.ga.earthsci.catalog.part.ICatalogBrowserController"
-            class="au.gov.ga.earthsci.catalog.part.CatalogBrowserController"
-            priority="0">
-      </bind>
-      <bind
-            binding="au.gov.ga.earthsci.catalog.part.preferences.ICatalogBrowserPreferences"
-            class="au.gov.ga.earthsci.catalog.part.preferences.CatalogBrowserPreferences"
-            priority="0">
-      </bind>
       <bind
             binding="au.gov.ga.earthsci.bookmark.part.IBookmarksController"
             class="au.gov.ga.earthsci.bookmark.part.BookmarksController"
@@ -101,10 +76,6 @@
             class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferences"
             priority="0">
       </bind>
-      <injectable
-            class="au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry"
-            priority="0">
-      </injectable>
       <injectable
             class="au.gov.ga.earthsci.bookmark.part.editor.BookmarkPropertyEditorFactory"
             priority="0">

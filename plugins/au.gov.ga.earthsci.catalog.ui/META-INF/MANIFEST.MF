@@ -1,0 +1,35 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Catalog UI
+Bundle-SymbolicName: au.gov.ga.earthsci.catalog.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: au.gov.ga.earthsci.catalog.ui.Activator
+Bundle-Vendor: Geoscience Australia
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.e4.ui.workbench;bundle-version="0.12.0",
+ org.eclipse.e4.core.di;bundle-version="1.3.0",
+ javax.inject;bundle-version="1.0.0",
+ org.eclipse.e4.core.di.extensions,
+ org.eclipse.e4.ui.model.workbench;bundle-version="1.0.0",
+ org.eclipse.e4.ui.services;bundle-version="1.0.0",
+ au.gov.ga.earthsci.catalog;bundle-version="1.0.0",
+ au.gov.ga.earthsci.application;bundle-version="1.0.0",
+ org.eclipse.e4.core.contexts;bundle-version="1.3.0",
+ au.gov.ga.earthsci.logging;bundle-version="1.0.0",
+ au.gov.ga.earthsci.core,
+ au.gov.ga.earthsci.common;bundle-version="1.0.0",
+ org.eclipse.core.databinding.property,
+ org.eclipse.e4.ui.workbench.swt,
+ org.eclipse.core.databinding.beans,
+ org.eclipse.core.databinding;bundle-version="1.4.1",
+ org.eclipse.jface.databinding;bundle-version="1.6.200",
+ gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
+ au.gov.ga.earthsci.common
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: au.gov.ga.earthsci.catalog.ui,
+ au.gov.ga.earthsci.catalog.ui.dataset,
+ au.gov.ga.earthsci.catalog.ui.handler,
+ au.gov.ga.earthsci.catalog.ui.preferences
+Import-Package: javax.annotation;version="1.1.0"

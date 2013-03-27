@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ASCII"?>
+<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/descriptor/basic" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_lCk1sJXJEeKo0s_wGDk0-Q">
+  <imports xsi:type="commands:Command" xmi:id="_I2rL8JZeEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.command.add"/>
+  <imports xsi:type="commands:Command" xmi:id="_HpswkJZgEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.command.remove"/>
+  <imports xsi:type="commands:Command" xmi:id="_I1_kkJZgEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.command.information"/>
+  <imports xsi:type="commands:Command" xmi:id="_J0a7sJZgEeKo0s_wGDk0-Q" elementId="org.eclipse.ui.edit.delete"/>
+  <imports xsi:type="commands:Command" xmi:id="_KrHTIJZgEeKo0s_wGDk0-Q" elementId="org.eclipse.ui.edit.rename"/>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_lCk1sZXJEeKo0s_wGDk0-Q" featurename="descriptors" parentElementId="au.gov.ga.earthsci.application">
+    <elements xsi:type="basic:PartDescriptor" xmi:id="_lCk1spXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalog.part" label="Catalog" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/datasets.gif" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.catalog.ui/au.gov.ga.earthsci.catalog.ui.CatalogBrowserPart">
+      <handlers xmi:id="_lCk1s5XJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.addhandler" contributionURI="bundleclass://au.gov.ga.earthsci.catalog.ui/au.gov.ga.earthsci.catalog.ui.handler.AddHandler" command="_I2rL8JZeEeKo0s_wGDk0-Q"/>
+      <handlers xmi:id="_lCk1tJXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.removehandler" contributionURI="bundleclass://au.gov.ga.earthsci.catalog.ui/au.gov.ga.earthsci.catalog.ui.handler.RemoveHandler" command="_HpswkJZgEeKo0s_wGDk0-Q"/>
+      <handlers xmi:id="_lCk1tZXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.infohandler" contributionURI="bundleclass://au.gov.ga.earthsci.catalog.ui/au.gov.ga.earthsci.catalog.ui.handler.InformationHandler" command="_I1_kkJZgEeKo0s_wGDk0-Q"/>
+      <handlers xmi:id="_lCk1tpXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.deletehandler" contributionURI="bundleclass://au.gov.ga.earthsci.catalog.ui/au.gov.ga.earthsci.catalog.ui.handler.DeleteHandler" command="_J0a7sJZgEeKo0s_wGDk0-Q"/>
+      <menus xsi:type="menu:PopupMenu" xmi:id="_lCk1t5XJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.popupmenu" label="Catalog Menu">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_lCk1uJXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.popupmenu.add" label="Add" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add.gif" tooltip="Add to the layer tree" mnemonics="+" command="_I2rL8JZeEeKo0s_wGDk0-Q"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_lCk1uZXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.popupmenu.remove" label="Remove" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/remove.gif" tooltip="Remove from the layer tree" mnemonics="-" command="_HpswkJZgEeKo0s_wGDk0-Q"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_lCk1upXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_lCk1u5XJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.popupmenu.info" label="Information" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/information.gif" tooltip="Show information" mnemonics="i" command="_I1_kkJZgEeKo0s_wGDk0-Q"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_cR7_4JZgEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.catalog.ui.menuseparator.0"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_cpMCQJZgEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.popupmenu.delete" label="Delete" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/delete.gif" tooltip="Delete catalog" command="_J0a7sJZgEeKo0s_wGDk0-Q"/>
+      </menus>
+      <toolbar xmi:id="_lCk1vJXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.toolbar.0">
+        <children xsi:type="menu:HandledToolItem" xmi:id="_lCk1vZXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar.add" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add.gif" tooltip="Add to the layer tree" command="_I2rL8JZeEeKo0s_wGDk0-Q"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_lCk1vpXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar.remove" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/remove.gif" tooltip="Remove from the layer tree" command="_HpswkJZgEeKo0s_wGDk0-Q"/>
+        <children xsi:type="menu:ToolBarSeparator" xmi:id="_lCk1v5XJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_lCk1wJXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar.info" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/information.gif" tooltip="Show information" command="_I1_kkJZgEeKo0s_wGDk0-Q"/>
+        <children xsi:type="menu:ToolBarSeparator" xmi:id="_lCk1wZXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_lCk1wpXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar.delete" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/delete.gif" tooltip="Delete catalog" command="_J0a7sJZgEeKo0s_wGDk0-Q"/>
+      </toolbar>
+    </elements>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_socUQJZgEeKo0s_wGDk0-Q" featurename="children" parentElementId="au.gov.ga.earthsci.application.partstack.0.0.0">
+    <elements xsi:type="advanced:Placeholder" xmi:id="_09nPcJZgEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalog.part" toBeRendered="false"/>
+  </fragments>
+</fragment:ModelFragments>

@@ -116,13 +116,6 @@
                class="au.gov.ga.earthsci.core.worldwind.ITreeModel">
          </type>
       </inject>
-      <inject
-            class="au.gov.ga.earthsci.catalog.model.CatalogModel"
-            priority="0">
-         <type
-               class="au.gov.ga.earthsci.catalog.model.ICatalogModel">
-         </type>
-      </inject>
       <bind
             binding="au.gov.ga.earthsci.bookmark.model.IBookmarks"
             class="au.gov.ga.earthsci.bookmark.model.Bookmarks"
@@ -171,22 +164,6 @@
             filter="au.gov.ga.earthsci.core.model.layer.LayerXmlLoader"
             priority="0">
       </loader>
-      <loader
-            class="au.gov.ga.earthsci.catalog.model.dataset.DatasetXmlLoader"
-            filter="au.gov.ga.earthsci.catalog.model.dataset.DatasetXmlLoader"
-            priority="0">
-      </loader>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.dispatchFilters">
-      <filter
-            class="au.gov.ga.earthsci.catalog.model.CatalogTreeNodeDispatchHandler"
-            name="Catalog"
-            priority="0">
-         <type
-               class="au.gov.ga.earthsci.catalog.model.ICatalogTreeNode">
-         </type>
-      </filter>
    </extension>
 
 </plugin>

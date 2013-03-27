@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="au.gov.ga.earthsci.catalog.ui.catalogTreeLabelProvider" name="Catalog Tree Label Provider" schema="schema/au.gov.ga.earthsci.catalog.catalogTreeLabelProvider.exsd"/>
+   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="au.gov.ga.earthsci.catalog.ui.preferences.CatalogBrowserPreferencesPage"
+            id="au.gov.ga.earthsci.catalogs"
+            name="%preferences.page.catalogbrowser.name">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="au.gov.ga.earthsci.catalog.ui.preferences.CatalogBrowserPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.catalog.ui.catalogTreeLabelProvider">
+      <provider
+            class="au.gov.ga.earthsci.catalog.ui.dataset.DatasetCatalogTreeLabelProvider">
+      </provider>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.injectable">
+      <bind
+            binding="au.gov.ga.earthsci.catalog.ui.ICatalogBrowserController"
+            class="au.gov.ga.earthsci.catalog.ui.CatalogBrowserController"
+            priority="0">
+      </bind>
+      <bind
+            binding="au.gov.ga.earthsci.catalog.ui.preferences.ICatalogBrowserPreferences"
+            class="au.gov.ga.earthsci.catalog.ui.preferences.CatalogBrowserPreferences"
+            priority="0">
+      </bind>
+      <injectable
+            class="au.gov.ga.earthsci.catalog.ui.CatalogTreeLabelProviderRegistry"
+            priority="0">
+      </injectable>
+   </extension>
+   <extension
+         id="id2"
+         point="org.eclipse.e4.workbench.model">
+      <fragment
+            uri="fragment.e4xmi">
+      </fragment>
+   </extension>
+</plugin>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="au.gov.ga.earthsci.injectable">
+      <inject
+            class="au.gov.ga.earthsci.catalog.CatalogModel"
+            priority="0">
+         <type
+               class="au.gov.ga.earthsci.catalog.ICatalogModel">
+         </type>
+      </inject>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.core.xmlLoaders">
+      <loader
+            class="au.gov.ga.earthsci.catalog.dataset.DatasetXmlLoader"
+            filter="au.gov.ga.earthsci.catalog.dataset.DatasetXmlLoader"
+            priority="0">
+      </loader>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.dispatchFilters">
+      <filter
+            class="au.gov.ga.earthsci.catalog.CatalogTreeNodeDispatchHandler"
+            name="Catalog"
+            priority="0">
+         <type
+               class="au.gov.ga.earthsci.catalog.ICatalogTreeNode">
+         </type>
+      </filter>
+   </extension>
+</plugin>
