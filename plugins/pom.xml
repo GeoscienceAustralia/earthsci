@@ -30,6 +30,11 @@
 		<module>au.gov.ga.earthsci.notification.popup</module>
 		<module>au.gov.ga.earthsci.application</module>
 		<module>au.gov.ga.earthsci.application.tests</module>
+		<module>au.gov.ga.earthsci.catalog</module>
+		<module>au.gov.ga.earthsci.catalog.tests</module>
+		<module>au.gov.ga.earthsci.catalog.ui</module>
+		<module>au.gov.ga.earthsci.catalog.ui.tests</module>
+		<module>au.gov.ga.earthsci.theme.ga</module>
 	</modules>
 
 </project>
