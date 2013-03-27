@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
-   <extension-point id="bookmarkPropertyEditor" name="Bookmark Property Editor" schema="schema/au.gov.ga.earthsci.bookmark.editor.exsd"/>
    <extension-point id="defaultTheme" name="Application Default Theme" schema="schema/defaultTheme.exsd"/>
    <extension-point id="iconReplacementProvider" name="Icon Replacement Provider" schema="schema/iconReplacementProvider.exsd"/>
 
@@ -8,11 +7,11 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            name="%product.name"
+            name="EarthSci"
             application="org.eclipse.e4.ui.workbench.swt.E4Application">
          <property
                name="appName"
-               value="%product.name">
+               value="EarthSci">
          </property>
          <property
                name="applicationXMI"
@@ -26,14 +25,6 @@
                name="cssTheme"
                value="au.gov.ga.earthsci.application.theme.default">
          </property>
-         <property
-               name="aboutImage"
-               value="platform:/plugin/au.gov.ga.earthsci.application/icons/application_icon.png">
-         </property>
-         <property
-               name="aboutText"
-               value="%about.text">
-         </property>
       </product>
    </extension>
    <extension
@@ -43,17 +34,6 @@
             id="au.gov.ga.earthsci.notifications"
             name="%preferences.page.notifications.name">
       </page>
-      <page
-            class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferencesPage"
-            id="au.gov.ga.earthsci.bookmarks"
-            name="%preferences.page.bookmarks.name">
-      </page>
-   </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferenceInitializer">
-      </initializer>
    </extension>
    <extension
          point="au.gov.ga.earthsci.notification.receiver">
@@ -66,20 +46,6 @@
    </extension>
    <extension
          point="au.gov.ga.earthsci.injectable">
-      <bind
-            binding="au.gov.ga.earthsci.bookmark.part.IBookmarksController"
-            class="au.gov.ga.earthsci.bookmark.part.BookmarksController"
-            priority="0">
-      </bind>
-      <bind
-            binding="au.gov.ga.earthsci.bookmark.part.preferences.IBookmarksPreferences"
-            class="au.gov.ga.earthsci.bookmark.part.preferences.BookmarksPreferences"
-            priority="0">
-      </bind>
-      <injectable
-            class="au.gov.ga.earthsci.bookmark.part.editor.BookmarkPropertyEditorFactory"
-            priority="0">
-      </injectable>
       <inject
             class="au.gov.ga.earthsci.application.parts.globe.GlobeActivePartTracker"
             priority="0">
@@ -88,17 +54,6 @@
             class="au.gov.ga.earthsci.application.theme.ThemeLoader"
             priority="0">
       </inject>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.application.bookmarkPropertyEditor">
-      <editor
-            class="au.gov.ga.earthsci.bookmark.part.editor.CameraPropertyEditor"
-            type="au.gov.ga.earthsci.bookmark.properties.camera">
-      </editor>
-      <editor
-            class="au.gov.ga.earthsci.bookmark.part.editor.LayersPropertyEditor"
-            type="au.gov.ga.earthsci.bookmark.properties.layers">
-      </editor>
    </extension>
    <extension
          point="au.gov.ga.earthsci.hud">

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="au.gov.ga.earthsci.bookmark.applicator" name="Bookmark Property Applicator" schema="schema/au.gov.ga.earthsci.bookmark.applicator.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.bookmark.creator.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.exporter" name="Bookmark Property Exporter" schema="schema/au.gov.ga.earthsci.bookmark.exporter.exsd"/>
+   
+   <extension
+         point="au.gov.ga.earthsci.bookmark.creator">
+      <creator
+            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
+      </creator>
+      <creator
+            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
+      </creator>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.bookmark.exporter">
+      <exporter
+            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
+         exporter body text
+      </exporter>
+      <exporter
+            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
+      </exporter>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.bookmark.applicator">
+      <applicator
+            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyApplicator">
+      </applicator>
+      <applicator
+            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyApplicator">
+      </applicator>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.injectable">
+      <bind
+            binding="au.gov.ga.earthsci.bookmark.model.IBookmarks"
+            class="au.gov.ga.earthsci.bookmark.model.Bookmarks"
+            priority="0">
+      </bind>
+      <inject
+            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry"
+            priority="-10">
+      </inject>
+      <inject
+            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory"
+            priority="-10">
+      </inject>
+   </extension>
+</plugin>

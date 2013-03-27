@@ -4,9 +4,6 @@
    <extension-point id="au.gov.ga.earthsci.notification.receiver" name="Notification Receiver" schema="schema/au.gov.ga.earthsci.notification.receiver.exsd"/>
    <extension-point id="au.gov.ga.earthsci.notification.categoryProvider" name="Notification Category Provider" schema="schema/au.gov.ga.earthsci.notification.categoryProvider.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.retrieve.retriever" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retriever.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.bookmark.applicator" name="Bookmark Property Applicator" schema="schema/au.gov.ga.earthsci.bookmark.applicator.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.bookmark.creator.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.bookmark.exporter" name="Bookmark Property Exporter" schema="schema/au.gov.ga.earthsci.bookmark.exporter.exsd"/>
    <extension-point id="au.gov.ga.earthsci.hud" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.hud.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.core.xmlLoaders.exsd"/>
    <extension
@@ -37,34 +34,6 @@
       <initializer
             class="au.gov.ga.earthsci.core.proxy.ProxyPreferences">
       </initializer>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.bookmark.creator">
-      <creator
-            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
-      </creator>
-      <creator
-            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
-      </creator>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.bookmark.exporter">
-      <exporter
-            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
-         exporter body text
-      </exporter>
-      <exporter
-            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
-      </exporter>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.bookmark.applicator">
-      <applicator
-            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyApplicator">
-      </applicator>
-      <applicator
-            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyApplicator">
-      </applicator>
    </extension>
    <extension
          point="au.gov.ga.earthsci.injectable">
@@ -115,19 +84,6 @@
          <type
                class="au.gov.ga.earthsci.core.worldwind.ITreeModel">
          </type>
-      </inject>
-      <bind
-            binding="au.gov.ga.earthsci.bookmark.model.IBookmarks"
-            class="au.gov.ga.earthsci.bookmark.model.Bookmarks"
-            priority="0">
-      </bind>
-      <inject
-            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry"
-            priority="0">
-      </inject>
-      <inject
-            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory"
-            priority="0">
       </inject>
    </extension>
    <extension
