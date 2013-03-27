@@ -123,7 +123,7 @@ public class IntentCatalogLoader
 					NotificationCategory.FILE_IO, e);
 
 			CatalogLoadIntent catalogIntent = (CatalogLoadIntent) intent;
-			ErrorCatalogTreeNode errorNode = new ErrorCatalogTreeNode(e);
+			ErrorCatalogTreeNode errorNode = new ErrorCatalogTreeNode(intent.getURI(), e);
 			errorNode.setRemoveable(true);
 			catalogIntent.placeholder.getParent().replaceChild(catalogIntent.placeholder, errorNode);
 		}
