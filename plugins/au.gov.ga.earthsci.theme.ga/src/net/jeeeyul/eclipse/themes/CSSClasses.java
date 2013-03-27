@@ -7,14 +7,13 @@ import java.util.List;
 import org.eclipse.e4.ui.css.swt.CSSSWTConstants;
 import org.eclipse.swt.widgets.Widget;
 
-@SuppressWarnings("restriction")
 public class CSSClasses {
 
 	private List<String> classes = new ArrayList<String>();
 	
 	public CSSClasses(String source){
 		if(source != null && !source.trim().isEmpty())
-			for(String name : source.split(" "))
+			for(String name : source.split(" ")) //$NON-NLS-1$
 				classes.add(name);
 	}
 	
@@ -41,13 +40,14 @@ public class CSSClasses {
 		w.setData(CSSSWTConstants.CSS_CLASS_NAME_KEY, newStyleClasses.toString());
 	}
 	
+	@Override
 	public String toString() {
 		if (classes.isEmpty())
-			return "";
+			return ""; //$NON-NLS-1$
 		Iterator<String> iter = classes.iterator();
 		StringBuilder sb = new StringBuilder(iter.next());
 		while(iter.hasNext())
-			sb.append(" ").append(iter.next());
+			sb.append(" ").append(iter.next()); //$NON-NLS-1$
 		return sb.toString();
 	}
 }

@@ -91,7 +91,7 @@ public class ChromeTabRendering extends HackedCTabRendering {
 
 	private boolean isPreviewingTab() {
 		CSSClasses tags = CSSClasses.getStyleClasses(tabFolder);
-		return tags.contains("chrome-tabfolder-preview");
+		return tags.contains("chrome-tabfolder-preview"); //$NON-NLS-1$
 	}
 
 	public boolean isShowShineyShadow() {
@@ -112,10 +112,10 @@ public class ChromeTabRendering extends HackedCTabRendering {
 
 		boolean haveToSetEmpty = tabFolder.getItemCount() == 0;
 
-		if (haveToSetEmpty && !tags.contains("empty")) {
+		if (haveToSetEmpty && !tags.contains("empty")) { //$NON-NLS-1$
 			updateTags.schedule();
 			updateItems();
-		} else if (!haveToSetEmpty && !tags.contains("nonEmpty")) {
+		} else if (!haveToSetEmpty && !tags.contains("nonEmpty")) { //$NON-NLS-1$
 			updateTags.schedule();
 			updateItems();
 		}
