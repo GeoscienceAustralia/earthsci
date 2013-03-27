@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import au.gov.ga.earthsci.common.util.message.ResourceBundleMessageSource;
+
 /**
  * Unit tests for the {@link ResourceBundleMessageSource} class
  * 

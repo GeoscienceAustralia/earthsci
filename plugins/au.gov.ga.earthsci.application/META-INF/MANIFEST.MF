@@ -32,7 +32,6 @@ Export-Package: au.gov.ga.earthsci.application,
    com.jogamp.newt.awt,
    gov.nasa.worldwind.avlist",
  au.gov.ga.earthsci.newt.swt,
- au.gov.ga.earthsci.notification.preferences,
  au.gov.ga.earthsci.viewers
 Require-Bundle: javax.inject;bundle-version="1.0.0",
  org.eclipse.core.runtime;bundle-version="3.8.0",

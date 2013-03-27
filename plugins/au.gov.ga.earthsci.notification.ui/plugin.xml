@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="au.gov.ga.earthsci.notification.ui.preferences.NotificationPreferencesPage"
+            id="au.gov.ga.earthsci.notifications"
+            name="%preferences.page.notifications.name">
+      </page>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.notification.receiver">
+      <receiver
+            class="au.gov.ga.earthsci.notification.ui.dialog.DialogNotificationReceiver">
+      </receiver>
+      <receiver
+            class="au.gov.ga.earthsci.notification.ui.NotificationPartReceiver">
+      </receiver>
+   </extension>
+   <extension
+         id="id2"
+         point="org.eclipse.e4.workbench.model">
+      <fragment
+            uri="fragment.e4xmi">
+      </fragment>
+   </extension>
+</plugin>

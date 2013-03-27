@@ -15,7 +15,6 @@
             </children>
             <children xsi:type="basic:PartStack" xmi:id="_0HDfgA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partstack.0.1.1" containerData="30">
               <children xsi:type="advanced:Placeholder" xmi:id="_VGKi4EfWEeKlQKEC4ZU57g" elementId="au.gov.ga.earthsci.application.retrieve.part" toBeRendered="false"/>
-              <children xsi:type="advanced:Placeholder" xmi:id="_m5rS4C0eEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.notification.notifications.part" toBeRendered="false"/>
               <children xsi:type="advanced:Placeholder" xmi:id="_ZW508C0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.progress.part" toBeRendered="false"/>
               <children xsi:type="advanced:Placeholder" xmi:id="_ZprnAC0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.information.part" toBeRendered="false"/>
             </children>
@@ -127,17 +126,6 @@
     </toolbar>
   </descriptors>
   <descriptors xmi:id="_vz7iwGNxEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.progress.part" label="Progress" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/progress_task.gif" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.progress.part.ProgressPart"/>
-  <descriptors xmi:id="_wIyYcGNxEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.notification.notifications.part" label="Notifications" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/problems.gif" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.notification.part.NotificationPart">
-    <handlers xmi:id="_SJbQ4BJgEeK3duY8thOvyA" elementId="au.gov.ga.earthsci.notification.part.groupby" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.notification.part.NotificationPartGroupByHandler" command="_cQRlEBJgEeK3duY8thOvyA"/>
-    <menus xmi:id="_uibuEBHBEeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.notification.notifications.viewmenu" label="">
-      <tags>ViewMenu</tags>
-      <children xsi:type="menu:Menu" xmi:id="_E1kp4BHLEeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.notification.notifications.viewmenu.group" label="Group by">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_wPyC4BHQEeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.notification.notifications.viewmenu.group.none" label="None" selected="true" type="Radio" command="_cQRlEBJgEeK3duY8thOvyA"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_NT3dIBHREeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.notification.notifications.viewmenu.group.level" label="Level" type="Radio" command="_cQRlEBJgEeK3duY8thOvyA"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_Rx-AIBHREeK3n9LqDJxDFQ" elementId="au.gov.ga.earthsci.notification.notifications.viewmenu.group.category" label="Category" type="Radio" command="_cQRlEBJgEeK3duY8thOvyA"/>
-      </children>
-    </menus>
-  </descriptors>
   <commands xmi:id="_007tWvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.exit" commandName="exitCommand"/>
   <commands xmi:id="_007tXvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.command.open" commandName="openCommand"/>
   <commands xmi:id="_007tYfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.save" commandName="saveCommand"/>

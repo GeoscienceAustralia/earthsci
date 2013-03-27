@@ -28,23 +28,6 @@
       </product>
    </extension>
    <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            class="au.gov.ga.earthsci.notification.preferences.NotificationPreferencesPage"
-            id="au.gov.ga.earthsci.notifications"
-            name="%preferences.page.notifications.name">
-      </page>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.notification.receiver">
-      <receiver
-            class="au.gov.ga.earthsci.notification.dialog.DialogNotificationReceiver">
-      </receiver>
-      <receiver
-            class="au.gov.ga.earthsci.notification.part.NotificationPartReceiver">
-      </receiver>
-   </extension>
-   <extension
          point="au.gov.ga.earthsci.injectable">
       <inject
             class="au.gov.ga.earthsci.application.parts.globe.GlobeActivePartTracker"

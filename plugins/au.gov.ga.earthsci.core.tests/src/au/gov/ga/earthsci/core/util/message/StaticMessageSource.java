@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import au.gov.ga.earthsci.common.util.message.ResourceBundleMessageSource;
+
 /**
  * An extension of {@link ResourceBundleMessageSource} that uses a backing map
  * to override source messages if required.
