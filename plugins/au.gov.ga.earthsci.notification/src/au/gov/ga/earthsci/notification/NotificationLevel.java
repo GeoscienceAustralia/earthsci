@@ -2,8 +2,6 @@ package au.gov.ga.earthsci.notification;
 
 import java.util.Comparator;
 
-import au.gov.ga.earthsci.common.util.message.MessageSourceAccessor;
-
 /**
  * An enumeration of the notification levels available in the system.
  * 
@@ -11,23 +9,17 @@ import au.gov.ga.earthsci.common.util.message.MessageSourceAccessor;
  */
 public enum NotificationLevel
 {
-
-	INFORMATION(1, "au.gov.ga.earthsci.notification.NotificationLevel.information"), //$NON-NLS-1$
-	WARNING(5, "au.gov.ga.earthsci.notification.NotificationLevel.warning"), //$NON-NLS-1$
-	ERROR(10, "au.gov.ga.earthsci.notification.NotificationLevel.error"); //$NON-NLS-1$
-
-	static
-	{
-		MessageSourceAccessor.addBundle("au.gov.ga.earthsci.notification.messages"); //$NON-NLS-1$
-	}
+	INFORMATION(1, Messages.NotificationLevel_Information),
+	WARNING(5, Messages.NotificationLevel_Warning),
+	ERROR(10, Messages.NotificationLevel_Error);
 
 	private int severity;
-	private String labelKey;
+	private String label;
 
-	private NotificationLevel(int severity, String labelKey)
+	private NotificationLevel(int severity, String label)
 	{
 		this.severity = severity;
-		this.labelKey = labelKey;
+		this.label = label;
 	}
 
 	public int getSeverity()
@@ -37,7 +29,7 @@ public enum NotificationLevel
 
 	public String getLabel()
 	{
-		return MessageSourceAccessor.getMessage(labelKey);
+		return label;
 	}
 
 	/** A comparator that will sort notification levels descending by severity */

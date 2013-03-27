@@ -11,6 +11,12 @@ public class Messages extends NLS
 	public static String Notification_DefaultActionText;
 	public static String NotificationPreferences_Description;
 	public static String NotificationPreferences_Title;
+	public static String NotificationCategory_General;
+	public static String NotificationCategory_Download;
+	public static String NotificationCategory_FileIO;
+	public static String NotificationLevel_Information;
+	public static String NotificationLevel_Error;
+	public static String NotificationLevel_Warning;
 	static
 	{
 		// initialize resource bundle

@@ -7,8 +7,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 
-import au.gov.ga.earthsci.common.util.message.MessageSourceAccessor;
-
 /**
  * A class that represents a categorisation of notifications.
  * <p/>
@@ -36,11 +34,13 @@ public class NotificationCategory implements Serializable
 	private static HashMap<String, NotificationCategory> categories = new HashMap<String, NotificationCategory>();
 	static
 	{
-		MessageSourceAccessor.addBundle("au.gov.ga.earthsci.notification.messages"); //$NON-NLS-1$
-
-		FILE_IO = registerCategory("au.gov.ga.earthsci.notification.category.io"); //$NON-NLS-1$
-		DOWNLOAD = registerCategory("au.gov.ga.earthsci.notification.category.download"); //$NON-NLS-1$
-		GENERAL = registerCategory("au.gov.ga.earthsci.notification.category.general"); //$NON-NLS-1$
+		FILE_IO = registerCategory("au.gov.ga.earthsci.notification.category.io", Messages.NotificationCategory_FileIO); //$NON-NLS-1$
+		DOWNLOAD =
+				registerCategory(
+						"au.gov.ga.earthsci.notification.category.download", Messages.NotificationCategory_Download); //$NON-NLS-1$
+		GENERAL =
+				registerCategory(
+						"au.gov.ga.earthsci.notification.category.general", Messages.NotificationCategory_General); //$NON-NLS-1$
 	}
 
 	/**
@@ -76,21 +76,6 @@ public class NotificationCategory implements Serializable
 	}
 
 	/**
-	 * @return Register a category with the given ID and label
-	 */
-	public static NotificationCategory registerCategory(String id)
-	{
-		if (categories.containsKey(id))
-		{
-			return categories.get(id);
-		}
-
-		NotificationCategory category = new NotificationCategory(id);
-		categories.put(id, category);
-		return category;
-	}
-
-	/**
 	 * @return The (unordered) collection of registered notification categories
 	 */
 	public static Collection<NotificationCategory> getRegisteredCategories()
@@ -103,18 +88,11 @@ public class NotificationCategory implements Serializable
 
 	private NotificationCategory(String id, String label)
 	{
-		this(id);
-		this.label = label;
-	}
-
-	private NotificationCategory(String id)
-	{
 		if (categories.containsKey(id))
 		{
 			throw new IllegalArgumentException("A category with ID " + id + " already exists"); //$NON-NLS-1$//$NON-NLS-2$
 		}
-		this.id = id;
-		this.label = MessageSourceAccessor.getMessage(id);
+		this.label = label;
 	}
 
 	/**
