@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="au.gov.ga.earthsci.catalog.ui.catalogTreeLabelProvider">
+      <provider
+            class="au.gov.ga.earthsci.catalog.dataset.DatasetCatalogTreeLabelProvider">
+      </provider>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.core.xmlLoaders">
+      <loader
+            class="au.gov.ga.earthsci.catalog.dataset.DatasetXmlLoader"
+            filter="au.gov.ga.earthsci.catalog.dataset.DatasetXmlLoader"
+            priority="0">
+      </loader>
+   </extension>
+</plugin>

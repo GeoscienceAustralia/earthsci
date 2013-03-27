@@ -12,14 +12,6 @@
       </inject>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.core.xmlLoaders">
-      <loader
-            class="au.gov.ga.earthsci.catalog.dataset.DatasetXmlLoader"
-            filter="au.gov.ga.earthsci.catalog.dataset.DatasetXmlLoader"
-            priority="0">
-      </loader>
-   </extension>
-   <extension
          point="au.gov.ga.earthsci.dispatchFilters">
       <filter
             class="au.gov.ga.earthsci.catalog.CatalogTreeNodeDispatchHandler"

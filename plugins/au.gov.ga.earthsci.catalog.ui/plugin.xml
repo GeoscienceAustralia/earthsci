@@ -18,12 +18,6 @@
       </initializer>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.catalog.ui.catalogTreeLabelProvider">
-      <provider
-            class="au.gov.ga.earthsci.catalog.ui.dataset.DatasetCatalogTreeLabelProvider">
-      </provider>
-   </extension>
-   <extension
          point="au.gov.ga.earthsci.injectable">
       <bind
             binding="au.gov.ga.earthsci.catalog.ui.ICatalogBrowserController"

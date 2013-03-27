@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.catalog.ui.dataset;
+package au.gov.ga.earthsci.catalog.dataset;
 
 import java.net.URL;
 
@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.catalog.dataset.DatasetCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ui.CatalogTreeLabelProviderRegistry;
 import au.gov.ga.earthsci.catalog.ui.ICatalogTreeLabelProvider;
 

@@ -19,6 +19,5 @@ Require-Bundle: org.eclipse.ui,
  gov.nasa.worldwind.jogl2;bundle-version="1.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: au.gov.ga.earthsci.catalog,
- au.gov.ga.earthsci.catalog.dataset
+Export-Package: au.gov.ga.earthsci.catalog
 Import-Package: javax.annotation;version="1.1.0"

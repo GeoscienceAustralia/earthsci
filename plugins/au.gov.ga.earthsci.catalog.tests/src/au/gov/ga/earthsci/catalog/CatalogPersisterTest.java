@@ -26,10 +26,6 @@ import java.net.URL;
 import org.junit.Test;
 import org.xml.sax.SAXParseException;
 
-import au.gov.ga.earthsci.catalog.CatalogModel;
-import au.gov.ga.earthsci.catalog.CatalogPersister;
-import au.gov.ga.earthsci.catalog.ICatalogModel;
-import au.gov.ga.earthsci.catalog.dataset.DatasetReader;
 import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.intent.IntentManager;
 
@@ -72,8 +68,8 @@ public class CatalogPersisterTest
 		ICatalogModel model = new CatalogModel();
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-		URL source = getClass().getResource("dataset/validdataset.xml");
-		model.addTopLevelCatalog(DatasetReader.read(source, null));
+		URL source = getClass().getResource("dummyresource.xml");
+		model.addTopLevelCatalog(new DummyCatalogNode(source.toURI()));
 
 		CatalogPersister.saveCatalogModel(model, os);
 
@@ -133,7 +129,7 @@ public class CatalogPersisterTest
 	@Test
 	public void testLoadModelValidNonEmptyModelDocument() throws Exception
 	{
-		URL catalog = getClass().getResource("dataset/validdataset.xml");
+		URL catalog = getClass().getResource("dummyresource.xml");
 		String document =
 				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><catalogModel><model><catalogs><element><catalog uri=\""
 						+ catalog.toExternalForm() + "\"/></element></catalogs></model></catalogModel>";

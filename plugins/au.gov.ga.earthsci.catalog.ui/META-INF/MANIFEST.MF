@@ -29,7 +29,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: au.gov.ga.earthsci.catalog.ui,
- au.gov.ga.earthsci.catalog.ui.dataset,
  au.gov.ga.earthsci.catalog.ui.handler,
  au.gov.ga.earthsci.catalog.ui.preferences
 Import-Package: javax.annotation;version="1.1.0"

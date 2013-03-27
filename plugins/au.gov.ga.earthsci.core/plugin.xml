@@ -74,32 +74,32 @@
       </inject>
       <inject
             class="au.gov.ga.earthsci.common.util.ExtensionRegistryUtil"
-            priority="0">
+            priority="10">
       </inject>
-      <injectable
-            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences"
-            priority="0">
-      </injectable>
-      <injectable
-            class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration"
-            priority="0">
-      </injectable>
       <inject
             class="au.gov.ga.earthsci.core.retrieve.RetrieverFactory"
-            priority="0">
+            priority="10">
          <type
                class="au.gov.ga.earthsci.core.retrieve.IRetrieverFactory">
          </type>
       </inject>
       <inject
             class="au.gov.ga.earthsci.core.retrieve.RetrievalService"
-            priority="0">
+            priority="10">
          <type
                class="au.gov.ga.earthsci.core.retrieve.IRetrievalService">
          </type>
       </inject>
       <injectable
             class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory"
+            priority="10">
+      </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences"
+            priority="0">
+      </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration"
             priority="0">
       </injectable>
       <inject
