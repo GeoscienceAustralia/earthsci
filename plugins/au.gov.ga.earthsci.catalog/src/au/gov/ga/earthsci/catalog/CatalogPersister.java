@@ -371,10 +371,13 @@ public class CatalogPersister
 		for (int i = 0; i < dto.catalogs.length; i++)
 		{
 			URI uri = dto.catalogs[i].nodeURI;
-			LoadingCatalogTreeNode loadingNode = new LoadingCatalogTreeNode(uri);
-			loadingNode.setLabel(dto.catalogs[i].label);
-			result.addTopLevelCatalog(loadingNode);
-			IntentCatalogLoader.load(uri, loadingNode, context);
+			if (uri != null)
+			{
+				LoadingCatalogTreeNode loadingNode = new LoadingCatalogTreeNode(uri);
+				loadingNode.setLabel(dto.catalogs[i].label);
+				result.addTopLevelCatalog(loadingNode);
+				IntentCatalogLoader.load(uri, loadingNode, context);
+			}
 		}
 
 		return result;
