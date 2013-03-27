@@ -22,7 +22,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.model.catalog.dataset.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.catalog.dataset.messages"; //$NON-NLS-1$
 	public static String DatasetLinkCatalogTreeNode_DownloadingLinkMessage;
 	public static String DatasetLinkCatalogTreeNode_GenericLinkDownloadFailedMessage;
 	public static String DatasetLinkCatalogTreeNode_NoRetrievalServiceMessage;

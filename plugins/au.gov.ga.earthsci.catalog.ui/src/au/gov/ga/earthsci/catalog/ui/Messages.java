@@ -19,7 +19,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.catalog.part.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.catalog.ui.messages"; //$NON-NLS-1$
 	public static String CatalogBrowserController_DialogDontAsk;
 	public static String CatalogBrowserController_AddNodePathDialogMessage;
 	public static String CatalogBrowserController_AddNodePathDialogTitle;
