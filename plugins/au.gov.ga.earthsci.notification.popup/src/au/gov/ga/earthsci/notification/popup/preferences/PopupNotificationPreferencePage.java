@@ -46,7 +46,6 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 	private LabelFieldEditor categoryFilterLabelEditor;
 	private MultiSelectTableListFieldEditor<NotificationCategory> categoryFilterEditor;
 
-	@SuppressWarnings("restriction")
 	public PopupNotificationPreferencePage()
 	{
 		super(GRID);
@@ -96,7 +95,9 @@ public class PopupNotificationPreferencePage extends FieldEditorPreferencePage
 
 		addField(new SpacerFieldEditor(getFieldEditorParent()));
 
-		categoryFilterLabelEditor = new LabelFieldEditor("Notification categories:", getFieldEditorParent());
+		categoryFilterLabelEditor =
+				new LabelFieldEditor(Messages.PopupNotificationPreferencePage_NotificationCategoryFilterLabel,
+						getFieldEditorParent());
 		addField(categoryFilterLabelEditor);
 
 		ITableItemCreator<NotificationCategory> categoryItemCreator = new ITableItemCreator<NotificationCategory>()

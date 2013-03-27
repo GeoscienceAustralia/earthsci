@@ -9,6 +9,7 @@ public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.notification.popup.messages"; //$NON-NLS-1$
 	public static String PopupNotification_CloseTooltip;
+	public static String PopupNotificationPreferencePage_NotificationCategoryFilterLabel;
 	public static String PopupNotificationPreferencePage_NotificationCategoryColumnLabel;
 	public static String PopupNotificationPreferences_Description;
 	public static String PopupNotificationPreferences_DurationLabel;
