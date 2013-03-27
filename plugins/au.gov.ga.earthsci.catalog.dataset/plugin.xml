@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="au.gov.ga.earthsci.catalog.ui.catalogTreeLabelProvider">
+         point="au.gov.ga.earthsci.catalog.ui.catalogTreeLabelProviders">
       <provider
             class="au.gov.ga.earthsci.catalog.dataset.DatasetCatalogTreeLabelProvider">
       </provider>
