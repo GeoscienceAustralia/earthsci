@@ -55,12 +55,12 @@ import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.LoadingCatalogTreeNode;
 import au.gov.ga.earthsci.common.collection.HashSetHashMap;
 import au.gov.ga.earthsci.common.collection.SetMap;
+import au.gov.ga.earthsci.common.ui.viewers.IControlProvider;
 import au.gov.ga.earthsci.common.util.ILabeled;
 import au.gov.ga.earthsci.common.util.INamed;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
-import au.gov.ga.earthsci.viewers.IControlProvider;
 
 /**
  * A {@link IControlProvider} for the catalog browser tree

@@ -25,7 +25,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.databinding;bundle-version="1.4.1",
  org.eclipse.jface.databinding;bundle-version="1.6.200",
  gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
- au.gov.ga.earthsci.common
+ au.gov.ga.earthsci.common,
+ au.gov.ga.earthsci.common.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: au.gov.ga.earthsci.catalog.ui,

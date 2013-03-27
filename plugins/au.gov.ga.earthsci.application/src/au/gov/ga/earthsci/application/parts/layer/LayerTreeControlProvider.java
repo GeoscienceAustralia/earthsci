@@ -21,7 +21,6 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
-import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.basic.MWindow;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
@@ -43,8 +42,8 @@ import org.eclipse.swt.widgets.Label;
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.application.parts.info.InfoPart;
 import au.gov.ga.earthsci.application.parts.legend.LegendPart;
+import au.gov.ga.earthsci.common.ui.viewers.IControlProvider;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.viewers.IControlProvider;
 
 /**
  * {@link IControlProvider} implementation for the layer tree. Must be disposed
@@ -60,9 +59,6 @@ public class LayerTreeControlProvider implements IControlProvider
 
 	@Inject
 	private EModelService modelService;
-
-	@Inject
-	private MApplication application;
 
 	@Inject
 	private MWindow window;

@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.viewers;
+package au.gov.ga.earthsci.common.ui.viewers;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Tree;
-
-import au.gov.ga.earthsci.application.ImageRegistry;
 
 /**
  * A {@link TreeViewer} that implements {@link IControlViewer}
@@ -36,19 +34,19 @@ public class ControlTreeViewer extends TreeViewer implements IControlViewer
 		super(parent, style);
 
 		// XXX: This is a workaround to reduce the flicker that occurs when tree item controls are redrawn 
-		getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
+		getTree().setBackgroundImage(TransparentIcon.IMAGE);
 	}
 
 	public ControlTreeViewer(Composite parent)
 	{
 		super(parent);
-		getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
+		getTree().setBackgroundImage(TransparentIcon.IMAGE);
 	}
 
 	public ControlTreeViewer(Tree tree)
 	{
 		super(tree);
-		getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
+		getTree().setBackgroundImage(TransparentIcon.IMAGE);
 	}
 
 	@Override

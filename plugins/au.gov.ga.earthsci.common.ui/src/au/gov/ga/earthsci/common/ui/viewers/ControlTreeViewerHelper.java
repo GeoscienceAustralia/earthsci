@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.viewers;
+package au.gov.ga.earthsci.common.ui.viewers;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.custom.TreeEditor;
