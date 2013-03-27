@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.progress.part;
+package au.gov.ga.earthsci.application.parts.progress;
 
 import java.util.ArrayList;
 import java.util.HashMap;

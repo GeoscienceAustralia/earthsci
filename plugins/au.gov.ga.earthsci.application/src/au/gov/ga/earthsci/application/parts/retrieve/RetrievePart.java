@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.retrieve.part;
+package au.gov.ga.earthsci.application.parts.retrieve;
 
 import java.util.ArrayList;
 import java.util.HashSet;

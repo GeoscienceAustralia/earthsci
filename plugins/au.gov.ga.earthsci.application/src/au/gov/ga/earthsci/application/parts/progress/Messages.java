@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.progress.part;
+package au.gov.ga.earthsci.application.parts.progress;
 
 import org.eclipse.osgi.util.NLS;
 
@@ -8,7 +8,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.progress.part.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.application.parts.progress.messages"; //$NON-NLS-1$
 	public static String ProgressPart_JobNameColumnLabel;
 	public static String ProgressPart_JobProgressColumnLabel;
 	public static String ProgressPart_JobStateColumnLabel;
