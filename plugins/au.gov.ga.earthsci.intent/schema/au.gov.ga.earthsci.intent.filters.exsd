@@ -3,7 +3,7 @@
 <schema targetNamespace="au.gov.ga.earthsci.intent" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="au.gov.ga.earthsci.intent" id="au.gov.ga.earthsci.intentFilters" name="IntentFilters"/>
+         <meta.schema plugin="au.gov.ga.earthsci.intent" id="au.gov.ga.earthsci.intent.filters" name="IntentFilters"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]

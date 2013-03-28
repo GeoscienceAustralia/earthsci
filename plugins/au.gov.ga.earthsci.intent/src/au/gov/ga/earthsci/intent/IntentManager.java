@@ -61,7 +61,7 @@ public class IntentManager implements IIntentManager
 		IntentManager.instance = instance;
 	}
 
-	private static final String INTENT_FILTERS_ID = "au.gov.ga.earthsci.intentFilters"; //$NON-NLS-1$
+	private static final String INTENT_FILTERS_ID = "au.gov.ga.earthsci.intent.filters"; //$NON-NLS-1$
 	private static final Logger logger = LoggerFactory.getLogger(IntentManager.class);
 
 	//filters, sorted descending by priority

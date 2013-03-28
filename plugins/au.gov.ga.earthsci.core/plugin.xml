@@ -85,7 +85,7 @@
       </inject>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.intentFilters">
+         point="au.gov.ga.earthsci.intent.filters">
       <filter
             class="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
             priority="0">
