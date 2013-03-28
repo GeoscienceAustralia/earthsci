@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="au.gov.ga.earthsci.bookmark.ui.bookmarkPropertyEditors" name="Bookmark Property Editors" schema="schema/au.gov.ga.earthsci.bookmark.ui.bookmarkPropertyEditors.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.ui.propertyEditors" name="Bookmark Property Editors" schema="schema/au.gov.ga.earthsci.bookmark.ui.propertyEditors.exsd"/>
    
    <extension
          id="id1"
@@ -42,7 +42,7 @@
       </injectable>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.bookmark.ui.bookmarkPropertyEditors">
+         point="au.gov.ga.earthsci.bookmark.ui.propertyEditors">
       <editor
             class="au.gov.ga.earthsci.bookmark.ui.editor.CameraPropertyEditor"
             type="au.gov.ga.earthsci.bookmark.properties.camera">

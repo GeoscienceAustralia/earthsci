@@ -41,7 +41,7 @@ import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 @Creatable
 public class BookmarkPropertyEditorFactory
 {
-	private static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.ui.bookmarkPropertyEditors"; //$NON-NLS-1$
+	private static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.ui.propertyEditors"; //$NON-NLS-1$
 	private static final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 	private static final String TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
 
