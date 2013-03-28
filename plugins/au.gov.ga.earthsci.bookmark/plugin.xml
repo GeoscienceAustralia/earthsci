@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="au.gov.ga.earthsci.bookmark.applicator" name="Bookmark Property Applicator" schema="schema/au.gov.ga.earthsci.bookmark.applicator.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.bookmark.creator.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.bookmark.exporter" name="Bookmark Property Exporter" schema="schema/au.gov.ga.earthsci.bookmark.exporter.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.applicators" name="Bookmark Property Applicators" schema="schema/au.gov.ga.earthsci.bookmark.applicators.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.creators" name="Bookmark Property Creators" schema="schema/au.gov.ga.earthsci.bookmark.creators.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.bookmark.exporters" name="Bookmark Property Exporters" schema="schema/au.gov.ga.earthsci.bookmark.exporters.exsd"/>
    
    <extension
-         point="au.gov.ga.earthsci.bookmark.creator">
+         point="au.gov.ga.earthsci.bookmark.creators">
       <creator
             class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
       </creator>
@@ -15,7 +15,7 @@
       </creator>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.bookmark.exporter">
+         point="au.gov.ga.earthsci.bookmark.exporters">
       <exporter
             class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
          exporter body text
@@ -25,7 +25,7 @@
       </exporter>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.bookmark.applicator">
+         point="au.gov.ga.earthsci.bookmark.applicators">
       <applicator
             class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyApplicator">
       </applicator>

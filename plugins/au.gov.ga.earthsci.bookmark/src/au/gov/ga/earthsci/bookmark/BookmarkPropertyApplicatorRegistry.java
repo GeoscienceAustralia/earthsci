@@ -42,7 +42,7 @@ import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil.Callback;
 @Creatable
 public class BookmarkPropertyApplicatorRegistry
 {
-	private static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.applicator"; //$NON-NLS-1$
+	private static final String EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.applicators"; //$NON-NLS-1$
 	private static final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
 	private static Map<String, IBookmarkPropertyApplicator> applicators =

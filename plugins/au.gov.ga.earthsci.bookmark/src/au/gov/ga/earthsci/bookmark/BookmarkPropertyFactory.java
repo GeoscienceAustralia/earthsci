@@ -49,8 +49,8 @@ import au.gov.ga.earthsci.common.util.Validate;
 public class BookmarkPropertyFactory
 {
 
-	private static final String CREATORS_EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.creator"; //$NON-NLS-1$
-	private static final String EXPORTERS_EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.exporter"; //$NON-NLS-1$
+	private static final String CREATORS_EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.creators"; //$NON-NLS-1$
+	private static final String EXPORTERS_EXTENSION_POINT_ID = "au.gov.ga.earthsci.bookmark.exporters"; //$NON-NLS-1$
 	private static final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
 	private static Logger logger = LoggerFactory.getLogger(BookmarkPropertyFactory.class);

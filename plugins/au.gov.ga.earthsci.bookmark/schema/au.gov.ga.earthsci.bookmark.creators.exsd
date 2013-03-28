@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="au.gov.ga.earthsci.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="au.gov.ga.earthsci.bookmark" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="au.gov.ga.earthsci.core" id="au.gov.ga.earthsci.bookmark.applicator" name="Bookmark Property Applicator"/>
+         <meta.schema plugin="au.gov.ga.earthsci.bookmark" id="au.gov.ga.earthsci.bookmark.creators" name="Bookmark Property Creators"/>
       </appinfo>
       <documentation>
-         Register bookmark property applicators.
+         Allows plugins to register additional bookmark property creators on the BookmarkPropertyFactory.
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence minOccurs="0" maxOccurs="unbounded">
-            <element ref="applicator"/>
+            <element ref="creator"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="applicator">
+   <element name="creator">
       <complexType>
          <attribute name="class" type="string">
             <annotation>
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java"/>
+                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.bookmark.IBookmarkPropertyCreator"/>
                </appinfo>
             </annotation>
          </attribute>
