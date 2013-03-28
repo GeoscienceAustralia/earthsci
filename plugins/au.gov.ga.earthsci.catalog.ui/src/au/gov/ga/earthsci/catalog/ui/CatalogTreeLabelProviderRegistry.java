@@ -52,7 +52,7 @@ public class CatalogTreeLabelProviderRegistry
 	private static final ReadWriteLock labelProvidersLock = new ReentrantReadWriteLock();
 
 	public static final String CATALOG_NODE_CONTROL_PROVIDER_EXTENSION_POINT_ID =
-			"au.gov.ga.earthsci.catalog.ui.catalogTreeLabelProvider"; //$NON-NLS-1$
+			"au.gov.ga.earthsci.catalog.ui.labelProviders"; //$NON-NLS-1$
 	public static final String CONTROL_PROVIDER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
 	/**

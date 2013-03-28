@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="au.gov.ga.earthsci.application" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="au.gov.ga.earthsci.catalog.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="au.gov.ga.earthsci.application" id="catalogTreeLabelProvider" name="Catalog Tree Label Provider"/>
+         <meta.schema plugin="au.gov.ga.earthsci.catalog.ui" id="au.gov.ga.earthsci.catalog.ui.labelProviders" name="Catalog Tree Label Providers"/>
       </appinfo>
       <documentation>
          Used to provide label providers that style the appearance of ICatalogTreeNodes in the catalog browser panel.
