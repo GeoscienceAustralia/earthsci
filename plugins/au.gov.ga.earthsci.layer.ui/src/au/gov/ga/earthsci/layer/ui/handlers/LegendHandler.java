@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts.layer.handlers;
+package au.gov.ga.earthsci.layer.ui.handlers;
 
 import javax.inject.Inject;
 import javax.inject.Named;

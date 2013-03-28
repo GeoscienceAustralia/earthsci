@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Geoscience Australia
+ * Copyright 2012 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,43 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts.layer.handlers;
+package au.gov.ga.earthsci.layer.ui.handlers;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.e4.ui.workbench.modeling.EPartService;
+import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
 
-import au.gov.ga.earthsci.core.model.layer.FolderNode;
+import au.gov.ga.earthsci.application.parts.info.InfoPart;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
- * Handles new folder commands for the layer tree.
+ * Handles layer node information button selection.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class NewFolderHandler
+public class InformationHandler
 {
 	@Inject
-	private ITreeModel model;
+	private EPartService partService;
 
 	@Execute
-	public void execute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode parent, TreeViewer viewer)
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
-		FolderNode folder = new FolderNode();
-		folder.setName("New Folder");
-		if (parent == null)
-		{
-			model.getRootNode().add(folder);
-		}
-		else
-		{
-			parent.add(folder);
-		}
-		viewer.editElement(folder, 0);
+		MPart part = partService.showPart(InfoPart.PART_ID, PartState.VISIBLE);
+		part.getContext().modify(InfoPart.INPUT_NAME, layer);
+		part.getContext().declareModifiable(InfoPart.INPUT_NAME);
+	}
+
+	@CanExecute
+	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
+	{
+		return layer != null;
 	}
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts.layer;
+package au.gov.ga.earthsci.layer.ui;
 
 import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.avlist.AVKey;
@@ -83,6 +83,7 @@ import au.gov.ga.earthsci.application.Activator;
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.application.util.StackTraceDialog;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;

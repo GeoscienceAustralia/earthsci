@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts.layer;
+package au.gov.ga.earthsci.core.model.layer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -78,7 +78,7 @@ final public class LayerTransfer extends ByteArrayTransfer
 		}
 	}
 
-	protected byte[] toByteArray(LayerTransferData data)
+	public byte[] toByteArray(LayerTransferData data)
 	{
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		try

@@ -13,47 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts.layer.handlers;
+package au.gov.ga.earthsci.layer.ui.handlers;
 
 import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.jface.viewers.TreeViewer;
 
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 
 /**
- * Handles delete commands for the layer tree.
+ * Handles rename commands for the layer tree.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class DeleteHandler
+public class RenameHandler
 {
 	@Execute
-	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer, TreeViewer viewer)
 	{
-		layer.removeFromParent();
-	}
-
-	@Execute
-	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode[] layers)
-	{
-		for (ILayerTreeNode layer : layers)
-		{
-			layer.removeFromParent();
-		}
+		viewer.editElement(layer, 0);
 	}
 
 	@CanExecute
-	public boolean canExecute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
+	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
 		return layer != null;
-	}
-
-	@CanExecute
-	public boolean canExecute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode[] layers)
-	{
-		return layers != null && layers.length > 0;
 	}
 }

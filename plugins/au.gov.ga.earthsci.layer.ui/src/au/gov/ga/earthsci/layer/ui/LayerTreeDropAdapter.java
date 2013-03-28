@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts.layer;
+package au.gov.ga.earthsci.layer.ui;
 
 import java.io.File;
 
@@ -27,10 +27,12 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
 import au.gov.ga.earthsci.application.ImageRegistry;
-import au.gov.ga.earthsci.application.parts.layer.LayerTransferData.TransferredLayer;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
+import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
+import au.gov.ga.earthsci.core.model.layer.LayerTransferData;
+import au.gov.ga.earthsci.core.model.layer.LayerTransferData.TransferredLayer;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**

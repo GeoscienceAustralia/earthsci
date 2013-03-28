@@ -23,11 +23,11 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 
-import au.gov.ga.earthsci.application.parts.layer.LayerTransfer;
 import au.gov.ga.earthsci.application.tree.LazyObservableListTreeContentProvider;
 import au.gov.ga.earthsci.catalog.ICatalogModel;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.common.ui.viewers.ControlTreeViewer;
+import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
 
 /**
  * A part that renders a tree-view of the current {@link ICatalogModel} and

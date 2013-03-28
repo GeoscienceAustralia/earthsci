@@ -13,43 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts.layer.handlers;
+package au.gov.ga.earthsci.layer.ui.handlers;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.core.di.annotations.Optional;
-import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.e4.ui.workbench.modeling.EPartService;
-import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.Transfer;
 
-import au.gov.ga.earthsci.application.parts.info.InfoPart;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
+import au.gov.ga.earthsci.core.model.layer.LayerTransferData;
 
 /**
- * Handles layer node information button selection.
+ * Handles copy commands for the layer tree.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class InformationHandler
+public class CopyHandler
 {
-	@Inject
-	private EPartService partService;
+	@Execute
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer, Clipboard clipboard)
+	{
+		execute(new ILayerTreeNode[] { layer }, clipboard);
+	}
 
 	@Execute
-	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
+	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode[] layers, Clipboard clipboard)
 	{
-		MPart part = partService.showPart(InfoPart.PART_ID, PartState.VISIBLE);
-		part.getContext().modify(InfoPart.INPUT_NAME, layer);
-		part.getContext().declareModifiable(InfoPart.INPUT_NAME);
+		LayerTransferData data = LayerTransferData.fromNodes(layers);
+		clipboard.setContents(new Object[] { data }, new Transfer[] { LayerTransfer.getInstance() });
 	}
 
 	@CanExecute
-	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
+	public boolean canExecute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
 		return layer != null;
+	}
+
+	@CanExecute
+	public boolean canExecute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode[] layers)
+	{
+		return layers != null && layers.length > 0;
 	}
 }

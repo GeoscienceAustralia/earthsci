@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ASCII"?>
+<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/descriptor/basic" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_AKs3QJdDEeKAe5mIUYJvmg">
+  <imports xsi:type="commands:Command" xmi:id="_IehHkJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.command.legend"/>
+  <imports xsi:type="commands:Command" xmi:id="_JYVrgJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.command.information"/>
+  <imports xsi:type="commands:Command" xmi:id="_KTDAQJdDEeKAe5mIUYJvmg" elementId="org.eclipse.ui.edit.delete"/>
+  <imports xsi:type="commands:Command" xmi:id="_LhlP8JdDEeKAe5mIUYJvmg" elementId="org.eclipse.ui.edit.cut"/>
+  <imports xsi:type="commands:Command" xmi:id="_MSJxQJdDEeKAe5mIUYJvmg" elementId="org.eclipse.ui.edit.copy"/>
+  <imports xsi:type="commands:Command" xmi:id="_NRCbYJdDEeKAe5mIUYJvmg" elementId="org.eclipse.ui.edit.paste"/>
+  <imports xsi:type="commands:Command" xmi:id="_OjStcJdDEeKAe5mIUYJvmg" elementId="org.eclipse.ui.edit.rename"/>
+  <imports xsi:type="commands:Command" xmi:id="_PgYn0JdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.command.newFolder"/>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_AKs3QZdDEeKAe5mIUYJvmg" featurename="descriptors" parentElementId="au.gov.ga.earthsci.application">
+    <elements xsi:type="basic:PartDescriptor" xmi:id="_AKs3QpdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.part" label="Layers" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/layer.png" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.LayerTreePart">
+      <handlers xmi:id="_AKs3Q5dDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.CutHandler" command="_LhlP8JdDEeKAe5mIUYJvmg"/>
+      <handlers xmi:id="_AKs3RJdDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.CopyHandler" command="_MSJxQJdDEeKAe5mIUYJvmg"/>
+      <handlers xmi:id="_AKs3RZdDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.PasteHandler" command="_NRCbYJdDEeKAe5mIUYJvmg"/>
+      <handlers xmi:id="_AKs3RpdDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.DeleteHandler" command="_KTDAQJdDEeKAe5mIUYJvmg"/>
+      <handlers xmi:id="_AKs3R5dDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.RenameHandler" command="_OjStcJdDEeKAe5mIUYJvmg"/>
+      <handlers xmi:id="_AKs3SJdDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.InformationHandler" command="_JYVrgJdDEeKAe5mIUYJvmg"/>
+      <handlers xmi:id="_AKs3SZdDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.LegendHandler" command="_IehHkJdDEeKAe5mIUYJvmg"/>
+      <handlers xmi:id="_AKs3SpdDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.NewFolderHandler" command="_PgYn0JdDEeKAe5mIUYJvmg"/>
+      <menus xsi:type="menu:PopupMenu" xmi:id="_AKs3S5dDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu" label="Layer Menu">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3TJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.rename" label="Rename" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/rename.gif" command="_OjStcJdDEeKAe5mIUYJvmg"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3TZdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.delete" label="Delete" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/delete.gif" command="_KTDAQJdDEeKAe5mIUYJvmg"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_AKs3TpdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3T5dDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.cut" label="Cut" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/cut_edit.gif" command="_LhlP8JdDEeKAe5mIUYJvmg"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3UJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.copy" label="Copy" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/copy_edit.gif" command="_MSJxQJdDEeKAe5mIUYJvmg"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3UZdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.paste" label="Paste" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/paste_edit.gif" command="_NRCbYJdDEeKAe5mIUYJvmg"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_AKs3UpdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3U5dDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.newfolder" label="New Folder" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/folder.gif" command="_PgYn0JdDEeKAe5mIUYJvmg"/>
+      </menus>
+      <toolbar xmi:id="_AKs3VJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.toolbar.0">
+        <children xsi:type="menu:ToolControl" xmi:id="_AKs3VZdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.opacitycontrol" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.LayerOpacityToolControl"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_AKs3VpdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.toolbar.legend" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/legend.gif" tooltip="Legend" command="_IehHkJdDEeKAe5mIUYJvmg"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_AKs3V5dDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.toolbar.info" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/information.gif" tooltip="Information" command="_JYVrgJdDEeKAe5mIUYJvmg"/>
+        <children xsi:type="menu:ToolBarSeparator" xmi:id="_AKs3WJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_AKs3WZdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.toolbar.delete" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/delete.gif" tooltip="Delete" command="_KTDAQJdDEeKAe5mIUYJvmg"/>
+      </toolbar>
+    </elements>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_B_hq4JdDEeKAe5mIUYJvmg" featurename="children" parentElementId="au.gov.ga.earthsci.application.partstack.0.0.0">
+    <elements xsi:type="advanced:Placeholder" xmi:id="_EYtIwJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.part" toBeRendered="false"/>
+  </fragments>
+</fragment:ModelFragments>

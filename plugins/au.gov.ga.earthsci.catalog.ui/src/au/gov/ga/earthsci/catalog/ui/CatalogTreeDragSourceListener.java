@@ -23,10 +23,10 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 
-import au.gov.ga.earthsci.application.parts.layer.LayerTransfer;
-import au.gov.ga.earthsci.application.parts.layer.LayerTransferData;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
+import au.gov.ga.earthsci.core.model.layer.LayerTransferData;
 
 /**
  * {@link DragSourceListener} implementation for the catalog browser tree

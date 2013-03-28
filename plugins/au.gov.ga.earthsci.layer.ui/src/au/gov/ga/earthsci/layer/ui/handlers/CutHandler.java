@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts.layer.handlers;
+package au.gov.ga.earthsci.layer.ui.handlers;
 
 import javax.inject.Named;
 
@@ -23,16 +23,16 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.Transfer;
 
-import au.gov.ga.earthsci.application.parts.layer.LayerTransfer;
-import au.gov.ga.earthsci.application.parts.layer.LayerTransferData;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
+import au.gov.ga.earthsci.core.model.layer.LayerTransferData;
 
 /**
- * Handles copy commands for the layer tree.
+ * Handles cut commands for the layer tree.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class CopyHandler
+public class CutHandler
 {
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer, Clipboard clipboard)
@@ -45,6 +45,10 @@ public class CopyHandler
 	{
 		LayerTransferData data = LayerTransferData.fromNodes(layers);
 		clipboard.setContents(new Object[] { data }, new Transfer[] { LayerTransfer.getInstance() });
+		for (ILayerTreeNode node : layers)
+		{
+			node.removeFromParent();
+		}
 	}
 
 	@CanExecute

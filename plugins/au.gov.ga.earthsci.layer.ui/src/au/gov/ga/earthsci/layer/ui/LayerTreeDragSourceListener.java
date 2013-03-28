@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.parts.layer;
+package au.gov.ga.earthsci.layer.ui;
 
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +28,8 @@ import org.eclipse.ui.part.PluginTransferData;
 
 import au.gov.ga.earthsci.application.Activator;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
+import au.gov.ga.earthsci.core.model.layer.LayerTransferData;
 
 /**
  * {@link DragSourceListener} implementation for the layer tree.
