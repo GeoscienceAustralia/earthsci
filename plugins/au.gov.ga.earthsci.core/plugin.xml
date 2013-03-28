@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="au.gov.ga.earthsci.core.retrieve.retriever" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retriever.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.hud" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.hud.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.hudLayers" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.core.hudLayers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.core.xmlLoaders.exsd"/>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retriever">

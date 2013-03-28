@@ -3,7 +3,7 @@
 <schema targetNamespace="au.gov.ga.earthsci.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="au.gov.ga.earthsci.core" id="au.gov.ga.earthsci.hud" name="Heads Up Display Layer"/>
+         <meta.schema plugin="au.gov.ga.earthsci.core" id="au.gov.ga.earthsci.core.hudLayers" name="Heads Up Display Layer"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]

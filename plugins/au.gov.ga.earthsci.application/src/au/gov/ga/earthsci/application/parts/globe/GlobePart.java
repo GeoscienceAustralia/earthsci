@@ -81,7 +81,7 @@ public class GlobePart
 {
 	private static final Logger logger = LoggerFactory.getLogger(GlobePart.class);
 	public final static String TOOLBAR_ID = "au.gov.ga.earthsci.application.part.globe.toolbar"; //$NON-NLS-1$
-	public final static String HUD_ELEMENT_TAG = "au.gov.ga.earthsci.hud"; //$NON-NLS-1$
+	public final static String HUD_ELEMENT_TAG = "au.gov.ga.earthsci.core.hudLayers"; //$NON-NLS-1$
 
 	@Inject
 	private ITreeModel model;
