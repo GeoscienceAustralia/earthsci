@@ -105,7 +105,7 @@
       </filter>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.intentResourceLocators">
+         point="au.gov.ga.earthsci.intent.resourceLocators">
       <locator
             class="au.gov.ga.earthsci.core.intent.ClasspathIntentResourceLocator"
             priority="0">
