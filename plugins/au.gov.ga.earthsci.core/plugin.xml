@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="au.gov.ga.earthsci.core.retrieve.retriever" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retriever.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.retrieve.retrievers" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retrievers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.hudLayers" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.core.hudLayers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.core.xmlLoaders.exsd"/>
    <extension
-         point="au.gov.ga.earthsci.core.retrieve.retriever">
+         point="au.gov.ga.earthsci.core.retrieve.retrievers">
       <retriever
             class="au.gov.ga.earthsci.core.retrieve.retriever.HttpRetriever">
       </retriever>

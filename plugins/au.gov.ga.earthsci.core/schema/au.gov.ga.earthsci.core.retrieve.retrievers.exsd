@@ -3,7 +3,7 @@
 <schema targetNamespace="au.gov.ga.earthsci.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="au.gov.ga.earthsci.core" id="au.gov.ga.earthsci.core.retrieve.retriever" name="Resource Retriever"/>
+         <meta.schema plugin="au.gov.ga.earthsci.core" id="au.gov.ga.earthsci.core.retrieve.retrievers" name="Resource Retrievers"/>
       </appinfo>
       <documentation>
          Allows additional IRetriever implementations to be registered with the current retrieval service.
