@@ -122,7 +122,7 @@
   <commands xmi:id="_7h3-kEf8EeKRt8yHXSHYtA" elementId="au.gov.ga.earthsci.application.command.edit" commandName="editCommand" description="Edit an item"/>
   <commands xmi:id="_TwF28F9zEeKICM2QMruAHQ" elementId="au.gov.ga.earthsci.application.command.newFolder" commandName="newFolderCommand" description="Create a new folder"/>
   <commands xmi:id="_cdOmEGXdEeKxr8W5TdCnMQ" elementId="au.gov.ga.earthsci.application.command.toggleHud" commandName="toggleHudCommand">
-    <parameters xmi:id="_hEH4sGXdEeKxr8W5TdCnMQ" elementId="au.gov.ga.earthsci.application.command.togglehud.hudid" name="hudid"/>
+    <parameters xmi:id="_hEH4sGXdEeKxr8W5TdCnMQ" elementId="au.gov.ga.earthsci.application.command.toggleHud.hudId" name="hudId"/>
   </commands>
   <commands xmi:id="_TmH-IGW_EeKPwbW-b0EtRg" elementId="au.gov.ga.earthsci.application.command.start" commandName="startCommand"/>
   <commands xmi:id="_Oay10GXMEeKPwbW-b0EtRg" elementId="au.gov.ga.earthsci.application.command.stop" commandName="stopCommand"/>

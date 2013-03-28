@@ -17,18 +17,14 @@ package au.gov.ga.earthsci.application.parts.globe.handlers;
 
 import gov.nasa.worldwind.layers.Layer;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.annotations.Optional;
-import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolItem;
-import org.eclipse.e4.ui.workbench.modeling.EModelService;
 
 import au.gov.ga.earthsci.application.parts.globe.GlobePart;
-import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
  * Handler for the toggle hud command, which toggles hud layers on/off.
@@ -37,17 +33,8 @@ import au.gov.ga.earthsci.core.worldwind.ITreeModel;
  */
 public class ToggleHudHandler
 {
-	public final static String HUD_ID_PARAMETER_ID = "au.gov.ga.earthsci.application.command.togglehud.hudid"; //$NON-NLS-1$
-	public final static String HUD_COMMAND_ID = "au.gov.ga.earthsci.application.command.togglehud"; //$NON-NLS-1$
-
-	@Inject
-	private EModelService service;
-
-	@Inject
-	private MApplication application;
-
-	@Inject
-	private ITreeModel model;
+	public final static String HUD_ID_PARAMETER_ID = "au.gov.ga.earthsci.application.command.toggleHud.hudId"; //$NON-NLS-1$
+	public final static String HUD_COMMAND_ID = "au.gov.ga.earthsci.application.command.toggleHud"; //$NON-NLS-1$
 
 	@Execute
 	public void execute(@Optional @Named(HUD_ID_PARAMETER_ID) String hudId, MPart part, MToolItem toolItem,
