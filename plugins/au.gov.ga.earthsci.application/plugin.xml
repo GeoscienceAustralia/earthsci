@@ -29,7 +29,7 @@
       </product>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.injectable">
+         point="au.gov.ga.earthsci.injectables">
       <inject
             class="au.gov.ga.earthsci.application.parts.globe.GlobeActivePartTracker"
             priority="0">

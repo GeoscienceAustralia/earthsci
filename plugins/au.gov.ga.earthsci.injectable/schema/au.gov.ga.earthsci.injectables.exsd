@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="au.gov.ga.earthsci.injectable" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="au.gov.ga.earthsci.injectables" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="au.gov.ga.earthsci.injectable" id="au.gov.ga.earthsci.injectable" name="Injectable"/>
+         <meta.schema plugin="au.gov.ga.earthsci.injectables" id="au.gov.ga.earthsci.injectables" name="Injectables"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]

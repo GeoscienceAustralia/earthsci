@@ -18,7 +18,7 @@
       </initializer>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.injectable">
+         point="au.gov.ga.earthsci.injectables">
       <bind
             binding="au.gov.ga.earthsci.catalog.ui.ICatalogBrowserController"
             class="au.gov.ga.earthsci.catalog.ui.CatalogBrowserController"

@@ -34,7 +34,7 @@
       </applicator>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.injectable">
+         point="au.gov.ga.earthsci.injectables">
       <bind
             binding="au.gov.ga.earthsci.bookmark.model.IBookmarks"
             class="au.gov.ga.earthsci.bookmark.model.Bookmarks"

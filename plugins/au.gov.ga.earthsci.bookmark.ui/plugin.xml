@@ -25,7 +25,7 @@
       </initializer>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.injectable">
+         point="au.gov.ga.earthsci.injectables">
       <bind
             binding="au.gov.ga.earthsci.bookmark.ui.IBookmarksController"
             class="au.gov.ga.earthsci.bookmark.ui.BookmarksController"

@@ -34,7 +34,7 @@
       </initializer>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.injectable">
+         point="au.gov.ga.earthsci.injectables">
       <inject
             class="au.gov.ga.earthsci.core.xml.XmlLoaderManager"
             priority="10">
