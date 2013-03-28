@@ -72,7 +72,7 @@ public class ThemeLoader
 	public static final String DEFAULT_THEME_ID_ATTRIBUTE = "themeId"; //$NON-NLS-1$
 
 	public static final String ICON_PROVIDER_EXTENSION_POINT_ID =
-			"au.gov.ga.earthsci.application.iconReplacementProvider"; //$NON-NLS-1$
+			"au.gov.ga.earthsci.application.iconReplacementProviders"; //$NON-NLS-1$
 
 	public static final String ID_TO_ICON_MAPPING_ELEMENT = "idToIconMapping"; //$NON-NLS-1$
 	public static final String ID_ATTRIBUTE = "elementID"; //$NON-NLS-1$

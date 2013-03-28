@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="defaultTheme" name="Application Default Theme" schema="schema/defaultTheme.exsd"/>
-   <extension-point id="iconReplacementProvider" name="Icon Replacement Provider" schema="schema/iconReplacementProvider.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.application.defaultTheme" name="Application Default Theme" schema="schema/defaultTheme.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.application.iconReplacementProviders" name="Icon Replacement Providers" schema="schema/iconReplacementProviders.exsd"/>
 
    <extension
          id="product"
