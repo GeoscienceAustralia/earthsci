@@ -24,17 +24,18 @@ public class LayerNodeDescriber
 {
 	public static String describe(ILayerTreeNode node)
 	{
-		String layerOrFolder = node instanceof FolderNode ? "Folder" : "Layer";
+		String layerOrFolder =
+				node instanceof FolderNode ? Messages.LayerNodeDescriber_Folder : Messages.LayerNodeDescriber_Layer;
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html>"); //$NON-NLS-1$
 		sb.append("<body>"); //$NON-NLS-1$
 		sb.append("<h1>"); //$NON-NLS-1$
 		sb.append(layerOrFolder);
 		sb.append(" "); //$NON-NLS-1$
-		sb.append("details");
+		sb.append(Messages.LayerNodeDescriber_details);
 		sb.append("</h1>"); //$NON-NLS-1$
-		appendProperty(sb, "Name", node.getName());
-		appendProperty(sb, "Label", node.getLabel());
+		appendProperty(sb, Messages.LayerNodeDescriber_Name, node.getName());
+		appendProperty(sb, Messages.LayerNodeDescriber_Label, node.getLabel());
 		if (node instanceof LayerNode)
 		{
 			LayerNode layer = (LayerNode) node;
@@ -43,7 +44,7 @@ public class LayerNodeDescriber
 		if (node.getLegendURL() != null)
 		{
 			String url = node.getLegendURL().toString();
-			appendProperty(sb, "Legend", "<a href=\"" + url + "\">" + url + "</a>"); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			appendProperty(sb, Messages.LayerNodeDescriber_Legend, "<a href=\"" + url + "\">" + url + "</a>"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		}
 		sb.append("</body>"); //$NON-NLS-1$
 		sb.append("</html>"); //$NON-NLS-1$

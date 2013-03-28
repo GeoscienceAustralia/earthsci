@@ -25,20 +25,20 @@ public class ExceptionFormatter
 	public static String toHTML(Throwable t)
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append("<html><body>");
+		sb.append("<html><body>"); //$NON-NLS-1$
 		sb.append(t.getClass());
-		sb.append(": ");
+		sb.append(": "); //$NON-NLS-1$
 		sb.append(t.getLocalizedMessage());
 
 		StackTraceElement[] elements = t.getStackTrace();
 		for (StackTraceElement element : elements)
 		{
-			sb.append("<br/>");
-			sb.append("&nbsp;&nbsp;&nbsp;&nbsp;");
+			sb.append("<br/>"); //$NON-NLS-1$
+			sb.append("&nbsp;&nbsp;&nbsp;&nbsp;"); //$NON-NLS-1$
 			sb.append(element.toString());
 
 		}
-		sb.append("</body></html>");
+		sb.append("</body></html>"); //$NON-NLS-1$
 		return sb.toString();
 	}
 }

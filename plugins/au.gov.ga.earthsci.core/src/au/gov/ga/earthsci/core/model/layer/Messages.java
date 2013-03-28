@@ -24,12 +24,19 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.core.model.layer.messages"; //$NON-NLS-1$
+	public static String DefaultLayers_DefaultLabel;
 	public static String IntentLayerLoader_FailedLoadNotificationDescription;
 	public static String IntentLayerLoader_FailedLoadNotificationTitle;
 	public static String IntentLayerLoader_UnknownLayerMessage;
 	public static String IntentLayerLoader_UnknownLayerTitle;
 	public static String LayerNode_FailedCopyNotificationDescription;
 	public static String LayerNode_FailedCopyNotificationTitle;
+	public static String LayerNodeDescriber_details;
+	public static String LayerNodeDescriber_Folder;
+	public static String LayerNodeDescriber_Label;
+	public static String LayerNodeDescriber_Layer;
+	public static String LayerNodeDescriber_Legend;
+	public static String LayerNodeDescriber_Name;
 	public static String URILayerLoadJob_FailedLoadNotificationDescription;
 	public static String URILayerLoadJob_FailedLoadNotificationTitle;
 	static

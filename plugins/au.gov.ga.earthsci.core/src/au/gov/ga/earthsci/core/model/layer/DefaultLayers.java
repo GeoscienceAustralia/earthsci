@@ -59,7 +59,7 @@ public class DefaultLayers
 	public static FolderNode getLayers()
 	{
 		FolderNode folder = new FolderNode();
-		folder.setName("Default");
+		folder.setName(Messages.DefaultLayers_DefaultLabel);
 		LayerNode[] nodes = getLayerNodes();
 		for (LayerNode node : nodes)
 		{
