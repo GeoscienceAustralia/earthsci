@@ -47,9 +47,9 @@ import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil.Callback;
 @Singleton
 public class NotificationManager
 {
-	public static final String NOTIFICATION_RECEIVER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.receiver"; //$NON-NLS-1$
+	public static final String NOTIFICATION_RECEIVER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.notification.receivers"; //$NON-NLS-1$
 	public static final String NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID =
-			"au.gov.ga.earthsci.notification.categoryProvider"; //$NON-NLS-1$
+			"au.gov.ga.earthsci.notification.categoryProviders"; //$NON-NLS-1$
 	public static final String NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
 	private static Set<INotificationReceiver> receivers = new LinkedHashSet<INotificationReceiver>();

@@ -10,7 +10,7 @@
       </page>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.notification.receiver">
+         point="au.gov.ga.earthsci.notification.receivers">
       <receiver
             class="au.gov.ga.earthsci.notification.ui.dialog.DialogNotificationReceiver">
       </receiver>

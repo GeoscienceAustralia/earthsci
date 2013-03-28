@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="au.gov.ga.earthsci.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="au.gov.ga.earthsci.notification" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="au.gov.ga.earthsci.core" id="au.gov.ga.earthsci.notification.receiver" name="Notification Receiver"/>
+         <meta.schema plugin="au.gov.ga.earthsci.notification" id="au.gov.ga.earthsci.notification.categoryProviders" name="Notification Category Providers"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         Allows services to be registered that are able to provide additional NotificationCategorys.
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="receiver"/>
+            <element ref="provider"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="receiver">
+   <element name="provider">
       <complexType>
          <attribute name="class" type="string">
             <annotation>
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.notification.INotificationReceiver"/>
+                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.notification.INotificationCategoryProvider"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -85,7 +85,7 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         Services should implement the INotificationCategoryProvider service interface.
       </documentation>
    </annotation>
 
