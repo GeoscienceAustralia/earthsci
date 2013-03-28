@@ -64,7 +64,7 @@ Plugins can specify one or more mappings and/or properties files.
          </documentation>
       </annotation>
       <complexType>
-         <attribute name="elementID" type="string" use="required">
+         <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
                   The ID of the element for which the mapping is to apply.

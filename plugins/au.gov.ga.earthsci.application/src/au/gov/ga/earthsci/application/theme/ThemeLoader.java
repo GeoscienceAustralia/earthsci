@@ -69,13 +69,13 @@ public class ThemeLoader
 	public static final String DEFAULT_ICONS_PROPERTIES = "icons/icons.properties"; //$NON-NLS-1$
 
 	public static final String DEFAULT_THEME_EXTENSION_POINT_ID = "au.gov.ga.earthsci.application.defaultTheme"; //$NON-NLS-1$
-	public static final String DEFAULT_THEME_ID_ATTRIBUTE = "themeId"; //$NON-NLS-1$
+	public static final String DEFAULT_THEME_ID_ATTRIBUTE = "id"; //$NON-NLS-1$
 
 	public static final String ICON_PROVIDER_EXTENSION_POINT_ID =
 			"au.gov.ga.earthsci.application.iconReplacementProviders"; //$NON-NLS-1$
 
 	public static final String ID_TO_ICON_MAPPING_ELEMENT = "idToIconMapping"; //$NON-NLS-1$
-	public static final String ID_ATTRIBUTE = "elementID"; //$NON-NLS-1$
+	public static final String ID_ATTRIBUTE = "id"; //$NON-NLS-1$
 	public static final String ICON_ATTRIBUTE = "icon"; //$NON-NLS-1$
 
 	public static final String ID_TO_ICON_PROPERTIES_ELEMENT = "idToIconProperties"; //$NON-NLS-1$
