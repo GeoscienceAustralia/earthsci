@@ -12,7 +12,7 @@
       </inject>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.dispatchFilters">
+         point="au.gov.ga.earthsci.intent.dispatchFilters">
       <filter
             class="au.gov.ga.earthsci.catalog.CatalogTreeNodeDispatchHandler"
             name="Catalog"

@@ -58,7 +58,7 @@ public class Dispatcher
 		return instance;
 	}
 
-	private static final String DISPATCH_FILTER_ID = "au.gov.ga.earthsci.dispatchFilters"; //$NON-NLS-1$
+	private static final String DISPATCH_FILTER_ID = "au.gov.ga.earthsci.intent.dispatchFilters"; //$NON-NLS-1$
 	private static final Logger logger = LoggerFactory.getLogger(Dispatcher.class);
 
 	//filters, sorted descending by priority
