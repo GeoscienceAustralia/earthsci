@@ -62,7 +62,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.bookmark.part.editor.IBookmarkPropertyEditor"/>
+                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.bookmark.ui.editor.IBookmarkPropertyEditor"/>
                </appinfo>
             </annotation>
          </attribute>
