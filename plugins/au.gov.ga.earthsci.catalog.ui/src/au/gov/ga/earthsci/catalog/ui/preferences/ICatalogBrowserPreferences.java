@@ -25,9 +25,9 @@ import au.gov.ga.earthsci.application.util.UserActionPreference;
  */
 public interface ICatalogBrowserPreferences
 {
-	String QUALIFIER_ID = "au.gov.ga.earthsci.catalog"; //$NON-NLS-1$
-	String ADD_NODE_STRUCTURE_MODE = "au.gov.ga.earthsci.catalog.preferences.addNodeStructure"; //$NON-NLS-1$
-	String DELETE_EMPTY_FOLDERS_MODE = "au.gov.ga.earthsci.catalog.preferences.deleteEmptyFolders"; //$NON-NLS-1$
+	String QUALIFIER_ID = "au.gov.ga.earthsci.catalog.ui"; //$NON-NLS-1$
+	String ADD_NODE_STRUCTURE_MODE = "au.gov.ga.earthsci.catalog.ui.preferences.addNodeStructure"; //$NON-NLS-1$
+	String DELETE_EMPTY_FOLDERS_MODE = "au.gov.ga.earthsci.catalog.ui.preferences.deleteEmptyFolders"; //$NON-NLS-1$
 
 	/**
 	 * Return the user's preference for adding the complete tree structure when
