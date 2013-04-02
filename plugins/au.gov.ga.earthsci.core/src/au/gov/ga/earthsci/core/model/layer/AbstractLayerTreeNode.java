@@ -23,6 +23,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -81,8 +82,8 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		firePropertyChange("name", getName(), this.name = name); //$NON-NLS-1$
 	}
 
-	@Override
 	@Persistent(attribute = true)
+	@Override
 	public String getLabel()
 	{
 		return label;
@@ -189,11 +190,16 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		firePropertyChange("iconURL", getIconURL(), this.iconURL = iconURL); //$NON-NLS-1$
 	}
 
-	@Persistent
-	@Override
-	public List<ILayerTreeNode> getChildren()
+	@Persistent(name = "children")
+	public ILayerTreeNode[] getChildrenAsArray()
 	{
-		return super.getChildren();
+		List<ILayerTreeNode> children = getChildren();
+		return getChildren().toArray(new ILayerTreeNode[children.size()]);
+	}
+
+	public void setChildrenAsArray(ILayerTreeNode[] children)
+	{
+		setChildren(Arrays.asList(children));
 	}
 
 	@Override
