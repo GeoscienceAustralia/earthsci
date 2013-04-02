@@ -32,7 +32,6 @@ import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
@@ -61,26 +60,29 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	}
 
 	@Override
-	public boolean allExistInLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
+	public boolean allExistInLayerModel(ICatalogTreeNode... nodes)
 	{
 		if (nodes == null || nodes.length == 0)
 		{
 			return true;
 		}
 		boolean allExistInModel = true;
-		for (ITreeNode<ICatalogTreeNode> n : nodes)
+		for (ICatalogTreeNode n : nodes)
 		{
-			if (n == null || n.getValue() == null)
+			if (n == null)
 			{
 				continue;
 			}
-			if (n.getValue().isLayerNode())
+			if (n.isLayerNode())
 			{
-				allExistInModel = allExistInModel && existsInLayerModel(n.getValue().getLayerURI());
+				allExistInModel = allExistInModel && existsInLayerModel(n.getLayerURI());
 			}
 			if (n.getChildCount() > 0)
 			{
-				allExistInModel = allExistInModel && allExistInLayerModel(n.getChildren());
+				allExistInModel =
+						allExistInModel
+								&& allExistInLayerModel(n.getChildren()
+										.toArray(new ICatalogTreeNode[n.getChildCount()]));
 			}
 			if (!allExistInModel)
 			{
@@ -91,26 +93,29 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	}
 
 	@Override
-	public boolean anyExistInLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
+	public boolean anyExistInLayerModel(ICatalogTreeNode... nodes)
 	{
 		if (nodes == null || nodes.length == 0)
 		{
 			return false;
 		}
 		boolean anyExistInModel = false;
-		for (ITreeNode<ICatalogTreeNode> n : nodes)
+		for (ICatalogTreeNode n : nodes)
 		{
-			if (n == null || n.getValue() == null)
+			if (n == null)
 			{
 				continue;
 			}
-			if (n != null && n.getValue() != null && n.getValue().isLayerNode())
+			if (n != null && n.isLayerNode())
 			{
-				anyExistInModel = anyExistInModel || existsInLayerModel(n.getValue().getLayerURI());
+				anyExistInModel = anyExistInModel || existsInLayerModel(n.getLayerURI());
 			}
 			if (n.getChildCount() > 0)
 			{
-				anyExistInModel = anyExistInModel || anyExistInLayerModel(n.getChildren());
+				anyExistInModel =
+						anyExistInModel
+								|| anyExistInLayerModel(n.getChildren()
+										.toArray(new ICatalogTreeNode[n.getChildCount()]));
 			}
 			if (anyExistInModel)
 			{
@@ -121,15 +126,15 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	}
 
 	@Override
-	public boolean areAllLayerNodes(ITreeNode<ICatalogTreeNode>... nodes)
+	public boolean areAllLayerNodes(ICatalogTreeNode... nodes)
 	{
 		if (nodes == null)
 		{
 			return true;
 		}
-		for (ITreeNode<ICatalogTreeNode> node : nodes)
+		for (ICatalogTreeNode node : nodes)
 		{
-			if (node != null && !node.getValue().isLayerNode())
+			if (node != null && !node.isLayerNode())
 			{
 				return false;
 			}
@@ -138,10 +143,10 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	}
 
 	@Override
-	public void addToLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
+	public void addToLayerModel(ICatalogTreeNode... nodes)
 	{
 		boolean fullNodePathRequiredOnAdd = isFullNodePathRequiredOnAdd();
-		for (ITreeNode<ICatalogTreeNode> node : nodes)
+		for (ICatalogTreeNode node : nodes)
 		{
 			ILayerTreeNode parent = fullNodePathRequiredOnAdd ? createNodePath(node) : currentLayerModel.getRootNode();
 			insertIntoLayerModel(parent, node);
@@ -165,14 +170,14 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	 *         should be inserted. This may be an existing node, or a new node
 	 *         as required.
 	 */
-	private ILayerTreeNode createNodePath(ITreeNode<ICatalogTreeNode> node)
+	private ILayerTreeNode createNodePath(ICatalogTreeNode node)
 	{
 		if (node.isRoot())
 		{
 			return currentLayerModel.getRootNode();
 		}
 
-		ILayerTreeNode[] folders = currentLayerModel.getRootNode().getNodesForURI(node.getValue().getURI());
+		ILayerTreeNode[] folders = currentLayerModel.getRootNode().getNodesForURI(node.getURI());
 		if (folders.length != 0)
 		{
 			return folders[0];
@@ -180,9 +185,9 @@ public class CatalogBrowserController implements ICatalogBrowserController
 
 		ILayerTreeNode parent = createNodePath(node.getParent());
 
-		if (!node.getValue().isLayerNode())
+		if (!node.isLayerNode())
 		{
-			ILayerTreeNode folder = createFolderNode(node.getValue());
+			ILayerTreeNode folder = createFolderNode(node);
 			parent.add(folder);
 			return folder;
 		}
@@ -199,21 +204,19 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	 * @param node
 	 *            The catalog node to insert
 	 */
-	private void insertIntoLayerModel(ILayerTreeNode parent, ITreeNode<ICatalogTreeNode> node)
+	private void insertIntoLayerModel(ILayerTreeNode parent, ICatalogTreeNode node)
 	{
-		ICatalogTreeNode catalogTreeNode = node.getValue();
-
-		if (catalogTreeNode.isLayerNode())
+		if (node.isLayerNode())
 		{
-			LayerNode layer = createLayerNode(catalogTreeNode);
+			LayerNode layer = createLayerNode(node);
 			parent.add(layer);
 			IntentLayerLoader.load(layer, context);
 		}
 		else
 		{
-			FolderNode folder = createFolderNode(catalogTreeNode);
+			FolderNode folder = createFolderNode(node);
 			parent.add(folder);
-			for (ITreeNode<ICatalogTreeNode> child : catalogTreeNode.getChildren())
+			for (ICatalogTreeNode child : node.getChildren())
 			{
 				insertIntoLayerModel(folder, child);
 			}
@@ -277,17 +280,16 @@ public class CatalogBrowserController implements ICatalogBrowserController
 	}
 
 	@Override
-	public void removeFromLayerModel(ITreeNode<ICatalogTreeNode>... nodes)
+	public void removeFromLayerModel(ICatalogTreeNode... nodes)
 	{
 		Boolean deleteEmptyFolders = null;
-		for (ITreeNode<ICatalogTreeNode> node : nodes)
+		for (ICatalogTreeNode node : nodes)
 		{
-			if (node.getValue().isLayerNode())
+			if (node.isLayerNode())
 			{
-				for (ILayerTreeNode layer : currentLayerModel.getRootNode().getNodesForURI(
-						node.getValue().getLayerURI()))
+				for (ILayerTreeNode layer : currentLayerModel.getRootNode().getNodesForURI(node.getLayerURI()))
 				{
-					ITreeNode<ILayerTreeNode> parent = layer.getParent();
+					ILayerTreeNode parent = layer.getParent();
 					layer.removeFromParent();
 
 					// If the removal will create an empty folder, determine whether to remove it
@@ -307,7 +309,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		}
 	}
 
-	private void deleteEmptyFolders(ITreeNode<ILayerTreeNode> node)
+	private void deleteEmptyFolders(ILayerTreeNode node)
 	{
 		if (node.isRoot())
 		{

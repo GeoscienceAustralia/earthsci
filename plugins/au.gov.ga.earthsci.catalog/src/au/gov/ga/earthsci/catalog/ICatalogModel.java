@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog;
 
+import java.util.List;
+
 /**
  * Represents the model of the available catalogs.
  * <p/>
@@ -46,7 +48,7 @@ public interface ICatalogModel
 	 * 
 	 * @return The ordered list of top-level catalogs in this model
 	 */
-	ICatalogTreeNode[] getTopLevelCatalogs();
+	List<ICatalogTreeNode> getTopLevelCatalogs();
 
 	/**
 	 * Add the provided catalog tree as a top-level catalog to this model.
@@ -55,14 +57,6 @@ public interface ICatalogModel
 	 *            The root node of the catalog tree to add to this model.
 	 */
 	void addTopLevelCatalog(ICatalogTreeNode catalog);
-
-	/**
-	 * Add the provided catalog tree nodes as top-level catalogs to this model.
-	 * 
-	 * @param catalogs
-	 *            The root nodes of the catalog tree to add to this model.
-	 */
-	void addTopLevelCatalogs(ICatalogTreeNode[] catalogs);
 
 	/**
 	 * Add the provided catalog tree node at the given index. If index is out of

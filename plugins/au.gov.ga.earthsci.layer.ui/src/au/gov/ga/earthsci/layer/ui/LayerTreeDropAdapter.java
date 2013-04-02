@@ -77,7 +77,7 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 			else
 			{
 				index = location == LOCATION_BEFORE ? target.index() : target.index() + 1;
-				target = target.getParent().getValue();
+				target = target.getParent();
 			}
 		}
 

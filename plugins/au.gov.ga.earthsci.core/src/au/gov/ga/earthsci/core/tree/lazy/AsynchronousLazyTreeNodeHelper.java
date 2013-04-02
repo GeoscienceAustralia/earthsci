@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.tree.lazy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -34,7 +36,7 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class AsynchronousLazyTreeNodeHelper<E>
+public class AsynchronousLazyTreeNodeHelper<E extends ITreeNode<E>>
 {
 	private final IAsynchronousLazyTreeNode<E> node;
 	private final AtomicBoolean loaded = new AtomicBoolean(false);
@@ -90,10 +92,10 @@ public class AsynchronousLazyTreeNodeHelper<E>
 	/**
 	 * @see ILazyTreeNode#getDisplayChildren()
 	 */
-	public ITreeNode<E>[] getDisplayChildren()
+	public List<E> getDisplayChildren()
 	{
-		ITreeNode<E>[] children = node.getChildren();
-		ITreeNode<E> firstNode = null;
+		List<E> children = node.getChildren();
+		E firstNode = null;
 		if (error != null)
 		{
 			firstNode = node.getErrorNode(error);
@@ -104,10 +106,8 @@ public class AsynchronousLazyTreeNodeHelper<E>
 		}
 		if (firstNode != null)
 		{
-			@SuppressWarnings("unchecked")
-			ITreeNode<E>[] newChildren = new ITreeNode[children.length + 1];
-			newChildren[0] = firstNode;
-			System.arraycopy(children, 0, newChildren, 1, children.length);
+			List<E> newChildren = new ArrayList<E>(children);
+			newChildren.add(0, firstNode);
 			children = newChildren;
 		}
 		return children;

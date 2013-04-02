@@ -14,9 +14,7 @@ import org.junit.Test;
 
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.catalog.ui.CatalogBrowserController;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
@@ -66,14 +64,14 @@ public class CatalogBrowserControllerTest
 	@Test
 	public void testAreAllLayerNodesWithNull()
 	{
-		ITreeNode<ICatalogTreeNode>[] nodes = null;
+		ICatalogTreeNode[] nodes = null;
 		assertTrue(classUnderTest.areAllLayerNodes(nodes));
 	}
 
 	@Test
 	public void testAreAllLayerNodesWithEmpty()
 	{
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[0];
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[0];
 		assertTrue(classUnderTest.areAllLayerNodes(nodes));
 	}
 
@@ -83,7 +81,7 @@ public class CatalogBrowserControllerTest
 		DummyCatalogNode node0 = new DummyCatalogNode();
 		node0.layerNode = true;
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0 };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0 };
 
 		assertTrue(classUnderTest.areAllLayerNodes(nodes));
 	}
@@ -94,7 +92,7 @@ public class CatalogBrowserControllerTest
 		DummyCatalogNode node0 = new DummyCatalogNode();
 		node0.layerNode = false;
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0 };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0 };
 
 		assertFalse(classUnderTest.areAllLayerNodes(nodes));
 	}
@@ -112,7 +110,7 @@ public class CatalogBrowserControllerTest
 		node2.layerNode = true;
 		node3.layerNode = true;
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0, node1, node2, node3 };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node2, node3 };
 
 		assertTrue(classUnderTest.areAllLayerNodes(nodes));
 	}
@@ -129,7 +127,7 @@ public class CatalogBrowserControllerTest
 		node1.layerNode = true;
 		node3.layerNode = true;
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0, node1, node2, node3 };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node2, node3 };
 
 		assertTrue(classUnderTest.areAllLayerNodes(nodes));
 	}
@@ -147,7 +145,7 @@ public class CatalogBrowserControllerTest
 		node2.layerNode = false;
 		node3.layerNode = true;
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0, node1, node2, node3 };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node2, node3 };
 
 		assertFalse(classUnderTest.areAllLayerNodes(nodes));
 	}
@@ -164,7 +162,7 @@ public class CatalogBrowserControllerTest
 		node2.layerNode = false;
 		node3.layerNode = true;
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0, node1, node2, node3 };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node2, node3 };
 
 		assertFalse(classUnderTest.areAllLayerNodes(nodes));
 	}
@@ -176,7 +174,7 @@ public class CatalogBrowserControllerTest
 	@Test
 	public void testAllExistInLayerModelWithNull()
 	{
-		ITreeNode<ICatalogTreeNode>[] nodes = null;
+		ICatalogTreeNode[] nodes = null;
 
 		assertTrue(classUnderTest.allExistInLayerModel(nodes));
 	}
@@ -184,7 +182,7 @@ public class CatalogBrowserControllerTest
 	@Test
 	public void testAllExistInLayerModelWithEmpty()
 	{
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[0];
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[0];
 
 		assertTrue(classUnderTest.allExistInLayerModel(nodes));
 	}
@@ -196,7 +194,7 @@ public class CatalogBrowserControllerTest
 		node0.layerNode = true;
 		node0.layerURI = new URI("file://layer0");
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0 };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0 };
 
 		mockContext.checking(new Expectations()
 		{
@@ -218,7 +216,7 @@ public class CatalogBrowserControllerTest
 		node0.layerNode = true;
 		node0.layerURI = new URI("file://layer0");
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0 };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0 };
 
 		mockContext.checking(new Expectations()
 		{
@@ -249,7 +247,7 @@ public class CatalogBrowserControllerTest
 
 		node1.add(node10);
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0, node1, node10, null };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node10, null };
 
 		mockContext.checking(new Expectations()
 		{
@@ -282,7 +280,7 @@ public class CatalogBrowserControllerTest
 
 		node1.add(node10);
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0, node1, node10, null };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node10, null };
 
 		mockContext.checking(new Expectations()
 		{
@@ -306,7 +304,7 @@ public class CatalogBrowserControllerTest
 	@Test
 	public void testAnyExistInLayerModelWithNull()
 	{
-		ITreeNode<ICatalogTreeNode>[] nodes = null;
+		ICatalogTreeNode[] nodes = null;
 
 		assertFalse(classUnderTest.anyExistInLayerModel(nodes));
 	}
@@ -314,7 +312,7 @@ public class CatalogBrowserControllerTest
 	@Test
 	public void testAnyExistInLayerModelWithEmpty()
 	{
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[0];
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[0];
 
 		assertFalse(classUnderTest.anyExistInLayerModel(nodes));
 	}
@@ -326,7 +324,7 @@ public class CatalogBrowserControllerTest
 		node0.layerNode = true;
 		node0.layerURI = new URI("file://layer0");
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0 };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0 };
 
 		mockContext.checking(new Expectations()
 		{
@@ -348,7 +346,7 @@ public class CatalogBrowserControllerTest
 		node0.layerNode = true;
 		node0.layerURI = new URI("file://layer0");
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0 };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0 };
 
 		mockContext.checking(new Expectations()
 		{
@@ -379,7 +377,7 @@ public class CatalogBrowserControllerTest
 
 		node1.add(node10);
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0, node1, node10, null };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node10, null };
 
 		mockContext.checking(new Expectations()
 		{
@@ -412,7 +410,7 @@ public class CatalogBrowserControllerTest
 
 		node1.add(node10);
 
-		ITreeNode<ICatalogTreeNode>[] nodes = new ITreeNode[] { node0, node1, node10, null };
+		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node10, null };
 
 		mockContext.checking(new Expectations()
 		{

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.tree;
 
+import java.util.List;
+
 import au.gov.ga.earthsci.common.util.ITreePropertyChangeBean;
 
 /**
@@ -23,14 +25,40 @@ import au.gov.ga.earthsci.common.util.ITreePropertyChangeBean;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  * 
  * @param <E>
- *            Type wrapped by this tree node.
+ *            Type of this tree node. All nodes in the tree hierarchy must be
+ *            instances of this type, as well as instances of ITreeNode.
  */
-public interface ITreeNode<E> extends ITreePropertyChangeBean
+public interface ITreeNode<E extends ITreeNode<E>> extends ITreePropertyChangeBean
 {
 	/**
-	 * @return Value at this node.
+	 * Genericised value of <code>this</code>.
+	 * <p/>
+	 * To get this value, either the generic class must be passed to an
+	 * implementor's constructor so that <code>this</code> can be cast using the
+	 * {@link Class#cast(Object)} method, or an unchecked cast must be used.
+	 * This is unfortunate but unavoidable due to the CRTP nature of ITreeNode.
+	 * <p/>
+	 * Example constructor implementation:
+	 * 
+	 * <pre>
+	 * public class TreeNode&lt;E extends ITreeNode&lt;E&gt;&gt; implements ITreeNode&lt;E&gt;
+	 * {
+	 * 	protected final E me;
+	 * ...
+	 * 	protected TreeNode(Class&lt;E&gt; genericClass)
+	 * 	{
+	 * 		if (!genericClass.isInstance(this))
+	 * 		{
+	 * 			throw new IllegalStateException();
+	 * 		}
+	 * 		me = genericClass.cast(this);
+	 * 	}
+	 * }
+	 * </pre>
+	 * 
+	 * @return <code>this</code>
 	 */
-	E getValue();
+	E me();
 
 	/**
 	 * @return Is this node the root node (has no parent)?
@@ -41,7 +69,7 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	 * @return Parent of this node (returns null if this node is the root).
 	 */
 	@Override
-	ITreeNode<E> getParent();
+	E getParent();
 
 	/**
 	 * @return True if this element has the given parent somewhere in it's path
@@ -58,7 +86,7 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	 * @param parent
 	 * @param indexInParent
 	 */
-	void setParent(ITreeNode<E> parent, int indexInParent);
+	void setParent(E parent, int indexInParent);
 
 	/**
 	 * @return Does this node have children?
@@ -68,7 +96,7 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	/**
 	 * @return This node's children.
 	 */
-	ITreeNode<E>[] getChildren();
+	List<E> getChildren();
 
 	/**
 	 * @return Number of children of this node.
@@ -79,7 +107,7 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	 * @param index
 	 * @return This node's child at <code>index</code>.
 	 */
-	ITreeNode<E> getChild(int index);
+	E getChild(int index);
 
 	/**
 	 * @return Index of this node in it's parent (-1 if this node is the root).
@@ -99,7 +127,7 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	 * @param child
 	 *            Child to add.
 	 */
-	void add(ITreeNode<E> child);
+	void add(E child);
 
 	/**
 	 * Add a child to this node at the specified index. If the specified child
@@ -110,7 +138,7 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	 * @param child
 	 *            Child to add.
 	 */
-	void add(int index, ITreeNode<E> child);
+	void add(int index, E child);
 
 	/**
 	 * Remove the specified child from this node.
@@ -119,12 +147,7 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	 *            Child to remove.
 	 * @return True if the child was found and removed, false otherwise.
 	 */
-	boolean remove(ITreeNode<E> child);
-
-	/**
-	 * Remove all children from this node
-	 */
-	void removeAll();
+	boolean remove(E child);
 
 	/**
 	 * Remove the child at the specified index.
@@ -133,7 +156,12 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	 *            Index of the child to remove.
 	 * @return Child removed.
 	 */
-	ITreeNode<E> remove(int index);
+	E remove(int index);
+
+	/**
+	 * Remove all children from this node
+	 */
+	void removeAll();
 
 	/**
 	 * Remove this node from its parent (no-op if this node is the root).
@@ -149,7 +177,7 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	 * @param newIndex
 	 *            The new index of the child
 	 */
-	void moveChild(ITreeNode<E> child, int newIndex);
+	void moveChild(E child, int newIndex);
 
 	/**
 	 * Replace the child node with a new child node at the same index.
@@ -160,13 +188,13 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	 *            New child node to insert
 	 * @return True if the child was found and replaced, false otherwise.
 	 */
-	boolean replaceChild(ITreeNode<E> child, ITreeNode<E> newChild);
+	boolean replaceChild(E child, E newChild);
 
 	/**
-	 * @return Array containing all nodes from the root (at index 0) to this
+	 * @return List containing all nodes from the root (at index 0) to this
 	 *         node.
 	 */
-	ITreeNode<E>[] pathToRoot();
+	List<E> pathToRoot();
 
 	/**
 	 * @return Array containing the index of each node from the root to this
@@ -177,5 +205,5 @@ public interface ITreeNode<E> extends ITreePropertyChangeBean
 	/**
 	 * @return The root node of this node.
 	 */
-	ITreeNode<E> getRoot();
+	E getRoot();
 }

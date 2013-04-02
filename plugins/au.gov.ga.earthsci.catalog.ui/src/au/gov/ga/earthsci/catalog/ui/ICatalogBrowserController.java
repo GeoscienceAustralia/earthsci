@@ -19,7 +19,6 @@ import java.net.URI;
 
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 
 /**
@@ -54,7 +53,7 @@ public interface ICatalogBrowserController
 	 * @return <code>true</code> if all of the layer nodes in the provided trees
 	 *         exist in the the layer model; <code>false</code> otherwise.
 	 */
-	boolean allExistInLayerModel(ITreeNode<ICatalogTreeNode>... nodes);
+	boolean allExistInLayerModel(ICatalogTreeNode... nodes);
 
 	/**
 	 * Determine whether <em>any</em> of the nodes in the provided list (and
@@ -67,7 +66,7 @@ public interface ICatalogBrowserController
 	 * @return <code>true</code> if any of the layer nodes in the provided trees
 	 *         exist in the the layer model; <code>false</code> otherwise.
 	 */
-	boolean anyExistInLayerModel(ITreeNode<ICatalogTreeNode>... nodes);
+	boolean anyExistInLayerModel(ICatalogTreeNode... nodes);
 
 	/**
 	 * Add the provided catalog nodes (and their children, as appropriate) to
@@ -76,7 +75,7 @@ public interface ICatalogBrowserController
 	 * @param nodes
 	 *            The nodes to add to the layer model
 	 */
-	void addToLayerModel(ITreeNode<ICatalogTreeNode>... nodes);
+	void addToLayerModel(ICatalogTreeNode... nodes);
 
 	/**
 	 * Remove the provided layer nodes from the current layer model
@@ -84,7 +83,7 @@ public interface ICatalogBrowserController
 	 * @param nodes
 	 *            the nodes to remove from the layer model
 	 */
-	void removeFromLayerModel(ITreeNode<ICatalogTreeNode>... nodes);
+	void removeFromLayerModel(ICatalogTreeNode... nodes);
 
 	/**
 	 * Determine whether all of the provided nodes are layer nodes (e.g. ones
@@ -96,7 +95,7 @@ public interface ICatalogBrowserController
 	 * @return <code>true</code> if all nodes are layer nodes;
 	 *         <code>false</code> otherwise.
 	 */
-	boolean areAllLayerNodes(ITreeNode<ICatalogTreeNode>... nodes);
+	boolean areAllLayerNodes(ICatalogTreeNode... nodes);
 
 	/**
 	 * Create and return an {@link ILayerTreeNode} that is the equivalent of the

@@ -123,7 +123,7 @@ public class CatalogPersisterTest
 		assertNotNull(catalogModel);
 		assertNotNull(catalogModel.getRoot());
 		assertNotNull(catalogModel.getTopLevelCatalogs());
-		assertEquals(0, catalogModel.getTopLevelCatalogs().length);
+		assertEquals(0, catalogModel.getTopLevelCatalogs().size());
 	}
 
 	@Test
@@ -142,9 +142,9 @@ public class CatalogPersisterTest
 		assertNotNull(catalogModel);
 		assertNotNull(catalogModel.getRoot());
 		assertNotNull(catalogModel.getTopLevelCatalogs());
-		assertEquals(1, catalogModel.getTopLevelCatalogs().length);
+		assertEquals(1, catalogModel.getTopLevelCatalogs().size());
 
-		assertEquals(catalog.toExternalForm(), catalogModel.getTopLevelCatalogs()[0].getURI().toASCIIString());
+		assertEquals(catalog.toExternalForm(), catalogModel.getTopLevelCatalogs().get(0).getURI().toASCIIString());
 	}
 
 	private static String stripNewLineIndents(String s)

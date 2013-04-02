@@ -17,8 +17,8 @@ public abstract class AbstractCatalogTreeNode extends AbstractTreeNode<ICatalogT
 
 	public AbstractCatalogTreeNode(URI nodeURI)
 	{
+		super(ICatalogTreeNode.class);
 		this.nodeURI = nodeURI;
-		setValue(this);
 	}
 
 	@Override

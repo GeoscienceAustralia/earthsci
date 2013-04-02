@@ -3,13 +3,13 @@ package au.gov.ga.earthsci.catalog.dataset;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
 import au.gov.ga.earthsci.catalog.ErrorCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.LoadingCatalogTreeNode;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.tree.ILazyTreeNodeCallback;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.tree.lazy.IRetrievalLazyTreeNode;
 import au.gov.ga.earthsci.core.tree.lazy.RetrievalLazyTreeNodeHelper;
 
@@ -46,7 +46,7 @@ public class DatasetLinkCatalogTreeNode extends DatasetCatalogTreeNode implement
 	}
 
 	@Override
-	public ITreeNode<ICatalogTreeNode>[] getDisplayChildren()
+	public List<ICatalogTreeNode> getDisplayChildren()
 	{
 		return helper.getDisplayChildren();
 	}
@@ -58,7 +58,7 @@ public class DatasetLinkCatalogTreeNode extends DatasetCatalogTreeNode implement
 	}
 
 	@Override
-	public ITreeNode<ICatalogTreeNode>[] handleRetrieval(IRetrievalData data, URL url) throws Exception
+	public List<ICatalogTreeNode> handleRetrieval(IRetrievalData data, URL url) throws Exception
 	{
 		InputStream is = data.getInputStream();
 		try
@@ -73,13 +73,13 @@ public class DatasetLinkCatalogTreeNode extends DatasetCatalogTreeNode implement
 	}
 
 	@Override
-	public ITreeNode<ICatalogTreeNode> getLoadingNode()
+	public ICatalogTreeNode getLoadingNode()
 	{
 		return new LoadingCatalogTreeNode();
 	}
 
 	@Override
-	public ITreeNode<ICatalogTreeNode> getErrorNode(Throwable error)
+	public ICatalogTreeNode getErrorNode(Throwable error)
 	{
 		return new ErrorCatalogTreeNode(error);
 	}

@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -59,7 +60,6 @@ import au.gov.ga.earthsci.common.ui.viewers.IControlProvider;
 import au.gov.ga.earthsci.common.util.ILabeled;
 import au.gov.ga.earthsci.common.util.INamed;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
 /**
@@ -292,22 +292,21 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 			@Override
 			public void propertyChange(PropertyChangeEvent evt)
 			{
-				ITreeNode<?>[] oldChildren = (ITreeNode<?>[]) evt.getOldValue();
-				ITreeNode<?>[] newChildren = (ITreeNode<?>[]) evt.getNewValue();
+				List<?> oldChildren = (List<?>) evt.getOldValue();
+				List<?> newChildren = (List<?>) evt.getNewValue();
 				addOrRemoveNodes(oldChildren, false);
 				addOrRemoveNodes(newChildren, true);
 			}
 
-			private void addOrRemoveNodes(ITreeNode<?>[] nodes, boolean add)
+			private void addOrRemoveNodes(List<?> nodes, boolean add)
 			{
 				if (nodes != null)
 				{
-					for (ITreeNode<?> n : nodes)
+					for (Object n : nodes)
 					{
-						Object value = n.getValue();
-						if (value instanceof ICatalogTreeNode)
+						if (n instanceof ICatalogTreeNode)
 						{
-							ICatalogTreeNode node = (ICatalogTreeNode) value;
+							ICatalogTreeNode node = (ICatalogTreeNode) n;
 							URI uri = node.getLayerURI();
 							if (uri != null)
 							{
@@ -355,23 +354,22 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 			public void propertyChange(PropertyChangeEvent evt)
 			{
 				Set<URI> changedURIs = new HashSet<URI>();
-				ITreeNode<?>[] oldChildren = (ITreeNode<?>[]) evt.getOldValue();
-				ITreeNode<?>[] newChildren = (ITreeNode<?>[]) evt.getNewValue();
+				List<?> oldChildren = (List<?>) evt.getOldValue();
+				List<?> newChildren = (List<?>) evt.getNewValue();
 				addURIsToSet(oldChildren, changedURIs);
 				addURIsToSet(newChildren, changedURIs);
 				updateElementsForURIs(changedURIs, uriElements);
 			}
 
-			private void addURIsToSet(ITreeNode<?>[] nodes, Set<URI> list)
+			private void addURIsToSet(List<?> nodes, Set<URI> list)
 			{
 				if (nodes != null)
 				{
-					for (ITreeNode<?> n : nodes)
+					for (Object n : nodes)
 					{
-						Object value = n.getValue();
-						if (value instanceof ILayerTreeNode)
+						if (n instanceof ILayerTreeNode)
 						{
-							ILayerTreeNode node = (ILayerTreeNode) value;
+							ILayerTreeNode node = (ILayerTreeNode) n;
 							URI uri = node.getURI();
 							if (uri != null)
 							{

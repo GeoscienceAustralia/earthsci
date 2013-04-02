@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
@@ -397,13 +398,12 @@ public class CatalogPersister
 
 		public CatalogModelDTO(final ICatalogModel model)
 		{
+			List<ICatalogTreeNode> topLevelCatalogs = model.getTopLevelCatalogs();
 
-			ICatalogTreeNode[] topLevelCatalogs = model.getTopLevelCatalogs();
-
-			catalogs = new CatalogNodeDTO[topLevelCatalogs.length];
-			for (int i = 0; i < topLevelCatalogs.length; i++)
+			catalogs = new CatalogNodeDTO[topLevelCatalogs.size()];
+			for (int i = 0; i < topLevelCatalogs.size(); i++)
 			{
-				catalogs[i] = new CatalogNodeDTO(topLevelCatalogs[i]);
+				catalogs[i] = new CatalogNodeDTO(topLevelCatalogs.get(i));
 			}
 		}
 

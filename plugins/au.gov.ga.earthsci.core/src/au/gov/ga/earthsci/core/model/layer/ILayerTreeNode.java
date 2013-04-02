@@ -20,6 +20,7 @@ import gov.nasa.worldwind.terrain.CompoundElevationModel;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
 import org.eclipse.core.runtime.content.IContentType;
 
@@ -117,7 +118,7 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	 * @param oldChildren
 	 * @param newChildren
 	 */
-	void childrenChanged(ITreeNode<ILayerTreeNode>[] oldChildren, ITreeNode<ILayerTreeNode>[] newChildren);
+	void childrenChanged(List<ILayerTreeNode> oldChildren, List<ILayerTreeNode> newChildren);
 
 	/**
 	 * @return The URL pointing to this layer's information page.

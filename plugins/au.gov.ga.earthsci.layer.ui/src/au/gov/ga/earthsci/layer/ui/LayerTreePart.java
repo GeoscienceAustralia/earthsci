@@ -84,7 +84,6 @@ import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.application.util.StackTraceDialog;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
@@ -168,7 +167,7 @@ public class LayerTreePart
 				{
 					if (o instanceof ILayerTreeNode)
 					{
-						((ILayerTreeNode) o).getParent().getValue().setExpanded(true);
+						((ILayerTreeNode) o).getParent().setExpanded(true);
 					}
 				}
 			}
@@ -362,9 +361,9 @@ public class LayerTreePart
 		{
 			list.add(parent);
 		}
-		for (ITreeNode<ILayerTreeNode> child : parent.getChildren())
+		for (ILayerTreeNode child : parent.getChildren())
 		{
-			addExpandedChildrenToList(child.getValue(), list);
+			addExpandedChildrenToList(child, list);
 		}
 	}
 

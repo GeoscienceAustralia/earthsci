@@ -15,6 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.layer.ui;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,7 +36,6 @@ import org.eclipse.swt.widgets.Scale;
 
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 /**
  * Tool control used to change layer opacity.
@@ -99,7 +101,7 @@ public class LayerOpacityToolControl
 						return;
 					}
 					double opacity = scale.getSelection() / 100d;
-					setOpacity(selection, opacity);
+					setOpacity(Arrays.asList(selection), opacity);
 				}
 			});
 
@@ -139,16 +141,16 @@ public class LayerOpacityToolControl
 
 		settingScale = true;
 		double opacity = scale.getSelection() / 100d;
-		Double o = getMinOpacity(selection, null);
+		Double o = getMinOpacity(Arrays.asList(selection), null);
 		opacity = o == null ? opacity : o;
 		scale.setSelection((int) (opacity * 100d));
 		scale.setEnabled(selection.length > 0);
 		settingScale = false;
 	}
 
-	private Double getMinOpacity(ITreeNode<ILayerTreeNode>[] nodes, Double opacity)
+	private Double getMinOpacity(List<ILayerTreeNode> nodes, Double opacity)
 	{
-		for (ITreeNode<ILayerTreeNode> node : nodes)
+		for (ILayerTreeNode node : nodes)
 		{
 			if (node instanceof LayerNode)
 			{
@@ -160,11 +162,11 @@ public class LayerOpacityToolControl
 		return opacity;
 	}
 
-	private void setOpacity(ITreeNode<ILayerTreeNode>[] nodes, double opacity)
+	private void setOpacity(List<ILayerTreeNode> nodes, double opacity)
 	{
 		if (nodes != null)
 		{
-			for (ITreeNode<ILayerTreeNode> node : nodes)
+			for (ILayerTreeNode node : nodes)
 			{
 				if (node instanceof LayerNode)
 				{

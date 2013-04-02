@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.catalog;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -27,8 +27,6 @@ import javax.inject.Singleton;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
-
-import au.gov.ga.earthsci.core.tree.ITreeNode;
 
 /**
  * Default implementation of the {@link ICatalogModel} interface
@@ -63,10 +61,9 @@ public class CatalogModel implements ICatalogModel
 	}
 
 	@Override
-	public ICatalogTreeNode[] getTopLevelCatalogs()
+	public List<ICatalogTreeNode> getTopLevelCatalogs()
 	{
-		ITreeNode<ICatalogTreeNode>[] children = root.getChildren();
-		return Arrays.asList(children).toArray(new ICatalogTreeNode[children.length]);
+		return root.getChildren();
 	}
 
 	public void setTopLevelCatalogs(ICatalogTreeNode[] nodes)
@@ -86,20 +83,6 @@ public class CatalogModel implements ICatalogModel
 		}
 
 		root.add(catalog);
-	}
-
-	@Override
-	public void addTopLevelCatalogs(final ICatalogTreeNode[] catalogs)
-	{
-		if (catalogs == null)
-		{
-			return;
-		}
-
-		for (ICatalogTreeNode catalog : catalogs)
-		{
-			addTopLevelCatalog(catalog);
-		}
 	}
 
 	@Override

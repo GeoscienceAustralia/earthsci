@@ -36,13 +36,13 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class RetrievalLazyTreeNodeHelper<E>
+public class RetrievalLazyTreeNodeHelper<E extends ITreeNode<E>>
 {
 	private final IRetrievalLazyTreeNode<E> node;
 	private final AtomicBoolean loaded = new AtomicBoolean(false);
 	private final AtomicBoolean loading = new AtomicBoolean(false);
 	private Throwable error;
-	private final List<ITreeNode<E>> childrenAdded = new ArrayList<ITreeNode<E>>();
+	private final List<E> childrenAdded = new ArrayList<E>();
 
 	public RetrievalLazyTreeNodeHelper(IRetrievalLazyTreeNode<E> node)
 	{
@@ -91,7 +91,7 @@ public class RetrievalLazyTreeNodeHelper<E>
 
 	protected void handleRetrieval(IRetrievalData data, URL url)
 	{
-		for (ITreeNode<E> child : childrenAdded)
+		for (E child : childrenAdded)
 		{
 			node.remove(child);
 		}
@@ -99,11 +99,11 @@ public class RetrievalLazyTreeNodeHelper<E>
 
 		try
 		{
-			ITreeNode<E>[] children = node.handleRetrieval(data, url);
-			for (ITreeNode<E> child : children)
+			List<E> children = node.handleRetrieval(data, url);
+			for (E child : children)
 			{
 				node.add(child);
-				childrenAdded.clear();
+				childrenAdded.add(child);
 			}
 		}
 		catch (Exception e)
@@ -128,10 +128,10 @@ public class RetrievalLazyTreeNodeHelper<E>
 	/**
 	 * @see ILazyTreeNode#getDisplayChildren()
 	 */
-	public ITreeNode<E>[] getDisplayChildren()
+	public List<E> getDisplayChildren()
 	{
-		ITreeNode<E>[] children = node.getChildren();
-		ITreeNode<E> firstNode = null;
+		List<E> children = node.getChildren();
+		E firstNode = null;
 		if (error != null)
 		{
 			firstNode = node.getErrorNode(error);
@@ -142,10 +142,8 @@ public class RetrievalLazyTreeNodeHelper<E>
 		}
 		if (firstNode != null)
 		{
-			@SuppressWarnings("unchecked")
-			ITreeNode<E>[] newChildren = new ITreeNode[children.length + 1];
-			newChildren[0] = firstNode;
-			System.arraycopy(children, 0, newChildren, 1, children.length);
+			List<E> newChildren = new ArrayList<E>(children);
+			newChildren.add(0, firstNode);
 			children = newChildren;
 		}
 		return children;
