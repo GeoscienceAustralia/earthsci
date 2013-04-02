@@ -8,7 +8,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.CoreException;
@@ -66,6 +65,12 @@ public class NotificationManager
 
 	private static final Logger logger = LoggerFactory.getLogger(NotificationManager.class);
 
+	static
+	{
+		loadReceiversFromExtensions();
+		registerNotificationCategories();
+	}
+
 	/**
 	 * Load registered notification receivers from the provided extension
 	 * registry.
@@ -78,7 +83,6 @@ public class NotificationManager
 	 * @param context
 	 *            The context to use for dependency injection etc.
 	 */
-	@Inject
 	public static void loadReceiversFromExtensions()
 	{
 		logger.info("Registering notification receivers"); //$NON-NLS-1$
@@ -113,14 +117,8 @@ public class NotificationManager
 	 * <p/>
 	 * This method will inject dependencies on retrieved receivers using the
 	 * provided eclipse context, as appropriate.
-	 * 
-	 * @param registry
-	 *            The extension registry to search for notification receivers
-	 * @param context
-	 *            The context to use for dependency injection etc.
 	 */
-	@Inject
-	public static void registerNotificationCategories(IExtensionRegistry registry, IEclipseContext context)
+	public static void registerNotificationCategories()
 	{
 		logger.info("Registering notification categories"); //$NON-NLS-1$
 
