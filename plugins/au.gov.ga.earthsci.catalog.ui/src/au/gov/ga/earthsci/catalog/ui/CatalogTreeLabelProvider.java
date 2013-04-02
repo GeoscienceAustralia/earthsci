@@ -166,7 +166,12 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 			}
 			return element.toString();
 		}
+
 		ICatalogTreeNode node = (ICatalogTreeNode) element;
+		if (element instanceof LoadingCatalogTreeNode || element instanceof ErrorCatalogTreeNode)
+		{
+			return node.getName();
+		}
 		return CatalogTreeLabelProviderRegistry.getProvider(node).getLabel(node);
 	}
 

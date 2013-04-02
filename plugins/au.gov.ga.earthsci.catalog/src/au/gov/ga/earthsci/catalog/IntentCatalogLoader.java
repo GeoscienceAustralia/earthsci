@@ -125,6 +125,7 @@ public class IntentCatalogLoader
 			CatalogLoadIntent catalogIntent = (CatalogLoadIntent) intent;
 			ErrorCatalogTreeNode errorNode = new ErrorCatalogTreeNode(intent.getURI(), e);
 			errorNode.setRemoveable(true);
+			errorNode.setLabel(catalogIntent.placeholder.getLabel());
 			catalogIntent.placeholder.getParent().replaceChild(catalogIntent.placeholder, errorNode);
 		}
 	};
