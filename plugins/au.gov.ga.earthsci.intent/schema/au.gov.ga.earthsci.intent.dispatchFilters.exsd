@@ -16,7 +16,7 @@
             <meta.element />
          </appinfo>
          <documentation>
-            Allows intelligent handling of instances of domain objects, by mapping a handler to a particular instance types.
+            Allows intelligent handling of instances of domain objects, by mapping a handler to particular instance types.
          </documentation>
       </annotation>
       <complexType>
