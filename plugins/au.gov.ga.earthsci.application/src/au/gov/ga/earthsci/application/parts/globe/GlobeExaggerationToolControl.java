@@ -20,9 +20,7 @@ import java.text.DecimalFormat;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -64,100 +62,75 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 
 	private final static int KEY_DELAY = 1500; //ms
 
-	private static IEclipseContext context;
-
 	private Label label;
 	private Scale scale;
 	private Color tickForeground;
 	private String keyString = ""; //$NON-NLS-1$
 	private long lastKeyTime;
 
-	/**
-	 * e4 bug workaround, don't call.
-	 */
-	public static void setPartContext(IEclipseContext context)
-	{
-		GlobeExaggerationToolControl.context = context;
-	}
-
 	@PostConstruct
 	public void createControls(Composite parent, IEclipseContext context)
 	{
-		//XXX BUG: for some reason, after the layer part is closed and reopened, the
-		//injected context is "anonymous", and doesn't contain the TreeViewer
-		//the following is a workaround; the LayerTreePart's context is passed
-		//to this class and stored in a static variable, and then this context
-		//is used to create the scale on instead of the injected one
+		VerticalExaggerationService.INSTANCE.addListener(this);
 
-		if (context.get(MPart.class) == null)
+		RowLayout layout = new RowLayout(SWT.HORIZONTAL);
+		layout.wrap = false;
+		layout.spacing = layout.marginBottom = layout.marginTop = layout.marginLeft = layout.marginRight = 0;
+		parent.setLayout(layout);
+
+		Composite labelParent = new Composite(parent, SWT.NONE);
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.marginWidth = 0;
+		gridLayout.marginHeight = 4;
+		labelParent.setLayout(gridLayout);
+		labelParent.setSize(labelParent.computeSize(SWT.DEFAULT, SCALE_HEIGHT));
+
+		label = new Label(labelParent, SWT.NONE);
+		label.setAlignment(SWT.RIGHT);
+		label.setText("1.000x"); //$NON-NLS-1$
+
+		Composite child = new Composite(parent, SWT.NONE);
+		child.setSize(child.computeSize(SCALE_WIDTH, SWT.DEFAULT));
+
+		scale = new Scale(child, SWT.HORIZONTAL);
+		Point size = scale.computeSize(SCALE_WIDTH, SWT.DEFAULT);
+		scale.setSize(size);
+		scale.setMinimum(exaggerationToScale(0));
+		scale.setMaximum(exaggerationToScale(SCALE_MAX));
+		scale.setLocation(0, (SCALE_HEIGHT - size.y) / 2);
+		scale.setToolTipText("Set vertical exaggeration");
+		scale.setIncrement(INCREMENTS_PER_POWER / 100);
+
+		scale.setSelection(exaggerationToScale(VerticalExaggerationService.INSTANCE.get()));
+		updateSelection(false);
+
+		tickForeground = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW);
+		scale.addPaintListener(new PaintListener()
 		{
-			context = GlobeExaggerationToolControl.context.createChild();
-			context.set(Composite.class, parent);
-			ContextInjectionFactory.inject(this, context);
-		}
-		else
+			@Override
+			public void paintControl(PaintEvent e)
+			{
+				GlobeExaggerationToolControl.this.paintControl(e);
+			}
+		});
+
+		scale.addSelectionListener(new SelectionAdapter()
 		{
-			VerticalExaggerationService.INSTANCE.addListener(this);
-
-			RowLayout layout = new RowLayout(SWT.HORIZONTAL);
-			layout.wrap = false;
-			layout.spacing = layout.marginBottom = layout.marginTop = layout.marginLeft = layout.marginRight = 0;
-			parent.setLayout(layout);
-
-			Composite labelParent = new Composite(parent, SWT.NONE);
-			GridLayout gridLayout = new GridLayout();
-			gridLayout.marginWidth = 0;
-			gridLayout.marginHeight = 4;
-			labelParent.setLayout(gridLayout);
-			labelParent.setSize(labelParent.computeSize(SWT.DEFAULT, SCALE_HEIGHT));
-
-			label = new Label(labelParent, SWT.NONE);
-			label.setAlignment(SWT.RIGHT);
-			label.setText("1.000x"); //$NON-NLS-1$
-
-			Composite child = new Composite(parent, SWT.NONE);
-			child.setSize(child.computeSize(SCALE_WIDTH, SWT.DEFAULT));
-
-			scale = new Scale(child, SWT.HORIZONTAL);
-			Point size = scale.computeSize(SCALE_WIDTH, SWT.DEFAULT);
-			scale.setSize(size);
-			scale.setMinimum(exaggerationToScale(0));
-			scale.setMaximum(exaggerationToScale(SCALE_MAX));
-			scale.setLocation(0, (SCALE_HEIGHT - size.y) / 2);
-			scale.setToolTipText("Set vertical exaggeration");
-			scale.setIncrement(INCREMENTS_PER_POWER / 100);
-
-			scale.setSelection(exaggerationToScale(VerticalExaggerationService.INSTANCE.get()));
-			updateSelection(false);
-
-			tickForeground = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW);
-			scale.addPaintListener(new PaintListener()
+			@Override
+			public void widgetSelected(SelectionEvent e)
 			{
-				@Override
-				public void paintControl(PaintEvent e)
-				{
-					GlobeExaggerationToolControl.this.paintControl(e);
-				}
-			});
+				updateSelection(true);
+			}
+		});
 
-			scale.addSelectionListener(new SelectionAdapter()
+		scale.addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyPressed(KeyEvent e)
 			{
-				@Override
-				public void widgetSelected(SelectionEvent e)
-				{
-					updateSelection(true);
-				}
-			});
-
-			scale.addKeyListener(new KeyAdapter()
-			{
-				@Override
-				public void keyPressed(KeyEvent e)
-				{
-					handleKey(e);
-				}
-			});
-		}
+				handleKey(e);
+			}
+		});
 	}
 
 	@PreDestroy

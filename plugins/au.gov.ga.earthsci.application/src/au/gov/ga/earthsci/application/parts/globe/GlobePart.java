@@ -105,7 +105,6 @@ public class GlobePart
 	@Inject
 	public void init(final Composite parent)
 	{
-		GlobeExaggerationToolControl.setPartContext(context);
 		context.set(GlobePart.class, this);
 
 		if (Platform.getOS().contains(Platform.OS_MACOSX))
