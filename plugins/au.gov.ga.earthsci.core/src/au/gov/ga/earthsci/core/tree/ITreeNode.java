@@ -127,7 +127,7 @@ public interface ITreeNode<E extends ITreeNode<E>> extends ITreePropertyChangeBe
 	 * @param child
 	 *            Child to add.
 	 */
-	void add(E child);
+	void addChild(E child);
 
 	/**
 	 * Add a child to this node at the specified index. If the specified child
@@ -138,7 +138,7 @@ public interface ITreeNode<E extends ITreeNode<E>> extends ITreePropertyChangeBe
 	 * @param child
 	 *            Child to add.
 	 */
-	void add(int index, E child);
+	void addChild(int index, E child);
 
 	/**
 	 * Remove the specified child from this node.
@@ -147,7 +147,7 @@ public interface ITreeNode<E extends ITreeNode<E>> extends ITreePropertyChangeBe
 	 *            Child to remove.
 	 * @return True if the child was found and removed, false otherwise.
 	 */
-	boolean remove(E child);
+	boolean removeChild(E child);
 
 	/**
 	 * Remove the child at the specified index.
@@ -156,12 +156,12 @@ public interface ITreeNode<E extends ITreeNode<E>> extends ITreePropertyChangeBe
 	 *            Index of the child to remove.
 	 * @return Child removed.
 	 */
-	E remove(int index);
+	E removeChild(int index);
 
 	/**
 	 * Remove all children from this node
 	 */
-	void removeAll();
+	void clearChildren();
 
 	/**
 	 * Remove this node from its parent (no-op if this node is the root).

@@ -60,7 +60,7 @@ public class PasteHandler
 			for (TransferredLayer layer : data.getLayers())
 			{
 				ILayerTreeNode node = layer.getNode();
-				target.add(node);
+				target.addChild(node);
 				viewer.add(target, node);
 				viewer.reveal(node);
 			}
@@ -78,7 +78,7 @@ public class PasteHandler
 					node.setName(file.getName());
 					node.setEnabled(true);
 					node.setURI(file.toURI());
-					target.add(node);
+					target.addChild(node);
 					viewer.add(target, node);
 					viewer.reveal(node);
 				}

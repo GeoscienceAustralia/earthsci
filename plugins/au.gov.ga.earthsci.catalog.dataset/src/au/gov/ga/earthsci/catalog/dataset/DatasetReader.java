@@ -180,7 +180,7 @@ final public class DatasetReader
 		URI nodeURI = buildChildURI(parent.getURI(), UTF8URLEncoder.encode(name));
 
 		final ICatalogTreeNode dataset = new DatasetCatalogTreeNode(nodeURI, name, info, icon, base);
-		parent.add(dataset);
+		parent.addChild(dataset);
 
 		return dataset;
 	}
@@ -197,7 +197,7 @@ final public class DatasetReader
 		URI nodeURI = buildChildURI(parent.getURI(), url.toExternalForm());
 
 		final ICatalogTreeNode link = new DatasetLinkCatalogTreeNode(nodeURI, name, url, info, icon, base);
-		parent.add(link);
+		parent.addChild(link);
 	}
 
 	private static void addLayer(final Element element, final ICatalogTreeNode parent, final URL context)
@@ -216,7 +216,7 @@ final public class DatasetReader
 
 		final DatasetLayerCatalogTreeNode layer =
 				new DatasetLayerCatalogTreeNode(nodeURI, name, url, info, icon, base, def, enabled);
-		parent.add(layer);
+		parent.addChild(layer);
 	}
 
 	private static URI buildChildURI(URI parentURI, String childPath) throws URISyntaxException

@@ -93,7 +93,7 @@ public class RetrievalLazyTreeNodeHelper<E extends ITreeNode<E>>
 	{
 		for (E child : childrenAdded)
 		{
-			node.remove(child);
+			node.removeChild(child);
 		}
 		childrenAdded.clear();
 
@@ -102,7 +102,7 @@ public class RetrievalLazyTreeNodeHelper<E extends ITreeNode<E>>
 			List<E> children = node.handleRetrieval(data, url);
 			for (E child : children)
 			{
-				node.add(child);
+				node.addChild(child);
 				childrenAdded.add(child);
 			}
 		}

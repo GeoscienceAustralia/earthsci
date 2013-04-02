@@ -156,13 +156,13 @@ public abstract class AbstractTreeNode<E extends ITreeNode<E>> extends AbstractT
 	}
 
 	@Override
-	public void add(E child)
+	public void addChild(E child)
 	{
-		add(-1, child);
+		addChild(-1, child);
 	}
 
 	@Override
-	public void add(int index, E child)
+	public void addChild(int index, E child)
 	{
 		// Handle the edge case of a child node being added that already exists
 		// Note - the rest of the tree API expects child arrays to act as sets
@@ -173,7 +173,7 @@ public abstract class AbstractTreeNode<E extends ITreeNode<E>> extends AbstractT
 		}
 		if (child.getParent() != null)
 		{
-			child.getParent().remove(child);
+			child.getParent().removeChild(child);
 		}
 		if (index < 0 || index > children.size())
 		{
@@ -203,7 +203,7 @@ public abstract class AbstractTreeNode<E extends ITreeNode<E>> extends AbstractT
 	}
 
 	@Override
-	public boolean remove(E child)
+	public boolean removeChild(E child)
 	{
 		int index = child.index();
 		if (index < 0)
@@ -214,12 +214,12 @@ public abstract class AbstractTreeNode<E extends ITreeNode<E>> extends AbstractT
 		{
 			return false;
 		}
-		remove(index);
+		removeChild(index);
 		return true;
 	}
 
 	@Override
-	public E remove(int index)
+	public E removeChild(int index)
 	{
 		if (index < 0 || index >= children.size())
 		{
@@ -236,7 +236,7 @@ public abstract class AbstractTreeNode<E extends ITreeNode<E>> extends AbstractT
 	}
 
 	@Override
-	public void removeAll()
+	public void clearChildren()
 	{
 		if (children.isEmpty())
 		{
@@ -261,7 +261,7 @@ public abstract class AbstractTreeNode<E extends ITreeNode<E>> extends AbstractT
 		}
 		@SuppressWarnings("unchecked")
 		E e = (E) this;
-		getParent().remove(e);
+		getParent().removeChild(e);
 	}
 
 	@Override

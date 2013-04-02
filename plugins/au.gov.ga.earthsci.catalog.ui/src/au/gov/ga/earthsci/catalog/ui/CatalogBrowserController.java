@@ -188,7 +188,7 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		if (!node.isLayerNode())
 		{
 			ILayerTreeNode folder = createFolderNode(node);
-			parent.add(folder);
+			parent.addChild(folder);
 			return folder;
 		}
 
@@ -209,13 +209,13 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		if (node.isLayerNode())
 		{
 			LayerNode layer = createLayerNode(node);
-			parent.add(layer);
+			parent.addChild(layer);
 			IntentLayerLoader.load(layer, context);
 		}
 		else
 		{
 			FolderNode folder = createFolderNode(node);
-			parent.add(folder);
+			parent.addChild(folder);
 			for (ICatalogTreeNode child : node.getChildren())
 			{
 				insertIntoLayerModel(folder, child);

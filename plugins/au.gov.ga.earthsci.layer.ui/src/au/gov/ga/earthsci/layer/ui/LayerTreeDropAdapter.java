@@ -101,7 +101,7 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 			{
 				TransferredLayer layer = toDrop[i];
 				ILayerTreeNode node = layer.getNode();
-				target.add(index, node);
+				target.addChild(index, node);
 				getViewer().add(target, node);
 				getViewer().reveal(node);
 			}
@@ -121,7 +121,7 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 					node.setIconURL(ImageRegistry.getInstance().getURL(ImageRegistry.ICON_FILE));
 					node.setURI(file.toURI());
 
-					target.add(index, node);
+					target.addChild(index, node);
 					getViewer().add(target, node);
 					getViewer().reveal(node);
 

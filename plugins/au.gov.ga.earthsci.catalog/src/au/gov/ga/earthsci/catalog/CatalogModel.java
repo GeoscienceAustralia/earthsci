@@ -70,7 +70,7 @@ public class CatalogModel implements ICatalogModel
 	{
 		for (ICatalogTreeNode node : nodes)
 		{
-			root.add(node);
+			root.addChild(node);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class CatalogModel implements ICatalogModel
 			return;
 		}
 
-		root.add(catalog);
+		root.addChild(catalog);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class CatalogModel implements ICatalogModel
 			return;
 		}
 
-		root.add(index, catalog);
+		root.addChild(index, catalog);
 	}
 
 	private static class RootNode extends AbstractCatalogTreeNode

@@ -105,7 +105,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		{
 			FolderNode folder = DefaultLayers.getLayers();
 			folder.setExpanded(true);
-			rootNode.add(folder);
+			rootNode.addChild(folder);
 		}
 		else
 		{
@@ -113,7 +113,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 			{
 				ILayerTreeNode child = loadedNode.getChild(0);
 				child.removeFromParent();
-				rootNode.add(child);
+				rootNode.addChild(child);
 			}
 		}
 		loadAllLayers(rootNode, context);

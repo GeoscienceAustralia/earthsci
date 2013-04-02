@@ -51,7 +51,7 @@ public class AbstractTreeNodeTest
 	public void testAddWithNull()
 	{
 		ConcreteTreeNode child = null;
-		classUnderTest.add(child);
+		classUnderTest.addChild(child);
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class AbstractTreeNodeTest
 	{
 		ConcreteTreeNode child = new ConcreteTreeNode("child");
 
-		classUnderTest.add(child);
+		classUnderTest.addChild(child);
 
 		// A children changed event should fire
 		assertEquals(1, changeListener.events.size());
@@ -84,10 +84,10 @@ public class AbstractTreeNodeTest
 		ConcreteTreeNode child2 = new ConcreteTreeNode("child2");
 		ConcreteTreeNode child3 = new ConcreteTreeNode("child3");
 
-		classUnderTest.add(child0);
-		classUnderTest.add(child1);
-		classUnderTest.add(child2);
-		classUnderTest.add(child3);
+		classUnderTest.addChild(child0);
+		classUnderTest.addChild(child1);
+		classUnderTest.addChild(child2);
+		classUnderTest.addChild(child3);
 
 		assertArrayEquals(new Object[] { child0, child1, child2, child3 }, classUnderTest.getChildren().toArray());
 
@@ -95,7 +95,7 @@ public class AbstractTreeNodeTest
 
 		changeListener.clear();
 
-		classUnderTest.add(2, newChild);
+		classUnderTest.addChild(2, newChild);
 
 		assertArrayEquals(new Object[] { child0, child1, newChild, child2, child3 }, classUnderTest.getChildren()
 				.toArray());
@@ -115,10 +115,10 @@ public class AbstractTreeNodeTest
 		ConcreteTreeNode child2 = new ConcreteTreeNode("child2");
 		ConcreteTreeNode child3 = new ConcreteTreeNode("child3");
 
-		classUnderTest.add(child0);
-		classUnderTest.add(child1);
-		classUnderTest.add(child2);
-		classUnderTest.add(child3);
+		classUnderTest.addChild(child0);
+		classUnderTest.addChild(child1);
+		classUnderTest.addChild(child2);
+		classUnderTest.addChild(child3);
 
 		assertArrayEquals(new Object[] { child0, child1, child2, child3 }, classUnderTest.getChildren().toArray());
 
@@ -126,7 +126,7 @@ public class AbstractTreeNodeTest
 
 		changeListener.clear();
 
-		classUnderTest.add(200, newChild);
+		classUnderTest.addChild(200, newChild);
 
 		assertArrayEquals(new Object[] { child0, child1, child2, child3, newChild }, classUnderTest.getChildren()
 				.toArray());
@@ -143,11 +143,11 @@ public class AbstractTreeNodeTest
 	{
 		ConcreteTreeNode child = new ConcreteTreeNode("child");
 
-		classUnderTest.add(child);
+		classUnderTest.addChild(child);
 
 		changeListener.clear();
 
-		classUnderTest.add(child);
+		classUnderTest.addChild(child);
 
 		// No children changed event should fire
 		assertEquals(0, changeListener.events.size());
@@ -166,12 +166,12 @@ public class AbstractTreeNodeTest
 		ConcreteTreeNode child0 = new ConcreteTreeNode("child0");
 		ConcreteTreeNode child1 = new ConcreteTreeNode("child1");
 
-		classUnderTest.add(child0);
-		classUnderTest.add(child1);
+		classUnderTest.addChild(child0);
+		classUnderTest.addChild(child1);
 
 		changeListener.clear();
 
-		classUnderTest.add(child0);
+		classUnderTest.addChild(child0);
 
 		// A children changed event should fire
 		assertEquals(1, changeListener.events.size());
@@ -193,14 +193,14 @@ public class AbstractTreeNodeTest
 		ConcreteTreeNode child2 = new ConcreteTreeNode("child2");
 		ConcreteTreeNode child3 = new ConcreteTreeNode("child3");
 
-		classUnderTest.add(child0);
-		classUnderTest.add(child1);
-		classUnderTest.add(child2);
-		classUnderTest.add(child3);
+		classUnderTest.addChild(child0);
+		classUnderTest.addChild(child1);
+		classUnderTest.addChild(child2);
+		classUnderTest.addChild(child3);
 
 		changeListener.clear();
 
-		classUnderTest.add(child0);
+		classUnderTest.addChild(child0);
 
 		// A single children changed event should fire
 		assertEquals(1, changeListener.events.size());
@@ -232,15 +232,15 @@ public class AbstractTreeNodeTest
 		ConcreteTreeNode child3 = new ConcreteTreeNode("child3");
 		ConcreteTreeNode child4 = new ConcreteTreeNode("child4");
 
-		classUnderTest.add(child0);
-		classUnderTest.add(child1);
-		classUnderTest.add(child2);
-		classUnderTest.add(child3);
-		classUnderTest.add(child4);
+		classUnderTest.addChild(child0);
+		classUnderTest.addChild(child1);
+		classUnderTest.addChild(child2);
+		classUnderTest.addChild(child3);
+		classUnderTest.addChild(child4);
 
 		changeListener.clear();
 
-		classUnderTest.add(2, child0);
+		classUnderTest.addChild(2, child0);
 
 		// A single children changed event should fire
 		assertEquals(1, changeListener.events.size());
@@ -275,15 +275,15 @@ public class AbstractTreeNodeTest
 		ConcreteTreeNode child3 = new ConcreteTreeNode("child3");
 		ConcreteTreeNode child4 = new ConcreteTreeNode("child4");
 
-		classUnderTest.add(child0);
-		classUnderTest.add(child1);
-		classUnderTest.add(child2);
-		classUnderTest.add(child3);
-		classUnderTest.add(child4);
+		classUnderTest.addChild(child0);
+		classUnderTest.addChild(child1);
+		classUnderTest.addChild(child2);
+		classUnderTest.addChild(child3);
+		classUnderTest.addChild(child4);
 
 		changeListener.clear();
 
-		classUnderTest.add(1, child3);
+		classUnderTest.addChild(1, child3);
 
 		// A single children changed event should fire
 		assertEquals(1, changeListener.events.size());
@@ -314,7 +314,7 @@ public class AbstractTreeNodeTest
 	{
 		ConcreteTreeNode child = null;
 
-		classUnderTest.remove(child);
+		classUnderTest.removeChild(child);
 	}
 
 	@Test
@@ -322,7 +322,7 @@ public class AbstractTreeNodeTest
 	{
 		ConcreteTreeNode child = new ConcreteTreeNode("child");
 
-		boolean removed = classUnderTest.remove(child);
+		boolean removed = classUnderTest.removeChild(child);
 
 		assertFalse(removed);
 
@@ -346,7 +346,7 @@ public class AbstractTreeNodeTest
 
 		changeListener.clear();
 
-		classUnderTest.remove(null);
+		classUnderTest.removeChild(null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -366,7 +366,7 @@ public class AbstractTreeNodeTest
 
 		changeListener.clear();
 
-		boolean removed = classUnderTest.remove(new ConcreteTreeNode("notAChild"));
+		boolean removed = classUnderTest.removeChild(new ConcreteTreeNode("notAChild"));
 
 		assertFalse(removed);
 
@@ -390,7 +390,7 @@ public class AbstractTreeNodeTest
 
 		changeListener.clear();
 
-		boolean removed = classUnderTest.remove(child1);
+		boolean removed = classUnderTest.removeChild(child1);
 
 		assertTrue(removed);
 
@@ -404,7 +404,7 @@ public class AbstractTreeNodeTest
 	@Test
 	public void testRemoveAllWithEmptyChildren()
 	{
-		classUnderTest.removeAll();
+		classUnderTest.clearChildren();
 
 		assertEquals(0, classUnderTest.getChildCount());
 
@@ -428,7 +428,7 @@ public class AbstractTreeNodeTest
 
 		changeListener.clear();
 
-		classUnderTest.removeAll();
+		classUnderTest.clearChildren();
 
 		assertEquals(0, classUnderTest.getChildCount());
 
@@ -447,8 +447,8 @@ public class AbstractTreeNodeTest
 		ConcreteTreeNode child0 = new ConcreteTreeNode("child0");
 		ConcreteTreeNode child1 = new ConcreteTreeNode("child1");
 
-		classUnderTest.add(child0);
-		classUnderTest.add(child1);
+		classUnderTest.addChild(child0);
+		classUnderTest.addChild(child1);
 
 		changeListener.clear();
 
@@ -472,8 +472,8 @@ public class AbstractTreeNodeTest
 		ConcreteTreeNode child0 = new ConcreteTreeNode("child0");
 		ConcreteTreeNode child1 = new ConcreteTreeNode("child1");
 
-		classUnderTest.add(child0);
-		classUnderTest.add(child1);
+		classUnderTest.addChild(child0);
+		classUnderTest.addChild(child1);
 
 		changeListener.clear();
 

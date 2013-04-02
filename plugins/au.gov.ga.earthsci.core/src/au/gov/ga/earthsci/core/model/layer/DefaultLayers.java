@@ -63,7 +63,7 @@ public class DefaultLayers
 		LayerNode[] nodes = getLayerNodes();
 		for (LayerNode node : nodes)
 		{
-			folder.add(node);
+			folder.addChild(node);
 		}
 		return folder;
 	}

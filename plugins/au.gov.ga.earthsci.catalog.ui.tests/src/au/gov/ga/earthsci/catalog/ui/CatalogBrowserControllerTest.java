@@ -245,7 +245,7 @@ public class CatalogBrowserControllerTest
 		node10.layerNode = true;
 		node10.layerURI = new URI("file://layer10");
 
-		node1.add(node10);
+		node1.addChild(node10);
 
 		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node10, null };
 
@@ -278,7 +278,7 @@ public class CatalogBrowserControllerTest
 		node10.layerNode = true;
 		node10.layerURI = new URI("file://layer10");
 
-		node1.add(node10);
+		node1.addChild(node10);
 
 		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node10, null };
 
@@ -375,7 +375,7 @@ public class CatalogBrowserControllerTest
 		node10.layerNode = true;
 		node10.layerURI = new URI("file://layer10");
 
-		node1.add(node10);
+		node1.addChild(node10);
 
 		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node10, null };
 
@@ -408,7 +408,7 @@ public class CatalogBrowserControllerTest
 		node10.layerNode = true;
 		node10.layerURI = new URI("file://layer10");
 
-		node1.add(node10);
+		node1.addChild(node10);
 
 		ICatalogTreeNode[] nodes = new ICatalogTreeNode[] { node0, node1, node10, null };
 

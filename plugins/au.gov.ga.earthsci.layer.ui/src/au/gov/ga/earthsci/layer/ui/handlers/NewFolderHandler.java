@@ -44,11 +44,11 @@ public class NewFolderHandler
 		folder.setName("New Folder");
 		if (parent == null)
 		{
-			model.getRootNode().add(folder);
+			model.getRootNode().addChild(folder);
 		}
 		else
 		{
-			parent.add(folder);
+			parent.addChild(folder);
 		}
 		viewer.editElement(folder, 0);
 	}
