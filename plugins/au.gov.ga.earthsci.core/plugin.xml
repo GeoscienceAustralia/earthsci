@@ -5,6 +5,15 @@
    <extension-point id="au.gov.ga.earthsci.core.hudLayers" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.core.hudLayers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.core.xmlLoaders.exsd"/>
    <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="tif,tiff,grd,ascii,asc,ecw,ers,png,jpg,jpeg,vrt,adf,bt,e00,bil,hdr,lan,gis,pgm,ppm"
+            id="au.gov.ga.earthsci.core.content.gdalraster"
+            name="GDAL Raster"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
          point="au.gov.ga.earthsci.core.retrieve.retrievers">
       <retriever
             class="au.gov.ga.earthsci.core.retrieve.retriever.HttpRetriever">
@@ -102,6 +111,16 @@
          <content-type
                id="org.eclipse.core.runtime.xml">
          </content-type>
+      </filter>
+      <filter
+            class="au.gov.ga.earthsci.model.intent.GDALRasterModelIntentHandler"
+            priority="0">
+         <content-type
+               id="au.gov.ga.earthsci.core.content.gdalraster">
+         </content-type>
+         <return-type
+               class="gov.nasa.worldwind.layers.Layer">
+         </return-type>
       </filter>
    </extension>
    <extension
