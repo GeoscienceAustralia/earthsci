@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="au.gov.ga.earthsci.bookmark.ui.propertyEditors" name="Bookmark Property Editors" schema="schema/au.gov.ga.earthsci.bookmark.ui.propertyEditors.exsd"/>
+   
+   <extension
+         id="id1"
+         point="org.eclipse.e4.workbench.model">
+      <fragment
+            uri="fragment.e4xmi">
+      </fragment>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="au.gov.ga.earthsci.bookmark.ui.preferences.BookmarksPreferencesPage"
+            id="au.gov.ga.earthsci.bookmarks"
+            name="%preferences.page.bookmarks.name">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="au.gov.ga.earthsci.bookmark.ui.preferences.BookmarksPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.injectables">
+      <bind
+            binding="au.gov.ga.earthsci.bookmark.ui.IBookmarksController"
+            class="au.gov.ga.earthsci.bookmark.ui.BookmarksController"
+            priority="0">
+      </bind>
+      <bind
+            binding="au.gov.ga.earthsci.bookmark.ui.preferences.IBookmarksPreferences"
+            class="au.gov.ga.earthsci.bookmark.ui.preferences.BookmarksPreferences"
+            priority="0">
+      </bind>
+      <injectable
+            class="au.gov.ga.earthsci.bookmark.ui.editor.BookmarkPropertyEditorFactory"
+            priority="0">
+      </injectable>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.bookmark.ui.propertyEditors">
+      <editor
+            class="au.gov.ga.earthsci.bookmark.ui.editor.CameraPropertyEditor"
+            type="au.gov.ga.earthsci.bookmark.properties.camera">
+      </editor>
+      <editor
+            class="au.gov.ga.earthsci.bookmark.ui.editor.LayersPropertyEditor"
+            type="au.gov.ga.earthsci.bookmark.properties.layers">
+      </editor>
+   </extension>
+</plugin>

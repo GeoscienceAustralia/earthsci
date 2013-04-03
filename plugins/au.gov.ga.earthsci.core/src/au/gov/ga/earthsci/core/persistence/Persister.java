@@ -464,7 +464,7 @@ public class Persister
 
 		Class<?> c = getTypeFromName(element.getTagName());
 		assertIsExportable(c);
-		
+
 		IPersistentAdapter<?> adapter = getAdapter(c, AnnotationUtil.getAnnotation(c, Adapter.class));
 		if (adapter != null)
 		{
@@ -472,7 +472,7 @@ public class Persister
 			IPersistentAdapter<Object> objectAdapter = (IPersistentAdapter<Object>) adapter;
 			return objectAdapter.fromXML(element, context);
 		}
-		
+
 		Constructor<?> constructor = null;
 		try
 		{
@@ -1091,7 +1091,7 @@ public class Persister
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Calculate the name for the given type. If the type is marked as
 	 * {@link Exportable} and a named exportable has been registered using
@@ -1154,7 +1154,8 @@ public class Persister
 		}
 		if (AnnotationUtil.getAnnotation(type, Exportable.class) == null)
 		{
-			throw new PersistenceException(type + " is not marked " + Exportable.class.getSimpleName() + " and has no registered adapter."); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new PersistenceException(type
+					+ " is not marked " + Exportable.class.getSimpleName() + " and has no registered adapter."); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		try
 		{

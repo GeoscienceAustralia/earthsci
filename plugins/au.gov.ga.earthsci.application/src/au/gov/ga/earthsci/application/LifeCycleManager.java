@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.application;
 
 import javax.inject.Inject;
 
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 import org.eclipse.e4.ui.workbench.lifecycle.PreSave;
@@ -35,12 +36,10 @@ public class LifeCycleManager
 	@Inject
 	private IEclipseContext context;
 
-	@Inject
-	private SLF4JE4LoggerBridge loggerBridge;
-
 	@PostContextCreate
 	void postContextCreate()
 	{
+		ContextInjectionFactory.make(SLF4JE4LoggerBridge.class, context);
 		Injector.injectIntoContext(context);
 	}
 

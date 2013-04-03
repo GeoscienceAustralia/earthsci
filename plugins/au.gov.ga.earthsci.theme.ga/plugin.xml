@@ -11,7 +11,7 @@
    <extension
          point="au.gov.ga.earthsci.application.defaultTheme">
       <defaultTheme
-            themeId="au.gov.ga.earthsci.theme.ga">
+            id="au.gov.ga.earthsci.theme.ga">
       </defaultTheme>
    </extension>
 </plugin>

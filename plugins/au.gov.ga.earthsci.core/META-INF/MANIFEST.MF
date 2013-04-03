@@ -5,15 +5,7 @@ Bundle-SymbolicName: au.gov.ga.earthsci.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: au.gov.ga.earthsci.bookmark,
- au.gov.ga.earthsci.bookmark.io,
- au.gov.ga.earthsci.bookmark.model,
- au.gov.ga.earthsci.bookmark.properties,
- au.gov.ga.earthsci.bookmark.properties.camera,
- au.gov.ga.earthsci.bookmark.properties.layer,
- au.gov.ga.earthsci.catalog.model,
- au.gov.ga.earthsci.catalog.model.dataset,
- au.gov.ga.earthsci.core,
+Export-Package: au.gov.ga.earthsci.core,
  au.gov.ga.earthsci.core.intent,
  au.gov.ga.earthsci.core.math.bezier,
  au.gov.ga.earthsci.core.math.interpolation,
@@ -32,11 +24,9 @@ Export-Package: au.gov.ga.earthsci.bookmark,
  au.gov.ga.earthsci.core.tree,
  au.gov.ga.earthsci.core.tree.lazy,
  au.gov.ga.earthsci.core.util,
- au.gov.ga.earthsci.core.util.message,
  au.gov.ga.earthsci.core.worldwind,
  au.gov.ga.earthsci.core.worldwind.adapters,
- au.gov.ga.earthsci.core.xml,
- au.gov.ga.earthsci.notification
+ au.gov.ga.earthsci.core.xml
 Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
  org.eclipse.e4.core.di;bundle-version="1.1.0",
  org.eclipse.e4.core.di.extensions;bundle-version="0.11.0",
@@ -53,8 +43,7 @@ Require-Bundle: gov.nasa.worldwind.jogl2;bundle-version="1.4.0",
  au.gov.ga.earthsci.intent;bundle-version="1.0.0",
  au.gov.ga.earthsci.common;bundle-version="1.0.0",
  com.btr.proxy;bundle-version="1.0.0",
- au.gov.ga.earthsci.model;bundle-version="1.0.0",
- org.gdal;bundle-version="1.7.2"
+ au.gov.ga.earthsci.notification
 Import-Package: javax.annotation;version="1.0.0",
  org.eclipse.osgi.util,
  org.slf4j

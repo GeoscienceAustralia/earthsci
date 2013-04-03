@@ -25,8 +25,8 @@ import au.gov.ga.earthsci.core.temporal.BigTime;
  * Represents a level in a {@link ITimeScale}.
  * <p/>
  * Levels are ordered, and have a resolution that gives an indication of the
- * scale at which time changes at this level of the time scale 
- * (e.g. millions of years, seconds etc.) 
+ * scale at which time changes at this level of the time scale (e.g. millions of
+ * years, seconds etc.)
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -41,13 +41,14 @@ public interface ITimeScaleLevel extends INamed, IDescribed, Comparable<ITimeSca
 	 * @return The resolution, in nanoseconds, of this level.
 	 */
 	BigInteger getResolution();
-	
+
 	/**
-	 * Return the order of this level within it's parent {@link ITimeScale}. Order
-	 * is 0-indexed, with order 0 being the topmost level in a {@link ITimeScale}.
+	 * Return the order of this level within it's parent {@link ITimeScale}.
+	 * Order is 0-indexed, with order 0 being the topmost level in a
+	 * {@link ITimeScale}.
 	 * 
 	 * @return The order of this level within it's parent {@link ITimeScale}.
 	 */
 	int getOrder();
-	
+
 }

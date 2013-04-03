@@ -19,7 +19,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 
 /**
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
- *
+ * 
  */
 public interface IIntentManager
 {

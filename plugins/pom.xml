@@ -20,6 +20,7 @@
 	<modules>
 		<module>au.gov.ga.earthsci.testbase</module>
 		<module>au.gov.ga.earthsci.common</module>
+		<module>au.gov.ga.earthsci.common.ui</module>
 		<module>au.gov.ga.earthsci.logging</module>
 		<module>au.gov.ga.earthsci.injectable</module>
 		<module>au.gov.ga.earthsci.model</module>
@@ -28,9 +29,24 @@
 		<module>au.gov.ga.earthsci.core.tests</module>
 		<module>au.gov.ga.earthsci.worldwind</module>
 		<module>au.gov.ga.earthsci.worldwind.tests</module>
-		<module>au.gov.ga.earthsci.notification.popup</module>
 		<module>au.gov.ga.earthsci.application</module>
 		<module>au.gov.ga.earthsci.application.tests</module>
+		<module>au.gov.ga.earthsci.catalog</module>
+		<module>au.gov.ga.earthsci.catalog.tests</module>
+		<module>au.gov.ga.earthsci.catalog.ui</module>
+		<module>au.gov.ga.earthsci.catalog.ui.tests</module>
+		<module>au.gov.ga.earthsci.catalog.dataset</module>
+		<module>au.gov.ga.earthsci.catalog.dataset.tests</module>
+		<module>au.gov.ga.earthsci.layer.ui</module>
+		<module>au.gov.ga.earthsci.bookmark</module>
+		<module>au.gov.ga.earthsci.bookmark.tests</module>
+		<module>au.gov.ga.earthsci.bookmark.ui</module>
+		<module>au.gov.ga.earthsci.bookmark.ui.tests</module>
+		<module>au.gov.ga.earthsci.notification</module>
+		<module>au.gov.ga.earthsci.notification.tests</module>
+		<module>au.gov.ga.earthsci.notification.ui</module>
+		<module>au.gov.ga.earthsci.notification.popup</module>
+		<module>au.gov.ga.earthsci.theme.ga</module>
 	</modules>
 
 </project>

@@ -42,7 +42,7 @@ import org.eclipse.e4.core.services.log.Logger;
 @Singleton
 public class RetrieverFactory implements IRetrieverFactory
 {
-	public static final String RETRIEVER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.core.retrieve.retriever"; //$NON-NLS-1$
+	public static final String RETRIEVER_EXTENSION_POINT_ID = "au.gov.ga.earthsci.core.retrieve.retrievers"; //$NON-NLS-1$
 	public static final String RETRIEVER_EXTENSION_POINT_CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
 	private Set<IRetriever> retrievers = new LinkedHashSet<IRetriever>();

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="au.gov.ga.earthsci.intentFilters" name="IntentFilters" schema="schema/au.gov.ga.earthsci.intentFilters.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.dispatchFilters" name="DispatchFilters" schema="schema/au.gov.ga.earthsci.dispatchFilters.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.intentResourceLocators" name="IntentResourceLocators" schema="schema/au.gov.ga.earthsci.intentResourceLocators.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.intent.filters" name="IntentFilters" schema="schema/au.gov.ga.earthsci.intent.filters.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.intent.dispatchFilters" name="DispatchFilters" schema="schema/au.gov.ga.earthsci.intent.dispatchFilters.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.intent.resourceLocators" name="IntentResourceLocators" schema="schema/au.gov.ga.earthsci.intent.resourceLocators.exsd"/>
    <extension
-         point="au.gov.ga.earthsci.injectable">
+         point="au.gov.ga.earthsci.injectables">
       <inject
             class="au.gov.ga.earthsci.intent.locator.IntentResourceLocatorManager"
             priority="10">

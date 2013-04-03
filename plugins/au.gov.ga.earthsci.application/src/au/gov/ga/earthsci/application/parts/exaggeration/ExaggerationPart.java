@@ -92,7 +92,7 @@ public class ExaggerationPart
 			scale.setMinimum(0);
 			scale.setMaximum((int) Math.round(SCALE_LOG_MAX - SCALE_LOG_MIN) * INCREMENTS_PER_POWER);
 			setValue(1);
-			
+
 			scale.addSelectionListener(new SelectionAdapter()
 			{
 				@Override

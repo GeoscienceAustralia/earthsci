@@ -30,7 +30,7 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IAsynchronousLazyTreeNode<E> extends ILazyTreeNode<E>
+public interface IAsynchronousLazyTreeNode<E extends ITreeNode<E>> extends ILazyTreeNode<E>
 {
 	/**
 	 * Perform the actual loading of lazy children on the calling thread. Notify
@@ -50,7 +50,7 @@ public interface IAsynchronousLazyTreeNode<E> extends ILazyTreeNode<E>
 	 * 
 	 * @return A node that displays the current loading state of this lazy node
 	 */
-	ITreeNode<E> getLoadingNode();
+	E getLoadingNode();
 
 	/**
 	 * Return a tree node that represents the given loading error. Null can be
@@ -61,5 +61,5 @@ public interface IAsynchronousLazyTreeNode<E> extends ILazyTreeNode<E>
 	 *            Error to create the node for
 	 * @return A node that displays the given error
 	 */
-	ITreeNode<E> getErrorNode(Throwable error);
+	E getErrorNode(Throwable error);
 }

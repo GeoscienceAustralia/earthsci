@@ -63,7 +63,7 @@
                   Class that performs the loading of an object from XML.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.intent.xml.XmlLoader"/>
+                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.core.xml.IXmlLoader"/>
                </appinfo>
             </annotation>
          </attribute>

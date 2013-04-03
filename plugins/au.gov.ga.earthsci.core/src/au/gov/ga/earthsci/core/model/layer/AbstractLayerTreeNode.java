@@ -23,6 +23,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Platform;
@@ -36,7 +38,6 @@ import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
-import au.gov.ga.earthsci.core.tree.ITreeNode;
 import au.gov.ga.earthsci.core.worldwind.WorldWindCompoundElevationModel;
 
 /**
@@ -64,8 +65,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 
 	protected AbstractLayerTreeNode()
 	{
-		super();
-		setValue(this);
+		super(ILayerTreeNode.class);
 		addPropertyChangeListener("enabled", new EnabledChangeListener()); //$NON-NLS-1$
 	}
 
@@ -82,8 +82,8 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		firePropertyChange("name", getName(), this.name = name); //$NON-NLS-1$
 	}
 
-	@Override
 	@Persistent(attribute = true)
+	@Override
 	public String getLabel()
 	{
 		return label;
@@ -154,6 +154,18 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		firePropertyChange("infoURL", getInfoURL(), this.infoURL = infoURL); //$NON-NLS-1$
 	}
 
+	@Override
+	public URL getInformationURL()
+	{
+		return getInfoURL();
+	}
+
+	@Override
+	public String getInformationString()
+	{
+		return LayerNodeDescriber.describe(this);
+	}
+
 	@Persistent
 	@Override
 	public URL getLegendURL()
@@ -178,11 +190,16 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		firePropertyChange("iconURL", getIconURL(), this.iconURL = iconURL); //$NON-NLS-1$
 	}
 
-	@Persistent
-	@Override
-	public ITreeNode<ILayerTreeNode>[] getChildren()
+	@Persistent(name = "children")
+	public ILayerTreeNode[] getChildrenAsArray()
 	{
-		return super.getChildren();
+		List<ILayerTreeNode> children = getChildren();
+		return getChildren().toArray(new ILayerTreeNode[children.size()]);
+	}
+
+	public void setChildrenAsArray(ILayerTreeNode[] children)
+	{
+		setChildren(Arrays.asList(children));
 	}
 
 	@Override
@@ -210,9 +227,9 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		}
 		if (hasChildren())
 		{
-			for (ITreeNode<ILayerTreeNode> child : getChildren())
+			for (ILayerTreeNode child : getChildren())
 			{
-				if (child.getValue().anyChildrenEnabledEquals(enabled))
+				if (child.anyChildrenEnabledEquals(enabled))
 				{
 					return true;
 				}
@@ -231,9 +248,9 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		}
 		if (hasChildren())
 		{
-			for (ITreeNode<ILayerTreeNode> child : getChildren())
+			for (ILayerTreeNode child : getChildren())
 			{
-				child.getValue().enableChildren(enabled);
+				child.enableChildren(enabled);
 			}
 		}
 	}
@@ -270,9 +287,9 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		{
 			layerList.add((Layer) node);
 		}
-		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
+		for (ILayerTreeNode child : node.getChildren())
 		{
-			addNodesToLayerList(child.getValue());
+			addNodesToLayerList(child);
 		}
 	}
 
@@ -346,9 +363,9 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 				elevationModels.addElevationModel(elevationModelLayer.getElevationModel());
 			}
 		}
-		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
+		for (ILayerTreeNode child : node.getChildren())
 		{
-			addNodesToElevationModels(child.getValue());
+			addNodesToElevationModels(child);
 		}
 	}
 
@@ -367,22 +384,21 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private void addNodesToURIMap(ILayerTreeNode node)
 	{
 		uriMap.putSingle(node.getURI(), node);
-		for (ITreeNode<ILayerTreeNode> child : node.getChildren())
+		for (ILayerTreeNode child : node.getChildren())
 		{
-			addNodesToURIMap(child.getValue());
+			addNodesToURIMap(child);
 		}
 	}
 
 	@Override
-	protected void fireChildrenPropertyChange(ITreeNode<ILayerTreeNode>[] oldChildren,
-			ITreeNode<ILayerTreeNode>[] newChildren)
+	protected void fireChildrenPropertyChange(List<ILayerTreeNode> oldChildren, List<ILayerTreeNode> newChildren)
 	{
 		childrenChanged(oldChildren, children);
 		super.fireChildrenPropertyChange(oldChildren, newChildren);
 	}
 
 	@Override
-	public void childrenChanged(ITreeNode<ILayerTreeNode>[] oldChildren, ITreeNode<ILayerTreeNode>[] newChildren)
+	public void childrenChanged(List<ILayerTreeNode> oldChildren, List<ILayerTreeNode> newChildren)
 	{
 		//TODO should we implement a (more efficient?) modification of these collections according to changed children?
 		//update the collections if they exist
@@ -396,7 +412,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		//recurse up to the root node
 		if (!isRoot())
 		{
-			getParent().getValue().childrenChanged(oldChildren, newChildren);
+			getParent().childrenChanged(oldChildren, newChildren);
 		}
 	}
 
@@ -409,7 +425,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		//recurse up to the root node
 		if (!isRoot())
 		{
-			getParent().getValue().enabledChanged();
+			getParent().enabledChanged();
 		}
 	}
 

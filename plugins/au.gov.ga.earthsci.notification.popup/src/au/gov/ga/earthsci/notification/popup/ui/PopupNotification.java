@@ -39,10 +39,12 @@ import au.gov.ga.earthsci.notification.popup.Messages;
 import au.gov.ga.earthsci.notification.popup.preferences.IPopupNotificationPreferences;
 
 /**
- * A popup notification widget that renders a notification in a nice fading popup.
+ * A popup notification widget that renders a notification in a nice fading
+ * popup.
  * <p/>
- * Implementation is inspired by the hexapixel tutorial available 
- * <a href="http://hexapixel.com/2009/06/30/creating-a-notification-popup-widget">here</a>.
+ * Implementation is inspired by the hexapixel tutorial available <a
+ * href="http://hexapixel.com/2009/06/30/creating-a-notification-popup-widget"
+ * >here</a>.
  * 
  * @see http://hexapixel.com/2009/06/30/creating-a-notification-popup-widget
  * @author James Navin (james.navin@ga.gov.au)
@@ -58,46 +60,50 @@ public class PopupNotification
 	private static final String DIALOG_IMAGE_STYLE_CLASS = "popupDialogImage"; //$NON-NLS-1$
 	private static final String DIALOG_LINK_STYLE_CLASS = "popupDialogLink"; //$NON-NLS-1$
 	private static final String DIALOG_SHELL_STYLE_CLASS = "popupDialog"; //$NON-NLS-1$
-	
+
 	private static final String DIALOG_INFORMATION_CLASS = "information"; //$NON-NLS-1$
 	private static final String DIALOG_WARNING_CLASS = "warning"; //$NON-NLS-1$
 	private static final String DIALOG_ERROR_CLASS = "error"; //$NON-NLS-1$
-	
+
 	/** How long each tick is when fading (in ms) */
 	private static final int FADE_TICK = 50;
-	
+
 	/** The amount to increment the alpha channel by on each tick when fading in */
 	private static final int FADE_IN_ALPHA_STEP = 30;
-	
-	/** The amount to decrement the alpha channel by on each tick when fading out */
+
+	/**
+	 * The amount to decrement the alpha channel by on each tick when fading out
+	 */
 	private static final int FADE_OUT_ALPHA_STEP = 8;
 
-	/** How high the alpha value is when the popup has finished fading in */ 
+	/** How high the alpha value is when the popup has finished fading in */
 	private static final int FINAL_ALPHA = 225;
 
 	/** The amount of padding to leave around a popup */
 	private static final int PADDING = 2;
-	
+
 	/** The size of the popup to create */
 	private static final Point POPUP_SIZE = new Point(350, 100);
-	
+
 	/** The list of currently active popups */
 	private static List<PopupNotification> activePopups = new ArrayList<PopupNotification>();
-	
+
 	/** Preferences used to control the appearance and behaviour of the popups */
 	@Inject
 	private static IPopupNotificationPreferences preferences;
-	
+
 	@Inject
 	private static Logger logger;
-	
+
 	/** Whether the plugin-specifc CSS has been loaded */
 	private static AtomicBoolean cssLoaded = new AtomicBoolean(false);
-	
+
 	/**
-	 * Show the given notification as a popup using the current popup preferences and styling 
+	 * Show the given notification as a popup using the current popup
+	 * preferences and styling
 	 * 
-	 * @param notification The notification to show
+	 * @param notification
+	 *            The notification to show
 	 */
 	public static void show(INotification notification, IPopupNotificationPreferences preferences)
 	{
@@ -107,7 +113,7 @@ public class PopupNotification
 
 	/** An appropriately styled shell used to create the popup */
 	private Shell shell;
-	
+
 	/**
 	 * No-arg constructor used for dependency injection
 	 */
@@ -115,11 +121,12 @@ public class PopupNotification
 	{
 		PopupNotification.preferences = preferences;
 	}
-	
+
 	/**
 	 * Create a new popup notification for the given notification object
 	 * 
-	 * @param notification The notification to use
+	 * @param notification
+	 *            The notification to use
 	 */
 	private void showPopupNotification(INotification notification)
 	{
@@ -127,21 +134,21 @@ public class PopupNotification
 		{
 			return;
 		}
-		
+
 		initialiseShell();
 
 		Composite inner = initialiseInner(notification);
 
-		addLevelImage(notification,inner);
+		addLevelImage(notification, inner);
 		addTitleLabel(notification, inner);
 		addCloseButton(inner);
 		addTextLabel(notification, inner);
 		addActionLinks(notification, inner);
-		
+
 		adjustExistingPopups();
-		
+
 		applyCSSStyling();
-		
+
 		shell.setVisible(true);
 
 		activePopups.add(this);
@@ -185,9 +192,9 @@ public class PopupNotification
 		gd.horizontalSpan = NUM_COLUMNS;
 		text.setLayoutData(gd);
 		text.setText(notification.getText());
-		
+
 		setCSSClass(text, DIALOG_TEXT_STYLE_CLASS, notification.getLevel());
-		
+
 		return text;
 	}
 
@@ -199,9 +206,9 @@ public class PopupNotification
 		CLabel titleLabel = new CLabel(inner, SWT.NONE);
 		titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER));
 		titleLabel.setText(notification.getTitle());
-		
+
 		setCSSClass(titleLabel, DIALOG_TITLE_STYLE_CLASS, notification.getLevel());
-		
+
 		return titleLabel;
 	}
 
@@ -226,7 +233,7 @@ public class PopupNotification
 			{
 				imageLabel.setImage(Icons.getCloseHoverIcon());
 			}
-			
+
 			@Override
 			public void mouseExit(MouseEvent e)
 			{
@@ -235,7 +242,7 @@ public class PopupNotification
 		});
 		return imageLabel;
 	}
-	
+
 	/**
 	 * Add an image representing the notification level
 	 */
@@ -245,7 +252,7 @@ public class PopupNotification
 		imageLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_BEGINNING));
 		imageLabel.setImage(Icons.getIcon(notification.getLevel()));
 		setCSSClass(imageLabel, DIALOG_IMAGE_STYLE_CLASS, notification.getLevel());
-		
+
 		return imageLabel;
 	}
 
@@ -254,14 +261,14 @@ public class PopupNotification
 	 */
 	private List<Link> addActionLinks(INotification notification, Composite inner)
 	{
-		
+
 		List<Link> result = new ArrayList<Link>();
-		
+
 		if (notification.getActions() == null || notification.getActions().length == 0)
 		{
 			return result;
 		}
-		
+
 		for (final INotificationAction action : notification.getActions())
 		{
 			Link link = new Link(inner, SWT.NONE);
@@ -269,7 +276,7 @@ public class PopupNotification
 			GridData gd = new GridData(GridData.FILL_BOTH);
 			gd.horizontalSpan = NUM_COLUMNS;
 			link.setLayoutData(gd);
-			
+
 			link.setToolTipText(action.getTooltip());
 			link.setText("- <a>" + action.getText() + "</a>"); //$NON-NLS-1$ //$NON-NLS-2$
 			link.addSelectionListener(new SelectionListener()
@@ -279,29 +286,29 @@ public class PopupNotification
 				{
 					action.run();
 				}
-				
+
 				@Override
 				public void widgetDefaultSelected(SelectionEvent e)
 				{
 					action.run();
 				}
 			});
-			
+
 			setCSSClass(link, DIALOG_LINK_STYLE_CLASS, notification.getLevel());
-			
+
 			result.add(link);
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Create the shell that will be used to display the dialog
 	 */
 	private void initialiseShell()
 	{
 		shell = new Shell(getRootShell(Display.getDefault().getActiveShell()), SWT.NO_FOCUS | SWT.NO_TRIM);
-		
+
 		shell.setLayout(new FillLayout());
 		shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
 		shell.addListener(SWT.Dispose, new Listener()
@@ -310,16 +317,16 @@ public class PopupNotification
 			public void handleEvent(Event event)
 			{
 				activePopups.remove(PopupNotification.this);
-		 	}
+			}
 		});
 		shell.setSize(POPUP_SIZE);
 		shell.setAlpha(0);
-		
+
 		Rectangle clientArea = Display.getDefault().getActiveShell().getMonitor().getClientArea();
 
 		int startX = clientArea.x + clientArea.width - POPUP_SIZE.x - PADDING;
 		int startY = clientArea.y + clientArea.height - POPUP_SIZE.y - PADDING;
-		
+
 		shell.setLocation(startX, startY);
 	}
 
@@ -335,35 +342,37 @@ public class PopupNotification
 		gl.marginRight = 5;
 		gl.marginBottom = 5;
 		inner.setLayout(gl);
-		
+
 		setCSSClass(inner, DIALOG_SHELL_STYLE_CLASS, notification.getLevel());
-		
+
 		return inner;
 	}
-	
+
 	/**
-	 * Setup the CSS class attribute for the provided widget, adding the appropriate level class
+	 * Setup the CSS class attribute for the provided widget, adding the
+	 * appropriate level class
 	 */
 	private void setCSSClass(Widget widget, String mainClass, NotificationLevel notificationLevel)
 	{
 		WidgetElement.setCSSClass(widget, mainClass + " " + getLevelClass(notificationLevel)); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * @return The CSS class to use for the provided notification level
 	 */
 	private String getLevelClass(NotificationLevel level)
 	{
-		return level == NotificationLevel.INFORMATION ? DIALOG_INFORMATION_CLASS : level == NotificationLevel.WARNING ? DIALOG_WARNING_CLASS : DIALOG_ERROR_CLASS;
+		return level == NotificationLevel.INFORMATION ? DIALOG_INFORMATION_CLASS : level == NotificationLevel.WARNING
+				? DIALOG_WARNING_CLASS : DIALOG_ERROR_CLASS;
 	}
-	
+
 	/**
 	 * Apply the styling to the shell and all of its children
 	 */
 	private void applyCSSStyling()
 	{
 		CSSEngine cssEngine = WidgetElement.getEngine(Display.getCurrent());
-		
+
 		if (!cssLoaded.get())
 		{
 			try
@@ -376,32 +385,34 @@ public class PopupNotification
 			}
 			cssLoaded.set(true);
 		}
-		
+
 		cssEngine.applyStyles(shell, true);
 	}
-	
+
 	/**
-	 * @return <code>true</code> if there is no active shell or monitor in the current display hierachy
+	 * @return <code>true</code> if there is no active shell or monitor in the
+	 *         current display hierachy
 	 */
 	private boolean noActiveMonitorExists()
 	{
-		return Display.getDefault().getActiveShell() == null || Display.getDefault().getActiveShell().getMonitor() == null;
+		return Display.getDefault().getActiveShell() == null
+				|| Display.getDefault().getActiveShell().getMonitor() == null;
 	}
-	
+
 	/**
 	 * Helper method that finds the root shell of the current shell.
 	 * <p/>
-	 * Used in the case where the active shell is e.g. a dialog box 
+	 * Used in the case where the active shell is e.g. a dialog box
 	 */
 	private static Shell getRootShell(Composite s)
 	{
 		if (s.getParent() == null)
 		{
-			return (Shell)s;
+			return (Shell) s;
 		}
 		return getRootShell(s.getParent());
 	}
-	
+
 	/**
 	 * Fade in this popup over the configured duration
 	 */
@@ -510,7 +521,7 @@ public class PopupNotification
 		};
 		Display.getDefault().timerExec(FADE_TICK, run);
 	}
-	
+
 	/**
 	 * Close the popup
 	 */
@@ -519,7 +530,7 @@ public class PopupNotification
 		dispose();
 		activePopups.remove(this);
 	}
-	
+
 	/**
 	 * Perform required cleanup
 	 */
@@ -530,5 +541,5 @@ public class PopupNotification
 			shell.dispose();
 		}
 	}
-	
+
 }

@@ -1,26 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="au.gov.ga.earthsci.notification.receiver" name="Notification Receiver" schema="schema/au.gov.ga.earthsci.notification.receiver.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.notification.categoryProvider" name="Notification Category Provider" schema="schema/au.gov.ga.earthsci.notification.categoryProvider.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.core.retrieve.retriever" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retriever.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.bookmark.applicator" name="Bookmark Property Applicator" schema="schema/au.gov.ga.earthsci.bookmark.applicator.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.bookmark.creator" name="Bookmark Property Creator" schema="schema/au.gov.ga.earthsci.bookmark.creator.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.bookmark.exporter" name="Bookmark Property Exporter" schema="schema/au.gov.ga.earthsci.bookmark.exporter.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.hud" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.hud.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.retrieve.retrievers" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retrievers.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.hudLayers" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.core.hudLayers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.core.xmlLoaders.exsd"/>
    <extension
-         point="org.eclipse.core.contenttype.contentTypes">
-      <content-type
-            file-extensions="tif,tiff,grd,ascii,asc,ecw,ers,png,jpg,jpeg,vrt,adf,bt,e00,bil,hdr,lan,gis,pgm,ppm"
-            file-names="tif,tiff,grd,ascii,asc,ecw,ers,png,jpg,jpeg,vrt,adf,bt,e00,bil,hdr,lan,gis,pgm,ppm"
-            id="au.gov.ga.earthsci.core.content.gdalraster"
-            name="GDAL Raster"
-            priority="normal">
-      </content-type>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.core.retrieve.retriever">
+         point="au.gov.ga.earthsci.core.retrieve.retrievers">
       <retriever
             class="au.gov.ga.earthsci.core.retrieve.retriever.HttpRetriever">
       </retriever>
@@ -49,67 +34,39 @@
       </initializer>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.bookmark.creator">
-      <creator
-            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
-      </creator>
-      <creator
-            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
-      </creator>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.bookmark.exporter">
-      <exporter
-            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyPersister">
-         exporter body text
-      </exporter>
-      <exporter
-            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
-      </exporter>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.bookmark.applicator">
-      <applicator
-            class="au.gov.ga.earthsci.bookmark.properties.camera.CameraPropertyApplicator">
-      </applicator>
-      <applicator
-            class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyApplicator">
-      </applicator>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.injectable">
+         point="au.gov.ga.earthsci.injectables">
       <inject
             class="au.gov.ga.earthsci.core.xml.XmlLoaderManager"
             priority="10">
       </inject>
       <inject
             class="au.gov.ga.earthsci.common.util.ExtensionRegistryUtil"
-            priority="0">
+            priority="10">
       </inject>
-      <injectable
-            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences"
-            priority="0">
-      </injectable>
-      <injectable
-            class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration"
-            priority="0">
-      </injectable>
       <inject
             class="au.gov.ga.earthsci.core.retrieve.RetrieverFactory"
-            priority="0">
+            priority="10">
          <type
                class="au.gov.ga.earthsci.core.retrieve.IRetrieverFactory">
          </type>
       </inject>
       <inject
             class="au.gov.ga.earthsci.core.retrieve.RetrievalService"
-            priority="0">
+            priority="10">
          <type
                class="au.gov.ga.earthsci.core.retrieve.IRetrievalService">
          </type>
       </inject>
       <injectable
             class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory"
+            priority="10">
+      </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences"
+            priority="0">
+      </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration"
             priority="0">
       </injectable>
       <inject
@@ -126,29 +83,9 @@
                class="au.gov.ga.earthsci.core.worldwind.ITreeModel">
          </type>
       </inject>
-      <inject
-            class="au.gov.ga.earthsci.catalog.model.CatalogModel"
-            priority="0">
-         <type
-               class="au.gov.ga.earthsci.catalog.model.ICatalogModel">
-         </type>
-      </inject>
-      <bind
-            binding="au.gov.ga.earthsci.bookmark.model.IBookmarks"
-            class="au.gov.ga.earthsci.bookmark.model.Bookmarks"
-            priority="0">
-      </bind>
-      <inject
-            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry"
-            priority="0">
-      </inject>
-      <inject
-            class="au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory"
-            priority="0">
-      </inject>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.intentFilters">
+         point="au.gov.ga.earthsci.intent.filters">
       <filter
             class="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
             priority="0">
@@ -166,19 +103,9 @@
                id="org.eclipse.core.runtime.xml">
          </content-type>
       </filter>
-      <filter
-            class="au.gov.ga.earthsci.model.intent.GDALRasterModelIntentHandler"
-            priority="0">
-         <content-type
-               id="au.gov.ga.earthsci.core.content.gdalraster">
-         </content-type>
-         <return-type
-               class="gov.nasa.worldwind.layers.Layer">
-         </return-type>
-      </filter>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.intentResourceLocators">
+         point="au.gov.ga.earthsci.intent.resourceLocators">
       <locator
             class="au.gov.ga.earthsci.core.intent.ClasspathIntentResourceLocator"
             priority="0">
@@ -191,22 +118,6 @@
             filter="au.gov.ga.earthsci.core.model.layer.LayerXmlLoader"
             priority="0">
       </loader>
-      <loader
-            class="au.gov.ga.earthsci.catalog.model.dataset.DatasetXmlLoader"
-            filter="au.gov.ga.earthsci.catalog.model.dataset.DatasetXmlLoader"
-            priority="0">
-      </loader>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.dispatchFilters">
-      <filter
-            class="au.gov.ga.earthsci.catalog.model.CatalogTreeNodeDispatchHandler"
-            name="Catalog"
-            priority="0">
-         <type
-               class="au.gov.ga.earthsci.catalog.model.ICatalogTreeNode">
-         </type>
-      </filter>
    </extension>
 
 </plugin>

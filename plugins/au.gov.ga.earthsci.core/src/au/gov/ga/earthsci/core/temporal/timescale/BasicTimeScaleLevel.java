@@ -23,7 +23,7 @@ import au.gov.ga.earthsci.common.util.Validate;
  * A basic immutable implementation of the {@link ITimeScaleLevel} interface
  * 
  * @author James Navin (james.navin@ga.gov.au)
- *
+ * 
  */
 public class BasicTimeScaleLevel implements ITimeScaleLevel
 {
@@ -32,18 +32,15 @@ public class BasicTimeScaleLevel implements ITimeScaleLevel
 	private final String description;
 	private final BigInteger resolution;
 	private final int order;
-	
-	public BasicTimeScaleLevel(String name, 
-							   String description, 
-							   BigInteger resolution, 
-							   int order)
+
+	public BasicTimeScaleLevel(String name, String description, BigInteger resolution, int order)
 	{
-		
+
 		Validate.notBlank(name, "A name is required"); //$NON-NLS-1$
 		Validate.notNull(resolution, "A resolution is required"); //$NON-NLS-1$
 		Validate.isTrue(resolution.signum() > 0, "Resolution must be greater than 0"); //$NON-NLS-1$
 		Validate.isTrue(order >= 0, "Order cannot be negative"); //$NON-NLS-1$
-		
+
 		this.name = name;
 		this.description = description;
 		this.resolution = resolution;
@@ -75,25 +72,23 @@ public class BasicTimeScaleLevel implements ITimeScaleLevel
 		{
 			return true;
 		}
-		
+
 		if (!(obj instanceof ITimeScaleLevel))
 		{
 			return false;
 		}
-		
-		ITimeScaleLevel other = (ITimeScaleLevel)obj;
-		
-		return name.equals(other.getName()) && 
-				resolution.equals(other.getResolution()) &&
-				order == other.getOrder();
+
+		ITimeScaleLevel other = (ITimeScaleLevel) obj;
+
+		return name.equals(other.getName()) && resolution.equals(other.getResolution()) && order == other.getOrder();
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
-		return name.hashCode() + resolution.hashCode() + 31*order;
+		return name.hashCode() + resolution.hashCode() + 31 * order;
 	}
-	
+
 	@Override
 	public BigInteger getResolution()
 	{
@@ -105,11 +100,11 @@ public class BasicTimeScaleLevel implements ITimeScaleLevel
 	{
 		return order;
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		return "BasicTimeScaleLevel(" + name + ")";  //$NON-NLS-1$//$NON-NLS-2$
+		return "BasicTimeScaleLevel(" + name + ")"; //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 }

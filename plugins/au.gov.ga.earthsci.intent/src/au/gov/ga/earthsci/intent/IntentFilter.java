@@ -31,16 +31,19 @@ import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 
 /**
  * Description of {@link Intent} values to be matched. Can match against the
- * Intent's action, categories, MIME types, and/or the URI. Provides the ability
- * to find a suitable handler for an Intent.
+ * Intent's action, categories, content type, expected return type, and/or the
+ * URI. Provides the ability to find a suitable handler for an Intent.
  * <p/>
  * The intent filtering is performed as follows:
  * <ul>
  * <li>Action matches if any of the given values match the Intent action, or if
- * no actions are specified.</li>
+ * no actions are specified by this filter.</li>
  * <li>Categories matches if all of the categories in the Intent match
  * categories in this filter.</li>
- * <li>Data type matches if any of the given values match the Intent type.</li>
+ * <li>Content type matches if any of the given values match the Intent content
+ * type, or both the Intent and the filter don't specify a content type.</li>
+ * <li>Return type matches if any of the given values match the Intent expected
+ * return type if defined, or if the filter defines no return types.</li>
  * <li>Data scheme matches if any of the given values match the Intent URI's
  * scheme.</li>
  * <li>Data authority matches if any of the given values match the Intent URI's
@@ -48,8 +51,7 @@ import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
  * <li>Data path matches if any of the given values match the Intent URI's path,
  * and the data scheme and authority have already matched.</li>
  * </ul>
- * Data types can contain a wildcard '*' in their MIME subtype. Data schemes,
- * authorities, and paths can also contain wildcards '*'.
+ * Data schemes, authorities, and paths can contain wildcards '*'.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -93,7 +95,9 @@ public class IntentFilter
 		{
 			String name = child.getAttribute(attributeName);
 			if (!isEmpty(name))
+			{
 				set.add(name);
+			}
 		}
 	}
 
@@ -107,7 +111,9 @@ public class IntentFilter
 			{
 				IContentType contentType = Platform.getContentTypeManager().getContentType(value);
 				if (contentType != null)
+				{
 					set.add(contentType);
+				}
 			}
 		}
 	}
@@ -121,7 +127,9 @@ public class IntentFilter
 			{
 				Class<?> c = ExtensionPointHelper.getClassForProperty(child, attributeName);
 				if (c != null)
+				{
 					set.add(c);
+				}
 			}
 			catch (ClassNotFoundException e)
 			{
@@ -374,32 +382,44 @@ public class IntentFilter
 	public boolean matches(Intent intent)
 	{
 		if (intent == null)
+		{
 			return false;
+		}
 
 		//first check intent action
 		if (!actions.isEmpty() && !actions.contains(intent.getAction()))
+		{
 			return false;
+		}
 
 		//next check that this contains all intent categories
 		if (!categories.containsAll(intent.getCategories()))
+		{
 			return false;
+		}
 
 		//if a content type is defined by one but not the other, no chance of matching
 		if ((intent.getContentType() == null) != contentTypes.isEmpty())
+		{
 			return false;
+		}
 
 		//if there are content types defined, check if any match the content type of the intent
 		if (!contentTypes.isEmpty())
 		{
 			if (!anyContentTypesMatch(intent.getContentType()))
+			{
 				return false;
+			}
 		}
 
 		//if both intent and filter have a return type defined, check that at least one matches
 		if (intent.getExpectedReturnType() != null && !returnTypes.isEmpty())
 		{
 			if (!anyReturnTypesMatch(intent.getExpectedReturnType()))
+			{
 				return false;
+			}
 		}
 
 		//if there are any schemes/authorities/paths defined, check if any match the URI of the intent (in that order)
@@ -407,20 +427,28 @@ public class IntentFilter
 		{
 			URI uri = intent.getURI();
 			if (uri == null)
+			{
 				return false;
+			}
 
 			if (!anyMatchesUsingWildcards(uri.getScheme(), dataSchemes))
+			{
 				return false;
+			}
 
 			if (!dataAuthorities.isEmpty())
 			{
 				if (!anyMatchesUsingWildcards(uri.getAuthority(), dataAuthorities))
+				{
 					return false;
+				}
 
 				if (!dataPaths.isEmpty())
 				{
 					if (!anyMatchesUsingWildcards(uri.getPath(), dataPaths))
+					{
 						return false;
+					}
 				}
 			}
 		}
@@ -431,18 +459,30 @@ public class IntentFilter
 	public boolean anyContentTypesMatch(IContentType expectedContentType)
 	{
 		if (expectedContentType != null)
+		{
 			for (IContentType contentType : contentTypes)
+			{
 				if (expectedContentType.isKindOf(contentType))
+				{
 					return true;
+				}
+			}
+		}
 		return false;
 	}
 
 	public boolean anyReturnTypesMatch(Class<?> expectedReturnType)
 	{
 		if (expectedReturnType != null)
+		{
 			for (Class<?> returnType : returnTypes)
+			{
 				if (expectedReturnType.isAssignableFrom(returnType))
+				{
 					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -458,7 +498,9 @@ public class IntentFilter
 			String quoted = Pattern.quote(pattern);
 			String regex = quoted.replace("*", "\\E.*\\Q"); //$NON-NLS-1$ //$NON-NLS-2$
 			if (Pattern.matches(regex, input))
+			{
 				return true;
+			}
 		}
 		return false;
 	}

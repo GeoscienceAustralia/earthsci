@@ -38,29 +38,34 @@ import ch.qos.logback.core.util.StatusPrinter;
 /**
  * A class used to bootstrap the configuration of logging.
  * <p/>
- * Searches the current workspace for a {@value #LOGBACK_XML} configuration file. If it doesn't find one,
- * it will use a default configuration that outputs to the console. 
+ * Searches the current workspace for a {@value #LOGBACK_XML} configuration
+ * file. If it doesn't find one, it will use a default configuration that
+ * outputs to the console.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class LoggingConfigurator
 {
 	private static final String LOGBACK_XML = "logback.xml"; //$NON-NLS-1$
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(LoggingConfigurator.class);
 
-	private LoggingConfigurator() {};
-	
+	private LoggingConfigurator()
+	{
+	};
+
 	/**
-	 * Configure the logging to replace the standard workbench loggers with SLF4J bridges.
+	 * Configure the logging to replace the standard workbench loggers with
+	 * SLF4J bridges.
 	 * 
-	 * @param bundleContext The current bundle context
+	 * @param bundleContext
+	 *            The current bundle context
 	 */
 	public static void configure(final BundleContext bundleContext)
 	{
 		configureLogback();
 		registerOSGiLogService(bundleContext);
-		
+
 		logger.debug("Logging configuration initialised."); //$NON-NLS-1$
 	}
 
@@ -70,9 +75,9 @@ public class LoggingConfigurator
 		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 		configurator.setContext(loggerContext);
 		loggerContext.reset();
-		
+
 		configureJULBridge(loggerContext);
-		
+
 		try
 		{
 			InputStream configurationStream = getConfiguration();
@@ -82,7 +87,7 @@ public class LoggingConfigurator
 		{
 			// Use status printer to show errors if needed
 		}
-		
+
 		StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 	}
 
@@ -95,7 +100,7 @@ public class LoggingConfigurator
 		{
 			rootLogger.removeHandler(handlers[i]);
 		}
-		
+
 		// Install the bridge
 		loggerContext.addListener(new LevelChangePropagator());
 		SLF4JBridgeHandler.install();
@@ -113,13 +118,14 @@ public class LoggingConfigurator
 		{
 
 		}
-		
+
 		// Fallback to the default configuration
 		return LoggingConfigurator.class.getResourceAsStream(LOGBACK_XML);
 	}
-	
+
 	/**
 	 * Replace the OSGi LogService implementation, and the ILoggerProvider
+	 * 
 	 * @param bundleContext
 	 */
 	private static void registerOSGiLogService(BundleContext bundleContext)

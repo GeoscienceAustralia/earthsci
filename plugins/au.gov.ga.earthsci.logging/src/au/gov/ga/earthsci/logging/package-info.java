@@ -1,4 +1,3 @@
-
 /**
  * Provides classes to configure the application logging mechanism to use SLF4J rather than the default
  * workbench provided mechanisms.

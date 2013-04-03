@@ -1,0 +1,37 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Bookmark UI
+Bundle-SymbolicName: au.gov.ga.earthsci.bookmark.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: au.gov.ga.earthsci.bookmark.ui.Activator
+Bundle-Vendor: Geoscience Australia
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.e4.core.di,
+ au.gov.ga.earthsci.common,
+ au.gov.ga.earthsci.logging,
+ au.gov.ga.earthsci.core,
+ gov.nasa.worldwind.jogl2,
+ au.gov.ga.earthsci.application;bundle-version="1.0.0",
+ au.gov.ga.earthsci.worldwind,
+ au.gov.ga.earthsci.worldwind,
+ org.eclipse.e4.ui.workbench,
+ org.eclipse.e4.ui.workbench.swt,
+ org.eclipse.e4.ui.model.workbench,
+ org.eclipse.e4.core.contexts,
+ org.eclipse.core.databinding.beans,
+ org.eclipse.core.databinding;bundle-version="1.4.1",
+ org.eclipse.core.databinding.property;bundle-version="1.4.200",
+ org.eclipse.jface.databinding,
+ au.gov.ga.earthsci.injectable,
+ org.eclipse.e4.ui.services,
+ org.eclipse.e4.core.di.extensions,
+ javax.inject;bundle-version="1.0.0",
+ au.gov.ga.earthsci.bookmark;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Import-Package: javax.annotation;version="1.1.0"
+Export-Package: au.gov.ga.earthsci.bookmark.ui,
+ au.gov.ga.earthsci.bookmark.ui.editor,
+ au.gov.ga.earthsci.bookmark.ui.handlers,
+ au.gov.ga.earthsci.bookmark.ui.preferences

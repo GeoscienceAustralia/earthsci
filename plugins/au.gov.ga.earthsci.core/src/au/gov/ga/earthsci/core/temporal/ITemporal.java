@@ -21,59 +21,66 @@ import au.gov.ga.earthsci.common.util.Range;
 
 
 /**
- * An interface for classes that can provide temporal data, or that have a temporal aspect to them.
+ * An interface for classes that can provide temporal data, or that have a
+ * temporal aspect to them.
  * <p/>
- * The 'time' referred to here is real-world time (rather than animation time etc.). Implementations
- * may be applicable at any time that can be stored in a {@link BigTime} instance - that is geological
- * through to nanosecond scale.
+ * The 'time' referred to here is real-world time (rather than animation time
+ * etc.). Implementations may be applicable at any time that can be stored in a
+ * {@link BigTime} instance - that is geological through to nanosecond scale.
  * 
  * @see Chronos
  * @see BigTime
  * 
  * @author James Navin (james.navin@ga.gov.au)
- *
+ * 
  */
 public interface ITemporal
 {
 
 	/**
-	 * Return the range of time, in real-world time, over which this temporal object is meaningful.
+	 * Return the range of time, in real-world time, over which this temporal
+	 * object is meaningful.
 	 * 
 	 * @return The range of time over which this temporal object is meaningful.
 	 */
 	Range<BigTime> getRange();
-	
+
 	/**
-	 * Return an indication of the resolution of the temporal data represented by this instance,
-	 * expressed in nanoseconds.
+	 * Return an indication of the resolution of the temporal data represented
+	 * by this instance, expressed in nanoseconds.
 	 * <p/>
-	 * See {@link BigTime#resolution} for more information on how resolution should be interpreted.
+	 * See {@link BigTime#resolution} for more information on how resolution
+	 * should be interpreted.
 	 * 
 	 * @return The resolution of the temporal data represented by this instance.
 	 */
 	BigInteger getResolution();
-	
+
 	/**
-	 * Determine whether this temporal object can be applied at the given real-world time instant.
+	 * Determine whether this temporal object can be applied at the given
+	 * real-world time instant.
 	 * <p/>
-	 * In most cases this will be equivalent to {@code getRange().contains(time);}. However, 
-	 * implementations may use a more fine-grained test and so client code should use this method
-	 * in preference to the above. 
+	 * In most cases this will be equivalent to
+	 * {@code getRange().contains(time);}. However, implementations may use a
+	 * more fine-grained test and so client code should use this method in
+	 * preference to the above.
 	 * 
-	 * @param time The real-world time instant to test for. 
+	 * @param time
+	 *            The real-world time instant to test for.
 	 * 
-	 * @return <code>true</code> if this temporal object can be applied at the given time instant;
-	 * <code>false</code> otherwise.
+	 * @return <code>true</code> if this temporal object can be applied at the
+	 *         given time instant; <code>false</code> otherwise.
 	 */
 	boolean isApplicableAt(BigTime time);
-	
+
 	/**
 	 * Apply this temporal object at the given real-world time instant.
 	 * <p/>
-	 * This method will have no effect if {@link #isApplicableAt(BigTime)} returns <code>false</code>
-	 * for the given time instant.
+	 * This method will have no effect if {@link #isApplicableAt(BigTime)}
+	 * returns <code>false</code> for the given time instant.
 	 * 
-	 * @param time The real-world time instant to apply 
+	 * @param time
+	 *            The real-world time instant to apply
 	 */
 	void apply(BigTime time);
 }

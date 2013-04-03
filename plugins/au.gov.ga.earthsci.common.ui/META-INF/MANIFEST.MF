@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Common UI
+Bundle-SymbolicName: au.gov.ga.earthsci.common.ui
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Geoscience Australia
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.jface.resource,
+ org.eclipse.swt.widgets
+Require-Bundle: org.eclipse.jface
+Export-Package: au.gov.ga.earthsci.common.ui.viewers

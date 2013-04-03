@@ -82,8 +82,10 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 
 		// Determine whether we should request a stereo canvas
 		String stereo = System.getProperty(AVKey.STEREO_MODE);
-		if ("device".equals(stereo)) //$NON-NLS-1$
+		if ("device".equals(stereo))
+		{
 			caps.setStereo(true);
+		}
 
 		return caps;
 	}
@@ -132,9 +134,13 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 					((WorldWindowNewtDrawableSWT) WorldWind.createConfigurationComponent(AVKey.WORLD_WINDOW_CLASS_NAME));
 			this.wwd.initDrawable(window, this);
 			if (shareWith != null)
+			{
 				this.wwd.initGpuResourceCache(shareWith.getGpuResourceCache());
+			}
 			else
+			{
 				this.wwd.initGpuResourceCache(WorldWindowImpl.createGpuResourceCache());
+			}
 			this.createView();
 			this.createDefaultInputHandler();
 			WorldWind.addPropertyChangeListener(WorldWind.SHUTDOWN_EVENT, this);
@@ -153,7 +159,9 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 	{
 		//noinspection StringEquality
 		if (evt.getPropertyName() == WorldWind.SHUTDOWN_EVENT)
+		{
 			this.shutdown();
+		}
 	}
 
 	@Override
@@ -191,11 +199,15 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 	public void setInputHandler(InputHandler inputHandler)
 	{
 		if (this.wwd.getInputHandler() != null)
+		{
 			this.wwd.getInputHandler().setEventSource(null); // remove this window as a source of events
+		}
 
 		this.wwd.setInputHandler(inputHandler != null ? inputHandler : new NoOpInputHandler());
 		if (inputHandler != null)
+		{
 			inputHandler.setEventSource(this);
+		}
 	}
 
 	@Override
@@ -246,7 +258,9 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 	{
 		// null views are permissible
 		if (view != null)
+		{
 			this.wwd.setView(view);
+		}
 	}
 
 	@Override

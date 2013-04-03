@@ -31,7 +31,7 @@ public class Activator implements BundleActivator
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(Activator.class);
-	
+
 	@Override
 	public void start(final BundleContext context) throws Exception
 	{

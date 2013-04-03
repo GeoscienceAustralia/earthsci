@@ -18,7 +18,8 @@ package au.gov.ga.earthsci.application;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * A listener that listens to new frame events on the {@link LoadingIconAnimator}.
+ * A listener that listens to new frame events on the
+ * {@link LoadingIconAnimator}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */

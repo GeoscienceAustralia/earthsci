@@ -31,11 +31,7 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 
 import au.gov.ga.earthsci.application.parts.info.handlers.LinkHandler;
-import au.gov.ga.earthsci.catalog.model.ICatalogTreeNode;
-import au.gov.ga.earthsci.catalog.part.CatalogTreeLabelProviderRegistry;
-import au.gov.ga.earthsci.core.model.layer.FolderNode;
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.model.layer.LayerNode;
+import au.gov.ga.earthsci.common.util.IInformationed;
 
 /**
  * Part that shows information about the currently selected item.
@@ -48,8 +44,7 @@ public class InfoPart
 	public static final String INPUT_NAME = PART_ID + ".input"; //$NON-NLS-1$
 
 	private Browser browser;
-	private ILayerTreeNode selectedLayer;
-	private ICatalogTreeNode selectedCatalog;
+	private IInformationed informationed;
 	private boolean link;
 
 	@Inject
@@ -82,117 +77,54 @@ public class InfoPart
 	public void setLink(boolean link)
 	{
 		this.link = link;
-		
-		if(selectedCatalog != null)
-			selectCatalog(selectedCatalog);
-		else
-			selectLayer(selectedLayer);
+		select(informationed);
 	}
 
 	@Inject
-	private void selectLayer(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
+	private void select(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IInformationed informationed)
 	{
-		this.selectedLayer = layer;
-		this.selectedCatalog = null;
+		this.informationed = informationed;
 		if (isLink())
 		{
-			context.modify(INPUT_NAME, layer);
-			context.declareModifiable(INPUT_NAME);
-		}
-	}
-	
-	@Inject
-	private void selectCatalog(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode catalog)
-	{
-		this.selectedCatalog = catalog;
-		this.selectedLayer = null;
-		if (isLink())
-		{
-			context.modify(INPUT_NAME, catalog);
+			context.modify(INPUT_NAME, informationed);
 			context.declareModifiable(INPUT_NAME);
 		}
 	}
 
 	@Inject
-	@Optional
-	private void setPartInput(@Named(INPUT_NAME) ILayerTreeNode layer)
+	private void select(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IInformationed[] informationed)
 	{
-		showInfo(layer);
-	}
-	
-	@Inject
-	@Optional
-	private void setPartInput(@Named(INPUT_NAME) ICatalogTreeNode catalog)
-	{
-		showInfo(catalog);
+		if (informationed != null && informationed.length == 1)
+		{
+			select(informationed[0]);
+		}
 	}
 
-	public void showInfo(ILayerTreeNode layer)
+	@Inject
+	@Optional
+	private void setPartInput(@Named(INPUT_NAME) IInformationed informationed)
 	{
-		if (layer != null)
+		showInfo(informationed);
+	}
+
+	public void showInfo(IInformationed informationed)
+	{
+		if (informationed != null)
 		{
-			if (layer.getInfoURL() != null)
+			URL url = informationed.getInformationURL();
+			if (url != null)
 			{
-				browser.setUrl(layer.getInfoURL().toString());
+				browser.setUrl(url.toString());
 			}
 			else
 			{
-				String html = generateInfoHtml(layer);
+				String html = informationed.getInformationString();
+				if (html == null)
+				{
+					html = ""; //$NON-NLS-1$
+				}
 				browser.setText(html);
 			}
-		}
-	}
-	
-	public void showInfo(ICatalogTreeNode catalog)
-	{
-		if (catalog != null)
-		{
-			URL infoURL = CatalogTreeLabelProviderRegistry.getProvider(catalog).getInfoURL(catalog);
-			if (infoURL != null)
-			{
-				browser.setUrl(infoURL.toString());
-			}
-		}
-	}
-
-	private String generateInfoHtml(ILayerTreeNode node)
-	{
-		String layerOrFolder = node instanceof FolderNode ? "Folder" : "Layer";
-		StringBuilder sb = new StringBuilder();
-		sb.append("<html>"); //$NON-NLS-1$
-		sb.append("<body>"); //$NON-NLS-1$
-		sb.append("<h1>"); //$NON-NLS-1$
-		sb.append(layerOrFolder);
-		sb.append(" "); //$NON-NLS-1$
-		sb.append("details");
-		sb.append("</h1>"); //$NON-NLS-1$
-		appendProperty(sb, "Name", node.getName());
-		appendProperty(sb, "Label", node.getLabel());
-		if (node instanceof LayerNode)
-		{
-			LayerNode layer = (LayerNode) node;
-			appendProperty(sb, "URI", layer.getURI()); //$NON-NLS-1$
-		}
-		if (node.getLegendURL() != null)
-		{
-			String url = node.getLegendURL().toString();
-			appendProperty(sb, "Legend", "<a href=\"" + url + "\">" + url + "</a>"); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		}
-		sb.append("</body>"); //$NON-NLS-1$
-		sb.append("</html>"); //$NON-NLS-1$
-		return sb.toString();
-	}
-
-	private void appendProperty(StringBuilder sb, String label, Object value)
-	{
-		if (value != null)
-		{
-			sb.append("<b>"); //$NON-NLS-1$
-			sb.append(label);
-			sb.append(": "); //$NON-NLS-1$
-			sb.append("</b>"); //$NON-NLS-1$
-			sb.append(value);
-			sb.append("<br />"); //$NON-NLS-1$
 		}
 	}
 }

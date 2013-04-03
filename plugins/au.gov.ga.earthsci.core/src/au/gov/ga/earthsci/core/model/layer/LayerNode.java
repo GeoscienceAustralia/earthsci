@@ -76,7 +76,7 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 			firePropertyChange("layer", this.layer, this.layer = layer); //$NON-NLS-1$
 			return;
 		}
-		
+
 		//set the values from the layer on this node
 		setName(layer.getName());
 
@@ -148,10 +148,10 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 				}
 				catch (Exception e)
 				{
-					NotificationManager.notify(Notification.create(NotificationLevel.ERROR, 
-												Messages.LayerNode_FailedCopyNotificationTitle, 
-												Messages.LayerNode_FailedCopyNotificationDescription + from)
-												.withThrowable(e).build());
+					NotificationManager.notify(Notification
+							.create(NotificationLevel.ERROR, Messages.LayerNode_FailedCopyNotificationTitle,
+									Messages.LayerNode_FailedCopyNotificationDescription + from).withThrowable(e)
+							.build());
 				}
 			}
 			copyingProperties = false;

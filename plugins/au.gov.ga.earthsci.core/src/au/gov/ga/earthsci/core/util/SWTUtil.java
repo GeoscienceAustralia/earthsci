@@ -66,12 +66,12 @@ public class SWTUtil
 	{
 		return (color.getRed() + color.getGreen() + color.getBlue()) > 128 * 3;
 	}
-	
+
 	/**
-	 * Recursively enable/disable all the root control and all
-	 * of its children.
+	 * Recursively enable/disable all the root control and all of its children.
 	 * 
-	 * @param root The root node to enable/disable
+	 * @param root
+	 *            The root node to enable/disable
 	 * @param enabled
 	 */
 	public static void setEnabled(Control root, boolean enabled)
@@ -79,18 +79,18 @@ public class SWTUtil
 		root.setEnabled(enabled);
 		if (root instanceof Composite)
 		{
-			for (Control c: ((Composite)root).getChildren())
+			for (Control c : ((Composite) root).getChildren())
 			{
 				setEnabled(c, enabled);
 			}
 		}
 	}
-	
+
 	/**
 	 * Add some colour to the provided control to better allow debugging
 	 */
 	public static void debug(Control control)
 	{
-		control.setBackground(new Color(Display.getCurrent(), new RGB(255,0,0)));
+		control.setBackground(new Color(Display.getCurrent(), new RGB(255, 0, 0)));
 	}
 }

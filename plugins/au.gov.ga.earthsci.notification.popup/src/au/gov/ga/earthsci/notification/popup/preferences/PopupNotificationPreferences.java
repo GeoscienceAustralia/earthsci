@@ -11,8 +11,8 @@ import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.NotificationLevel;
 
 /**
- * Default implementation of the {@link IPopupNotificationPreferences} interface that
- * binds to preferences via the Eclipse preference mechanism
+ * Default implementation of the {@link IPopupNotificationPreferences} interface
+ * that binds to preferences via the Eclipse preference mechanism
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -20,31 +20,31 @@ import au.gov.ga.earthsci.notification.NotificationLevel;
 @Singleton
 public class PopupNotificationPreferences implements IPopupNotificationPreferences
 {
-	
+
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=ENABLE_POPUPS)
+	@Preference(nodePath = QUALIFIER_ID, value = ENABLE_POPUPS)
 	private boolean enabled;
 
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=SHOW_INFO_NOTIFICATIONS)
+	@Preference(nodePath = QUALIFIER_ID, value = SHOW_INFO_NOTIFICATIONS)
 	private boolean infoEnabled;
-	
+
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=SHOW_WARNING_NOTIFICATIONS)
+	@Preference(nodePath = QUALIFIER_ID, value = SHOW_WARNING_NOTIFICATIONS)
 	private boolean warningEnabled;
-	
+
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=SHOW_ERROR_NOTIFICATIONS)
+	@Preference(nodePath = QUALIFIER_ID, value = SHOW_ERROR_NOTIFICATIONS)
 	private boolean errorEnabled;
 
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=POPUP_DURATION)
+	@Preference(nodePath = QUALIFIER_ID, value = POPUP_DURATION)
 	private int displayDuration;
-	
+
 	@Inject
-	@Preference(nodePath=QUALIFIER_ID, value=CATEGORY_FILTER)
+	@Preference(nodePath = QUALIFIER_ID, value = CATEGORY_FILTER)
 	private String enabledCategories;
-	
+
 	@Override
 	public boolean isEnabled()
 	{
@@ -58,36 +58,36 @@ public class PopupNotificationPreferences implements IPopupNotificationPreferenc
 		{
 			return false;
 		}
-		
+
 		if (!enabledFor(notification.getLevel()))
 		{
 			return false;
 		}
-		
+
 		return enabledFor(notification.getCategory());
-		
+
 	}
-	
+
 	private boolean enabledFor(NotificationLevel level)
 	{
 		switch (level)
 		{
-			case INFORMATION:
-			{
-				return enabled && infoEnabled; 
-			}
-			case WARNING:
-			{
-				return enabled && warningEnabled;
-			}
-			case ERROR:
-			{
-				return enabled && errorEnabled;
-			}
+		case INFORMATION:
+		{
+			return enabled && infoEnabled;
+		}
+		case WARNING:
+		{
+			return enabled && warningEnabled;
+		}
+		case ERROR:
+		{
+			return enabled && errorEnabled;
+		}
 		}
 		return false;
 	}
-	
+
 	private boolean enabledFor(NotificationCategory category)
 	{
 		return enabledCategories == null || enabledCategories.isEmpty() || enabledCategories.contains(category.getId());

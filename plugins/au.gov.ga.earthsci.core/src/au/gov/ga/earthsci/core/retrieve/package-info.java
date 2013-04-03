@@ -1,4 +1,3 @@
-
 /**
  * Provides a centralised mechanism for retrieving resources identified by {@link java.net.URL}s.
  * <p/>
@@ -50,3 +49,4 @@
  * </pre>
  */
 package au.gov.ga.earthsci.core.retrieve;
+

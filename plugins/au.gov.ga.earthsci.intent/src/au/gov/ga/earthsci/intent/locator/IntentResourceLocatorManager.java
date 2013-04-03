@@ -47,7 +47,7 @@ public class IntentResourceLocatorManager
 		return instance;
 	}
 
-	private static final String LOCATOR_FILTER_ID = "au.gov.ga.earthsci.intentResourceLocators"; //$NON-NLS-1$
+	private static final String LOCATOR_FILTER_ID = "au.gov.ga.earthsci.intent.resourceLocators"; //$NON-NLS-1$
 	private static final Logger logger = LoggerFactory.getLogger(IntentResourceLocatorManager.class);
 
 	//filters, sorted descending by priority

@@ -10,12 +10,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
- * An {@link IProgressMonitor} that maintains a list of registered delegate monitors.
+ * An {@link IProgressMonitor} that maintains a list of registered delegate
+ * monitors.
  * <p/>
  * Each event will be posted to all registered delegates.
  * <p/>
- * This provides an easy mechanism to have multiple interested parties listen for
- * progress updates from a job.
+ * This provides an easy mechanism to have multiple interested parties listen
+ * for progress updates from a job.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -25,7 +26,7 @@ public class DelegatingProgressMonitor extends NullProgressMonitor implements IP
 	private Set<IProgressMonitor> additionalMonitors = new LinkedHashSet<IProgressMonitor>();
 	private ReadWriteLock monitorsLock = new ReentrantReadWriteLock();
 
-	
+
 	@Override
 	public void beginTask(String name, int totalWork)
 	{
@@ -147,7 +148,7 @@ public class DelegatingProgressMonitor extends NullProgressMonitor implements IP
 			monitorsLock.readLock().unlock();
 		}
 	}
-	
+
 	/**
 	 * Add an additional monitor delegate
 	 */
@@ -163,7 +164,7 @@ public class DelegatingProgressMonitor extends NullProgressMonitor implements IP
 			monitorsLock.writeLock().unlock();
 		}
 	}
-	
+
 	/**
 	 * Add additional monitor delegates
 	 */
@@ -179,7 +180,7 @@ public class DelegatingProgressMonitor extends NullProgressMonitor implements IP
 			monitorsLock.writeLock().unlock();
 		}
 	}
-	
+
 	/**
 	 * Remove an additional monitor delegate
 	 */
@@ -195,7 +196,7 @@ public class DelegatingProgressMonitor extends NullProgressMonitor implements IP
 			monitorsLock.writeLock().unlock();
 		}
 	}
-	
+
 	/**
 	 * Remove all registered monitor delegates
 	 */

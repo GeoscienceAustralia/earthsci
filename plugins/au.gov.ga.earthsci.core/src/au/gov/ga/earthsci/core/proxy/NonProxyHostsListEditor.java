@@ -38,7 +38,9 @@ public class NonProxyHostsListEditor extends ListEditor
 	protected String createList(String[] items)
 	{
 		if (items == null || items.length == 0)
+		{
 			return ""; //$NON-NLS-1$
+		}
 
 		StringBuilder sb = new StringBuilder();
 		for (String i : items)
@@ -59,14 +61,18 @@ public class NonProxyHostsListEditor extends ListEditor
 							public String isValid(String s)
 							{
 								if (s != null && s.length() > 0)
+								{
 									return null;
+								}
 								return "Please enter a value";
 							}
 						});
 		inputDialog.open();
 
 		if (inputDialog.getReturnCode() != Window.OK)
+		{
 			return null;
+		}
 		return inputDialog.getValue();
 	}
 
@@ -74,7 +80,9 @@ public class NonProxyHostsListEditor extends ListEditor
 	protected String[] parseString(String stringList)
 	{
 		if (stringList == null)
+		{
 			return new String[] {};
+		}
 		return stringList.split("\\|"); //$NON-NLS-1$
 	}
 }

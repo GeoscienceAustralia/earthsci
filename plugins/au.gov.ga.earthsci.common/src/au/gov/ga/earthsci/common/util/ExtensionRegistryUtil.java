@@ -34,7 +34,7 @@ public class ExtensionRegistryUtil
 {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExtensionRegistryUtil.class);
-	
+
 	@Inject
 	public static void init(IExtensionRegistry registry, IEclipseContext context)
 	{
@@ -42,23 +42,26 @@ public class ExtensionRegistryUtil
 		ExtensionRegistryUtil.registry = registry;
 		ExtensionRegistryUtil.context = context;
 	}
-	
+
 	private static IExtensionRegistry registry;
 	private static IEclipseContext context;
-	
+
 	/**
-	 * Instantiate classes registered against the given extension point ID using the named attribute.
-	 * Once instantiated, the callback will be invoked with the newly created object.
-	 *  
-	 * @param extensionPointId The ID of the extension point to load from
-	 * @param classAttribute The name of the attribute defining the target class
-	 * @param clazz The type of object that is expected (used for validation)
-	 * @param callback The callback to execute once the object has been instantiated
+	 * Instantiate classes registered against the given extension point ID using
+	 * the named attribute. Once instantiated, the callback will be invoked with
+	 * the newly created object.
+	 * 
+	 * @param extensionPointId
+	 *            The ID of the extension point to load from
+	 * @param classAttribute
+	 *            The name of the attribute defining the target class
+	 * @param clazz
+	 *            The type of object that is expected (used for validation)
+	 * @param callback
+	 *            The callback to execute once the object has been instantiated
 	 */
-	public static <T> void createFromExtension(String extensionPointId, 
-										   String classAttribute, 
-										   Class<? extends T> clazz, 
-										   Callback<T> callback) throws CoreException
+	public static <T> void createFromExtension(String extensionPointId, String classAttribute,
+			Class<? extends T> clazz, Callback<T> callback) throws CoreException
 	{
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(extensionPointId);
 		for (IConfigurationElement e : config)
@@ -76,8 +79,8 @@ public class ExtensionRegistryUtil
 			}
 		}
 	}
-	
-	
+
+
 	public static interface Callback<T>
 	{
 		void run(T t, IConfigurationElement element, IEclipseContext context);

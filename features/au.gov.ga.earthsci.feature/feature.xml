@@ -39,13 +39,6 @@
    </requires>
 
    <plugin
-         id="com.ibm.icu.base"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.jhlabs.filters"
          download-size="0"
          install-size="0"
@@ -60,6 +53,62 @@
 
    <plugin
          id="au.gov.ga.earthsci.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="au.gov.ga.earthsci.catalog"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="au.gov.ga.earthsci.catalog.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="au.gov.ga.earthsci.catalog.dataset"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="au.gov.ga.earthsci.bookmark"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="au.gov.ga.earthsci.bookmark.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="au.gov.ga.earthsci.layer.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="au.gov.ga.earthsci.notification.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="au.gov.ga.earthsci.notification.popup"
          download-size="0"
          install-size="0"
          version="0.0.0"

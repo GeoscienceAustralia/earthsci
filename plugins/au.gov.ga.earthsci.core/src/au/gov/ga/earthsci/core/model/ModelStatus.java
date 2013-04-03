@@ -28,7 +28,7 @@ public class ModelStatus implements IModelStatus
 	private final Level level;
 	private final String message;
 	private final Throwable throwable;
-	
+
 	/**
 	 * Create a new {@link ModelStatus} instance representing an OK status
 	 */
@@ -36,7 +36,7 @@ public class ModelStatus implements IModelStatus
 	{
 		return ok(null);
 	}
-	
+
 	/**
 	 * Create a new {@link ModelStatus} instance representing an OK status
 	 */
@@ -44,7 +44,7 @@ public class ModelStatus implements IModelStatus
 	{
 		return new ModelStatus(Level.OK, message, null);
 	}
-	
+
 	/**
 	 * Create a new {@link ModelStatus} instance representing an ERROR status
 	 */
@@ -52,9 +52,9 @@ public class ModelStatus implements IModelStatus
 	{
 		return new ModelStatus(Level.ERROR, message, t);
 	}
-	
+
 	/**
-	 * Create a new {@link ModelStatus} instance from the given {@link IStatus} 
+	 * Create a new {@link ModelStatus} instance from the given {@link IStatus}
 	 * object.
 	 */
 	public static ModelStatus fromIStatus(IStatus s)
@@ -63,7 +63,7 @@ public class ModelStatus implements IModelStatus
 		{
 			return ok(null);
 		}
-		
+
 		Level l = Level.OK;
 		if (s.getSeverity() == IStatus.ERROR)
 		{
@@ -73,16 +73,19 @@ public class ModelStatus implements IModelStatus
 		{
 			l = Level.WARNING;
 		}
-		
+
 		return new ModelStatus(l, s.getMessage(), s.getException());
 	}
-	
+
 	/**
 	 * Create a new {@link ModelStatus} instance
 	 * 
-	 * @param level The level of the status instance
-	 * @param message The localised message to associate with the status
-	 * @param throwable Optional throwable to attach to the status
+	 * @param level
+	 *            The level of the status instance
+	 * @param message
+	 *            The localised message to associate with the status
+	 * @param throwable
+	 *            Optional throwable to attach to the status
 	 */
 	public ModelStatus(Level level, String message, Throwable throwable)
 	{
@@ -108,7 +111,7 @@ public class ModelStatus implements IModelStatus
 	{
 		return throwable;
 	}
-	
+
 	@Override
 	public boolean isError()
 	{

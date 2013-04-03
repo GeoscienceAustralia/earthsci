@@ -44,7 +44,8 @@ public class NewtInputHandlerAWT extends AWTInputHandler
 
 		if (newWorldWindow != null && !(newWorldWindow instanceof WorldWindowNewtCanvasAWT))
 		{
-			throw new IllegalArgumentException("newWorldWindow must be an instanceof " + WorldWindowNewtCanvasAWT.class.getSimpleName()); //$NON-NLS-1$
+			throw new IllegalArgumentException(
+					"newWorldWindow must be an instanceof " + WorldWindowNewtCanvasAWT.class.getSimpleName()); //$NON-NLS-1$
 		}
 
 		GLWindow window = newWorldWindow == null ? null : ((WorldWindowNewtCanvasAWT) newWorldWindow).getWindow();

@@ -37,7 +37,7 @@ import au.gov.ga.earthsci.common.collection.ListSortedMap;
  */
 public final class Injector
 {
-	private static final String INJECTOR_ID = "au.gov.ga.earthsci.injectable"; //$NON-NLS-1$
+	private static final String INJECTOR_ID = "au.gov.ga.earthsci.injectables"; //$NON-NLS-1$
 	private static final Logger logger = LoggerFactory.getLogger(Injector.class);
 
 	private Injector()

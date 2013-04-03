@@ -26,27 +26,24 @@ import java.util.Set;
 import au.gov.ga.earthsci.worldwind.common.util.Validate;
 
 /**
- * A basic immutable implementation of the {@link ITimeScale} class that provides
- * a builder mechanism for populating fields.
+ * A basic immutable implementation of the {@link ITimeScale} class that
+ * provides a builder mechanism for populating fields.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class BasicTimeScale implements ITimeScale
 {
-	
+
 	private final String id;
 	private final String name;
 	private final String description;
 	private final List<ITimeScaleLevel> levels;
 	private final List<ITimePeriod> periods;
-	
-	
+
+
 	// Use the builder class for creating instances
-	private BasicTimeScale(String id, 
-						   String name, 
-						   String description, 
-						   List<ITimeScaleLevel> levels,
-						   List<ITimePeriod> periods)
+	private BasicTimeScale(String id, String name, String description, List<ITimeScaleLevel> levels,
+			List<ITimePeriod> periods)
 	{
 		this.id = id;
 		this.name = name;
@@ -54,7 +51,7 @@ public class BasicTimeScale implements ITimeScale
 		this.levels = Collections.unmodifiableList(levels);
 		this.periods = Collections.unmodifiableList(periods);
 	}
-	
+
 	@Override
 	public String getName()
 	{
@@ -84,7 +81,7 @@ public class BasicTimeScale implements ITimeScale
 	{
 		return periods;
 	}
-	
+
 	@Override
 	public boolean hasPeriod(ITimePeriod p)
 	{
@@ -92,7 +89,7 @@ public class BasicTimeScale implements ITimeScale
 		{
 			return false;
 		}
-		
+
 		for (ITimePeriod period : periods)
 		{
 			if (period.equals(p) || period.hasSubPeriod(p))
@@ -102,21 +99,23 @@ public class BasicTimeScale implements ITimeScale
 		}
 		return false;
 	}
-	
+
 	/**
 	 * A builder class for {@link BasicTimeScale} instances
 	 */
 	public static class Builder
 	{
-		
+
 		private String id;
 		private String name;
 		private String description;
 		private List<ITimeScaleLevel> levels = new ArrayList<ITimeScaleLevel>();
 		private List<ITimePeriod> periods = new ArrayList<ITimePeriod>();
-		
-		private Builder() {}
-		
+
+		private Builder()
+		{
+		}
+
 		public static Builder buildTimeScale(String id, String name, String description)
 		{
 			Builder result = new Builder();
@@ -135,11 +134,11 @@ public class BasicTimeScale implements ITimeScale
 			{
 				return this;
 			}
-			
+
 			this.levels.addAll(Arrays.asList(levels));
 			return this;
 		}
-		
+
 		/**
 		 * Add all provided levels to the created time scale
 		 */
@@ -149,11 +148,11 @@ public class BasicTimeScale implements ITimeScale
 			{
 				return this;
 			}
-			
+
 			this.levels.addAll(levels);
 			return this;
 		}
-		
+
 		/**
 		 * Add the provided level to the created time scale
 		 */
@@ -163,11 +162,11 @@ public class BasicTimeScale implements ITimeScale
 			{
 				return this;
 			}
-			
+
 			this.levels.add(level);
 			return this;
 		}
-		
+
 		/**
 		 * Add the provided top-level periods to the created time scale
 		 */
@@ -177,11 +176,11 @@ public class BasicTimeScale implements ITimeScale
 			{
 				return this;
 			}
-			
+
 			this.periods.addAll(Arrays.asList(periods));
 			return this;
 		}
-		
+
 		/**
 		 * Add the provided top-level periods to the created time scale
 		 */
@@ -191,11 +190,11 @@ public class BasicTimeScale implements ITimeScale
 			{
 				return this;
 			}
-			
+
 			this.periods.addAll(periods);
 			return this;
 		}
-		
+
 		/**
 		 * Add the provided top-level period to the created time scale
 		 */
@@ -205,38 +204,39 @@ public class BasicTimeScale implements ITimeScale
 			{
 				return this;
 			}
-			
+
 			this.periods.add(period);
 			return this;
 		}
-		
+
 		/**
-		 * Create and return a {@link BasicTimeScale} instance from the values collected with 
-		 * this builder.
+		 * Create and return a {@link BasicTimeScale} instance from the values
+		 * collected with this builder.
 		 * 
-		 * @return a new {@link BasicTimeScale} instance created from the values collected with
-		 * this builder.
+		 * @return a new {@link BasicTimeScale} instance created from the values
+		 *         collected with this builder.
 		 * 
-		 * @throws IllegalArgumentException If this method is called before all required
-		 * values have been provided.
+		 * @throws IllegalArgumentException
+		 *             If this method is called before all required values have
+		 *             been provided.
 		 */
 		public BasicTimeScale build() throws IllegalArgumentException
 		{
 			validate();
-			
+
 			Collections.sort(levels);
 			Collections.sort(periods);
-			
+
 			return new BasicTimeScale(id, name, description, levels, periods);
 		}
-		
+
 		private void validate()
 		{
 			Validate.notBlank(id, "An ID is required"); //$NON-NLS-1$
 			Validate.notBlank(name, "A name is required"); //$NON-NLS-1$
 			Validate.notEmpty(levels, "At least one level is required"); //$NON-NLS-1$
 			Validate.notEmpty(periods, "At least one period is required"); //$NON-NLS-1$
-			
+
 			Set<ITimeScaleLevel> periodLevels = new HashSet<ITimeScaleLevel>();
 			for (ITimePeriod p : periods)
 			{
@@ -244,12 +244,12 @@ public class BasicTimeScale implements ITimeScale
 			}
 			for (ITimeScaleLevel periodLevel : periodLevels)
 			{
-				Validate.isTrue(levels.contains(periodLevel), 
-								"Periods must only use levels from the parent time scale (found unknown level \"" +  //$NON-NLS-1$
-								 periodLevel.getName() + "\")"); //$NON-NLS-1$ 
+				Validate.isTrue(levels.contains(periodLevel),
+						"Periods must only use levels from the parent time scale (found unknown level \"" + //$NON-NLS-1$
+								periodLevel.getName() + "\")"); //$NON-NLS-1$ 
 			}
 		}
-		
+
 		private void collectLevels(ITimePeriod p, Set<ITimeScaleLevel> levels)
 		{
 			levels.add(p.getLevel());
@@ -259,5 +259,5 @@ public class BasicTimeScale implements ITimeScale
 			}
 		}
 	}
-	
+
 }

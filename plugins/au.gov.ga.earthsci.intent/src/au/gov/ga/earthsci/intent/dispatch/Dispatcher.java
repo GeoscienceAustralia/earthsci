@@ -58,7 +58,7 @@ public class Dispatcher
 		return instance;
 	}
 
-	private static final String DISPATCH_FILTER_ID = "au.gov.ga.earthsci.dispatchFilters"; //$NON-NLS-1$
+	private static final String DISPATCH_FILTER_ID = "au.gov.ga.earthsci.intent.dispatchFilters"; //$NON-NLS-1$
 	private static final Logger logger = LoggerFactory.getLogger(Dispatcher.class);
 
 	//filters, sorted descending by priority
@@ -141,7 +141,9 @@ public class Dispatcher
 	public DispatchFilter findFilter(Object object)
 	{
 		if (object == null)
+		{
 			return null;
+		}
 
 		int minDistance = Integer.MAX_VALUE;
 		DispatchFilter closest = null;
@@ -177,16 +179,22 @@ public class Dispatcher
 	protected static int classHierarchyDistance(Class<?> subclass, Class<?> superclass)
 	{
 		if (subclass == null || superclass == null)
+		{
 			return -1;
+		}
 		if (!superclass.isAssignableFrom(subclass))
+		{
 			return -1;
+		}
 		return classHierarchyDistance(subclass, superclass, 0);
 	}
 
 	private static int classHierarchyDistance(Class<?> subclass, Class<?> superclass, int position)
 	{
 		if (subclass.equals(superclass))
+		{
 			return position;
+		}
 		position++;
 		Class<?>[] supers = subclass.getInterfaces();
 		if (subclass.getSuperclass() != null)

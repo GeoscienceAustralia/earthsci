@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.core.tree.lazy;
 
 import java.net.URL;
+import java.util.List;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
@@ -30,7 +31,7 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IRetrievalLazyTreeNode<E> extends ILazyTreeNode<E>
+public interface IRetrievalLazyTreeNode<E extends ITreeNode<E>> extends ILazyTreeNode<E>
 {
 	/**
 	 * @return URL to retrieve the lazy data from
@@ -53,7 +54,7 @@ public interface IRetrievalLazyTreeNode<E> extends ILazyTreeNode<E>
 	 *             If the data could not be read
 	 * @return Children nodes loaded from the retrieved data
 	 */
-	ITreeNode<E>[] handleRetrieval(IRetrievalData data, URL url) throws Exception;
+	List<E> handleRetrieval(IRetrievalData data, URL url) throws Exception;
 
 	/**
 	 * Return a tree node that represents the current loading state of this lazy
@@ -63,7 +64,7 @@ public interface IRetrievalLazyTreeNode<E> extends ILazyTreeNode<E>
 	 * 
 	 * @return A node that displays the current loading state of this lazy node
 	 */
-	ITreeNode<E> getLoadingNode();
+	E getLoadingNode();
 
 	/**
 	 * Return a tree node that represents the given loading error. Null can be
@@ -74,5 +75,5 @@ public interface IRetrievalLazyTreeNode<E> extends ILazyTreeNode<E>
 	 *            Error to create the node for
 	 * @return A node that displays the given error
 	 */
-	ITreeNode<E> getErrorNode(Throwable error);
+	E getErrorNode(Throwable error);
 }

@@ -40,28 +40,28 @@ public class HackedCTabRendering extends CTabFolderRenderer {
 
 	static {
 		try {
-			HACK_CTabItem_closeRect = CTabItem.class.getDeclaredField("closeRect");
+			HACK_CTabItem_closeRect = CTabItem.class.getDeclaredField("closeRect"); //$NON-NLS-1$
 			HACK_CTabItem_closeRect.setAccessible(true);
 
-			HACK_CTabItem_shortenText = CTabItem.class.getDeclaredField("shortenedText");
+			HACK_CTabItem_shortenText = CTabItem.class.getDeclaredField("shortenedText"); //$NON-NLS-1$
 			HACK_CTabItem_shortenText.setAccessible(true);
 
-			HACK_CTabItem_shortenTextWidth = CTabItem.class.getDeclaredField("shortenedTextWidth");
+			HACK_CTabItem_shortenTextWidth = CTabItem.class.getDeclaredField("shortenedTextWidth"); //$NON-NLS-1$
 			HACK_CTabItem_shortenTextWidth.setAccessible(true);
 
-			HACK_CTabItem_closeImageState = CTabItem.class.getDeclaredField("closeImageState");
+			HACK_CTabItem_closeImageState = CTabItem.class.getDeclaredField("closeImageState"); //$NON-NLS-1$
 			HACK_CTabItem_closeImageState.setAccessible(true);
 
-			HACK_CTabFolder_curveWidth = CTabFolderRenderer.class.getDeclaredField("curveWidth");
+			HACK_CTabFolder_curveWidth = CTabFolderRenderer.class.getDeclaredField("curveWidth"); //$NON-NLS-1$
 			HACK_CTabFolder_curveWidth.setAccessible(true);
 
-			HACK_CTabFolder_curveIndent = CTabFolderRenderer.class.getDeclaredField("curveIndent");
+			HACK_CTabFolder_curveIndent = CTabFolderRenderer.class.getDeclaredField("curveIndent"); //$NON-NLS-1$
 			HACK_CTabFolder_curveIndent.setAccessible(true);
 
-			HACK_CTabFolder_getRightItemEdge = CTabFolder.class.getDeclaredMethod("getRightItemEdge", GC.class);
+			HACK_CTabFolder_getRightItemEdge = CTabFolder.class.getDeclaredMethod("getRightItemEdge", GC.class); //$NON-NLS-1$
 			HACK_CTabFolder_getRightItemEdge.setAccessible(true);
 
-			HACK_CTabFolder_updateItems = CTabFolder.class.getDeclaredMethod("updateItems");
+			HACK_CTabFolder_updateItems = CTabFolder.class.getDeclaredMethod("updateItems"); //$NON-NLS-1$
 			HACK_CTabFolder_updateItems.setAccessible(true);
 
 		} catch (Exception e) {
@@ -245,7 +245,7 @@ public class HackedCTabRendering extends CTabFolderRenderer {
 	}
 
 	String _shortenText(GC gc, String text, int width) {
-		return parent.getSimple() ? _shortenText(gc, text, width, "...") : _shortenText(gc, text, width, ""); //$NON-NLS-1$
+		return parent.getSimple() ? _shortenText(gc, text, width, "...") : _shortenText(gc, text, width, ""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	String _shortenText(GC gc, String text, int width, String ellipses) {
@@ -320,6 +320,7 @@ public class HackedCTabRendering extends CTabFolderRenderer {
 		return value;
 	}
 
+	@Override
 	protected Point computeSize(int part, int state, GC gc, int wHint, int hHint) {
 		wHint += paddingLeft + paddingRight;
 		hHint += paddingTop + paddingBottom;
@@ -332,6 +333,7 @@ public class HackedCTabRendering extends CTabFolderRenderer {
 		return super.computeSize(part, state, gc, wHint, hHint);
 	}
 
+	@Override
 	protected Rectangle computeTrim(int part, int state, int x, int y, int width, int height) {
 		GC gc = new GC(parent);
 		gc.dispose();
@@ -450,6 +452,7 @@ public class HackedCTabRendering extends CTabFolderRenderer {
 		tmpImage.dispose();
 	}
 
+	@Override
 	protected void dispose() {
 		if (shadowImage != null && !shadowImage.isDisposed()) {
 			shadowImage.dispose();
@@ -458,6 +461,7 @@ public class HackedCTabRendering extends CTabFolderRenderer {
 		super.dispose();
 	}
 
+	@Override
 	protected void draw(int part, int state, Rectangle bounds, GC gc) {
 		switch (part) {
 

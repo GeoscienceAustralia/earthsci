@@ -59,11 +59,11 @@ public class DefaultLayers
 	public static FolderNode getLayers()
 	{
 		FolderNode folder = new FolderNode();
-		folder.setName("Default");
+		folder.setName(Messages.DefaultLayers_DefaultLabel);
 		LayerNode[] nodes = getLayerNodes();
 		for (LayerNode node : nodes)
 		{
-			folder.add(node);
+			folder.addChild(node);
 		}
 		return folder;
 	}
@@ -122,16 +122,22 @@ public class DefaultLayers
 		Object o = factory.createFromConfigSource(element, null);
 
 		if (o instanceof LayerList)
+		{
 			return (LayerList) o;
+		}
 
 		if (o instanceof Layer)
+		{
 			return new LayerList(new Layer[] { (Layer) o });
+		}
 
 		if (o instanceof LayerList[])
 		{
 			LayerList[] lists = (LayerList[]) o;
 			if (lists.length > 0)
+			{
 				return LayerList.collapseLists((LayerList[]) o);
+			}
 		}
 
 		return null;
@@ -230,11 +236,15 @@ public class DefaultLayers
 				{
 					String propertyName = element.getAttribute("name"); //$NON-NLS-1$
 					if (Util.isEmpty(propertyName))
+					{
 						continue;
+					}
 
 					String propertyValue = element.getAttribute("value"); //$NON-NLS-1$
 					if (Util.isEmpty(propertyValue))
+					{
 						continue;
+					}
 
 					map.put(propertyName, propertyValue);
 				}

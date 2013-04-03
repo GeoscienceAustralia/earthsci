@@ -35,7 +35,7 @@ import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
  */
 public class HudLayers
 {
-	public static final String HUD_EXTENSION_POINT_ID = "au.gov.ga.earthsci.hud"; //$NON-NLS-1$
+	public static final String HUD_EXTENSION_POINT_ID = "au.gov.ga.earthsci.core.hudLayers"; //$NON-NLS-1$
 
 	private static HudLayer[] layers;
 	private static final Set<Class<?>> layerClasses = new HashSet<Class<?>>();

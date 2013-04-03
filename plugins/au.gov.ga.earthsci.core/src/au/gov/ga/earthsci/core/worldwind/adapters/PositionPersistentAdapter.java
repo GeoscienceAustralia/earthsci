@@ -25,7 +25,8 @@ import au.gov.ga.earthsci.core.persistence.IPersistentAdapter;
 import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
 /**
- * An {@link IPersistentAdapter} that can be used to persist {@link Position} instances
+ * An {@link IPersistentAdapter} that can be used to persist {@link Position}
+ * instances
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -38,7 +39,7 @@ public class PositionPersistentAdapter implements IPersistentAdapter<Position>
 	public void toXML(Position object, Element element, URI context)
 	{
 		XMLUtil.appendPosition(element, ELEMENT_NAME, object);
-		
+
 	}
 
 	@Override

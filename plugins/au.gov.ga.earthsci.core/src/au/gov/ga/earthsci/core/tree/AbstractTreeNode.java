@@ -15,7 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.tree;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import au.gov.ga.earthsci.common.util.AbstractTreePropertyChangeBean;
 
@@ -27,22 +29,27 @@ import au.gov.ga.earthsci.common.util.AbstractTreePropertyChangeBean;
  * @param <E>
  *            Type wrapped by this node.
  */
-public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean implements ITreeNode<E>
+public abstract class AbstractTreeNode<E extends ITreeNode<E>> extends AbstractTreePropertyChangeBean implements
+		ITreeNode<E>
 {
-	protected E value;
-	protected ITreeNode<E> parent;
-	@SuppressWarnings("unchecked")
-	protected ITreeNode<E>[] children = new ITreeNode[0];
+	protected final E me;
+	protected E parent;
+	protected List<E> children = Collections.unmodifiableList(new ArrayList<E>());
 
-	@Override
-	public E getValue()
+	protected AbstractTreeNode(Class<E> genericClass)
 	{
-		return value;
+		if (!genericClass.isInstance(this))
+		{
+			throw new IllegalStateException("Subclasses of " + AbstractTreeNode.class //$NON-NLS-1$
+					+ " must be an instance of the class specified by the generic argument"); //$NON-NLS-1$
+		}
+		me = genericClass.cast(this);
 	}
 
-	public void setValue(E value)
+	@Override
+	public E me()
 	{
-		this.value = value;
+		return me;
 	}
 
 	@Override
@@ -52,13 +59,13 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 	}
 
 	@Override
-	public ITreeNode<E> getParent()
+	public E getParent()
 	{
 		return parent;
 	}
 
 	@Override
-	public void setParent(ITreeNode<E> parent, int indexInParent)
+	public void setParent(E parent, int indexInParent)
 	{
 		if (parent != null && parent.getChild(indexInParent) != this)
 		{
@@ -74,7 +81,7 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 	}
 
 	@Override
-	public ITreeNode<E>[] getChildren()
+	public List<E> getChildren()
 	{
 		return children;
 	}
@@ -82,7 +89,7 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 	@Override
 	public int getChildCount()
 	{
-		return children == null ? 0 : children.length;
+		return children.size();
 	}
 
 	/**
@@ -91,19 +98,16 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 	 * @param children
 	 *            Node's children, cannot be null
 	 */
-	public void setChildren(ITreeNode<E>[] children)
+	public void setChildren(List<E> children)
 	{
-		ITreeNode<E>[] oldValue = getChildren();
-		this.children = Arrays.copyOf(children, children.length);
+		List<E> oldValue = getChildren();
+		this.children = Collections.unmodifiableList(children);
 
 		//set children's parent to this
-		for (int i = 0; i < children.length; i++)
+		int i = 0;
+		for (E child : children)
 		{
-			ITreeNode<E> child = children[i];
-			if (child.getParent() != this)
-			{
-				child.setParent(this, i);
-			}
+			child.setParent(me(), i++);
 		}
 
 		fireChildrenPropertyChange(oldValue, children);
@@ -115,15 +119,15 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 	 * @param oldChildren
 	 * @param newChildren
 	 */
-	protected void fireChildrenPropertyChange(ITreeNode<E>[] oldChildren, ITreeNode<E>[] newChildren)
+	protected void fireChildrenPropertyChange(List<E> oldChildren, List<E> newChildren)
 	{
 		firePropertyChange("children", oldChildren, newChildren); //$NON-NLS-1$
 	}
 
 	@Override
-	public ITreeNode<E> getChild(int index)
+	public E getChild(int index)
 	{
-		return children[index];
+		return children.get(index);
 	}
 
 	@Override
@@ -133,17 +137,7 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 		{
 			return -1;
 		}
-
-		int i = 0;
-		for (ITreeNode<E> sibling : getParent().getChildren())
-		{
-			if (sibling == this)
-			{
-				return i;
-			}
-			i++;
-		}
-		return -1;
+		return getParent().getChildren().indexOf(this);
 	}
 
 	@Override
@@ -162,13 +156,13 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 	}
 
 	@Override
-	public void add(ITreeNode<E> child)
+	public void addChild(E child)
 	{
-		add(-1, child);
+		addChild(-1, child);
 	}
 
 	@Override
-	public void add(int index, ITreeNode<E> child)
+	public void addChild(int index, E child)
 	{
 		// Handle the edge case of a child node being added that already exists
 		// Note - the rest of the tree API expects child arrays to act as sets
@@ -177,70 +171,39 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 			moveChild(child, index);
 			return;
 		}
-
 		if (child.getParent() != null)
 		{
-			child.getParent().remove(child);
+			child.getParent().removeChild(child);
 		}
-		@SuppressWarnings("unchecked")
-		ITreeNode<E>[] newChildren = new ITreeNode[children.length + 1];
-		if (index < 0 || index > children.length)
+		if (index < 0 || index > children.size())
 		{
-			index = children.length;
+			index = children.size();
 		}
-		if (index > 0)
-		{
-			System.arraycopy(children, 0, newChildren, 0, index);
-		}
-		newChildren[index] = child;
-		if (index < children.length)
-		{
-			System.arraycopy(children, index, newChildren, index + 1, children.length - index);
-		}
+		List<E> newChildren = new ArrayList<E>(children);
+		newChildren.add(index, child);
 		setChildren(newChildren);
 	}
 
 	@Override
-	public void moveChild(ITreeNode<E> child, int newIndex)
+	public void moveChild(E child, int newIndex)
 	{
-		if (newIndex < 0 || newIndex >= children.length)
+		if (newIndex < 0 || newIndex >= children.size())
 		{
-			newIndex = children.length - 1;
+			newIndex = children.size() - 1;
 		}
-
 		int oldIndex = child.index();
 		if (oldIndex == newIndex)
 		{
 			return;
 		}
-
-		@SuppressWarnings("unchecked")
-		ITreeNode<E>[] newChildren = new ITreeNode[children.length];
-		System.arraycopy(children, 0, newChildren, 0, Math.min(oldIndex, newIndex));
-
-		if (oldIndex < newIndex)
-		{
-			System.arraycopy(children, oldIndex + 1, newChildren, oldIndex, newIndex - oldIndex);
-			if (newIndex < children.length - 1)
-			{
-				System.arraycopy(children, newIndex + 1, newChildren, newIndex + 1, children.length - newIndex - 1);
-			}
-		}
-		else
-		{
-			System.arraycopy(children, newIndex, newChildren, newIndex + 1, oldIndex - newIndex);
-			if (oldIndex < children.length - 1)
-			{
-				System.arraycopy(children, oldIndex + 1, newChildren, oldIndex + 1, children.length - oldIndex - 1);
-			}
-		}
-		newChildren[newIndex] = child;
-
+		List<E> newChildren = new ArrayList<E>(children);
+		newChildren.remove(oldIndex);
+		newChildren.add(newIndex, child);
 		setChildren(newChildren);
 	}
 
 	@Override
-	public boolean remove(ITreeNode<E> child)
+	public boolean removeChild(E child)
 	{
 		int index = child.index();
 		if (index < 0)
@@ -251,57 +214,42 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 		{
 			return false;
 		}
-		remove(index);
+		removeChild(index);
 		return true;
 	}
 
 	@Override
-	public ITreeNode<E> remove(int index)
+	public E removeChild(int index)
 	{
-		if (index < 0 || index >= children.length)
+		if (index < 0 || index >= children.size())
 		{
 			throw new IndexOutOfBoundsException();
 		}
-
-		@SuppressWarnings("unchecked")
-		ITreeNode<E>[] newChildren = new ITreeNode[children.length - 1];
-		ITreeNode<E> node = children[index];
+		List<E> newChildren = new ArrayList<E>(children);
+		E node = newChildren.remove(index);
 		if (node.getParent() == this)
 		{
 			node.setParent(null, -1);
-		}
-		if (index > 0)
-		{
-			System.arraycopy(children, 0, newChildren, 0, index);
-		}
-		if (index < children.length - 1)
-		{
-			System.arraycopy(children, index + 1, newChildren, index, children.length - index - 1);
 		}
 		setChildren(newChildren);
 		return node;
 	}
 
 	@Override
-	public void removeAll()
+	public void clearChildren()
 	{
-		if (children.length == 0)
+		if (children.isEmpty())
 		{
 			return;
 		}
-
-		@SuppressWarnings("unchecked")
-		ITreeNode<E>[] newChildren = new ITreeNode[0];
-
-		for (ITreeNode<E> child : children)
+		for (E child : children)
 		{
 			if (child.getParent() == this)
 			{
 				child.setParent(null, -1);
 			}
 		}
-
-		setChildren(newChildren);
+		setChildren(new ArrayList<E>());
 	}
 
 	@Override
@@ -311,11 +259,13 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 		{
 			return;
 		}
-		getParent().remove(this);
+		@SuppressWarnings("unchecked")
+		E e = (E) this;
+		getParent().removeChild(e);
 	}
 
 	@Override
-	public boolean replaceChild(ITreeNode<E> child, ITreeNode<E> newChild)
+	public boolean replaceChild(E child, E newChild)
 	{
 		int index = child.index();
 		if (index < 0)
@@ -326,24 +276,25 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 		{
 			return false;
 		}
-		@SuppressWarnings("unchecked")
-		ITreeNode<E>[] newChildren = new ITreeNode[children.length];
-		System.arraycopy(children, 0, newChildren, 0, children.length);
-		newChildren[index] = newChild;
+		List<E> newChildren = new ArrayList<E>(children);
+		newChildren.remove(index);
+		if (child.getParent() == this)
+		{
+			child.setParent(null, -1);
+		}
+		newChildren.add(index, newChild);
 		setChildren(newChildren);
 		return true;
 	}
 
 	@Override
-	public ITreeNode<E>[] pathToRoot()
+	public List<E> pathToRoot()
 	{
-		int count = depth() + 1;
-		@SuppressWarnings("unchecked")
-		ITreeNode<E>[] path = new ITreeNode[count];
-		ITreeNode<E> node = this;
-		for (int i = count - 1; i >= 0; i--)
+		List<E> path = new ArrayList<E>();
+		E node = me();
+		while (node != null)
 		{
-			path[i] = node;
+			path.add(0, node);
 			node = node.getParent();
 		}
 		return path;
@@ -379,9 +330,9 @@ public abstract class AbstractTreeNode<E> extends AbstractTreePropertyChangeBean
 	}
 
 	@Override
-	public ITreeNode<E> getRoot()
+	public E getRoot()
 	{
-		ITreeNode<E> node = this;
+		E node = me();
 		while (!node.isRoot())
 		{
 			node = node.getParent();

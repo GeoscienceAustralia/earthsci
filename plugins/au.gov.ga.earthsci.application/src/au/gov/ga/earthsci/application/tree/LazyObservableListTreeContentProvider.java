@@ -80,7 +80,7 @@ public class LazyObservableListTreeContentProvider extends ObservableListTreeCon
 				}
 			});
 		}
-		return lazyTreeNode.getDisplayChildren();
+		return lazyTreeNode.getDisplayChildren().toArray();
 	}
 
 	@Override

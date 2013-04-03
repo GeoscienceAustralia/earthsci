@@ -79,7 +79,9 @@ public class WorldWindowNewtAutoDrawableAWT extends WorldWindowGLAutoDrawable im
 	public void redraw()
 	{
 		if (awtComponent != null)
+		{
 			awtComponent.repaint();
+		}
 	}
 
 	@Override
@@ -101,7 +103,9 @@ public class WorldWindowNewtAutoDrawableAWT extends WorldWindowGLAutoDrawable im
 		//have to override this method because the superclass' dashboard field is private
 		super.doShutdown();
 		if (this.dashboard != null)
+		{
 			this.dashboard.dispose();
+		}
 	}
 
 	@Override

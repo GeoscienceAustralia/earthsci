@@ -19,8 +19,8 @@ import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.core.math.vector.Vector;
 
 /**
- * A simple linear interpolator that interpolates linearly between
- * a start and end vector
+ * A simple linear interpolator that interpolates linearly between a start and
+ * end vector
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -29,7 +29,7 @@ public class LinearInterpolator<V extends Vector<V>> implements Interpolator<V>
 
 	private V start;
 	private V end;
-	
+
 	/**
 	 * Constructor. Initialises the start and end vectors.
 	 * 
@@ -40,7 +40,7 @@ public class LinearInterpolator<V extends Vector<V>> implements Interpolator<V>
 	{
 		Validate.notNull(start, "A start vector is required"); //$NON-NLS-1$
 		Validate.notNull(end, "An end vector is required"); //$NON-NLS-1$
-		
+
 		this.start = start;
 		this.end = end;
 	}
@@ -60,7 +60,8 @@ public class LinearInterpolator<V extends Vector<V>> implements Interpolator<V>
 	}
 
 	/**
-	 * @param start the start to set
+	 * @param start
+	 *            the start to set
 	 */
 	public void setStart(V start)
 	{
@@ -77,7 +78,8 @@ public class LinearInterpolator<V extends Vector<V>> implements Interpolator<V>
 	}
 
 	/**
-	 * @param end the end to set
+	 * @param end
+	 *            the end to set
 	 */
 	public void setEnd(V end)
 	{

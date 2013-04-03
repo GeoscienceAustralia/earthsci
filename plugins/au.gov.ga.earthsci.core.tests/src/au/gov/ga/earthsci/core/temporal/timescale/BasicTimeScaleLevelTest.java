@@ -38,15 +38,15 @@ public class BasicTimeScaleLevelTest
 		String description = "description";
 		BigInteger resolution = BigInteger.valueOf(1000);
 		int order = 1;
-		
+
 		BasicTimeScaleLevel classUnderTest = new BasicTimeScaleLevel(name, description, resolution, order);
-		
+
 		assertEquals(name, classUnderTest.getName());
 		assertEquals(description, classUnderTest.getDescription());
 		assertEquals(resolution, classUnderTest.getResolution());
 		assertEquals(order, classUnderTest.getOrder());
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateWithBlankName()
 	{
@@ -54,10 +54,10 @@ public class BasicTimeScaleLevelTest
 		String description = "description";
 		BigInteger resolution = BigInteger.valueOf(1000);
 		int order = 1;
-		
+
 		new BasicTimeScaleLevel(name, description, resolution, order);
 	}
-	
+
 	@Test()
 	public void testCreateWithBlankDescription()
 	{
@@ -65,15 +65,15 @@ public class BasicTimeScaleLevelTest
 		String description = "";
 		BigInteger resolution = BigInteger.valueOf(1000);
 		int order = 1;
-		
+
 		BasicTimeScaleLevel classUnderTest = new BasicTimeScaleLevel(name, description, resolution, order);
-		
+
 		assertEquals(name, classUnderTest.getName());
 		assertEquals(description, classUnderTest.getDescription());
 		assertEquals(resolution, classUnderTest.getResolution());
 		assertEquals(order, classUnderTest.getOrder());
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateWithNoResolution()
 	{
@@ -81,10 +81,10 @@ public class BasicTimeScaleLevelTest
 		String description = "description";
 		BigInteger resolution = null;
 		int order = 1;
-		
+
 		new BasicTimeScaleLevel(name, description, resolution, order);
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateWithZeroResolution()
 	{
@@ -92,10 +92,10 @@ public class BasicTimeScaleLevelTest
 		String description = "description";
 		BigInteger resolution = BigInteger.valueOf(0);
 		int order = 1;
-		
+
 		new BasicTimeScaleLevel(name, description, resolution, order);
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateWithNegativeResolution()
 	{
@@ -103,10 +103,10 @@ public class BasicTimeScaleLevelTest
 		String description = "description";
 		BigInteger resolution = BigInteger.valueOf(-1000);
 		int order = 1;
-		
+
 		new BasicTimeScaleLevel(name, description, resolution, order);
 	}
-	
+
 	@Test()
 	public void testCreateWithZeroOrder()
 	{
@@ -114,15 +114,15 @@ public class BasicTimeScaleLevelTest
 		String description = "description";
 		BigInteger resolution = BigInteger.valueOf(1000);
 		int order = 0;
-		
+
 		BasicTimeScaleLevel classUnderTest = new BasicTimeScaleLevel(name, description, resolution, order);
-		
+
 		assertEquals(name, classUnderTest.getName());
 		assertEquals(description, classUnderTest.getDescription());
 		assertEquals(resolution, classUnderTest.getResolution());
 		assertEquals(order, classUnderTest.getOrder());
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateWithNegativeOrder()
 	{
@@ -130,7 +130,7 @@ public class BasicTimeScaleLevelTest
 		String description = "description";
 		BigInteger resolution = BigInteger.valueOf(1000);
 		int order = -1;
-		
+
 		new BasicTimeScaleLevel(name, description, resolution, order);
 	}
 
@@ -139,25 +139,25 @@ public class BasicTimeScaleLevelTest
 	{
 		BasicTimeScaleLevel l1 = new BasicTimeScaleLevel("name1", "description1", BigInteger.TEN, 1);
 		BasicTimeScaleLevel l2 = new BasicTimeScaleLevel("name2", "description2", BigInteger.ONE, 2);
-		
+
 		assertTrue(l1.compareTo(l2) < 0);
 	}
-	
+
 	@Test
 	public void testCompareToEqualTo()
 	{
 		BasicTimeScaleLevel l1 = new BasicTimeScaleLevel("name1", "description1", BigInteger.TEN, 1);
 		BasicTimeScaleLevel l2 = new BasicTimeScaleLevel("name2", "description2", BigInteger.ONE, 1);
-		
+
 		assertTrue(l1.compareTo(l2) == 0);
 	}
-	
+
 	@Test
 	public void testCompareToGreaterThan()
 	{
 		BasicTimeScaleLevel l1 = new BasicTimeScaleLevel("name1", "description1", BigInteger.TEN, 2);
 		BasicTimeScaleLevel l2 = new BasicTimeScaleLevel("name2", "description2", BigInteger.ONE, 1);
-		
+
 		assertTrue(l1.compareTo(l2) > 0);
 	}
 
@@ -166,58 +166,57 @@ public class BasicTimeScaleLevelTest
 	{
 		BasicTimeScaleLevel l1 = new BasicTimeScaleLevel("name1", "description1", BigInteger.TEN, 2);
 		BasicTimeScaleLevel l2 = l1;
-		
+
 		assertTrue(l1.equals(l2));
 	}
-	
+
 	@Test
 	public void testEqualsWithEqual()
 	{
 		BasicTimeScaleLevel l1 = new BasicTimeScaleLevel("name1", "description1", BigInteger.TEN, 2);
 		BasicTimeScaleLevel l2 = new BasicTimeScaleLevel("name1", "description1", BigInteger.TEN, 2);
-		
+
 		assertTrue(l1.equals(l2));
 		assertTrue(l2.equals(l1));
 	}
-	
+
 	@Test
 	public void testEqualsWithDifferentName()
 	{
 		BasicTimeScaleLevel l1 = new BasicTimeScaleLevel("name1", "description1", BigInteger.TEN, 2);
 		BasicTimeScaleLevel l2 = new BasicTimeScaleLevel("name2", "description1", BigInteger.TEN, 2);
-		
+
 		assertFalse(l1.equals(l2));
 		assertFalse(l2.equals(l1));
 	}
-	
+
 	@Test
 	public void testEqualsWithDifferentDescription()
 	{
 		BasicTimeScaleLevel l1 = new BasicTimeScaleLevel("name1", "description1", BigInteger.TEN, 2);
 		BasicTimeScaleLevel l2 = new BasicTimeScaleLevel("name1", "description2", BigInteger.TEN, 2);
-		
+
 		assertTrue(l1.equals(l2));
 		assertTrue(l2.equals(l1));
 	}
-	
+
 	@Test
 	public void testEqualsWithDifferentResolution()
 	{
 		BasicTimeScaleLevel l1 = new BasicTimeScaleLevel("name1", "description1", BigInteger.TEN, 2);
 		BasicTimeScaleLevel l2 = new BasicTimeScaleLevel("name1", "description1", BigInteger.ONE, 2);
-		
+
 		assertFalse(l1.equals(l2));
 		assertFalse(l2.equals(l1));
 	}
-	
+
 	@Test
 	public void testEqualsWithDifferentOrder()
 	{
 		BasicTimeScaleLevel l1 = new BasicTimeScaleLevel("name1", "description1", BigInteger.TEN, 2);
 		BasicTimeScaleLevel l2 = new BasicTimeScaleLevel("name1", "description1", BigInteger.TEN, 1);
-		
+
 		assertFalse(l1.equals(l2));
 		assertFalse(l2.equals(l1));
 	}
 }
-

@@ -33,12 +33,12 @@ import au.gov.ga.earthsci.application.about.AboutDialog;
  */
 public class AboutHandler
 {
-	
+
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 	{
 		IProduct product = Platform.getProduct();
-		
+
 		AboutDialog dialog = new AboutDialog(shell, product);
 		dialog.open();
 	}

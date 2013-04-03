@@ -10,13 +10,12 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * Add "empty" class(CSS) into {@link CTabFolder} when there is no item.
  */
-@SuppressWarnings("restriction")
 public class UpdateCTabFolderClassesJob extends UIJob {
 
 	private CTabFolder folder;
 
 	public UpdateCTabFolderClassesJob(CTabFolder folder) {
-		super("Update CTabFolder CSS");
+		super("Update CTabFolder CSS"); //$NON-NLS-1$
 		this.folder = folder;
 		this.setSystem(true);
 	}
@@ -31,11 +30,11 @@ public class UpdateCTabFolderClassesJob extends UIJob {
 		boolean haveToSetEmpty = folder.getItemCount() == 0;
 
 		if (haveToSetEmpty) {
-			classes.add("empty");
-			classes.remove("nonEmpty");
+			classes.add("empty"); //$NON-NLS-1$
+			classes.remove("nonEmpty"); //$NON-NLS-1$
 		} else {
-			classes.remove("empty");
-			classes.add("nonEmpty");
+			classes.remove("empty"); //$NON-NLS-1$
+			classes.add("nonEmpty"); //$NON-NLS-1$
 		}
 
 		CSSClasses.setStyleClasses(folder, classes);
@@ -45,7 +44,7 @@ public class UpdateCTabFolderClassesJob extends UIJob {
 	}
 
 	private IThemeEngine getThemeEngine() {
-		return (IThemeEngine) folder.getDisplay().getData("org.eclipse.e4.ui.css.swt.theme");
+		return (IThemeEngine) folder.getDisplay().getData("org.eclipse.e4.ui.css.swt.theme"); //$NON-NLS-1$
 	}
 
 	@Override

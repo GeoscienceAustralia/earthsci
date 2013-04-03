@@ -16,17 +16,23 @@ import au.gov.ga.earthsci.notification.NotificationLevel;
 public class Icons
 {
 
-	private static final Map<NotificationLevel, Image> LEVEL_ICONS = new EnumMap<NotificationLevel, Image>(NotificationLevel.class);
+	private static final Map<NotificationLevel, Image> LEVEL_ICONS = new EnumMap<NotificationLevel, Image>(
+			NotificationLevel.class);
 	static
 	{
-		LEVEL_ICONS.put(NotificationLevel.INFORMATION, new Image(Display.getDefault(), Icons.class.getResourceAsStream("/icons/information.gif"))); //$NON-NLS-1$
-		LEVEL_ICONS.put(NotificationLevel.ERROR, new Image(Display.getDefault(), Icons.class.getResourceAsStream("/icons/error.gif"))); //$NON-NLS-1$
-		LEVEL_ICONS.put(NotificationLevel.WARNING, new Image(Display.getDefault(), Icons.class.getResourceAsStream("/icons/warning.gif"))); //$NON-NLS-1$
+		LEVEL_ICONS.put(NotificationLevel.INFORMATION,
+				new Image(Display.getDefault(), Icons.class.getResourceAsStream("/icons/information.gif"))); //$NON-NLS-1$
+		LEVEL_ICONS.put(NotificationLevel.ERROR,
+				new Image(Display.getDefault(), Icons.class.getResourceAsStream("/icons/error.gif"))); //$NON-NLS-1$
+		LEVEL_ICONS.put(NotificationLevel.WARNING,
+				new Image(Display.getDefault(), Icons.class.getResourceAsStream("/icons/warning.gif"))); //$NON-NLS-1$
 	}
-	
-	private static final Image CLOSE_ICON = new Image(Display.getDefault(), Icons.class.getResourceAsStream("/icons/close.gif")); //$NON-NLS-1$
-	private static final Image CLOSE_HOVER_ICON = new Image(Display.getDefault(), Icons.class.getResourceAsStream("/icons/close_hot.gif")); //$NON-NLS-1$
-	
+
+	private static final Image CLOSE_ICON = new Image(Display.getDefault(),
+			Icons.class.getResourceAsStream("/icons/close.gif")); //$NON-NLS-1$
+	private static final Image CLOSE_HOVER_ICON = new Image(Display.getDefault(),
+			Icons.class.getResourceAsStream("/icons/close_hot.gif")); //$NON-NLS-1$
+
 	/**
 	 * @return The icon to use for the provided notification level
 	 */
@@ -34,7 +40,7 @@ public class Icons
 	{
 		return LEVEL_ICONS.get(level);
 	}
-	
+
 	/**
 	 * @return The icon to use for the 'close' button for popups
 	 */
@@ -42,9 +48,10 @@ public class Icons
 	{
 		return CLOSE_ICON;
 	}
-	
+
 	/**
-	 * @return The icon to use for the 'close' button for popups when the mouse is hovering
+	 * @return The icon to use for the 'close' button for popups when the mouse
+	 *         is hovering
 	 */
 	public static Image getCloseHoverIcon()
 	{

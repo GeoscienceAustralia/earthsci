@@ -58,7 +58,9 @@ public class ShowViewHandler
 		final ShowViewDialog dialog = new ShowViewDialog(shell, application);
 		dialog.open();
 		if (dialog.getReturnCode() != Window.OK)
+		{
 			return;
+		}
 
 		for (MPartDescriptor part : dialog.getSelection())
 		{
@@ -69,7 +71,9 @@ public class ShowViewHandler
 	private void showPart(MPartDescriptor descriptor)
 	{
 		if (descriptor == null)
+		{
 			return;
+		}
 
 		List<MPart> siblings = modelService.findElements(application, descriptor.getElementId(), MPart.class, null);
 

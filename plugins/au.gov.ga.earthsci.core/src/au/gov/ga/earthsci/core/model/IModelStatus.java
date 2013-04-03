@@ -29,31 +29,31 @@ public interface IModelStatus
 		WARNING,
 		OK
 	}
-	
+
 	/**
 	 * @return the level of this status
 	 */
 	Level getLevel();
-	
-	
+
+
 	/**
 	 * @return a (localised) message for this status
 	 */
 	String getMessage();
-	
+
 	/**
 	 * @return any (optional) throwables associated with this status
 	 */
 	Throwable getThrowable();
-	
+
 	/**
 	 * @return If this status has level OK
 	 */
 	boolean isOk();
-	
+
 	/**
 	 * @return If this status has level ERROR
 	 */
 	boolean isError();
-	
+
 }

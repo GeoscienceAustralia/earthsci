@@ -22,14 +22,15 @@ import au.gov.ga.earthsci.common.util.INamed;
 import au.gov.ga.earthsci.core.temporal.BigTime;
 
 /**
- * A {@link ITimeScale} is a concept used to capture the various scales on which time can
- * be measured (e.g. Geological vs. human history vs. modern history etc.)
+ * A {@link ITimeScale} is a concept used to capture the various scales on which
+ * time can be measured (e.g. Geological vs. human history vs. modern history
+ * etc.)
  * <p/>
- * {@link ITimeScale}s contain a hierarchy of {@link ITimePeriod}s which describe the structure
- * of the scale.
+ * {@link ITimeScale}s contain a hierarchy of {@link ITimePeriod}s which
+ * describe the structure of the scale.
  * <p/>
- * A primary use of a {@link ITimeScale} is to generate a human-readable label for a
- * {@link BigTime} instance based on a particular scale.
+ * A primary use of a {@link ITimeScale} is to generate a human-readable label
+ * for a {@link BigTime} instance based on a particular scale.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -42,28 +43,32 @@ public interface ITimeScale extends INamed, IDescribed
 	 * @return The unique identifier for this time scale
 	 */
 	String getId();
-	
+
 	/**
-	 * Return the ordered list of levels that are used to define this {@link ITimeScale}.
+	 * Return the ordered list of levels that are used to define this
+	 * {@link ITimeScale}.
 	 * 
 	 * @return The ordered list of levels that define this {@link ITimeScale}
 	 */
 	List<ITimeScaleLevel> getLevels();
-	
+
 	/**
-	 * Return the top-level periods of this {@link ITimeScale} ordered from earliest to latest.
+	 * Return the top-level periods of this {@link ITimeScale} ordered from
+	 * earliest to latest.
 	 * 
-	 * @return The ordered list of top-level periods for this {@link ITimeScale}, from earliest to latest.
+	 * @return The ordered list of top-level periods for this {@link ITimeScale}
+	 *         , from earliest to latest.
 	 */
 	List<ITimePeriod> getPeriods();
-	
+
 	/**
 	 * Return whether this time scale contains the provided time period
 	 * 
-	 * @param p The time period to test for
+	 * @param p
+	 *            The time period to test for
 	 * 
-	 * @return <code>true</code> if the time period exists in this time scale; <code>false</code>
-	 * otherwise.
+	 * @return <code>true</code> if the time period exists in this time scale;
+	 *         <code>false</code> otherwise.
 	 */
 	boolean hasPeriod(ITimePeriod p);
 }

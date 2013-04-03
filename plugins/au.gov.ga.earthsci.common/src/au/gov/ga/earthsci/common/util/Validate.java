@@ -74,10 +74,13 @@ public class Validate
 	/**
 	 * Validate that the provided collection is not <code>null</code> or empty.
 	 * 
-	 * @param value The value to validate
-	 * @param msg The message to include in any generated exceptions
+	 * @param value
+	 *            The value to validate
+	 * @param msg
+	 *            The message to include in any generated exceptions
 	 * 
-	 * @throws IllegalArgumentException If the provided collection is <code>null</code> or empty
+	 * @throws IllegalArgumentException
+	 *             If the provided collection is <code>null</code> or empty
 	 */
 	public static void notEmpty(Collection<?> value, String msg) throws IllegalArgumentException
 	{
@@ -86,7 +89,7 @@ public class Validate
 			throw new IllegalArgumentException(msg == null ? DEFAULT_NOT_EMPTY_MSG : msg);
 		}
 	}
-	
+
 	/**
 	 * Validate that the provided string contains non-whitespace characters.
 	 * 

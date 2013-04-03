@@ -28,11 +28,11 @@ public class DummyRealm extends Realm
 	{
 		setDefault(new DummyRealm());
 	}
-	
+
 	@Override
 	public boolean isCurrent()
 	{
 		return true;
 	}
-		
+
 }

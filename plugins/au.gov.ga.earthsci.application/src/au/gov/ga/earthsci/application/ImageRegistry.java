@@ -62,9 +62,9 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_LOADING = "icon.loading"; //$NON-NLS-1$
 	public static final String ICON_BOOKMARKS = "icon.bookmarks"; //$NON-NLS-1$
 	public static final String DECORATION_INCLUDED = "decoration.included"; //$NON-NLS-1$
-	
-	private final Map<String, URL> urlMap = new ConcurrentHashMap<String, URL>(); 
-	
+
+	private final Map<String, URL> urlMap = new ConcurrentHashMap<String, URL>();
+
 	public static ImageRegistry getInstance()
 	{
 		return INSTANCE;
@@ -90,13 +90,13 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 
 		putResource(ICON_ADD, "/icons/add.gif"); //$NON-NLS-1$
 		putResource(ICON_REMOVE, "/icons/remove.gif"); //$NON-NLS-1$
-		
+
 		putResource(ICON_APPLY, "/icons/apply.gif"); //$NON-NLS-1$
 
 		putResource(ICON_EDIT, "/icons/edit.gif"); //$NON-NLS-1$
-		
+
 		putResource(ICON_TRANSPARENT, "/icons/transparent.gif"); //$NON-NLS-1$
-		
+
 		putResource(ICON_BOOKMARKS, "/icons/bookmarks.gif"); //$NON-NLS-1$
 
 		putResource(DECORATION_INCLUDED, "/icons/included_dec.gif"); //$NON-NLS-1$
@@ -108,7 +108,7 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	{
 		URL url = getClass().getResource(resourceName);
 		put(key, ImageDescriptor.createFromURL(url));
-		
+
 		urlMap.put(key, url);
 	}
 
@@ -163,14 +163,16 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 		}
 		return images;
 	}
-	
+
 	/**
 	 * Return the URL for the image resource with the given key, if one exists
 	 * 
-	 * @param key The key for the image URL to load
+	 * @param key
+	 *            The key for the image URL to load
 	 * 
-	 * @return the URL for the image resource with the given key. 
-	 * <code>null</code> if no resource exists or no URL is available for the resource.
+	 * @return the URL for the image resource with the given key.
+	 *         <code>null</code> if no resource exists or no URL is available
+	 *         for the resource.
 	 */
 	public URL getURL(String key)
 	{

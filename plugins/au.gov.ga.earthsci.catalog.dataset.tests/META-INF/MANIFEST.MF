@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Dataset Catalog Tests
+Bundle-SymbolicName: au.gov.ga.earthsci.catalog.dataset.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Geoscience Australia
+Fragment-Host: au.gov.ga.earthsci.catalog.dataset;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: au.gov.ga.earthsci.testbase;bundle-version="1.0.0",
+ org.junit;bundle-version="4.11.0"

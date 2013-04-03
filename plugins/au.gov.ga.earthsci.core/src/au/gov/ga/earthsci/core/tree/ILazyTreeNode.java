@@ -1,5 +1,9 @@
 package au.gov.ga.earthsci.core.tree;
 
+import java.util.List;
+
+import au.gov.ga.earthsci.core.tree.lazy.AsynchronousLazyTreeNodeHelper;
+
 
 /**
  * An extension of the {@link ITreeNode} interface that supports lazy loading of
@@ -11,7 +15,7 @@ package au.gov.ga.earthsci.core.tree;
  * @author James Navin (james.navin@ga.gov.au)
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILazyTreeNode<E> extends ITreeNode<E>
+public interface ILazyTreeNode<E extends ITreeNode<E>> extends ITreeNode<E>
 {
 	/**
 	 * Load this node's children. The callback should be notified once loading
@@ -47,5 +51,5 @@ public interface ILazyTreeNode<E> extends ITreeNode<E>
 	 * 
 	 * @return Array of child elements to display to the user
 	 */
-	ITreeNode<E>[] getDisplayChildren();
+	List<E> getDisplayChildren();
 }
