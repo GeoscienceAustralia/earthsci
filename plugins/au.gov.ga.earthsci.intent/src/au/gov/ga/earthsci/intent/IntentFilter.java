@@ -31,16 +31,19 @@ import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 
 /**
  * Description of {@link Intent} values to be matched. Can match against the
- * Intent's action, categories, MIME types, and/or the URI. Provides the ability
- * to find a suitable handler for an Intent.
+ * Intent's action, categories, content type, expected return type, and/or the
+ * URI. Provides the ability to find a suitable handler for an Intent.
  * <p/>
  * The intent filtering is performed as follows:
  * <ul>
  * <li>Action matches if any of the given values match the Intent action, or if
- * no actions are specified.</li>
+ * no actions are specified by this filter.</li>
  * <li>Categories matches if all of the categories in the Intent match
  * categories in this filter.</li>
- * <li>Data type matches if any of the given values match the Intent type.</li>
+ * <li>Content type matches if any of the given values match the Intent content
+ * type, or both the Intent and the filter don't specify a content type.</li>
+ * <li>Return type matches if any of the given values match the Intent expected
+ * return type if defined, or if the filter defines no return types.</li>
  * <li>Data scheme matches if any of the given values match the Intent URI's
  * scheme.</li>
  * <li>Data authority matches if any of the given values match the Intent URI's
@@ -48,8 +51,7 @@ import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
  * <li>Data path matches if any of the given values match the Intent URI's path,
  * and the data scheme and authority have already matched.</li>
  * </ul>
- * Data types can contain a wildcard '*' in their MIME subtype. Data schemes,
- * authorities, and paths can also contain wildcards '*'.
+ * Data schemes, authorities, and paths can contain wildcards '*'.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
