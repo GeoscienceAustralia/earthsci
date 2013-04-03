@@ -18,3 +18,8 @@ Require-Bundle: org.eclipse.uomo.units;bundle-version="0.6.0";visibility:=reexpo
  org.eclipse.core.runtime;bundle-version="3.8.0",
  au.gov.ga.earthsci.common;bundle-version="1.0.0",
  au.gov.ga.earthsci.common
+Export-Package: au.gov.ga.earthsci.model,
+ au.gov.ga.earthsci.model.bounds,
+ au.gov.ga.earthsci.model.data,
+ au.gov.ga.earthsci.model.geometry,
+ au.gov.ga.earthsci.model.render
