@@ -493,6 +493,7 @@ public class IntentFilter
 
 	private static boolean anyMatchesUsingWildcards(String input, Collection<String> patterns)
 	{
+		input = input == null ? "" : input; //$NON-NLS-1$
 		for (String pattern : patterns)
 		{
 			String quoted = Pattern.quote(pattern);
