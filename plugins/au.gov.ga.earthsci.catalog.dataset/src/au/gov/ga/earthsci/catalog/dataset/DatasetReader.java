@@ -81,7 +81,7 @@ final public class DatasetReader
 		final Element rootElement = XmlUtil.getElementFromSource(source);
 		if (rootElement == null)
 		{
-			return new DatasetCatalogTreeNode(null, getRootNodeName(source, context), null, null, true);
+			return new DatasetCatalogTreeNode(null, getRootNodeName(source, context), null, null, true, true);
 		}
 
 		// Special case
@@ -92,7 +92,7 @@ final public class DatasetReader
 		}
 
 		final ICatalogTreeNode root =
-				new DatasetCatalogTreeNode(theContext.toURI(), getRootNodeName(source, context), null, null, true);
+				new DatasetCatalogTreeNode(theContext.toURI(), getRootNodeName(source, context), null, null, true, true);
 
 		final Element[] elements = XmlUtil.getElements(rootElement, DATASET_LIST_XPATH, null);
 		if (elements != null)
