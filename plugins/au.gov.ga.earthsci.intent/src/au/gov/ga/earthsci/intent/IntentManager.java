@@ -119,15 +119,22 @@ public class IntentManager implements IIntentManager
 			}
 		}
 
-		if (handlerClass != null)
+		try
 		{
-			IEclipseContext child = context.createChild();
-			IIntentHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
-			handler.handle(intent, callback);
+			if (handlerClass != null)
+			{
+				IEclipseContext child = context.createChild();
+				IIntentHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
+				handler.handle(intent, callback);
+			}
+			else
+			{
+				throw new Exception("Could not find filter to handle intent: " + intent); //$NON-NLS-1$
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			logger.error("Could not find filter to handle intent: " + intent); //$NON-NLS-1$
+			callback.error(e, intent);
 		}
 	}
 
