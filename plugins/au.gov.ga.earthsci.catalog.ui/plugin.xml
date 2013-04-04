@@ -30,7 +30,7 @@
             priority="0">
       </bind>
       <injectable
-            class="au.gov.ga.earthsci.catalog.ui.CatalogTreeLabelProviderRegistry"
+            class="au.gov.ga.earthsci.catalog.ui.CatalogLabelProviderRegistry"
             priority="0">
       </injectable>
    </extension>

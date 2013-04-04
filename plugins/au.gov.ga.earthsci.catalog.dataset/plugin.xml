@@ -4,7 +4,7 @@
    <extension
          point="au.gov.ga.earthsci.catalog.ui.labelProviders">
       <provider
-            class="au.gov.ga.earthsci.catalog.dataset.DatasetCatalogTreeLabelProvider">
+            class="au.gov.ga.earthsci.catalog.dataset.DatasetCatalogLabelProvider">
       </provider>
    </extension>
    <extension

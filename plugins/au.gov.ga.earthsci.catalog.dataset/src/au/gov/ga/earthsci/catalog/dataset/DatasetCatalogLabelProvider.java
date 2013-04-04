@@ -21,20 +21,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.catalog.ui.CatalogTreeLabelProviderRegistry;
-import au.gov.ga.earthsci.catalog.ui.ICatalogTreeLabelProvider;
+import au.gov.ga.earthsci.catalog.ui.CatalogLabelProviderRegistry;
+import au.gov.ga.earthsci.catalog.ui.ICatalogLabelProvider;
 
 /**
- * An {@link ICatalogTreeLabelProvider} that supports
+ * An {@link ICatalogLabelProvider} that supports
  * {@link DatasetCatalogTreeNode}s
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class DatasetCatalogTreeLabelProvider implements ICatalogTreeLabelProvider
+public class DatasetCatalogLabelProvider implements ICatalogLabelProvider
 {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(DatasetCatalogTreeLabelProvider.class);
+	private static final Logger logger = LoggerFactory.getLogger(DatasetCatalogLabelProvider.class);
 
 	@Override
 	public boolean supports(ICatalogTreeNode node)
@@ -47,7 +47,7 @@ public class DatasetCatalogTreeLabelProvider implements ICatalogTreeLabelProvide
 	{
 		DatasetCatalogTreeNode datasetNode = (DatasetCatalogTreeNode) node;
 
-		return datasetNode.getIconURL() == null ? CatalogTreeLabelProviderRegistry.getDefaultProvider().getIconURL(
+		return datasetNode.getIconURL() == null ? CatalogLabelProviderRegistry.getDefaultProvider().getIconURL(
 				datasetNode) : datasetNode.getIconURL();
 	}
 

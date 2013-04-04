@@ -147,7 +147,7 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		}
 
 		ICatalogTreeNode node = (ICatalogTreeNode) element;
-		URL iconURL = CatalogTreeLabelProviderRegistry.getProvider(node).getIconURL(node);
+		URL iconURL = CatalogLabelProviderRegistry.getProvider(node).getIconURL(node);
 		return getImage(element, iconURL);
 	}
 
@@ -172,7 +172,7 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		{
 			return node.getName();
 		}
-		return CatalogTreeLabelProviderRegistry.getProvider(node).getLabel(node);
+		return CatalogLabelProviderRegistry.getProvider(node).getLabel(node);
 	}
 
 	@Override
@@ -268,7 +268,7 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		if (element instanceof ICatalogTreeNode)
 		{
 			ICatalogTreeNode node = (ICatalogTreeNode) element;
-			URL infoURL = CatalogTreeLabelProviderRegistry.getProvider(node).getInfoURL(node);
+			URL infoURL = CatalogLabelProviderRegistry.getProvider(node).getInfoURL(node);
 			if (infoURL != null)
 			{
 				string.append("  i", informationStyler); //$NON-NLS-1$
