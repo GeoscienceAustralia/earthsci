@@ -9,8 +9,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.gdal.gdal.gdal;
-import org.gdal.gdal.gdalJNI;
-import org.gdal.gdalconst.gdalconstJNI;
+import org.gdal.ogr.ogr;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -41,10 +40,7 @@ public class Activator implements BundleActivator
 
 		unpackData();
 		setupGdalDataConfig();
-
-		System.loadLibrary("gdalalljni23.dll");
-		System.out.println("**** " + gdalJNI.isAvailable());
-		System.out.println("**** " + gdalconstJNI.isAvailable());
+		registerGdalDrivers();
 	}
 
 	@Override
@@ -61,7 +57,7 @@ public class Activator implements BundleActivator
 	/**
 	 * Unpack the GDAL_DATA folder into the plugin data area
 	 */
-	private static void unpackData()
+	private void unpackData()
 	{
 		try
 		{
@@ -106,9 +102,18 @@ public class Activator implements BundleActivator
 	 * Setup the GDAL_DATA configuration setting to point to the data area for
 	 * the plugin
 	 */
-	private static void setupGdalDataConfig()
+	private void setupGdalDataConfig()
 	{
 		gdal.SetConfigOption(GDALDATA_CONFIG, context.getDataFile("").getAbsolutePath());
+	}
+
+	/**
+	 * Register required GDAL drivers and OGR transforms etc.
+	 */
+	private void registerGdalDrivers()
+	{
+		gdal.AllRegister();
+		ogr.RegisterAll();
 	}
 
 	/**
