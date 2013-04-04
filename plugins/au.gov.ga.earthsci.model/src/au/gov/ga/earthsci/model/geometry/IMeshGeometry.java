@@ -1,6 +1,6 @@
 package au.gov.ga.earthsci.model.geometry;
 
-import au.gov.ga.earthsci.model.data.BufferType;
+import au.gov.ga.earthsci.common.buffer.BufferType;
 import au.gov.ga.earthsci.model.data.IModelData;
 
 /**

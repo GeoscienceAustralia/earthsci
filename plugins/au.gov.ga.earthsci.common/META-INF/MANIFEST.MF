@@ -5,7 +5,8 @@ Bundle-SymbolicName: au.gov.ga.earthsci.common
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: au.gov.ga.earthsci.common.collection,
+Export-Package: au.gov.ga.earthsci.common.buffer,
+ au.gov.ga.earthsci.common.collection,
  au.gov.ga.earthsci.common.util
 Require-Bundle: au.gov.ga.earthsci.worldwind;bundle-version="1.0.0",
  gov.nasa.worldwind.jogl2;bundle-version="1.4.0",

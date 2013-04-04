@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.model.data;
+package au.gov.ga.earthsci.common.buffer;
 
 /**
  * An enumeration of the types of data stored in native byte buffers

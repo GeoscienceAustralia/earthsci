@@ -4,6 +4,7 @@ import java.nio.Buffer;
 
 import org.unitsofmeasurement.unit.Unit;
 
+import au.gov.ga.earthsci.common.buffer.BufferType;
 import au.gov.ga.earthsci.common.util.IDescribed;
 import au.gov.ga.earthsci.common.util.IIdentifiable;
 import au.gov.ga.earthsci.common.util.INamed;

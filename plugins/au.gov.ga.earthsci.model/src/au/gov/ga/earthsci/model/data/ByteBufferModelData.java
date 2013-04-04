@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.unitsofmeasurement.unit.Unit;
 
+import au.gov.ga.earthsci.common.buffer.BufferType;
 import au.gov.ga.earthsci.common.util.Validate;
 
 /**
