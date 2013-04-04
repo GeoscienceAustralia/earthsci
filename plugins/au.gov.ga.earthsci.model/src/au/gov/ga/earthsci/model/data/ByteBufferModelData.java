@@ -1,0 +1,106 @@
+package au.gov.ga.earthsci.model.data;
+
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.util.UUID;
+
+import org.unitsofmeasurement.unit.Unit;
+
+import au.gov.ga.earthsci.common.util.Validate;
+
+/**
+ * A general-purpose {@link IModelData} implementation backed by a
+ * {@link ByteBuffer}
+ * <p/>
+ * Client code should use the {@link #getBufferType()} method to determine what
+ * type of values to read from the buffer.
+ * 
+ * @author James Navin (james.navin@ga.gov.au)
+ */
+public class ByteBufferModelData implements IModelData
+{
+
+	private final ByteBuffer buffer;
+	private final BufferType type;
+	private final String id;
+
+	private String name;
+	private String description;
+
+	private Object nodata;
+	private Unit<?> units;
+
+	public ByteBufferModelData(ByteBuffer buffer, BufferType type)
+	{
+		this(null, null, null, buffer, type, null, null);
+	}
+
+	public ByteBufferModelData(String id, String name, String description, ByteBuffer buffer, BufferType type,
+			Object nodata, Unit<?> units)
+	{
+		Validate.notNull(buffer, "A byte buffer is required"); //$NON-NLS-1$
+		Validate.notNull(type, "A buffer type is required"); //$NON-NLS-1$
+		Validate.isTrue(nodata == null || type.isAssignableFrom(nodata), "NODATA must be of type " + type.name() //$NON-NLS-1$
+				+ ", not " + nodata.getClass().getSimpleName()); //$NON-NLS-1$
+
+		this.id = id == null ? UUID.randomUUID().toString() : id;
+
+		this.name = name;
+		this.description = description;
+
+		this.buffer = buffer;
+		this.type = type;
+		this.nodata = nodata;
+
+		this.units = units;
+	}
+
+	@Override
+	public String getId()
+	{
+		return id;
+	}
+
+	@Override
+	public String getName()
+	{
+		return name;
+	}
+
+	@Override
+	public String getDescription()
+	{
+		return description;
+	}
+
+	@Override
+	public Object getNoDataValue()
+	{
+		return nodata;
+	}
+
+	@Override
+	public Buffer getSource()
+	{
+		return buffer;
+	}
+
+	@Override
+	public BufferType getBufferType()
+	{
+		return type;
+	}
+
+	@Override
+	public Unit<?> getUnits()
+	{
+		return units;
+	}
+
+	@Override
+	public boolean hasUnits()
+	{
+		return units != null;
+	}
+
+}
