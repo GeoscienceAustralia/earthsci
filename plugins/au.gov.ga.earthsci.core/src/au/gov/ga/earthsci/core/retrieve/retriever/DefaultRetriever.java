@@ -34,7 +34,7 @@ import au.gov.ga.earthsci.core.retrieve.result.LocalURLRetrievalResult;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class AbstractLocalURLRetriever implements IRetriever
+public class DefaultRetriever implements IRetriever
 {
 	@Override
 	public RetrieverResult retrieve(URL url, IRetrieverMonitor monitor, IRetrievalProperties retrievalProperties,
@@ -51,5 +51,11 @@ public abstract class AbstractLocalURLRetriever implements IRetriever
 	{
 		//caching is unsupported for these retrievers
 		return null;
+	}
+
+	@Override
+	public boolean supports(URL url)
+	{
+		return true;
 	}
 }

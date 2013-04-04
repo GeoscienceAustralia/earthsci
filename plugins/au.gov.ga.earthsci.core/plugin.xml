@@ -9,15 +9,6 @@
       <retriever
             class="au.gov.ga.earthsci.core.retrieve.retriever.HttpRetriever">
       </retriever>
-      <retriever
-            class="au.gov.ga.earthsci.core.retrieve.retriever.FileRetriever">
-      </retriever>
-      <retriever
-            class="au.gov.ga.earthsci.core.retrieve.retriever.BundleResourceRetriever">
-      </retriever>
-      <retriever
-            class="au.gov.ga.earthsci.core.retrieve.retriever.JarRetriever">
-      </retriever>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
