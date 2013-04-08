@@ -113,7 +113,7 @@
          </content-type>
       </filter>
       <filter
-            class="au.gov.ga.earthsci.model.intent.GDALRasterModelIntentHandler"
+            class="au.gov.ga.earthsci.core.model.raster.GDALRasterModelIntentHandler"
             priority="0">
          <content-type
                id="au.gov.ga.earthsci.core.content.gdalraster">
