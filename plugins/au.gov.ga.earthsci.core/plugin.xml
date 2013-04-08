@@ -4,6 +4,7 @@
    <extension-point id="au.gov.ga.earthsci.core.retrieve.retrievers" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retrievers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.hudLayers" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.core.hudLayers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.core.xmlLoaders.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.urlStreamHandlers" name="URL Stream Handlers" schema="schema/au.gov.ga.earthsci.core.urlStreamHandlers.exsd"/>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retrievers">
       <retriever
@@ -109,6 +110,21 @@
             filter="au.gov.ga.earthsci.core.model.layer.LayerXmlLoader"
             priority="0">
       </loader>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.core.urlStreamHandlers">
+      <handler
+            class="au.gov.ga.earthsci.core.url.ExtensionIconURLStreamHandlerService">
+         <protocol
+               name="extensionicon">
+         </protocol>
+      </handler>
+      <handler
+            class="au.gov.ga.earthsci.core.url.SystemIconURLStreamHandlerService">
+         <protocol
+               name="systemicon">
+         </protocol>
+      </handler>
    </extension>
 
 </plugin>

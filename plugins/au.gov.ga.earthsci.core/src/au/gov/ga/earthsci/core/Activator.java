@@ -20,6 +20,8 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.core.url.URLStreamHandlerServiceRegistrar;
+
 /**
  * Plugin's activator.
  * 
@@ -36,6 +38,7 @@ public class Activator implements BundleActivator
 	public void start(final BundleContext context) throws Exception
 	{
 		bundleContext = context;
+		URLStreamHandlerServiceRegistrar.register(context);
 	}
 
 	@Override
@@ -44,7 +47,7 @@ public class Activator implements BundleActivator
 		bundleContext = null;
 	}
 
-	static BundleContext getContext()
+	public static BundleContext getContext()
 	{
 		return bundleContext;
 	}
