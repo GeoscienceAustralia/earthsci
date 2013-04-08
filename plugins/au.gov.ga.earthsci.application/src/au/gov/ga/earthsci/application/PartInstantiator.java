@@ -11,6 +11,7 @@ import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.MUIElement;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPlaceholder;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.workbench.UIEvents;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.osgi.service.event.Event;
@@ -58,10 +59,7 @@ public class PartInstantiator
 					}
 				}
 			};
-
-			// Subscribe "ServiceEvent.MODIFIED" to grab the application.STARTED
-			// event. Does anybody know how to do this in a better way?
-			broker.subscribe("org/osgi/framework/ServiceEvent/MODIFIED", handler); //$NON-NLS-1$
+			broker.subscribe(UIEvents.UILifeCycle.APP_STARTUP_COMPLETE, handler);
 		}
 	}
 
