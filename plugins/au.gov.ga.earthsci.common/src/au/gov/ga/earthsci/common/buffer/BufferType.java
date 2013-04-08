@@ -7,11 +7,28 @@ package au.gov.ga.earthsci.common.buffer;
  */
 public enum BufferType
 {
+	/** 8 bit value */
 	BYTE(1, Byte.class),
+
+	/** 16 bit signed integer */
 	SHORT(2, Short.class),
+
+	/** 16 bit unsigned integer (uses Java Integer) */
+	UNSIGNED_SHORT(2, Integer.class),
+
+	/** 32 bit signed integer */
 	INT(4, Integer.class),
+
+	/** 32 bit unsigned integer (uses Java Long) */
+	UNSIGNED_INT(4, Long.class),
+
+	/** 64 bit signed integer */
 	LONG(8, Long.class),
+
+	/** 32 bit IEE floating point */
 	FLOAT(4, Float.class),
+
+	/** 64 bit IEE floating point */
 	DOUBLE(8, Double.class);
 
 	private final int numBytes;
@@ -38,5 +55,13 @@ public enum BufferType
 	public boolean isAssignableFrom(Object testObject)
 	{
 		return typeClass.isAssignableFrom(testObject.getClass());
+	}
+
+	/**
+	 * Return the Java type that will be used to store the buffer values.
+	 */
+	public Class<?> getContainerClass()
+	{
+		return typeClass;
 	}
 }
