@@ -58,7 +58,15 @@ public class ExtensionIconURLStreamHandlerService extends AbstractURLStreamHandl
 			{
 				String extension = getURL().getHost();
 				Program program = Program.findProgram(extension);
+				if (program == null)
+				{
+					throw new IOException("Program not found for extension: " + extension); //$NON-NLS-1$
+				}
 				ImageData data = program.getImageData();
+				if (data == null)
+				{
+					throw new IOException("Icon not found for program for extension: " + extension); //$NON-NLS-1$
+				}
 				ImageLoader loader = new ImageLoader();
 				loader.data = new ImageData[] { data };
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();

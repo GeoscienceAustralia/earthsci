@@ -21,6 +21,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -65,6 +66,10 @@ public class SystemIconURLStreamHandlerService extends AbstractURLStreamHandlerS
 				{
 					URL fileURL = new URL("file:" + getURL().getPath()); //$NON-NLS-1$
 					File file = new File(fileURL.toURI());
+					if (!file.exists())
+					{
+						throw new FileNotFoundException(file.getAbsolutePath());
+					}
 					ImageIcon icon =
 							(ImageIcon) javax.swing.filechooser.FileSystemView.getFileSystemView().getSystemIcon(file);
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -77,6 +82,10 @@ public class SystemIconURLStreamHandlerService extends AbstractURLStreamHandlerS
 					ImageIO.write(bi, "PNG", baos); //$NON-NLS-1$
 					baos.close();
 					return new ByteArrayInputStream(baos.toByteArray());
+				}
+				catch (IOException e)
+				{
+					throw e;
 				}
 				catch (Exception e)
 				{
