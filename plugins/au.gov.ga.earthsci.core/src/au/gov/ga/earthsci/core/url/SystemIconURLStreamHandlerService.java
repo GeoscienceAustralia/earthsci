@@ -90,7 +90,7 @@ public class SystemIconURLStreamHandlerService extends AbstractURLStreamHandlerS
 	{
 		try
 		{
-			return new URL(PROTOCOL + ":" + file.toURI().toURL().getPath()); //$NON-NLS-1$
+			return new URL(PROTOCOL, null, file.toURI().toURL().getPath());
 		}
 		catch (Exception e)
 		{
