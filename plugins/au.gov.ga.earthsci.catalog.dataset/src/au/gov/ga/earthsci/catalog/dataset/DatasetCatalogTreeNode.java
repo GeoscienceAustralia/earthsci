@@ -60,9 +60,10 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 		return name;
 	}
 
+	@Override
 	public URL getIconURL()
 	{
-		return iconURL;
+		return iconURL != null ? iconURL : super.getIconURL();
 	}
 
 	public boolean isBase()

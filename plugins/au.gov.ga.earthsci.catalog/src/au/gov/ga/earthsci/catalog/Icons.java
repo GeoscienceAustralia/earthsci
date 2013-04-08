@@ -15,74 +15,48 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog;
 
-import java.net.URI;
+import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.core.runtime.content.IContentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * {@link ICatalogTreeNode} that represents a loading node as a child of a node
- * that loads its children lazily.
+ * Helper class for getting access to icon URLs.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LoadingCatalogTreeNode extends AbstractCatalogTreeNode
+public class Icons
 {
-	public LoadingCatalogTreeNode()
+	public static final URL FILE;
+	public static final URL FOLDER;
+	public static final URL REPO;
+	public static final URL ERROR;
+
+	static
 	{
-		this(null);
+		FILE = getURL("icons/file.gif"); //$NON-NLS-1$
+		FOLDER = getURL("icons/folder.gif"); //$NON-NLS-1$
+		REPO = getURL("icons/repo.gif"); //$NON-NLS-1$
+		ERROR = getURL("icons/error.gif"); //$NON-NLS-1$
 	}
 
-	public LoadingCatalogTreeNode(URI nodeURI)
+	private static final Logger logger = LoggerFactory.getLogger(Icons.class);
+
+	private static URL getURL(String resourceName)
 	{
-		super(nodeURI);
+		try
+		{
+			return new URL("platform:/plugin/" + Activator.PLUGIN_ID + "/" + resourceName); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		catch (MalformedURLException e)
+		{
+			logger.error("Error creating icon url", e); //$NON-NLS-1$
+			return null;
+		}
 	}
 
-	@Override
-	public boolean isRemoveable()
+	private Icons()
 	{
-		return false;
-	}
-
-	@Override
-	public boolean isLayerNode()
-	{
-		return false;
-	}
-
-	@Override
-	public URI getLayerURI()
-	{
-		return null;
-	}
-
-	@Override
-	public IContentType getLayerContentType()
-	{
-		return null;
-	}
-
-	@Override
-	public String getName()
-	{
-		return "Loading...";
-	}
-
-	@Override
-	public URL getInformationURL()
-	{
-		return null;
-	}
-
-	@Override
-	public String getInformationString()
-	{
-		return null;
-	}
-
-	@Override
-	public URL getIconURL()
-	{
-		return null;
 	}
 }

@@ -2,12 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="au.gov.ga.earthsci.catalog.ui.labelProviders">
-      <provider
-            class="au.gov.ga.earthsci.catalog.dataset.DatasetCatalogLabelProvider">
-      </provider>
-   </extension>
-   <extension
          point="au.gov.ga.earthsci.core.xmlLoaders">
       <loader
             class="au.gov.ga.earthsci.catalog.dataset.DatasetXmlLoader"

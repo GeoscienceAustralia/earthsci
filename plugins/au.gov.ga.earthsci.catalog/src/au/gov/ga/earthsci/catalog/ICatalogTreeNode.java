@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.catalog;
 
 import java.net.URI;
+import java.net.URL;
 
 import org.eclipse.core.runtime.content.IContentType;
 
@@ -68,4 +69,9 @@ public interface ICatalogTreeNode extends ITreeNode<ICatalogTreeNode>, IProperty
 	 *         {@link #isLayerNode()} returns <code>true</code>
 	 */
 	IContentType getLayerContentType();
+
+	/**
+	 * @return URL pointing to the icon to display for this node
+	 */
+	URL getIconURL();
 }

@@ -141,14 +141,10 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 			LoadingIconAnimator.get().addListener(loadingIconFrameListener);
 			return LoadingIconAnimator.get().getCurrentFrame();
 		}
-		else if (element instanceof ErrorCatalogTreeNode)
-		{
-			return ImageRegistry.getInstance().get(ImageRegistry.ICON_ERROR);
-		}
 
 		ICatalogTreeNode node = (ICatalogTreeNode) element;
-		URL iconURL = CatalogLabelProviderRegistry.getProvider(node).getIconURL(node);
-		return getImage(element, iconURL);
+		URL url = node.getIconURL();
+		return getImage(element, url);
 	}
 
 	@Override
@@ -172,7 +168,7 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		{
 			return node.getName();
 		}
-		return CatalogLabelProviderRegistry.getProvider(node).getLabel(node);
+		return node.getLabelOrName();
 	}
 
 	@Override
@@ -268,7 +264,7 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		if (element instanceof ICatalogTreeNode)
 		{
 			ICatalogTreeNode node = (ICatalogTreeNode) element;
-			URL infoURL = CatalogLabelProviderRegistry.getProvider(node).getInfoURL(node);
+			URL infoURL = node.getInformationURL();
 			if (infoURL != null)
 			{
 				string.append("  i", informationStyler); //$NON-NLS-1$
