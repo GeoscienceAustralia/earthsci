@@ -438,9 +438,9 @@ public class FileURLCache implements IURLCache
 		}
 	}
 
-	private static String getHashDirectory(Object o)
+	private static String getHashDirectory(URL url)
 	{
-		String hashCode = String.valueOf(o.hashCode());
+		String hashCode = String.valueOf(url.toString().hashCode());
 		StringBuilder directory = new StringBuilder();
 		if (hashCode.charAt(0) == '-')
 		{
