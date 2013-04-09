@@ -29,6 +29,7 @@ public class RetrievalProperties implements IRetrievalProperties
 	private final boolean refreshCache;
 	private final int connectTimeout;
 	private final int readTimeout;
+	private final boolean fileRequired;
 
 	/**
 	 * Create a new properties object with the default values (cache = true,
@@ -68,10 +69,31 @@ public class RetrievalProperties implements IRetrievalProperties
 	 */
 	public RetrievalProperties(boolean useCache, boolean refreshCache, int connectTimeout, int readTimeout)
 	{
+		this(useCache, refreshCache, connectTimeout, readTimeout, false);
+	}
+
+	/**
+	 * Create a new properties object.
+	 * 
+	 * @param useCache
+	 *            Value to return from {@link #isUseCache()}
+	 * @param refreshCache
+	 *            Value to return from {@link #isRefreshCache()}
+	 * @param connectTimeout
+	 *            Value to return from {@link #getConnectTimeout()}
+	 * @param readTimeout
+	 *            Value to return from {@link #getReadTimeout()}
+	 * @param fileRequired
+	 *            Value to return from {@link #isFileRequired()}
+	 */
+	public RetrievalProperties(boolean useCache, boolean refreshCache, int connectTimeout, int readTimeout,
+			boolean fileRequired)
+	{
 		this.useCache = useCache;
 		this.refreshCache = refreshCache;
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
+		this.fileRequired = fileRequired;
 	}
 
 	@Override
@@ -96,5 +118,11 @@ public class RetrievalProperties implements IRetrievalProperties
 	public int getReadTimeout()
 	{
 		return readTimeout;
+	}
+
+	@Override
+	public boolean isFileRequired()
+	{
+		return fileRequired;
 	}
 }

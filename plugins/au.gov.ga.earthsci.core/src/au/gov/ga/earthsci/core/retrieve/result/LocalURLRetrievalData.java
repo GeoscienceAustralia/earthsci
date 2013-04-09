@@ -30,29 +30,11 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LocalURLRetrievalData implements IRetrievalData
+public class LocalURLRetrievalData extends AbstractRetrievalData
 {
-	private final URL url;
-	private final long contentLength;
-	private final String contentType;
-
 	public LocalURLRetrievalData(URL url, long contentLength, String contentType)
 	{
-		this.url = url;
-		this.contentLength = contentLength;
-		this.contentType = contentType;
-	}
-
-	@Override
-	public long getContentLength()
-	{
-		return contentLength;
-	}
-
-	@Override
-	public String getContentType()
-	{
-		return contentType;
+		super(url, contentLength, contentType);
 	}
 
 	@Override

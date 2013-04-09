@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,52 +15,60 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve.result;
 
-import java.io.ByteArrayInputStream;
+import gov.nasa.worldwind.util.WWIO;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.ByteBuffer;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 
 /**
- * {@link IRetrievalData} implementation containing the retrieved resource in
- * memory in the form of a {@link ByteBuffer}.
+ * {@link IRetrievalData} implementation that reads the retrieved resource from
+ * a local file.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ByteBufferRetrievalData extends AbstractRetrievalData
+public class FileRetrievalData implements IRetrievalData
 {
-	private final ByteBuffer buffer;
+	private final File file;
+	private final String contentType;
 
-	public ByteBufferRetrievalData(URL url, ByteBuffer buffer, String contentType)
+	public FileRetrievalData(File file, String contentType)
 	{
-		super(url, buffer.limit(), contentType);
-		this.buffer = buffer;
+		this.file = file;
+		this.contentType = contentType;
 	}
 
 	@Override
-	public InputStream getInputStream()
+	public long getContentLength()
 	{
-		if (buffer.hasArray())
-		{
-			return new ByteArrayInputStream(buffer.array(), 0, buffer.limit());
-		}
-		synchronized (buffer)
-		{
-			byte[] array = new byte[buffer.limit()];
-			buffer.rewind();
-			buffer.get(array);
-			return new ByteArrayInputStream(array);
-		}
+		return file.length();
 	}
 
 	@Override
-	public ByteBuffer getByteBuffer()
+	public String getContentType()
 	{
-		synchronized (buffer)
-		{
-			buffer.rewind();
-			return buffer.slice();
-		}
+		return contentType;
+	}
+
+	@Override
+	public InputStream getInputStream() throws IOException
+	{
+		return new FileInputStream(file);
+	}
+
+	@Override
+	public ByteBuffer getByteBuffer() throws IOException
+	{
+		return WWIO.readFileToBuffer(file);
+	}
+
+	@Override
+	public File getFile()
+	{
+		return file;
 	}
 }

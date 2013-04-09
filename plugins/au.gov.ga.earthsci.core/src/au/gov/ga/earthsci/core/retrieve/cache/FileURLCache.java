@@ -367,6 +367,12 @@ public class FileURLCache implements IURLCache
 		}
 	}
 
+	@Override
+	public File getFile(URL url)
+	{
+		return getCompleteFile(url);
+	}
+
 	private File getCompleteFile(URL url)
 	{
 		return fileForURL(url, ""); //$NON-NLS-1$
@@ -387,16 +393,11 @@ public class FileURLCache implements IURLCache
 		String hashDirectory = !Util.isBlank(url.getHost()) ? url.getHost() + File.separator : ""; //$NON-NLS-1$
 		hashDirectory += getHashDirectory(url);
 
-		String extension = ""; //$NON-NLS-1$
-		int lastIndexOfDot = !Util.isBlank(url.getPath()) ? url.getPath().lastIndexOf('.') : -1;
-		if (lastIndexOfDot >= 0)
+		String extension = au.gov.ga.earthsci.common.util.Util.getExtension(url.getPath());
+		if (extension == null || extension.length() > 30)
 		{
-			extension = url.getPath().substring(lastIndexOfDot);
-			if (extension.length() > 20)
-			{
-				//probably not an extension
-				extension = ""; //$NON-NLS-1$
-			}
+			//probably not an extension
+			extension = ""; //$NON-NLS-1$
 		}
 
 		File propertiesFile = new File(directory, hashDirectory + File.separator + URLS_PROPERTIES_FILENAME);

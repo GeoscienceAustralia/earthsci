@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.core.retrieve.result;
 
 import gov.nasa.worldwind.util.WWIO;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -72,5 +73,11 @@ public class URLCacheRetrievalData implements IRetrievalData
 		{
 			is.close();
 		}
+	}
+
+	@Override
+	public File getFile()
+	{
+		return cache.getFile(url);
 	}
 }

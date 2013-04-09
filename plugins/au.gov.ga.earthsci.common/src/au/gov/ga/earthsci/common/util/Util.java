@@ -275,7 +275,7 @@ public class Util
 	 * @throws IOException
 	 *             If writing fails
 	 */
-	public static File saveInputStreamToTemporaryFile(InputStream is, String prefix, String suffix) throws IOException
+	public static File writeInputStreamToTemporaryFile(InputStream is, String prefix, String suffix) throws IOException
 	{
 		File file = File.createTempFile(prefix, suffix);
 		file.deleteOnExit();

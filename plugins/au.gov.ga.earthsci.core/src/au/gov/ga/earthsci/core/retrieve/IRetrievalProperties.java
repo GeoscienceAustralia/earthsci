@@ -54,4 +54,16 @@ public interface IRetrievalProperties
 	 * @return The read timeout to use when retrieving.
 	 */
 	int getReadTimeout();
+
+	/**
+	 * Whether the result should be saved to a file, so that the caller can
+	 * treat the retrieved resource as a file.
+	 * <p/>
+	 * This is useful if there is some requirement for the result to be a File;
+	 * for example, passing the result to an external library that supports
+	 * Files only.
+	 * 
+	 * @return Should the retriever save the result to a file?
+	 */
+	boolean isFileRequired();
 }
