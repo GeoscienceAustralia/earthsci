@@ -299,7 +299,6 @@ public class Retrieval extends AbstractPropertyChangeBean implements IRetrieval,
 	{
 		while (checkAndWaitIfPaused() || joinJob())
 		{
-			;
 		}
 		return getResult();
 	}
