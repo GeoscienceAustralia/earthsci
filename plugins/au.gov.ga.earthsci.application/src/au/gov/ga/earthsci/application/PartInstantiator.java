@@ -21,11 +21,14 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.internal.contexts.EclipseContext;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.MUIElement;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPlaceholder;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.model.application.ui.basic.MTrimmedWindow;
 import org.eclipse.e4.ui.workbench.UIEvents;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
@@ -87,6 +90,33 @@ public class PartInstantiator
 
 	private void createParts(MApplication application, EModelService service)
 	{
+		//Sometimes, when switching windows at startup, the active context
+		//is null or doesn't have a window, and the part instantiation fails.
+		//Ensure that a child context with a window is activated:
+		IEclipseContext activeChild = application.getContext().getActiveChild();
+		if (activeChild == null || activeChild.get(MTrimmedWindow.class) == null)
+		{
+			boolean activated = false;
+			if (application.getContext() instanceof EclipseContext)
+			{
+				for (IEclipseContext child : ((EclipseContext) application.getContext()).getChildren())
+				{
+					MTrimmedWindow window = child.get(MTrimmedWindow.class);
+					if (window != null)
+					{
+						child.activate();
+						activated = true;
+						break;
+					}
+				}
+			}
+			if (!activated)
+			{
+				logger.error("Could not activate window for part instantiation"); //$NON-NLS-1$
+				return;
+			}
+		}
+
 		// find all placeholders
 		List<MPlaceholder> placeholders = service.findElements(application, null, MPlaceholder.class, null);
 
