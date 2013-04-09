@@ -52,7 +52,6 @@ public class FileURLCache implements IURLCache
 	private final HashReadWriteLocker locker = new HashReadWriteLocker();
 	private final static String PARTIAL_SUFFIX = ".partial"; //$NON-NLS-1$
 	private final static String CONTENT_TYPE_SUFFIX = ".contenttype"; //$NON-NLS-1$
-	private final static String HASH_DIRECTORY_PREFIX = "hash"; //$NON-NLS-1$
 	private final static String URLS_PROPERTIES_FILENAME = "urls.properties"; //$NON-NLS-1$
 
 	public FileURLCache(File directory)
@@ -386,7 +385,7 @@ public class FileURLCache implements IURLCache
 	private File fileForURL(URL url, String suffix)
 	{
 		String hashDirectory = !Util.isBlank(url.getHost()) ? url.getHost() + File.separator : ""; //$NON-NLS-1$
-		hashDirectory += HASH_DIRECTORY_PREFIX + url.hashCode();
+		hashDirectory += getHashDirectory(url);
 
 		String extension = ""; //$NON-NLS-1$
 		int lastIndexOfDot = !Util.isBlank(url.getPath()) ? url.getPath().lastIndexOf('.') : -1;
@@ -437,6 +436,27 @@ public class FileURLCache implements IURLCache
 		{
 			locker.unlockWrite(propertiesFile);
 		}
+	}
+
+	private static String getHashDirectory(Object o)
+	{
+		String hashCode = String.valueOf(o.hashCode());
+		StringBuilder directory = new StringBuilder();
+		if (hashCode.charAt(0) == '-')
+		{
+			directory.append('-');
+			hashCode = hashCode.substring(1);
+		}
+		while (hashCode.length() < 10)
+		{
+			hashCode = "0" + hashCode; //$NON-NLS-1$
+		}
+		directory.append(hashCode.substring(0, 3));
+		directory.append(File.separator);
+		directory.append(hashCode.substring(3, 6));
+		directory.append(File.separator);
+		directory.append(hashCode.substring(6));
+		return directory.toString();
 	}
 
 	private static void loadProperties(Properties properties, File file) throws IOException
