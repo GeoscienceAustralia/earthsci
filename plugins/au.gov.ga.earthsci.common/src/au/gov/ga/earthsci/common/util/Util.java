@@ -337,7 +337,8 @@ public class Util
 
 	/**
 	 * Read the file extension from the given string. This is defined as the
-	 * string after the last '.' dot.
+	 * string including and after the last '.' dot (eg
+	 * <code>temp/file.txt</code> = <code>.txt</code>).
 	 * <p/>
 	 * Returns null for a null path, or an empty string if no extension can be
 	 * found or the extension contains non-word characters [a-zA-Z_0-9].
