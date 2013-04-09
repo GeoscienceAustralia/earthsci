@@ -25,81 +25,21 @@ import gov.nasa.worldwind.avlist.AVKey;
  */
 public class RetrievalProperties implements IRetrievalProperties
 {
-	private final boolean useCache;
-	private final boolean refreshCache;
-	private final int connectTimeout;
-	private final int readTimeout;
-	private final boolean fileRequired;
-
-	/**
-	 * Create a new properties object with the default values (cache = true,
-	 * refresh = false, timeouts read from the WorldWind {@link Configuration}
-	 * class).
-	 */
-	public RetrievalProperties()
-	{
-		this(true, false);
-	}
-
-	/**
-	 * Create a new properties object with control over the caching properties.
-	 * 
-	 * @param useCache
-	 *            Value to return from {@link #isUseCache()}
-	 * @param refreshCache
-	 *            Value to return from {@link #isRefreshCache()}
-	 */
-	public RetrievalProperties(boolean useCache, boolean refreshCache)
-	{
-		this(useCache, refreshCache, Configuration.getIntegerValue(AVKey.URL_CONNECT_TIMEOUT, 8000), Configuration
-				.getIntegerValue(AVKey.URL_READ_TIMEOUT, 5000));
-	}
-
-	/**
-	 * Create a new properties object.
-	 * 
-	 * @param useCache
-	 *            Value to return from {@link #isUseCache()}
-	 * @param refreshCache
-	 *            Value to return from {@link #isRefreshCache()}
-	 * @param connectTimeout
-	 *            Value to return from {@link #getConnectTimeout()}
-	 * @param readTimeout
-	 *            Value to return from {@link #getReadTimeout()}
-	 */
-	public RetrievalProperties(boolean useCache, boolean refreshCache, int connectTimeout, int readTimeout)
-	{
-		this(useCache, refreshCache, connectTimeout, readTimeout, false);
-	}
-
-	/**
-	 * Create a new properties object.
-	 * 
-	 * @param useCache
-	 *            Value to return from {@link #isUseCache()}
-	 * @param refreshCache
-	 *            Value to return from {@link #isRefreshCache()}
-	 * @param connectTimeout
-	 *            Value to return from {@link #getConnectTimeout()}
-	 * @param readTimeout
-	 *            Value to return from {@link #getReadTimeout()}
-	 * @param fileRequired
-	 *            Value to return from {@link #isFileRequired()}
-	 */
-	public RetrievalProperties(boolean useCache, boolean refreshCache, int connectTimeout, int readTimeout,
-			boolean fileRequired)
-	{
-		this.useCache = useCache;
-		this.refreshCache = refreshCache;
-		this.connectTimeout = connectTimeout;
-		this.readTimeout = readTimeout;
-		this.fileRequired = fileRequired;
-	}
+	private boolean useCache = true;
+	private boolean refreshCache = false;
+	private int connectTimeout = Configuration.getIntegerValue(AVKey.URL_CONNECT_TIMEOUT, 8000);
+	private int readTimeout = Configuration.getIntegerValue(AVKey.URL_READ_TIMEOUT, 5000);
+	private boolean fileRequired = false;
 
 	@Override
 	public boolean isUseCache()
 	{
 		return useCache;
+	}
+
+	public void setUseCache(boolean useCache)
+	{
+		this.useCache = useCache;
 	}
 
 	@Override
@@ -108,10 +48,20 @@ public class RetrievalProperties implements IRetrievalProperties
 		return refreshCache;
 	}
 
+	public void setRefreshCache(boolean refreshCache)
+	{
+		this.refreshCache = refreshCache;
+	}
+
 	@Override
 	public int getConnectTimeout()
 	{
 		return connectTimeout;
+	}
+
+	public void setConnectTimeout(int connectTimeout)
+	{
+		this.connectTimeout = connectTimeout;
 	}
 
 	@Override
@@ -120,9 +70,19 @@ public class RetrievalProperties implements IRetrievalProperties
 		return readTimeout;
 	}
 
+	public void setReadTimeout(int readTimeout)
+	{
+		this.readTimeout = readTimeout;
+	}
+
 	@Override
 	public boolean isFileRequired()
 	{
 		return fileRequired;
+	}
+
+	public void setFileRequired(boolean fileRequired)
+	{
+		this.fileRequired = fileRequired;
 	}
 }
