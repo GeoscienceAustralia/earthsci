@@ -6,6 +6,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="gdal.jar">
 		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/Developer/java/libraries/gdal/gdal-1.7.0-javadoc.zip!/java"/>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="org.gdal.win32.x86"/>
 		</attributes>
 	</classpathentry>
