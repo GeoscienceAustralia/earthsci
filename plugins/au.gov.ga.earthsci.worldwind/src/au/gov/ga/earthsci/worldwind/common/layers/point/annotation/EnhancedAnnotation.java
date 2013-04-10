@@ -225,7 +225,7 @@ public class EnhancedAnnotation extends GlobeAnnotation
 		double finalScale = scale * this.computeScale(dc);
 		java.awt.Point offset = this.getAttributes().getDrawOffset();
 
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 		gl.glTranslated(x, y, 0);
 		gl.glScaled(finalScale, finalScale, 1);
 		gl.glTranslated(offset.x, offset.y, 0);

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Directory Catalog
+Bundle-SymbolicName: au.gov.ga.earthsci.catalog.directory;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: au.gov.ga.earthsci.catalog.directory.Activator
+Bundle-Vendor: Geoscience Australia
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ au.gov.ga.earthsci.intent;bundle-version="1.0.0",
+ au.gov.ga.earthsci.core;bundle-version="1.0.0",
+ au.gov.ga.earthsci.catalog;bundle-version="1.0.0",
+ au.gov.ga.earthsci.common;bundle-version="1.0.0",
+ gov.nasa.worldwind
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

@@ -79,4 +79,10 @@ public class LoadingCatalogTreeNode extends AbstractCatalogTreeNode
 	{
 		return null;
 	}
+
+	@Override
+	public URL getIconURL()
+	{
+		return null;
+	}
 }

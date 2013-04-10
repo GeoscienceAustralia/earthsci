@@ -120,7 +120,7 @@ public class ShapeOutlineCurtain extends Curtain implements ShapeOutlineAirspace
 	{
 
 		dc.getView().pushReferenceCenter(dc, refCenter);
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 		OGLStackHandler stack = new OGLStackHandler();
 		stack.pushAttrib(gl, GL2.GL_CURRENT_BIT | GL2.GL_HINT_BIT | GL2.GL_ENABLE_BIT | GL2.GL_DEPTH_BUFFER_BIT
 				| GL2.GL_POINT_BIT | GL2.GL_COLOR_BUFFER_BIT | GL2.GL_LIGHTING_BIT | GL2.GL_POINT_BIT);

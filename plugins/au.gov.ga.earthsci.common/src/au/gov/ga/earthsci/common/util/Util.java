@@ -15,6 +15,11 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.common.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -253,5 +258,112 @@ public class Util
 		}
 
 		return false;
+	}
+
+	/**
+	 * Save the given InputStream to a temporary file. Uses the
+	 * {@link File#createTempFile(String, String)} method to generate the file.
+	 * 
+	 * @param is
+	 *            InputStream to save
+	 * @param prefix
+	 *            Prefix to use for the filename; must be at least 3 characters
+	 * @param suffix
+	 *            Suffix to use for the filename; if null, <code>.tmp</code> is
+	 *            used
+	 * @return File containing the contents of the InputStream
+	 * @throws IOException
+	 *             If writing fails
+	 */
+	public static File writeInputStreamToTemporaryFile(InputStream is, String prefix, String suffix) throws IOException
+	{
+		File file = File.createTempFile(prefix, suffix);
+		file.deleteOnExit();
+		FileOutputStream fos = null;
+		try
+		{
+			fos = new FileOutputStream(file);
+			writeInputStreamToOutputStream(is, fos);
+		}
+		finally
+		{
+			if (fos != null)
+			{
+				fos.close();
+			}
+		}
+		return file;
+	}
+
+	/**
+	 * Write the given InputStream to the given OutputStream, until no bytes are
+	 * left in the InputStream. Uses a buffer size of 8096 bytes.
+	 * 
+	 * @param is
+	 *            InputStream to read from
+	 * @param os
+	 *            OutputStream to write to
+	 * @throws IOException
+	 *             If writing fails
+	 */
+	public static void writeInputStreamToOutputStream(InputStream is, OutputStream os) throws IOException
+	{
+		writeInputStreamToOutputStream(is, os, 8096);
+	}
+
+	/**
+	 * Write the given InputStream to the given OutputStream, until no bytes are
+	 * left in the InputStream.
+	 * 
+	 * @param is
+	 *            InputStream to read from
+	 * @param os
+	 *            OutputStream to write to
+	 * @param bufferSize
+	 *            Size of the intermediate buffer
+	 * @throws IOException
+	 *             If writing fails
+	 */
+	public static void writeInputStreamToOutputStream(InputStream is, OutputStream os, int bufferSize)
+			throws IOException
+	{
+		byte[] buffer = new byte[bufferSize];
+		int len;
+		while ((len = is.read(buffer)) >= 0)
+		{
+			os.write(buffer, 0, len);
+		}
+	}
+
+	/**
+	 * Read the file extension from the given string. This is defined as the
+	 * string including and after the last '.' dot (eg
+	 * <code>temp/file.txt</code> = <code>.txt</code>).
+	 * <p/>
+	 * Returns null for a null path, or an empty string if no extension can be
+	 * found or the extension contains non-word characters [a-zA-Z_0-9].
+	 * 
+	 * 
+	 * @param path
+	 *            Path to determine the file extension for
+	 * @return File extension for path
+	 */
+	public static String getExtension(String path)
+	{
+		if (path == null)
+		{
+			return null;
+		}
+		int lastIndexOfDot = path.lastIndexOf('.');
+		int lastIndexOfSlash = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+		if (lastIndexOfDot > lastIndexOfSlash)
+		{
+			String extension = path.substring(lastIndexOfDot);
+			if (extension.matches("\\w+")) //$NON-NLS-1$
+			{
+				return extension;
+			}
+		}
+		return ""; //$NON-NLS-1$
 	}
 }

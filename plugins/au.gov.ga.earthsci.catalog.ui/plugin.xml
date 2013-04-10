@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="au.gov.ga.earthsci.catalog.ui.labelProviders" name="Catalog Tree Label Providers" schema="schema/au.gov.ga.earthsci.catalog.ui.labelProviders.exsd"/>
    
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -29,10 +28,6 @@
             class="au.gov.ga.earthsci.catalog.ui.preferences.CatalogBrowserPreferences"
             priority="0">
       </bind>
-      <injectable
-            class="au.gov.ga.earthsci.catalog.ui.CatalogTreeLabelProviderRegistry"
-            priority="0">
-      </injectable>
    </extension>
    <extension
          id="id2"

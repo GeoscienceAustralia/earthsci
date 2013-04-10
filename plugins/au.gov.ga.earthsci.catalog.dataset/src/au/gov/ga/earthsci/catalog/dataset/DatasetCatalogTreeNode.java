@@ -18,18 +18,26 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 {
 
 	/** The name to use for this node */
-	private String name;
+	private final String name;
 
 	/** The info URL (if applicable) for this node */
-	private URL infoURL;
+	private final URL infoURL;
 
 	/** The icon URL (if applicable) for this node */
-	private URL iconURL;
+	private final URL iconURL;
 
-	private boolean base;
+	private final boolean base;
+
+	private final boolean removeable;
 
 	public DatasetCatalogTreeNode(final URI nodeURI, final String name, final URL infoURL, final URL iconURL,
 			final boolean base)
+	{
+		this(nodeURI, name, infoURL, iconURL, base, false);
+	}
+
+	public DatasetCatalogTreeNode(final URI nodeURI, final String name, final URL infoURL, final URL iconURL,
+			final boolean base, boolean removeable)
 	{
 		super(nodeURI);
 
@@ -37,12 +45,13 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 		this.infoURL = infoURL;
 		this.iconURL = iconURL;
 		this.base = base;
+		this.removeable = removeable;
 	}
 
 	@Override
 	public boolean isRemoveable()
 	{
-		return true;
+		return removeable;
 	}
 
 	@Override
@@ -51,9 +60,10 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 		return name;
 	}
 
+	@Override
 	public URL getIconURL()
 	{
-		return iconURL;
+		return iconURL != null ? iconURL : super.getIconURL();
 	}
 
 	public boolean isBase()

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve.cache;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -148,4 +149,17 @@ public interface IURLCache
 	 *             If an error occurs when creating the InputStream
 	 */
 	InputStream read(URL url) throws IOException;
+
+	/**
+	 * Create a File object that points to the completed retrieved resource.
+	 * <p/>
+	 * It is generally preferred to use the {@link #read(URL)} method over this
+	 * one. Use this if a file is explicitly required; for example, to pass to
+	 * an external library that requires File input.
+	 * 
+	 * @param url
+	 *            URL to get the File for
+	 * @return File containing the retrieved resource
+	 */
+	File getFile(URL url);
 }

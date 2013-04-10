@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.core.retrieve.result;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.ByteBuffer;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
@@ -27,27 +28,14 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ByteBufferRetrievalData implements IRetrievalData
+public class ByteBufferRetrievalData extends AbstractRetrievalData
 {
 	private final ByteBuffer buffer;
-	private final String contentType;
 
-	public ByteBufferRetrievalData(ByteBuffer buffer, String contentType)
+	public ByteBufferRetrievalData(URL url, ByteBuffer buffer, String contentType)
 	{
+		super(url, buffer.limit(), contentType);
 		this.buffer = buffer;
-		this.contentType = contentType;
-	}
-
-	@Override
-	public long getContentLength()
-	{
-		return buffer.limit();
-	}
-
-	@Override
-	public String getContentType()
-	{
-		return contentType;
 	}
 
 	@Override

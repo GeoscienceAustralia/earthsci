@@ -32,8 +32,9 @@ import au.gov.ga.earthsci.application.parts.info.InfoPart;
  */
 public class LinkHandler
 {
-	private static final String TOOL_ITEM_ID = "au.gov.ga.earthsci.application.info.toolitems.link"; //$NON-NLS-1$
-	private static final String PERSISTED_STATE_KEY = "au.gov.ga.earthsci.application.info.toolitems.link.persist"; //$NON-NLS-1$
+	private static final String TOOL_ITEM_ID = "au.gov.ga.earthsci.application.information.toolbar.link"; //$NON-NLS-1$
+	private static final String PERSISTED_STATE_KEY =
+			"au.gov.ga.earthsci.application.information.toolitems.link.persist"; //$NON-NLS-1$
 
 	@Inject
 	private EModelService service;

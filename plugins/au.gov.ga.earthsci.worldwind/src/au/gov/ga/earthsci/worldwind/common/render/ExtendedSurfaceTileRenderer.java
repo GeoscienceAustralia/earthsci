@@ -73,7 +73,7 @@ public class ExtendedSurfaceTileRenderer extends GeographicSurfaceTileRenderer
 		double exaggeratedOffset = elevationOffset * dc.getVerticalExaggeration();
 		if (exaggeratedOffset != 0)
 		{
-			GL2 gl = dc.getGL();
+			GL2 gl = dc.getGL().getGL2();
 			gl.glMatrixMode(GL2.GL_MODELVIEW);
 
 			Globe globe = dc.getGlobe();

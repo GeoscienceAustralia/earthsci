@@ -4,6 +4,7 @@
    <extension-point id="au.gov.ga.earthsci.core.retrieve.retrievers" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retrievers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.hudLayers" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.core.hudLayers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.core.xmlLoaders.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.urlStreamHandlers" name="URL Stream Handlers" schema="schema/au.gov.ga.earthsci.core.urlStreamHandlers.exsd"/>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
@@ -17,15 +18,6 @@
          point="au.gov.ga.earthsci.core.retrieve.retrievers">
       <retriever
             class="au.gov.ga.earthsci.core.retrieve.retriever.HttpRetriever">
-      </retriever>
-      <retriever
-            class="au.gov.ga.earthsci.core.retrieve.retriever.FileRetriever">
-      </retriever>
-      <retriever
-            class="au.gov.ga.earthsci.core.retrieve.retriever.BundleResourceRetriever">
-      </retriever>
-      <retriever
-            class="au.gov.ga.earthsci.core.retrieve.retriever.JarRetriever">
       </retriever>
    </extension>
    <extension
@@ -137,6 +129,21 @@
             filter="au.gov.ga.earthsci.core.model.layer.LayerXmlLoader"
             priority="0">
       </loader>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.core.urlStreamHandlers">
+      <handler
+            class="au.gov.ga.earthsci.core.url.ExtensionIconURLStreamHandlerService">
+         <protocol
+               name="extensionicon">
+         </protocol>
+      </handler>
+      <handler
+            class="au.gov.ga.earthsci.core.url.SystemIconURLStreamHandlerService">
+         <protocol
+               name="systemicon">
+         </protocol>
+      </handler>
    </extension>
 
 </plugin>

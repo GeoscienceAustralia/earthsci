@@ -26,7 +26,6 @@ import java.nio.ByteBuffer;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrieval;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
-import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalProperties;
@@ -71,8 +70,10 @@ public class URLRetrieverWrapper extends JarRetriever
 			caller = wrapped;
 		}
 		IRetrievalService service = RetrievalServiceFactory.getServiceInstance();
-		IRetrievalProperties retrievalProperties =
-				new RetrievalProperties(false, false, getConnectTimeout(), getReadTimeout());
+		RetrievalProperties retrievalProperties = new RetrievalProperties();
+		retrievalProperties.setConnectTimeout(getConnectTimeout());
+		retrievalProperties.setReadTimeout(getReadTimeout());
+		retrievalProperties.setUseCache(false);
 		IRetrieval retrieval = service.retrieve(caller, getUrl(), retrievalProperties);
 		retrieval.start();
 		IRetrievalResult result = retrieval.waitAndGetResult();

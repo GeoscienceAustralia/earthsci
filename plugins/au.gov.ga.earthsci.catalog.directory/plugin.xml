@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="au.gov.ga.earthsci.intent.filters">
+      <filter
+            class="au.gov.ga.earthsci.catalog.directory.DirectoryCatalogIntentHandler"
+            priority="0">
+         <scheme
+               name="file">
+         </scheme>
+         <authority
+               name="*">
+         </authority>
+         <path
+               name="*/">
+         </path>
+         <return-type
+               class="au.gov.ga.earthsci.catalog.ICatalogTreeNode">
+         </return-type>
+      </filter>
+   </extension>
+
+</plugin>

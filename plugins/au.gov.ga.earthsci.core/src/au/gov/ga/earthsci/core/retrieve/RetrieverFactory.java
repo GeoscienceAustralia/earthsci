@@ -33,6 +33,8 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.e4.core.services.log.Logger;
 
+import au.gov.ga.earthsci.core.retrieve.retriever.DefaultRetriever;
+
 /**
  * Basic implementation of the {@link IRetrieverFactory} interface.
  * 
@@ -47,6 +49,8 @@ public class RetrieverFactory implements IRetrieverFactory
 
 	private Set<IRetriever> retrievers = new LinkedHashSet<IRetriever>();
 	private ReadWriteLock retrieversLock = new ReentrantReadWriteLock();
+
+	private IRetriever defaultRetriever = new DefaultRetriever();
 
 	@Inject
 	private Logger logger;
@@ -135,11 +139,21 @@ public class RetrieverFactory implements IRetrieverFactory
 					return r;
 				}
 			}
-			return null;
+			return getDefaultRetriever();
 		}
 		finally
 		{
 			retrieversLock.readLock().unlock();
 		}
+	}
+
+	public IRetriever getDefaultRetriever()
+	{
+		return defaultRetriever;
+	}
+
+	public void setDefaultRetriever(IRetriever defaultRetriever)
+	{
+		this.defaultRetriever = defaultRetriever;
 	}
 }

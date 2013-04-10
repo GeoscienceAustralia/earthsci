@@ -30,6 +30,7 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
@@ -42,6 +43,7 @@ import au.gov.ga.earthsci.core.retrieve.cache.FileURLCache;
 import au.gov.ga.earthsci.core.retrieve.cache.IURLCache;
 import au.gov.ga.earthsci.core.retrieve.result.BasicRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.result.ByteBufferRetrievalData;
+import au.gov.ga.earthsci.core.retrieve.result.FileRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.result.URLCacheRetrievalData;
 import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 
@@ -205,7 +207,7 @@ public class HttpRetriever implements IRetriever
 					try
 					{
 						os = urlCache.writePartial(url, position);
-						writeInputStreamToOutputStream(is, os);
+						Util.writeInputStreamToOutputStream(is, os);
 					}
 					finally
 					{
@@ -217,10 +219,18 @@ public class HttpRetriever implements IRetriever
 					urlCache.writeComplete(url, lastModified, contentType);
 					retrievedData = new URLCacheRetrievalData(urlCache, url);
 				}
+				else if (retrievalProperties.isFileRequired())
+				{
+					String prefix = getClass().getSimpleName();
+					String suffix = Util.getExtension(url.getPath());
+					suffix = suffix != null ? suffix : ""; //$NON-NLS-1$
+					File file = Util.writeInputStreamToTemporaryFile(is, prefix, suffix);
+					retrievedData = new FileRetrievalData(file, contentType);
+				}
 				else
 				{
 					ByteBuffer buffer = WWIO.readStreamToBuffer(is);
-					retrievedData = new ByteBufferRetrievalData(buffer, contentType);
+					retrievedData = new ByteBufferRetrievalData(url, buffer, contentType);
 				}
 				IRetrievalResult result = new BasicRetrievalResult(retrievedData, false);
 				return new RetrieverResult(result, RetrieverResultStatus.COMPLETE);
@@ -249,16 +259,6 @@ public class HttpRetriever implements IRetriever
 		if (monitor.isCanceled() || monitor.isPaused())
 		{
 			throw new MonitorCancelledOrPausedException();
-		}
-	}
-
-	private static void writeInputStreamToOutputStream(InputStream is, OutputStream os) throws IOException
-	{
-		byte[] buffer = new byte[8096];
-		int len;
-		while ((len = is.read(buffer)) >= 0)
-		{
-			os.write(buffer, 0, len);
 		}
 	}
 }

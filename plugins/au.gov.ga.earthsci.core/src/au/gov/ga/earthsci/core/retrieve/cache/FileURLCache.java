@@ -30,6 +30,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,9 +51,8 @@ public class FileURLCache implements IURLCache
 	private final File directory;
 	private final HashReadWriteLocker locker = new HashReadWriteLocker();
 	private final static String PARTIAL_SUFFIX = ".partial"; //$NON-NLS-1$
-	private final static String PARTIAL_SUFFIX_REPLACEMENT = ".partialr"; //$NON-NLS-1$
 	private final static String CONTENT_TYPE_SUFFIX = ".contenttype"; //$NON-NLS-1$
-	private final static String CONTENT_TYPE_SUFFIX_REPLACEMENT = ".contenttyper"; //$NON-NLS-1$
+	private final static String URLS_PROPERTIES_FILENAME = "urls.properties"; //$NON-NLS-1$
 
 	public FileURLCache(File directory)
 	{
@@ -207,8 +207,13 @@ public class FileURLCache implements IURLCache
 
 	private void setContentType(URL url, String contentType, File completeFile)
 	{
+		if (contentType == null)
+		{
+			return;
+		}
+
 		String guessedContentType = URLConnection.guessContentTypeFromName(completeFile.getName());
-		if ((guessedContentType == null && contentType == null) || guessedContentType.equals(contentType))
+		if ((guessedContentType == null && contentType == null) || contentType.equals(guessedContentType))
 		{
 			//don't need to write a content type file if the URLConnection can guess the content type from the complete filename
 			return;
@@ -362,51 +367,130 @@ public class FileURLCache implements IURLCache
 		}
 	}
 
+	@Override
+	public File getFile(URL url)
+	{
+		return getCompleteFile(url);
+	}
+
 	private File getCompleteFile(URL url)
 	{
-		return new File(directory, filenameForURL(url));
+		return fileForURL(url, ""); //$NON-NLS-1$
 	}
 
 	private File getPartialFile(URL url)
 	{
-		return new File(directory, filenameForURL(url) + PARTIAL_SUFFIX);
+		return fileForURL(url, PARTIAL_SUFFIX);
 	}
 
 	private File getContentTypeFile(URL url)
 	{
-		return new File(directory, filenameForURL(url) + CONTENT_TYPE_SUFFIX);
+		return fileForURL(url, CONTENT_TYPE_SUFFIX);
 	}
 
-	private static String filenameForURL(URL url)
+	private File fileForURL(URL url, String suffix)
 	{
-		String filename;
-		if (!Util.isBlank(url.getHost()) && !Util.isBlank(url.getPath()))
+		String hashDirectory = !Util.isBlank(url.getHost()) ? url.getHost() + File.separator : ""; //$NON-NLS-1$
+		hashDirectory += getHashDirectory(url);
+
+		String extension = au.gov.ga.earthsci.common.util.Util.getExtension(url.getPath());
+		if (extension == null || extension.length() > 30)
 		{
-			filename = fixForFilename(url.getHost());
-			if (url.getPort() >= 0)
-			{
-				filename += "!" + url.getPort(); //$NON-NLS-1$
-			}
-			filename += File.separator + fixForFilename(url.getPath());
-			if (url.getQuery() != null)
-			{
-				filename += "#" + url.getQuery(); //$NON-NLS-1$
-			}
+			//probably not an extension
+			extension = ""; //$NON-NLS-1$
 		}
-		else
+
+		File propertiesFile = new File(directory, hashDirectory + File.separator + URLS_PROPERTIES_FILENAME);
+		locker.lockWrite(propertiesFile);
+		try
 		{
-			filename = fixForFilename(url.toExternalForm());
+			Properties properties = new Properties();
+			if (propertiesFile.exists())
+			{
+				try
+				{
+					loadProperties(properties, propertiesFile);
+				}
+				catch (IOException e)
+				{
+					logger.error("Error reading url properties file", e); //$NON-NLS-1$
+				}
+			}
+			String filename = properties.getProperty(url.toString());
+			if (filename == null)
+			{
+				filename = properties.size() + extension;
+			}
+			properties.setProperty(url.toString(), filename);
+			propertiesFile.getParentFile().mkdirs();
+			try
+			{
+				saveProperties(properties, propertiesFile);
+			}
+			catch (IOException e)
+			{
+				logger.error("Error writing url properties file", e); //$NON-NLS-1$
+			}
+			return new File(directory, hashDirectory + File.separator + filename + suffix);
 		}
-		//ensure we don't get collisions with the partial and content type suffixes
-		filename = filename.replace(PARTIAL_SUFFIX, PARTIAL_SUFFIX_REPLACEMENT);
-		filename = filename.replace(CONTENT_TYPE_SUFFIX, CONTENT_TYPE_SUFFIX_REPLACEMENT);
-		return filename;
+		finally
+		{
+			locker.unlockWrite(propertiesFile);
+		}
 	}
 
-	private static String fixForFilename(String s)
+	private static String getHashDirectory(URL url)
 	{
-		// need to replace the following invalid filename characters: \/:*?"<>|
-		// replace them with exclamation points, because that is cool
-		return s.replaceAll("!", "!!").replaceAll("[\\/:*?\"<>|]", "!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		String hashCode = String.valueOf(url.toString().hashCode());
+		StringBuilder directory = new StringBuilder();
+		if (hashCode.charAt(0) == '-')
+		{
+			directory.append('-');
+			hashCode = hashCode.substring(1);
+		}
+		while (hashCode.length() < 10)
+		{
+			hashCode = "0" + hashCode; //$NON-NLS-1$
+		}
+		directory.append(hashCode.substring(0, 3));
+		directory.append(File.separator);
+		directory.append(hashCode.substring(3, 6));
+		directory.append(File.separator);
+		directory.append(hashCode.substring(6));
+		return directory.toString();
+	}
+
+	private static void loadProperties(Properties properties, File file) throws IOException
+	{
+		FileInputStream fis = null;
+		try
+		{
+			fis = new FileInputStream(file);
+			properties.load(fis);
+		}
+		finally
+		{
+			if (fis != null)
+			{
+				fis.close();
+			}
+		}
+	}
+
+	private static void saveProperties(Properties properties, File file) throws IOException
+	{
+		FileOutputStream fos = null;
+		try
+		{
+			fos = new FileOutputStream(file);
+			properties.store(fos, null);
+		}
+		finally
+		{
+			if (fos != null)
+			{
+				fos.close();
+			}
+		}
 	}
 }

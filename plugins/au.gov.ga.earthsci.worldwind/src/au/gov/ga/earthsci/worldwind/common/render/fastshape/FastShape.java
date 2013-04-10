@@ -289,7 +289,7 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 			alpha = 1;
 		}
 
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 		OGLStackHandler stack = new OGLStackHandler();
 
 		try

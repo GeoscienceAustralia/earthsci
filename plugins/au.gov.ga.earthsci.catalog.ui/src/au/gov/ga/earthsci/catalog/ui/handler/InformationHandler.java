@@ -30,7 +30,6 @@ import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
 
 import au.gov.ga.earthsci.application.parts.info.InfoPart;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.catalog.ui.CatalogTreeLabelProviderRegistry;
 
 /**
  * Handler used to show the information related to a catalog tree node.
@@ -59,7 +58,7 @@ public class InformationHandler
 		}
 
 		ICatalogTreeNode node = nodes[0];
-		URL infoURL = CatalogTreeLabelProviderRegistry.getProvider(node).getInfoURL(node);
+		URL infoURL = node.getInformationURL();
 		return infoURL != null;
 	}
 }

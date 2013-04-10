@@ -95,4 +95,10 @@ public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 	{
 		return ExceptionFormatter.toHTML(error);
 	}
+
+	@Override
+	public URL getIconURL()
+	{
+		return Icons.ERROR;
+	}
 }

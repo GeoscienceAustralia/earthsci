@@ -35,11 +35,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetrieverMonitor;
 import au.gov.ga.earthsci.core.retrieve.RetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.RetrievalStatus;
-import au.gov.ga.earthsci.core.retrieve.retriever.HttpRetriever;
 
 /**
  * Unit tests for the {@link HttpRetriever} class
@@ -121,7 +121,7 @@ public class HTTPRetrieverTest
 			}
 		});
 
-		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
+		classUnderTest.retrieve(url, monitor, createRetrievalProperties(), null);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -138,7 +138,7 @@ public class HTTPRetrieverTest
 			}
 		});
 
-		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
+		classUnderTest.retrieve(url, monitor, createRetrievalProperties(), null);
 	}
 
 	@Test
@@ -152,8 +152,7 @@ public class HTTPRetrieverTest
 
 		URL url = createHttpURL("/success");
 
-		IRetrievalResult result =
-				classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null).result;
+		IRetrievalResult result = classUnderTest.retrieve(url, monitor, createRetrievalProperties(), null).result;
 
 		assertNotNull(result);
 		assertNull(result.getError());
@@ -167,7 +166,7 @@ public class HTTPRetrieverTest
 		Assume.assumeTrue(httpServerIsAvailable());
 
 		URL url = createHttpURL("/404");
-		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
+		classUnderTest.retrieve(url, monitor, createRetrievalProperties(), null);
 	}
 
 	@Test(expected = IOException.class)
@@ -180,7 +179,14 @@ public class HTTPRetrieverTest
 		setServerResponse("/fail", 403, expectedResult, true);
 
 		URL url = createHttpURL("/fail");
-		classUnderTest.retrieve(url, monitor, new RetrievalProperties(false, false), null);
+		classUnderTest.retrieve(url, monitor, createRetrievalProperties(), null);
+	}
+
+	private static IRetrievalProperties createRetrievalProperties()
+	{
+		RetrievalProperties retrievalProperties = new RetrievalProperties();
+		retrievalProperties.setUseCache(false);
+		return retrievalProperties;
 	}
 
 	// TODO: Move this code somewhere more reusable

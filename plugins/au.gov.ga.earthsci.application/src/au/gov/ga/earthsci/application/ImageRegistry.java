@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.application;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,10 +107,16 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 
 	protected void putResource(String key, String resourceName)
 	{
-		URL url = getClass().getResource(resourceName);
-		put(key, ImageDescriptor.createFromURL(url));
-
-		urlMap.put(key, url);
+		try
+		{
+			URL url = new URL("platform:/plugin/" + Activator.getBundleName() + resourceName); //$NON-NLS-1$
+			put(key, ImageDescriptor.createFromURL(url));
+			urlMap.put(key, url);
+		}
+		catch (MalformedURLException e)
+		{
+			logger.error("Error adding image resource", e); //$NON-NLS-1$
+		}
 	}
 
 	protected void putAnimatedResource(String key, String resourceName)
