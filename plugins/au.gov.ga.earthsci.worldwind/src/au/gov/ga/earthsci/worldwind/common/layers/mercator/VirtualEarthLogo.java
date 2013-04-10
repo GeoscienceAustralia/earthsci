@@ -81,9 +81,11 @@ public class VirtualEarthLogo implements OrderedRenderable
 	private void drawIcon(DrawContext dc)
 	{
 		if (this.iconFilePath == null)
+		{
 			return;
+		}
 
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 
 		boolean attribsPushed = false;
 		boolean modelviewPushed = false;
@@ -91,18 +93,16 @@ public class VirtualEarthLogo implements OrderedRenderable
 
 		try
 		{
-			gl.glPushAttrib(GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_COLOR_BUFFER_BIT
-					| GL2.GL_ENABLE_BIT | GL2.GL_TEXTURE_BIT
-					| GL2.GL_TRANSFORM_BIT | GL2.GL_VIEWPORT_BIT
-					| GL2.GL_CURRENT_BIT);
+			gl.glPushAttrib(GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_COLOR_BUFFER_BIT | GL2.GL_ENABLE_BIT | GL2.GL_TEXTURE_BIT
+					| GL2.GL_TRANSFORM_BIT | GL2.GL_VIEWPORT_BIT | GL2.GL_CURRENT_BIT);
 			attribsPushed = true;
 
 			// Initialize texture if not done yet
-			Texture iconTexture = (Texture)dc.getTextureCache().get(this);
+			Texture iconTexture = (Texture) dc.getTextureCache().get(this);
 			if (iconTexture == null)
 			{
 				this.initializeTexture(dc);
-				iconTexture = (Texture)dc.getTextureCache().get(this);
+				iconTexture = (Texture) dc.getTextureCache().get(this);
 				if (iconTexture == null)
 				{
 					// TODO: log warning
@@ -125,8 +125,7 @@ public class VirtualEarthLogo implements OrderedRenderable
 			projectionPushed = true;
 			gl.glLoadIdentity();
 			double maxwh = width > height ? width : height;
-			gl.glOrtho(0d, viewport.width, 0d, viewport.height, -0.6 * maxwh,
-					0.6 * maxwh);
+			gl.glOrtho(0d, viewport.width, 0d, viewport.height, -0.6 * maxwh, 0.6 * maxwh);
 
 			gl.glMatrixMode(GL2.GL_MODELVIEW);
 			gl.glPushMatrix();
@@ -165,20 +164,23 @@ public class VirtualEarthLogo implements OrderedRenderable
 				gl.glPopMatrix();
 			}
 			if (attribsPushed)
+			{
 				gl.glPopAttrib();
+			}
 		}
 	}
 
 	private void initializeTexture(DrawContext dc)
 	{
-		Texture iconTexture = (Texture)dc.getTextureCache().get(this);
+		Texture iconTexture = (Texture) dc.getTextureCache().get(this);
 		if (iconTexture != null)
+		{
 			return;
+		}
 
 		try
 		{
-			InputStream iconStream = this.getClass().getResourceAsStream(
-					this.iconFilePath);
+			InputStream iconStream = this.getClass().getResourceAsStream(this.iconFilePath);
 			if (iconStream == null)
 			{
 				File iconFile = new File(this.iconFilePath);
@@ -196,22 +198,17 @@ public class VirtualEarthLogo implements OrderedRenderable
 		}
 		catch (IOException e)
 		{
-			String msg = Logging
-					.getMessage("layers.IOExceptionDuringInitialization");
+			String msg = Logging.getMessage("layers.IOExceptionDuringInitialization");
 			Logging.logger().severe(msg);
 			throw new WWRuntimeException(msg, e);
 		}
 
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 		gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
-		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER,
-				GL2.GL_LINEAR_MIPMAP_LINEAR);
-		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER,
-				GL2.GL_LINEAR);
-		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S,
-				GL2.GL_CLAMP_TO_EDGE);
-		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T,
-				GL2.GL_CLAMP_TO_EDGE);
+		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR_MIPMAP_LINEAR);
+		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
+		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP_TO_EDGE);
+		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP_TO_EDGE);
 		// Enable texture anisotropy, improves "tilted" world map quality.
 		/*int[] maxAnisotropy = new int[1];
 		gl
@@ -235,13 +232,11 @@ public class VirtualEarthLogo implements OrderedRenderable
 	{
 		if (this.resizeBehavior.equals(RESIZE_SHRINK_ONLY))
 		{
-			return Math.min(1d, (this.toViewportScale) * viewport.width
-					/ this.getScaledIconWidth());
+			return Math.min(1d, (this.toViewportScale) * viewport.width / this.getScaledIconWidth());
 		}
 		else if (this.resizeBehavior.equals(RESIZE_STRETCH))
 		{
-			return (this.toViewportScale) * viewport.width
-					/ this.getScaledIconWidth();
+			return (this.toViewportScale) * viewport.width / this.getScaledIconWidth();
 		}
 		else if (this.resizeBehavior.equals(RESIZE_KEEP_FIXED_SIZE))
 		{

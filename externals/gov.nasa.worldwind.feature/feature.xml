@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="gov.nasa.worldwind.feature"
-      label="NASA World Wind (JOGL2 port)"
-      version="1.4.0"
+      label="NASA World Wind"
+      version="2.0.0.rev1269"
       provider-name="NASA"
       os="linux,macosx,win32"
       arch="x86,x86_64">
@@ -20,7 +20,7 @@
    </license>
 
    <requires>
-      <import plugin="gov.nasa.worldwind" version="1.4.0.rev709" match="greaterOrEqual"/>
+      <import plugin="gov.nasa.worldwind" version="2.0.0.rev1269" match="greaterOrEqual"/>
       <import plugin="com.jogamp.jogl" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.gdal" version="1.7.2" match="greaterOrEqual"/>
       <import feature="com.jogamp.jogl.feature" version="2.0.0"/>

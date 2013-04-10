@@ -67,7 +67,7 @@ public class CurtainTileRenderer
 
 		ExtendedDrawContext.applyWireframePolygonMode(dc);
 
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 
 		gl.glPushAttrib(GL2.GL_COLOR_BUFFER_BIT // for alpha func
 				| GL2.GL_ENABLE_BIT | GL2.GL_CURRENT_BIT | GL2.GL_DEPTH_BUFFER_BIT // for depth func

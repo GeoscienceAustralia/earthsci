@@ -50,15 +50,16 @@ import au.gov.ga.earthsci.worldwind.common.util.Loader;
 import com.jogamp.common.nio.Buffers;
 
 /**
- * A specialised sub-surface layer that displays crustal elevation data
- * read from a simple comma- or whitespace-separated data file.
+ * A specialised sub-surface layer that displays crustal elevation data read
+ * from a simple comma- or whitespace-separated data file.
  * <p/>
- * The data file (referenced via the {@link #url} field) should contain elevations
- * expressed as doubles (in metres) in a row-major ordering of dimensions {@link #width} x {@link #height}.
- * The datafile can be contaied within a zip file to minimise bandwidth requirements.
+ * The data file (referenced via the {@link #url} field) should contain
+ * elevations expressed as doubles (in metres) in a row-major ordering of
+ * dimensions {@link #width} x {@link #height}. The datafile can be contaied
+ * within a zip file to minimise bandwidth requirements.
  * <p/>
- * The crust layer will be rendered as a surface deformed by the elevation data and
- * coloured using a colour map based on min and max elevation values.
+ * The crust layer will be rendered as a surface deformed by the elevation data
+ * and coloured using a colour map based on min and max elevation values.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -108,7 +109,7 @@ public class CrustLayer extends AbstractLayer implements Loader
 		this.width = (Integer) params.getValue(AVKey.WIDTH);
 		this.height = (Integer) params.getValue(AVKey.HEIGHT);
 		this.sector = (Sector) params.getValue(AVKey.SECTOR);
-		
+
 		if (width <= 1 || height <= 1)
 		{
 			throw new IllegalArgumentException("Illegal width or height");
@@ -126,7 +127,7 @@ public class CrustLayer extends AbstractLayer implements Loader
 		{
 			wrap = (Boolean) params.getValue(AVKeyMore.WRAP);
 		}
-		
+
 		indices = generateTriStripIndices(width, height, wrap);
 		vertices = Buffers.newDirectDoubleBuffer(width * height * 3);
 		colors = Buffers.newDirectDoubleBuffer(width * height * 4);
@@ -201,7 +202,8 @@ public class CrustLayer extends AbstractLayer implements Loader
 				colors.rewind();
 				for (int i = 0; i < width * height; i++)
 				{
-					double[] color = chroma((elevations.get() - minElevation) / (maxElevation - minElevation), getOpacity());
+					double[] color =
+							chroma((elevations.get() - minElevation) / (maxElevation - minElevation), getOpacity());
 					colors.put(color);
 				}
 			}
@@ -293,7 +295,7 @@ public class CrustLayer extends AbstractLayer implements Loader
 			recalculateColors();
 		}
 
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 
 		int push = GL2.GL_CLIENT_VERTEX_ARRAY_BIT;
 		if (colors != null)
@@ -319,8 +321,7 @@ public class CrustLayer extends AbstractLayer implements Loader
 		gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL2.GL_DOUBLE, 0, vertices.rewind());
 
-		gl.glDrawElements(GL2.GL_TRIANGLE_STRIP, indices.limit(),
-				GL2.GL_UNSIGNED_INT, indices.rewind());
+		gl.glDrawElements(GL2.GL_TRIANGLE_STRIP, indices.limit(), GL2.GL_UNSIGNED_INT, indices.rewind());
 
 		gl.glColor4d(1, 1, 1, 1);
 		gl.glPopClientAttrib();
@@ -366,12 +367,14 @@ public class CrustLayer extends AbstractLayer implements Loader
 			double[] doubles = parseDoubles(s);
 
 			if (doubles.length != width * height)
+			{
 				throw new IOException("File doesn't contain width x height (" + (width * height) + ") values");
+			}
 
 			DoubleBuffer buffer = Buffers.newDirectDoubleBuffer(width * height);
 			buffer.put(doubles);
 			buffer.rewind();
-			
+
 			for (int i = 0; i < width * height; i++)
 			{
 				double elev = buffer.get();
@@ -404,7 +407,7 @@ public class CrustLayer extends AbstractLayer implements Loader
 
 	protected void setBlendingFunction(DrawContext dc)
 	{
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 		double alpha = this.getOpacity();
 		gl.glColor4d(alpha, alpha, alpha, alpha);
 		gl.glEnable(GL2.GL_BLEND);

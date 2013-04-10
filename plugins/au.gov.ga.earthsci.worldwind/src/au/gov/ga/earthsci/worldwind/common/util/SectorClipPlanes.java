@@ -77,7 +77,7 @@ public class SectorClipPlanes
 
 		if (planes != null)
 		{
-			GL2 gl = dc.getGL();
+			GL2 gl = dc.getGL().getGL2();
 
 			gl.glClipPlane(GL2.GL_CLIP_PLANE0, planes, 0);
 			gl.glClipPlane(GL2.GL_CLIP_PLANE1, planes, 4);
@@ -98,7 +98,7 @@ public class SectorClipPlanes
 	 */
 	public void disableClipping(DrawContext dc)
 	{
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 
 		gl.glDisable(GL2.GL_CLIP_PLANE0);
 		gl.glDisable(GL2.GL_CLIP_PLANE1);

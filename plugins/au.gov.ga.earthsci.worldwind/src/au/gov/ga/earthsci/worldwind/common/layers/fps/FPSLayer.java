@@ -356,7 +356,9 @@ public class FPSLayer extends AbstractLayer
 	public void draw(DrawContext dc)
 	{
 		if (dc.isPickingMode())
+		{
 			return;
+		}
 
 		frameCount++;
 		long currentNanos = System.nanoTime();
@@ -372,7 +374,7 @@ public class FPSLayer extends AbstractLayer
 		}
 
 
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 
 		OGLStackHandler ogsh = new OGLStackHandler();
 
@@ -459,9 +461,13 @@ public class FPSLayer extends AbstractLayer
 	{
 		Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), compArray);
 		if (compArray[2] > 0.5)
+		{
 			return new Color(0, 0, 0, 0.7f);
+		}
 		else
+		{
 			return new Color(1, 1, 1, 0.7f);
+		}
 	}
 
 	private double computeScale(java.awt.Rectangle viewport)

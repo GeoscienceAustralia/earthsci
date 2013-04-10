@@ -856,14 +856,14 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	public void shapePreRender(DrawContext dc, FastShape shape)
 	{
 		//push the OpenGL clipping plane state on the attribute stack
-		dc.getGL().glPushAttrib(GL2.GL_TRANSFORM_BIT);
+		dc.getGL().getGL2().glPushAttrib(GL2.GL_TRANSFORM_BIT);
 		setupClippingPlanes(dc, shape == topSurface, shape == bottomSurface);
 	}
 
 	@Override
 	public void shapePostRender(DrawContext dc, FastShape shape)
 	{
-		dc.getGL().glPopAttrib();
+		dc.getGL().getGL2().glPopAttrib();
 	}
 
 	protected void setupClippingPlanes(DrawContext dc, boolean top, boolean bottom)
@@ -876,7 +876,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		boolean[] enabled;
 		double[] array;
 
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 		if (top || bottom)
 		{
 			array = top ? topClippingPlanes : bottomClippingPlanes;

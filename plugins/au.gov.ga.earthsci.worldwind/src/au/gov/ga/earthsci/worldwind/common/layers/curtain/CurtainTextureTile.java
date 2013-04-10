@@ -15,8 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.curtain;
 
-import gov.nasa.worldwind.cache.MemoryCache;
 import gov.nasa.worldwind.cache.GpuResourceCache;
+import gov.nasa.worldwind.cache.MemoryCache;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.util.TileKey;
@@ -58,7 +58,9 @@ public class CurtainTextureTile extends CurtainTile
 		long size = super.getSizeInBytes();
 
 		if (this.textureData != null)
+		{
 			size += this.textureData.getEstimatedMemorySize();
+		}
 
 		return size;
 	}
@@ -113,7 +115,9 @@ public class CurtainTextureTile extends CurtainTile
 	{
 		this.textureData = textureData;
 		if (textureData.getMipmapData() != null)
+		{
 			this.hasMipmapData = true;
+		}
 	}
 
 	public Texture getTexture(GpuResourceCache tc)
@@ -255,7 +259,9 @@ public class CurtainTextureTile extends CurtainTile
 	protected void updateMemoryCache()
 	{
 		if (this.getTileFromMemoryCache(this.getTileKey()) != null)
+		{
 			getMemoryCache().add(this.getTileKey(), this);
+		}
 	}
 
 	protected Texture initializeTexture(DrawContext dc)
@@ -270,7 +276,9 @@ public class CurtainTextureTile extends CurtainTile
 		Texture t = this.getTexture(dc.getTextureCache());
 		// Return texture if found and there is no new texture data
 		if (t != null && this.getTextureData() == null)
+		{
 			return t;
+		}
 
 		if (this.getTextureData() == null) // texture not in cache yet texture data is null, can't initialize
 		{
@@ -307,7 +315,7 @@ public class CurtainTextureTile extends CurtainTile
 			throw new IllegalStateException(message);
 		}
 
-		GL2 gl = dc.getGL();
+		GL2 gl = dc.getGL().getGL2();
 
 		// Use a mipmap minification filter when either of the following is true:
 		// a. The texture has mipmap data. This is typically true for formats with embedded mipmaps, such as DDS.
@@ -363,7 +371,9 @@ public class CurtainTextureTile extends CurtainTile
 		{
 			Texture t = this.initializeTexture(dc);
 			if (t != null)
+			{
 				return true; // texture was bound during initialization.
+			}
 		}
 
 		Texture t = this.getTexture(dc.getTextureCache());
@@ -376,12 +386,16 @@ public class CurtainTextureTile extends CurtainTile
 			{
 				t = resourceTile.initializeTexture(dc);
 				if (t != null)
+				{
 					return true; // texture was bound during initialization.
+				}
 			}
 		}
 
 		if (t != null)
+		{
 			t.bind(dc.getGL());
+		}
 
 		return t != null;
 	}
@@ -396,10 +410,14 @@ public class CurtainTextureTile extends CurtainTile
 		}
 
 		Texture t;
-		if (this.getTextureData() != null) // Reinitialize if new texture data
+		if (this.getTextureData() != null)
+		{
 			t = this.initializeTexture(dc);
+		}
 		else
+		{
 			t = this.getTexture(dc.getTextureCache()); // Use the tile's texture if available
+		}
 
 		if (t != null)
 		{
@@ -416,15 +434,21 @@ public class CurtainTextureTile extends CurtainTile
 
 		// Use the tile's fallback texture if its primary texture is not available.
 		CurtainTextureTile resourceTile = this.getFallbackTile();
-		if (resourceTile == null) // no fallback specified
+		if (resourceTile == null)
+		{
 			return;
+		}
 
 		t = resourceTile.getTexture(dc.getTextureCache());
 		if (t == null && resourceTile.getTextureData() != null)
+		{
 			t = resourceTile.initializeTexture(dc);
+		}
 
-		if (t == null) // was not able to initialize the fallback texture
+		if (t == null)
+		{
 			return;
+		}
 
 		// Apply necessary transforms to the fallback texture.
 		GL2 gl = GLContext.getCurrent().getGL().getGL2();
@@ -450,11 +474,15 @@ public class CurtainTextureTile extends CurtainTile
 		}
 
 		if (this.getLevel() == null)
+		{
 			return;
+		}
 
 		int levelDelta = this.getLevelNumber() - this.getFallbackTile().getLevelNumber();
 		if (levelDelta <= 0)
+		{
 			return;
+		}
 
 		Segment segment = getSegment();
 		Segment fallbackSegment = this.getFallbackTile().getSegment();
@@ -468,17 +496,21 @@ public class CurtainTextureTile extends CurtainTile
 		double xShift = (segment.getStart() - fallbackSegment.getStart()) / fhd;
 		double yShift = (segment.getBottom() - fallbackSegment.getBottom()) / fvd;
 
-		dc.getGL().glTranslated(xShift, yShift, 0);
-		dc.getGL().glScaled(xScale, yScale, 1);
+		dc.getGL().getGL2().glTranslated(xShift, yShift, 0);
+		dc.getGL().getGL2().glScaled(xScale, yScale, 1);
 	}
 
 	@Override
 	public boolean equals(Object o)
 	{
 		if (this == o)
+		{
 			return true;
+		}
 		if (o == null || getClass() != o.getClass())
+		{
 			return false;
+		}
 
 		final CurtainTextureTile tile = (CurtainTextureTile) o;
 

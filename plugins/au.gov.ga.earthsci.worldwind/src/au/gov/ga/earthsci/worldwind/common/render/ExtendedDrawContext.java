@@ -118,7 +118,7 @@ public class ExtendedDrawContext extends DrawContextDelegate implements Vertical
 	 */
 	public static void applyWireframePolygonMode(DrawContext dc)
 	{
-		dc.getGL().glPolygonMode(GL2.GL_FRONT_AND_BACK, isWireframe(dc) ? GL2.GL_LINE : GL2.GL_FILL);
+		dc.getGL().getGL2().glPolygonMode(GL2.GL_FRONT_AND_BACK, isWireframe(dc) ? GL2.GL_LINE : GL2.GL_FILL);
 	}
 
 	@Override
@@ -129,7 +129,9 @@ public class ExtendedDrawContext extends DrawContextDelegate implements Vertical
 		//it would be better to override the initialize method, but unfortunately (for some unknown reason) it's final
 
 		if (this.flatSurfaceGeometry != null)
+		{
 			this.flatSurfaceGeometry.clear();
+		}
 		this.flatSurfaceGeometry = null;
 	}
 

@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: NASA World Wind Java (JOGL2 port)
+Bundle-Name: NASA World Wind Java
 Bundle-SymbolicName: gov.nasa.worldwind
-Bundle-Version: 1.4.0.rev709
+Bundle-Version: 2.0.0.rev1269
 Bundle-ClassPath: worldwind.jar,
  worldwindx.jar
 Bundle-Vendor: NASA
@@ -16,7 +16,6 @@ Export-Package: com.zebraimaging,
  gov.nasa.worldwind.awt,
  gov.nasa.worldwind.cache,
  gov.nasa.worldwind.data,
- gov.nasa.worldwind.database,
  gov.nasa.worldwind.event,
  gov.nasa.worldwind.exception,
  gov.nasa.worldwind.formats.csv,
@@ -53,10 +52,7 @@ Export-Package: com.zebraimaging,
  gov.nasa.worldwind.ogc.kml.gx,
  gov.nasa.worldwind.ogc.kml.impl,
  gov.nasa.worldwind.ogc.kml.io,
- gov.nasa.worldwind.ogc.ows,
- gov.nasa.worldwind.ogc.wfs,
  gov.nasa.worldwind.ogc.wms,
- gov.nasa.worldwind.ogc.wss,
  gov.nasa.worldwind.pick,
  gov.nasa.worldwind.poi,
  gov.nasa.worldwind.render,
@@ -88,6 +84,7 @@ Export-Package: com.zebraimaging,
  gov.nasa.worldwind.view.orbit,
  gov.nasa.worldwind.wms,
  gov.nasa.worldwindx.applications.antenna,
+ gov.nasa.worldwindx.applications.dataimporter,
  gov.nasa.worldwindx.applications.glider,
  gov.nasa.worldwindx.applications.sar,
  gov.nasa.worldwindx.applications.sar.actions,
@@ -114,6 +111,7 @@ Export-Package: com.zebraimaging,
  gov.nasa.worldwindx.examples.elevations,
  gov.nasa.worldwindx.examples.images,
  gov.nasa.worldwindx.examples.kml,
+ gov.nasa.worldwindx.examples.layermanager,
  gov.nasa.worldwindx.examples.lineofsight,
  gov.nasa.worldwindx.examples.multiwindow,
  gov.nasa.worldwindx.examples.shapebuilder,
@@ -122,6 +120,7 @@ Export-Package: com.zebraimaging,
  gov.nasa.worldwindx.examples.util,
  gov.nasa.worldwindx.examples.util.cachecleaner,
  gov.nasa.worldwindx.examples.view,
+ gov.nasa.worldwindx.performance,
  images,
  images.pushpins,
  org.codehaus.jackson,

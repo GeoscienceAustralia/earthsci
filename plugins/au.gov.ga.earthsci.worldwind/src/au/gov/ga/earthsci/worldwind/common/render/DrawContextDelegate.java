@@ -42,6 +42,7 @@ import gov.nasa.worldwind.render.SurfaceTileRenderer;
 import gov.nasa.worldwind.render.TextRendererCache;
 import gov.nasa.worldwind.terrain.SectorGeometryList;
 import gov.nasa.worldwind.terrain.Terrain;
+import gov.nasa.worldwind.util.ClutterFilter;
 import gov.nasa.worldwind.util.PerformanceStatistic;
 import gov.nasa.worldwind.util.PickPointFrustumList;
 
@@ -59,7 +60,7 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 
-import javax.media.opengl.GL2;
+import javax.media.opengl.GL;
 import javax.media.opengl.GLContext;
 import javax.media.opengl.GLDrawable;
 import javax.media.opengl.glu.GLU;
@@ -130,7 +131,7 @@ public class DrawContextDelegate implements DrawContext
 	}
 
 	@Override
-	public GL2 getGL()
+	public GL getGL()
 	{
 		return delegate.getGL();
 	}
@@ -820,8 +821,20 @@ public class DrawContextDelegate implements DrawContext
 	}
 
 	@Override
-	public void applyDeclutterFilter()
+	public void applyClutterFilter()
 	{
-		delegate.applyDeclutterFilter();
+		delegate.applyClutterFilter();
+	}
+
+	@Override
+	public void setClutterFilter(ClutterFilter filter)
+	{
+		delegate.setClutterFilter(filter);
+	}
+
+	@Override
+	public ClutterFilter getClutterFilter()
+	{
+		return delegate.getClutterFilter();
 	}
 }

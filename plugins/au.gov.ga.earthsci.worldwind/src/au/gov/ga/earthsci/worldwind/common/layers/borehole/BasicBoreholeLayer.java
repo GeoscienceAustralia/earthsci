@@ -67,7 +67,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Validate;
 public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, SelectListener
 {
 	private static final Color DEFAULT_SAMPLE_COLOR = Color.GRAY;
-	
+
 	protected BoreholeProvider boreholeProvider;
 	protected StyleProvider boreholeStyleProvider = new BasicStyleProvider();
 	protected StyleProvider sampleStyleProvider = new BasicStyleProvider();
@@ -105,9 +105,9 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 		uniqueIdentifierAttribute = params.getStringValue(AVKeyMore.BOREHOLE_UNIQUE_IDENTIFIER_ATTRIBUTE);
 		sampleDepthFromAttribute = params.getStringValue(AVKeyMore.BOREHOLE_SAMPLE_DEPTH_FROM_ATTRIBUTE);
 		sampleDepthToAttribute = params.getStringValue(AVKeyMore.BOREHOLE_SAMPLE_DEPTH_TO_ATTRIBUTE);
-		
+
 		Boolean b = (Boolean) params.getValue(AVKeyMore.BOREHOLE_SAMPLE_DEPTH_ATTRIBUTES_POSITIVE);
-		if(b != null)
+		if (b != null)
 		{
 			attributesRepresentPositiveDepth = b;
 		}
@@ -117,7 +117,7 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 		{
 			lineWidth = d;
 		}
-		
+
 		minimumDistance = (Double) params.getValue(AVKeyMore.MINIMUM_DISTANCE);
 
 		Validate.notBlank(url, "Borehole data url not set");
@@ -146,7 +146,7 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 
 		markerRenderer.setOverrideMarkerElevation(true);
 		markerRenderer.setElevation(0);
-		
+
 		WorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
@@ -244,7 +244,7 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 			markerRenderer.render(dc, markers);
 			annotationRenderer.render(dc, tooltipAnnotation, tooltipAnnotation.getAnnotationDrawPoint(dc), this);
 
-			GL2 gl = dc.getGL();
+			GL2 gl = dc.getGL().getGL2();
 			try
 			{
 				gl.glPushAttrib(GL2.GL_LINE_BIT);
@@ -333,7 +333,7 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 	{
 		return DEFAULT_SAMPLE_COLOR;
 	}
-	
+
 	/**
 	 * Highlight the provided object by showing the tooltip annotation over it.
 	 * 
