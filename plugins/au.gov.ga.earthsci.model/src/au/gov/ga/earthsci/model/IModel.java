@@ -1,6 +1,6 @@
 package au.gov.ga.earthsci.model;
 
-import java.util.Collection;
+import java.util.List;
 
 import au.gov.ga.earthsci.common.util.IDescribed;
 import au.gov.ga.earthsci.common.util.IIdentifiable;
@@ -20,7 +20,7 @@ public interface IModel extends IIdentifiable, INamed, IDescribed
 	 * 
 	 * @return The collection of geometries that make up this model
 	 */
-	Collection<IModelGeometry> getGeometries();
+	List<IModelGeometry> getGeometries();
 
 	/**
 	 * Return the geometry with the given ID, if one exists on this model.

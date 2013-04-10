@@ -41,8 +41,11 @@ public class ByteBufferModelData implements IModelData
 	{
 		Validate.notNull(buffer, "A byte buffer is required"); //$NON-NLS-1$
 		Validate.notNull(type, "A buffer type is required"); //$NON-NLS-1$
-		Validate.isTrue(nodata == null || type.isAssignableFrom(nodata), "NODATA must be of type " + type.name() //$NON-NLS-1$
-				+ ", not " + nodata.getClass().getSimpleName()); //$NON-NLS-1$
+		if (nodata != null)
+		{
+			Validate.isTrue(type.isAssignableFrom(nodata), "NODATA must be of type " + type.name() //$NON-NLS-1$
+					+ ", not " + nodata.getClass().getSimpleName()); //$NON-NLS-1$
+		}
 
 		this.id = id == null ? UUID.randomUUID().toString() : id;
 

@@ -80,7 +80,7 @@ public class ModelDataBuilder
 	/**
 	 * @see IModelData#getDescription()
 	 */
-	public ModelDataBuilder withDescription(String description)
+	public ModelDataBuilder describedAs(String description)
 	{
 		this.description = description;
 		return this;
@@ -92,6 +92,15 @@ public class ModelDataBuilder
 	public ModelDataBuilder withUnits(Unit<?> units)
 	{
 		this.units = units;
+		return this;
+	}
+
+	/**
+	 * @see IModelData#getNoDataValue()
+	 */
+	public ModelDataBuilder withNodata(Object nodata)
+	{
+		this.nodata = nodata;
 		return this;
 	}
 

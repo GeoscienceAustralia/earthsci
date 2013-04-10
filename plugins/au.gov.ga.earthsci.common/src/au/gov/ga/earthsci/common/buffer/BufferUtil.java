@@ -18,6 +18,8 @@ package au.gov.ga.earthsci.common.buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import au.gov.ga.earthsci.common.util.Validate;
+
 /**
  * Utility methods for working with buffers
  * 
@@ -41,6 +43,13 @@ public class BufferUtil
 	 */
 	public static Number getValue(ByteBuffer buffer, BufferType bufferType)
 	{
+		if (buffer == null)
+		{
+			return null;
+		}
+
+		Validate.notNull(bufferType, "A valid buffer type is required"); //$NON-NLS-1$
+
 		switch (bufferType)
 		{
 		case BYTE:
@@ -62,6 +71,50 @@ public class BufferUtil
 		}
 
 		throw new UnsupportedOperationException("Unsupported buffer type " + bufferType.name()); //$NON-NLS-1$
+	}
+
+	/**
+	 * Convert the given number into the correct type for use with the given
+	 * buffer type.
+	 * <p/>
+	 * Note that this may lose information (through rounding or truncation) if
+	 * not used correctly.
+	 * 
+	 * @param n
+	 *            The number to convert
+	 * @param targetType
+	 *            The target buffer type to convert the number to
+	 */
+	public static Number convertTo(Number n, BufferType targetType)
+	{
+		if (n == null)
+		{
+			return n;
+		}
+
+		Validate.notNull(targetType, "A valid buffer type is required"); //$NON-NLS-1$
+
+		switch (targetType)
+		{
+		case BYTE:
+			return n.byteValue();
+		case UNSIGNED_SHORT:
+			return n.intValue();
+		case SHORT:
+			return n.shortValue();
+		case UNSIGNED_INT:
+			return n.longValue();
+		case INT:
+			return n.intValue();
+		case LONG:
+			return n.longValue();
+		case FLOAT:
+			return n.floatValue();
+		case DOUBLE:
+			return n.doubleValue();
+		}
+
+		throw new UnsupportedOperationException("Unsupported buffer type " + targetType.name()); //$NON-NLS-1$
 	}
 
 	private static int getUInt16(ByteBuffer buffer)

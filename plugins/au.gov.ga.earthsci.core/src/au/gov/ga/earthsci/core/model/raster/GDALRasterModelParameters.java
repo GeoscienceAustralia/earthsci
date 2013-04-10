@@ -17,7 +17,6 @@ package au.gov.ga.earthsci.core.model.raster;
 
 import org.gdal.gdal.Dataset;
 
-import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.model.IModel;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
@@ -42,6 +41,12 @@ public class GDALRasterModelParameters
 	/** The scale factor to apply to the 'elevation' values */
 	private Double scale;
 
+	/** A (localised) name to attach to the model on creation */
+	private String modelName;
+
+	/** A (localised) description to attach to the model on creation */
+	private String modelDescription;
+
 	/**
 	 * Create a new parameters object, populated with any sensible defaults
 	 * obtainable from the provided dataset
@@ -51,26 +56,34 @@ public class GDALRasterModelParameters
 	 */
 	public GDALRasterModelParameters(Dataset ds)
 	{
-		Validate.notNull(ds, "A dataset is required"); //$NON-NLS-1$
+		if (ds == null)
+		{
+			return;
+		}
 
 		String datasetProjection = ds.GetProjection();
 		if (!Util.isBlank(datasetProjection))
 		{
 			sourceProjection = datasetProjection;
 		}
+
+		modelName = ds.GetDescription();
+		modelDescription = ds.GetDescription();
 	}
 
 	/**
-	 * @return the {@value #elevationBandIndex}
+	 * Create a new, empty parameters object.
 	 */
+	public GDALRasterModelParameters()
+	{
+		this(null);
+	}
+
 	public int getElevationBandIndex()
 	{
 		return elevationBandIndex;
 	}
 
-	/**
-	 * @return the sourceProjection
-	 */
 	public String getSourceProjection()
 	{
 		return sourceProjection;
@@ -94,5 +107,25 @@ public class GDALRasterModelParameters
 	public void setOffset(Double offset)
 	{
 		this.offset = offset;
+	}
+
+	public String getModelName()
+	{
+		return modelName;
+	}
+
+	public void setModelName(String modelName)
+	{
+		this.modelName = modelName;
+	}
+
+	public String getModelDescription()
+	{
+		return modelDescription;
+	}
+
+	public void setModelDescription(String modelDescription)
+	{
+		this.modelDescription = modelDescription;
 	}
 }

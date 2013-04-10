@@ -15,8 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.raster;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.gdal.gdal.Dataset;
@@ -97,7 +97,7 @@ public class GDALRasterModel implements IModel
 	}
 
 	@Override
-	public Collection<IModelGeometry> getGeometries()
+	public List<IModelGeometry> getGeometries()
 	{
 		return Collections.singletonList((IModelGeometry) geometry);
 	}
