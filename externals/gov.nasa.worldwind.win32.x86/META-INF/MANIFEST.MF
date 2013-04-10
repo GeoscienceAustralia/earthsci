@@ -5,7 +5,7 @@ Bundle-SymbolicName: gov.nasa.worldwind.win32.x86
 Bundle-Version: 1.4.0
 Bundle-Vendor: NASA
 Bundle-NativeCode: WebView32.dll; osname="win32"; processor="x86"
-Fragment-Host: gov.nasa.worldwind.jogl2;bundle-version="1.4.0"
+Fragment-Host: gov.nasa.worldwind;bundle-version="1.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-BundleShape: dir
 Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=x86))

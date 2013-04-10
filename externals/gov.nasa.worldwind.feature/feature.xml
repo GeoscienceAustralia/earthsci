@@ -20,7 +20,7 @@
    </license>
 
    <requires>
-      <import plugin="gov.nasa.worldwind.jogl2" version="1.4.0.rev709" match="greaterOrEqual"/>
+      <import plugin="gov.nasa.worldwind" version="1.4.0.rev709" match="greaterOrEqual"/>
       <import plugin="com.jogamp.jogl" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.gdal" version="1.7.2" match="greaterOrEqual"/>
       <import feature="com.jogamp.jogl.feature" version="2.0.0"/>
@@ -37,7 +37,7 @@
          unpack="false"/>
 
    <plugin
-         id="gov.nasa.worldwind.jogl2"
+         id="gov.nasa.worldwind"
          download-size="0"
          install-size="0"
          version="0.0.0"

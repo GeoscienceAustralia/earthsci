@@ -39,7 +39,7 @@
 		<module>gov.nasa.worldwind.win32.x86</module>
 		<module>gov.nasa.worldwind.win32.x86__64</module>
 		<module>gov.nasa.worldwind.macosx</module>
-		<module>gov.nasa.worldwind.jogl2</module>
+		<module>gov.nasa.worldwind</module>
 		<module>gov.nasa.worldwind.feature</module>
 		
 		<module>com.btr.proxy</module>

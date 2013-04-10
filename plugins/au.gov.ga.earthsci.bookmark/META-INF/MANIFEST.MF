@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  au.gov.ga.earthsci.logging,
  au.gov.ga.earthsci.worldwind,
  au.gov.ga.earthsci.common,
- gov.nasa.worldwind.jogl2,
+ gov.nasa.worldwind,
  org.eclipse.e4.core.di,
  org.eclipse.e4.core.contexts,
  org.eclipse.core.databinding.observable

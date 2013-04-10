@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NASA World Wind Java (JOGL2 port)
-Bundle-SymbolicName: gov.nasa.worldwind.jogl2
+Bundle-SymbolicName: gov.nasa.worldwind
 Bundle-Version: 1.4.0.rev709
 Bundle-ClassPath: worldwind.jar,
  worldwindx.jar

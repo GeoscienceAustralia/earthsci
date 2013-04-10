@@ -11,6 +11,6 @@ Require-Bundle: org.eclipse.ui,
  au.gov.ga.earthsci.core;bundle-version="1.0.0",
  au.gov.ga.earthsci.catalog;bundle-version="1.0.0",
  au.gov.ga.earthsci.common;bundle-version="1.0.0",
- gov.nasa.worldwind.jogl2;bundle-version="1.4.0"
+ gov.nasa.worldwind;bundle-version="1.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
