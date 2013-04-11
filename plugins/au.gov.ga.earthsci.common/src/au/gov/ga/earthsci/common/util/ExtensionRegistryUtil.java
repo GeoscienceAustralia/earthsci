@@ -63,6 +63,11 @@ public class ExtensionRegistryUtil
 	public static <T> void createFromExtension(String extensionPointId, String classAttribute,
 			Class<? extends T> clazz, Callback<T> callback) throws CoreException
 	{
+		if (registry == null)
+		{
+			logger.warn("Extension registry util called before being injected"); //$NON-NLS-1$
+			return;
+		}
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(extensionPointId);
 		for (IConfigurationElement e : config)
 		{

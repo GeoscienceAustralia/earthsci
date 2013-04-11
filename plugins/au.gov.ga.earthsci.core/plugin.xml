@@ -42,7 +42,7 @@
       </inject>
       <inject
             class="au.gov.ga.earthsci.common.util.ExtensionRegistryUtil"
-            priority="10">
+            priority="100">
       </inject>
       <inject
             class="au.gov.ga.earthsci.core.retrieve.RetrieverFactory"
