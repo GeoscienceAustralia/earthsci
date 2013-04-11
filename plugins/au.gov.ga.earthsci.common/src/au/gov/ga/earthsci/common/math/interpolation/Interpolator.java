@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.math.interpolation;
+package au.gov.ga.earthsci.common.math.interpolation;
 
-import au.gov.ga.earthsci.core.math.vector.Vector;
+import au.gov.ga.earthsci.common.math.vector.Vector;
 
 /**
  * An interface for interpolators that are able to provide interpolated values

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.math.bezier;
+package au.gov.ga.earthsci.common.math.bezier;
 
 import java.io.Serializable;
 
+import au.gov.ga.earthsci.common.math.vector.Vector;
 import au.gov.ga.earthsci.common.util.Validate;
-import au.gov.ga.earthsci.core.math.vector.Vector;
 
 /**
  * An implementation of a Cubic Bezier curve.
