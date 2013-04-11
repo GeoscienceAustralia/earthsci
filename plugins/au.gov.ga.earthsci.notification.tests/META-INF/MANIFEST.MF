@@ -6,5 +6,4 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
 Fragment-Host: au.gov.ga.earthsci.notification;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.jmock,
- org.junit
+Require-Bundle: au.gov.ga.earthsci.testbase;bundle-version="1.0.0"
