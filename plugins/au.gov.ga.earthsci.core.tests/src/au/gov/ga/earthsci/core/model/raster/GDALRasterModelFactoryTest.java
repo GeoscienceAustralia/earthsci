@@ -28,6 +28,7 @@ import org.gdal.GDALDataSetup;
 import org.gdal.GDALDataSetup.DataFileSource;
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
+import org.gdal.gdal.gdalJNI;
 import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.BeforeClass;
@@ -49,6 +50,11 @@ public class GDALRasterModelFactoryTest
 	@BeforeClass
 	public static void init()
 	{
+		if (!gdalJNI.isAvailable())
+		{
+			return;
+		}
+
 		gdal.PushErrorHandler("CPLQuietErrorHandler");
 
 		if (gdal.GetConfigOption("GDAL_DATA") == null)
@@ -75,6 +81,11 @@ public class GDALRasterModelFactoryTest
 	@AfterClass
 	public static void destroy()
 	{
+		if (!gdalJNI.isAvailable())
+		{
+			return;
+		}
+
 		gdal.PopErrorHandler();
 	}
 

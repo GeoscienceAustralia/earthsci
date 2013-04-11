@@ -29,6 +29,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gdal.gdal.gdalJNI;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
@@ -78,7 +79,7 @@ public class GDALRasterModelProviderTest
 				}
 			}
 		});
-		
+
 		TEST_RASTERS.add(new RasterProperties()
 		{
 			{
@@ -174,8 +175,9 @@ public class GDALRasterModelProviderTest
 	{
 		RasterProperties testRaster = TEST_RASTERS.get(0);
 		URL url = setupTestWithRaster(testRaster);
-		
+
 		//TODO fix GDAL loading within Eclipse plugin test
+		Assume.assumeTrue(gdalJNI.isAvailable());
 		Assume.assumeTrue(GDALUtils.canOpen(url));
 
 		boolean dataLoaded = classUnderTest.doLoadData(url, modelLayer);
@@ -214,25 +216,25 @@ public class GDALRasterModelProviderTest
 	{
 		final float scale = 1.0f;
 		final float offset = -100f;
-		
+
 		doScaleOffsetTest(scale, offset);
 	}
-	
+
 	@Test
 	public void testScale()
 	{
 		final float scale = 10.0f;
 		final float offset = 0f;
-		
+
 		doScaleOffsetTest(scale, offset);
 	}
-	
+
 	@Test
 	public void testScaleWithOffset()
 	{
 		final float scale = 10.0f;
 		final float offset = -100f;
-		
+
 		doScaleOffsetTest(scale, offset);
 	}
 
@@ -240,27 +242,28 @@ public class GDALRasterModelProviderTest
 	{
 		RasterProperties testRaster = TEST_RASTERS.get(1);
 		URL url = setupTestWithRaster(testRaster);
-		
+
 		//TODO fix GDAL loading within Eclipse plugin test
+		Assume.assumeTrue(gdalJNI.isAvailable());
 		Assume.assumeTrue(GDALUtils.canOpen(url));
-		
+
 		GDALRasterModelParameters params = new GDALRasterModelParameters();
 		params.setCoordinateSystem("EPSG:4326");
-		params.setOffset((double)offset);
-		params.setScaleFactor((double)scale);
+		params.setOffset((double) offset);
+		params.setScaleFactor((double) scale);
 		classUnderTest = new GDALRasterModelProvider(params);
-		
+
 		boolean dataLoaded = classUnderTest.doLoadData(url, modelLayer);
 		FastShape shape = matcher.shape;
 
 		assertTrue("Data did not load as expected", dataLoaded);
 		assertNotNull("Shape is null", shape);
-		
+
 		// With MaxVariance = 0 we expect every pixel to have a corresponding position
 		List<Position> positions = shape.getPositions();
 		assertNotNull(positions);
 		assertEquals(testRaster.width * testRaster.height, positions.size());
-		
+
 		// Expected behaviour:
 		// - NODATA values will be set to last 'good' value
 		// - Elevation values will be offset by offset amount (-100)
@@ -273,23 +276,23 @@ public class GDALRasterModelProviderTest
 				13, 5, 1, 1,
 		};
 		float[] expected = adjustRawValue(raw, offset, scale);
-		
+
 		assertElevationsAsExpected(positions, expected, testRaster);
 	}
-	
+
 	private void assertElevationsAsExpected(List<Position> positions, float[] expected, RasterProperties testRaster)
 	{
 		for (int v = 0; v < testRaster.height; v++)
 		{
 			for (int u = 0; u < testRaster.width; u++)
 			{
-				Position p = positions.get(v*testRaster.width + u);
-				Float e = expected[v*testRaster.width + u];
+				Position p = positions.get(v * testRaster.width + u);
+				Float e = expected[v * testRaster.width + u];
 				assertEquals(e, p.elevation, 0.001);
 			}
 		}
 	}
-	
+
 	private float[] adjustRawValue(float[] raw, float offset, float scale)
 	{
 		float[] result = new float[raw.length];
@@ -299,7 +302,7 @@ public class GDALRasterModelProviderTest
 		}
 		return result;
 	}
-	
+
 	private URL setupTestWithRaster(RasterProperties raster)
 	{
 		URL url = TestUtils.resolveFileURL(getClass().getResource(raster.name));
@@ -313,10 +316,10 @@ public class GDALRasterModelProviderTest
 				}
 			}
 		});
-		
+
 		return url;
 	}
-	
+
 	/** A simple properties class that holds raster details for use in tests */
 	private static class RasterProperties
 	{

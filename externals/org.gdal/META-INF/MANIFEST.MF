@@ -4,7 +4,6 @@ Bundle-Name: GDAL
 Bundle-SymbolicName: org.gdal;singleton:=true
 Bundle-Version: 1.7.2
 Bundle-ClassPath: gdal.jar,
- bin/,
  .
 Bundle-Vendor: GDAL
 Export-Package: org.gdal,
