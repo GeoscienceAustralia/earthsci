@@ -13,337 +13,315 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.math.vector;
+package au.gov.ga.earthsci.common.math.vector;
 
 /**
- * {@link Vector} implementation that represents a 2-dimensional vector.
+ * {@link Vector} implementation that represents a 1-dimensional vector.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 @SuppressWarnings("serial")
-public class Vector2 implements Vector<Vector2>
+public class Vector1 implements Vector<Vector1>
 {
-	public final static Vector2 ZERO = new Vector2(0, 0);
+	public final static Vector1 ZERO = new Vector1(0);
+	public final static Vector1 UNIT_X = new Vector1(1);
 
 	public double x;
-	public double y;
 
-	public Vector2()
+	public Vector1()
 	{
 	}
 
-	public Vector2(Vector2 v)
+	public Vector1(Vector1 v)
 	{
 		set(v);
 	}
 
-	public Vector2(double x, double y)
+	public Vector1(double x)
 	{
-		set(x, y);
+		set(x);
 	}
 
 	@Override
-	public Vector2 createNew()
+	public Vector1 createNew()
 	{
-		return new Vector2();
+		return new Vector1();
 	}
 
 	@Override
-	public Vector2 clone()
+	public Vector1 clone()
 	{
-		return new Vector2(this);
+		return new Vector1(this);
 	}
 
 	@Override
-	public Vector2 set(Vector2 v)
+	public Vector1 set(Vector1 v)
 	{
-		return set(v.x, v.y);
+		return set(v.x);
 	}
 
-	public Vector2 set(double x, double y)
+	public Vector1 set(double x)
 	{
 		this.x = x;
-		this.y = y;
 		return this;
 	}
 
 	@Override
-	public Vector2 mult(Vector2 v)
+	public Vector1 mult(Vector1 v)
 	{
 		return mult(v, null);
 	}
 
 	@Override
-	public Vector2 mult(Vector2 v, Vector2 store)
+	public Vector1 mult(Vector1 v, Vector1 store)
 	{
 		if (store == null)
 		{
-			store = createNew();
+			store = new Vector1();
 		}
 		store.x = x * v.x;
-		store.y = y * v.y;
 		return store;
 	}
 
 	@Override
-	public Vector2 multLocal(Vector2 v)
+	public Vector1 multLocal(Vector1 v)
 	{
 		x *= v.x;
-		y *= v.y;
 		return this;
 	}
 
 	@Override
-	public Vector2 mult(double s)
+	public Vector1 mult(double s)
 	{
 		return mult(s, null);
 	}
 
 	@Override
-	public Vector2 mult(double s, Vector2 store)
+	public Vector1 mult(double s, Vector1 store)
 	{
 		if (store == null)
 		{
-			store = createNew();
+			store = new Vector1();
 		}
 		store.x = x * s;
-		store.y = y * s;
 		return store;
 	}
 
 	@Override
-	public Vector2 multLocal(double s)
+	public Vector1 multLocal(double s)
 	{
 		x *= s;
-		y *= s;
 		return this;
 	}
 
 	@Override
-	public Vector2 divide(Vector2 v)
+	public Vector1 divide(Vector1 v)
 	{
 		return divide(v, null);
 	}
 
 	@Override
-	public Vector2 divide(Vector2 v, Vector2 store)
+	public Vector1 divide(Vector1 v, Vector1 store)
 	{
 		if (store == null)
 		{
-			store = createNew();
+			store = new Vector1();
 		}
 		store.x = x / v.x;
-		store.y = y / v.y;
 		return store;
 	}
 
 	@Override
-	public Vector2 divideLocal(Vector2 v)
+	public Vector1 divideLocal(Vector1 v)
 	{
 		x /= v.x;
-		y /= v.y;
 		return this;
 	}
 
 	@Override
-	public Vector2 divide(double s)
+	public Vector1 divide(double s)
 	{
 		return divide(s, null);
 	}
 
 	@Override
-	public Vector2 divide(double s, Vector2 store)
+	public Vector1 divide(double s, Vector1 store)
 	{
 		if (store == null)
 		{
-			store = createNew();
+			store = new Vector1();
 		}
 		store.x = x / s;
-		store.y = y / s;
 		return store;
 	}
 
 	@Override
-	public Vector2 divideLocal(double s)
+	public Vector1 divideLocal(double s)
 	{
 		x /= s;
-		y /= s;
 		return this;
 	}
 
 	@Override
-	public Vector2 add(Vector2 v)
+	public Vector1 add(Vector1 v)
 	{
 		return add(v, null);
 	}
 
 	@Override
-	public Vector2 add(Vector2 v, Vector2 store)
+	public Vector1 add(Vector1 v, Vector1 store)
 	{
 		if (store == null)
 		{
-			store = createNew();
+			store = new Vector1();
 		}
 		store.x = x + v.x;
-		store.y = y + v.y;
 		return store;
 	}
 
 	@Override
-	public Vector2 addLocal(Vector2 v)
+	public Vector1 addLocal(Vector1 v)
 	{
 		x += v.x;
-		y += v.y;
 		return this;
 	}
 
 	@Override
-	public Vector2 subtract(Vector2 v)
+	public Vector1 subtract(Vector1 v)
 	{
 		return subtract(v, null);
 	}
 
 	@Override
-	public Vector2 subtract(Vector2 v, Vector2 store)
+	public Vector1 subtract(Vector1 v, Vector1 store)
 	{
 		if (store == null)
 		{
-			store = createNew();
+			store = new Vector1();
 		}
 		store.x = x - v.x;
-		store.y = y - v.y;
 		return store;
 	}
 
 	@Override
-	public Vector2 subtractLocal(Vector2 v)
+	public Vector1 subtractLocal(Vector1 v)
 	{
 		x -= v.x;
-		y -= v.y;
 		return this;
 	}
 
 	@Override
-	public Vector2 max(Vector2 v)
+	public Vector1 max(Vector1 v)
 	{
 		return max(v, null);
 	}
 
 	@Override
-	public Vector2 max(Vector2 v, Vector2 store)
+	public Vector1 max(Vector1 v, Vector1 store)
 	{
 		if (store == null)
 		{
-			store = createNew();
+			store = new Vector1();
 		}
 		store.x = Math.max(x, v.x);
-		store.y = Math.max(y, v.y);
 		return store;
 	}
 
 	@Override
-	public Vector2 maxLocal(Vector2 v)
+	public Vector1 maxLocal(Vector1 v)
 	{
 		x = Math.max(x, v.x);
-		y = Math.max(y, v.y);
 		return this;
 	}
 
 	@Override
-	public Vector2 min(Vector2 v)
+	public Vector1 min(Vector1 v)
 	{
 		return min(v, null);
 	}
 
 	@Override
-	public Vector2 min(Vector2 v, Vector2 store)
+	public Vector1 min(Vector1 v, Vector1 store)
 	{
 		if (store == null)
 		{
-			store = createNew();
+			store = new Vector1();
 		}
 		store.x = Math.min(x, v.x);
-		store.y = Math.min(y, v.y);
 		return store;
 	}
 
 	@Override
-	public Vector2 minLocal(Vector2 v)
+	public Vector1 minLocal(Vector1 v)
 	{
 		x = Math.min(x, v.x);
-		y = Math.min(y, v.y);
 		return this;
 	}
 
 	@Override
 	public double distanceSquared()
 	{
-		return x * x + y * y;
+		return x * x;
 	}
 
 	@Override
 	public double distance()
 	{
-		return Math.sqrt(distanceSquared());
+		return Math.abs(x);
 	}
 
 	@Override
-	public Vector2 zeroLocal()
+	public Vector1 zeroLocal()
 	{
 		x = 0d;
-		y = 0d;
 		return this;
 	}
 
 	@Override
-	public Vector2 negate()
+	public Vector1 negate()
 	{
 		return negate(null);
 	}
 
 	@Override
-	public Vector2 negate(Vector2 store)
+	public Vector1 negate(Vector1 store)
 	{
 		if (store == null)
 		{
-			store = createNew();
+			store = new Vector1();
 		}
 		store.x = -x;
-		store.y = -y;
 		return store;
 	}
 
 	@Override
-	public Vector2 negateLocal()
+	public Vector1 negateLocal()
 	{
 		x = -x;
-		y = -y;
 		return this;
 	}
 
 	@Override
-	public Vector2 interpolate(Vector2 v, double percent)
+	public Vector1 interpolate(Vector1 v, double percent)
 	{
 		return interpolate(v, percent, null);
 	}
 
 	@Override
-	public Vector2 interpolate(Vector2 v, double percent, Vector2 store)
+	public Vector1 interpolate(Vector1 v, double percent, Vector1 store)
 	{
 		if (store == null)
 		{
-			store = createNew();
+			store = new Vector1();
 		}
 		store.x = interpolate(x, v.x, percent);
-		store.y = interpolate(y, v.y, percent);
 		return store;
 	}
 
 	@Override
-	public Vector2 interpolateLocal(Vector2 v, double percent)
+	public Vector1 interpolateLocal(Vector1 v, double percent)
 	{
 		x = interpolate(x, v.x, percent);
-		y = interpolate(y, v.y, percent);
 		return this;
 	}
 
@@ -353,24 +331,24 @@ public class Vector2 implements Vector<Vector2>
 	}
 
 	@Override
-	public Vector2 normalize()
+	public Vector1 normalize()
 	{
 		return normalize(null);
 	}
 
 	@Override
-	public Vector2 normalize(Vector2 store)
+	public Vector1 normalize(Vector1 store)
 	{
 		if (store == null)
 		{
-			store = createNew();
+			store = new Vector1();
 		}
 		store.divide(distance());
 		return store;
 	}
 
 	@Override
-	public Vector2 normalizeLocal()
+	public Vector1 normalizeLocal()
 	{
 		return divideLocal(distance());
 	}
@@ -378,14 +356,14 @@ public class Vector2 implements Vector<Vector2>
 	@Override
 	public boolean equals(Object other)
 	{
-		return (other instanceof Vector2) && other != null && this.x == ((Vector2) other).x
-				&& this.y == ((Vector2) other).y;
+		return (other instanceof Vector1) && other != null && this.x == ((Vector1) other).x;
 	}
 
 	@SuppressWarnings("nls")
 	@Override
 	public String toString()
 	{
-		return this.getClass().getName() + " (" + x + ", " + y + ")";
+		return this.getClass().getName() + " (" + x + ")";
 	}
+
 }

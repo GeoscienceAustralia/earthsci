@@ -1,11 +1,12 @@
-package au.gov.ga.earthsci.core.math.bezier;
+package au.gov.ga.earthsci.common.math.bezier;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import au.gov.ga.earthsci.core.math.interpolation.BezierInterpolator;
-import au.gov.ga.earthsci.core.math.vector.Vector2;
+import au.gov.ga.earthsci.common.math.bezier.Bezier;
+import au.gov.ga.earthsci.common.math.interpolation.BezierInterpolator;
+import au.gov.ga.earthsci.common.math.vector.Vector2;
 
 /**
  * Tests for the {@link Bezier} class
