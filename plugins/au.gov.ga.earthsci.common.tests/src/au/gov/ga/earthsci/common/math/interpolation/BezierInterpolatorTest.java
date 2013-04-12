@@ -1,16 +1,17 @@
 /**
  * 
  */
-package au.gov.ga.earthsci.core.math.interpolation;
+package au.gov.ga.earthsci.common.math.interpolation;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import au.gov.ga.earthsci.core.math.vector.TimeVector;
-import au.gov.ga.earthsci.core.math.vector.Vector1;
-import au.gov.ga.earthsci.core.math.vector.Vector2;
-import au.gov.ga.earthsci.core.math.vector.Vector3;
+import au.gov.ga.earthsci.common.math.interpolation.BezierInterpolator;
+import au.gov.ga.earthsci.common.math.vector.TimeVector;
+import au.gov.ga.earthsci.common.math.vector.Vector1;
+import au.gov.ga.earthsci.common.math.vector.Vector2;
+import au.gov.ga.earthsci.common.math.vector.Vector3;
 
 
 /**

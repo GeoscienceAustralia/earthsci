@@ -17,16 +17,20 @@ package au.gov.ga.earthsci.application;
 
 import org.junit.Test;
 
-/**
- * A dummy test to make sure at least one test exists in this project.
+/*
+ * This is a dummy test to ensure at least one unit test is present 
+ * in this plugin (so the Maven/Tycho execution does not fail).
  * 
- * TODO REMOVE THIS AS SOON AS A REAL TEST IS ADDED
+ * TODO Remove this class as soon as another (real) test is added
+ *
  */
 public class DummyTest
 {
+
 	@Test
 	public void testDummy()
 	{
-
+		// Do nothing
 	}
+
 }

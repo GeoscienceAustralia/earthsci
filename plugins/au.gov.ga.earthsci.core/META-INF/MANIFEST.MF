@@ -7,9 +7,6 @@ Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: au.gov.ga.earthsci.core,
  au.gov.ga.earthsci.core.intent,
- au.gov.ga.earthsci.core.math.bezier,
- au.gov.ga.earthsci.core.math.interpolation,
- au.gov.ga.earthsci.core.math.vector,
  au.gov.ga.earthsci.core.model,
  au.gov.ga.earthsci.core.model.layer,
  au.gov.ga.earthsci.core.model.raster,

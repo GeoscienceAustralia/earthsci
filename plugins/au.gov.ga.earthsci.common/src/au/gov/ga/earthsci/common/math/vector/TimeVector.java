@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.math.vector;
+package au.gov.ga.earthsci.common.math.vector;
 
 /**
  * A subclass of {@link Vector2} that holds time (x) and value (y).
