@@ -2,7 +2,7 @@ package au.gov.ga.earthsci.model.bounds;
 
 import java.util.Collection;
 
-import javax.swing.text.Position;
+import au.gov.ga.earthsci.common.math.vector.Vector3;
 
 /**
  * An interface that represents a bounding volume for a model and/or it's
@@ -18,66 +18,65 @@ import javax.swing.text.Position;
 public interface IBoundingVolume
 {
 	/**
-	 * Return whether the provided geographic position is included in this
-	 * bounding volume.
+	 * Return whether the provided point is included in this bounding volume.
 	 * 
 	 * @param point
-	 *            The position to test
+	 *            The point to test
 	 * 
-	 * @return <code>true</code> if the provided position falls within this
+	 * @return <code>true</code> if the provided point falls within this
 	 *         bounding volume; <code>false</code> otherwise.
 	 */
-	boolean contains(Position point);
+	boolean contains(Vector3 point);
 
 	/**
-	 * Return whether <em>all</em> of the provided positions fall within this
+	 * Return whether <em>all</em> of the provided points fall within this
 	 * bounding volume.
 	 * <p/>
 	 * Note that (depending on the implementation) this may be more efficient
 	 * than testing each point individually via multiple calls to
-	 * {@link #contains(Position)}. In general it is safe to assume it will
-	 * never be <em>less</em> efficient.
+	 * {@link #contains(point)}. In general it is safe to assume it will never
+	 * be <em>less</em> efficient.
 	 * 
 	 * @param points
-	 *            The positions to test
+	 *            The points to test
 	 * 
 	 * @return <code>true</code> if <em>all</em> of the provided points are
 	 *         contained within the bounding volume; <code>false</code> if
-	 *         <em>any</em> of the provided positions fall outside the volume.
+	 *         <em>any</em> of the provided points fall outside the volume.
 	 */
-	boolean containsAll(Position... points);
+	boolean containsAll(Vector3... points);
 
 	/**
-	 * See {@link #containsAll(Position...)}
+	 * See {@link #containsAll(Vector3...)}
 	 * 
-	 * @see #containsAll(Position...)
-	 * @see #containsAny(Position...)
+	 * @see #containsAll(Vector3...)
+	 * @see #containsAny(Vector3...)
 	 */
-	boolean containsAll(Collection<Position> points);
+	boolean containsAll(Collection<Vector3> points);
 
 	/**
-	 * Return whether <em>any</em> of the provided positions fall within this
+	 * Return whether <em>any</em> of the provided points fall within this
 	 * bounding volume.
 	 * <p/>
 	 * Note that (depending on the implementation) this may be more efficient
 	 * than testing each point individually via multiple calls to
-	 * {@link #contains(Position)}. In general it is safe to assume it will
-	 * never be <em>less</em> efficient.
+	 * {@link #contains(Vector3)}. In general it is safe to assume it will never
+	 * be <em>less</em> efficient.
 	 * 
 	 * @param points
-	 *            The positions to test
+	 *            The points to test
 	 * 
 	 * @return <code>true</code> if <em>any</em> of the provided points are
 	 *         contained within the bounding volume; <code>false</code> if
-	 *         <em>all</em> of the provided positions fall outside the volume.
+	 *         <em>all</em> of the provided points fall outside the volume.
 	 */
-	boolean containsAny(Position... points);
+	boolean containsAny(Vector3... points);
 
 	/**
-	 * See {@link #containsAny(Position...)}
+	 * See {@link #containsAny(Vector3...)}
 	 * 
-	 * @see #containsAny(Position...)
-	 * @see #containsAll(Position...)
+	 * @see #containsAny(Vector3...)
+	 * @see #containsAll(Vector3...)
 	 */
-	boolean containsAny(Collection<Position> points);
+	boolean containsAny(Collection<Vector3> points);
 }
