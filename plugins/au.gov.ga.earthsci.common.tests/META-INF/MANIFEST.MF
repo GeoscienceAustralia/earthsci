@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Notification Tests
-Bundle-SymbolicName: au.gov.ga.earthsci.notification.tests
+Bundle-Name: EarthSci Common Tests
+Bundle-SymbolicName: au.gov.ga.earthsci.common.tests
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
-Fragment-Host: au.gov.ga.earthsci.notification;bundle-version="1.0.0"
+Fragment-Host: au.gov.ga.earthsci.common;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: au.gov.ga.earthsci.testbase;bundle-version="1.0.0"
