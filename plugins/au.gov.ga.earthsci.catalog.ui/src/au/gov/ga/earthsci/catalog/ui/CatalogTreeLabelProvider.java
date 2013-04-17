@@ -255,12 +255,9 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		return string;
 	}
 
-	int fireCount = 0;
-
 	@Override
 	public void fireLabelProviderChanged(LabelProviderChangedEvent event)
 	{
-		System.out.println((fireCount++) + " fire");
 		super.fireLabelProviderChanged(event);
 	}
 
