@@ -49,6 +49,7 @@ public class IntentCatalogLoader
 	{
 		if (contentType == null)
 		{
+			//TODO this should only happen for file/jar/resourcebundle/... uris
 			try
 			{
 				contentType = Platform.getContentTypeManager().findContentTypeFor(uri.getPath());
@@ -74,11 +75,7 @@ public class IntentCatalogLoader
 			if (result instanceof ICatalogTreeNode)
 			{
 				ICatalogTreeNode node = (ICatalogTreeNode) result;
-				if (catalogIntent.placeholder.getLabel() != null)
-				{
-					node.setLabel(catalogIntent.placeholder.getLabel());
-				}
-				catalogIntent.placeholder.getParent().replaceChild(catalogIntent.placeholder, node);
+				replaceWithNode(catalogIntent, node);
 			}
 			else
 			{
@@ -125,8 +122,25 @@ public class IntentCatalogLoader
 			CatalogLoadIntent catalogIntent = (CatalogLoadIntent) intent;
 			ErrorCatalogTreeNode errorNode = new ErrorCatalogTreeNode(intent.getURI(), e);
 			errorNode.setRemoveable(true);
-			errorNode.setLabel(catalogIntent.placeholder.getLabel());
-			catalogIntent.placeholder.getParent().replaceChild(catalogIntent.placeholder, errorNode);
+			replaceWithNode(catalogIntent, errorNode);
+		}
+
+		private void replaceWithNode(CatalogLoadIntent intent, ICatalogTreeNode node)
+		{
+			synchronized (intent)
+			{
+				ICatalogTreeNode placeholder = intent.replacement != null ? intent.replacement : intent.placeholder;
+				if (placeholder.getParent() == null)
+				{
+					throw new IllegalStateException("Placeholder parent cannot be null"); //$NON-NLS-1$
+				}
+				intent.replacement = node;
+				if (placeholder.getLabel() != null)
+				{
+					node.setLabel(placeholder.getLabel());
+				}
+				placeholder.getParent().replaceChild(placeholder, node);
+			}
 		}
 	};
 
@@ -134,6 +148,7 @@ public class IntentCatalogLoader
 	{
 		private final ICatalogTreeNode placeholder;
 		private final IEclipseContext context;
+		private ICatalogTreeNode replacement;
 
 		public CatalogLoadIntent(ICatalogTreeNode placeholder, IEclipseContext context)
 		{
