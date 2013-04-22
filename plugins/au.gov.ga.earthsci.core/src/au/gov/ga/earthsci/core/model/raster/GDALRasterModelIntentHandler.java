@@ -66,7 +66,11 @@ public class GDALRasterModelIntentHandler implements IIntentHandler
 
 			File source = URLUtil.urlToFile(url);
 			IModel result = createModel(source);
-			callback.completed(result, intent);
+
+			if (intent.getExpectedReturnType().isAssignableFrom(I))
+			{
+				callback.completed(result, intent);
+			}
 		}
 		catch (Exception e)
 		{
@@ -130,5 +134,10 @@ public class GDALRasterModelIntentHandler implements IIntentHandler
 	{
 		// TODO: Launch wizard to collect additional params
 		return new GDALRasterModelParameters(ds);
+	}
+
+	private boolean isModelIntent(Intent intent)
+	{
+
 	}
 }
