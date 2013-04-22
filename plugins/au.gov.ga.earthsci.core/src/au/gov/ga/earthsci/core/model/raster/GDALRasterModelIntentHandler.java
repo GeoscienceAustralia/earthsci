@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.raster;
 
+import gov.nasa.worldwind.layers.Layer;
+
 import java.io.File;
 import java.net.URL;
 
@@ -23,6 +25,8 @@ import org.gdal.gdal.gdal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.core.model.worldwind.BasicModelLayer;
+import au.gov.ga.earthsci.core.model.worldwind.IModelLayer;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
@@ -65,11 +69,15 @@ public class GDALRasterModelIntentHandler implements IIntentHandler
 			}
 
 			File source = URLUtil.urlToFile(url);
-			IModel result = createModel(source);
+			IModel model = createModel(source);
 
-			if (intent.getExpectedReturnType().isAssignableFrom(I))
+			if (isModelIntent(intent))
 			{
-				callback.completed(result, intent);
+				callback.completed(model, intent);
+			}
+			else if (isLayerIntent(intent))
+			{
+				callback.completed(createModelLayer(model), intent);
 			}
 		}
 		catch (Exception e)
@@ -127,6 +135,19 @@ public class GDALRasterModelIntentHandler implements IIntentHandler
 	}
 
 	/**
+	 * Create a new {@link IModelLayer} that contains the provided model.
+	 * 
+	 * @param m
+	 *            The model to wrap with a layer
+	 * 
+	 * @return A new {@link IModelLayer} that contains the provided model.
+	 */
+	private IModelLayer createModelLayer(IModel m) throws Exception
+	{
+		return new BasicModelLayer(m.getName(), m);
+	}
+
+	/**
 	 * Get parameters to use for creating a model instance from the provided
 	 * dataset
 	 */
@@ -138,6 +159,11 @@ public class GDALRasterModelIntentHandler implements IIntentHandler
 
 	private boolean isModelIntent(Intent intent)
 	{
+		return intent.getExpectedReturnType().isAssignableFrom(IModel.class);
+	}
 
+	private boolean isLayerIntent(Intent intent)
+	{
+		return intent.getExpectedReturnType().isAssignableFrom(Layer.class);
 	}
 }
