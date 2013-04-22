@@ -1,5 +1,7 @@
 package au.gov.ga.earthsci.common.buffer;
 
+import java.nio.ByteBuffer;
+
 /**
  * An enumeration of the types of data stored in native byte buffers
  * 
@@ -63,5 +65,21 @@ public enum BufferType
 	public Class<?> getContainerClass()
 	{
 		return typeClass;
+	}
+
+	/**
+	 * Return the next value from the given ByteBuffer of this type.
+	 * <p/>
+	 * On return, the provided ByteBuffer will be advanced to the end of the
+	 * read value.
+	 * 
+	 * @param buffer
+	 *            The buffer to read from
+	 * 
+	 * @return The next value of this type read from the given buffer
+	 */
+	public Number getValueFrom(ByteBuffer buffer)
+	{
+		return BufferUtil.getValue(buffer, this);
 	}
 }

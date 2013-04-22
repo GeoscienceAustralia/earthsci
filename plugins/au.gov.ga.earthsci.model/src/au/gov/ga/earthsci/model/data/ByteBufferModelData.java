@@ -10,11 +10,15 @@ import au.gov.ga.earthsci.common.buffer.BufferType;
 import au.gov.ga.earthsci.common.util.Validate;
 
 /**
- * A general-purpose {@link IModelData} implementation backed by a
+ * A general-purpose immutable {@link IModelData} implementation backed by a
  * {@link ByteBuffer}
  * <p/>
  * Client code should use the {@link #getBufferType()} method to determine what
  * type of values to read from the buffer.
+ * <p/>
+ * The {@link #getSource()} method of this implementation will return a
+ * read-only view of the underlying source buffer. This allows multiple threads
+ * to access the source data safely.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -86,7 +90,7 @@ public class ByteBufferModelData implements IModelData
 	@Override
 	public Buffer getSource()
 	{
-		return buffer;
+		return buffer.asReadOnlyBuffer().rewind();
 	}
 
 	@Override

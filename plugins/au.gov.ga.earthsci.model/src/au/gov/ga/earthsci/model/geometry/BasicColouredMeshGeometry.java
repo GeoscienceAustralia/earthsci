@@ -11,35 +11,37 @@ import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.model.render.IModelGeometryRenderer;
 
 /**
- * A basic implementation of the {@link IMeshGeometry} interface that also implements
- * {@link IVertexColouredGeometry} and allows colour information to be stored at each vertex.
+ * A basic implementation of the {@link IMeshGeometry} interface that also
+ * implements {@link IVertexColouredGeometry} and allows colour information to
+ * be stored at each vertex.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implements IMeshGeometry, IVertexColouredGeometry
+public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implements IMeshGeometry,
+		IVertexColouredGeometry
 {
 
 	private final String id;
 	private String name;
 	private String description;
-	
+
 	private IModelData vertices;
-	
+
 	private IModelData normals;
-	
+
 	private IModelData colours;
 	private ColourType colourType;
-	
+
 	private IModelData edges;
 	private FaceType faceType;
 
 	private IModelGeometryRenderer renderer;
-	
+
 	private IBoundingVolume bounds;
-	
+
 	private final Map<String, IModelData> dataById = new ConcurrentHashMap<String, IModelData>();
 	private final Map<String, IModelData> dataByKey = new ConcurrentHashMap<String, IModelData>();
-	
+
 	public BasicColouredMeshGeometry(String id, String name, String description)
 	{
 		Validate.notBlank(id, "An ID is required"); //$NON-NLS-1$
@@ -47,31 +49,31 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 		this.name = name;
 		this.description = description;
 	}
-	
+
 	@Override
 	public String getId()
 	{
 		return id;
 	}
-	
+
 	@Override
 	public String getName()
 	{
 		return name;
 	}
-	
+
 	@Override
 	public String getDescription()
 	{
 		return description;
 	}
-	
+
 	@Override
 	public IModelData getVertices()
 	{
 		return vertices;
 	}
-	
+
 	public void setVertices(IModelData vertices)
 	{
 		firePropertyChange(VERTICES_EVENT_NAME, this.vertices, this.vertices = vertices);
@@ -82,7 +84,7 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	{
 		return vertices != null;
 	}
-	
+
 	@Override
 	public IModelGeometryRenderer getRenderer()
 	{
@@ -118,7 +120,7 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	{
 		return colours;
 	}
-	
+
 	public void setVertexColour(IModelData colours)
 	{
 		firePropertyChange(VERTEX_COLOUR_EVENT_NAME, this.colours, this.colours = colours);
@@ -141,13 +143,13 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	{
 		return edges;
 	}
-	
+
 	@Override
 	public boolean hasEdgeIndices()
 	{
 		return edges != null;
 	}
-	
+
 	@Override
 	public FaceType getFaceType()
 	{
@@ -171,9 +173,15 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	{
 		return bounds;
 	}
-	
+
 	public void setBoundingVolume(IBoundingVolume bounds)
 	{
-		firePropertyChange(BOUNDING_VOLUME_EVENT_NAME, this.bounds, bounds);
+		firePropertyChange(BOUNDING_VOLUME_EVENT_NAME, this.bounds, this.bounds = bounds);
+	}
+
+	@Override
+	public boolean hasBoundingVolume()
+	{
+		return bounds != null;
 	}
 }

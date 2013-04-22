@@ -23,6 +23,7 @@ import gov.nasa.worldwind.util.gdal.GDALUtils;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.ByteBuffer;
 
 import org.gdal.GDALDataSetup;
 import org.gdal.GDALDataSetup.DataFileSource;
@@ -34,7 +35,10 @@ import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import au.gov.ga.earthsci.common.buffer.BufferType;
+import au.gov.ga.earthsci.common.math.vector.Vector3;
 import au.gov.ga.earthsci.common.util.Util;
+import au.gov.ga.earthsci.model.bounds.BoundingBox;
 import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.model.geometry.IVertexColouredGeometry;
 import au.gov.ga.earthsci.test.util.TestUtils;
@@ -116,20 +120,50 @@ public class GDALRasterModelFactoryTest
 
 		GDALRasterModel result = GDALRasterModelFactory.createModel(ds, parameters);
 
+		// Single result with correct names
 		assertNotNull(result);
 		assertFalse(Util.isEmpty(result.getId()));
 		assertEquals("testgrid", result.getName()); //$NON-NLS-1$
 		assertEquals(ds.GetDescription(), result.getDescription());
 
+		// Containing a single geometry
 		assertNotNull(result.getGeometries());
 		assertEquals(1, result.getGeometries().size());
 
 		IVertexColouredGeometry geometry = (IVertexColouredGeometry) result.getGeometries().get(0);
 		assertNotNull(geometry);
 
+		// With the correct vertices
 		assertTrue(geometry.hasVertices());
-		IModelData vertices = geometry.getVertices();
-		assertNotNull(vertices);
+		IModelData vertexData = geometry.getVertices();
+		assertNotNull(vertexData);
+		assertEquals(BufferType.FLOAT, vertexData.getBufferType());
+		assertEquals(24 * 3 * BufferType.FLOAT.getNumberOfBytes(), vertexData.getSource().limit());
+
+		// And a bounding volume that encompasses the vertices
+		assertTrue(geometry.hasBoundingVolume());
+
+		BoundingBox bounds = (BoundingBox) geometry.getBoundingVolume();
+		assertNotNull(bounds);
+		assertEquals(0.0, bounds.getXRange().getMinValue(), 0.001);
+		assertEquals(150.0, bounds.getXRange().getMaxValue(), 0.001);
+		assertEquals(50.0, bounds.getYRange().getMinValue(), 0.001);
+		assertEquals(300.0, bounds.getYRange().getMaxValue(), 0.001);
+		assertEquals(-9999.0, bounds.getZRange().getMinValue(), 0.001);
+		assertEquals(100.0, bounds.getZRange().getMaxValue(), 0.001);
+
+		ByteBuffer source = (ByteBuffer) vertexData.getSource();
+		int count = 0;
+		Vector3 vertex = new Vector3();
+		while (source.hasRemaining())
+		{
+			vertex.x = vertexData.getBufferType().getValueFrom(source).doubleValue();
+			vertex.y = vertexData.getBufferType().getValueFrom(source).doubleValue();
+			vertex.z = vertexData.getBufferType().getValueFrom(source).doubleValue();
+			assertTrue(bounds.contains(vertex));
+			count++;
+		}
+		assertEquals(24, count);
 	}
 
 	private static Dataset openRaster(String rasterName) throws Exception

@@ -122,4 +122,27 @@ public class BoundingBox implements IBoundingVolume
 		return false;
 	}
 
+	/**
+	 * @return The range of X values encompassed by this bounding box
+	 */
+	public Range<Double> getXRange()
+	{
+		return xRange;
+	}
+
+	/**
+	 * @return The range of Y values encompassed by this bounding box
+	 */
+	public Range<Double> getYRange()
+	{
+		return yRange;
+	}
+
+	/**
+	 * @return The range of Z values encompassed by this bounding box
+	 */
+	public Range<Double> getZRange()
+	{
+		return zRange;
+	}
 }

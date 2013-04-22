@@ -15,6 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.model.raster;
 
+import static au.gov.ga.earthsci.common.buffer.BufferUtil.getValue;
+import static au.gov.ga.earthsci.core.raster.GDALRasterUtil.getBufferType;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.UUID;
@@ -26,10 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.buffer.BufferType;
-import au.gov.ga.earthsci.common.buffer.BufferUtil;
 import au.gov.ga.earthsci.common.util.Validate;
-import au.gov.ga.earthsci.core.raster.GDALRasterUtil;
 import au.gov.ga.earthsci.model.IModel;
+import au.gov.ga.earthsci.model.bounds.BoundingBox;
 import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.model.data.ModelDataBuilder;
 import au.gov.ga.earthsci.model.geometry.BasicColouredMeshGeometry;
@@ -48,7 +50,8 @@ public class GDALRasterModelFactory
 
 	private static final Logger logger = LoggerFactory.getLogger(GDALRasterModelFactory.class);
 
-	private static final String WGS84 = "EPSG:4326"; //$NON-NLS-1$
+	// TODO: Move this somewhere
+	private static final String WGS84 = "EPSG:4326";
 
 	/**
 	 * Create a new {@link GDALRasterModel} from the provided GDAL dataset and
@@ -68,6 +71,10 @@ public class GDALRasterModelFactory
 						ds.GetDescription(), ds.GetDescription());
 
 		geometry.setVertices(vertices);
+
+		geometry.setBoundingVolume(new BoundingBox(stats.getMinLon(), stats.getMaxLon(),
+				stats.getMinLat(), stats.getMaxLat(),
+				stats.getMinElevation(), stats.getMaxElevation()));
 
 		return new GDALRasterModel(null, geometry, ds, parameters,
 				parameters.getModelName(),
@@ -111,7 +118,7 @@ public class GDALRasterModelFactory
 		CoordinateTransformation coordinateTransformation =
 				CoordinateTransformationUtil.getTransformationToWGS84(sourceProjection);
 
-		BufferType sourceBufferType = GDALRasterUtil.getBufferType(band);
+		BufferType sourceBufferType = getBufferType(band);
 
 		double elevationOffset = getOffset(band, parameters);
 		double elevationScale = getScale(band, parameters);
@@ -126,8 +133,8 @@ public class GDALRasterModelFactory
 		{
 			for (int x = 0; x < columns; x++)
 			{
-				double datasetValue = BufferUtil.getValue(buffer, sourceBufferType).doubleValue();
-				double elevation = elevationOffset + (elevationScale * datasetValue);
+				double datasetValue = getValue(buffer, sourceBufferType).doubleValue();
+				double elevation = toElevation(elevationOffset, elevationScale, datasetValue, nodatas[0]);
 
 				transformCoordinates(geoTransform, x, y, transformedCoords);
 				projectCoordinates(coordinateTransformation,
@@ -140,7 +147,7 @@ public class GDALRasterModelFactory
 						.putFloat((float) projectedCoords[1])
 						.putFloat((float) projectedCoords[2]);
 
-				stats.updateStats(projectedCoords[0], projectedCoords[1], projectedCoords[2]);
+				stats.updateStats(projectedCoords[1], projectedCoords[0], projectedCoords[2]);
 			}
 		}
 
@@ -152,6 +159,15 @@ public class GDALRasterModelFactory
 				.describedAs("Vertices")
 				.build();
 
+	}
+
+	private static double toElevation(double elevationOffset, double elevationScale, double datasetValue, double nodata)
+	{
+		if (isNoData(nodata, datasetValue))
+		{
+			return nodata;
+		}
+		return elevationOffset + (elevationScale * datasetValue);
 	}
 
 	/**
