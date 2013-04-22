@@ -84,6 +84,11 @@ public interface IURLCache
 	 * Mark the URL as complete. Must be called after calling
 	 * {@link #writePartial(URL, long)}, after the retrieval is complete and the
 	 * OutputStream has been closed.
+	 * <p/>
+	 * Returns true if the cache was updated with the completed retrieval data.
+	 * A returned value of false means the cached version of the data is exactly
+	 * the same as the retrieved version, and therefore the cached version was
+	 * not updated.
 	 * 
 	 * @param url
 	 *            URL completed
@@ -93,8 +98,9 @@ public interface IURLCache
 	 * @param Value
 	 *            to use when setting the content-type property of the cached
 	 *            resource
+	 * @return True if the cache was updated with the completed retrieval data
 	 */
-	void writeComplete(URL url, long lastModified, String contentType);
+	boolean writeComplete(URL url, long lastModified, String contentType);
 
 	/**
 	 * Does this cache contain a complete version of resource pointed to by the

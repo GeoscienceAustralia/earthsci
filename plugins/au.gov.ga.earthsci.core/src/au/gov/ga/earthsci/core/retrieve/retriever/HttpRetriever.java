@@ -152,16 +152,8 @@ public class HttpRetriever implements IRetriever
 			checkMonitor(monitor);
 
 			//read the response code
-			int responseCode = -1;
-			try
-			{
-				responseCode = connection.getResponseCode();
-				monitor.updateStatus(RetrievalStatus.CONNECTED);
-			}
-			catch (Exception e)
-			{
-				//ignore exceptions from response code; handle invalid responses below
-			}
+			int responseCode = connection.getResponseCode();
+			monitor.updateStatus(RetrievalStatus.CONNECTED);
 
 			checkMonitor(monitor);
 
@@ -216,8 +208,16 @@ public class HttpRetriever implements IRetriever
 							os.close();
 						}
 					}
-					urlCache.writeComplete(url, lastModified, contentType);
-					retrievedData = new URLCacheRetrievalData(urlCache, url);
+					boolean updated = urlCache.writeComplete(url, lastModified, contentType);
+					if (!updated)
+					{
+						return new RetrieverResult(new BasicRetrievalResult(cachedData, true),
+								RetrieverResultStatus.COMPLETE);
+					}
+					else
+					{
+						retrievedData = new URLCacheRetrievalData(urlCache, url);
+					}
 				}
 				else if (retrievalProperties.isFileRequired())
 				{

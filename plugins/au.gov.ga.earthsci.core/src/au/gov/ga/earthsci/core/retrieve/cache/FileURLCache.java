@@ -30,6 +30,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -131,10 +132,35 @@ public class FileURLCache implements IURLCache
 	}
 
 	@Override
-	public void writeComplete(URL url, long lastModified, String contentType)
+	public boolean writeComplete(URL url, long lastModified, String contentType)
 	{
 		File partialFile = getPartialFile(url);
 		File completeFile = getCompleteFile(url);
+
+		locker.lockRead(partialFile);
+		locker.lockRead(completeFile);
+		try
+		{
+			if (fileEquals(partialFile, completeFile))
+			{
+				locker.lockWrite(partialFile);
+				try
+				{
+					partialFile.delete();
+					return false;
+				}
+				finally
+				{
+					locker.unlockWrite(partialFile);
+				}
+			}
+		}
+		finally
+		{
+			locker.unlockRead(partialFile);
+			locker.unlockRead(completeFile);
+		}
+
 		locker.lockWrite(partialFile);
 		locker.lockWrite(completeFile);
 		try
@@ -150,6 +176,69 @@ public class FileURLCache implements IURLCache
 		{
 			locker.unlockWrite(partialFile);
 			locker.unlockWrite(completeFile);
+		}
+		return true;
+	}
+
+	public static boolean fileEquals(File file1, File file2)
+	{
+		byte[] md51 = fileMD5(file1);
+		byte[] md52 = fileMD5(file2);
+		if (md51 == null || md52 == null)
+		{
+			return false;
+		}
+		return byteArrayEquals(md51, md52);
+	}
+
+	public static boolean byteArrayEquals(byte[] b1, byte[] b2)
+	{
+		if (b1 == b2)
+		{
+			return true;
+		}
+		if (b1.length != b2.length)
+		{
+			return false;
+		}
+		for (int i = 0; i < b1.length; i++)
+		{
+			if (b1[i] != b2[i])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static byte[] fileMD5(File file)
+	{
+		try
+		{
+			MessageDigest md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
+			InputStream is = null;
+			try
+			{
+				byte[] buffer = new byte[8192];
+				is = new BufferedInputStream(new FileInputStream(file));
+				int read;
+				while ((read = is.read(buffer)) >= 0)
+				{
+					md.update(buffer, 0, read);
+				}
+			}
+			finally
+			{
+				if (is != null)
+				{
+					is.close();
+				}
+			}
+			return md.digest();
+		}
+		catch (Exception e)
+		{
+			return null;
 		}
 	}
 
