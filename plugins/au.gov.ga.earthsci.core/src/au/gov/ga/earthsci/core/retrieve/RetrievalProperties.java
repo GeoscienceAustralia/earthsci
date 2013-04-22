@@ -15,9 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.retrieve;
 
-import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.avlist.AVKey;
-
 /**
  * Basic {@link IRetrievalProperties} implementation.
  * 
@@ -27,8 +24,8 @@ public class RetrievalProperties implements IRetrievalProperties
 {
 	private boolean useCache = true;
 	private boolean refreshCache = false;
-	private int connectTimeout = Configuration.getIntegerValue(AVKey.URL_CONNECT_TIMEOUT, 8000);
-	private int readTimeout = Configuration.getIntegerValue(AVKey.URL_READ_TIMEOUT, 5000);
+	private int connectTimeout = 30000; //30 seconds
+	private int readTimeout = 30000; //30 seconds
 	private boolean fileRequired = false;
 
 	@Override
