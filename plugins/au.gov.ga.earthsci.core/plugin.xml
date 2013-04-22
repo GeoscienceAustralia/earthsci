@@ -113,6 +113,9 @@
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
+         <return-type
+               class="au.gov.ga.earthsci.model.IModel">
+         </return-type>
       </filter>
    </extension>
    <extension
