@@ -90,7 +90,7 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 	 * It is possible that this could be called twice, once for a cached version
 	 * of the data, and once for the updated data.
 	 * <p/>
-	 * Must notify the callback when completed (or failed).
+	 * Must notify the callback at least once when completed (or failed).
 	 * 
 	 * @param data
 	 *            Retrieved data
