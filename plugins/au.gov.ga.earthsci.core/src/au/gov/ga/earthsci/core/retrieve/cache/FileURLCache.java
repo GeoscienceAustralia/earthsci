@@ -30,6 +30,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.Properties;
 
@@ -219,12 +220,10 @@ public class FileURLCache implements IURLCache
 			InputStream is = null;
 			try
 			{
+				is = new DigestInputStream(new BufferedInputStream(new FileInputStream(file)), md);
 				byte[] buffer = new byte[8192];
-				is = new BufferedInputStream(new FileInputStream(file));
-				int read;
-				while ((read = is.read(buffer)) >= 0)
+				while (is.read(buffer) >= 0)
 				{
-					md.update(buffer, 0, read);
 				}
 			}
 			finally
