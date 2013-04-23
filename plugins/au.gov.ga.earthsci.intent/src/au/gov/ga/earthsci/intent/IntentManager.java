@@ -23,6 +23,7 @@ import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,26 +176,30 @@ public class IntentManager implements IIntentManager
 			return null;
 		}
 
-		//if no content type matching, we don't need to find the closest, so just return the first one found
-		if (intent.getContentType() == null)
+		//if the content type is defined or guessed, find the filter in the list of matches that most closely matches it
+		IContentType contentType = intent.getOrGuessContentType();
+		if (contentType != null)
 		{
-			return matches.get(0);
-		}
-
-		//find the filter in the list of matches that most closely matches the intent's content type
-		int minDistance = Integer.MAX_VALUE;
-		IntentFilter closest = null;
-		for (IntentFilter filter : matches)
-		{
-			int distance =
-					ContentTypeHelper.distanceToClosestMatching(intent.getContentType(), filter.getContentTypes());
-			if (distance >= 0 && distance < minDistance)
+			int minDistance = Integer.MAX_VALUE;
+			IntentFilter closest = null;
+			for (IntentFilter filter : matches)
 			{
-				minDistance = distance;
-				closest = filter;
+				int distance = ContentTypeHelper.distanceToClosestMatching(contentType, filter.getContentTypes());
+				if (distance >= 0 && distance < minDistance)
+				{
+					minDistance = distance;
+					closest = filter;
+				}
+			}
+			//none may match; this occurs if no matches define content types, and the content type was guessed
+			if (closest != null)
+			{
+				return closest;
 			}
 		}
-		return closest;
+
+		//if no content types matched, return the first
+		return matches.get(0);
 	}
 
 	@Override
