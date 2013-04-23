@@ -37,5 +37,8 @@
       <uri
             scheme="platform">
       </uri>
+      <uri
+            scheme="bundleresource">
+      </uri>
    </extension>
 </plugin>
