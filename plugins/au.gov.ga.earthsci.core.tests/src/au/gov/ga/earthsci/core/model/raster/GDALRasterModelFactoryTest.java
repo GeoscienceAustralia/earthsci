@@ -164,6 +164,9 @@ public class GDALRasterModelFactoryTest
 			count++;
 		}
 		assertEquals(24, count);
+
+		// A renderer should always be set
+		assertNotNull(geometry.getRenderer());
 	}
 
 	private static Dataset openRaster(String rasterName) throws Exception

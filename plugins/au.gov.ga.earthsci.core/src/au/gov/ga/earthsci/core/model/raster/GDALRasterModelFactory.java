@@ -36,6 +36,7 @@ import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.model.data.ModelDataBuilder;
 import au.gov.ga.earthsci.model.geometry.BasicColouredMeshGeometry;
 import au.gov.ga.earthsci.model.geometry.ModelGeometryStatistics;
+import au.gov.ga.earthsci.model.render.RendererCreatorRegistry;
 import au.gov.ga.earthsci.worldwind.common.util.CoordinateTransformationUtil;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
@@ -75,6 +76,8 @@ public class GDALRasterModelFactory
 		geometry.setBoundingVolume(new BoundingBox(stats.getMinLon(), stats.getMaxLon(),
 				stats.getMinLat(), stats.getMaxLat(),
 				stats.getMinElevation(), stats.getMaxElevation()));
+
+		geometry.setRenderer(RendererCreatorRegistry.getDefaultCreator(geometry).createRenderer(geometry));
 
 		return new GDALRasterModel(null, geometry, ds, parameters,
 				parameters.getModelName(),
