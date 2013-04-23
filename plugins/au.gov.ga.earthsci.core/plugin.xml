@@ -138,5 +138,17 @@
          </protocol>
       </handler>
    </extension>
+   <extension
+         point="au.gov.ga.earthsci.intent.guessableContentTypeURIs">
+      <uri
+            scheme="extensionicon">
+      </uri>
+      <uri
+            scheme="systemicon">
+      </uri>
+      <uri
+            scheme="classpath">
+      </uri>
+   </extension>
 
 </plugin>
