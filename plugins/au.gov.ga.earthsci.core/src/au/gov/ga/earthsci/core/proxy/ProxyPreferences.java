@@ -51,11 +51,6 @@ public class ProxyPreferences extends AbstractPreferenceInitializer
 
 	private static ProxySelector defaultProxySelector = null;
 
-	private static IPreferenceStore createStore()
-	{
-		return new ScopedPreferenceStore(DefaultScope.INSTANCE, PreferenceConstants.QUALIFIER_ID);
-	}
-
 	public static void configureProxy(String proxyType, String proxyHost, int proxyPort, String nonProxyHosts)
 	{
 		boolean system = PROXY_TYPE_SYSTEM.equals(proxyType);
@@ -91,7 +86,7 @@ public class ProxyPreferences extends AbstractPreferenceInitializer
 	@Override
 	public void initializeDefaultPreferences()
 	{
-		IPreferenceStore store = createStore();
+		IPreferenceStore store = new ScopedPreferenceStore(DefaultScope.INSTANCE, PreferenceConstants.QUALIFIER_ID);
 		store.setDefault(PROXY_TYPE, PROXY_TYPE_SYSTEM);
 		store.setDefault(PROXY_HOST, ""); //$NON-NLS-1$
 		store.setDefault(PROXY_PORT, 80);
