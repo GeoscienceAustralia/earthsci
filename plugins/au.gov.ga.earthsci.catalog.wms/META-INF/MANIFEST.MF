@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Catalog WMS
+Bundle-SymbolicName: au.gov.ga.earthsci.catalog.wms;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: au.gov.ga.earthsci.catalog.wms.Activator
+Bundle-Vendor: Geoscience Australia
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ au.gov.ga.earthsci.catalog;bundle-version="1.0.0",
+ au.gov.ga.earthsci.core;bundle-version="1.0.0",
+ au.gov.ga.earthsci.intent;bundle-version="1.0.0",
+ au.gov.ga.earthsci.common;bundle-version="1.0.0",
+ gov.nasa.worldwind;bundle-version="2.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
