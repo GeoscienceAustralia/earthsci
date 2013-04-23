@@ -18,11 +18,19 @@
             id="au.gov.ga.earthsci.core.proxy.ProxyPreferencePage"
             name="Network Connections">
       </page>
+      <page
+            class="au.gov.ga.earthsci.core.worldwind.RetrievePreferencePage"
+            id="au.gov.ga.earthsci.core.retrieve.RetreivePreferencePage"
+            name="Resource Retrieval">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="au.gov.ga.earthsci.core.proxy.ProxyPreferences">
+      </initializer>
+      <initializer
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindRetrievalServicePreferences">
       </initializer>
    </extension>
    <extension
@@ -59,6 +67,10 @@
       </injectable>
       <injectable
             class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration"
+            priority="0">
+      </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.worldwind.WorldWindRetrievalServicePreferences"
             priority="0">
       </injectable>
       <inject
