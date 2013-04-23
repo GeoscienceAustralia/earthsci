@@ -30,6 +30,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -131,25 +133,107 @@ public class FileURLCache implements IURLCache
 	}
 
 	@Override
-	public void writeComplete(URL url, long lastModified, String contentType)
+	public boolean writeComplete(URL url, long lastModified, String contentType)
 	{
 		File partialFile = getPartialFile(url);
 		File completeFile = getCompleteFile(url);
+
 		locker.lockWrite(partialFile);
-		locker.lockWrite(completeFile);
 		try
 		{
-			partialFile.renameTo(completeFile);
-			if (lastModified > 0)
+			locker.lockRead(completeFile);
+			try
 			{
-				completeFile.setLastModified(lastModified);
+				if (fileEquals(partialFile, completeFile))
+				{
+					partialFile.delete();
+					return false;
+				}
 			}
-			setContentType(url, contentType, completeFile);
+			finally
+			{
+				locker.unlockRead(completeFile);
+			}
+
+			locker.lockWrite(completeFile);
+			try
+			{
+				partialFile.renameTo(completeFile);
+				if (lastModified > 0)
+				{
+					completeFile.setLastModified(lastModified);
+				}
+				setContentType(url, contentType, completeFile);
+			}
+			finally
+			{
+				locker.unlockWrite(completeFile);
+			}
 		}
 		finally
 		{
 			locker.unlockWrite(partialFile);
-			locker.unlockWrite(completeFile);
+		}
+		return true;
+	}
+
+	public static boolean fileEquals(File file1, File file2)
+	{
+		byte[] md51 = fileMD5(file1);
+		byte[] md52 = fileMD5(file2);
+		if (md51 == null || md52 == null)
+		{
+			return false;
+		}
+		return byteArrayEquals(md51, md52);
+	}
+
+	public static boolean byteArrayEquals(byte[] b1, byte[] b2)
+	{
+		if (b1 == b2)
+		{
+			return true;
+		}
+		if (b1.length != b2.length)
+		{
+			return false;
+		}
+		for (int i = 0; i < b1.length; i++)
+		{
+			if (b1[i] != b2[i])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static byte[] fileMD5(File file)
+	{
+		try
+		{
+			MessageDigest md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
+			InputStream is = null;
+			try
+			{
+				is = new DigestInputStream(new BufferedInputStream(new FileInputStream(file)), md);
+				byte[] buffer = new byte[8192];
+				while (is.read(buffer) >= 0)
+				{
+				}
+			}
+			finally
+			{
+				if (is != null)
+				{
+					is.close();
+				}
+			}
+			return md.digest();
+		}
+		catch (Exception e)
+		{
+			return null;
 		}
 	}
 

@@ -253,17 +253,20 @@ public class RetrievePart implements IRetrievalServiceListener
 		{
 			retrievals.add(retrieval);
 			retrieval.addListener(retrievalListener);
-			viewer.getControl().getDisplay().asyncExec(new Runnable()
+			if (viewer != null && !viewer.getControl().isDisposed())
 			{
-				@Override
-				public void run()
+				viewer.getControl().getDisplay().asyncExec(new Runnable()
 				{
-					if (!viewer.getControl().isDisposed())
+					@Override
+					public void run()
 					{
-						viewer.add(retrieval);
+						if (!viewer.getControl().isDisposed())
+						{
+							viewer.add(retrieval);
+						}
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 
@@ -274,17 +277,20 @@ public class RetrievePart implements IRetrievalServiceListener
 		{
 			retrievals.remove(retrieval);
 			retrieval.removeListener(retrievalListener);
-			viewer.getControl().getDisplay().asyncExec(new Runnable()
+			if (viewer != null && !viewer.getControl().isDisposed())
 			{
-				@Override
-				public void run()
+				viewer.getControl().getDisplay().asyncExec(new Runnable()
 				{
-					if (!viewer.getControl().isDisposed())
+					@Override
+					public void run()
 					{
-						viewer.remove(retrieval);
+						if (!viewer.getControl().isDisposed())
+						{
+							viewer.remove(retrieval);
+						}
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 
@@ -296,7 +302,7 @@ public class RetrievePart implements IRetrievalServiceListener
 			return;
 		}
 
-		if (!viewer.getControl().isDisposed())
+		if (viewer != null && !viewer.getControl().isDisposed())
 		{
 			updatingElements.add(element);
 			viewer.getControl().getDisplay().asyncExec(new Runnable()

@@ -17,7 +17,6 @@ package au.gov.ga.earthsci.core.model.layer;
 
 import gov.nasa.worldwind.layers.Layer;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -42,18 +41,6 @@ public class IntentLayerLoader
 {
 	public static void load(LayerNode layerNode, IEclipseContext context)
 	{
-		if (layerNode.getContentType() == null)
-		{
-			try
-			{
-				layerNode.setContentType(Platform.getContentTypeManager().findContentTypeFor(
-						layerNode.getURI().getPath()));
-			}
-			catch (Exception e)
-			{
-				//ignore
-			}
-		}
 		LayerLoadIntent intent = new LayerLoadIntent(context, layerNode);
 		intent.setURI(layerNode.getURI());
 		intent.setContentType(layerNode.getContentType());

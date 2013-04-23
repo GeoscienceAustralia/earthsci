@@ -138,7 +138,6 @@ public class RetrievalService implements IRetrievalService
 				callerToRetrievals.removeSingle(caller, retrieval);
 				fireRetrievalRemoved(caller, retrieval);
 			}
-
 		}
 	}
 
@@ -170,7 +169,16 @@ public class RetrievalService implements IRetrievalService
 	{
 		synchronized (listeners)
 		{
-			listeners.add(listener);
+			synchronized (urlToRetrieval)
+			{
+				listeners.add(listener);
+
+				//notify the newly added listener of all current retrievals:
+				for (Retrieval retrieval : urlToRetrieval.values())
+				{
+					listener.retrievalAdded(retrieval);
+				}
+			}
 		}
 	}
 
@@ -179,7 +187,23 @@ public class RetrievalService implements IRetrievalService
 	{
 		synchronized (callerListeners)
 		{
-			callerListeners.putSingle(caller, listener);
+			synchronized (urlToRetrieval)
+			{
+				callerListeners.putSingle(caller, listener);
+
+				//notify the newly added listener of all current retrievals for this caller:
+				for (Retrieval retrieval : urlToRetrieval.values())
+				{
+					for (Object retrievalCaller : retrieval.getCallers())
+					{
+						if (retrievalCaller.equals(caller))
+						{
+							listener.retrievalAdded(retrieval);
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 

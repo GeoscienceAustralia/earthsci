@@ -17,7 +17,6 @@ package au.gov.ga.earthsci.catalog;
 
 import java.net.URI;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -40,6 +39,8 @@ import au.gov.ga.earthsci.notification.NotificationManager;
  */
 public class IntentCatalogLoader
 {
+	private static final Object replaceNodeSemaphore = new Object();
+
 	public static void load(URI uri, ICatalogTreeNode placeholder, IEclipseContext context)
 	{
 		load(uri, null, placeholder, context);
@@ -47,17 +48,6 @@ public class IntentCatalogLoader
 
 	public static void load(URI uri, IContentType contentType, ICatalogTreeNode placeholder, IEclipseContext context)
 	{
-		if (contentType == null)
-		{
-			try
-			{
-				contentType = Platform.getContentTypeManager().findContentTypeFor(uri.getPath());
-			}
-			catch (Exception e)
-			{
-				//ignore
-			}
-		}
 		CatalogLoadIntent intent = new CatalogLoadIntent(placeholder, context);
 		intent.setURI(uri);
 		intent.setContentType(contentType);
@@ -74,11 +64,7 @@ public class IntentCatalogLoader
 			if (result instanceof ICatalogTreeNode)
 			{
 				ICatalogTreeNode node = (ICatalogTreeNode) result;
-				if (catalogIntent.placeholder.getLabel() != null)
-				{
-					node.setLabel(catalogIntent.placeholder.getLabel());
-				}
-				catalogIntent.placeholder.getParent().replaceChild(catalogIntent.placeholder, node);
+				replaceWithNode(catalogIntent, node);
 			}
 			else
 			{
@@ -125,8 +111,26 @@ public class IntentCatalogLoader
 			CatalogLoadIntent catalogIntent = (CatalogLoadIntent) intent;
 			ErrorCatalogTreeNode errorNode = new ErrorCatalogTreeNode(intent.getURI(), e);
 			errorNode.setRemoveable(true);
-			errorNode.setLabel(catalogIntent.placeholder.getLabel());
-			catalogIntent.placeholder.getParent().replaceChild(catalogIntent.placeholder, errorNode);
+			replaceWithNode(catalogIntent, errorNode);
+		}
+
+		private void replaceWithNode(CatalogLoadIntent intent, ICatalogTreeNode node)
+		{
+			//only allow one node to be replaced at a time; synchronize on a static object:
+			synchronized (replaceNodeSemaphore)
+			{
+				ICatalogTreeNode placeholder = intent.replacement != null ? intent.replacement : intent.placeholder;
+				if (placeholder.getParent() == null)
+				{
+					throw new IllegalStateException("Placeholder parent cannot be null"); //$NON-NLS-1$
+				}
+				intent.replacement = node;
+				if (placeholder.getLabel() != null)
+				{
+					node.setLabel(placeholder.getLabel());
+				}
+				placeholder.getParent().replaceChild(placeholder, node);
+			}
 		}
 	};
 
@@ -134,6 +138,7 @@ public class IntentCatalogLoader
 	{
 		private final ICatalogTreeNode placeholder;
 		private final IEclipseContext context;
+		private ICatalogTreeNode replacement;
 
 		public CatalogLoadIntent(ICatalogTreeNode placeholder, IEclipseContext context)
 		{

@@ -81,6 +81,9 @@ public interface IRetrievalService
 
 	/**
 	 * Add a listener to the service.
+	 * <p/>
+	 * This listener will immediately be informed of any current retrievals in
+	 * progress.
 	 * 
 	 * @param listener
 	 *            Listener to add
@@ -90,6 +93,9 @@ public interface IRetrievalService
 	/**
 	 * Add a listener to the service, listening for added/removed retrievals for
 	 * the given caller.
+	 * <p/>
+	 * This listener will immediately be informed of any current retrievals in
+	 * progress for the given caller.
 	 * 
 	 * @param listener
 	 *            Listener to add

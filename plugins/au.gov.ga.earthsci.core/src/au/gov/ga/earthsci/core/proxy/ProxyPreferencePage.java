@@ -48,17 +48,17 @@ public class ProxyPreferencePage extends FieldEditorPreferencePage
 	public void createFieldEditors()
 	{
 		ListenableRadioGroupFieldEditor proxyType =
-				new ListenableRadioGroupFieldEditor(PreferenceConstants.PROXY_TYPE, "", 1, new String[][] {
-						{ "&No proxy", PreferenceConstants.PROXY_TYPE_NONE },
-						{ "&System proxy", PreferenceConstants.PROXY_TYPE_SYSTEM },
-						{ "&User proxy:", PreferenceConstants.PROXY_TYPE_USER } }, getFieldEditorParent());
+				new ListenableRadioGroupFieldEditor(ProxyPreferences.PROXY_TYPE, "", 1, new String[][] {
+						{ "&No proxy", ProxyPreferences.PROXY_TYPE_NONE },
+						{ "&System proxy", ProxyPreferences.PROXY_TYPE_SYSTEM },
+						{ "&User proxy:", ProxyPreferences.PROXY_TYPE_USER } }, getFieldEditorParent());
 		addField(proxyType);
 
 		final FieldEditor[] userFields =
 				new FieldEditor[] {
-						new StringFieldEditor(PreferenceConstants.PROXY_HOST, "Proxy &host", getFieldEditorParent()),
-						new IntegerFieldEditor(PreferenceConstants.PROXY_PORT, "Proxy &port", getFieldEditorParent()),
-						new NonProxyHostsListEditor(PreferenceConstants.NON_PROXY_HOSTS, "&Non-proxy hosts",
+						new StringFieldEditor(ProxyPreferences.PROXY_HOST, "Proxy &host", getFieldEditorParent()),
+						new IntegerFieldEditor(ProxyPreferences.PROXY_PORT, "Proxy &port", getFieldEditorParent()),
+						new NonProxyHostsListEditor(ProxyPreferences.NON_PROXY_HOSTS, "&Non-proxy hosts",
 								getFieldEditorParent()) };
 		for (FieldEditor userField : userFields)
 		{
@@ -70,7 +70,7 @@ public class ProxyPreferencePage extends FieldEditorPreferencePage
 			@Override
 			public void valueChanged(String newValue)
 			{
-				boolean enabled = PreferenceConstants.PROXY_TYPE_USER.equals(newValue);
+				boolean enabled = ProxyPreferences.PROXY_TYPE_USER.equals(newValue);
 				for (FieldEditor customField : userFields)
 				{
 					customField.setEnabled(enabled, getFieldEditorParent());

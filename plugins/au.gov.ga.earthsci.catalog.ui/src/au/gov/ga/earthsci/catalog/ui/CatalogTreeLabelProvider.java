@@ -46,10 +46,9 @@ import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 
 import au.gov.ga.earthsci.application.IFireableLabelProvider;
-import au.gov.ga.earthsci.application.ILoadingIconFrameListener;
 import au.gov.ga.earthsci.application.IconLoader;
 import au.gov.ga.earthsci.application.ImageRegistry;
-import au.gov.ga.earthsci.application.LoadingIconAnimator;
+import au.gov.ga.earthsci.application.LoadingIconHelper;
 import au.gov.ga.earthsci.catalog.ErrorCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogModel;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
@@ -79,6 +78,7 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 	private ICatalogBrowserController controller;
 
 	private IconLoader iconLoader = new IconLoader(this);
+	private LoadingIconHelper nodeLoader = new LoadingIconHelper(this);
 
 	@Inject
 	private ICatalogModel catalogModel;
@@ -121,25 +121,7 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 
 		if (element instanceof LoadingCatalogTreeNode)
 		{
-			ILoadingIconFrameListener loadingIconFrameListener = new ILoadingIconFrameListener()
-			{
-				@Override
-				public void nextFrame(Image image)
-				{
-					Display.getDefault().asyncExec(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							fireLabelProviderChanged(new LabelProviderChangedEvent(CatalogTreeLabelProvider.this,
-									element));
-						}
-					});
-					LoadingIconAnimator.get().removeListener(this);
-				}
-			};
-			LoadingIconAnimator.get().addListener(loadingIconFrameListener);
-			return LoadingIconAnimator.get().getCurrentFrame();
+			return nodeLoader.getLoadingIcon(element);
 		}
 
 		ICatalogTreeNode node = (ICatalogTreeNode) element;

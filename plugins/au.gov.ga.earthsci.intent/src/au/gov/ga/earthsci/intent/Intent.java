@@ -120,6 +120,31 @@ public class Intent
 	}
 
 	/**
+	 * Guess the content type for this Intent's URI.
+	 * <p/>
+	 * Uses the {@link GuessableContentTypeURIManager} to guess.
+	 * 
+	 * @return The content type guessed for this Intent's URI
+	 */
+	public IContentType guessContentType()
+	{
+		return GuessableContentTypeURIManager.guessContentType(getURI());
+	}
+
+	/**
+	 * @return Explicit content type of the data associated with this intnet. If
+	 *         null, the value from {@link #guessContentType()} is returned.
+	 */
+	public IContentType getOrGuessContentType()
+	{
+		if (contentType != null)
+		{
+			return contentType;
+		}
+		return guessContentType();
+	}
+
+	/**
 	 * @return The URI of the data associated with this intent.
 	 */
 	public URI getURI()

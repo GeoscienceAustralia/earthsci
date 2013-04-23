@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.intent;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.inject.Inject;
@@ -44,7 +45,7 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 	{
 		try
 		{
-			final URL url = intent.getURL();
+			final URL url = getRetrievalURL(intent);
 			if (url == null)
 			{
 				throw new IllegalArgumentException("Intent URL is null"); //$NON-NLS-1$
@@ -85,12 +86,27 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 	}
 
 	/**
+	 * Return the URL to retrieve for the given intent. Returns
+	 * {@link Intent#getURL()} by default. Subclasses can override this method
+	 * to return custom URLs.
+	 * 
+	 * @param intent
+	 *            Intent to get the URL for
+	 * @return URL to retrieve for the intent
+	 * @throws MalformedURLException
+	 */
+	protected URL getRetrievalURL(Intent intent) throws MalformedURLException
+	{
+		return intent.getURL();
+	}
+
+	/**
 	 * Handle the retrieved data.
 	 * <p/>
 	 * It is possible that this could be called twice, once for a cached version
 	 * of the data, and once for the updated data.
 	 * <p/>
-	 * Must notify the callback when completed (or failed).
+	 * Must notify the callback at least once when completed (or failed).
 	 * 
 	 * @param data
 	 *            Retrieved data
