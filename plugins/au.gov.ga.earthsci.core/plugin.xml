@@ -35,6 +35,12 @@
       </initializer>
    </extension>
    <extension
+         point="au.gov.ga.earthsci.model.render.geometryRendererCreators">
+      <creator
+            class="au.gov.ga.earthsci.core.model.render.BasicRendererCreator">
+      </creator>
+   </extension>
+   <extension
          point="au.gov.ga.earthsci.injectables">
       <inject
             class="au.gov.ga.earthsci.core.xml.XmlLoaderManager"

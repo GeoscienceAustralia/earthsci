@@ -29,6 +29,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
 import au.gov.ga.earthsci.model.IModel;
+import au.gov.ga.earthsci.model.render.ModelRenderer;
 
 /**
  * A basic mutable implementation of the {@link IModelLayer} interface.
@@ -56,6 +57,8 @@ public class BasicModelLayer extends AbstractLayer implements IModelLayer, IProp
 
 	private List<IModel> models = new ArrayList<IModel>();
 	private ReadWriteLock modelsLock = new ReentrantReadWriteLock();
+
+	private ModelRenderer renderer = new ModelRenderer();
 
 	/**
 	 * Create an empty, unnamed model layer
@@ -221,9 +224,34 @@ public class BasicModelLayer extends AbstractLayer implements IModelLayer, IProp
 	@Override
 	protected void doRender(DrawContext dc)
 	{
-		// TODO
+		if (!isEnabled())
+		{
+			return;
+		}
+
+		modelsLock.readLock().lock();
+		try
+		{
+			for (IModel model : models)
+			{
+				renderer.render(model);
+			}
+		}
+		finally
+		{
+			modelsLock.readLock().unlock();
+		}
 
 	}
 
+
+	/**
+	 * @param renderer
+	 *            the renderer to set
+	 */
+	public void setRenderer(ModelRenderer renderer)
+	{
+		this.renderer = renderer;
+	}
 
 }

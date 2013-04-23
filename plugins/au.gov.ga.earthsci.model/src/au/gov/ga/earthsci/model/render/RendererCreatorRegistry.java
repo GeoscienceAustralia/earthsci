@@ -63,7 +63,7 @@ public class RendererCreatorRegistry
 		}
 		catch (Exception e)
 		{
-			logger.error("Exception occurred while registering model geometry renderer creators"); //$NON-NLS-1$
+			logger.error("Exception occurred while registering model geometry renderer creators", e); //$NON-NLS-1$
 		}
 	}
 
@@ -122,7 +122,7 @@ public class RendererCreatorRegistry
 					result.add(creator);
 				}
 			}
-			return creators;
+			return result;
 		}
 		finally
 		{

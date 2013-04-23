@@ -16,8 +16,11 @@ import au.gov.ga.earthsci.common.util.Validate;
  * type of values to read from the buffer.
  * <p/>
  * The {@link #getSource()} method of this implementation will return a
- * read-only view of the underlying source buffer. This allows multiple threads
- * to access the source data safely.
+ * duplicate view of the underlying source buffer. This allows multiple threads
+ * to modify buffer limits and positions etc. safely. Note, however, that for
+ * performance reasons the returned buffers share the same underlying data.
+ * <b>No modifications should be made to the data obtained from
+ * {@link #getSource()}</b>. To do so is considered programmer error.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -89,7 +92,7 @@ public class ByteBufferModelData implements IModelData
 	@Override
 	public ByteBuffer getSource()
 	{
-		return (ByteBuffer) buffer.asReadOnlyBuffer().rewind();
+		return (ByteBuffer) buffer.duplicate().rewind();
 	}
 
 	@Override
