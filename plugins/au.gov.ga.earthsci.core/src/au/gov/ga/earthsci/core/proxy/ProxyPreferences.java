@@ -41,6 +41,14 @@ import com.btr.proxy.search.ProxySearch;
 @Singleton
 public class ProxyPreferences extends AbstractPreferenceInitializer
 {
+	public static final String PROXY_TYPE = "proxyType"; //$NON-NLS-1$
+	public static final String PROXY_TYPE_NONE = "none"; //$NON-NLS-1$
+	public static final String PROXY_TYPE_SYSTEM = "system"; //$NON-NLS-1$
+	public static final String PROXY_TYPE_USER = "user"; //$NON-NLS-1$
+	public static final String PROXY_HOST = "proxyHost"; //$NON-NLS-1$
+	public static final String PROXY_PORT = "proxyPort"; //$NON-NLS-1$
+	public static final String NON_PROXY_HOSTS = "nonProxyHosts"; //$NON-NLS-1$
+
 	private static ProxySelector defaultProxySelector = null;
 
 	private static IPreferenceStore createStore()
@@ -50,8 +58,8 @@ public class ProxyPreferences extends AbstractPreferenceInitializer
 
 	public static void configureProxy(String proxyType, String proxyHost, int proxyPort, String nonProxyHosts)
 	{
-		boolean system = PreferenceConstants.PROXY_TYPE_SYSTEM.equals(proxyType);
-		boolean user = PreferenceConstants.PROXY_TYPE_USER.equals(proxyType);
+		boolean system = PROXY_TYPE_SYSTEM.equals(proxyType);
+		boolean user = PROXY_TYPE_USER.equals(proxyType);
 		System.setProperty("java.net.useSystemProxies", system ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		String actualProxyHost = user ? proxyHost : ""; //$NON-NLS-1$
@@ -84,18 +92,18 @@ public class ProxyPreferences extends AbstractPreferenceInitializer
 	public void initializeDefaultPreferences()
 	{
 		IPreferenceStore store = createStore();
-		store.setDefault(PreferenceConstants.PROXY_TYPE, PreferenceConstants.PROXY_TYPE_SYSTEM);
-		store.setDefault(PreferenceConstants.PROXY_HOST, ""); //$NON-NLS-1$
-		store.setDefault(PreferenceConstants.PROXY_PORT, 80);
-		store.setDefault(PreferenceConstants.NON_PROXY_HOSTS, "localhost"); //$NON-NLS-1$
+		store.setDefault(PROXY_TYPE, PROXY_TYPE_SYSTEM);
+		store.setDefault(PROXY_HOST, ""); //$NON-NLS-1$
+		store.setDefault(PROXY_PORT, 80);
+		store.setDefault(NON_PROXY_HOSTS, "localhost"); //$NON-NLS-1$
 	}
 
 	@Inject
 	public void preferencesChanged(
-			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_TYPE) String proxyType,
-			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_HOST) String proxyHost,
-			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.PROXY_PORT) int proxyPort,
-			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PreferenceConstants.NON_PROXY_HOSTS) String nonProxyHosts)
+			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PROXY_TYPE) String proxyType,
+			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PROXY_HOST) String proxyHost,
+			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = PROXY_PORT) int proxyPort,
+			@Preference(nodePath = PreferenceConstants.QUALIFIER_ID, value = NON_PROXY_HOSTS) String nonProxyHosts)
 	{
 		configureProxy(proxyType, proxyHost, proxyPort, nonProxyHosts);
 	}
