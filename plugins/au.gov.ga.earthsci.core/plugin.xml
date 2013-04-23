@@ -108,6 +108,16 @@
                id="org.eclipse.core.runtime.xml">
          </content-type>
       </filter>
+      <filter
+            class="au.gov.ga.earthsci.core.intent.HttpUnknownContentTypeIntentHandler"
+            priority="0">
+         <uri
+               scheme="http">
+         </uri>
+         <uri
+               scheme="https">
+         </uri>
+      </filter>
    </extension>
    <extension
          point="au.gov.ga.earthsci.intent.resourceLocators">
