@@ -17,7 +17,6 @@ package au.gov.ga.earthsci.catalog;
 
 import java.net.URI;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -40,6 +39,8 @@ import au.gov.ga.earthsci.notification.NotificationManager;
  */
 public class IntentCatalogLoader
 {
+	private static final Object replaceNodeSemaphore = new Object();
+
 	public static void load(URI uri, ICatalogTreeNode placeholder, IEclipseContext context)
 	{
 		load(uri, null, placeholder, context);
@@ -47,18 +48,6 @@ public class IntentCatalogLoader
 
 	public static void load(URI uri, IContentType contentType, ICatalogTreeNode placeholder, IEclipseContext context)
 	{
-		if (contentType == null)
-		{
-			//TODO this should only happen for file/jar/resourcebundle/... uris
-			try
-			{
-				contentType = Platform.getContentTypeManager().findContentTypeFor(uri.getPath());
-			}
-			catch (Exception e)
-			{
-				//ignore
-			}
-		}
 		CatalogLoadIntent intent = new CatalogLoadIntent(placeholder, context);
 		intent.setURI(uri);
 		intent.setContentType(contentType);
@@ -127,7 +116,8 @@ public class IntentCatalogLoader
 
 		private void replaceWithNode(CatalogLoadIntent intent, ICatalogTreeNode node)
 		{
-			synchronized (intent)
+			//only allow one node to be replaced at a time; synchronize on a static object:
+			synchronized (replaceNodeSemaphore)
 			{
 				ICatalogTreeNode placeholder = intent.replacement != null ? intent.replacement : intent.placeholder;
 				if (placeholder.getParent() == null)
