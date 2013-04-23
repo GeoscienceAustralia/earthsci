@@ -120,6 +120,16 @@ public class Intent
 	}
 
 	/**
+	 * Guess the content type for this Intent's URI.
+	 * <p/>
+	 * Uses the {@link GuessableContentTypeURIManager} to guess.
+	 */
+	public IContentType guessContentType()
+	{
+		return GuessableContentTypeURIManager.guessContentType(getURI());
+	}
+
+	/**
 	 * @return The URI of the data associated with this intent.
 	 */
 	public URI getURI()
