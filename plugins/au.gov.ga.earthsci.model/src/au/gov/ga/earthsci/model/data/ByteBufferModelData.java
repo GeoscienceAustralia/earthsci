@@ -1,6 +1,5 @@
 package au.gov.ga.earthsci.model.data;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
@@ -88,9 +87,9 @@ public class ByteBufferModelData implements IModelData
 	}
 
 	@Override
-	public Buffer getSource()
+	public ByteBuffer getSource()
 	{
-		return buffer.asReadOnlyBuffer().rewind();
+		return (ByteBuffer) buffer.asReadOnlyBuffer().rewind();
 	}
 
 	@Override

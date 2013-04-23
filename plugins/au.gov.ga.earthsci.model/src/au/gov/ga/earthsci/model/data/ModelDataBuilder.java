@@ -1,6 +1,5 @@
 package au.gov.ga.earthsci.model.data;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.UUID;
@@ -26,7 +25,7 @@ import au.gov.ga.earthsci.common.util.Validate;
 public class ModelDataBuilder
 {
 
-	private Buffer buffer;
+	private ByteBuffer buffer;
 	private BufferType type;
 
 	private String id;
@@ -36,7 +35,7 @@ public class ModelDataBuilder
 	private Unit<?> units;
 	private Object nodata;
 
-	private ModelDataBuilder(Buffer buffer)
+	private ModelDataBuilder(ByteBuffer buffer)
 	{
 		this.buffer = buffer;
 	};
@@ -44,7 +43,7 @@ public class ModelDataBuilder
 	/**
 	 * @see IModelData#getSource()
 	 */
-	public static ModelDataBuilder createFromBuffer(Buffer buffer)
+	public static ModelDataBuilder createFromBuffer(ByteBuffer buffer)
 	{
 		Validate.notNull(buffer, "A buffer is required"); //$NON-NLS-1$
 		return new ModelDataBuilder(buffer);
@@ -106,20 +105,8 @@ public class ModelDataBuilder
 
 	public IModelData build()
 	{
-		if (buffer instanceof FloatBuffer)
-		{
-			Validate.isTrue(nodata == null || nodata instanceof Float, "NODATA must be of type Float, not " //$NON-NLS-1$
-					+ nodata.getClass().getSimpleName());
-			return new FloatBufferModelData(id, name, description, (FloatBuffer) buffer, (Float) nodata, units);
-		}
-		if (buffer instanceof ByteBuffer)
-		{
-			Validate.notNull(type, "For general buffers a buffer type must be provided"); //$NON-NLS-1$
+		Validate.notNull(type, "A buffer type must be provided"); //$NON-NLS-1$
 
-			return new ByteBufferModelData(id, name, description, (ByteBuffer) buffer, type, nodata, units);
-		}
-
-		throw new UnsupportedOperationException(buffer.getClass().getSimpleName()
-				+ " backed model data not supported yet"); //$NON-NLS-1$
+		return new ByteBufferModelData(id, name, description, buffer, type, nodata, units);
 	}
 }
