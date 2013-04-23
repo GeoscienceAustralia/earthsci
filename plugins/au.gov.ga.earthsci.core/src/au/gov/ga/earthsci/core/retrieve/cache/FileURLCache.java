@@ -138,45 +138,41 @@ public class FileURLCache implements IURLCache
 		File partialFile = getPartialFile(url);
 		File completeFile = getCompleteFile(url);
 
-		locker.lockRead(partialFile);
-		locker.lockRead(completeFile);
+		locker.lockWrite(partialFile);
 		try
 		{
-			if (fileEquals(partialFile, completeFile))
+			locker.lockRead(completeFile);
+			try
 			{
-				locker.lockWrite(partialFile);
-				try
+				if (fileEquals(partialFile, completeFile))
 				{
 					partialFile.delete();
 					return false;
 				}
-				finally
-				{
-					locker.unlockWrite(partialFile);
-				}
 			}
-		}
-		finally
-		{
-			locker.unlockRead(partialFile);
-			locker.unlockRead(completeFile);
-		}
-
-		locker.lockWrite(partialFile);
-		locker.lockWrite(completeFile);
-		try
-		{
-			partialFile.renameTo(completeFile);
-			if (lastModified > 0)
+			finally
 			{
-				completeFile.setLastModified(lastModified);
+				locker.unlockRead(completeFile);
 			}
-			setContentType(url, contentType, completeFile);
+
+			locker.lockWrite(completeFile);
+			try
+			{
+				partialFile.renameTo(completeFile);
+				if (lastModified > 0)
+				{
+					completeFile.setLastModified(lastModified);
+				}
+				setContentType(url, contentType, completeFile);
+			}
+			finally
+			{
+				locker.unlockWrite(completeFile);
+			}
 		}
 		finally
 		{
 			locker.unlockWrite(partialFile);
-			locker.unlockWrite(completeFile);
 		}
 		return true;
 	}
