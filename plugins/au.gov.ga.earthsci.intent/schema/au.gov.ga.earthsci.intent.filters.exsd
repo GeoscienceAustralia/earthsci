@@ -62,9 +62,7 @@
             <element ref="category"/>
             <element ref="content-type"/>
             <element ref="return-type"/>
-            <element ref="scheme"/>
-            <element ref="authority"/>
-            <element ref="path"/>
+            <element ref="uri"/>
          </choice>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -137,57 +135,6 @@
       </complexType>
    </element>
 
-   <element name="scheme">
-      <annotation>
-         <documentation>
-            Matches the Intent&apos;s URI&apos;s scheme part.
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="name" type="string" use="required">
-            <annotation>
-               <documentation>
-                  Matches the Intent&apos;s URI&apos;s scheme part.
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="authority">
-      <annotation>
-         <documentation>
-            Matches the Intent&apos;s URI&apos;s authority part, after a scheme part has already been matched.
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="name" type="string" use="required">
-            <annotation>
-               <documentation>
-                  Matches the Intent&apos;s URI&apos;s authority part, after a scheme part has already been matched.
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="path">
-      <annotation>
-         <documentation>
-            Matches the Intent&apos;s URI&apos;s path part, after a authority part has already been matched.
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="name" type="string" use="required">
-            <annotation>
-               <documentation>
-                  Matches the Intent&apos;s URI&apos;s path part, after a authority part has already been matched.
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
    <element name="return-type">
       <annotation>
          <documentation>
@@ -203,6 +150,37 @@
                <appinfo>
                   <meta.attribute kind="java"/>
                </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="uri">
+      <annotation>
+         <documentation>
+            Matches the Intent&apos;s URI.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="scheme" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Matches the Intent&apos;s URI&apos;s scheme part. Can contain the &apos;*&apos; wildcard character.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="authority" type="string">
+            <annotation>
+               <documentation>
+                  Matches the Intent&apos;s URI&apos;s authority part, after the scheme part has already been matched. Can contain the &apos;*&apos; wildcard character. If blank, matches any authority unless the path attribute is set. If &quot;*&quot;, matches any authority.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="path" type="string">
+            <annotation>
+               <documentation>
+                  Matches the Intent&apos;s URI&apos;s path part, after the authority part has already been matched. Can contain the &apos;*&apos; wildcard character. If blank or &quot;*&quot;, matches any path.
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

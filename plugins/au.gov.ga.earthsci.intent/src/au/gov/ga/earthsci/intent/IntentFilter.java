@@ -16,10 +16,8 @@
 package au.gov.ga.earthsci.intent;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -62,9 +60,7 @@ public class IntentFilter
 	private final Set<String> categories = new HashSet<String>();
 	private final Set<IContentType> contentTypes = new HashSet<IContentType>();
 	private final Set<Class<?>> returnTypes = new HashSet<Class<?>>();
-	private final Set<String> dataSchemes = new HashSet<String>();
-	private final Set<String> dataAuthorities = new HashSet<String>();
-	private final Set<String> dataPaths = new HashSet<String>();
+	private final Set<URIFilter> uriFilters = new HashSet<URIFilter>();
 	private Class<? extends IIntentHandler> handler;
 	private static final Logger logger = LoggerFactory.getLogger(IntentFilter.class);
 
@@ -78,9 +74,11 @@ public class IntentFilter
 		addToSetFromElements(element, "category", "name", categories); //$NON-NLS-1$ //$NON-NLS-2$
 		addToContentTypeSetFromElements(element, "content-type", "id", contentTypes); //$NON-NLS-1$ //$NON-NLS-2$
 		addToClassSetFromElements(element, "return-type", "class", returnTypes); //$NON-NLS-1$ //$NON-NLS-2$
-		addToSetFromElements(element, "scheme", "name", dataSchemes); //$NON-NLS-1$ //$NON-NLS-2$
-		addToSetFromElements(element, "authority", "name", dataAuthorities); //$NON-NLS-1$ //$NON-NLS-2$
-		addToSetFromElements(element, "path", "name", dataPaths); //$NON-NLS-1$ //$NON-NLS-2$
+
+		for (IConfigurationElement uri : element.getChildren("uri")) //$NON-NLS-1$
+		{
+			uriFilters.add(new URIFilter(uri));
+		}
 
 		@SuppressWarnings("unchecked")
 		Class<? extends IIntentHandler> handler =
@@ -88,8 +86,8 @@ public class IntentFilter
 		setHandler(handler);
 	}
 
-	private void addToSetFromElements(IConfigurationElement element, String childrenName, String attributeName,
-			Set<String> set)
+	protected static void addToSetFromElements(IConfigurationElement element, String childrenName,
+			String attributeName, Set<String> set)
 	{
 		for (IConfigurationElement child : element.getChildren(childrenName))
 		{
@@ -258,98 +256,34 @@ public class IntentFilter
 	}
 
 	/**
-	 * @return Collection of URI schemes that this filter matches against.
+	 * @return The {@link URIFilter}s used to filter an Intent's URI.
 	 */
-	public Set<String> getDataSchemes()
+	public Set<URIFilter> getURIFilters()
 	{
-		return dataSchemes;
+		return uriFilters;
 	}
 
 	/**
-	 * Add a URI scheme to this filter.
+	 * Add a {@link URIFilter} to this filter.
 	 * 
-	 * @param dataScheme
+	 * @param uriFilter
 	 * @return this
 	 */
-	public IntentFilter addDataScheme(String dataScheme)
+	public IntentFilter addURIFilter(URIFilter uriFilter)
 	{
-		dataSchemes.add(dataScheme);
+		uriFilters.add(uriFilter);
 		return this;
 	}
 
 	/**
-	 * Remove a URI scheme from this filter.
+	 * Remove a {@link URIFilter} from this filter.
 	 * 
-	 * @param dataScheme
+	 * @param uriFilter
 	 * @return this
 	 */
-	public IntentFilter removeDataScheme(String dataScheme)
+	public IntentFilter removeURIFilter(URIFilter uriFilter)
 	{
-		dataSchemes.remove(dataScheme);
-		return this;
-	}
-
-	/**
-	 * @return Collection of URI authorities that this filter matches against.
-	 */
-	public Set<String> getDataAuthorities()
-	{
-		return dataAuthorities;
-	}
-
-	/**
-	 * Add a URI authority to this filter.
-	 * 
-	 * @param dataAuthority
-	 * @return this
-	 */
-	public IntentFilter addDataAuthority(String dataAuthority)
-	{
-		dataAuthorities.add(dataAuthority);
-		return this;
-	}
-
-	/**
-	 * Remove a URI authority from this filter.
-	 * 
-	 * @param dataAuthority
-	 * @return this
-	 */
-	public IntentFilter removeDataAuthority(String dataAuthority)
-	{
-		dataAuthorities.remove(dataAuthority);
-		return this;
-	}
-
-	/**
-	 * @return Collection of URI paths that this filter matches against.
-	 */
-	public Set<String> getDataPaths()
-	{
-		return dataPaths;
-	}
-
-	/**
-	 * Add a URI path to this filter.
-	 * 
-	 * @param dataPath
-	 * @return this
-	 */
-	public IntentFilter addDataPath(String dataPath)
-	{
-		dataPaths.add(dataPath);
-		return this;
-	}
-
-	/**
-	 * Remove a URI path from this filter.
-	 * 
-	 * @param dataPath
-	 * @return this
-	 */
-	public IntentFilter removeDataPath(String dataPath)
-	{
-		dataPaths.remove(dataPath);
+		uriFilters.remove(uriFilter);
 		return this;
 	}
 
@@ -398,8 +332,15 @@ public class IntentFilter
 			return false;
 		}
 
+		//check if the content type can be guessed (only if this filter has content types defined)
+		IContentType contentType = intent.getContentType();
+		if (contentType == null && !contentTypes.isEmpty())
+		{
+			contentType = intent.guessContentType();
+		}
+
 		//if a content type is defined by one but not the other, no chance of matching
-		if ((intent.getContentType() == null) != contentTypes.isEmpty())
+		if ((contentType == null) != contentTypes.isEmpty())
 		{
 			return false;
 		}
@@ -407,7 +348,7 @@ public class IntentFilter
 		//if there are content types defined, check if any match the content type of the intent
 		if (!contentTypes.isEmpty())
 		{
-			if (!anyContentTypesMatch(intent.getContentType()))
+			if (!anyContentTypesMatch(contentType))
 			{
 				return false;
 			}
@@ -423,40 +364,18 @@ public class IntentFilter
 		}
 
 		//if there are any schemes/authorities/paths defined, check if any match the URI of the intent (in that order)
-		if (!dataSchemes.isEmpty())
+		if (!uriFilters.isEmpty())
 		{
-			URI uri = intent.getURI();
-			if (uri == null)
+			if (!anyURIFiltersMatch(intent.getURI()))
 			{
 				return false;
-			}
-
-			if (!anyMatchesUsingWildcards(uri.getScheme(), dataSchemes))
-			{
-				return false;
-			}
-
-			if (!dataAuthorities.isEmpty())
-			{
-				if (!anyMatchesUsingWildcards(uri.getAuthority(), dataAuthorities))
-				{
-					return false;
-				}
-
-				if (!dataPaths.isEmpty())
-				{
-					if (!anyMatchesUsingWildcards(uri.getPath(), dataPaths))
-					{
-						return false;
-					}
-				}
 			}
 		}
 
 		return true;
 	}
 
-	public boolean anyContentTypesMatch(IContentType expectedContentType)
+	protected boolean anyContentTypesMatch(IContentType expectedContentType)
 	{
 		if (expectedContentType != null)
 		{
@@ -471,7 +390,7 @@ public class IntentFilter
 		return false;
 	}
 
-	public boolean anyReturnTypesMatch(Class<?> expectedReturnType)
+	protected boolean anyReturnTypesMatch(Class<?> expectedReturnType)
 	{
 		if (expectedReturnType != null)
 		{
@@ -486,23 +405,20 @@ public class IntentFilter
 		return false;
 	}
 
-	private static boolean isEmpty(String s)
+	protected boolean anyURIFiltersMatch(URI uri)
 	{
-		return s == null || s.isEmpty();
-	}
-
-	private static boolean anyMatchesUsingWildcards(String input, Collection<String> patterns)
-	{
-		input = input == null ? "" : input; //$NON-NLS-1$
-		for (String pattern : patterns)
+		for (URIFilter uriFilter : uriFilters)
 		{
-			String quoted = Pattern.quote(pattern);
-			String regex = quoted.replace("*", "\\E.*\\Q"); //$NON-NLS-1$ //$NON-NLS-2$
-			if (Pattern.matches(regex, input))
+			if (uriFilter.matches(uri))
 			{
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private static boolean isEmpty(String s)
+	{
+		return s == null || s.isEmpty();
 	}
 }

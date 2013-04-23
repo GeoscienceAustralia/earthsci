@@ -94,12 +94,12 @@
       <filter
             class="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
             priority="0">
-         <scheme
-               name="class">
-         </scheme>
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
+         <uri
+               scheme="class">
+         </uri>
       </filter>
       <filter
             class="au.gov.ga.earthsci.core.intent.XmlRetrieveIntentHandler"

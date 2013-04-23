@@ -6,18 +6,14 @@
       <filter
             class="au.gov.ga.earthsci.catalog.directory.DirectoryCatalogIntentHandler"
             priority="0">
-         <scheme
-               name="file">
-         </scheme>
-         <authority
-               name="*">
-         </authority>
-         <path
-               name="*/">
-         </path>
          <return-type
                class="au.gov.ga.earthsci.catalog.ICatalogTreeNode">
          </return-type>
+         <uri
+               authority="*"
+               path="*/"
+               scheme="file">
+         </uri>
       </filter>
    </extension>
 
