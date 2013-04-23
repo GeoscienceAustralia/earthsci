@@ -5,6 +5,7 @@
    <extension-point id="au.gov.ga.earthsci.core.hudLayers" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.core.hudLayers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.xmlLoaders" name="XmlLoaders" schema="schema/au.gov.ga.earthsci.core.xmlLoaders.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.urlStreamHandlers" name="URL Stream Handlers" schema="schema/au.gov.ga.earthsci.core.urlStreamHandlers.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.core.mimeTypes" name="MIME Types" schema="schema/au.gov.ga.earthsci.core.mimeTypes.exsd"/>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retrievers">
       <retriever
@@ -137,6 +138,21 @@
                name="systemicon">
          </protocol>
       </handler>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.core.mimeTypes">
+      <mime-type
+            content-type-id="org.eclipse.core.runtime.text"
+            name="text/plain">
+      </mime-type>
+      <mime-type
+            content-type-id="org.eclipse.core.runtime.xml"
+            name="text/xml">
+      </mime-type>
+      <mime-type
+            content-type-id="org.eclipse.core.runtime.xml"
+            name="application/xml">
+      </mime-type>
    </extension>
    <extension
          point="au.gov.ga.earthsci.intent.guessableContentTypeURIs">
