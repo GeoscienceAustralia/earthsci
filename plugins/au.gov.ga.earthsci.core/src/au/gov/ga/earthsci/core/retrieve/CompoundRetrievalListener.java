@@ -18,6 +18,9 @@ package au.gov.ga.earthsci.core.retrieve;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Helper {@link IRetrievalListener} that contains a list of listeners that this
  * object delegates to.
@@ -26,6 +29,7 @@ import java.util.List;
  */
 public class CompoundRetrievalListener implements IRetrievalListener
 {
+	private final static Logger logger = LoggerFactory.getLogger(CompoundRetrievalListener.class);
 	private final List<IRetrievalListener> listeners = new ArrayList<IRetrievalListener>();
 
 	public void addListener(IRetrievalListener listener)
@@ -57,7 +61,14 @@ public class CompoundRetrievalListener implements IRetrievalListener
 	{
 		for (IRetrievalListener listener : copy())
 		{
-			listener.statusChanged(retrieval);
+			try
+			{
+				listener.statusChanged(retrieval);
+			}
+			catch (Exception e)
+			{
+				logger.error("Error calling retrieval listener", e); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -66,7 +77,14 @@ public class CompoundRetrievalListener implements IRetrievalListener
 	{
 		for (IRetrievalListener listener : copy())
 		{
-			listener.progress(retrieval);
+			try
+			{
+				listener.progress(retrieval);
+			}
+			catch (Exception e)
+			{
+				logger.error("Error calling retrieval listener", e); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -75,7 +93,14 @@ public class CompoundRetrievalListener implements IRetrievalListener
 	{
 		for (IRetrievalListener listener : copy())
 		{
-			listener.cached(retrieval);
+			try
+			{
+				listener.cached(retrieval);
+			}
+			catch (Exception e)
+			{
+				logger.error("Error calling retrieval listener", e); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -84,7 +109,14 @@ public class CompoundRetrievalListener implements IRetrievalListener
 	{
 		for (IRetrievalListener listener : copy())
 		{
-			listener.complete(retrieval);
+			try
+			{
+				listener.complete(retrieval);
+			}
+			catch (Exception e)
+			{
+				logger.error("Error calling retrieval listener", e); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -93,7 +125,14 @@ public class CompoundRetrievalListener implements IRetrievalListener
 	{
 		for (IRetrievalListener listener : copy())
 		{
-			listener.paused(retrieval);
+			try
+			{
+				listener.paused(retrieval);
+			}
+			catch (Exception e)
+			{
+				logger.error("Error calling retrieval listener", e); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -102,7 +141,14 @@ public class CompoundRetrievalListener implements IRetrievalListener
 	{
 		for (IRetrievalListener listener : copy())
 		{
-			listener.callersChanged(retrieval);
+			try
+			{
+				listener.callersChanged(retrieval);
+			}
+			catch (Exception e)
+			{
+				logger.error("Error calling retrieval listener", e); //$NON-NLS-1$
+			}
 		}
 	}
 }
