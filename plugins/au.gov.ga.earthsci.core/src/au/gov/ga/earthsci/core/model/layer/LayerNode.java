@@ -33,6 +33,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import au.gov.ga.earthsci.common.util.IEnableable;
+import au.gov.ga.earthsci.common.util.IInformationed;
+import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.notification.Notification;
 import au.gov.ga.earthsci.notification.NotificationLevel;
@@ -156,6 +158,36 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 			}
 			copyingProperties = false;
 		}
+	}
+
+	@Override
+	public URL getInformationURL()
+	{
+		//if the layer is IInformationed, use that instead
+		if (layer instanceof IInformationed)
+		{
+			URL url = ((IInformationed) layer).getInformationURL();
+			if (url != null)
+			{
+				return url;
+			}
+		}
+		return super.getInformationURL();
+	}
+
+	@Override
+	public String getInformationString()
+	{
+		//if the layer is IInformationed, use that instead
+		if (layer instanceof IInformationed)
+		{
+			String information = ((IInformationed) layer).getInformationString();
+			if (!Util.isEmpty(information))
+			{
+				return information;
+			}
+		}
+		return super.getInformationString();
 	}
 
 	@Override

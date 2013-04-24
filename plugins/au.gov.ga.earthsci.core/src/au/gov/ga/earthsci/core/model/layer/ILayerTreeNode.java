@@ -121,17 +121,12 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	void childrenChanged(List<ILayerTreeNode> oldChildren, List<ILayerTreeNode> newChildren);
 
 	/**
-	 * @return The URL pointing to this layer's information page.
-	 */
-	URL getInfoURL();
-
-	/**
-	 * @return The URL pointing to this layer's legend.
+	 * @return The URL pointing to this node's legend.
 	 */
 	URL getLegendURL();
 
 	/**
-	 * @return The URL pointing to this layer's icon.
+	 * @return The URL pointing to this node's icon.
 	 */
 	URL getIconURL();
 
