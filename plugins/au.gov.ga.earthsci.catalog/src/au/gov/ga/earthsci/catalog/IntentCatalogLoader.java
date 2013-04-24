@@ -118,6 +118,16 @@ public class IntentCatalogLoader
 			replaceWithNode(catalogIntent, errorNode);
 		}
 
+		@Override
+		public void canceled(Intent intent)
+		{
+			CatalogLoadIntent catalogIntent = (CatalogLoadIntent) intent;
+			ErrorCatalogTreeNode errorNode =
+					new ErrorCatalogTreeNode(intent.getURI(), new Exception("Catalog load canceled"));
+			errorNode.setRemoveable(true);
+			replaceWithNode(catalogIntent, errorNode);
+		}
+
 		private void replaceWithNode(CatalogLoadIntent intent, ICatalogTreeNode node)
 		{
 			//only allow one node to be replaced at a time; synchronize on a static object:

@@ -52,4 +52,12 @@ public interface IIntentCallback
 	 *            Intent that failed
 	 */
 	void error(Exception e, Intent intent);
+
+	/**
+	 * Called when the Intent handler was canceled.
+	 * 
+	 * @param intent
+	 *            Intent that was canceled
+	 */
+	void canceled(Intent intent);
 }

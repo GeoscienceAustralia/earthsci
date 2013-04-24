@@ -110,6 +110,14 @@ public class IntentLayerLoader
 			NotificationManager.error(title, message, NotificationCategory.FILE_IO, e);
 			logger.error(message, e);
 		}
+
+		@Override
+		public void canceled(Intent intent)
+		{
+			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
+			Exception e = new Exception(Messages.IntentLayerLoader_LoadCanceledDescription);
+			layerIntent.layerNode.setStatus(ModelStatus.error(e.getLocalizedMessage(), e));
+		}
 	};
 
 	protected static class LayerLoadIntent extends Intent
