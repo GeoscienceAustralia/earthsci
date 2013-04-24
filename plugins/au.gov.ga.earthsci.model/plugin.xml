@@ -6,7 +6,7 @@
          point="au.gov.ga.earthsci.injectables">
       <inject
             class="au.gov.ga.earthsci.model.render.RendererCreatorRegistry"
-            priority="0">
+            priority="10">
       </inject>
    </extension>
 

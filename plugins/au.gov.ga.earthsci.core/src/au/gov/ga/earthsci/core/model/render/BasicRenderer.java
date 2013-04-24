@@ -1,9 +1,11 @@
 package au.gov.ga.earthsci.core.model.render;
 
+import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.util.OGLStackHandler;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLContext;
+import javax.media.opengl.GLUniformData;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,12 @@ import au.gov.ga.earthsci.model.geometry.IVertexBasedGeometry;
 import au.gov.ga.earthsci.model.geometry.IVertexColouredGeometry;
 import au.gov.ga.earthsci.model.render.IModelGeometryRenderer;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationService;
+import au.gov.ga.earthsci.worldwind.common.render.fastshape.AbstractVBO;
+
+import com.jogamp.opengl.util.glsl.ShaderCode;
+import com.jogamp.opengl.util.glsl.ShaderProgram;
+import com.jogamp.opengl.util.glsl.ShaderState;
 
 /**
  * A basic {@link IModelGeometryRenderer} that supports
@@ -27,10 +35,22 @@ public class BasicRenderer implements IModelGeometryRenderer
 
 	private static final Logger logger = LoggerFactory.getLogger(BasicRenderer.class);
 
+	private static final String FRAGMENT_SHADER = "BasicRenderer.fp"; //$NON-NLS-1$
+	private static final String VERTEX_SHADER = "BasicRenderer.vp"; //$NON-NLS-1$
+	private static final String VE = "ve"; //$NON-NLS-1$
+	private static final String ES = "es"; //$NON-NLS-1$
+	private static final String RADIUS = "radius"; //$NON-NLS-1$
+
+	private VerticalExaggerationService veService = VerticalExaggerationService.INSTANCE;
 	private WorldWindowRegistry wwRegistry;
 	private IVertexBasedGeometry geometry;
 
-	private ModelDataVBO vertexVBO;
+	private AbstractVBO<?> vertexVBO;
+
+	private ShaderState shaderState;
+	private ShaderProgram shaderProgram;
+	private ShaderCode vertexShader;
+	private ShaderCode fragmentShader;
 
 	/**
 	 * Create a new instance of the renderer for the given geometry
@@ -72,37 +92,68 @@ public class BasicRenderer implements IModelGeometryRenderer
 		stack.pushClientAttrib(gl, GL2.GL_CLIENT_VERTEX_ARRAY_BIT);
 		try
 		{
+			initShader(gl);
+
+			shaderState.useProgram(gl, true);
+
+			Globe globe = wwRegistry.getRenderingView().getGlobe();
+			boolean uniformsSet = true;
+			uniformsSet &= shaderState.uniform(gl, new GLUniformData(RADIUS, (float) globe.getRadius()));
+			uniformsSet &= shaderState.uniform(gl, new GLUniformData(ES, (float) globe.getEccentricitySquared()));
+			uniformsSet &= shaderState.uniform(gl, new GLUniformData(VE, (float) veService.get()));
+			if (!uniformsSet)
+			{
+				throw new IllegalStateException("Uniforms not set correctly."); //$NON-NLS-1$
+			}
+
+			// TODO: Move this into model data
+			int groupSize = 3;
+			int count =
+					geometry.getVertices().getSource().limit()
+							/ (groupSize * geometry.getVertices().getBufferType().getNumberOfBytes());
+
 			gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 			vertexVBO.bind(gl);
-			gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
-			gl.glDrawArrays(GL2.GL_POINTS, 0, vertexVBO.getBuffer().limit() / 3);
+			gl.glVertexPointer(groupSize, GL2.GL_FLOAT, 0, 0);
+			gl.glDrawArrays(GL2.GL_POINTS, 0, count);
+
 		}
 		finally
 		{
+			shaderState.useProgram(gl, false);
 			stack.pop(gl);
 		}
+	}
 
-		//		// TODO REALLY REALLY INNEFICIENT!!! TESTING ONLY!!!
-		//		ByteBuffer vertices = geometry.getVertices().getSource();
-		//		BufferType type = geometry.getVertices().getBufferType();
-		//
-		//		Globe globe = wwRegistry.getRendering().getView().getGlobe();
-		//
-		//		gl.glBegin(GL2.GL_POINTS);
-		//		while (vertices.hasRemaining())
-		//		{
-		//			float lon = type.getValueFrom(vertices).floatValue();
-		//			float lat = type.getValueFrom(vertices).floatValue();
-		//			float elevation = type.getValueFrom(vertices).floatValue();
-		//
-		//			Vec4 point = globe.computePointFromPosition(Angle.fromDegrees(lat), Angle.fromDegrees(lon), elevation);
-		//
-		//
-		//			gl.glVertex3d(point.x, point.y, point.z);
-		//		}
-		//		gl.glEnd();
+	private void initShader(GL2 gl)
+	{
+		// TODO: Move shader codes to a repository so the same shader can be shared amongst programs
+		try
+		{
+			if (shaderProgram == null)
+			{
+				vertexShader = ShaderCode.create(gl, GL2.GL_VERTEX_SHADER, 1, getClass(),
+						new String[] { VERTEX_SHADER }, false);
 
-		// TODO 
+				fragmentShader = ShaderCode.create(gl, GL2.GL_FRAGMENT_SHADER, 1, getClass(),
+						new String[] { FRAGMENT_SHADER }, false);
+
+				shaderProgram = new ShaderProgram();
+				shaderProgram.add(gl, vertexShader, null);
+				shaderProgram.add(gl, fragmentShader, null);
+			}
+
+			if (shaderState == null)
+			{
+				shaderState = new ShaderState();
+			}
+
+			shaderState.attachShaderProgram(gl, shaderProgram, true);
+		}
+		catch (Exception e)
+		{
+			logger.error("Unable to initialise shader", e); //$NON-NLS-1$
+		}
 	}
 
 	@Override
@@ -110,5 +161,4 @@ public class BasicRenderer implements IModelGeometryRenderer
 	{
 		return geometry;
 	}
-
 }

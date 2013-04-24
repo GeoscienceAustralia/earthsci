@@ -49,6 +49,8 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
 public class GDALRasterModelFactory
 {
 
+	private static final int VERTEX_GROUP_SIZE = 3;
+
 	private static final Logger logger = LoggerFactory.getLogger(GDALRasterModelFactory.class);
 
 	// TODO: Move this somewhere
@@ -101,25 +103,15 @@ public class GDALRasterModelFactory
 		int columns = band.getXSize();
 		int rows = band.getYSize();
 
-		// Get the buffer from the raster band
-		ByteBuffer buffer = band.ReadRaster_Direct(0, 0, columns, rows, band.getDataType());
-		buffer.order(ByteOrder.nativeOrder()); // @see Band.ReadRaster_Direct
-		buffer.rewind();
+		ByteBuffer buffer = readRasterBuffer(band, columns, rows);
 
-		// Retrieve the nodata value
-		Double[] nodatas = new Double[1];
-		band.GetNoDataValue(nodatas);
+		Double nodata = getNodata(band);
 
-		// Create a coordinate transformation to transform into WGS84
-		String sourceProjection = parameters.getSourceProjection();
-		if (Util.isBlank(sourceProjection))
-		{
-			logger.info("No source projection found. Assuming WGS84."); //$NON-NLS-1$
-			sourceProjection = WGS84;
-		}
+		// Transform pixel coords -> source coordinate system coords
 		double[] geoTransform = ds.GetGeoTransform();
-		CoordinateTransformation coordinateTransformation =
-				CoordinateTransformationUtil.getTransformationToWGS84(sourceProjection);
+
+		// Transform source coordinate system -> WGS84
+		CoordinateTransformation coordinateTransformation = getCoordinateTransform(parameters);
 
 		BufferType sourceBufferType = getBufferType(band);
 
@@ -127,17 +119,16 @@ public class GDALRasterModelFactory
 		double elevationScale = getScale(band, parameters);
 
 		double[] transformedCoords = new double[2];
-		double[] projectedCoords = new double[3];
+		double[] projectedCoords = new double[VERTEX_GROUP_SIZE];
 
-		ByteBuffer vertices =
-				ByteBuffer.allocate(columns * rows * projectedCoords.length * BufferType.FLOAT.getNumberOfBytes());
+		ByteBuffer vertices = allocateVerticesBuffer(columns, rows);
 
 		for (int y = 0; y < rows; y++)
 		{
 			for (int x = 0; x < columns; x++)
 			{
 				double datasetValue = getValue(buffer, sourceBufferType).doubleValue();
-				double elevation = toElevation(elevationOffset, elevationScale, datasetValue, nodatas[0]);
+				double elevation = toElevation(elevationOffset, elevationScale, datasetValue, nodata);
 
 				transformCoordinates(geoTransform, x, y, transformedCoords);
 				projectCoordinates(coordinateTransformation,
@@ -157,11 +148,48 @@ public class GDALRasterModelFactory
 		// TODO Move name/description to constant somewhere for reuse as standard name
 		return ModelDataBuilder.createFromBuffer(vertices)
 				.ofType(BufferType.FLOAT)
-				.withNodata(nodatas[0] == null ? null : nodatas[0].floatValue())
+				.withNodata(nodata == null ? null : nodata.floatValue())
 				.named("Vertices")
 				.describedAs("Vertices")
 				.build();
 
+	}
+
+	private static ByteBuffer allocateVerticesBuffer(int columns, int rows)
+	{
+		int bufferSize = columns * rows * VERTEX_GROUP_SIZE * BufferType.FLOAT.getNumberOfBytes();
+		ByteBuffer vertices = ByteBuffer.allocate(bufferSize);
+		vertices.order(ByteOrder.nativeOrder());
+		return vertices;
+	}
+
+	private static CoordinateTransformation getCoordinateTransform(GDALRasterModelParameters parameters)
+	{
+		String sourceProjection = parameters.getSourceProjection();
+		if (Util.isBlank(sourceProjection))
+		{
+			logger.info("No source projection found. Assuming WGS84."); //$NON-NLS-1$
+			sourceProjection = WGS84;
+		}
+		CoordinateTransformation coordinateTransformation =
+				CoordinateTransformationUtil.getTransformationToWGS84(sourceProjection);
+		return coordinateTransformation;
+	}
+
+	private static ByteBuffer readRasterBuffer(Band band, int columns, int rows)
+	{
+		ByteBuffer buffer = band.ReadRaster_Direct(0, 0, columns, rows, band.getDataType());
+		buffer.order(ByteOrder.nativeOrder()); // @see Band.ReadRaster_Direct
+		buffer.rewind();
+		return buffer;
+	}
+
+	private static Double getNodata(Band band)
+	{
+		Double[] nodatas = new Double[1];
+		band.GetNoDataValue(nodatas);
+		Double nodata = nodatas[0];
+		return nodata;
 	}
 
 	private static double toElevation(double elevationOffset, double elevationScale, double datasetValue, double nodata)

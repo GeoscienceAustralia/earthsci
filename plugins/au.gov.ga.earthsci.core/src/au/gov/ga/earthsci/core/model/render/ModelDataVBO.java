@@ -19,6 +19,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.AbstractVBO;
@@ -42,7 +43,7 @@ public class ModelDataVBO extends AbstractVBO<ByteBuffer>
 	 */
 	public static ModelDataVBO createDataVBO(IModelData data)
 	{
-		return new ModelDataVBO(GL.GL_ARRAY_BUFFER, data);
+		return new ModelDataVBO(GL2.GL_ARRAY_BUFFER, data);
 	}
 
 	/**
@@ -50,7 +51,7 @@ public class ModelDataVBO extends AbstractVBO<ByteBuffer>
 	 */
 	public static ModelDataVBO createIndexVBO(IModelData data)
 	{
-		return new ModelDataVBO(GL.GL_ELEMENT_ARRAY_BUFFER, data);
+		return new ModelDataVBO(GL2.GL_ELEMENT_ARRAY_BUFFER, data);
 	}
 
 	/**
@@ -87,7 +88,7 @@ public class ModelDataVBO extends AbstractVBO<ByteBuffer>
 	@Override
 	protected int getDataSize()
 	{
-		return data.getBufferType().getNumberOfBytes();
+		return 1;
 	}
 
 }
