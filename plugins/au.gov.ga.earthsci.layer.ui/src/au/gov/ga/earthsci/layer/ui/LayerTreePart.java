@@ -134,6 +134,7 @@ public class LayerTreePart
 
 		IObservableSet knownElements = contentProvider.getKnownElements();
 		IObservableMap enabledMap = BeanProperties.value("enabled").observeDetail(knownElements); //$NON-NLS-1$
+		IObservableMap layerMap = BeanProperties.value("layer").observeDetail(knownElements); //$NON-NLS-1$
 		IObservableMap opacityMap = BeanProperties.value("opacity").observeDetail(knownElements); //$NON-NLS-1$
 		IObservableMap nameMap = BeanProperties.value("name").observeDetail(knownElements); //$NON-NLS-1$
 		IObservableMap labelMap = BeanProperties.value("label").observeDetail(knownElements); //$NON-NLS-1$
@@ -144,7 +145,7 @@ public class LayerTreePart
 		IObservableMap expandedMap = BeanProperties.value("expanded").observeDetail(knownElements); //$NON-NLS-1$
 
 		IObservableMap[] labelAttributeMaps =
-				new IObservableMap[] { enabledMap, opacityMap, nameMap, labelMap, anyChildrenEnabledMap,
+				new IObservableMap[] { enabledMap, layerMap, opacityMap, nameMap, labelMap, anyChildrenEnabledMap,
 						allChildrenEnabledMap, statusMap };
 
 		labelProvider = new LayerTreeLabelProvider(labelAttributeMaps);
