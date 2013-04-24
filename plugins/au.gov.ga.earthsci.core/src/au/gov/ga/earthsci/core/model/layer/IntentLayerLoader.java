@@ -20,6 +20,8 @@ import gov.nasa.worldwind.layers.Layer;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
@@ -39,6 +41,8 @@ import au.gov.ga.earthsci.notification.NotificationManager;
  */
 public class IntentLayerLoader
 {
+	private final static Logger logger = LoggerFactory.getLogger(IntentLayerLoader.class);
+
 	public static void load(LayerNode layerNode, IEclipseContext context)
 	{
 		LayerLoadIntent intent = new LayerLoadIntent(context, layerNode);
@@ -99,11 +103,12 @@ public class IntentLayerLoader
 
 			//TODO cannot let this notification require acknowledgement during initial loading (layer unpersistence)
 			//as it causes the parts to be created incorrectly (bad parent window perhaps?)
-			NotificationManager.error(
-					Messages.IntentLayerLoader_FailedLoadNotificationTitle,
+			String title = Messages.IntentLayerLoader_FailedLoadNotificationTitle;
+			String message =
 					Messages.IntentLayerLoader_FailedLoadNotificationDescription
-							+ UTF8URLEncoder.decode(intent.getURI().toString()) + ": " + e.getLocalizedMessage(), //$NON-NLS-1$
-					NotificationCategory.FILE_IO, e);
+							+ UTF8URLEncoder.decode(intent.getURI().toString()) + ": " + e.getLocalizedMessage(); //$NON-NLS-1$
+			NotificationManager.error(title, message, NotificationCategory.FILE_IO, e);
+			logger.error(message, e);
 		}
 	};
 

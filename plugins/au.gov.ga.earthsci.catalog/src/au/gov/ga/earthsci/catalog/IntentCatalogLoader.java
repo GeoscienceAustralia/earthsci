@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.intent.IIntentCallback;
@@ -40,6 +42,7 @@ import au.gov.ga.earthsci.notification.NotificationManager;
 public class IntentCatalogLoader
 {
 	private static final Object replaceNodeSemaphore = new Object();
+	private final static Logger logger = LoggerFactory.getLogger(IntentCatalogLoader.class);
 
 	public static void load(URI uri, ICatalogTreeNode placeholder, IEclipseContext context)
 	{
@@ -102,11 +105,12 @@ public class IntentCatalogLoader
 		{
 			//TODO cannot let this notification require acknowledgement during initial loading (catalog unpersistence)
 			//as it causes the parts to be created incorrectly (bad parent window perhaps?)
-			NotificationManager.error(
-					"Failed to load catalog",
-					"Failed to load catalog from URI " + UTF8URLEncoder.decode(intent.getURI().toString())
-							+ ": " + e.getLocalizedMessage(), //$NON-NLS-1$
-					NotificationCategory.FILE_IO, e);
+			String title = "Failed to load catalog";
+			String message =
+					"Failed to load catalog from URI " + UTF8URLEncoder.decode(intent.getURI().toString()) + ": "
+							+ e.getLocalizedMessage();
+			NotificationManager.error(title, message, NotificationCategory.FILE_IO, e);
+			logger.error(message, e);
 
 			CatalogLoadIntent catalogIntent = (CatalogLoadIntent) intent;
 			ErrorCatalogTreeNode errorNode = new ErrorCatalogTreeNode(intent.getURI(), e);
