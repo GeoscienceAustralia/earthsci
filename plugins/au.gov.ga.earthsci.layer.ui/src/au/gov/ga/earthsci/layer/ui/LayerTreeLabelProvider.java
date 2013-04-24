@@ -369,10 +369,10 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 			if (element instanceof ILayerTreeNode)
 			{
 				ILayerTreeNode layerNode = (ILayerTreeNode) element;
-				if (layerNode.getInfoURL() != null || layerNode.getLegendURL() != null)
+				if (layerNode.getInformationURL() != null || layerNode.getLegendURL() != null)
 				{
 					string.append(" "); //$NON-NLS-1$
-					if (layerNode.getInfoURL() != null)
+					if (layerNode.getInformationURL() != null)
 					{
 						string.append(" i", informationStyler); //$NON-NLS-1$
 					}

@@ -135,7 +135,7 @@ public class LayerTreeControlProvider implements IControlProvider
 		if (element instanceof ILayerTreeNode)
 		{
 			ILayerTreeNode node = (ILayerTreeNode) element;
-			createURLClickableLabel(composite, node, node.getInfoURL(),
+			createURLClickableLabel(composite, node, node.getInformationURL(),
 					ImageRegistry.getInstance().get(ImageRegistry.ICON_INFORMATION_WHITE), ImageRegistry.getInstance()
 							.get(ImageRegistry.ICON_INFORMATION), true);
 			createURLClickableLabel(composite, node, node.getLegendURL(),
