@@ -20,19 +20,16 @@ import gov.nasa.worldwind.layers.Layer;
 import java.io.File;
 import java.net.URL;
 
-import javax.inject.Inject;
-
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.retrieve.IRetrieval;
-import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
-import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
+import au.gov.ga.earthsci.core.intent.AbstractRetrieveIntentHandler;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.RetrievalProperties;
 import au.gov.ga.earthsci.intent.IIntentCallback;
-import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.model.IModel;
 import au.gov.ga.earthsci.model.core.worldwind.BasicModelLayer;
@@ -44,71 +41,40 @@ import au.gov.ga.earthsci.model.core.worldwind.IModelLayer;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class GDALRasterModelIntentHandler implements IIntentHandler
+public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 {
 
 	private static final Logger logger = LoggerFactory.getLogger(GDALRasterModelIntentHandler.class);
 
-	@Inject
-	private IRetrievalService retrievalService;
-
 	@Override
-	public void handle(final Intent intent, final IIntentCallback callback)
+	protected void handle(IRetrievalData data, URL url, Intent intent, IIntentCallback callback)
 	{
 		try
 		{
-			final URL url = intent.getURL();
-			if (url == null)
-			{
-				logger.debug("Intent contains no URL - cannot create model"); //$NON-NLS-1$
+			File source = data.getFile();
+			IModel model = createModel(source);
 
-				throw new IllegalArgumentException("Intent URL is null"); //$NON-NLS-1$
+			if (isModelIntent(intent))
+			{
+				callback.completed(model, intent);
 			}
-
-			RetrievalProperties retrievalProperties = new RetrievalProperties();
-			retrievalProperties.setFileRequired(true);
-			IRetrieval retrieval = retrievalService.retrieve(this, url, retrievalProperties);
-
-			retrieval.addListener(new RetrievalAdapter()
+			else if (isLayerIntent(intent))
 			{
-				@Override
-				public void complete(IRetrieval retrieval)
-				{
-					if (!retrieval.getResult().isSuccessful())
-					{
-						callback.error(retrieval.getResult().getError(), intent);
-						return;
-					}
-
-					try
-					{
-						File source = retrieval.getData().getFile();
-						IModel model = createModel(source);
-
-						if (isModelIntent(intent))
-						{
-							callback.completed(model, intent);
-						}
-						else if (isLayerIntent(intent))
-						{
-							callback.completed(createModelLayer(model), intent);
-						}
-					}
-					catch (Exception e)
-					{
-						callback.error(e, intent);
-					}
-				}
-
-
-			});
-
-			retrieval.start();
+				callback.completed(createModelLayer(model), intent);
+			}
 		}
 		catch (Exception e)
 		{
 			callback.error(e, intent);
 		}
+	}
+
+	@Override
+	protected IRetrievalProperties getRetrievalProperties()
+	{
+		RetrievalProperties result = new RetrievalProperties();
+		result.setFileRequired(true);
+		return result;
 	}
 
 	/**
@@ -178,7 +144,6 @@ public class GDALRasterModelIntentHandler implements IIntentHandler
 	 */
 	private GDALRasterModelParameters getParameters(Dataset ds)
 	{
-		// TODO: Launch wizard to collect additional params
 		return new GDALRasterModelParameters(ds);
 	}
 
@@ -191,4 +156,7 @@ public class GDALRasterModelIntentHandler implements IIntentHandler
 	{
 		return intent.getExpectedReturnType().isAssignableFrom(Layer.class);
 	}
+
+
+
 }
