@@ -22,9 +22,11 @@ import javax.inject.Inject;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrieval;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
+import au.gov.ga.earthsci.core.retrieve.RetrievalProperties;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
@@ -51,7 +53,7 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 				throw new IllegalArgumentException("Intent URL is null"); //$NON-NLS-1$
 			}
 
-			IRetrieval retrieval = retrievalService.retrieve(this, url);
+			IRetrieval retrieval = retrievalService.retrieve(this, url, getRetrievalProperties());
 			retrieval.addListener(new RetrievalAdapter()
 			{
 				@Override
@@ -118,4 +120,17 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 	 *            Intent callback to notify once the data has been handled
 	 */
 	protected abstract void handle(IRetrievalData data, URL url, Intent intent, IIntentCallback callback);
+
+	/**
+	 * Return the properties to use for controlling the retrieval.
+	 * <p/>
+	 * Classes may override this method to change default retrieval behaviour as
+	 * required.
+	 * 
+	 * @return The properties to use to control retrieval behaviour.
+	 */
+	protected IRetrievalProperties getRetrievalProperties()
+	{
+		return new RetrievalProperties();
+	}
 }
