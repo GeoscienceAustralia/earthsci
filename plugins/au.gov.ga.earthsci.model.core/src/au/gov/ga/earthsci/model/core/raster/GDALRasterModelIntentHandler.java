@@ -20,6 +20,9 @@ import gov.nasa.worldwind.layers.Layer;
 import java.io.File;
 import java.net.URL;
 
+import javax.inject.Inject;
+
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
 import org.slf4j.Logger;
@@ -30,6 +33,7 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.RetrievalProperties;
 import au.gov.ga.earthsci.intent.IIntentCallback;
+import au.gov.ga.earthsci.intent.IIntentManager;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.model.IModel;
 import au.gov.ga.earthsci.model.core.worldwind.BasicModelLayer;
@@ -46,13 +50,97 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 
 	private static final Logger logger = LoggerFactory.getLogger(GDALRasterModelIntentHandler.class);
 
+	@Inject
+	private IIntentManager intentManager;
+
+	@Inject
+	private IEclipseContext eclipseContext;
+
 	@Override
 	protected void handle(IRetrievalData data, URL url, Intent intent, IIntentCallback callback)
 	{
 		try
 		{
 			File source = data.getFile();
-			IModel model = createModel(source);
+
+			/* Create the model from the source file
+			 *  
+			 * Implementation passes the original callback through for use in (possibly) 
+			 * asynchronous operations
+			 *
+			 * Processing chain is as follows:
+			 * 
+			 * Open dataset -> Get model parameters -> Create model
+			 * 
+			 */
+
+			openDataset(source, intent, callback);
+		}
+		catch (Exception e)
+		{
+			callback.error(e, intent);
+		}
+	}
+
+	@Override
+	protected IRetrievalProperties getRetrievalProperties()
+	{
+		RetrievalProperties result = new RetrievalProperties();
+		result.setFileRequired(true);
+		return result;
+	}
+
+	private void openDataset(File source, Intent intent, IIntentCallback callback)
+	{
+		logger.debug("Creating model from dataset {}", source.getAbsoluteFile()); //$NON-NLS-1$
+
+		Dataset ds = gdal.Open(source.getAbsolutePath());
+		if (ds == null)
+		{
+			logger.debug("Unable to open dataset {}", source.getAbsoluteFile()); //$NON-NLS-1$
+			callback.error(new IllegalArgumentException(gdal.GetLastErrorMsg()), intent);
+			return;
+		}
+
+		obtainParameters(ds, intent, callback);
+	}
+
+	private void obtainParameters(final Dataset ds, final Intent intent, final IIntentCallback callback)
+	{
+
+		Intent paramsIntent = new Intent();
+		paramsIntent.setExpectedReturnType(GDALRasterModelParameters.class);
+		paramsIntent.putExtra("dataset", ds);
+
+		intentManager.start(paramsIntent, new IIntentCallback()
+		{
+			@Override
+			public void error(Exception e, Intent paramsIntent)
+			{
+				callback.error(e, intent);
+			}
+
+			@Override
+			public void completed(Object result, Intent paramsIntent)
+			{
+				GDALRasterModelParameters parameters = (GDALRasterModelParameters) result;
+				if (parameters == null)
+				{
+					parameters = new GDALRasterModelParameters(ds);
+				}
+
+				createModel(ds, parameters, intent, callback);
+			}
+		}, eclipseContext);
+
+	}
+
+	private void createModel(final Dataset ds, GDALRasterModelParameters parameters, final Intent intent,
+			final IIntentCallback callback)
+	{
+		try
+		{
+			IModel model = GDALRasterModelFactory.createModel(ds, parameters);
 
 			if (isModelIntent(intent))
 			{
@@ -69,62 +157,6 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 		}
 	}
 
-	@Override
-	protected IRetrievalProperties getRetrievalProperties()
-	{
-		RetrievalProperties result = new RetrievalProperties();
-		result.setFileRequired(true);
-		return result;
-	}
-
-	/**
-	 * Create an {@link IModel} instance from the GDAL raster referenced by the
-	 * provided file
-	 * 
-	 * @param source
-	 *            The source raster to load
-	 * 
-	 * @return A created {@link IModel} instance, or <code>null</code> if one
-	 *         could not be created
-	 * 
-	 * @throws Exception
-	 *             If something goes wrong during creation
-	 */
-	private IModel createModel(File source) throws Exception
-	{
-		logger.debug("Creating model from dataset {}", source.getAbsoluteFile()); //$NON-NLS-1$
-
-		Dataset ds = gdal.Open(source.getAbsolutePath());
-		if (ds == null)
-		{
-			logger.debug("Unable to open dataset {}", source.getAbsoluteFile()); //$NON-NLS-1$
-
-			throw new IllegalArgumentException(gdal.GetLastErrorMsg());
-		}
-		return createModel(ds);
-	}
-
-	/**
-	 * Create an {@link IModel} instance from the GDAL raster referenced by the
-	 * provided dataset.
-	 * 
-	 * @param ds
-	 *            The GDAL dataset to load the model from
-	 * 
-	 * @return A created {@link IModel} instance, or <code>null</code> if one
-	 *         could not be created
-	 * 
-	 * @throws Exception
-	 *             If something goes wrong during creation
-	 */
-	private IModel createModel(Dataset ds) throws Exception
-	{
-		GDALRasterModelParameters parameters = getParameters(ds);
-
-		return GDALRasterModelFactory.createModel(ds, parameters);
-
-	}
-
 	/**
 	 * Create a new {@link IModelLayer} that contains the provided model.
 	 * 
@@ -138,15 +170,6 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 		return new BasicModelLayer(m.getName(), m);
 	}
 
-	/**
-	 * Get parameters to use for creating a model instance from the provided
-	 * dataset
-	 */
-	private GDALRasterModelParameters getParameters(Dataset ds)
-	{
-		return new GDALRasterModelParameters(ds);
-	}
-
 	private boolean isModelIntent(Intent intent)
 	{
 		return intent.getExpectedReturnType().isAssignableFrom(IModel.class);
@@ -156,7 +179,5 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 	{
 		return intent.getExpectedReturnType().isAssignableFrom(Layer.class);
 	}
-
-
 
 }

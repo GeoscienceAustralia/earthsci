@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="au.gov.ga.earthsci.intent.filters">
+      <filter
+            class="au.gov.ga.earthsci.model.ui.raster.GDALRasterModelParametersIntentHandler"
+            priority="0">
+         <return-type
+               class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters">
+         </return-type>
+      </filter>
+   </extension>
+
+</plugin>

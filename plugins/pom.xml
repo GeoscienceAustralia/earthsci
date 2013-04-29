@@ -34,6 +34,7 @@
 		<module>au.gov.ga.earthsci.model.core.tests</module>
 		<module>au.gov.ga.earthsci.application</module>
 		<module>au.gov.ga.earthsci.application.tests</module>
+		<module>au.gov.ga.earthsci.model.ui</module>
 		<module>au.gov.ga.earthsci.catalog</module>
 		<module>au.gov.ga.earthsci.catalog.tests</module>
 		<module>au.gov.ga.earthsci.catalog.ui</module>
