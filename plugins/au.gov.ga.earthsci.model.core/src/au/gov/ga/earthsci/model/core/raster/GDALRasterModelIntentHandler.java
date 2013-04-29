@@ -20,18 +20,23 @@ import gov.nasa.worldwind.layers.Layer;
 import java.io.File;
 import java.net.URL;
 
+import javax.inject.Inject;
+
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.core.retrieve.IRetrieval;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
+import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
+import au.gov.ga.earthsci.core.retrieve.RetrievalProperties;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.model.IModel;
 import au.gov.ga.earthsci.model.core.worldwind.BasicModelLayer;
 import au.gov.ga.earthsci.model.core.worldwind.IModelLayer;
-import au.gov.ga.earthsci.worldwind.common.util.URLUtil;
 
 /**
  * An intent handler that responds to intents that match GDAL-supported raster
@@ -43,6 +48,9 @@ public class GDALRasterModelIntentHandler implements IIntentHandler
 {
 
 	private static final Logger logger = LoggerFactory.getLogger(GDALRasterModelIntentHandler.class);
+
+	@Inject
+	private IRetrievalService retrievalService;
 
 	@Override
 	public void handle(final Intent intent, final IIntentCallback callback)
@@ -57,28 +65,45 @@ public class GDALRasterModelIntentHandler implements IIntentHandler
 				throw new IllegalArgumentException("Intent URL is null"); //$NON-NLS-1$
 			}
 
-			// TODO Use retrieval service to retrieve URL and attach model creation to the completed
-			// lifecycle phase. This requires Issue #15 to be addressed so that a File object can
-			// be obtained from the retrieval result.
+			RetrievalProperties retrievalProperties = new RetrievalProperties();
+			retrievalProperties.setFileRequired(true);
+			IRetrieval retrieval = retrievalService.retrieve(this, url, retrievalProperties);
 
-			if (!URLUtil.isFileUrl(url))
+			retrieval.addListener(new RetrievalAdapter()
 			{
-				logger.debug("Intent URL {} is not a file URL. Cannot create model.", url); //$NON-NLS-1$
+				@Override
+				public void complete(IRetrieval retrieval)
+				{
+					if (!retrieval.getResult().isSuccessful())
+					{
+						callback.error(retrieval.getResult().getError(), intent);
+						return;
+					}
 
-				throw new IllegalArgumentException("Currently only file:// URLs are supported for this feature"); //$NON-NLS-1$
-			}
+					try
+					{
+						File source = retrieval.getData().getFile();
+						IModel model = createModel(source);
 
-			File source = URLUtil.urlToFile(url);
-			IModel model = createModel(source);
+						if (isModelIntent(intent))
+						{
+							callback.completed(model, intent);
+						}
+						else if (isLayerIntent(intent))
+						{
+							callback.completed(createModelLayer(model), intent);
+						}
+					}
+					catch (Exception e)
+					{
+						callback.error(e, intent);
+					}
+				}
 
-			if (isModelIntent(intent))
-			{
-				callback.completed(model, intent);
-			}
-			else if (isLayerIntent(intent))
-			{
-				callback.completed(createModelLayer(model), intent);
-			}
+
+			});
+
+			retrieval.start();
 		}
 		catch (Exception e)
 		{

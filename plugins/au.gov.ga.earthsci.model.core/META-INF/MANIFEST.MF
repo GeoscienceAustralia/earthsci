@@ -21,3 +21,4 @@ Export-Package: au.gov.ga.earthsci.model.core,
  au.gov.ga.earthsci.model.core.raster,
  au.gov.ga.earthsci.model.core.render,
  au.gov.ga.earthsci.model.core.worldwind
+Import-Package: javax.inject
