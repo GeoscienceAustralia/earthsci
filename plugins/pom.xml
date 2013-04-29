@@ -30,6 +30,8 @@
 		<module>au.gov.ga.earthsci.core.tests</module>
 		<module>au.gov.ga.earthsci.worldwind</module>
 		<module>au.gov.ga.earthsci.worldwind.tests</module>
+		<module>au.gov.ga.earthsci.model.core</module>
+		<module>au.gov.ga.earthsci.model.core.tests</module>
 		<module>au.gov.ga.earthsci.application</module>
 		<module>au.gov.ga.earthsci.application.tests</module>
 		<module>au.gov.ga.earthsci.catalog</module>

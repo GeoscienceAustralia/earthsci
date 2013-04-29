@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.render;
+package au.gov.ga.earthsci.model.core.render;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.worldwind;
+package au.gov.ga.earthsci.model.core.worldwind;
 
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.layers.AbstractLayer;

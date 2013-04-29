@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.raster;
+package au.gov.ga.earthsci.model.core.raster;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,6 +39,9 @@ import au.gov.ga.earthsci.common.buffer.BufferType;
 import au.gov.ga.earthsci.common.math.vector.Vector3;
 import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.model.bounds.BoundingBox;
+import au.gov.ga.earthsci.model.core.raster.GDALRasterModel;
+import au.gov.ga.earthsci.model.core.raster.GDALRasterModelFactory;
+import au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters;
 import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.model.geometry.IVertexColouredGeometry;
 import au.gov.ga.earthsci.test.util.TestUtils;

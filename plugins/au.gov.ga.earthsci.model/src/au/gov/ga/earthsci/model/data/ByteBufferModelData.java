@@ -92,7 +92,9 @@ public class ByteBufferModelData implements IModelData
 	@Override
 	public ByteBuffer getSource()
 	{
-		return (ByteBuffer) buffer.duplicate().rewind();
+		ByteBuffer result = (ByteBuffer) buffer.duplicate().rewind();
+		result.order(buffer.order());
+		return result;
 	}
 
 	@Override

@@ -9,7 +9,6 @@ Export-Package: au.gov.ga.earthsci.core,
  au.gov.ga.earthsci.core.intent,
  au.gov.ga.earthsci.core.model,
  au.gov.ga.earthsci.core.model.layer,
- au.gov.ga.earthsci.core.model.raster,
  au.gov.ga.earthsci.core.persistence,
  au.gov.ga.earthsci.core.preferences,
  au.gov.ga.earthsci.core.proxy,
@@ -44,8 +43,7 @@ Require-Bundle: gov.nasa.worldwind,
  au.gov.ga.earthsci.common;bundle-version="1.0.0",
  com.btr.proxy;bundle-version="1.0.0",
  au.gov.ga.earthsci.notification,
- org.gdal;bundle-version="1.7.2",
- au.gov.ga.earthsci.model;bundle-version="1.0.0"
+ org.gdal;bundle-version="1.7.2"
 Import-Package: javax.annotation;version="1.0.0",
  org.eclipse.osgi.util,
  org.slf4j

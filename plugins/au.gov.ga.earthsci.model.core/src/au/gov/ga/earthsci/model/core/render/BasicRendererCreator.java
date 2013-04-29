@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.core.model.render;
+package au.gov.ga.earthsci.model.core.render;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
 

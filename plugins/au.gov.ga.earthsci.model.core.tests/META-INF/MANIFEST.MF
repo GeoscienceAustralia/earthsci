@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for core 3D model functionality
+Bundle-SymbolicName: au.gov.ga.earthsci.model.core.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Geoscience Australia
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Fragment-Host: au.gov.ga.earthsci.model.core;bundle-version="1.0.0"
+Require-Bundle: au.gov.ga.earthsci.testbase;bundle-version="1.0.0"

@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.core.model.render;
+package au.gov.ga.earthsci.model.core.render;
 
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.util.OGLStackHandler;

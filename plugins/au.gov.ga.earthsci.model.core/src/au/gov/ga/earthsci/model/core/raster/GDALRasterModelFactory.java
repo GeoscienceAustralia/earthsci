@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.raster;
+package au.gov.ga.earthsci.model.core.raster;
 
 import static au.gov.ga.earthsci.common.buffer.BufferUtil.getValue;
 import static au.gov.ga.earthsci.core.raster.GDALRasterUtil.getBufferType;

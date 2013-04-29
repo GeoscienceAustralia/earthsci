@@ -44,12 +44,6 @@
       </initializer>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.model.render.geometryRendererCreators">
-      <creator
-            class="au.gov.ga.earthsci.core.model.render.BasicRendererCreator">
-      </creator>
-   </extension>
-   <extension
          point="au.gov.ga.earthsci.injectables">
       <inject
             class="au.gov.ga.earthsci.core.xml.XmlLoaderManager"
@@ -122,19 +116,6 @@
          <content-type
                id="org.eclipse.core.runtime.xml">
          </content-type>
-      </filter>
-      <filter
-            class="au.gov.ga.earthsci.core.model.raster.GDALRasterModelIntentHandler"
-            priority="0">
-         <content-type
-               id="au.gov.ga.earthsci.core.content.gdalraster">
-         </content-type>
-         <return-type
-               class="gov.nasa.worldwind.layers.Layer">
-         </return-type>
-         <return-type
-               class="au.gov.ga.earthsci.model.IModel">
-         </return-type>
       </filter>
       <filter
             class="au.gov.ga.earthsci.core.intent.HttpUnknownContentTypeIntentHandler"

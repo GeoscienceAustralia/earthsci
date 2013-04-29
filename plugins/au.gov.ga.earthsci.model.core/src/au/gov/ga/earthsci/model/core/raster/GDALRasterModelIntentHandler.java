@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.raster;
+package au.gov.ga.earthsci.model.core.raster;
 
 import gov.nasa.worldwind.layers.Layer;
 
@@ -25,12 +25,12 @@ import org.gdal.gdal.gdal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.model.worldwind.BasicModelLayer;
-import au.gov.ga.earthsci.core.model.worldwind.IModelLayer;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.model.IModel;
+import au.gov.ga.earthsci.model.core.worldwind.BasicModelLayer;
+import au.gov.ga.earthsci.model.core.worldwind.IModelLayer;
 import au.gov.ga.earthsci.worldwind.common.util.URLUtil;
 
 /**

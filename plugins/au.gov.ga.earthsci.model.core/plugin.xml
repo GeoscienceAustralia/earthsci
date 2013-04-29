@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="au.gov.ga.earthsci.model.render.geometryRendererCreators">
+      <creator
+            class="au.gov.ga.earthsci.model.core.render.BasicRendererCreator">
+      </creator>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.intent.filters">
+          <filter
+            class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelIntentHandler"
+            priority="0">
+         <content-type
+               id="au.gov.ga.earthsci.core.content.gdalraster">
+         </content-type>
+         <return-type
+               class="gov.nasa.worldwind.layers.Layer">
+         </return-type>
+         <return-type
+               class="au.gov.ga.earthsci.model.IModel">
+         </return-type>
+      </filter>
+   </extension>
+
+</plugin>
