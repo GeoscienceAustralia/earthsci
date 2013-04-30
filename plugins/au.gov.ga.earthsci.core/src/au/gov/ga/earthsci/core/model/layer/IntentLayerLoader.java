@@ -118,6 +118,13 @@ public class IntentLayerLoader
 			Exception e = new Exception(Messages.IntentLayerLoader_LoadCanceledDescription);
 			layerIntent.layerNode.setStatus(ModelStatus.error(e.getLocalizedMessage(), e));
 		}
+
+		@Override
+		public void aborted(Intent intent)
+		{
+			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
+			layerIntent.layerNode.removeFromParent();
+		}
 	};
 
 	protected static class LayerLoadIntent extends Intent

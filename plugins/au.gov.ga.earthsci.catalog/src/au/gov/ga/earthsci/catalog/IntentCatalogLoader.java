@@ -128,6 +128,12 @@ public class IntentCatalogLoader
 			replaceWithNode(catalogIntent, errorNode);
 		}
 
+		@Override
+		public void aborted(Intent intent)
+		{
+			replaceWithNode((CatalogLoadIntent) intent, null);
+		}
+
 		private void replaceWithNode(CatalogLoadIntent intent, ICatalogTreeNode node)
 		{
 			//only allow one node to be replaced at a time; synchronize on a static object:
@@ -138,12 +144,21 @@ public class IntentCatalogLoader
 				{
 					throw new IllegalStateException("Placeholder parent cannot be null"); //$NON-NLS-1$
 				}
+
 				intent.replacement = node;
-				if (placeholder.getLabel() != null)
+				if (node != null)
 				{
-					node.setLabel(placeholder.getLabel());
+					if (placeholder.getLabel() != null)
+					{
+						node.setLabel(placeholder.getLabel());
+					}
+					placeholder.getParent().replaceChild(placeholder, node);
 				}
-				placeholder.getParent().replaceChild(placeholder, node);
+				else
+				{
+					//replaced with null means aborted; just remove the placeholder
+					placeholder.removeFromParent();
+				}
 			}
 		}
 	};
