@@ -84,6 +84,11 @@ public class GDALRasterModelParameters
 		return elevationBandIndex;
 	}
 
+	public void setElevationBandIndex(int elevationBandIndex)
+	{
+		this.elevationBandIndex = elevationBandIndex;
+	}
+
 	public String getSourceProjection()
 	{
 		return sourceProjection;

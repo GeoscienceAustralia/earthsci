@@ -126,7 +126,8 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 				GDALRasterModelParameters parameters = (GDALRasterModelParameters) result;
 				if (parameters == null)
 				{
-					parameters = new GDALRasterModelParameters(ds);
+					callback.completed(null, intent);
+					return;
 				}
 
 				createModel(ds, parameters, intent, callback);
