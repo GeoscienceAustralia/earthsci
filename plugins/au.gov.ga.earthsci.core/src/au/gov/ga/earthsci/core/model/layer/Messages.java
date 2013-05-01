@@ -27,6 +27,7 @@ public class Messages extends NLS
 	public static String DefaultLayers_DefaultLabel;
 	public static String IntentLayerLoader_FailedLoadNotificationDescription;
 	public static String IntentLayerLoader_FailedLoadNotificationTitle;
+	public static String IntentLayerLoader_LoadCanceledDescription;
 	public static String IntentLayerLoader_UnknownLayerMessage;
 	public static String IntentLayerLoader_UnknownLayerTitle;
 	public static String LayerNode_FailedCopyNotificationDescription;

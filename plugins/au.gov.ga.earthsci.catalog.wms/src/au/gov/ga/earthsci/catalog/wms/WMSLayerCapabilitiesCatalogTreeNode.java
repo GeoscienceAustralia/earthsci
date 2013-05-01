@@ -132,8 +132,7 @@ public class WMSLayerCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 	@Override
 	public URL getInformationURL()
 	{
-		//TODO
-		return null;
+		return WMSHelper.getInformationURL(layer);
 	}
 
 	@Override

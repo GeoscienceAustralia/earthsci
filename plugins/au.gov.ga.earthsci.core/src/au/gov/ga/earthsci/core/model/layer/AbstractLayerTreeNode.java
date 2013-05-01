@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import au.gov.ga.earthsci.common.collection.HashSetHashMap;
 import au.gov.ga.earthsci.common.collection.SetMap;
 import au.gov.ga.earthsci.common.util.IEnableable;
+import au.gov.ga.earthsci.common.util.IInformationed;
 import au.gov.ga.earthsci.core.model.IModelStatus;
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.persistence.Exportable;
@@ -56,7 +57,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private String label;
 	private URI uri;
 	private IContentType contentType;
-	private URL infoURL;
+	private URL nodeInformationURL;
 	private URL legendURL;
 	private URL iconURL;
 	private boolean expanded;
@@ -142,22 +143,30 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		contentType = contentTypeId == null ? null : Platform.getContentTypeManager().getContentType(contentTypeId);
 	}
 
-	@Persistent
-	@Override
-	public URL getInfoURL()
+	/**
+	 * The URL pointing to this node's information page.
+	 * <p/>
+	 * If this node is a layer node and the associated layer implements
+	 * {@link IInformationed}, then the layer's information URL should be used
+	 * for information instead of this one.
+	 * 
+	 * @return The URL pointing to this node's information page.
+	 */
+	@Persistent(name = "infoURL")
+	public URL getNodeInformationURL()
 	{
-		return infoURL;
+		return nodeInformationURL;
 	}
 
-	public void setInfoURL(URL infoURL)
+	public void setNodeInformationURL(URL nodeInformationURL)
 	{
-		firePropertyChange("infoURL", getInfoURL(), this.infoURL = infoURL); //$NON-NLS-1$
+		firePropertyChange("nodeInformationURL", getNodeInformationURL(), this.nodeInformationURL = nodeInformationURL); //$NON-NLS-1$
 	}
 
 	@Override
 	public URL getInformationURL()
 	{
-		return getInfoURL();
+		return getNodeInformationURL();
 	}
 
 	@Override

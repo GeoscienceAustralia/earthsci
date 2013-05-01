@@ -26,6 +26,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import au.gov.ga.earthsci.core.intent.AbstractRetrieveIntentHandler;
@@ -34,6 +37,7 @@ import au.gov.ga.earthsci.core.util.QueryString;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
+import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
  * {@link IIntentHandler} that creates a {@link WMSTiledImageLayer} from a
@@ -58,12 +62,26 @@ public class WMSLayerIntentHandler extends AbstractRetrieveIntentHandler
 				}
 
 				QueryString query = new QueryString(intent.getURI().getQuery());
+				List<String> layerNames = commaDelimited(query.get(WMSHelper.WMS_LAYER_URI_LAYERS_PARAMETER));
+				List<String> styleNames = commaDelimited(query.get(WMSHelper.WMS_LAYER_URI_STYLES_PARAMETER));
 
 				AVList params = new AVListImpl();
-				params.setValue(AVKey.LAYER_NAMES, commaSeparated(query.get(WMSHelper.WMS_LAYER_URI_LAYERS_PARAMETER)));
-				params.setValue(AVKey.STYLE_NAMES, commaSeparated(query.get(WMSHelper.WMS_LAYER_URI_STYLES_PARAMETER)));
+				params.setValue(AVKey.LAYER_NAMES, commaSeparated(layerNames));
+				params.setValue(AVKey.STYLE_NAMES, commaSeparated(styleNames));
 
-				Layer layer = new WMSTiledImageLayer(wmsCapabilities, params);
+				URL legendURL = getLegendURL(wmsCapabilities, layerNames, styleNames);
+				if (legendURL != null)
+				{
+					params.setValue(AVKeyMore.LEGEND_URL, legendURL);
+				}
+				URL informationURL = getInformationURL(wmsCapabilities, layerNames);
+
+				Layer layer = new InformationedWMSTiledImageLayer(wmsCapabilities, params, informationURL);
+				if (legendURL != null)
+				{
+					layer.setValue(AVKeyMore.LEGEND_URL, legendURL);
+				}
+
 				callback.completed(layer, intent);
 			}
 			finally
@@ -90,7 +108,73 @@ public class WMSLayerIntentHandler extends AbstractRetrieveIntentHandler
 		}
 	}
 
-	protected String commaSeparated(List<String> strings)
+	protected static URL getInformationURL(WMSCapabilities capabilities, Collection<String> layerNames)
+	{
+		if (layerNames != null)
+		{
+			for (String layerName : layerNames)
+			{
+				URL url = WMSHelper.getInformationURL(capabilities, layerName);
+				if (url != null)
+				{
+					return url;
+				}
+			}
+		}
+		return null;
+	}
+
+	protected static URL getLegendURL(WMSCapabilities capabilities, Collection<String> layerNames,
+			Collection<String> styleNames)
+	{
+		if (layerNames != null)
+		{
+			for (String layerName : layerNames)
+			{
+				if (styleNames == null || styleNames.isEmpty())
+				{
+					URL url = WMSHelper.getLegendURL(capabilities, layerName, null);
+					if (url != null)
+					{
+						return url;
+					}
+				}
+				else
+				{
+					for (String styleName : styleNames)
+					{
+						URL url = WMSHelper.getLegendURL(capabilities, layerName, styleName);
+						if (url != null)
+						{
+							return url;
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	protected static List<String> commaDelimited(Collection<String> strings)
+	{
+		if (strings == null)
+		{
+			return null;
+		}
+		List<String> all = new ArrayList<String>();
+		for (String string : strings)
+		{
+			all.addAll(commaDelimited(string));
+		}
+		return all;
+	}
+
+	protected static List<String> commaDelimited(String string)
+	{
+		return Arrays.asList(string.split(",")); //$NON-NLS-1$
+	}
+
+	protected static String commaSeparated(Collection<String> strings)
 	{
 		if (strings == null || strings.isEmpty())
 		{

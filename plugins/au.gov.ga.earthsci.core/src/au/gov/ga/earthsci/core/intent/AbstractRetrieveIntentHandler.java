@@ -66,7 +66,11 @@ public abstract class AbstractRetrieveIntentHandler implements IIntentHandler
 				public void complete(IRetrieval retrieval)
 				{
 					IRetrievalResult result = retrieval.getResult();
-					if (result.isSuccessful())
+					if (result == null)
+					{
+						callback.canceled(intent);
+					}
+					else if (result.isSuccessful())
 					{
 						if (!result.isFromCache())
 						{

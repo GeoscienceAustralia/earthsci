@@ -52,4 +52,27 @@ public interface IIntentCallback
 	 *            Intent that failed
 	 */
 	void error(Exception e, Intent intent);
+
+	/**
+	 * Called by the Intent handler when it is canceled.
+	 * <p/>
+	 * For example, could mean that a retrieval required to complete the intent
+	 * was canceled.
+	 * 
+	 * @param intent
+	 *            Intent whose handler was canceled
+	 */
+	void canceled(Intent intent);
+
+	/**
+	 * Called by the Intent handler when it is aborted.
+	 * <p/>
+	 * Generally means that the user canceled an interactive intent handler.
+	 * This method should clean up any model changed, as if the Intent never
+	 * occurred.
+	 * 
+	 * @param intent
+	 *            Intent whose handler was aborted
+	 */
+	void aborted(Intent intent);
 }

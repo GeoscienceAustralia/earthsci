@@ -152,7 +152,20 @@ public class HttpRetriever implements IRetriever
 			checkMonitor(monitor);
 
 			//read the response code
-			int responseCode = connection.getResponseCode();
+			int responseCode;
+			try
+			{
+				responseCode = connection.getResponseCode();
+			}
+			catch (RuntimeException e)
+			{
+				if (e.getCause() != null && e.getCause() instanceof NullPointerException)
+				{
+					//if NPE is thrown, assume shutdown, so return as canceled
+					throw new MonitorCancelledOrPausedException();
+				}
+				throw e;
+			}
 			monitor.updateStatus(RetrievalStatus.CONNECTED);
 
 			checkMonitor(monitor);
