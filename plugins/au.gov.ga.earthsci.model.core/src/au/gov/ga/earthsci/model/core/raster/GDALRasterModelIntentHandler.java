@@ -117,12 +117,16 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 			@Override
 			public void error(Exception e, Intent paramsIntent)
 			{
+				logger.debug("Error signaled during raster parameter collection"); //$NON-NLS-1$
+
 				callback.error(e, intent);
 			}
 
 			@Override
 			public void completed(Object result, Intent paramsIntent)
 			{
+				logger.debug("Raster parameters completed"); //$NON-NLS-1$
+
 				GDALRasterModelParameters parameters = (GDALRasterModelParameters) result;
 				if (parameters == null)
 				{
@@ -132,6 +136,23 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 
 				createModel(ds, parameters, intent, callback);
 			}
+
+			@Override
+			public void aborted(Intent paramsIntent)
+			{
+				logger.debug("Raster parameter collection aborted"); //$NON-NLS-1$
+
+				callback.aborted(intent);
+			}
+
+			@Override
+			public void canceled(Intent paramsIntent)
+			{
+				logger.debug("Raster parameter collection cancelled"); //$NON-NLS-1$
+
+				callback.aborted(intent);
+			}
+
 		}, eclipseContext);
 
 	}

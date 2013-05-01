@@ -54,8 +54,7 @@ public class GDALRasterModelParametersIntentHandler implements IIntentHandler
 				}
 				else
 				{
-					// TODO: Signal cancelled rather than completed
-					callback.completed(null, intent);
+					callback.aborted(intent);
 				}
 			}
 		});
