@@ -18,6 +18,19 @@ public class Messages extends NLS
 	public static String RasterModelBandSelectPage_ScaleFieldLabel;
 	public static String RasterModelBandSelectPage_OffsetFieldLabel;
 	public static String RasterModelParametersWizard_WizardTitle;
+	public static String RasterModelProjectionPage_GroupDescription;
+	public static String RasterModelProjectionPage_GroupTitle;
+	public static String RasterModelProjectionPage_InvalidSRSMessage;
+	public static String RasterModelProjectionPage_PageDescription;
+	public static String RasterModelProjectionPage_PageTitle;
+	public static String RasterModelProjectionPage_SelectSRSButtonText;
+	public static String RasterModelProjectionPage_SelectSRSButtonTooltip;
+	public static String RasterModelProjectionPage_UseExistingButtonText;
+	public static String RasterModelProjectionPage_UseExistingDescription;
+	public static String RasterModelProjectionPage_UsePreDefinedButtonText;
+	public static String RasterModelProjectionPage_UsePreDefinedDescription;
+	public static String RasterModelProjectionPage_UseUserDefinedButtonText;
+	public static String RasterModelProjectionPage_UseUserDefinedDescription;
 	static
 	{
 		// initialize resource bundle

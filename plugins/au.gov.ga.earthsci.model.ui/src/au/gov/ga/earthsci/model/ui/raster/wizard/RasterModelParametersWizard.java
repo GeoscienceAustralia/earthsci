@@ -18,8 +18,6 @@ public class RasterModelParametersWizard extends Wizard
 	private Dataset dataset;
 	private GDALRasterModelParameters params;
 
-	private AbstractRasterModelPage bandSelectPage;
-
 	/**
 	 * Create a new wizard backed by the given parameters object.
 	 * <p/>
@@ -38,14 +36,14 @@ public class RasterModelParametersWizard extends Wizard
 		this.params = params;
 
 		setWindowTitle(Messages.RasterModelParametersWizard_WizardTitle);
+		setNeedsProgressMonitor(false);
 	}
 
 	@Override
 	public void addPages()
 	{
-		bandSelectPage = new RasterModelBandSelectPage(dataset, params);
-
-		addPage(bandSelectPage);
+		addPage(new RasterModelBandSelectPage(dataset, params));
+		addPage(new RasterModelProjectionPage(dataset, params));
 	}
 
 	@Override

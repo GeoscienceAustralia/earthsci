@@ -56,7 +56,6 @@ public final class SpatialReferenceSelectorDialog extends TitleAreaDialog
 
 	private static final Point DIALOG_SIZE = new Point(400, 500);
 
-	private SpatialReference selectedReference = null;
 	private SpatialReferenceSummary selectedSummary = null;
 
 	private Text filterText;
@@ -201,18 +200,8 @@ public final class SpatialReferenceSelectorDialog extends TitleAreaDialog
 	}
 
 	@Override
-	protected void okPressed()
-	{
-		selectedReference = new SpatialReference();
-		selectedReference.SetFromUserInput(selectedSummary.getEpsg());
-
-		super.okPressed();
-	}
-
-	@Override
 	protected void cancelPressed()
 	{
-		selectedReference = null;
 		selectedSummary = null;
 
 		super.cancelPressed();
@@ -224,7 +213,12 @@ public final class SpatialReferenceSelectorDialog extends TitleAreaDialog
 	 */
 	public SpatialReference getSelectedSpatialReference()
 	{
-		return selectedReference;
+		return selectedSummary == null ? null : selectedSummary.createReference();
+	}
+
+	public SpatialReferenceSummary getSelected()
+	{
+		return selectedSummary;
 	}
 
 }

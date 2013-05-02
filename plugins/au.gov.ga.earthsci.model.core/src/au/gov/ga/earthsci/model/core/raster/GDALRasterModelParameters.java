@@ -94,6 +94,11 @@ public class GDALRasterModelParameters
 		return sourceProjection;
 	}
 
+	public void setSourceProjection(String sourceProjection)
+	{
+		this.sourceProjection = sourceProjection;
+	}
+
 	public Double getScaleFactor()
 	{
 		return scale;

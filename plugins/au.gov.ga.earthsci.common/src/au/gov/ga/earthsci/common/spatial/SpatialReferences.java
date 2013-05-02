@@ -44,6 +44,8 @@ public class SpatialReferences
 	 */
 	public static final class SpatialReferenceSummary implements Comparable<SpatialReferenceSummary>
 	{
+		public static final SpatialReferenceSummary WGS84 = new SpatialReferenceSummary("EPSG:4326", "WGS 84"); //$NON-NLS-1$//$NON-NLS-2$
+
 		private final String epsg;
 		private final String name;
 
