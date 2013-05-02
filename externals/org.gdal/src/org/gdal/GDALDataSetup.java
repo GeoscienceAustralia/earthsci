@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -23,6 +25,8 @@ public class GDALDataSetup
 	private static final String GDALDATA_ZIP = "gdaldata.zip";
 	private static final String GDALDATA_CONFIG = "GDAL_DATA";
 
+	private static Map<String, File> extractedDataMap = new ConcurrentHashMap<String, File>();
+	
 	/**
 	 * A strategy interface for obtaining a target file for unpacking data
 	 */
@@ -51,6 +55,19 @@ public class GDALDataSetup
 	}
 
 	/**
+	 * Return the File object of the extracted data file with the given name, or <code>null</code> 
+	 * if no such file exists.
+	 * 
+	 * @param name The name of the file to retrieve
+	 * 
+	 * @return The named GDAL data file
+	 */
+	public static File getDataFile(String name)
+	{
+		return extractedDataMap.get(name);
+	}
+	
+	/**
 	 * Unpack the GDAL_DATA folder into the plugin data area
 	 */
 	private static void unpackData(DataFileSource fileSource)
@@ -67,7 +84,10 @@ public class GDALDataSetup
 				{
 					if (!entry.isDirectory())
 					{
-						File output = fileSource.getDataFile(entry.getName());
+						String name = entry.getName();
+						File output = fileSource.getDataFile(name);
+						
+						extractedDataMap.put(name, output);
 						if (output.length() > 0)
 						{
 							// File already exists - move on to the next one

@@ -203,6 +203,17 @@ public class Util
 	}
 
 	/**
+	 * Remove all whitespace from the given string
+	 * 
+	 * @param s
+	 * @return The input string with all whitespace removed
+	 */
+	public static String removeWhitespace(String s)
+	{
+		return s == null ? null : s.replaceAll("\\s*", ""); //$NON-NLS-1$//$NON-NLS-2$
+	}
+
+	/**
 	 * Call the given named property's setter on the object with an Object
 	 * represented by the propertyValue string. The property's setter's
 	 * parameter count must be 1, and the parameter class must be
