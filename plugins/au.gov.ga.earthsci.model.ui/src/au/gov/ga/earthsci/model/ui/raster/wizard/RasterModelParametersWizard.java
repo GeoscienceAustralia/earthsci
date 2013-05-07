@@ -44,6 +44,7 @@ public class RasterModelParametersWizard extends Wizard
 	{
 		addPage(new RasterModelBandSelectPage(dataset, params));
 		addPage(new RasterModelProjectionPage(dataset, params));
+		addPage(new RasterModelOtherInformationPage(dataset, params));
 	}
 
 	@Override

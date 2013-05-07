@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.model.core.raster;
 
 import org.gdal.gdal.Dataset;
 
+import au.gov.ga.earthsci.common.util.FileUtil;
 import au.gov.ga.earthsci.model.IModel;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
@@ -67,7 +68,9 @@ public class GDALRasterModelParameters
 			sourceProjection = datasetProjection;
 		}
 
-		modelName = ds.GetDescription();
+		modelName = FileUtil.isLikelyFilePath(ds.GetDescription()) ?
+				FileUtil.getFileName(ds.GetDescription()) :
+				ds.GetDescription();
 		modelDescription = ds.GetDescription();
 	}
 

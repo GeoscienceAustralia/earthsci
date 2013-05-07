@@ -17,6 +17,12 @@ public class Messages extends NLS
 	public static String RasterModelBandSelectPage_ScaleOffsetGroupDescription;
 	public static String RasterModelBandSelectPage_ScaleFieldLabel;
 	public static String RasterModelBandSelectPage_OffsetFieldLabel;
+	public static String RasterModelOtherInformationPage_DescriptionFieldLabel;
+	public static String RasterModelOtherInformationPage_NameDescriptionGroupDescription;
+	public static String RasterModelOtherInformationPage_NameDescriptionGroupTitle;
+	public static String RasterModelOtherInformationPage_NameFieldLabel;
+	public static String RasterModelOtherInformationPage_PageDescription;
+	public static String RasterModelOtherInformationPage_PageTitle;
 	public static String RasterModelParametersWizard_WizardTitle;
 	public static String RasterModelProjectionPage_GroupDescription;
 	public static String RasterModelProjectionPage_GroupTitle;
