@@ -82,6 +82,13 @@ public class RetrievalService implements IRetrievalService
 	@Override
 	public IRetrieval retrieve(Object caller, URL url, IRetrievalProperties retrievalProperties)
 	{
+		return retrieve(caller, url, retrievalProperties, false);
+	}
+
+	@Override
+	public IRetrieval retrieve(Object caller, URL url, IRetrievalProperties retrievalProperties,
+			boolean ignoreDuplicates)
+	{
 		if (url == null)
 		{
 			throw new NullPointerException("Retrieval URL is null"); //$NON-NLS-1$
@@ -89,7 +96,7 @@ public class RetrievalService implements IRetrievalService
 
 		synchronized (urlToRetrieval)
 		{
-			Retrieval retrieval = urlToRetrieval.get(url);
+			Retrieval retrieval = ignoreDuplicates ? null : urlToRetrieval.get(url);
 			if (retrieval == null)
 			{
 				//create a retriever to retrieve the url
@@ -102,7 +109,10 @@ public class RetrievalService implements IRetrievalService
 
 				//create a retrieval object
 				retrieval = new Retrieval(caller, url, retrievalProperties, retriever);
-				urlToRetrieval.put(url, retrieval);
+				if (!ignoreDuplicates)
+				{
+					urlToRetrieval.put(url, retrieval);
+				}
 				fireRetrievalAdded(retrieval);
 
 				//add a listener to remove the retrieval after it's complete
