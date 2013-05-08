@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.Text;
 import org.gdal.gdal.Band;
 import org.gdal.gdal.Dataset;
 
-import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters;
 
 /**
@@ -113,32 +112,6 @@ public class RasterModelBandSelectPage extends AbstractRasterModelPage
 		{
 
 			markInvalid(offsetField, Messages.RasterModelBandSelectPage_InvalidOffsetMessage);
-		}
-	}
-
-	private static Double getDoubleOrNull(String text)
-	{
-		if (Util.isEmpty(text))
-		{
-			return null;
-		}
-		return Double.valueOf(text);
-	}
-
-	private static boolean isNumericOrEmpty(String text)
-	{
-		if (Util.isEmpty(text))
-		{
-			return true;
-		}
-		try
-		{
-			Double.valueOf(text);
-			return true;
-		}
-		catch (Exception e)
-		{
-			return false;
 		}
 	}
 }

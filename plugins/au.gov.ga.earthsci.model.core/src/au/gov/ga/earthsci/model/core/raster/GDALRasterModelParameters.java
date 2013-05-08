@@ -48,6 +48,10 @@ public class GDALRasterModelParameters
 	/** A (localised) description to attach to the model on creation */
 	private String modelDescription;
 
+	/** An (optional) subsample rate to apply to raster data on creation */
+	// TODO: Support better subsampling methods (downscaling and filtering etc.)
+	private Integer subsample;
+
 	/**
 	 * Create a new parameters object, populated with any sensible defaults
 	 * obtainable from the provided dataset
@@ -140,5 +144,15 @@ public class GDALRasterModelParameters
 	public void setModelDescription(String modelDescription)
 	{
 		this.modelDescription = modelDescription;
+	}
+
+	public void setSubsample(Integer subsample)
+	{
+		this.subsample = subsample;
+	}
+
+	public Integer getSubsample()
+	{
+		return subsample;
 	}
 }

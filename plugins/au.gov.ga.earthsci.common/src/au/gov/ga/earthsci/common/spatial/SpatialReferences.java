@@ -39,6 +39,9 @@ public class SpatialReferences
 
 	private static Logger logger = LoggerFactory.getLogger(SpatialReferences.class);
 
+	/** WGS84 Geodetic lat/lon */
+	public static final SpatialReference WGS84 = SpatialReferenceSummary.WGS84.createReference();
+
 	/**
 	 * Provides summary information for a spatial reference system (SRS).
 	 */

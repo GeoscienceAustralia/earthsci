@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.gdal.gdal.Dataset;
 
+import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters;
 
 /**
@@ -274,4 +275,56 @@ public abstract class AbstractRasterModelPage extends WizardPage
 		return getErrorMessage() == null;
 	}
 
+
+	protected static Double getDoubleOrNull(String text)
+	{
+		if (Util.isEmpty(text))
+		{
+			return null;
+		}
+		return Double.valueOf(text);
+	}
+
+	protected static Integer getIntegerOrNull(String text)
+	{
+		if (Util.isEmpty(text))
+		{
+			return null;
+		}
+		return Integer.valueOf(text);
+	}
+
+	protected static boolean isIntegerOrEmpty(String text)
+	{
+		if (Util.isEmpty(text))
+		{
+			return true;
+		}
+		try
+		{
+			Integer.valueOf(text);
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
+
+	protected static boolean isNumericOrEmpty(String text)
+	{
+		if (Util.isEmpty(text))
+		{
+			return true;
+		}
+		try
+		{
+			Double.valueOf(text);
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
 }

@@ -74,6 +74,32 @@ public class BufferUtil
 	}
 
 	/**
+	 * Skip forward in the buffer the given number of values of the given type
+	 * <p/>
+	 * This is generally more efficient than using
+	 * {@link #getValue(ByteBuffer, BufferType)} repeatedly and discarding the
+	 * value when the number of values to skip is known ahead of time.
+	 * 
+	 * @param num
+	 *            The number of values to skip. A negative value will move
+	 *            backwards through the buffer.
+	 * @param buffer
+	 *            The buffer to skip
+	 * @param bufferType
+	 *            The type of value contained in the buffer
+	 */
+	public static void skipValues(int num, ByteBuffer buffer, BufferType bufferType)
+	{
+		if (buffer == null || num == 0)
+		{
+			return;
+		}
+
+		Validate.notNull(bufferType, "A valid buffer type is required"); //$NON-NLS-1$
+		buffer.position(buffer.position() + num * bufferType.getNumberOfBytes());
+	}
+
+	/**
 	 * Convert the given number into the correct type for use with the given
 	 * buffer type.
 	 * <p/>

@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.model.core.raster;
 
 import static au.gov.ga.earthsci.common.buffer.BufferUtil.getValue;
+import static au.gov.ga.earthsci.common.buffer.BufferUtil.skipValues;
 import static au.gov.ga.earthsci.core.raster.GDALRasterUtil.getBufferType;
 
 import java.nio.ByteBuffer;
@@ -29,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.buffer.BufferType;
+import au.gov.ga.earthsci.common.spatial.SpatialReferences;
 import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.model.IModel;
 import au.gov.ga.earthsci.model.bounds.BoundingBox;
@@ -52,9 +54,6 @@ public class GDALRasterModelFactory
 	private static final int VERTEX_GROUP_SIZE = 3;
 
 	private static final Logger logger = LoggerFactory.getLogger(GDALRasterModelFactory.class);
-
-	// TODO: Move this somewhere
-	private static final String WGS84 = "EPSG:4326";
 
 	/**
 	 * Create a new {@link GDALRasterModel} from the provided GDAL dataset and
@@ -121,11 +120,12 @@ public class GDALRasterModelFactory
 		double[] transformedCoords = new double[2];
 		double[] projectedCoords = new double[VERTEX_GROUP_SIZE];
 
-		ByteBuffer vertices = allocateVerticesBuffer(columns, rows);
+		int stride = parameters.getSubsample() == null ? 1 : Math.max(1, parameters.getSubsample());
+		ByteBuffer vertices = allocateVerticesBuffer(columns, rows, stride);
 
-		for (int y = 0; y < rows; y++)
+		for (int y = 0; y < rows; y += stride)
 		{
-			for (int x = 0; x < columns; x++)
+			for (int x = 0; x < columns; x += stride)
 			{
 				double datasetValue = getValue(buffer, sourceBufferType).doubleValue();
 				double elevation = toElevation(elevationOffset, elevationScale, datasetValue, nodata);
@@ -142,7 +142,12 @@ public class GDALRasterModelFactory
 						.putFloat((float) projectedCoords[2]);
 
 				stats.updateStats(projectedCoords[1], projectedCoords[0], projectedCoords[2]);
+
+				int step = Math.min(stride, columns - x) - 1; // Skip stride values, or move to the end of the column
+				skipValues(step, buffer, sourceBufferType);
 			}
+			int step = Math.min(stride, rows - y) - 1;
+			skipValues(columns * step, buffer, sourceBufferType);
 		}
 
 		// TODO Move name/description to constant somewhere for reuse as standard name
@@ -155,10 +160,14 @@ public class GDALRasterModelFactory
 
 	}
 
-	private static ByteBuffer allocateVerticesBuffer(int columns, int rows)
+	private static ByteBuffer allocateVerticesBuffer(int columns, int rows, int subsample)
 	{
-		int bufferSize = columns * rows * VERTEX_GROUP_SIZE * BufferType.FLOAT.getNumberOfBytes();
-		ByteBuffer vertices = ByteBuffer.allocate(bufferSize);
+		int numColumns = (columns + subsample - 1) / subsample;
+		int numRows = (rows + subsample - 1) / subsample;
+
+		int numVerts = numColumns * numRows; // Ensure the integer division rounds up
+
+		ByteBuffer vertices = ByteBuffer.allocate(numVerts * VERTEX_GROUP_SIZE * BufferType.FLOAT.getNumberOfBytes());
 		vertices.order(ByteOrder.nativeOrder());
 		return vertices;
 	}
@@ -169,8 +178,9 @@ public class GDALRasterModelFactory
 		if (Util.isBlank(sourceProjection))
 		{
 			logger.info("No source projection found. Assuming WGS84."); //$NON-NLS-1$
-			sourceProjection = WGS84;
+			return new CoordinateTransformation(SpatialReferences.WGS84, SpatialReferences.WGS84);
 		}
+
 		CoordinateTransformation coordinateTransformation =
 				CoordinateTransformationUtil.getTransformationToWGS84(sourceProjection);
 		return coordinateTransformation;

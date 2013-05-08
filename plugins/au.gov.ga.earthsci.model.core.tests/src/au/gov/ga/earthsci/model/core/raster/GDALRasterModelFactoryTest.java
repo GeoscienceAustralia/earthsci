@@ -39,9 +39,6 @@ import au.gov.ga.earthsci.common.buffer.BufferType;
 import au.gov.ga.earthsci.common.math.vector.Vector3;
 import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.model.bounds.BoundingBox;
-import au.gov.ga.earthsci.model.core.raster.GDALRasterModel;
-import au.gov.ga.earthsci.model.core.raster.GDALRasterModelFactory;
-import au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters;
 import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.model.geometry.IVertexColouredGeometry;
 import au.gov.ga.earthsci.test.util.TestUtils;
@@ -123,11 +120,43 @@ public class GDALRasterModelFactoryTest
 
 		GDALRasterModel result = GDALRasterModelFactory.createModel(ds, parameters);
 
+		assertLoadedModelCorrect(result,
+				"testgrid", ds.GetDescription(),
+				24,
+				0, 150,
+				50, 300,
+				-9999, 100);
+	}
+
+	@Test
+	public void testCreateWithSubsampling() throws Exception
+	{
+		Dataset ds = openRaster("testgrid.asc");
+		GDALRasterModelParameters parameters = new GDALRasterModelParameters(ds);
+		parameters.setSubsample(3);
+
+		GDALRasterModel result = GDALRasterModelFactory.createModel(ds, parameters);
+
+		assertLoadedModelCorrect(result,
+				"testgrid.asc", ds.GetDescription(),
+				4,
+				0, 150,
+				150, 300,
+				-9999, 32);
+	}
+
+	private void assertLoadedModelCorrect(GDALRasterModel result,
+			String name, String description,
+			int expectedNumVertices,
+			double minX, double maxX,
+			double minY, double maxY,
+			double minZ, double maxZ)
+	{
 		// Single result with correct names
 		assertNotNull(result);
 		assertFalse(Util.isEmpty(result.getId()));
-		assertEquals("testgrid", result.getName()); //$NON-NLS-1$
-		assertEquals(ds.GetDescription(), result.getDescription());
+		assertEquals(name, result.getName());
+		assertEquals(description, result.getDescription());
 
 		// Containing a single geometry
 		assertNotNull(result.getGeometries());
@@ -141,21 +170,21 @@ public class GDALRasterModelFactoryTest
 		IModelData vertexData = geometry.getVertices();
 		assertNotNull(vertexData);
 		assertEquals(BufferType.FLOAT, vertexData.getBufferType());
-		assertEquals(24 * 3 * BufferType.FLOAT.getNumberOfBytes(), vertexData.getSource().limit());
+		assertEquals(expectedNumVertices * 3 * BufferType.FLOAT.getNumberOfBytes(), vertexData.getSource().limit());
 
 		// And a bounding volume that encompasses the vertices
 		assertTrue(geometry.hasBoundingVolume());
 
 		BoundingBox bounds = (BoundingBox) geometry.getBoundingVolume();
 		assertNotNull(bounds);
-		assertEquals(0.0, bounds.getXRange().getMinValue(), 0.001);
-		assertEquals(150.0, bounds.getXRange().getMaxValue(), 0.001);
-		assertEquals(50.0, bounds.getYRange().getMinValue(), 0.001);
-		assertEquals(300.0, bounds.getYRange().getMaxValue(), 0.001);
-		assertEquals(-9999.0, bounds.getZRange().getMinValue(), 0.001);
-		assertEquals(100.0, bounds.getZRange().getMaxValue(), 0.001);
+		assertEquals(minX, bounds.getXRange().getMinValue(), 0.001);
+		assertEquals(maxX, bounds.getXRange().getMaxValue(), 0.001);
+		assertEquals(minY, bounds.getYRange().getMinValue(), 0.001);
+		assertEquals(maxY, bounds.getYRange().getMaxValue(), 0.001);
+		assertEquals(minZ, bounds.getZRange().getMinValue(), 0.001);
+		assertEquals(maxZ, bounds.getZRange().getMaxValue(), 0.001);
 
-		ByteBuffer source = (ByteBuffer) vertexData.getSource();
+		ByteBuffer source = vertexData.getSource();
 		int count = 0;
 		Vector3 vertex = new Vector3();
 		while (source.hasRemaining())
@@ -166,7 +195,7 @@ public class GDALRasterModelFactoryTest
 			assertTrue(bounds.contains(vertex));
 			count++;
 		}
-		assertEquals(24, count);
+		assertEquals(expectedNumVertices, count);
 
 		// A renderer should always be set
 		assertNotNull(geometry.getRenderer());
