@@ -46,12 +46,41 @@ public interface IModelData extends IIdentifiable, INamed, IDescribed
 	BufferType getBufferType();
 
 	/**
+	 * Return the number of values contained in this data
+	 * 
+	 * @return the number of values contained in the data
+	 */
+	int getNumberOfValues();
+
+	/**
+	 * Return the group size of values in this data
+	 * <p/>
+	 * For example, if the data holds vertex information, group size would be 3
+	 * indicating that values should be grouped into 3-tuples ({@code [x,y,z]}).
+	 * 
+	 * @return the group size of values in the data
+	 */
+	int getGroupSize();
+
+	/**
+	 * Return the number of groups contained in the data.
+	 * <p/>
+	 * This is a convenience method and is usually derived from the number of
+	 * values and group size.
+	 * 
+	 * @return The number of groups contained in the data.
+	 */
+	int getNumberOfGroups();
+
+	/**
 	 * Return the units the data is expressed in, or <code>null</code> if there
 	 * are none (e.g. greyscale intensity values).
 	 * 
 	 * @return the units the data is expressed in, or <code>null</code> if there
 	 *         are none.
 	 */
+	// TODO: Should units be returned in the an array that matches group size so 
+	// a unit can be assigned per-value in the tuple? 
 	Unit<?> getUnits();
 
 	/**

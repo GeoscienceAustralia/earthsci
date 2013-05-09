@@ -28,6 +28,8 @@ public class ModelDataBuilder
 	private ByteBuffer buffer;
 	private BufferType type;
 
+	private int groupSize = 1;
+
 	private String id;
 	private String name;
 	private String description;
@@ -103,10 +105,17 @@ public class ModelDataBuilder
 		return this;
 	}
 
+	public ModelDataBuilder withGroupSize(int groupSize)
+	{
+		Validate.isTrue(groupSize > 0, "Group size must be a positive integer"); //$NON-NLS-1$
+		this.groupSize = groupSize;
+		return this;
+	}
+
 	public IModelData build()
 	{
 		Validate.notNull(type, "A buffer type must be provided"); //$NON-NLS-1$
 
-		return new ByteBufferModelData(id, name, description, buffer, type, nodata, units);
+		return new ByteBufferModelData(id, name, description, buffer, type, groupSize, nodata, units);
 	}
 }

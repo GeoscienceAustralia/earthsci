@@ -47,6 +47,9 @@ public class ModelDataBuilderTest
 		assertNull(data.getNoDataValue());
 		assertFalse(data.hasUnits());
 		assertNull(data.getUnits());
+		assertEquals(1, data.getGroupSize());
+		assertEquals(12, data.getNumberOfValues());
+		assertEquals(12, data.getNumberOfGroups());
 	}
 
 	@Test
@@ -56,7 +59,7 @@ public class ModelDataBuilderTest
 
 		IModelData data =
 				ModelDataBuilder.createFromBuffer(buffer).ofType(BufferType.BYTE).withId("dataId").named("myData")
-						.describedAs("some data").withNodata((byte) 1).withUnits(SI.SECOND).build();
+						.describedAs("some data").withNodata((byte) 1).withUnits(SI.SECOND).withGroupSize(3).build();
 
 		assertEquals("dataId", data.getId());
 		assertEquals("myData", data.getName());
@@ -65,5 +68,16 @@ public class ModelDataBuilderTest
 		assertEquals((byte) 1, data.getNoDataValue());
 		assertTrue(data.hasUnits());
 		assertEquals(SI.SECOND, data.getUnits());
+		assertEquals(3, data.getGroupSize());
+		assertEquals(12, data.getNumberOfValues());
+		assertEquals(4, data.getNumberOfGroups());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testBuildWithInvalidGroupSize()
+	{
+		ByteBuffer buffer = ByteBuffer.wrap(new byte[12]);
+
+		ModelDataBuilder.createFromBuffer(buffer).ofType(BufferType.BYTE).withGroupSize(0).build();
 	}
 }
