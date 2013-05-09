@@ -92,6 +92,7 @@ public class NotificationCategory implements Serializable
 		{
 			throw new IllegalArgumentException("A category with ID " + id + " already exists"); //$NON-NLS-1$//$NON-NLS-2$
 		}
+		this.id = id;
 		this.label = label;
 	}
 
