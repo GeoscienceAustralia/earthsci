@@ -155,4 +155,13 @@ public class GDALRasterModelParameters
 	{
 		return subsample;
 	}
+
+	/**
+	 * @return A normalised subsample value to use that will never return a null
+	 *         or non-positive number.
+	 */
+	public int getNormalisedSubsample()
+	{
+		return subsample == null ? 1 : Math.max(1, subsample);
+	}
 }

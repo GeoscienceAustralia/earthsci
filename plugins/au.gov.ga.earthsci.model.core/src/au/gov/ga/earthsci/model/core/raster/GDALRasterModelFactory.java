@@ -37,6 +37,7 @@ import au.gov.ga.earthsci.model.bounds.BoundingBox;
 import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.model.data.ModelDataBuilder;
 import au.gov.ga.earthsci.model.geometry.BasicColouredMeshGeometry;
+import au.gov.ga.earthsci.model.geometry.FaceType;
 import au.gov.ga.earthsci.model.geometry.ModelGeometryStatistics;
 import au.gov.ga.earthsci.model.render.RendererCreatorRegistry;
 import au.gov.ga.earthsci.worldwind.common.util.CoordinateTransformationUtil;
@@ -68,11 +69,15 @@ public class GDALRasterModelFactory
 
 		IModelData vertices = readVertices(ds, parameters, stats);
 
+		IModelData edges = createEdges(ds, parameters, stats, vertices);
+
 		BasicColouredMeshGeometry geometry =
 				new BasicColouredMeshGeometry(UUID.randomUUID().toString(),
 						ds.GetDescription(), ds.GetDescription());
 
 		geometry.setVertices(vertices);
+		geometry.setEdgeIndices(edges);
+		geometry.setFaceType(FaceType.TRIANGLE_STRIP);
 
 		geometry.setBoundingVolume(new BoundingBox(stats.getMinLon(), stats.getMaxLon(),
 				stats.getMinLat(), stats.getMaxLat(),
@@ -99,10 +104,10 @@ public class GDALRasterModelFactory
 	{
 		Band band = ds.GetRasterBand(parameters.getElevationBandIndex());
 
-		int columns = band.getXSize();
-		int rows = band.getYSize();
+		int rasterXSize = band.getXSize();
+		int rasterYSize = band.getYSize();
 
-		ByteBuffer buffer = readRasterBuffer(band, columns, rows);
+		ByteBuffer buffer = readRasterBuffer(band, rasterXSize, rasterYSize);
 
 		Double nodata = getNodata(band);
 
@@ -120,12 +125,12 @@ public class GDALRasterModelFactory
 		double[] transformedCoords = new double[2];
 		double[] projectedCoords = new double[VERTEX_GROUP_SIZE];
 
-		int stride = parameters.getSubsample() == null ? 1 : Math.max(1, parameters.getSubsample());
-		ByteBuffer vertices = allocateVerticesBuffer(columns, rows, stride);
+		int stride = parameters.getNormalisedSubsample();
+		ByteBuffer vertices = allocateVerticesBuffer(rasterXSize, rasterYSize, stride);
 
-		for (int y = 0; y < rows; y += stride)
+		for (int y = 0; y < rasterYSize; y += stride)
 		{
-			for (int x = 0; x < columns; x += stride)
+			for (int x = 0; x < rasterXSize; x += stride)
 			{
 				double datasetValue = getValue(buffer, sourceBufferType).doubleValue();
 				double elevation = toElevation(elevationOffset, elevationScale, datasetValue, nodata);
@@ -143,11 +148,11 @@ public class GDALRasterModelFactory
 
 				stats.updateStats(projectedCoords[1], projectedCoords[0], projectedCoords[2]);
 
-				int step = Math.min(stride, columns - x) - 1; // Skip stride values, or move to the end of the column
+				int step = Math.min(stride, rasterXSize - x) - 1; // Skip stride values, or move to the end of the column
 				skipValues(step, buffer, sourceBufferType);
 			}
-			int step = Math.min(stride, rows - y) - 1;
-			skipValues(columns * step, buffer, sourceBufferType);
+			int step = Math.min(stride, rasterYSize - y) - 1;
+			skipValues(rasterXSize * step, buffer, sourceBufferType);
 		}
 
 		// TODO Move name/description to constant somewhere for reuse as standard name
@@ -156,20 +161,90 @@ public class GDALRasterModelFactory
 				.withNodata(nodata == null ? null : nodata.floatValue())
 				.named("Vertices")
 				.describedAs("Vertices")
+				.withGroupSize(3)
 				.build();
 
 	}
 
-	private static ByteBuffer allocateVerticesBuffer(int columns, int rows, int subsample)
+	/**
+	 * Create and return an edge indices buffer from the provided dataset
+	 * parameters and vertices.
+	 * <p/>
+	 * The returned edges are intended for use with the
+	 * {@link FaceType#TRIANGLE_STRIP} type.
+	 */
+	private static IModelData createEdges(Dataset ds, GDALRasterModelParameters parameters,
+			ModelGeometryStatistics stats, IModelData vertices)
 	{
-		int numColumns = (columns + subsample - 1) / subsample;
-		int numRows = (rows + subsample - 1) / subsample;
+		Band band = ds.GetRasterBand(parameters.getElevationBandIndex());
+		int rasterXSize = band.getXSize();
+		int rasterYSize = band.getYSize();
 
-		int numVerts = numColumns * numRows; // Ensure the integer division rounds up
+		int subsample = parameters.getNormalisedSubsample();
+
+		int numColumns = subsample(rasterXSize, subsample);
+		int numRows = subsample(rasterYSize, subsample);
+
+		ByteBuffer edges = allocateEdgesBuffer(rasterXSize, rasterYSize, subsample);
+
+		for (int y = 0; y < numRows - 1; y++)
+		{
+			for (int x = 0; x < numColumns; x++)
+			{
+				int top = y * numColumns + x;
+				int bottom = top + numColumns;
+
+				edges.putInt(top);
+				edges.putInt(bottom);
+				if (x == numColumns - 1 && y < numRows - 2)
+				{
+					// Put two empty triangles to reset back to the next strip
+					edges.putInt(bottom);
+					edges.putInt(bottom);
+
+					int nextTop = (y + 1) * numColumns;
+					edges.putInt(nextTop);
+					edges.putInt(nextTop);
+				}
+			}
+		}
+
+		// Edges are full, so make sure limit is set appropriately
+		edges.limit(edges.position());
+
+		// TODO Move name/description to constant somewhere for reuse as standard name
+		return ModelDataBuilder.createFromBuffer(edges)
+				.ofType(BufferType.INT)
+				.named("Edges")
+				.describedAs("Edges")
+				.withGroupSize(1)
+				.build();
+	}
+
+	private static ByteBuffer allocateVerticesBuffer(int rasterXSize, int rasterYSize, int subsample)
+	{
+		int numColumns = subsample(rasterXSize, subsample);
+		int numRows = subsample(rasterYSize, subsample);
+
+		int numVerts = numColumns * numRows;
 
 		ByteBuffer vertices = ByteBuffer.allocate(numVerts * VERTEX_GROUP_SIZE * BufferType.FLOAT.getNumberOfBytes());
 		vertices.order(ByteOrder.nativeOrder());
 		return vertices;
+	}
+
+	private static ByteBuffer allocateEdgesBuffer(int rasterXSize, int rasterYSize, int subsample)
+	{
+		int numColumns = subsample(rasterXSize, subsample);
+		int numRows = subsample(rasterYSize, subsample);
+
+		// Each row has 2 indices for each vertex, plus 4 terminating indices (2 @ start and end)
+		// The exception is first and last row, which have only 1 index per vertex and no terminating indices
+		int numIndices = (2 * numColumns * (numRows - 1)) + 4 * (numRows - 2);
+
+		ByteBuffer edges = ByteBuffer.allocate(numIndices * BufferType.INT.getNumberOfBytes());
+		edges.order(ByteOrder.nativeOrder());
+		return edges;
 	}
 
 	private static CoordinateTransformation getCoordinateTransform(GDALRasterModelParameters parameters)
@@ -338,6 +413,11 @@ public class GDALRasterModelFactory
 			}
 		}
 		return false;
+	}
+
+	private static int subsample(int original, int subsample)
+	{
+		return (original + subsample - 1) / subsample;
 	}
 
 }

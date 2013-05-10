@@ -144,6 +144,11 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 		return edges;
 	}
 
+	public void setEdgeIndices(IModelData edges)
+	{
+		firePropertyChange(EDGE_INDICES_EVENT_NAME, this.edges, this.edges = edges);
+	}
+
 	@Override
 	public boolean hasEdgeIndices()
 	{
@@ -154,6 +159,11 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	public FaceType getFaceType()
 	{
 		return faceType;
+	}
+
+	public void setFaceType(FaceType faceType)
+	{
+		firePropertyChange(FACE_TYPE_EVENT_NAME, this.faceType, this.faceType = faceType);
 	}
 
 	@Override

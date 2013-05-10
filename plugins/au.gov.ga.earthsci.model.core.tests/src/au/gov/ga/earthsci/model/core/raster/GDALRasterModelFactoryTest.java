@@ -40,7 +40,7 @@ import au.gov.ga.earthsci.common.math.vector.Vector3;
 import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.model.bounds.BoundingBox;
 import au.gov.ga.earthsci.model.data.IModelData;
-import au.gov.ga.earthsci.model.geometry.IVertexColouredGeometry;
+import au.gov.ga.earthsci.model.geometry.IMeshGeometry;
 import au.gov.ga.earthsci.test.util.TestUtils;
 
 /**
@@ -59,9 +59,9 @@ public class GDALRasterModelFactoryTest
 			return;
 		}
 
-		gdal.PushErrorHandler("CPLQuietErrorHandler");
+		gdal.PushErrorHandler("CPLQuietErrorHandler"); //$NON-NLS-1$
 
-		if (gdal.GetConfigOption("GDAL_DATA") == null)
+		if (gdal.GetConfigOption("GDAL_DATA") == null) //$NON-NLS-1$
 		{
 			GDALDataSetup.run(new DataFileSource()
 			{
@@ -114,43 +114,44 @@ public class GDALRasterModelFactoryTest
 	@Test
 	public void testCreateWithValidRasterAndParams() throws Exception
 	{
-		Dataset ds = openRaster("testgrid.asc");
+		Dataset ds = openRaster("testgrid.asc"); //$NON-NLS-1$
 		GDALRasterModelParameters parameters = new GDALRasterModelParameters(ds);
-		parameters.setModelName("testgrid");
+		parameters.setModelName("testgrid"); //$NON-NLS-1$
 
 		GDALRasterModel result = GDALRasterModelFactory.createModel(ds, parameters);
 
-		assertLoadedModelCorrect(result,
-				"testgrid", ds.GetDescription(),
-				24,
+		assertLoadedModelCorrect(result, "testgrid", ds.GetDescription(), //$NON-NLS-1$
+				24, 4, 6,
 				0, 150,
 				50, 300,
-				-9999, 100);
+				-9999, 100,
+				new int[] { 0, 4, 1, 5, 2, 6, 3, 7, 7, 7, 4, 4, 4, 8, 5, 9 });
 	}
 
 	@Test
 	public void testCreateWithSubsampling() throws Exception
 	{
-		Dataset ds = openRaster("testgrid.asc");
+		Dataset ds = openRaster("testgrid.asc"); //$NON-NLS-1$
 		GDALRasterModelParameters parameters = new GDALRasterModelParameters(ds);
 		parameters.setSubsample(3);
 
 		GDALRasterModel result = GDALRasterModelFactory.createModel(ds, parameters);
 
-		assertLoadedModelCorrect(result,
-				"testgrid.asc", ds.GetDescription(),
-				4,
+		assertLoadedModelCorrect(result, "testgrid.asc", ds.GetDescription(), //$NON-NLS-1$
+				4, 2, 2,
 				0, 150,
 				150, 300,
-				-9999, 32);
+				-9999, 32,
+				new int[] { 0, 2, 1, 3 });
 	}
 
 	private void assertLoadedModelCorrect(GDALRasterModel result,
 			String name, String description,
-			int expectedNumVertices,
+			int expectedNumVertices, int xSize, int ySize,
 			double minX, double maxX,
 			double minY, double maxY,
-			double minZ, double maxZ)
+			double minZ, double maxZ,
+			int[] exampleEdges)
 	{
 		// Single result with correct names
 		assertNotNull(result);
@@ -162,7 +163,7 @@ public class GDALRasterModelFactoryTest
 		assertNotNull(result.getGeometries());
 		assertEquals(1, result.getGeometries().size());
 
-		IVertexColouredGeometry geometry = (IVertexColouredGeometry) result.getGeometries().get(0);
+		IMeshGeometry geometry = (IMeshGeometry) result.getGeometries().get(0);
 		assertNotNull(geometry);
 
 		// With the correct vertices
@@ -196,6 +197,21 @@ public class GDALRasterModelFactoryTest
 			count++;
 		}
 		assertEquals(expectedNumVertices, count);
+
+		// Edges should be set
+		assertTrue(geometry.hasEdgeIndices());
+		IModelData edgeData = geometry.getEdgeIndices();
+		assertNotNull(edgeData);
+		assertEquals(BufferType.INT, edgeData.getBufferType());
+
+		int numIndices = (2 * xSize * (ySize - 1)) + 4 * (ySize - 2);
+		assertEquals(numIndices * BufferType.INT.getNumberOfBytes(), edgeData.getSource().limit());
+
+		source = edgeData.getSource();
+		for (int i = 0; i < exampleEdges.length; i++)
+		{
+			assertEquals(exampleEdges[i], source.getInt());
+		}
 
 		// A renderer should always be set
 		assertNotNull(geometry.getRenderer());

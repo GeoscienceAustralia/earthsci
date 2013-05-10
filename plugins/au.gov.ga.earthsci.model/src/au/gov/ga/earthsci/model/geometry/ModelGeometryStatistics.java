@@ -23,6 +23,8 @@ public class ModelGeometryStatistics
 	private Double minElevation;
 	private Double maxElevation;
 
+	private long numPoints;
+
 	/**
 	 * Create a new, empty statistics instance
 	 */
@@ -48,6 +50,7 @@ public class ModelGeometryStatistics
 	{
 		updateStats(minLat, minLon, minElevation);
 		updateStats(maxLat, maxLon, maxElevation);
+		numPoints = 0;
 	}
 
 	public Double getMinLat()
@@ -83,12 +86,15 @@ public class ModelGeometryStatistics
 	/**
 	 * Update the statistics with the given latitude, longitude and elevation
 	 * values
+	 * <p/>
+	 * The total number of points recorded will also be incremented.
 	 */
 	public void updateStats(Double lat, Double lon, Double elevation)
 	{
 		updateLatStats(lat);
 		updateLonStats(lon);
 		updateElevationStats(elevation);
+		numPoints++;
 	}
 
 	/**
@@ -224,5 +230,15 @@ public class ModelGeometryStatistics
 			return;
 		}
 		maxElevation = Math.max(maxElevation, val);
+	}
+
+	public long getNumPoints()
+	{
+		return numPoints;
+	}
+
+	public void setNumPoints(long numPoints)
+	{
+		this.numPoints = numPoints;
 	}
 }
