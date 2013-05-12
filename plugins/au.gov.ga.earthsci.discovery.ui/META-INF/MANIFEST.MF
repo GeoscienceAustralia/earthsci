@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Discovery UI
+Bundle-SymbolicName: au.gov.ga.earthsci.discovery.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: au.gov.ga.earthsci.discovery.ui.Activator
+Bundle-Vendor: Geoscience Australia
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ au.gov.ga.earthsci.discovery;bundle-version="1.0.0",
+ org.eclipse.e4.ui.workbench;bundle-version="0.12.0",
+ javax.inject;bundle-version="1.0.0",
+ au.gov.ga.earthsci.application;bundle-version="1.0.0",
+ org.eclipse.e4.core.di;bundle-version="1.3.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Import-Package: javax.annotation;version="1.1.0"
+Export-Package: au.gov.ga.earthsci.discovery.ui
