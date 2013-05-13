@@ -3,6 +3,8 @@ package au.gov.ga.earthsci.model.core.render;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.util.OGLStackHandler;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLContext;
 import javax.media.opengl.GLUniformData;
@@ -46,7 +48,10 @@ public class BasicRenderer implements IModelGeometryRenderer
 	private WorldWindowRegistry wwRegistry;
 	private IVertexBasedGeometry geometry;
 
+	private AtomicBoolean isInitialised = new AtomicBoolean(false);
+
 	private AbstractVBO<?> vertexVBO;
+	private AbstractVBO<?> vertexColourVBO;
 	private AbstractVBO<?> edgesVBO;
 
 	private Integer renderMode;
@@ -86,18 +91,7 @@ public class BasicRenderer implements IModelGeometryRenderer
 		}
 		GL2 gl = (GL2) context.getGL();
 
-		if (vertexVBO == null)
-		{
-			vertexVBO = ModelDataVBO.createDataVBO(geometry.getVertices());
-		}
-		if (edgesVBO == null && geometry instanceof IMeshGeometry && ((IMeshGeometry) geometry).hasEdgeIndices())
-		{
-			edgesVBO = ModelDataVBO.createIndexVBO(((IMeshGeometry) geometry).getEdgeIndices());
-		}
-		if (renderMode == null)
-		{
-			renderMode = getModeForGeometry();
-		}
+		init();
 
 		OGLStackHandler stack = new OGLStackHandler();
 		stack.pushAttrib(gl, GL2.GL_CURRENT_BIT | GL2.GL_POINT_BIT | GL2.GL_POLYGON_BIT);
@@ -118,6 +112,13 @@ public class BasicRenderer implements IModelGeometryRenderer
 				throw new IllegalStateException("Uniforms not set correctly."); //$NON-NLS-1$
 			}
 
+			if (vertexColourVBO != null)
+			{
+				gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+				vertexColourVBO.bind(gl);
+				gl.glColorPointer(4, GL2.GL_FLOAT, 0, 0);
+			}
+
 			gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 			vertexVBO.bind(gl);
 			gl.glVertexPointer(geometry.getVertices().getGroupSize(), GL2.GL_FLOAT, 0, 0);
@@ -134,12 +135,52 @@ public class BasicRenderer implements IModelGeometryRenderer
 			}
 
 			checkForError(gl);
+
+			gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
+			gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 		finally
 		{
 			shaderState.useProgram(gl, false);
 			stack.pop(gl);
 		}
+	}
+
+	private void init()
+	{
+		if (isInitialised.get())
+		{
+			return;
+		}
+
+		if (vertexVBO == null)
+		{
+			vertexVBO = ModelDataVBO.createDataVBO(geometry.getVertices());
+		}
+		if (edgesVBO == null && geometryHasEdges())
+		{
+			edgesVBO = ModelDataVBO.createIndexVBO(((IMeshGeometry) geometry).getEdgeIndices());
+		}
+		if (vertexColourVBO == null && geometryHasVertexColours())
+		{
+			vertexColourVBO = ModelDataVBO.createDataVBO(((IVertexColouredGeometry) geometry).getVertexColour());
+		}
+		if (renderMode == null)
+		{
+			renderMode = getModeForGeometry();
+		}
+
+		isInitialised.set(true);
+	}
+
+	private boolean geometryHasEdges()
+	{
+		return geometry instanceof IMeshGeometry && ((IMeshGeometry) geometry).hasEdgeIndices();
+	}
+
+	private boolean geometryHasVertexColours()
+	{
+		return geometry instanceof IVertexColouredGeometry && ((IVertexColouredGeometry) geometry).hasVertexColour();
 	}
 
 	private void checkForError(GL2 gl)

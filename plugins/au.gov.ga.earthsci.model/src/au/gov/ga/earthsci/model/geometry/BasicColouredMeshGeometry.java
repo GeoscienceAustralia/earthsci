@@ -138,6 +138,11 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 		return colourType;
 	}
 
+	public void setColourType(ColourType colourType)
+	{
+		firePropertyChange(VERTEX_COLOUR_TYPE_EVENT_NAME, this.colourType, this.colourType = colourType);
+	}
+
 	@Override
 	public IModelData getEdgeIndices()
 	{

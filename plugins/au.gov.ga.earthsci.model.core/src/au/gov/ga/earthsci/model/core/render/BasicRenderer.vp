@@ -31,6 +31,8 @@ void main(void)
 	//project the geodetic coordinates to cartesian space
 	vec3 cartesian = geodeticToCartesian(geodetic, cosSinLatLon);
 
+	gl_FrontColor = gl_Color;
+
 	//output the vertex position
 	gl_Position = gl_ModelViewProjectionMatrix * vec4(cartesian, 1.0);
 }
