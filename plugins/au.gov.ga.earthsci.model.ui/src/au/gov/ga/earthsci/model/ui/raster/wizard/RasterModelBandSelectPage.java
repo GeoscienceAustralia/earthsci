@@ -25,6 +25,7 @@ public class RasterModelBandSelectPage extends AbstractRasterModelPage
 	private Text scaleField;
 	private Text offsetField;
 	private Combo bandDropdown;
+	private Text subsampleField;
 
 	protected RasterModelBandSelectPage(Dataset dataset, GDALRasterModelParameters params)
 	{
@@ -36,6 +37,17 @@ public class RasterModelBandSelectPage extends AbstractRasterModelPage
 	protected void addContents(Composite container)
 	{
 		// Raster band select
+		addRasterBandGroup(container);
+
+		// Scale and offset
+		addScaleOffsetGroup(container);
+
+		// Subsample
+		addSubsampleGroup(container);
+	}
+
+	private void addRasterBandGroup(Composite container)
+	{
 		Group rasterBandGroup = addGroup(Messages.RasterModelBandSelectPage_BandSelectGroupTitle,
 				Messages.RasterModelBandSelectPage_BandSelectGroupDescription,
 				container);
@@ -47,8 +59,10 @@ public class RasterModelBandSelectPage extends AbstractRasterModelPage
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.grabExcessHorizontalSpace = true;
 		bandDropdown.setLayoutData(gd);
+	}
 
-		// Scale and offset
+	private void addScaleOffsetGroup(Composite container)
+	{
 		Group scaleOffsetBandGroup = addGroup(Messages.RasterModelBandSelectPage_ScaleOffsetGroupTitle,
 				Messages.RasterModelBandSelectPage_ScaleOffsetGroupDescription,
 				container);
@@ -68,6 +82,23 @@ public class RasterModelBandSelectPage extends AbstractRasterModelPage
 		offsetField.setText(params.getOffset() == null ? "" : params.getOffset().toString()); //$NON-NLS-1$
 		offsetField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		registerField(offsetField);
+	}
+
+	private void addSubsampleGroup(Composite container)
+	{
+		Group subsampleGroup =
+				addGroup(
+						Messages.RasterModelBandSelectPage_SubsampleGroupTitle,
+						Messages.RasterModelBandSelectPage_SubsampleGroupDescription,
+						container,
+						1, true);
+
+		Label subsampleLabel = new Label(subsampleGroup, SWT.NONE);
+		subsampleLabel.setText(Messages.RasterModelBandSelectPage_SubsampleFactorLabel);
+
+		subsampleField = new Text(subsampleGroup, SWT.BORDER);
+		subsampleField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		registerField(subsampleField);
 	}
 
 	public Combo createBandDropdown(Composite parent)
@@ -98,6 +129,7 @@ public class RasterModelBandSelectPage extends AbstractRasterModelPage
 		params.setElevationBandIndex(bandDropdown.getSelectionIndex() + 1); // Bands are 1-indexed
 		params.setScaleFactor(getDoubleOrNull(scaleField.getText()));
 		params.setOffset(getDoubleOrNull(offsetField.getText()));
+		params.setSubsample(getIntegerOrNull(subsampleField.getText()));
 	}
 
 	@Override
@@ -110,8 +142,12 @@ public class RasterModelBandSelectPage extends AbstractRasterModelPage
 
 		if (!isNumericOrEmpty(offsetField.getText()))
 		{
-
 			markInvalid(offsetField, Messages.RasterModelBandSelectPage_InvalidOffsetMessage);
+		}
+
+		if (!isIntegerOrEmpty(subsampleField.getText()))
+		{
+			markInvalid(subsampleField, Messages.RasterModelBandSelectPage_SubsampleFactorValidationMessage);
 		}
 	}
 }

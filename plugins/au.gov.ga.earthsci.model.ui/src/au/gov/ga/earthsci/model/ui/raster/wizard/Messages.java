@@ -37,12 +37,10 @@ public class Messages extends NLS
 	public static String RasterModelProjectionPage_UsePreDefinedDescription;
 	public static String RasterModelProjectionPage_UseUserDefinedButtonText;
 	public static String RasterModelProjectionPage_UseUserDefinedDescription;
-	public static String RasterModelSubSamplePage_PageDescription;
-	public static String RasterModelSubSamplePage_PageTitle;
-	public static String RasterModelSubSamplePage_SubsampleFactorLabel;
-	public static String RasterModelSubSamplePage_SubsampleFactorValidationMessage;
-	public static String RasterModelSubSamplePage_SubsampleGroupDescription;
-	public static String RasterModelSubSamplePage_SubsampleGroupTitle;
+	public static String RasterModelBandSelectPage_SubsampleFactorLabel;
+	public static String RasterModelBandSelectPage_SubsampleFactorValidationMessage;
+	public static String RasterModelBandSelectPage_SubsampleGroupDescription;
+	public static String RasterModelBandSelectPage_SubsampleGroupTitle;
 	static
 	{
 		// initialize resource bundle
