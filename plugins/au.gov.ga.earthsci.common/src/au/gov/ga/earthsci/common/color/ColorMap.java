@@ -20,7 +20,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.UUID;
 
+import au.gov.ga.earthsci.common.util.IDescribed;
+import au.gov.ga.earthsci.common.util.INamed;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
@@ -32,7 +35,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  * 
  * @see au.gov.ga.earthsci.worldwind.common.util.ColorMap
  */
-public class ColorMap
+public class ColorMap implements INamed, IDescribed
 {
 
 	public static enum InterpolationMode
@@ -155,6 +158,10 @@ public class ColorMap
 
 	private TreeMap<Double, Color> entries = new TreeMap<Double, Color>();
 
+	private final String name;
+
+	private final String description;
+
 	/**
 	 * Create a new colour map using the provided entries. The instance will use
 	 * RGB interpolation, will return {@code RGB(0,0,0,0)} for NODATA values and
@@ -165,17 +172,33 @@ public class ColorMap
 	 */
 	public ColorMap(Map<Double, Color> entries)
 	{
-		this(entries, DEFAULT_NODATA, InterpolationMode.INTERPOLATE_RGB, false);
+		this(null, null, entries, DEFAULT_NODATA, InterpolationMode.INTERPOLATE_RGB, false);
 	}
 
 	/**
 	 * Create a new fully configured colour map.
 	 * 
+	 * 
+	 * @param name
+	 *            The (localised) human-readable name for the colour map.
+	 *            (Optional - if missing will use an auto-generated name).
+	 * @param description
+	 *            The (localised) human-readable description for the colour map
+	 *            (Optional - if missing will have no description).
 	 * @param entries
-	 *            The colour map entries to use
+	 *            The colour map entries to use (Required).
 	 * @param nodataColour
+	 *            The nodata colour to associate with this map (Optional - if
+	 *            missing will return <code>null</code> for nodata).
+	 * @param mode
+	 *            The interpolation mode for this map (Optional - if missing
+	 *            will default to {@link InterpolationMode#INTERPOLATE_RGB})
+	 * @param valuesArePercentages
+	 *            Whether the map uses percentages (<code>true</code>) or
+	 *            absolute values (<code>true</code>).
 	 */
-	public ColorMap(Map<Double, Color> entries, Color nodataColour,
+	public ColorMap(String name, String description,
+			Map<Double, Color> entries, Color nodataColour,
 			InterpolationMode mode, boolean valuesArePercentages)
 	{
 		if (entries != null)
@@ -185,6 +208,8 @@ public class ColorMap
 		this.nodataColour = nodataColour;
 		this.mode = mode == null ? InterpolationMode.INTERPOLATE_RGB : mode;
 		this.valuesArePercentages = valuesArePercentages;
+		this.name = name == null ? Messages.ColorMap_DefaultColorMapName + UUID.randomUUID().toString() : name;
+		this.description = description;
 	}
 
 
@@ -271,5 +296,17 @@ public class ColorMap
 	public Map<Double, Color> getEntries()
 	{
 		return Collections.unmodifiableMap(entries);
+	}
+
+	@Override
+	public String getName()
+	{
+		return name;
+	}
+
+	@Override
+	public String getDescription()
+	{
+		return description;
 	}
 }

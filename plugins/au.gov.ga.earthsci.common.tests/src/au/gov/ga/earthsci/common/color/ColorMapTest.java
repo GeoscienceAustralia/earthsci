@@ -47,7 +47,8 @@ public class ColorMapTest
 	@Test
 	public void testFullConstructor()
 	{
-		ColorMap classUnderTest = new ColorMap(null, new Color(1, 1, 1, 1), InterpolationMode.EXACT_MATCH, true);
+		ColorMap classUnderTest =
+				new ColorMap(null, null, null, new Color(1, 1, 1, 1), InterpolationMode.EXACT_MATCH, true);
 
 		assertEquals(InterpolationMode.EXACT_MATCH, classUnderTest.getMode());
 		assertColorsEqual(new Color(1, 1, 1, 1), classUnderTest.getNodataColour());
@@ -68,7 +69,8 @@ public class ColorMapTest
 	@Test
 	public void testGetColorExactMatchPercentages()
 	{
-		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES, null, InterpolationMode.EXACT_MATCH, true);
+		ColorMap classUnderTest =
+				new ColorMap(null, null, PERCENTAGE_ENTRIES, null, InterpolationMode.EXACT_MATCH, true);
 
 		assertColorsEqual(new Color(1.0f, 0.0f, 0.0f, 0.0f), classUnderTest.getColor(0.0));
 		assertColorsEqual(null, classUnderTest.getColor(0.5));
@@ -78,7 +80,8 @@ public class ColorMapTest
 	@Test
 	public void testGetColorNearestMatchPercentages()
 	{
-		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, true);
+		ColorMap classUnderTest =
+				new ColorMap(null, null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, true);
 
 		assertColorsEqual(new Color(1.0f, 0.0f, 0.0f, 0.0f), classUnderTest.getColor(0.0));
 		assertColorsEqual(new Color(0.0f, 0.0f, 1.0f, 0.0f), classUnderTest.getColor(0.5));
@@ -88,7 +91,8 @@ public class ColorMapTest
 	@Test
 	public void testGetColorRGBInterpolationPercentages()
 	{
-		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES, null, InterpolationMode.INTERPOLATE_RGB, true);
+		ColorMap classUnderTest =
+				new ColorMap(null, null, PERCENTAGE_ENTRIES, null, InterpolationMode.INTERPOLATE_RGB, true);
 
 		assertColorsEqual(new Color(1.0f, 0.0f, 0.0f, 0.0f), classUnderTest.getColor(0.0));
 		assertColorsEqual(new Color(0.0f, 0.333f, 0.666f, 0.0f), classUnderTest.getColor(0.5));
@@ -98,7 +102,8 @@ public class ColorMapTest
 	@Test
 	public void testGetColorHueInterpolationPercentages()
 	{
-		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES, null, InterpolationMode.INTERPOLATE_HUE, true);
+		ColorMap classUnderTest =
+				new ColorMap(null, null, PERCENTAGE_ENTRIES, null, InterpolationMode.INTERPOLATE_HUE, true);
 
 		assertColorsEqual(new Color(1.0f, 0.0f, 0.0f, 0.0f), classUnderTest.getColor(0.0));
 		assertColorsEqual(new Color(0.0f, 0.666f, 1.0f, 0.0f), classUnderTest.getColor(0.5));
@@ -108,7 +113,8 @@ public class ColorMapTest
 	@Test
 	public void testGetColorFromAbsoluteWithPercentages()
 	{
-		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, true);
+		ColorMap classUnderTest =
+				new ColorMap(null, null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, true);
 
 		assertColorsEqual(new Color(1.0f, 0.0f, 0.0f, 0.0f), classUnderTest.getColor(10, 10, 100));
 		assertColorsEqual(new Color(0.0f, 0.0f, 1.0f, 0.0f), classUnderTest.getColor(55, 10, 100));
@@ -118,7 +124,8 @@ public class ColorMapTest
 	@Test
 	public void testGetColorFromAbsoluteWithNonPercentages()
 	{
-		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, false);
+		ColorMap classUnderTest =
+				new ColorMap(null, null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, false);
 
 		assertColorsEqual(new Color(0.0f, 0.0f, 0.0f, 1.0f), classUnderTest.getColor(10, 10, 100));
 		assertColorsEqual(new Color(0.0f, 0.0f, 0.0f, 1.0f), classUnderTest.getColor(55, 10, 100));
