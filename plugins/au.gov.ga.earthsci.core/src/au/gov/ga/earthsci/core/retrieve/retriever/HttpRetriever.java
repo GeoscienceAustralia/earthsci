@@ -145,9 +145,31 @@ public class HttpRetriever implements IRetriever
 
 			checkMonitor(monitor);
 
+			byte[] payload = null;
+			if (retrievalProperties instanceof HttpRetrievalProperties)
+			{
+				HttpRetrievalProperties httpRetrievalProperties = (HttpRetrievalProperties) retrievalProperties;
+				if (!Util.isEmpty(httpRetrievalProperties.getRequestMethod()))
+				{
+					connection.setRequestMethod(httpRetrievalProperties.getRequestMethod());
+				}
+				payload = httpRetrievalProperties.getRequestPayload();
+			}
+
 			//connect
 			monitor.updateStatus(RetrievalStatus.CONNECTING);
-			connection.connect();
+			if (payload != null)
+			{
+				connection.setDoOutput(true);
+				connection.setFixedLengthStreamingMode(payload.length);
+
+				OutputStream os = connection.getOutputStream();
+				os.write(payload);
+			}
+			else
+			{
+				connection.connect();
+			}
 
 			checkMonitor(monitor);
 

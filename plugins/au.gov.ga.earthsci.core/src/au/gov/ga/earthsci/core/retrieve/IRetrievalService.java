@@ -60,6 +60,25 @@ public interface IRetrievalService
 	IRetrieval retrieve(Object caller, URL url, IRetrievalProperties retrievalProperties);
 
 	/**
+	 * Retrieve the given URL. If <code>ignoreDuplicates</code> is true, the URL
+	 * is retrieved even if it is already currently being retrieved by another
+	 * retrieval. Otherwise the caller is added to the old {@link IRetrieval}.
+	 * <p/>
+	 * The returned retrieval object is not automatically started;
+	 * {@link IRetrieval#start()} should be called to begin retrieval.
+	 * 
+	 * @param caller
+	 *            Object requesting the retrieval
+	 * @param url
+	 *            URL to retrieve
+	 * @param retrievalProperties
+	 *            Properties to use when retrieving the URL
+	 * @param ignoreDuplicates
+	 * @return {@link IRetrieval} used to retrieve the resource from the URL
+	 */
+	IRetrieval retrieve(Object caller, URL url, IRetrievalProperties retrievalProperties, boolean ignoreDuplicates);
+
+	/**
 	 * Get the {@link IRetrieval} that is currently retrieving the given URL, if
 	 * it exists.
 	 * 
