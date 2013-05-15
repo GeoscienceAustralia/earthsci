@@ -91,6 +91,8 @@ public class BasicModelLayer extends AbstractLayer implements IModelLayer, IProp
 		{
 			this.models.addAll(Arrays.asList(models));
 		}
+
+		setOpacity(getOpacity());
 	}
 
 	/**
@@ -111,6 +113,7 @@ public class BasicModelLayer extends AbstractLayer implements IModelLayer, IProp
 		{
 			this.models.addAll(Arrays.asList(models));
 		}
+		setOpacity(getOpacity());
 	}
 
 	@Override
@@ -244,6 +247,29 @@ public class BasicModelLayer extends AbstractLayer implements IModelLayer, IProp
 
 	}
 
+	@Override
+	public void setOpacity(double opacity)
+	{
+		super.setOpacity(opacity);
+		modelsLock.readLock().lock();
+		try
+		{
+			for (IModel model : models)
+			{
+				model.setOpacity(opacity);
+			}
+		}
+		finally
+		{
+			modelsLock.readLock().unlock();
+		}
+	}
+
+	@Override
+	public double getOpacity()
+	{
+		return super.getOpacity();
+	}
 
 	/**
 	 * @param renderer

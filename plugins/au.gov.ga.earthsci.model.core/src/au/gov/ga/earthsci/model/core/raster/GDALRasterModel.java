@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import org.gdal.gdal.Dataset;
 
+import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
 import au.gov.ga.earthsci.model.IModel;
 import au.gov.ga.earthsci.model.geometry.IModelGeometry;
 import au.gov.ga.earthsci.model.geometry.IVertexBasedGeometry;
@@ -35,7 +36,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class GDALRasterModel implements IModel
+public class GDALRasterModel extends AbstractPropertyChangeBean implements IModel
 {
 
 	private final String id;
@@ -145,5 +146,18 @@ public class GDALRasterModel implements IModel
 	public boolean hasParameters()
 	{
 		return parameters != null;
+	}
+
+	@Override
+	public void setOpacity(double opacity)
+	{
+		firePropertyChange(OPACITY_EVENT_NAME, geometry.getOpacity(), opacity);
+		geometry.setOpacity(opacity);
+	}
+
+	@Override
+	public double getOpacity()
+	{
+		return geometry.getOpacity();
 	}
 }

@@ -32,6 +32,8 @@ import au.gov.ga.earthsci.model.render.IModelGeometryRenderer;
  * is changed</dd>
  * <dt>{@value #BOUNDING_VOLUME_EVENT_NAME}</dt>
  * <dd>Issued when the bounding volume for this geometry changes</dd>
+ * <dt>{@value #OPACITY_EVENT_NAME}</dt>
+ * <dd>Fired when the opacity on this geometry changes (if applicable)</dd>
  * </dl>
  * 
  * @author James Navin (james.navin@ga.gov.au)
@@ -42,6 +44,7 @@ public interface IModelGeometry extends IIdentifiable, INamed, IDescribed, IProp
 	String RENDERER_EVENT_NAME = "renderer"; //$NON-NLS-1$
 	String DATA_EVENT_NAME = "data"; //$NON-NLS-1$
 	String BOUNDING_VOLUME_EVENT_NAME = "boundingVolume"; //$NON-NLS-1$
+	String OPACITY_EVENT_NAME = "opacity"; //$NON-NLS-1$
 
 	/**
 	 * Return the renderer associated with this geometry, if there is one.
@@ -110,4 +113,25 @@ public interface IModelGeometry extends IIdentifiable, INamed, IDescribed, IProp
 	 *         <code>false</code> otherwise.
 	 */
 	boolean hasBoundingVolume();
+
+	/**
+	 * Set the opacity on this geometry.
+	 * <p/>
+	 * Values should be in the range {@code [0,1]} where 0 = fully transparent
+	 * and 1 = fully opaque.
+	 * 
+	 * @param opacity
+	 *            The opacity to set, in the range {@code [0,1]}
+	 */
+	void setOpacity(double opacity);
+
+	/**
+	 * Return current opacity value for this geometry.
+	 * <p/>
+	 * Value will be in the range {@code [0,1]} where 0 = fully transparent and
+	 * 1 = fully opaque.
+	 * 
+	 * @return The current opacity for this geometry.
+	 */
+	double getOpacity();
 }

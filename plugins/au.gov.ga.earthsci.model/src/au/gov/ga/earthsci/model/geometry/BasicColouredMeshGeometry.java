@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
+import au.gov.ga.earthsci.common.util.MathUtil;
 import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.model.bounds.IBoundingVolume;
 import au.gov.ga.earthsci.model.data.IModelData;
@@ -24,6 +25,8 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	private final String id;
 	private String name;
 	private String description;
+
+	private double opacity = 1.0;
 
 	private IModelData vertices;
 
@@ -233,6 +236,18 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	public boolean useZMasking()
 	{
 		return zMasked;
+	}
+
+	@Override
+	public double getOpacity()
+	{
+		return this.opacity;
+	}
+
+	@Override
+	public void setOpacity(double opacity)
+	{
+		firePropertyChange(OPACITY_EVENT_NAME, this.opacity, this.opacity = MathUtil.clamp(opacity, 0.0, 1.0));
 	}
 
 	private void updateMaps(IModelData oldData, IModelData newData, String key)

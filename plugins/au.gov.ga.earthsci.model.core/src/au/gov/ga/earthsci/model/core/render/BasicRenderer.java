@@ -41,6 +41,8 @@ public class BasicRenderer implements IModelGeometryRenderer
 
 	private static final String FRAGMENT_SHADER = "BasicRenderer.fp"; //$NON-NLS-1$
 	private static final String VERTEX_SHADER = "BasicRenderer.vp"; //$NON-NLS-1$
+
+	private static final String OPACITY = "opacity"; //$NON-NLS-1$
 	private static final String VE = "ve"; //$NON-NLS-1$
 	private static final String ES = "es"; //$NON-NLS-1$
 	private static final String RADIUS = "radius"; //$NON-NLS-1$
@@ -106,6 +108,7 @@ public class BasicRenderer implements IModelGeometryRenderer
 
 			Globe globe = wwRegistry.getRenderingView().getGlobe();
 			boolean uniformsSet = true;
+			uniformsSet &= shaderState.uniform(gl, new GLUniformData(OPACITY, (float) geometry.getOpacity()));
 			uniformsSet &= shaderState.uniform(gl, new GLUniformData(RADIUS, (float) globe.getRadius()));
 			uniformsSet &= shaderState.uniform(gl, new GLUniformData(ES, (float) globe.getEccentricitySquared()));
 			uniformsSet &= shaderState.uniform(gl, new GLUniformData(VE, (float) veService.get()));

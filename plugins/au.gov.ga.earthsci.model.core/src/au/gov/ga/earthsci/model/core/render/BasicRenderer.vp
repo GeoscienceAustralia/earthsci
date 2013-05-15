@@ -8,6 +8,8 @@
 // @author Michael de Hoog (michael.dehoog@ga.gov.au)
 // @author James Navin (james.navin@ga.gov.au)
  
+uniform float opacity; // Opacity in range [0,1] 
+
 uniform float radius; //globe radius
 uniform float es; //eccentricity squared
 uniform float ve; //vertical exaggeration
@@ -37,7 +39,7 @@ void main(void)
 	//project the geodetic coordinates to cartesian space
 	vec3 cartesian = geodeticToCartesian(geodetic, cosSinLatLon);
 
-	gl_FrontColor = gl_Color;
+	gl_FrontColor = vec4(gl_Color.rgb, gl_Color.a * opacity);
 
 	//output the vertex position
 	gl_Position = gl_ModelViewProjectionMatrix * vec4(cartesian, 1.0);
