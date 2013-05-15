@@ -17,6 +17,8 @@ package au.gov.ga.earthsci.model.core.raster;
 
 import org.gdal.gdal.Dataset;
 
+import au.gov.ga.earthsci.common.color.ColorMap;
+import au.gov.ga.earthsci.common.color.ColorMaps;
 import au.gov.ga.earthsci.common.util.FileUtil;
 import au.gov.ga.earthsci.model.IModel;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
@@ -51,6 +53,9 @@ public class GDALRasterModelParameters
 	/** An (optional) subsample rate to apply to raster data on creation */
 	// TODO: Support better subsampling methods (downscaling and filtering etc.)
 	private Integer subsample;
+
+	/** A colour map used to apply colouring to the loaded model */
+	private ColorMap colorMap = ColorMaps.getRGBRainbowMap();
 
 	/**
 	 * Create a new parameters object, populated with any sensible defaults
@@ -163,5 +168,15 @@ public class GDALRasterModelParameters
 	public int getNormalisedSubsample()
 	{
 		return subsample == null ? 1 : Math.max(1, subsample);
+	}
+
+	public ColorMap getColorMap()
+	{
+		return colorMap;
+	}
+
+	public void setColorMap(ColorMap colorMap)
+	{
+		this.colorMap = colorMap;
 	}
 }

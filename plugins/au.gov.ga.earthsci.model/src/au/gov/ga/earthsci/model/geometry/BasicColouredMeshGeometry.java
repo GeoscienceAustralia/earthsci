@@ -18,7 +18,7 @@ import au.gov.ga.earthsci.model.render.IModelGeometryRenderer;
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implements IMeshGeometry,
-		IVertexColouredGeometry
+		IVertexColouredGeometry, IMaskedGeometry
 {
 
 	private final String id;
@@ -26,6 +26,9 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	private String description;
 
 	private IModelData vertices;
+
+	private IModelData mask;
+	private boolean zMasked;
 
 	private IModelData normals;
 
@@ -76,6 +79,7 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 
 	public void setVertices(IModelData vertices)
 	{
+		updateMaps(this.vertices, vertices, VERTICES_KEY);
 		firePropertyChange(VERTICES_EVENT_NAME, this.vertices, this.vertices = vertices);
 	}
 
@@ -123,6 +127,7 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 
 	public void setVertexColour(IModelData colours)
 	{
+		updateMaps(this.colours, colours, VERTEX_COLOUR_KEY);
 		firePropertyChange(VERTEX_COLOUR_EVENT_NAME, this.colours, this.colours = colours);
 	}
 
@@ -151,6 +156,7 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 
 	public void setEdgeIndices(IModelData edges)
 	{
+		updateMaps(this.edges, edges, EDGE_INDICES_KEY);
 		firePropertyChange(EDGE_INDICES_EVENT_NAME, this.edges, this.edges = edges);
 	}
 
@@ -198,5 +204,62 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	public boolean hasBoundingVolume()
 	{
 		return bounds != null;
+	}
+
+	@Override
+	public IModelData getMask()
+	{
+		return mask;
+	}
+
+	public void setMask(IModelData mask)
+	{
+		updateMaps(this.mask, mask, MASK_KEY);
+		firePropertyChange(MASK_EVENT_NAME, this.mask, this.mask = mask);
+	}
+
+	@Override
+	public boolean hasMask()
+	{
+		return mask != null;
+	}
+
+	public void setUseZMasking(boolean use)
+	{
+		this.zMasked = use;
+	}
+
+	@Override
+	public boolean useZMasking()
+	{
+		return zMasked;
+	}
+
+	private void updateMaps(IModelData oldData, IModelData newData, String key)
+	{
+		removeFromMaps(oldData, key);
+		addToMaps(oldData, key);
+	}
+
+	private void removeFromMaps(IModelData object, String key)
+	{
+		if (object == null)
+		{
+			return;
+		}
+
+		dataById.remove(object.getId());
+		dataByKey.remove(key);
+	}
+
+	private void addToMaps(IModelData object, String key)
+	{
+		if (object == null)
+		{
+			return;
+		}
+
+		dataById.put(object.getId(), object);
+		dataByKey.put(key, object);
 	}
 }

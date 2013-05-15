@@ -11,6 +11,9 @@
 uniform float radius; //globe radius
 uniform float es; //eccentricity squared
 uniform float ve; //vertical exaggeration
+uniform float zNodata; //nodata mask encoded in Z values
+
+varying float mask;
 
 vec3 geodeticToCartesian(vec3 geodetic, vec4 cosSinLatLon)
 {
@@ -24,6 +27,9 @@ vec3 geodeticToCartesian(vec3 geodetic, vec4 cosSinLatLon)
 void main(void)
 {
 	vec3 geodetic = vec3(radians(gl_Vertex.xy), ve * gl_Vertex.z);
+	
+	// Mask will be 0 where Z == zNodata; 1 everywhere else.
+	mask = step(zNodata, gl_Vertex.z) * (1 - step(gl_Vertex.z, zNodata)); 
 	
 	//calculate the sine and cosine of the latitude/longitude angles
 	vec4 cosSinLatLon = vec4(cos(geodetic.y), sin(geodetic.y), cos(geodetic.x), sin(geodetic.x));

@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.util.Validate;
+import au.gov.ga.earthsci.model.geometry.ColourType;
 import au.gov.ga.earthsci.model.geometry.IMeshGeometry;
 import au.gov.ga.earthsci.model.geometry.IModelGeometry;
 import au.gov.ga.earthsci.model.geometry.IVertexBasedGeometry;
@@ -43,6 +44,7 @@ public class BasicRenderer implements IModelGeometryRenderer
 	private static final String VE = "ve"; //$NON-NLS-1$
 	private static final String ES = "es"; //$NON-NLS-1$
 	private static final String RADIUS = "radius"; //$NON-NLS-1$
+	private static final String ZNODATA = "zNodata"; //$NON-NLS-1$
 
 	private VerticalExaggerationService veService = VerticalExaggerationService.INSTANCE;
 	private WorldWindowRegistry wwRegistry;
@@ -94,7 +96,7 @@ public class BasicRenderer implements IModelGeometryRenderer
 		init();
 
 		OGLStackHandler stack = new OGLStackHandler();
-		stack.pushAttrib(gl, GL2.GL_CURRENT_BIT | GL2.GL_POINT_BIT | GL2.GL_POLYGON_BIT);
+		stack.pushAttrib(gl, GL2.GL_CURRENT_BIT | GL2.GL_POINT_BIT | GL2.GL_POLYGON_BIT | GL2.GL_ALPHA_BITS);
 		stack.pushClientAttrib(gl, GL2.GL_CLIENT_VERTEX_ARRAY_BIT);
 		try
 		{
@@ -107,16 +109,22 @@ public class BasicRenderer implements IModelGeometryRenderer
 			uniformsSet &= shaderState.uniform(gl, new GLUniformData(RADIUS, (float) globe.getRadius()));
 			uniformsSet &= shaderState.uniform(gl, new GLUniformData(ES, (float) globe.getEccentricitySquared()));
 			uniformsSet &= shaderState.uniform(gl, new GLUniformData(VE, (float) veService.get()));
+			uniformsSet &=
+					shaderState
+							.uniform(gl, new GLUniformData(ZNODATA, (Float) geometry.getVertices().getNoDataValue()));
+
 			if (!uniformsSet)
 			{
 				throw new IllegalStateException("Uniforms not set correctly."); //$NON-NLS-1$
 			}
 
+			gl.glEnable(GL2.GL_BLEND);
+			gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 			if (vertexColourVBO != null)
 			{
 				gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
 				vertexColourVBO.bind(gl);
-				gl.glColorPointer(4, GL2.GL_FLOAT, 0, 0);
+				gl.glColorPointer(getColourTypeForGeometry().getNumComponents(), GL2.GL_FLOAT, 0, 0);
 			}
 
 			gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
@@ -285,6 +293,15 @@ public class BasicRenderer implements IModelGeometryRenderer
 			}
 		}
 		return mode;
+	}
+
+	private ColourType getColourTypeForGeometry()
+	{
+		if (geometry instanceof IVertexColouredGeometry)
+		{
+			return ((IVertexColouredGeometry) geometry).getColourType();
+		}
+		return ColourType.RGB;
 	}
 
 	@Override

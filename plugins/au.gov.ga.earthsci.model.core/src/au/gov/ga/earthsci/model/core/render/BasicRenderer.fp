@@ -11,7 +11,9 @@ precision highp float;
 
 #define PI 3.14159
 
+varying float mask;
+
 void main(void)
 {
-	gl_FragColor = gl_Color;
+	gl_FragColor = vec4(gl_Color.rgb, gl_Color.a * step(1.0f, mask));
 }

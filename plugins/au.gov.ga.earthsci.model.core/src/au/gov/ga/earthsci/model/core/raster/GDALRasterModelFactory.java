@@ -22,8 +22,6 @@ import static au.gov.ga.earthsci.core.raster.GDALRasterUtil.getBufferType;
 import java.awt.Color;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import org.gdal.gdal.Band;
@@ -35,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import au.gov.ga.earthsci.common.buffer.BufferType;
 import au.gov.ga.earthsci.common.buffer.BufferUtil;
 import au.gov.ga.earthsci.common.color.ColorMap;
-import au.gov.ga.earthsci.common.color.ColorMap.InterpolationMode;
 import au.gov.ga.earthsci.common.spatial.SpatialReferences;
 import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.model.IModel;
@@ -62,6 +59,8 @@ public class GDALRasterModelFactory
 	private static final int VERTEX_GROUP_SIZE = 3;
 	private static final int RGBA_GROUP_SIZE = 4;
 
+	private static final Color DEFAULT_NODATA_COLOR = new Color(0, 0, 0, 0);
+
 	private static final Logger logger = LoggerFactory.getLogger(GDALRasterModelFactory.class);
 
 	/**
@@ -75,19 +74,13 @@ public class GDALRasterModelFactory
 
 		ModelGeometryStatistics stats = new ModelGeometryStatistics();
 
-		IModelData vertices = readVertices(ds, parameters, stats);
-		IModelData vertexColours = createVertexColours(ds, parameters, stats, vertices);
-		IModelData edges = createEdges(ds, parameters, stats, vertices);
-
 		BasicColouredMeshGeometry geometry =
 				new BasicColouredMeshGeometry(UUID.randomUUID().toString(),
 						ds.GetDescription(), ds.GetDescription());
 
-		geometry.setVertices(vertices);
-		geometry.setEdgeIndices(edges);
-		geometry.setFaceType(FaceType.TRIANGLE_STRIP);
-		geometry.setVertexColour(vertexColours);
-		geometry.setColourType(ColourType.RGBA);
+		addVerticesAndNodata(geometry, ds, parameters, stats);
+		addVertexColours(geometry, ds, parameters, stats);
+		addEdges(geometry, ds, parameters, stats);
 
 		geometry.setBoundingVolume(new BoundingBox(stats.getMinLon(), stats.getMaxLon(),
 				stats.getMinLat(), stats.getMaxLat(),
@@ -109,7 +102,8 @@ public class GDALRasterModelFactory
 	 * parameters, and store calculated statistics about the mesh in the
 	 * provided object for later use.
 	 */
-	private static IModelData readVertices(Dataset ds, GDALRasterModelParameters parameters,
+	private static void addVerticesAndNodata(BasicColouredMeshGeometry geometry, Dataset ds,
+			GDALRasterModelParameters parameters,
 			ModelGeometryStatistics stats)
 	{
 		Band band = ds.GetRasterBand(parameters.getElevationBandIndex());
@@ -136,7 +130,7 @@ public class GDALRasterModelFactory
 		double[] projectedCoords = new double[VERTEX_GROUP_SIZE];
 
 		int stride = parameters.getNormalisedSubsample();
-		ByteBuffer vertices = allocateVerticesBuffer(rasterXSize, rasterYSize, stride);
+		ByteBuffer vertexBuffer = allocateVerticesBuffer(rasterXSize, rasterYSize, stride);
 
 		for (int y = 0; y < rasterYSize; y += stride)
 		{
@@ -152,7 +146,7 @@ public class GDALRasterModelFactory
 						elevation,
 						projectedCoords);
 
-				vertices.putFloat((float) projectedCoords[0])
+				vertexBuffer.putFloat((float) projectedCoords[0])
 						.putFloat((float) projectedCoords[1])
 						.putFloat((float) projectedCoords[2]);
 
@@ -166,7 +160,7 @@ public class GDALRasterModelFactory
 		}
 
 		// TODO Move name/description to constant somewhere for reuse as standard name
-		return ModelDataBuilder.createFromBuffer(vertices)
+		IModelData vertices = ModelDataBuilder.createFromBuffer(vertexBuffer)
 				.ofType(BufferType.FLOAT)
 				.withNodata(nodata == null ? null : nodata.floatValue())
 				.named("Vertices")
@@ -174,47 +168,69 @@ public class GDALRasterModelFactory
 				.withGroupSize(3)
 				.build();
 
+		geometry.setVertices(vertices);
+		geometry.setUseZMasking(nodata != null);
 	}
 
-	private static IModelData createVertexColours(Dataset ds, GDALRasterModelParameters parameters,
-			ModelGeometryStatistics stats, IModelData vertexData)
+	/**
+	 * Create and return a vertex colour data object containing RGBA values for
+	 * each vertex based on a color map contained in the provided parameters.
+	 * <p/>
+	 * If no colour map is found, will return <code>null</code>.
+	 */
+	private static void addVertexColours(BasicColouredMeshGeometry geometry, Dataset ds,
+			GDALRasterModelParameters parameters,
+			ModelGeometryStatistics stats)
 	{
-		// TODO: replace this with a user-configured map
-		// ----------------------------------------------
-		Map<Double, Color> entries = new HashMap<Double, Color>();
-		entries.put(0.0, new Color(1.0f, 0.0f, 0.0f, 1.0f));
-		entries.put(0.5, new Color(0.0f, 1.0f, 0.0f, 1.0f));
-		entries.put(1.0, new Color(0.0f, 0.0f, 1.0f, 1.0f));
-		ColorMap map = new ColorMap(entries, new Color(0, 0, 0, 0), InterpolationMode.INTERPOLATE_HUE, true);
-		// -----------------------------------------------
+		ColorMap map = parameters.getColorMap();
+		if (map == null)
+		{
+			return;
+		}
 
-		int numVertices = vertexData.getNumberOfGroups();
+		IModelData vertices = geometry.getVertices();
+		int numVertices = vertices.getNumberOfGroups();
 
-		ByteBuffer colours = allocateVertexColourBuffer(numVertices);
-		ByteBuffer vertices = vertexData.getSource();
+		ByteBuffer coloursBuffer = allocateVertexColourBuffer(numVertices);
+		ByteBuffer verticesBuffer = vertices.getSource();
 
 		float[] rgba = new float[4];
 		for (int i = 0; i < numVertices; i++)
 		{
-			BufferUtil.skipValues(2, vertices, vertexData.getBufferType());
-			float elevation = BufferUtil.getValue(vertices, vertexData.getBufferType()).floatValue();
+			BufferUtil.skipValues(2, verticesBuffer, vertices.getBufferType());
+			float elevation = BufferUtil.getValue(verticesBuffer, vertices.getBufferType()).floatValue();
 
-			Color color = map.getColor(elevation, stats.getMinElevation(), stats.getMaxElevation());
+			Color color;
+
+			if (vertices.getNoDataValue() != null && isNoData((Float) vertices.getNoDataValue(), elevation))
+			{
+				color = map.getNodataColour();
+				if (color == null)
+				{
+					color = DEFAULT_NODATA_COLOR;
+				}
+			}
+			else
+			{
+				color = map.getColor(elevation, stats.getMinElevation(), stats.getMaxElevation());
+			}
+
 			color.getRGBComponents(rgba);
-
-			colours.putFloat(rgba[0]);
-			colours.putFloat(rgba[1]);
-			colours.putFloat(rgba[2]);
-			colours.putFloat(rgba[3]);
+			coloursBuffer.putFloat(rgba[0]);
+			coloursBuffer.putFloat(rgba[1]);
+			coloursBuffer.putFloat(rgba[2]);
+			coloursBuffer.putFloat(rgba[3]);
 		}
 
-		return ModelDataBuilder.createFromBuffer(colours)
+		IModelData vertexColours = ModelDataBuilder.createFromBuffer(coloursBuffer)
 				.ofType(BufferType.FLOAT)
 				.withGroupSize(RGBA_GROUP_SIZE)
 				.named("Vertex Colours")
 				.describedAs("Vertex Colours")
 				.build();
 
+		geometry.setVertexColour(vertexColours);
+		geometry.setColourType(ColourType.RGBA);
 	}
 
 	/**
@@ -224,8 +240,9 @@ public class GDALRasterModelFactory
 	 * The returned edges are intended for use with the
 	 * {@link FaceType#TRIANGLE_STRIP} type.
 	 */
-	private static IModelData createEdges(Dataset ds, GDALRasterModelParameters parameters,
-			ModelGeometryStatistics stats, IModelData vertices)
+	private static void addEdges(BasicColouredMeshGeometry geometry, Dataset ds,
+			GDALRasterModelParameters parameters,
+			ModelGeometryStatistics stats)
 	{
 		Band band = ds.GetRasterBand(parameters.getElevationBandIndex());
 		int rasterXSize = band.getXSize();
@@ -236,7 +253,7 @@ public class GDALRasterModelFactory
 		int numColumns = subsample(rasterXSize, subsample);
 		int numRows = subsample(rasterYSize, subsample);
 
-		ByteBuffer edges = allocateEdgesBuffer(rasterXSize, rasterYSize, subsample);
+		ByteBuffer edgesBuffer = allocateEdgesBuffer(rasterXSize, rasterYSize, subsample);
 
 		for (int y = 0; y < numRows - 1; y++)
 		{
@@ -245,31 +262,34 @@ public class GDALRasterModelFactory
 				int top = y * numColumns + x;
 				int bottom = top + numColumns;
 
-				edges.putInt(top);
-				edges.putInt(bottom);
+				edgesBuffer.putInt(top);
+				edgesBuffer.putInt(bottom);
 				if (x == numColumns - 1 && y < numRows - 2)
 				{
 					// Put two empty triangles to reset back to the next strip
-					edges.putInt(bottom);
-					edges.putInt(bottom);
+					edgesBuffer.putInt(bottom);
+					edgesBuffer.putInt(bottom);
 
 					int nextTop = (y + 1) * numColumns;
-					edges.putInt(nextTop);
-					edges.putInt(nextTop);
+					edgesBuffer.putInt(nextTop);
+					edgesBuffer.putInt(nextTop);
 				}
 			}
 		}
 
 		// Edges are full, so make sure limit is set appropriately
-		edges.limit(edges.position());
+		edgesBuffer.limit(edgesBuffer.position());
 
 		// TODO Move name/description to constant somewhere for reuse as standard name
-		return ModelDataBuilder.createFromBuffer(edges)
+		IModelData edges = ModelDataBuilder.createFromBuffer(edgesBuffer)
 				.ofType(BufferType.INT)
 				.named("Edges")
 				.describedAs("Edges")
 				.withGroupSize(1)
 				.build();
+
+		geometry.setEdgeIndices(edges);
+		geometry.setFaceType(FaceType.TRIANGLE_STRIP);
 	}
 
 	private static ByteBuffer allocateVerticesBuffer(int rasterXSize, int rasterYSize, int subsample)
