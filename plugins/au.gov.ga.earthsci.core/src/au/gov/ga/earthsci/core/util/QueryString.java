@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import au.gov.ga.earthsci.common.collection.ArrayListHashMap;
+import au.gov.ga.earthsci.common.util.UTF8URLEncoder;
 
 /**
  * Class that parses a URL query string into a key/value map.

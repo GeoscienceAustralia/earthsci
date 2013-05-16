@@ -28,9 +28,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import au.gov.ga.earthsci.common.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.core.util.QueryString;
-import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
 
 /**
  * Class containing helper methods for the WMS catalog.

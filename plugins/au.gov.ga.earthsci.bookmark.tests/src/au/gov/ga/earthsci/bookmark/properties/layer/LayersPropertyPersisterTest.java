@@ -28,8 +28,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.common.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.common.util.XmlUtil;
-import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
 
 /**
  * Unit tests for the {@link LayersPropertyPersister}.

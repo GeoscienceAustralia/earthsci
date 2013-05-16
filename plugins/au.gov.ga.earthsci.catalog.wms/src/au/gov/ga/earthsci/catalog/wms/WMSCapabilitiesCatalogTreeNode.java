@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ErrorCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
+import au.gov.ga.earthsci.common.util.UTF8URLEncoder;
 
 /**
  * {@link ICatalogTreeNode} for the root node of a WMS server. Contains the root
