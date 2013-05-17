@@ -154,6 +154,9 @@ public class Intent
 
 	/**
 	 * Set the URI of the data associated with this intent.
+	 * <p/>
+	 * This value may be updated during the Intent lifecycle (to support URI
+	 * re-writing etc.).
 	 * 
 	 * @param uri
 	 * @return this

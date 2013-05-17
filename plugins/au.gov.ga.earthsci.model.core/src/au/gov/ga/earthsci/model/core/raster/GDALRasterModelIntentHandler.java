@@ -18,7 +18,10 @@ package au.gov.ga.earthsci.model.core.raster;
 import gov.nasa.worldwind.layers.Layer;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
@@ -28,6 +31,8 @@ import org.gdal.gdal.gdal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.common.util.URIBuilder;
+import au.gov.ga.earthsci.common.util.URIUtil;
 import au.gov.ga.earthsci.core.intent.AbstractRetrieveIntentHandler;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
@@ -50,11 +55,49 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 
 	private static final Logger logger = LoggerFactory.getLogger(GDALRasterModelIntentHandler.class);
 
+	public static String GDAL_RASTER_MODEL_URI_SCHEME = "gdalrastermodel"; //$NON-NLS-1$
+	public static String GDAL_RASTER_MODEL_URI_HOST = "model"; //$NON-NLS-1$
+	public static String SOURCE_URI_PARAM_KEY = "source"; //$NON-NLS-1$
+
+	public static String MODEL_PARAMS_EXTRAS_KEY = "gdalRasterModelParams"; //$NON-NLS-1$
+	public static String DATASET_EXTRAS_KEY = "dataset"; //$NON-NLS-1$
+
 	@Inject
 	private IIntentManager intentManager;
 
 	@Inject
 	private IEclipseContext eclipseContext;
+
+	@Override
+	public void handle(Intent intent, IIntentCallback callback)
+	{
+		if (isModelURI(intent.getURI()))
+		{
+
+			Map<String, String> queryParams = URIUtil.getParameterMap(intent.getURI());
+
+			URI source = null;
+			GDALRasterModelParameters modelParams = null;
+			try
+			{
+				source = new URI(queryParams.get(SOURCE_URI_PARAM_KEY));
+				modelParams = new GDALRasterModelParameters(queryParams);
+			}
+			catch (Exception e)
+			{
+				callback.error(e, intent);
+				return;
+			}
+
+			intent.setURI(source);
+			intent.putExtra(MODEL_PARAMS_EXTRAS_KEY, modelParams);
+			super.handle(intent, callback);
+		}
+		else
+		{
+			super.handle(intent, callback);
+		}
+	}
 
 	@Override
 	protected void handle(IRetrievalData data, URL url, Intent intent, IIntentCallback callback)
@@ -108,9 +151,18 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 	private void obtainParameters(final Dataset ds, final Intent intent, final IIntentCallback callback)
 	{
 
+		// If model params already exist, they were likely loaded from a URL
+		// If so, use them here and don't collect them from elsewhere
+		if (intent.getExtra(MODEL_PARAMS_EXTRAS_KEY) != null)
+		{
+			GDALRasterModelParameters params = (GDALRasterModelParameters) intent.getExtra(MODEL_PARAMS_EXTRAS_KEY);
+			createModel(ds, params, intent, callback);
+			return;
+		}
+
 		Intent paramsIntent = new Intent();
 		paramsIntent.setExpectedReturnType(GDALRasterModelParameters.class);
-		paramsIntent.putExtra("dataset", ds);
+		paramsIntent.putExtra(DATASET_EXTRAS_KEY, ds);
 
 		intentManager.start(paramsIntent, new IIntentCallback()
 		{
@@ -162,14 +214,16 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 	{
 		try
 		{
-			IModel model = GDALRasterModelFactory.createModel(ds, parameters);
+			GDALRasterModel model = GDALRasterModelFactory.createModel(ds, parameters);
 
+			URI newURI = rewriteURI(intent.getURI(), model);
 			if (isModelIntent(intent))
 			{
 				callback.completed(model, intent);
 			}
 			else if (isLayerIntent(intent))
 			{
+				intent.setURI(newURI);
 				callback.completed(createModelLayer(model), intent);
 			}
 		}
@@ -192,6 +246,11 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 		return new BasicModelLayer(m.getName(), m);
 	}
 
+	private boolean isModelURI(URI source)
+	{
+		return source.getScheme().equalsIgnoreCase(GDAL_RASTER_MODEL_URI_SCHEME);
+	}
+
 	private boolean isModelIntent(Intent intent)
 	{
 		return intent.getExpectedReturnType().isAssignableFrom(IModel.class);
@@ -200,6 +259,35 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 	private boolean isLayerIntent(Intent intent)
 	{
 		return intent.getExpectedReturnType().isAssignableFrom(Layer.class);
+	}
+
+	/**
+	 * Re-write the source URI as a GDAL Raster Model URI with all parameters
+	 * encoded.
+	 * 
+	 * @param sourceURI
+	 *            The source URI from which the model was originally created
+	 * @param model
+	 *            The loaded model
+	 * 
+	 * @return A model re-written using the
+	 *         {@link #GDAL_RASTER_MODEL_URI_SCHEME} scheme
+	 */
+	private URI rewriteURI(URI sourceURI, GDALRasterModel model) throws Exception
+	{
+		URIBuilder builder = new URIBuilder();
+		builder.setScheme(GDAL_RASTER_MODEL_URI_SCHEME);
+		builder.setHost(GDAL_RASTER_MODEL_URI_HOST);
+		builder.setParam(SOURCE_URI_PARAM_KEY, sourceURI.toString());
+
+		// Add configuration params
+		Map<String, String> modelParams = model.getParameters().asParameterMap();
+		for (Entry<String, String> paramEntry : modelParams.entrySet())
+		{
+			builder.setParam(paramEntry.getKey(), paramEntry.getValue());
+		}
+
+		return builder.build();
 	}
 
 }

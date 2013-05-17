@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.common.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.core.model.ModelStatus;
-import au.gov.ga.earthsci.core.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentManager;
@@ -62,6 +62,7 @@ public class IntentLayerLoader
 			{
 				layerIntent.layerNode.setStatus(ModelStatus.ok());
 				layerIntent.layerNode.setLayer((Layer) result);
+				layerIntent.layerNode.setURI(intent.getURI());
 			}
 			else if (result != null)
 			{

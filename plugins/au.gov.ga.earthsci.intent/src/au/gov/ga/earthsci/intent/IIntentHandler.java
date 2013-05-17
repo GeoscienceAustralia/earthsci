@@ -23,8 +23,8 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
  * {@link IntentFilter} for lookup, but can also be associated directly with an
  * {@link Intent}.
  * <p/>
- * Upon instatiation, an {@link IEclipseContext} is used to inject any annotated
- * methods/fields into this object.
+ * Upon instantiation, an {@link IEclipseContext} is used to inject any
+ * annotated methods/fields into this object.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -32,6 +32,9 @@ public interface IIntentHandler
 {
 	/**
 	 * Handle this intent. Must notify the callback when completed (or failed).
+	 * <p/>
+	 * May modify the URI stored on the {@link Intent} if appropriate (for
+	 * example, to support URI re-writing)
 	 * 
 	 * @param intent
 	 *            Intent to handle.

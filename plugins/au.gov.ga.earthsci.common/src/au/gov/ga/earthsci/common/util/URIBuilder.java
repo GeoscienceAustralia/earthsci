@@ -49,7 +49,6 @@ public class URIBuilder
 	/**
 	 * Create a new URI builder using values from the given URI as a base
 	 */
-	@SuppressWarnings("nls")
 	public URIBuilder(URI base)
 	{
 		if (base == null)
@@ -69,18 +68,7 @@ public class URIBuilder
 			return;
 		}
 
-		for (String paramPair : base.getQuery().split("[&;]+"))
-		{
-			String[] paramComponents = paramPair.split("=");
-			if (paramComponents.length > 1)
-			{
-				params.put(paramComponents[0], paramComponents[1]);
-			}
-			else if (paramComponents.length == 1)
-			{
-				params.put(paramComponents[0], null);
-			}
-		}
+		params.putAll(URIUtil.getParameterMap(base));
 	}
 
 	/**

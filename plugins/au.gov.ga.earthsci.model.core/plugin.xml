@@ -22,6 +22,19 @@
                class="au.gov.ga.earthsci.model.IModel">
          </return-type>
       </filter>
+          <filter
+                class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelIntentHandler"
+                priority="0">
+             <uri
+                   scheme="gdalrastermodel">
+             </uri>
+             <return-type
+                   class="gov.nasa.worldwind.layers.Layer">
+             </return-type>
+             <return-type
+                   class="au.gov.ga.earthsci.model.IModel">
+             </return-type>
+          </filter>
    </extension>
 
 </plugin>

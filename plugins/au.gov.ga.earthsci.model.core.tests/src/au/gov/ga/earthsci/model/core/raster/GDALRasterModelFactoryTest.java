@@ -19,19 +19,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import gov.nasa.worldwind.util.gdal.GDALUtils;
 
-import java.io.File;
-import java.net.URL;
 import java.nio.ByteBuffer;
 
-import org.gdal.GDALDataSetup;
-import org.gdal.GDALDataSetup.DataFileSource;
 import org.gdal.gdal.Dataset;
-import org.gdal.gdal.gdal;
-import org.gdal.gdal.gdalJNI;
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -41,7 +33,6 @@ import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.model.bounds.BoundingBox;
 import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.model.geometry.IMeshGeometry;
-import au.gov.ga.earthsci.test.util.TestUtils;
 
 /**
  * Unit tests for the {@link GDALRasterModelFactory}
@@ -54,43 +45,13 @@ public class GDALRasterModelFactoryTest
 	@BeforeClass
 	public static void init()
 	{
-		if (!gdalJNI.isAvailable())
-		{
-			return;
-		}
-
-		gdal.PushErrorHandler("CPLQuietErrorHandler"); //$NON-NLS-1$
-
-		if (gdal.GetConfigOption("GDAL_DATA") == null) //$NON-NLS-1$
-		{
-			GDALDataSetup.run(new DataFileSource()
-			{
-				@Override
-				public File getDataFile(String dataFileName)
-				{
-					File result = new File(System.getProperty("java.io.tmpdir"), dataFileName); //$NON-NLS-1$
-					result.deleteOnExit();
-					return result;
-				}
-
-				@Override
-				public File getDataFolder()
-				{
-					return new File(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
-				}
-			});
-		}
+		GDALTestUtils.initGDAL();
 	}
 
 	@AfterClass
 	public static void destroy()
 	{
-		if (!gdalJNI.isAvailable())
-		{
-			return;
-		}
-
-		gdal.PopErrorHandler();
+		GDALTestUtils.destroyGDAL();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -114,7 +75,7 @@ public class GDALRasterModelFactoryTest
 	@Test
 	public void testCreateWithValidRasterAndParams() throws Exception
 	{
-		Dataset ds = openRaster("testgrid.asc"); //$NON-NLS-1$
+		Dataset ds = GDALTestUtils.openRaster("testgrid.asc"); //$NON-NLS-1$
 		GDALRasterModelParameters parameters = new GDALRasterModelParameters(ds);
 		parameters.setModelName("testgrid"); //$NON-NLS-1$
 
@@ -131,7 +92,7 @@ public class GDALRasterModelFactoryTest
 	@Test
 	public void testCreateWithSubsampling() throws Exception
 	{
-		Dataset ds = openRaster("testgrid.asc"); //$NON-NLS-1$
+		Dataset ds = GDALTestUtils.openRaster("testgrid.asc"); //$NON-NLS-1$
 		GDALRasterModelParameters parameters = new GDALRasterModelParameters(ds);
 		parameters.setSubsample(3);
 
@@ -217,12 +178,5 @@ public class GDALRasterModelFactoryTest
 		assertNotNull(geometry.getRenderer());
 	}
 
-	private static Dataset openRaster(String rasterName) throws Exception
-	{
-		URL rasterUrl = TestUtils.resolveFileURL(GDALRasterModelFactoryTest.class.getResource(rasterName));
 
-		Assume.assumeTrue(GDALUtils.canOpen(rasterUrl));
-
-		return GDALUtils.open(rasterUrl);
-	}
 }
