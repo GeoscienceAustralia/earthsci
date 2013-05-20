@@ -81,6 +81,7 @@ public class GDALTestUtils
 	{
 		URL rasterUrl = TestUtils.resolveFileURL(GDALRasterModelFactoryTest.class.getResource(rasterName));
 
+		Assume.assumeTrue(gdalJNI.isAvailable());
 		Assume.assumeTrue(GDALUtils.canOpen(rasterUrl));
 
 		return GDALUtils.open(rasterUrl);
