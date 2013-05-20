@@ -16,18 +16,42 @@
 package au.gov.ga.earthsci.common.color;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import javax.inject.Inject;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.color.ColorMap.InterpolationMode;
+import au.gov.ga.earthsci.common.color.io.IColorMapReader;
+import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil;
+import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil.Callback;
 
 /**
- * A class that gives static access to commonly used colour maps
+ * A class that gives static access to commonly used colour maps, and acts as a
+ * factory for reading/writing colour maps.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class ColorMaps
 {
+
+	private static final String READERS_EXTENSION_POINT_ID = "au.gov.ga.earthsci.common.color.colormapreaders"; //$NON-NLS-1$
+	private static final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
+
+	private static final Logger logger = LoggerFactory.getLogger(ColorMaps.class);
+
+	private static List<IColorMapReader> readers = new ArrayList<IColorMapReader>();
+	private static ReadWriteLock readersLock = new ReentrantReadWriteLock();
 
 	private ColorMaps()
 	{
@@ -72,4 +96,95 @@ public class ColorMaps
 		return RGB_RAINBOW_MAP;
 	}
 
+	@Inject
+	public static void loadFromExtensions()
+	{
+		logger.debug("Registering color map readers"); //$NON-NLS-1$
+		try
+		{
+			ExtensionRegistryUtil.createFromExtension(READERS_EXTENSION_POINT_ID,
+					CLASS_ATTRIBUTE, IColorMapReader.class,
+					new Callback<IColorMapReader>()
+					{
+						@Override
+						public void run(IColorMapReader reader,
+								IConfigurationElement element,
+								IEclipseContext context)
+						{
+							registerColorMapReader(reader);
+						}
+					});
+		}
+		catch (CoreException e)
+		{
+			logger.error("Exception occurred while loading reader from extension", e); //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * Register the provided {@link IColorMapReader} on this class
+	 * 
+	 * @param reader
+	 *            The reader to register
+	 */
+	public static void registerColorMapReader(IColorMapReader reader)
+	{
+		if (reader == null)
+		{
+			return;
+		}
+
+		readersLock.writeLock().lock();
+		try
+		{
+			logger.debug("Registering color map reader: {}", reader.getClass()); //$NON-NLS-1$
+			readers.add(reader);
+		}
+		finally
+		{
+			readersLock.writeLock().unlock();
+		}
+	}
+
+	/**
+	 * Read a ColorMap from the given source, using registered
+	 * {@link IColorMapReader} implementations.
+	 * 
+	 * @param source
+	 *            The source object to read from
+	 * 
+	 * @return The loaded colour map, or <code>null</code> if a colour map could
+	 *         not be read from the provided source.
+	 */
+	public static ColorMap readFrom(Object source)
+	{
+		if (source == null)
+		{
+			return null;
+		}
+
+		readersLock.readLock().lock();
+		try
+		{
+			for (IColorMapReader reader : readers)
+			{
+				if (reader.supports(source))
+				{
+					return reader.read(source);
+				}
+			}
+			logger.debug("No color map reader found that supports source {}", source); //$NON-NLS-1$
+			return null;
+		}
+		catch (Exception e)
+		{
+			logger.debug("An exception occurred while reading color map from source " + source, e); //$NON-NLS-1$
+			return null;
+		}
+		finally
+		{
+			readersLock.readLock().unlock();
+		}
+
+	}
 }

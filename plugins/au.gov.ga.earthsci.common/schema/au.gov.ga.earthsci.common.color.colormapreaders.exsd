@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="au.gov.ga.earthsci.common" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="au.gov.ga.earthsci.common" id="au.gov.ga.earthsci.common.color.colormapreaders" name="ColorMap Readers"/>
+      </appinfo>
+      <documentation>
+         Allows IColorMapReader implementations to be registered on the ColorMaps class to support different color map formats.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+         <documentation>
+            Register one or more IColorMapReader implementations to provide support for different color map formats.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="reader"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="reader">
+      <annotation>
+         <documentation>
+            Register a single IColorMapReader implementation with the ColorMaps factory.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  The IColorMapReader implementation to register.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.common.color.io.IColorMapReader"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         See CompactStringColorMapReader for an example implementation.
+      </documentation>
+   </annotation>
+
+
+</schema>

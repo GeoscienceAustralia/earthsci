@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="au.gov.ga.earthsci.common.color.colormapreaders" name="ColorMap Readers" schema="schema/au.gov.ga.earthsci.common.color.colormapreaders.exsd"/>
+   <extension
+         point="au.gov.ga.earthsci.common.color.colormapreaders">
+      <reader
+            class="au.gov.ga.earthsci.common.color.io.CompactStringColorMapReader">
+      </reader>
+   </extension>
+
+</plugin>

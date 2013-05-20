@@ -1,13 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common
-Bundle-SymbolicName: au.gov.ga.earthsci.common
+Bundle-SymbolicName: au.gov.ga.earthsci.common;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: au.gov.ga.earthsci.common.buffer,
  au.gov.ga.earthsci.common.collection,
  au.gov.ga.earthsci.common.color,
+ au.gov.ga.earthsci.common.color.io,
  au.gov.ga.earthsci.common.math.bezier,
  au.gov.ga.earthsci.common.math.interpolation,
  au.gov.ga.earthsci.common.math.vector,
