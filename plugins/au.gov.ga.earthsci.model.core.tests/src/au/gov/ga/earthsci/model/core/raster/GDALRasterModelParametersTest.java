@@ -27,6 +27,8 @@ import org.junit.Test;
 
 import au.gov.ga.earthsci.common.color.ColorMap;
 import au.gov.ga.earthsci.common.color.ColorMaps;
+import au.gov.ga.earthsci.common.color.io.CompactStringColorMapReader;
+import au.gov.ga.earthsci.common.color.io.CompactStringColorMapWriter;
 
 /**
  * Unit tests for the {@link GDALRasterModelParameters} class
@@ -42,6 +44,7 @@ public class GDALRasterModelParametersTest
 	public static void init()
 	{
 		GDALTestUtils.initGDAL();
+		ColorMaps.registerColorMapReader(new CompactStringColorMapReader());
 	}
 
 	@AfterClass
@@ -111,11 +114,20 @@ public class GDALRasterModelParametersTest
 		params.put(GDALRasterModelParameters.ELEVATION_OFFSET, "123.45");
 		params.put(GDALRasterModelParameters.ELEVATION_SCALE, "-1e3");
 		params.put(GDALRasterModelParameters.ELEVATION_SUBSAMPLE, "5");
+		params.put(GDALRasterModelParameters.COLOR_MAP,
+				new CompactStringColorMapWriter().writeToString(ColorMaps.getRBGRainbowMap()));
 
 		GDALRasterModelParameters classUnderTest = new GDALRasterModelParameters(params);
 
-		assertParamsCorrect(classUnderTest, 2, "Model name", "Model description", -1000.0, 123.45, 5, "Model SRS",
-				ColorMaps.getRGBRainbowMap());
+		assertParamsCorrect(classUnderTest,
+				2,
+				"Model name",
+				"Model description",
+				-1000.0,
+				123.45,
+				5,
+				"Model SRS",
+				ColorMaps.getRBGRainbowMap());
 	}
 
 	@Test(expected = NumberFormatException.class)
@@ -164,7 +176,8 @@ public class GDALRasterModelParametersTest
 				false, null,
 				false, null,
 				false, null,
-				false, null);
+				false, null,
+				true, new CompactStringColorMapWriter().writeToString(ColorMaps.getRGBRainbowMap()));
 	}
 
 	@Test
@@ -188,7 +201,8 @@ public class GDALRasterModelParametersTest
 				true, "2",
 				true, "name",
 				true, "description",
-				true, "srs");
+				true, "srs",
+				true, new CompactStringColorMapWriter().writeToString(ColorMaps.getRGBRainbowMap()));
 	}
 
 	private void assertParamsCorrect(GDALRasterModelParameters params,
@@ -205,7 +219,7 @@ public class GDALRasterModelParametersTest
 		assertEquals(scale, params.getScaleFactor());
 		assertEquals(subsample, params.getSubsample());
 		assertEquals(srs, params.getSourceProjection());
-		assertEquals(ColorMaps.getRGBRainbowMap(), params.getColorMap());
+		assertEquals(colormap, params.getColorMap());
 	}
 
 	private void assertParamMapCorrect(Map<String, String> params,
@@ -215,7 +229,8 @@ public class GDALRasterModelParametersTest
 			boolean hasSubsample, String subsample,
 			boolean hasName, String name,
 			boolean hasDescription, String description,
-			boolean hasSRS, String srs)
+			boolean hasSRS, String srs,
+			boolean hasColorMap, String colorMap)
 	{
 		assertEquals(hasBand, params.containsKey(GDALRasterModelParameters.ELEVATION_BAND));
 		assertEquals(band, params.get(GDALRasterModelParameters.ELEVATION_BAND));
@@ -237,6 +252,9 @@ public class GDALRasterModelParametersTest
 
 		assertEquals(hasSRS, params.containsKey(GDALRasterModelParameters.SOURCE_SRS));
 		assertEquals(srs, params.get(GDALRasterModelParameters.SOURCE_SRS));
+
+		assertEquals(hasColorMap, params.containsKey(GDALRasterModelParameters.COLOR_MAP));
+		assertEquals(colorMap, params.get(GDALRasterModelParameters.COLOR_MAP));
 	}
 
 }

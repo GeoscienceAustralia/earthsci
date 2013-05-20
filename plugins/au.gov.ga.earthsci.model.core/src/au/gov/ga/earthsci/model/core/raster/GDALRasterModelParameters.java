@@ -19,9 +19,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.gdal.gdal.Dataset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.color.ColorMap;
 import au.gov.ga.earthsci.common.color.ColorMaps;
+import au.gov.ga.earthsci.common.color.io.CompactStringColorMapWriter;
 import au.gov.ga.earthsci.common.util.FileUtil;
 import au.gov.ga.earthsci.model.IModel;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
@@ -34,6 +37,9 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  */
 public class GDALRasterModelParameters
 {
+
+	@SuppressWarnings("unused")
+	private static final Logger logger = LoggerFactory.getLogger(GDALRasterModelParameters.class);
 
 	public static final String ELEVATION_BAND = "elevationBand"; //$NON-NLS-1$
 	public static final String SOURCE_SRS = "sourceSRS"; //$NON-NLS-1$
@@ -146,8 +152,10 @@ public class GDALRasterModelParameters
 		{
 			sourceProjection = params.get(SOURCE_SRS);
 		}
-
-		// TODO colormap
+		if (params.containsKey(COLOR_MAP))
+		{
+			colorMap = ColorMaps.readFrom(params.get(COLOR_MAP));
+		}
 	}
 
 	public int getElevationBandIndex()
@@ -272,7 +280,10 @@ public class GDALRasterModelParameters
 		{
 			result.put(ELEVATION_SUBSAMPLE, Integer.toString(subsample));
 		}
-		//TODO: Colormap
+		if (colorMap != null)
+		{
+			result.put(COLOR_MAP, new CompactStringColorMapWriter().writeToString(colorMap));
+		}
 
 		return result;
 	}
