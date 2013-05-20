@@ -44,4 +44,22 @@ public interface IColorMapWriter extends INamed, IDescribed
 	 */
 	void write(ColorMap map, OutputStream stream) throws IOException;
 
+	/**
+	 * Write the given map to a String using the default system encoding.
+	 * <p/>
+	 * This is a shortcut method that uses
+	 * {@link #write(ColorMap, OutputStream)} with a stream that writes directly
+	 * to a String. This method may not be support by all implementations (e.g.
+	 * some may write to a binary format etc.). If that is the case, this method
+	 * will throw an {@link UnsupportedOperationException}
+	 * 
+	 * @param map
+	 *            The colour map to write to a String
+	 * @return A String representation of the given colour map
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             if this implementation does not support writing to a String.
+	 */
+	String writeToString(ColorMap map) throws UnsupportedOperationException;
+
 }

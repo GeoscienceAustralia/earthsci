@@ -1,6 +1,7 @@
 package au.gov.ga.earthsci.common.color.io;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
@@ -82,4 +83,29 @@ public class CompactStringColorMapWriterTest
 		assertEquals(expected, out.toString());
 	}
 
+	@Test
+	public void testWriteToStringWithNull() throws Exception
+	{
+		assertNull(classUnderTest.writeToString(null));
+	}
+
+	@Test
+	public void testWriteToStringFullyConfigured() throws Exception
+	{
+		ColorMap map = ColorMapBuilder.createColorMap()
+				.named("test")
+				.describedAs("Test map")
+				.using(InterpolationMode.INTERPOLATE_HUE)
+				.withPercentageValues()
+				.withEntry(0.0, Color.BLACK)
+				.withEntry(1.0, Color.WHITE)
+				.withNodata(Color.RED)
+				.build();
+
+		String result = classUnderTest.writeToString(map);
+		String expected = "test|Test map|INTERPOLATE_HUE|1|" + Color.RED.getRGB()
+				+ "|0.0," + Color.BLACK.getRGB() + ",1.0," + Color.WHITE.getRGB();
+
+		assertEquals(expected, result);
+	}
 }

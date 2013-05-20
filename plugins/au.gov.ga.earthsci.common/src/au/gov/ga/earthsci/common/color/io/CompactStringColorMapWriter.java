@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.common.color.io;
 
 import java.awt.Color;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map.Entry;
@@ -85,6 +86,26 @@ public class CompactStringColorMapWriter implements IColorMapWriter
 		}
 
 		stream.write(builder.toString().getBytes());
+	}
+
+	@Override
+	public String writeToString(ColorMap map) throws UnsupportedOperationException
+	{
+		if (map == null)
+		{
+			return null;
+		}
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try
+		{
+			write(map, out);
+		}
+		catch (IOException e)
+		{
+			// Should never happen...
+		}
+		return out.toString();
 	}
 
 }
