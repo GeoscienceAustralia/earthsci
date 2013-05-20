@@ -309,4 +309,63 @@ public class ColorMap implements INamed, IDescribed
 	{
 		return description;
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == this)
+		{
+			return true;
+		}
+		if (!(obj instanceof ColorMap))
+		{
+			return false;
+		}
+
+		ColorMap other = (ColorMap) obj;
+
+		// Equality based on all fields (use short-circuiting to avoid unnecessary tests)
+		boolean equals = au.gov.ga.earthsci.common.util.Util.nullSafeEquals(name, other.name);
+		equals = equals && au.gov.ga.earthsci.common.util.Util.nullSafeEquals(description, other.description);
+		equals = equals && (mode == other.mode);
+		equals = equals && (valuesArePercentages == other.valuesArePercentages);
+		equals = equals && au.gov.ga.earthsci.common.util.Util.nullSafeEquals(nodataColour, other.nodataColour);
+		equals = equals && (entries.size() == other.entries.size());
+
+		for (Entry<Double, Color> thisEntry : entries.entrySet())
+		{
+			equals = equals && other.entries.containsKey(thisEntry.getKey());
+			equals = equals && thisEntry.getValue().equals(other.entries.get(thisEntry.getKey()));
+		}
+
+		return equals;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 31;
+		if (name != null)
+		{
+			hash += name.hashCode();
+		}
+		if (description != null)
+		{
+			hash += description.hashCode();
+		}
+		if (nodataColour != null)
+		{
+			hash += nodataColour.hashCode();
+		}
+		if (mode != null)
+		{
+			hash += mode.hashCode();
+		}
+		if (valuesArePercentages)
+		{
+			hash += 1;
+		}
+		hash += entries.hashCode();
+		return hash;
+	}
 }

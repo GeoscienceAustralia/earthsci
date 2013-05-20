@@ -132,6 +132,60 @@ public class ColorMapTest
 		assertColorsEqual(new Color(0.0f, 0.0f, 0.0f, 1.0f), classUnderTest.getColor(100, 10, 100));
 	}
 
+	@Test
+	public void testEqualsWithSame()
+	{
+		ColorMap map1 = new ColorMap(null, null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, false);
+		ColorMap map2 = map1;
+
+		assertTrue(map1.equals(map2));
+	}
+
+	@Test
+	public void testEqualsWithNull()
+	{
+		ColorMap map1 = new ColorMap(null, null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, false);
+		ColorMap map2 = null;
+
+		assertFalse(map1.equals(map2));
+	}
+
+	@Test
+	public void testEqualsWithEqual()
+	{
+		ColorMap map1 = new ColorMap("name", null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, false);
+		ColorMap map2 = new ColorMap("name", null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, false);
+
+		assertTrue(map1.equals(map2));
+	}
+
+	@Test
+	public void testEqualsWithNotEqual()
+	{
+		ColorMap map1 = new ColorMap("name", null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, false);
+		ColorMap map2 = new ColorMap("name", null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, true);
+
+		assertFalse(map1.equals(map2));
+	}
+
+	@Test
+	public void testHashCodeWithEqual()
+	{
+		ColorMap map1 = new ColorMap("name", null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, false);
+		ColorMap map2 = new ColorMap("name", null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, false);
+
+		assertTrue(map1.hashCode() == map2.hashCode());
+	}
+
+	@Test
+	public void testHashCodeWithNotEqual()
+	{
+		ColorMap map1 = new ColorMap("name", null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, false);
+		ColorMap map2 = new ColorMap("name", null, PERCENTAGE_ENTRIES, null, InterpolationMode.EXACT_MATCH, false);
+
+		assertTrue(map1.hashCode() != map2.hashCode());
+	}
+
 	private static void assertColorsEqual(Color expected, Color actual)
 	{
 		if (expected == null)

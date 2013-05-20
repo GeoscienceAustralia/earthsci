@@ -214,6 +214,26 @@ public class Util
 	}
 
 	/**
+	 * Perform a null-safe equality test on the two provided objects
+	 * 
+	 * @return <code>true</code> if both objects are equal according to
+	 *         {@link Object#equals(Object)}, or if both objects are
+	 *         <code>null</code>.
+	 */
+	public static boolean nullSafeEquals(Object o1, Object o2)
+	{
+		if (o1 == o2)
+		{
+			return true;
+		}
+		if ((o1 == null && o2 != null) || (o1 != null && o2 == null))
+		{
+			return false;
+		}
+		return o1.equals(o2);
+	}
+
+	/**
 	 * Call the given named property's setter on the object with an Object
 	 * represented by the propertyValue string. The property's setter's
 	 * parameter count must be 1, and the parameter class must be
