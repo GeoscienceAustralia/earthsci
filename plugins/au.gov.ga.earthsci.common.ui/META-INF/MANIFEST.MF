@@ -10,5 +10,6 @@ Import-Package: org.eclipse.jface.resource,
 Require-Bundle: org.eclipse.jface,
  org.gdal,
  au.gov.ga.earthsci.common
-Export-Package: au.gov.ga.earthsci.common.ui.dialogs,
+Export-Package: au.gov.ga.earthsci.common.ui.color,
+ au.gov.ga.earthsci.common.ui.dialogs,
  au.gov.ga.earthsci.common.ui.viewers

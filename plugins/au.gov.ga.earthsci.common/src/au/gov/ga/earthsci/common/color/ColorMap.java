@@ -38,7 +38,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
 public class ColorMap implements INamed, IDescribed
 {
 
-	public static enum InterpolationMode
+	public static enum InterpolationMode implements INamed, IDescribed
 	{
 		/**
 		 * Return the colour for the nearest matching value in the colour table
@@ -72,6 +72,18 @@ public class ColorMap implements INamed, IDescribed
 				}
 				return ceiling.getValue();
 			}
+
+			@Override
+			public String getName()
+			{
+				return "Nearest match";
+			}
+
+			@Override
+			public String getDescription()
+			{
+				return "Colours are clamped to the nearest entry in the colour map";
+			}
 		},
 
 		/**
@@ -92,6 +104,18 @@ public class ColorMap implements INamed, IDescribed
 				}
 				return result;
 			}
+
+			@Override
+			public String getName()
+			{
+				return "Exact match";
+			}
+
+			@Override
+			public String getDescription()
+			{
+				return "Colours are only used for values that exactly match entries in the colour map";
+			}
 		},
 
 		/**
@@ -104,6 +128,18 @@ public class ColorMap implements INamed, IDescribed
 			protected Color getColor(double value, TreeMap<Double, Color> entries, Color nodata)
 			{
 				return doInterpolate(value, entries, nodata, false);
+			}
+
+			@Override
+			public String getName()
+			{
+				return "RGB Interpolate";
+			}
+
+			@Override
+			public String getDescription()
+			{
+				return "Use RGB interpolation to blend between entries in the colour map";
 			}
 		},
 
@@ -118,6 +154,18 @@ public class ColorMap implements INamed, IDescribed
 			protected Color getColor(double value, TreeMap<Double, Color> entries, Color nodata)
 			{
 				return doInterpolate(value, entries, nodata, true);
+			}
+
+			@Override
+			public String getName()
+			{
+				return "Hue Interpolate";
+			}
+
+			@Override
+			public String getDescription()
+			{
+				return "Use HSL interpolation to blend between entries in the colour map";
 			}
 		};
 
@@ -150,17 +198,19 @@ public class ColorMap implements INamed, IDescribed
 
 	private static final Color DEFAULT_NODATA = new Color(0, 0, 0, 0);
 
-	private final Color nodataColour;
+	// Note that package-private is used to restrict subclassing to the MutableColorMap implementation
 
-	private final boolean valuesArePercentages;
+	Color nodataColour;
 
-	private final InterpolationMode mode;
+	boolean valuesArePercentages;
 
-	private TreeMap<Double, Color> entries = new TreeMap<Double, Color>();
+	InterpolationMode mode;
 
-	private final String name;
+	final TreeMap<Double, Color> entries = new TreeMap<Double, Color>();
 
-	private final String description;
+	String name;
+
+	String description;
 
 	/**
 	 * Create a new colour map using the provided entries. The instance will use
