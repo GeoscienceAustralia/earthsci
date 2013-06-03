@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -41,13 +40,13 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 
 import au.gov.ga.earthsci.application.IFireableLabelProvider;
 import au.gov.ga.earthsci.application.IconLoader;
 import au.gov.ga.earthsci.application.ImageRegistry;
+import au.gov.ga.earthsci.common.ui.util.TextStyler;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
@@ -239,33 +238,13 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 
 		private boolean disposed = false;
 
-		private final Color informationColor;
-		private final Color legendColor;
 		private final Font subscriptFont;
-		private final Styler informationStyler = new Styler()
-		{
-			@Override
-			public void applyStyles(TextStyle textStyle)
-			{
-				textStyle.foreground = informationColor;
-				textStyle.font = subscriptFont;
-			}
-		};
-		private final Styler legendStyler = new Styler()
-		{
-			@Override
-			public void applyStyles(TextStyle textStyle)
-			{
-				textStyle.foreground = legendColor;
-				textStyle.font = subscriptFont;
-			}
-		};
+		private final TextStyler informationStyler = new TextStyler();
+		private final TextStyler legendStyler = new TextStyler();
 
 		public LayerTreeLabelProviderDelegate(IObservableMap[] attributeMaps)
 		{
 			super(attributeMaps);
-			informationColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
-			legendColor = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
 			FontData[] fontDatas = Display.getDefault().getSystemFont().getFontData();
 			for (FontData fontData : fontDatas)
 			{
@@ -273,6 +252,10 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 				fontData.setHeight((int) (fontData.getHeight() * 0.8));
 			}
 			subscriptFont = new Font(Display.getDefault(), fontDatas);
+			informationStyler.style.foreground = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
+			informationStyler.style.font = subscriptFont;
+			legendStyler.style.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
+			legendStyler.style.font = subscriptFont;
 		}
 
 		@Override

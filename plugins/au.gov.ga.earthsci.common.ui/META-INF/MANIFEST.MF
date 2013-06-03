@@ -8,4 +8,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.jface.resource,
  org.eclipse.swt.widgets
 Require-Bundle: org.eclipse.jface
-Export-Package: au.gov.ga.earthsci.common.ui.viewers
+Export-Package: au.gov.ga.earthsci.common.ui.util,
+ au.gov.ga.earthsci.common.ui.viewers
