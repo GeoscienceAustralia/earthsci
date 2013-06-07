@@ -258,10 +258,14 @@ public class ColorMap implements INamed, IDescribed
 		this.nodataColour = nodataColour;
 		this.mode = mode == null ? InterpolationMode.INTERPOLATE_RGB : mode;
 		this.valuesArePercentages = valuesArePercentages;
-		this.name = name == null ? Messages.ColorMap_DefaultColorMapName + UUID.randomUUID().toString() : name;
+		this.name = name == null ? createDefaultName() : name;
 		this.description = description;
 	}
 
+	final static String createDefaultName()
+	{
+		return Messages.ColorMap_DefaultColorMapName + UUID.randomUUID().toString();
+	}
 
 	/**
 	 * Return the colour for the given value, using the appropriate
