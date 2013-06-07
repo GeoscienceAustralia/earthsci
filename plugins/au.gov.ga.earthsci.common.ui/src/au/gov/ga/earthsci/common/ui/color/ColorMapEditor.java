@@ -16,22 +16,40 @@
 package au.gov.ga.earthsci.common.ui.color;
 
 import java.awt.Color;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.preference.ColorSelector;
+import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.JFaceColors;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnPixelData;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -43,12 +61,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Scale;
 
 import au.gov.ga.earthsci.common.color.ColorMap;
 import au.gov.ga.earthsci.common.color.ColorMap.InterpolationMode;
 import au.gov.ga.earthsci.common.color.ColorMaps;
 import au.gov.ga.earthsci.common.color.MutableColorMap;
 import au.gov.ga.earthsci.common.ui.viewers.NamedLabelProvider;
+import au.gov.ga.earthsci.common.ui.widgets.NumericTextField;
 
 /**
  * A widget that allows for the editing of a {@link ColorMap}, using a gradient
@@ -63,7 +83,7 @@ import au.gov.ga.earthsci.common.ui.viewers.NamedLabelProvider;
  * <dt>{@link SWT#BORDER}</dt>
  * <dd>Apply a border around the editor</dd>
  * <dt>{@link SWT#VERTICAL}</dt>
- * <dd>Orient the gradient editor vertically</dd>
+ * <dd>Orient the gradient editor vertically (default)</dd>
  * </dl>
  * 
  * 
@@ -90,7 +110,17 @@ public class ColorMapEditor extends Composite
 
 	private Composite optionsContainer;
 	private ComboViewer modeCombo;
+	private TableViewer entriesTable;
 	private Button percentageBasedButton;
+
+	private ColorRegistry colorRegistry;
+
+	private Color currentEntryColor;
+	private Double currentEntryValue;
+	private NumericTextField editorValueField;
+	private ColorSelector editorColorField;
+	private Scale editorAlphaScale;
+	private NumericTextField editorAlphaField;
 
 	/**
 	 * Create a new {@link ColorMap} editor widget with a default seed map.
@@ -149,8 +179,12 @@ public class ColorMapEditor extends Composite
 	 */
 	public ColorMapEditor(ColorMap seed, Double minDataValue, Double maxDataValue, Composite parent, int style)
 	{
+		// TODO: Support vertical / horizontal style
+
 		super(parent, style);
 		setLayout(new GridLayout(2, false));
+
+		colorRegistry = new ColorRegistry(getDisplay());
 
 		map = new MutableColorMap(seed);
 
@@ -199,22 +233,262 @@ public class ColorMapEditor extends Composite
 			}
 		});
 
-		percentageBasedButton = new Button(optionsContainer, SWT.CHECK);
-		percentageBasedButton.setText("Use percentages");
-		percentageBasedButton.setSelection(map.isPercentageBased());
-		GridData gd = new GridData();
-		gd.horizontalSpan = 2;
-		percentageBasedButton.setLayoutData(gd);
+		if (hasDataValues)
+		{
+			percentageBasedButton = new Button(optionsContainer, SWT.CHECK);
+			percentageBasedButton.setText("Use percentages");
+			percentageBasedButton.setSelection(map.isPercentageBased());
+			GridData gd = new GridData();
+			gd.horizontalSpan = 2;
+			percentageBasedButton.setLayoutData(gd);
+			percentageBasedButton.addSelectionListener(new SelectionListener()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent e)
+				{
+					map.setValuesArePercentages(percentageBasedButton.getSelection(),
+							minDataValue,
+							maxDataValue);
+				}
+
+				@Override
+				public void widgetDefaultSelected(SelectionEvent e)
+				{
+					map.setValuesArePercentages(percentageBasedButton.getSelection(),
+							minDataValue,
+							maxDataValue);
+				}
+			});
+		}
+
+		addEntryEditor(optionsContainer);
+		addEntriesList(optionsContainer);
 	}
 
+	/**
+	 * Add the entry editor area. Allows users to edit:
+	 * <ul>
+	 * <li>Value
+	 * <li>Colour
+	 * <li>Transparency
+	 * </ul>
+	 * For a single selected entry in the colour map
+	 */
+	private void addEntryEditor(Composite parent)
+	{
+		Composite editorContainer = new Composite(parent, SWT.BORDER);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		editorContainer.setLayoutData(gd);
+		editorContainer.setLayout(new GridLayout(7, false));
+
+		Label valueLabel = new Label(editorContainer, SWT.NONE);
+		valueLabel.setText("Value:");
+		editorValueField = new NumericTextField(editorContainer, SWT.SINGLE | SWT.BORDER);
+		editorValueField.addFocusListener(new FocusAdapter()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				map.moveEntry(currentEntryValue, editorValueField.getNumber().doubleValue());
+				currentEntryValue = editorValueField.getNumber().doubleValue();
+			}
+		});
+
+		Label colorLabel = new Label(editorContainer, SWT.NONE);
+		colorLabel.setText("Color:");
+		editorColorField = new ColorSelector(editorContainer);
+		editorColorField.addListener(new IPropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(PropertyChangeEvent event)
+			{
+				updateCurrentEntryColor();
+			}
+		});
+
+		Label alphaLabel = new Label(editorContainer, SWT.NONE);
+		alphaLabel.setText("Alpha:");
+
+		editorAlphaScale = new Scale(editorContainer, SWT.HORIZONTAL);
+		editorAlphaScale.setMinimum(0);
+		editorAlphaScale.setMaximum(255);
+		editorAlphaScale.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		editorAlphaField = new NumericTextField(editorContainer, SWT.BORDER, false, false);
+		editorAlphaField.setMinValue(0);
+		editorAlphaField.setMaxValue(255);
+		gd = new GridData();
+		gd.widthHint = 35;
+		editorAlphaField.setLayoutData(gd);
+
+		editorAlphaScale.addSelectionListener(new SelectionListener()
+		{
+
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				updateCurrentEntryColor();
+				editorAlphaField.setNumber(editorAlphaScale.getSelection());
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e)
+			{
+				// Never called
+			}
+		});
+
+		editorAlphaField.addFocusListener(new FocusAdapter()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				editorAlphaScale.setSelection(editorAlphaField.getNumber().intValue());
+				updateCurrentEntryColor();
+			}
+		});
+
+		disableEntryEditor();
+	}
+
+	private void updateCurrentEntryColor()
+	{
+		currentEntryColor = fromRGB(editorColorField.getColorValue(),
+				editorAlphaScale.getSelection());
+		map.changeColor(currentEntryValue, currentEntryColor);
+	}
+
+	private void updateEntryEditor(Entry<Double, Color> entry)
+	{
+		currentEntryValue = entry.getKey();
+		currentEntryColor = entry.getValue();
+
+		editorValueField.setEnabled(true);
+		editorValueField.setNumber(entry.getKey());
+		editorColorField.setEnabled(true);
+		editorColorField.setColorValue(toRGB(entry.getValue()));
+		editorAlphaScale.setEnabled(true);
+		editorAlphaScale.setSelection(entry.getValue().getAlpha());
+		editorAlphaField.setEnabled(true);
+		editorAlphaField.setNumber(entry.getValue().getAlpha());
+	}
+
+	private void disableEntryEditor()
+	{
+		currentEntryValue = null;
+		currentEntryColor = null;
+
+		editorValueField.setNumber(null);
+		editorValueField.setEnabled(false);
+		editorColorField.setEnabled(false);
+		editorAlphaScale.setSelection(255);
+		editorAlphaScale.setEnabled(false);
+		editorAlphaField.setNumber(null);
+		editorAlphaField.setEnabled(false);
+	}
+
+	private void addEntriesList(Composite parent)
+	{
+		Composite tableContainer = new Composite(parent, SWT.NONE);
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		gd.horizontalSpan = 2;
+		tableContainer.setLayoutData(gd);
+		TableColumnLayout layout = new TableColumnLayout();
+		tableContainer.setLayout(layout);
+
+		entriesTable = new TableViewer(tableContainer, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER | SWT.VIRTUAL);
+		entriesTable.setContentProvider(ArrayContentProvider.getInstance());
+		entriesTable.getTable().setHeaderVisible(true);
+		entriesTable.getTable().setLinesVisible(true);
+		entriesTable.setInput(map.getEntries().entrySet());
+		entriesTable.addSelectionChangedListener(new ISelectionChangedListener()
+		{
+			@Override
+			public void selectionChanged(SelectionChangedEvent event)
+			{
+				Entry<Double, Color> selection =
+						(Entry<Double, Color>) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				if (selection != null)
+				{
+					updateEntryEditor(selection);
+				}
+			}
+		});
+		map.addPropertyChangeListener(MutableColorMap.COLOR_MAP_ENTRY_CHANGE_EVENT, new PropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(java.beans.PropertyChangeEvent evt)
+			{
+				entriesTable.refresh();
+			}
+		});
+
+		TableViewerColumn valueColumn = new TableViewerColumn(entriesTable, SWT.NONE);
+		valueColumn.getColumn().setText("Value");
+		valueColumn.setLabelProvider(new ColumnLabelProvider()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public String getText(Object element)
+			{
+				Double value = ((Entry<Double, Color>) element).getKey();
+				String result = "" + value;
+				if (map.isPercentageBased())
+				{
+					result += " (" + (int) (value * 100) + "%)";
+				}
+				return result;
+			}
+		});
+		layout.setColumnData(valueColumn.getColumn(), new ColumnPixelData(80, false));
+
+		TableViewerColumn colorNameColumn = new TableViewerColumn(entriesTable, SWT.NONE);
+		colorNameColumn.getColumn().setText("Color");
+		colorNameColumn.setLabelProvider(new ColumnLabelProvider()
+		{
+
+			@SuppressWarnings("nls")
+			@Override
+			public String getText(Object element)
+			{
+				Color color = getColorFromElement(element);
+				return "RGBA(" + color.getRed() + ", "
+						+ color.getGreen() + ", "
+						+ color.getBlue() + ", "
+						+ color.getAlpha() + ")";
+			}
+
+			@SuppressWarnings("nls")
+			@Override
+			public String getToolTipText(Object element)
+			{
+				return "#" + getColorKey(getColorFromElement(element));
+			}
+
+			@SuppressWarnings("unchecked")
+			private Color getColorFromElement(Object element)
+			{
+				return ((Entry<Double, Color>) element).getValue();
+			}
+
+			private String getColorKey(Color color)
+			{
+				return Integer.toHexString(color.getRGB());
+			}
+
+		});
+		layout.setColumnData(colorNameColumn.getColumn(), new ColumnWeightData(100, false));
+
+		ColumnViewerToolTipSupport.enableFor(entriesTable, ToolTip.NO_RECREATE);
+
+	}
 
 	/**
 	 * Build the gradient edit area
 	 */
 	private void addGradientArea()
 	{
-
-
 		gradientAreaContainer = new Composite(this, SWT.NONE);
 		gradientAreaContainer.setLayout(new GridLayout(1, true));
 		GridData gd = new GridData(GridData.FILL_VERTICAL);
@@ -262,6 +536,23 @@ public class ColorMapEditor extends Composite
 			}
 		});
 
+		map.addPropertyChangeListener(MutableColorMap.COLOR_MAP_ENTRY_CHANGE_EVENT, new PropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(java.beans.PropertyChangeEvent evt)
+			{
+				Display.getCurrent().asyncExec(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						populateColors();
+						gradientCanvas.redraw();
+					}
+				});
+			}
+		});
+
 		for (Entry<Double, Color> entry : map.getEntries().entrySet())
 		{
 			Marker marker = new Marker(entry.getKey(), entry.getValue());
@@ -295,7 +586,7 @@ public class ColorMapEditor extends Composite
 	{
 		Rectangle rect = gradientCanvas.getBounds();
 
-		// Allow colors array to be changed mid-render without locking
+		// Allow colours array to be changed mid-render without locking
 		Color[] paintColors = colors;
 
 		// TODO: I suspect this is a bad way of doing this... optimise based on 
@@ -308,27 +599,7 @@ public class ColorMapEditor extends Composite
 			Color paintColor = paintColors[pixel];
 			if (paintColor != null)
 			{
-				int red;
-				int green;
-				int blue;
-
-				if (paintColor.getAlpha() < 255)
-				{
-					// Do alpha pre-multiplication as SWT colors don't support an alpha channel
-					float alpha = paintColor.getAlpha() / 255.0f;
-
-					red = (int) (paintColor.getRed() * alpha) + (int) (backgroundColor.getRed() * (1 - alpha));
-					green = (int) (paintColor.getGreen() * alpha) + (int) (backgroundColor.getGreen() * (1 - alpha));
-					blue = (int) (paintColor.getBlue() * alpha) + (int) (backgroundColor.getBlue() * (1 - alpha));
-				}
-				else
-				{
-					red = paintColor.getRed();
-					green = paintColor.getGreen();
-					blue = paintColor.getBlue();
-				}
-
-				swtColor = new org.eclipse.swt.graphics.Color(display, red, green, blue);
+				swtColor = toSwtColor(paintColor, display, backgroundColor);
 			}
 			else
 			{
@@ -343,6 +614,62 @@ public class ColorMapEditor extends Composite
 				swtColor.dispose();
 			}
 		}
+	}
+
+	private static RGB toRGB(Color color)
+	{
+		return new RGB(color.getRed(), color.getGreen(), color.getBlue());
+	}
+
+	private static Color fromRGB(RGB rgb, int alpha)
+	{
+		return new Color(rgb.red, rgb.green, rgb.blue, alpha);
+	}
+
+	/**
+	 * Convert an AWT colour to an SWT colour.
+	 * <p/>
+	 * If the provided AWT colour contains transparency, will pre-multiply with
+	 * the given background colour (as SWT colours do not support an alpha
+	 * channel).
+	 * 
+	 * @param awtColor
+	 *            The AWT colour to convert
+	 * @param display
+	 *            The display to use when creating the SWT colour
+	 * @param backgroundColor
+	 *            The background colour to use for pre-multiplying in the case
+	 *            of an AWT colour with transparency.
+	 * 
+	 * @return A new SWT colour
+	 */
+	private static org.eclipse.swt.graphics.Color toSwtColor(Color awtColor,
+			Display display,
+			org.eclipse.swt.graphics.Color backgroundColor)
+	{
+		int red;
+		int green;
+		int blue;
+
+		if (awtColor.getAlpha() < 255 && backgroundColor != null)
+		{
+			// Do alpha pre-multiplication as SWT colours don't support an alpha channel
+			// Use a simple (alpha + 1-alpha) combiner
+
+			float alpha = awtColor.getAlpha() / 255.0f;
+
+			red = (int) (awtColor.getRed() * alpha) + (int) (backgroundColor.getRed() * (1 - alpha));
+			green = (int) (awtColor.getGreen() * alpha) + (int) (backgroundColor.getGreen() * (1 - alpha));
+			blue = (int) (awtColor.getBlue() * alpha) + (int) (backgroundColor.getBlue() * (1 - alpha));
+		}
+		else
+		{
+			red = awtColor.getRed();
+			green = awtColor.getGreen();
+			blue = awtColor.getBlue();
+		}
+
+		return new org.eclipse.swt.graphics.Color(display, red, green, blue);
 	}
 
 	private void paintMarkers(GC gc, Display display)
