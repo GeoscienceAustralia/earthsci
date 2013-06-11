@@ -11,7 +11,6 @@
 package au.gov.ga.earthsci.jface.extras.information;
 
 import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension3;
 import org.eclipse.jface.text.IViewportListener;
 import org.eclipse.jface.util.Geometry;
