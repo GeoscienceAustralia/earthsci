@@ -24,8 +24,8 @@ import java.util.Map.Entry;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.ColorSelector;
-import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.JFaceColors;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -46,6 +46,7 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.GC;
@@ -101,6 +102,7 @@ public class ColorMapEditor extends Composite
 	private List<Marker> markers = new ArrayList<Marker>();
 	private Color[] colors;
 
+	// Gradient area
 	private Composite gradientAreaContainer;
 	private Label minText;
 	private Label maxText;
@@ -108,19 +110,33 @@ public class ColorMapEditor extends Composite
 	private Composite gradientContainer;
 	private Canvas gradientCanvas;
 
+	// Options area
 	private Composite optionsContainer;
+
+	// Mode dropdown
 	private ComboViewer modeCombo;
-	private TableViewer entriesTable;
 	private Button percentageBasedButton;
 
-	private ColorRegistry colorRegistry;
+	// Entries table
+	private TableViewer entriesTable;
 
+	// Entry editor
 	private Color currentEntryColor;
 	private Double currentEntryValue;
 	private NumericTextField editorValueField;
 	private ColorSelector editorColorField;
 	private Scale editorAlphaScale;
 	private NumericTextField editorAlphaField;
+
+	// Add/Remove buttons
+	private Button addEntryButton;
+	private Button removeEntryButton;
+
+	// Nodata editor
+	private Button nodataCheckBox;
+	private ColorSelector nodataColorField;
+	private Scale nodataAlphaScale;
+	private NumericTextField nodataAlphaField;
 
 	/**
 	 * Create a new {@link ColorMap} editor widget with a default seed map.
@@ -184,8 +200,6 @@ public class ColorMapEditor extends Composite
 		super(parent, style);
 		setLayout(new GridLayout(2, false));
 
-		colorRegistry = new ColorRegistry(getDisplay());
-
 		map = new MutableColorMap(seed);
 
 		if (minDataValue != null && maxDataValue != null)
@@ -217,6 +231,15 @@ public class ColorMapEditor extends Composite
 		modeCombo.setInput(InterpolationMode.values());
 		modeCombo.setLabelProvider(new NamedLabelProvider());
 		modeCombo.setSelection(new StructuredSelection(map.getMode()));
+
+		final Label modeDescription = new Label(optionsContainer, SWT.WRAP);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		gd.horizontalIndent = 10;
+		modeDescription.setLayoutData(gd);
+		modeDescription.setText(map.getMode().getDescription());
+		modeDescription.setFont(JFaceResources.getFontRegistry().getItalic("default")); //$NON-NLS-1$
+
 		modeCombo.addSelectionChangedListener(new ISelectionChangedListener()
 		{
 			@Override
@@ -227,6 +250,7 @@ public class ColorMapEditor extends Composite
 				if (newMode != map.getMode())
 				{
 					map.setMode(newMode);
+					modeDescription.setText(newMode.getDescription());
 					populateColors();
 					gradientCanvas.redraw();
 				}
@@ -238,7 +262,7 @@ public class ColorMapEditor extends Composite
 			percentageBasedButton = new Button(optionsContainer, SWT.CHECK);
 			percentageBasedButton.setText("Use percentages");
 			percentageBasedButton.setSelection(map.isPercentageBased());
-			GridData gd = new GridData();
+			gd = new GridData();
 			gd.horizontalSpan = 2;
 			percentageBasedButton.setLayoutData(gd);
 			percentageBasedButton.addSelectionListener(new SelectionListener()
@@ -262,7 +286,9 @@ public class ColorMapEditor extends Composite
 		}
 
 		addEntryEditor(optionsContainer);
+		addAddRemoveButtons(optionsContainer);
 		addEntriesList(optionsContainer);
+		addNodataEditor(optionsContainer);
 	}
 
 	/**
@@ -322,20 +348,13 @@ public class ColorMapEditor extends Composite
 		gd.widthHint = 35;
 		editorAlphaField.setLayoutData(gd);
 
-		editorAlphaScale.addSelectionListener(new SelectionListener()
+		editorAlphaScale.addSelectionListener(new SelectionAdapter()
 		{
-
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				updateCurrentEntryColor();
 				editorAlphaField.setNumber(editorAlphaScale.getSelection());
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e)
-			{
-				// Never called
 			}
 		});
 
@@ -388,6 +407,134 @@ public class ColorMapEditor extends Composite
 		editorAlphaField.setEnabled(false);
 	}
 
+	private void addAddRemoveButtons(Composite parent)
+	{
+		Composite buttonContainer = new Composite(parent, SWT.NONE);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		buttonContainer.setLayoutData(gd);
+		buttonContainer.setLayout(new GridLayout(2, false));
+
+		addEntryButton = new Button(buttonContainer, SWT.PUSH);
+		addEntryButton.setText("Add");
+		addEntryButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				addNewEntry();
+			}
+		});
+
+		removeEntryButton = new Button(buttonContainer, SWT.PUSH);
+		removeEntryButton.setText("Remove");
+		removeEntryButton.setEnabled(false);
+		removeEntryButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				removeSelectedEntry();
+			}
+		});
+	}
+
+	/**
+	 * Add a new entry in the colour map that is:
+	 * <ul>
+	 * <li>Half way between the selected entry and the previous entry (if one
+	 * exists); or
+	 * <li>Half way between the selected entry and the min value (if no previous
+	 * entry exists and selected != min)
+	 * <li>Half way between the selected entry and the next entry (if min entry
+	 * is selected); or
+	 * <li>Half way between the selected entry and the max value (if min entry
+	 * is selected and no other entry exists); or
+	 * <li>Half way between the min value and the max value (if no entries exist
+	 * in the table)
+	 * </ul>
+	 * 
+	 */
+	private void addNewEntry()
+	{
+		Double newEntryValue = getMinValue();
+
+		Entry<Double, Color> selectedEntry = getSelectedEntry();
+		if (selectedEntry == null)
+		{
+			// If nothing selected, either choose the first entry or the mid point
+			if (map.isEmpty())
+			{
+				newEntryValue = getMinValue() + (getMaxValue() - getMinValue()) / 2;
+			}
+			else
+			{
+				selectedEntry = map.getFirstEntry();
+			}
+		}
+
+		if (selectedEntry != null)
+		{
+			if (map.getSize() == 1)
+			{
+				// Map only contains one entry
+				if (selectedEntry.getKey() == getMinValue())
+				{
+					// Selected entry is min value - go higher
+					newEntryValue = getMinValue() + (getMaxValue() - getMinValue()) / 2;
+				}
+				else
+				{
+					// Otherwise go lower
+					newEntryValue = getMinValue() + (selectedEntry.getKey() - getMinValue()) / 2;
+				}
+			}
+			else
+			{
+				// Map contains more than one entry
+				if (selectedEntry.equals(map.getFirstEntry()))
+				{
+					// Selected entry is first entry 
+					if (selectedEntry.getKey() == getMinValue())
+					{
+						// Go between selected and next
+						double nextValue = map.getNextEntry(getMinValue()).getKey();
+						newEntryValue = getMinValue() + (nextValue - getMinValue()) / 2;
+					}
+					else
+					{
+						// Go between selected and min value
+						newEntryValue = getMinValue() + (selectedEntry.getKey() - getMinValue()) / 2;
+					}
+				}
+				else
+				{
+					// Selected entry is not first - go between previous entry
+					double previousValue = map.getPreviousEntry(selectedEntry.getKey()).getKey();
+					newEntryValue = previousValue + (selectedEntry.getKey() - previousValue) / 2;
+				}
+			}
+		}
+
+		Color newEntryColor = map.getColor(newEntryValue);
+		map.addEntry(newEntryValue, newEntryColor);
+
+	}
+
+	private void removeSelectedEntry()
+	{
+		Entry<Double, Color> currentEntry = getSelectedEntry();
+		if (currentEntry == null)
+		{
+			return;
+		}
+
+		map.removeEntry(currentEntry.getKey());
+		entriesTable.setSelection(null);
+		removeEntryButton.setEnabled(false);
+		disableEntryEditor();
+	}
+
 	private void addEntriesList(Composite parent)
 	{
 		Composite tableContainer = new Composite(parent, SWT.NONE);
@@ -397,6 +544,7 @@ public class ColorMapEditor extends Composite
 		TableColumnLayout layout = new TableColumnLayout();
 		tableContainer.setLayout(layout);
 
+		// Not sure why, but columns and column label providers only work when SWT.VIRTUAL is used
 		entriesTable = new TableViewer(tableContainer, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER | SWT.VIRTUAL);
 		entriesTable.setContentProvider(ArrayContentProvider.getInstance());
 		entriesTable.getTable().setHeaderVisible(true);
@@ -407,11 +555,11 @@ public class ColorMapEditor extends Composite
 			@Override
 			public void selectionChanged(SelectionChangedEvent event)
 			{
-				Entry<Double, Color> selection =
-						(Entry<Double, Color>) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				Entry<Double, Color> selection = getSelectedEntry();
 				if (selection != null)
 				{
 					updateEntryEditor(selection);
+					removeEntryButton.setEnabled(true);
 				}
 			}
 		});
@@ -482,6 +630,132 @@ public class ColorMapEditor extends Composite
 
 		ColumnViewerToolTipSupport.enableFor(entriesTable, ToolTip.NO_RECREATE);
 
+	}
+
+	/**
+	 * @return The currently selected entry in the entries table, or
+	 *         <code>null</code> if none is selected.
+	 */
+	@SuppressWarnings("unchecked")
+	private Entry<Double, Color> getSelectedEntry()
+	{
+		Entry<Double, Color> selection =
+				(Entry<Double, Color>) ((IStructuredSelection) entriesTable.getSelection()).getFirstElement();
+		return selection;
+	}
+
+	/**
+	 * Add an editor area for changing the NODATA colour used
+	 */
+	private void addNodataEditor(Composite parent)
+	{
+		Composite editorContainer = new Composite(parent, SWT.BORDER);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		editorContainer.setLayoutData(gd);
+		editorContainer.setLayout(new GridLayout(7, false));
+
+		nodataCheckBox = new Button(editorContainer, SWT.CHECK);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 7;
+		nodataCheckBox.setLayoutData(gd);
+		nodataCheckBox.setText("Specify a NODATA colour");
+		nodataCheckBox.setToolTipText("If not specified, NODATA will be made transparent.");
+		nodataCheckBox.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				enableNodataEditor(nodataCheckBox.getSelection());
+				updateNodataColor();
+			}
+		});
+
+		Label colorLabel = new Label(editorContainer, SWT.NONE);
+		colorLabel.setText("Color:");
+		nodataColorField = new ColorSelector(editorContainer);
+		nodataColorField.addListener(new IPropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(PropertyChangeEvent event)
+			{
+				updateNodataColor();
+			}
+		});
+		nodataColorField.setColorValue(toRGB(Color.BLACK));
+
+		Label alphaLabel = new Label(editorContainer, SWT.NONE);
+		alphaLabel.setText("Alpha:");
+
+		nodataAlphaScale = new Scale(editorContainer, SWT.HORIZONTAL);
+		nodataAlphaScale.setMinimum(0);
+		nodataAlphaScale.setMaximum(255);
+		nodataAlphaScale.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		nodataAlphaScale.setSelection(255);
+
+		nodataAlphaField = new NumericTextField(editorContainer, SWT.BORDER, false, false);
+		nodataAlphaField.setMinValue(0);
+		nodataAlphaField.setMaxValue(255);
+		gd = new GridData();
+		gd.widthHint = 35;
+		nodataAlphaField.setLayoutData(gd);
+		nodataAlphaField.setNumber(255);
+
+		nodataAlphaScale.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				updateNodataColor();
+				nodataAlphaField.setNumber(nodataAlphaScale.getSelection());
+			}
+		});
+
+		nodataAlphaField.addFocusListener(new FocusAdapter()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				nodataAlphaScale.setSelection(nodataAlphaField.getNumber().intValue());
+				updateNodataColor();
+			}
+		});
+
+		updateNodataEditor(map.getNodataColour());
+	}
+
+	private void enableNodataEditor(boolean enable)
+	{
+		nodataColorField.setEnabled(enable);
+		nodataAlphaScale.setEnabled(enable);
+		nodataAlphaField.setEnabled(enable);
+	}
+
+	private void updateNodataEditor(Color nodataColor)
+	{
+		if (nodataColor == null)
+		{
+			nodataCheckBox.setSelection(false);
+			enableNodataEditor(false);
+			return;
+		}
+
+		nodataColorField.setColorValue(toRGB(nodataColor));
+		nodataAlphaScale.setSelection(nodataColor.getAlpha());
+		nodataAlphaField.setNumber(nodataColor.getAlpha());
+	}
+
+	private void updateNodataColor()
+	{
+		if (!nodataCheckBox.getSelection())
+		{
+			map.setNodataColour(null);
+			return;
+		}
+
+		Color nodataColor = fromRGB(nodataColorField.getColorValue(),
+				nodataAlphaScale.getSelection());
+		map.setNodataColour(nodataColor);
 	}
 
 	/**
