@@ -4,6 +4,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.text.DefaultInformationControl;
+import org.eclipse.jface.text.IInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -60,7 +63,15 @@ public class InformationProviderExample
 	private void hookTooltips(TableViewer viewer)
 	{
 		IInformationProvider provider = new TableViewerInformationProvider(viewer);
-		InformationProviderHoverInformationControlManager.install(viewer.getControl(), provider);
+		InformationProviderHoverInformationControlManager.install(viewer.getControl(), provider,
+				new IInformationControlCreator()
+				{
+					@Override
+					public IInformationControl createInformationControl(Shell parent)
+					{
+						return new DefaultInformationControl(parent, false);
+					}
+				});
 	}
 
 	public static void main(String[] args) throws Exception

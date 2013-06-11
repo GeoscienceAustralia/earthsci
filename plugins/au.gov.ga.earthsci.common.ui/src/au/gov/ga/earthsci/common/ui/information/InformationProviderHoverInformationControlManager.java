@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.common.ui.information;
 
-import org.eclipse.jface.text.DefaultInformationControl;
-import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -26,7 +24,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.jface.extras.information.AbstractHoverInformationControlManager;
 import au.gov.ga.earthsci.jface.extras.information.ControlStickyHoverManager;
@@ -40,10 +37,10 @@ import au.gov.ga.earthsci.jface.extras.information.ControlStickyHoverManager;
 public class InformationProviderHoverInformationControlManager extends AbstractHoverInformationControlManager
 {
 	public static InformationProviderHoverInformationControlManager install(Control control,
-			IInformationProvider provider)
+			IInformationProvider provider, IInformationControlCreator creator)
 	{
 		final InformationProviderHoverInformationControlManager manager =
-				new InformationProviderHoverInformationControlManager(provider);
+				new InformationProviderHoverInformationControlManager(provider, creator);
 		manager.install(control);
 
 		// MouseListener to show the information when the user hovers a table item
@@ -71,18 +68,11 @@ public class InformationProviderHoverInformationControlManager extends AbstractH
 
 	private final IInformationProvider provider;
 
-	public InformationProviderHoverInformationControlManager(IInformationProvider provider)
+	public InformationProviderHoverInformationControlManager(IInformationProvider provider,
+			final IInformationControlCreator creator)
 	{
-		super(new IInformationControlCreator()
-		{
-			@Override
-			public IInformationControl createInformationControl(Shell parent)
-			{
-				return new DefaultInformationControl(parent, false);
-			}
-		});
+		super(creator);
 		this.provider = provider;
-
 		setAnchor(ANCHOR_RIGHT);
 	}
 
