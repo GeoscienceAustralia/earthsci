@@ -76,13 +76,13 @@ public class ColorMap implements INamed, IDescribed
 			@Override
 			public String getName()
 			{
-				return "Nearest match";
+				return Messages.ColorMap_NearestMatchName;
 			}
 
 			@Override
 			public String getDescription()
 			{
-				return "Colours are clamped to the nearest entry in the colour map";
+				return Messages.ColorMap_NearestMatchDescription;
 			}
 		},
 
@@ -108,13 +108,13 @@ public class ColorMap implements INamed, IDescribed
 			@Override
 			public String getName()
 			{
-				return "Exact match";
+				return Messages.ColorMap_ExactMatchName;
 			}
 
 			@Override
 			public String getDescription()
 			{
-				return "Colours are only used for values that exactly match entries in the colour map";
+				return Messages.ColorMap_ExactMatchDescription;
 			}
 		},
 
@@ -133,13 +133,13 @@ public class ColorMap implements INamed, IDescribed
 			@Override
 			public String getName()
 			{
-				return "RGB Interpolate";
+				return Messages.ColorMap_RGBInterpolateName;
 			}
 
 			@Override
 			public String getDescription()
 			{
-				return "Use RGB interpolation to blend between entries in the colour map";
+				return Messages.ColorMap_RGBInterpolateDescription;
 			}
 		},
 
@@ -159,13 +159,13 @@ public class ColorMap implements INamed, IDescribed
 			@Override
 			public String getName()
 			{
-				return "Hue Interpolate";
+				return Messages.ColorMap_HueInterpolateName;
 			}
 
 			@Override
 			public String getDescription()
 			{
-				return "Use HSL interpolation to blend between entries in the colour map";
+				return Messages.ColorMap_HueInterpolateDescription;
 			}
 		};
 
@@ -350,6 +350,84 @@ public class ColorMap implements INamed, IDescribed
 	public Map<Double, Color> getEntries()
 	{
 		return Collections.unmodifiableMap(entries);
+	}
+
+	/**
+	 * Return the number of entries in this colour map
+	 * 
+	 * @return The number of entries in this colour map
+	 */
+	public int getSize()
+	{
+		return entries.size();
+	}
+
+	/**
+	 * Return whether this map is empty
+	 * 
+	 * @return <code>true</code> if this map contains no entries;
+	 *         <code>false</code> otherwise.
+	 */
+	public boolean isEmpty()
+	{
+		return entries.isEmpty();
+	}
+
+	/**
+	 * Return the first entry in this colour map, if one exists
+	 * 
+	 * @return The first entry in this colour map
+	 */
+	public Entry<Double, Color> getFirstEntry()
+	{
+		return entries.firstEntry();
+	}
+
+	/**
+	 * Return the last entry in this colour map, if one exists
+	 * 
+	 * @return The last entry in this colour map
+	 */
+	public Entry<Double, Color> getLastEntry()
+	{
+		return entries.lastEntry();
+	}
+
+	/**
+	 * Return the entry in the colour map for the next lowest value to the one
+	 * given.
+	 * 
+	 * @param value
+	 *            The value to retrieve the previous entry from
+	 * 
+	 * @return The previous entry, or <code>null</code> if none exists in the
+	 *         map.
+	 */
+	public Entry<Double, Color> getPreviousEntry(Double value)
+	{
+		if (value == null)
+		{
+			return null;
+		}
+		return entries.floorEntry(Math.nextAfter(value, Double.NEGATIVE_INFINITY));
+	}
+
+	/**
+	 * Return the entry in the colour map for the next highest value to the one
+	 * given.
+	 * 
+	 * @param value
+	 *            The value to retrieve the next entry from
+	 * 
+	 * @return The next entry, or <code>null</code> if none exists in the map.
+	 */
+	public Entry<Double, Color> getNextEntry(Double value)
+	{
+		if (value == null)
+		{
+			return null;
+		}
+		return entries.ceilingEntry(Math.nextUp(value));
 	}
 
 	@Override

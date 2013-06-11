@@ -25,6 +25,14 @@ public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.common.color.messages"; //$NON-NLS-1$
 	public static String ColorMap_DefaultColorMapName;
+	public static String ColorMap_ExactMatchDescription;
+	public static String ColorMap_ExactMatchName;
+	public static String ColorMap_HueInterpolateDescription;
+	public static String ColorMap_HueInterpolateName;
+	public static String ColorMap_NearestMatchDescription;
+	public static String ColorMap_NearestMatchName;
+	public static String ColorMap_RGBInterpolateDescription;
+	public static String ColorMap_RGBInterpolateName;
 	public static String ColorMaps_RBGDescription;
 	public static String ColorMaps_RBGName;
 	public static String ColorMaps_RGBDescription;

@@ -42,6 +42,8 @@ public class ColorMapTest
 		assertEquals(InterpolationMode.INTERPOLATE_RGB, classUnderTest.getMode());
 		assertColorsEqual(new Color(0, 0, 0, 0), classUnderTest.getNodataColour());
 		assertFalse(classUnderTest.isPercentageBased());
+		assertTrue(classUnderTest.isEmpty());
+		assertEquals(0, classUnderTest.getSize());
 	}
 
 	@Test
@@ -54,6 +56,8 @@ public class ColorMapTest
 		assertColorsEqual(new Color(1, 1, 1, 1), classUnderTest.getNodataColour());
 		assertTrue(classUnderTest.isPercentageBased());
 		assertTrue(classUnderTest.getEntries().isEmpty());
+		assertTrue(classUnderTest.isEmpty());
+		assertEquals(0, classUnderTest.getSize());
 	}
 
 	@Test
@@ -184,6 +188,65 @@ public class ColorMapTest
 		ColorMap map2 = new ColorMap("name", null, PERCENTAGE_ENTRIES, null, InterpolationMode.EXACT_MATCH, false);
 
 		assertTrue(map1.hashCode() != map2.hashCode());
+	}
+
+	@Test
+	public void testGetNextEntry()
+	{
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(0.0, classUnderTest.getNextEntry(-1.0).getKey(), 0.001);
+		assertEquals(0.1, classUnderTest.getNextEntry(0.0).getKey(), 0.001);
+		assertEquals(0.7, classUnderTest.getNextEntry(0.1).getKey(), 0.001);
+		assertEquals(1.0, classUnderTest.getNextEntry(0.7).getKey(), 0.001);
+		assertEquals(null, classUnderTest.getNextEntry(1.0));
+		assertEquals(null, classUnderTest.getNextEntry(null));
+	}
+
+	@Test
+	public void testGetPreviousEntry()
+	{
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(null, classUnderTest.getPreviousEntry(-1.0));
+		assertEquals(null, classUnderTest.getPreviousEntry(0.0));
+		assertEquals(0.0, classUnderTest.getPreviousEntry(0.1).getKey(), 0.001);
+		assertEquals(0.1, classUnderTest.getPreviousEntry(0.7).getKey(), 0.001);
+		assertEquals(0.7, classUnderTest.getPreviousEntry(1.0).getKey(), 0.001);
+		assertEquals(1.0, classUnderTest.getPreviousEntry(1.1).getKey(), 0.001);
+		assertEquals(null, classUnderTest.getPreviousEntry(null));
+	}
+
+	@Test
+	public void testGetFirstWithEntries()
+	{
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(0.0, classUnderTest.getFirstEntry().getKey(), 0.001);
+	}
+
+	@Test
+	public void testGetFirstWithNoEntries()
+	{
+		ColorMap classUnderTest = new ColorMap(null);
+
+		assertEquals(null, classUnderTest.getFirstEntry());
+	}
+
+	@Test
+	public void testGetLastWithEntries()
+	{
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(1.0, classUnderTest.getLastEntry().getKey(), 0.001);
+	}
+
+	@Test
+	public void testGetLastWithNoEntries()
+	{
+		ColorMap classUnderTest = new ColorMap(null);
+
+		assertEquals(null, classUnderTest.getLastEntry());
 	}
 
 	private static void assertColorsEqual(Color expected, Color actual)
