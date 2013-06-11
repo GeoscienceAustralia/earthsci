@@ -366,4 +366,63 @@ public class Util
 		}
 		return ""; //$NON-NLS-1$
 	}
+
+	/**
+	 * Read the given stream until EOF, and return a string.
+	 * 
+	 * @param stream
+	 *            Stream to read
+	 * @param charsetName
+	 *            Charset to read the stream in
+	 * @return String read from stream
+	 * @throws IOException
+	 *             If an IO error occurs during read
+	 */
+	public static String readStreamToString(InputStream stream, String charsetName) throws IOException
+	{
+		StringBuilder sb = new StringBuilder();
+		byte[] buffer = new byte[8192];
+		int read;
+		while ((read = stream.read(buffer)) >= 0)
+		{
+			String s = new String(buffer, 0, read, charsetName);
+			sb.append(s);
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Search through the text, and replace all instances of a character with a
+	 * string.
+	 * 
+	 * @param text
+	 *            Text to replace characters within
+	 * @param c
+	 *            Character to replace
+	 * @param s
+	 *            String to replace characters with
+	 * @return Text with all <code>c</code> characters replaced with
+	 *         <code>s</code>
+	 */
+	public static String replace(String text, char c, String s)
+	{
+		int previous = 0;
+		int current = text.indexOf(c, previous);
+		if (current == -1)
+		{
+			return text;
+		}
+
+		StringBuilder sb = new StringBuilder();
+		while (current > -1)
+		{
+			sb.append(text.substring(previous, current));
+			sb.append(s);
+			previous = current + 1;
+			current = text.indexOf(c, previous);
+		}
+		sb.append(text.substring(previous));
+
+		return sb.toString();
+	}
 }
