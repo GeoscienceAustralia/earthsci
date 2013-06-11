@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery;
 
-import org.eclipse.jface.viewers.ILabelProvider;
-
 /**
  * Represents a single data discovery (search).
  * 
@@ -25,7 +23,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 public interface IDiscovery
 {
 	/**
-	 * Represents an unknown value.
+	 * Represents an unknown value (value is {@value #UNKNOWN}).
 	 */
 	static final int UNKNOWN = -1;
 
@@ -49,7 +47,7 @@ public interface IDiscovery
 	 * @return A new label provider that configures the labels for the viewer
 	 *         that displays this discovery's results.
 	 */
-	ILabelProvider createLabelProvider();
+	IDiscoveryResultLabelProvider getLabelProvider();
 
 	/**
 	 * Add a listener to this discovery.
@@ -71,6 +69,12 @@ public interface IDiscovery
 	 * Start this discovery.
 	 */
 	void start();
+
+	/**
+	 * Cancel this discovery. After cancel is called, this discovery can be
+	 * considered unusable.
+	 */
+	void cancel();
 
 	/**
 	 * @return Is this discovery loading results?

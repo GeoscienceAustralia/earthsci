@@ -16,10 +16,15 @@
 package au.gov.ga.earthsci.discovery;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Defines the search parameters passed to an {@link IDiscoveryService} to
+ * create a new {@link IDiscovery}.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public interface IDiscoveryParameters
 {
+	/**
+	 * @return Search query
+	 */
 	String getQuery();
 }

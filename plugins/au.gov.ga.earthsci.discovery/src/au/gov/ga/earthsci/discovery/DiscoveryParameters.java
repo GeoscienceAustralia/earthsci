@@ -16,8 +16,9 @@
 package au.gov.ga.earthsci.discovery;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Basic implementation of {@link IDiscoveryParameters}.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class DiscoveryParameters implements IDiscoveryParameters
 {

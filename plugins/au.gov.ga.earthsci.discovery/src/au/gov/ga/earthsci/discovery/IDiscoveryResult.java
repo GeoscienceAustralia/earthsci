@@ -16,12 +16,18 @@
 package au.gov.ga.earthsci.discovery;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Single result contained by an {@link IDiscovery}.
+ * <p/>
+ * Implementations can add whatever methods/fields they like; these can be
+ * displayed to the user through the {@link IDiscoveryResultLabelProvider}
+ * implementation.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public interface IDiscoveryResult
 {
+	/**
+	 * @return Index of this result in the {@link IDiscovery}
+	 */
 	int getIndex();
-
-	String getName();
 }

@@ -16,12 +16,28 @@
 package au.gov.ga.earthsci.discovery;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Listens to change events on an {@link IDiscovery} instance, such as when new
+ * results are added.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public interface IDiscoveryListener
 {
+	/**
+	 * Called when the discovery's total result count has changed.
+	 * 
+	 * @param discovery
+	 *            Discovery whose result count changed
+	 */
 	void resultCountChanged(IDiscovery discovery);
 
+	/**
+	 * Called when a result has been added to the discovery.
+	 * 
+	 * @param discovery
+	 *            Discovery that the result was added to
+	 * @param result
+	 *            Result that was added
+	 */
 	void resultAdded(IDiscovery discovery, IDiscoveryResult result);
 }

@@ -26,12 +26,14 @@ import java.net.URL;
  */
 public class MissingPluginPlaceholderDiscoveryService implements IDiscoveryService
 {
+	private final String name;
 	private final URL serviceURL;
 	private final IDiscoveryProvider provider;
 	private final boolean wasEnabled;
 
-	public MissingPluginPlaceholderDiscoveryService(String providerId, URL serviceURL, boolean wasEnabled)
+	public MissingPluginPlaceholderDiscoveryService(String providerId, String name, URL serviceURL, boolean wasEnabled)
 	{
+		this.name = name;
 		this.serviceURL = serviceURL;
 		this.provider = new MissingPluginPlaceholderDiscoveryProvider(providerId);
 		this.wasEnabled = wasEnabled;
@@ -41,6 +43,12 @@ public class MissingPluginPlaceholderDiscoveryService implements IDiscoveryServi
 	public URL getServiceURL()
 	{
 		return serviceURL;
+	}
+
+	@Override
+	public String getName()
+	{
+		return name;
 	}
 
 	@Override
@@ -93,7 +101,7 @@ public class MissingPluginPlaceholderDiscoveryService implements IDiscoveryServi
 		}
 
 		@Override
-		public IDiscoveryService createService(URL serviceURL)
+		public IDiscoveryService createService(String label, URL url)
 		{
 			return null;
 		}

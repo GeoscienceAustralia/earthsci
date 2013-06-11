@@ -63,21 +63,44 @@ public class DiscoveryServiceManager
 	private static final List<IDiscoveryService> services = new ArrayList<IDiscoveryService>();
 	private static final Logger logger = LoggerFactory.getLogger(DiscoveryServiceManager.class);
 
+	/**
+	 * Add a new {@link IDiscoveryService}.
+	 * 
+	 * @param service
+	 *            Service to add
+	 */
 	public static void addService(IDiscoveryService service)
 	{
 		services.add(service);
 	}
 
+	/**
+	 * Add a new {@link IDiscoveryService} at a specific index.
+	 * 
+	 * @param index
+	 *            Index at which to add the service
+	 * @param service
+	 *            Service to add
+	 */
 	public static void addService(int index, IDiscoveryService service)
 	{
 		services.add(index, service);
 	}
 
+	/**
+	 * Remove the given {@link IDiscoveryService}.
+	 * 
+	 * @param service
+	 *            Service to remove
+	 */
 	public static void removeService(IDiscoveryService service)
 	{
 		services.remove(service);
 	}
 
+	/**
+	 * @return List of discovery services
+	 */
 	public static List<IDiscoveryService> getServices()
 	{
 		return services;
@@ -167,6 +190,7 @@ public class DiscoveryServiceManager
 	protected static class PersistentDiscoveryService
 	{
 		private String providerId;
+		private String name;
 		private URL serviceURL;
 		private boolean enabled;
 
@@ -191,9 +215,10 @@ public class DiscoveryServiceManager
 			IDiscoveryProvider provider = DiscoveryProviderRegistry.getProviderForId(getProviderId());
 			if (provider == null)
 			{
-				return new MissingPluginPlaceholderDiscoveryService(getProviderId(), getServiceURL(), isEnabled());
+				return new MissingPluginPlaceholderDiscoveryService(getProviderId(), getName(), getServiceURL(),
+						isEnabled());
 			}
-			IDiscoveryService service = provider.createService(getServiceURL());
+			IDiscoveryService service = provider.createService(getName(), getServiceURL());
 			service.setEnabled(isEnabled());
 			return service;
 		}
@@ -207,6 +232,17 @@ public class DiscoveryServiceManager
 		public void setProviderId(String providerId)
 		{
 			this.providerId = providerId;
+		}
+
+		@Persistent(attribute = true)
+		public String getName()
+		{
+			return name;
+		}
+
+		public void setName(String name)
+		{
+			this.name = name;
 		}
 
 		@Persistent(attribute = true)

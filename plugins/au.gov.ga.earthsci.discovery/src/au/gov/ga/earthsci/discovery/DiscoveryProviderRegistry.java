@@ -28,8 +28,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Central {@link IDiscoveryProvider} registry. Reads the list of discovery
+ * providers using the extension registry mechanism.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 @Singleton
 public class DiscoveryProviderRegistry
@@ -39,16 +41,37 @@ public class DiscoveryProviderRegistry
 	private static final Map<String, IDiscoveryProvider> providers = new HashMap<String, IDiscoveryProvider>();
 	private static final Logger logger = LoggerFactory.getLogger(DiscoveryProviderRegistry.class);
 
+	/**
+	 * Register the given {@link IDiscoveryProvider}.
+	 * 
+	 * @param provider
+	 *            Provider to register
+	 */
 	public static void registerProvider(IDiscoveryProvider provider)
 	{
 		providers.put(provider.getId(), provider);
 	}
 
+	/**
+	 * Unregister the given {@link IDiscoveryProvider}.
+	 * 
+	 * @param provider
+	 *            Provider to unregister
+	 */
 	public static void unregisterProvider(IDiscoveryProvider provider)
 	{
 		providers.remove(provider.getId());
 	}
 
+	/**
+	 * Get the provider implementation with the given id.
+	 * 
+	 * @param id
+	 *            ID to get the provider for
+	 * @return Discovery provider with the given id, or null if no provider with
+	 *         that id could be found.
+	 * @see IDiscoveryProvider#getId()
+	 */
 	public static IDiscoveryProvider getProviderForId(String id)
 	{
 		return providers.get(id);

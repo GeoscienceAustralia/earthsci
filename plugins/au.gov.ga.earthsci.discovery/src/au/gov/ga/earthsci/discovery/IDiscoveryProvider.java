@@ -18,14 +18,41 @@ package au.gov.ga.earthsci.discovery;
 import java.net.URL;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * A provider of discovery services. Handles creating services for each service
+ * URL associated with this provider.
+ * <p/>
+ * For example, a CSW discovery provider could create multiple CSW discovery
+ * services, one for each CSW URL registered in the application.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public interface IDiscoveryProvider
 {
+	/**
+	 * @return Unique id of this discovery provider
+	 */
 	String getId();
 
+	/**
+	 * @return Pretty name of this discovery provider; used in the UI
+	 */
 	String getName();
 
-	IDiscoveryService createService(URL serviceURL);
+	/**
+	 * Create a new discovery service for discovering data from the given URL,
+	 * which should be a URL pointing to a service that implements this
+	 * particular provider's method of discovering data.
+	 * <p/>
+	 * For example, if this provider was a CSW discovery provider, the URL
+	 * should point to a CSW endpoint, and a CSW discovery service should be
+	 * returned by this method.
+	 * 
+	 * @param name
+	 *            Name of the service; used in the UI
+	 * @param url
+	 *            URL of the discovery service
+	 * @return {@link IDiscoveryService} that can be used to discover results
+	 *         from the given URL
+	 */
+	IDiscoveryService createService(String name, URL url);
 }

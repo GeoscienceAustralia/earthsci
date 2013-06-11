@@ -19,19 +19,47 @@ import java.net.URL;
 
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Instance of a searchable discovery service.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public interface IDiscoveryService
 {
+	/**
+	 * @return The name of this service; used in the UI
+	 */
+	String getName();
+
+	/**
+	 * @return URL of this service
+	 */
 	URL getServiceURL();
 
+	/**
+	 * @return {@link IDiscoveryProvider} that this service is associated with
+	 *         (the provider that created this service)
+	 */
 	IDiscoveryProvider getProvider();
 
+	/**
+	 * @return Is this service enabled for searching?
+	 */
 	boolean isEnabled();
 
+	/**
+	 * Enable/disable this service.
+	 * 
+	 * @param enabled
+	 */
 	void setEnabled(boolean enabled);
 
-	//TODO add comment about checking for null return value
+	/**
+	 * Create a new discovery, searching this service for the given parameters.
+	 * 
+	 * @param parameters
+	 *            Parameters to used in the search/discovery
+	 * @return New discovery, or null if no discovery could be created for the
+	 *         given parameters
+	 */
 	IDiscovery createDiscovery(IDiscoveryParameters parameters);
 }
