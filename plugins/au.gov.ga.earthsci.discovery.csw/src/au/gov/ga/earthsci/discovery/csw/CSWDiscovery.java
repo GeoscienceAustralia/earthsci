@@ -26,10 +26,10 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrieval;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalListener;
@@ -40,6 +40,7 @@ import au.gov.ga.earthsci.discovery.DiscoveryIndexOutOfBoundsException;
 import au.gov.ga.earthsci.discovery.DiscoveryListenerList;
 import au.gov.ga.earthsci.discovery.DiscoveryResultNotFoundException;
 import au.gov.ga.earthsci.discovery.IDiscovery;
+import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryListener;
 import au.gov.ga.earthsci.discovery.IDiscoveryParameters;
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
@@ -55,6 +56,7 @@ public class CSWDiscovery implements IDiscovery
 	private final IDiscoveryParameters parameters;
 	private final IDiscoveryService service;
 	private final DiscoveryListenerList listeners = new DiscoveryListenerList();
+	private final IDiscoveryResultLabelProvider labelProvider = new CSWDiscoveryResultLabelProvider();
 	private int pageSize = DEFAULT_PAGE_SIZE;
 
 	private Integer resultCount;
@@ -85,17 +87,29 @@ public class CSWDiscovery implements IDiscovery
 	}
 
 	@Override
-	public ILabelProvider createLabelProvider()
+	public IDiscoveryResultLabelProvider getLabelProvider()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return labelProvider;
 	}
 
 	@Override
 	public void start()
 	{
-		loading = true;
 		retrieve(0, 0);
+	}
+
+	@Override
+	public void cancel()
+	{
+		synchronized (retrievals)
+		{
+			for (IRetrieval retrieval : retrievals.keySet())
+			{
+				retrieval.cancel();
+			}
+			retrievals.clear();
+			retrievalIds.clear();
+		}
 	}
 
 	@Override
@@ -221,6 +235,7 @@ public class CSWDiscovery implements IDiscovery
 			retrievals.put(retrieval, id);
 			retrieval.addListener(retrievalListener);
 			retrieval.start();
+			loading = true;
 		}
 	}
 
@@ -233,6 +248,7 @@ public class CSWDiscovery implements IDiscovery
 			{
 				String id = retrievals.remove(retrieval);
 				retrievalIds.remove(id);
+				loading = !retrievals.isEmpty();
 
 				if (retrieval.getResult().isSuccessful())
 				{
@@ -242,16 +258,50 @@ public class CSWDiscovery implements IDiscovery
 						Document document = builder.parse(retrieval.getData().getInputStream());
 
 						XPath xpath = WWXML.makeXPath();
-						XPathExpression expr =
-								xpath.compile("/GetRecordsResponse/SearchResults/@numberOfRecordsMatched"); //$NON-NLS-1$
-						Double numberOfRecords = (Double) expr.evaluate(document, XPathConstants.NUMBER);
-						if (numberOfRecords != null && !Double.isNaN(numberOfRecords))
+						Double totalRecordCount =
+								(Double) xpath.compile("/GetRecordsResponse/SearchResults/@numberOfRecordsMatched") //$NON-NLS-1$
+										.evaluate(document, XPathConstants.NUMBER);
+						Double nextRecordIndex =
+								(Double) xpath.compile("/GetRecordsResponse/SearchResults/@nextRecord").evaluate( //$NON-NLS-1$
+										document, XPathConstants.NUMBER);
+						Double numberOfRecordsReturned =
+								(Double) xpath.compile("/GetRecordsResponse/SearchResults/@numberOfRecordsReturned") //$NON-NLS-1$
+										.evaluate(document, XPathConstants.NUMBER);
+						if (!Double.isNaN(totalRecordCount))
 						{
-							resultCount = numberOfRecords.intValue();
+							int newResultCount = totalRecordCount.intValue();
+							if (resultCount == null || resultCount != newResultCount)
+							{
+								resultCount = newResultCount;
+								listeners.resultCountChanged(CSWDiscovery.this);
+							}
+						}
+						if (!Double.isNaN(numberOfRecordsReturned) && !Double.isNaN(nextRecordIndex)
+								&& numberOfRecordsReturned > 0)
+						{
+							int count = numberOfRecordsReturned.intValue();
+							int startIndex = nextRecordIndex.intValue() - 1 - count;
+							NodeList recordElements =
+									(NodeList) xpath.compile("/GetRecordsResponse/SearchResults/Record").evaluate( //$NON-NLS-1$
+											document, XPathConstants.NODESET);
+							if (recordElements.getLength() != count)
+							{
+								throw new Exception(
+										"Number of record elements in the CSW response doesn't match the number of records attribute");
+							}
+							for (int i = 0; i < count; i++)
+							{
+								Element recordElement = (Element) recordElements.item(i);
+								int index = startIndex + i;
+								CSWDiscoveryResult result = new CSWDiscoveryResult(index, recordElement);
+								results.put(index, result);
+								listeners.resultAdded(CSWDiscovery.this, result);
+							}
 						}
 					}
 					catch (Exception e)
 					{
+						e.printStackTrace(); //TODO
 						error = e;
 					}
 				}

@@ -15,6 +15,15 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery.csw;
 
+import gov.nasa.worldwind.util.WWXML;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.w3c.dom.Element;
+
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
 
 /**
@@ -24,6 +33,18 @@ import au.gov.ga.earthsci.discovery.IDiscoveryResult;
 public class CSWDiscoveryResult implements IDiscoveryResult
 {
 	/*
+	FULL RESPONSE:
+	<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+	<csw:GetRecordsResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcmiBox="http://dublincore.org/documents/2000/07/11/dcmi-box/" xmlns:dct="http://purl.org/dc/terms/" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+		<csw:SearchStatus timestamp="2013-05-20T09:48:33+10:00"/>
+		<csw:SearchResults elementSet="full" nextRecord="11" numberOfRecordsMatched="63" numberOfRecordsReturned="10" recordSchema="http://www.opengis.net/cat/csw/2.0.2">
+			<csw:Record>
+				...
+			</csw:Record>
+		</csw:SearchResults>
+	</csw:GetRecordsResponse>
+	
+	INDIVIDUAL RECORD:
 	<csw:Record>
 		<dc:identifier scheme="urn:x-esri:specification:ServiceType:ArcIMS:Metadata:FileID">{1E1BA4EA-E8FB-47FD-9551-A045A550A478}</dc:identifier>
 		<dc:identifier scheme="urn:x-esri:specification:ServiceType:ArcIMS:Metadata:DocID">{F58AC930-A27F-45BB-A46C-F38551AE9A65}</dc:identifier>
@@ -55,22 +76,49 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 	</csw:Record>
 	 */
 
-	public CSWDiscoveryResult()
+	private final int index;
+	private final String title;
+	private final String description;
+
+	public CSWDiscoveryResult(int index, Element cswRecordElement) throws XPathExpressionException
 	{
-		// TODO Auto-generated constructor stub
+		this.index = index;
+
+		XPath xpath = WWXML.makeXPath();
+
+		String title = (String) xpath.compile("title/text()").evaluate(cswRecordElement, XPathConstants.STRING); //$NON-NLS-1$
+		title = StringEscapeUtils.unescapeXml(title);
+
+		String description =
+				(String) xpath.compile("abstract/text()").evaluate(cswRecordElement, XPathConstants.STRING); //$NON-NLS-1$
+		description = StringEscapeUtils.unescapeXml(description);
+
+		//normalize newlines
+		description = description.replace("\r\n", "\n").replace("\r", "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+		this.title = title;
+		this.description = description;
 	}
 
 	@Override
 	public int getIndex()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return index;
+	}
+
+	public String getTitle()
+	{
+		return title;
+	}
+
+	public String getDescription()
+	{
+		return description;
 	}
 
 	@Override
-	public String getName()
+	public String toString()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return getIndex() + ": " + getTitle(); //$NON-NLS-1$
 	}
 }

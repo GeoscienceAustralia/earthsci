@@ -28,14 +28,22 @@ import au.gov.ga.earthsci.discovery.IDiscoveryService;
  */
 public class CSWDiscoveryService implements IDiscoveryService
 {
+	private final String name;
 	private final URL serviceURL;
 	private final IDiscoveryProvider provider;
 	private boolean enabled;
 
-	public CSWDiscoveryService(URL serviceURL, IDiscoveryProvider provider)
+	public CSWDiscoveryService(String name, URL serviceURL, IDiscoveryProvider provider)
 	{
+		this.name = name;
 		this.serviceURL = serviceURL;
 		this.provider = provider;
+	}
+
+	@Override
+	public String getName()
+	{
+		return name;
 	}
 
 	@Override

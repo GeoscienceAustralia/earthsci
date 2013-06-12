@@ -41,8 +41,8 @@ public class CSWDiscoveryProvider implements IDiscoveryProvider
 	}
 
 	@Override
-	public IDiscoveryService createService(URL serviceURL)
+	public IDiscoveryService createService(String name, URL serviceURL)
 	{
-		return new CSWDiscoveryService(serviceURL, this);
+		return new CSWDiscoveryService(name, serviceURL, this);
 	}
 }
