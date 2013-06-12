@@ -81,7 +81,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.application.Activator;
 import au.gov.ga.earthsci.application.ImageRegistry;
-import au.gov.ga.earthsci.application.util.StackTraceDialog;
+import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;

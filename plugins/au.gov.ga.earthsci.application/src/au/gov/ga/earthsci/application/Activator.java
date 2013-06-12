@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import au.gov.ga.earthsci.application.util.KeyboardFocusManagerFix;
+import au.gov.ga.earthsci.common.ui.util.KeyboardFocusManagerFix;
 
 /**
  * Application bundle activator.

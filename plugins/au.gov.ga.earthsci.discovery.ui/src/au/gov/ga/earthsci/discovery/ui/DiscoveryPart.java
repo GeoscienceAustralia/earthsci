@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import au.gov.ga.earthsci.application.Activator;
-import au.gov.ga.earthsci.application.util.StackTraceDialog;
+import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
 import au.gov.ga.earthsci.common.ui.information.IInformationProvider;
 import au.gov.ga.earthsci.common.ui.information.InformationProviderHoverInformationControlManager;
 import au.gov.ga.earthsci.common.ui.widgets.PageLinks;

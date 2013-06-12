@@ -43,7 +43,6 @@ import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.application.util.EmptyStringInputValidator;
 import au.gov.ga.earthsci.bookmark.BookmarkFactory;
 import au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
@@ -56,6 +55,7 @@ import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.model.IBookmarks;
 import au.gov.ga.earthsci.bookmark.ui.editor.BookmarkEditorDialog;
 import au.gov.ga.earthsci.bookmark.ui.preferences.IBookmarksPreferences;
+import au.gov.ga.earthsci.common.ui.dialogs.EmptyStringInputValidator;
 import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.util.Util;

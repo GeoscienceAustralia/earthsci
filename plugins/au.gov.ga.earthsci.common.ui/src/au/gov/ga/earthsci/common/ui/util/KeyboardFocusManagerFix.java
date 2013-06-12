@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.util;
+package au.gov.ga.earthsci.common.ui.util;
 
 import java.awt.Component;
 import java.awt.DefaultKeyboardFocusManager;
