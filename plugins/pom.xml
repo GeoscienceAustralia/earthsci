@@ -37,6 +37,10 @@
 		<module>au.gov.ga.earthsci.catalog.ui.tests</module>
 		<module>au.gov.ga.earthsci.catalog.dataset</module>
 		<module>au.gov.ga.earthsci.catalog.dataset.tests</module>
+		<module>au.gov.ga.earthsci.discovery</module>
+		<module>au.gov.ga.earthsci.discovery.csw</module>
+		<module>au.gov.ga.earthsci.discovery.ui</module>
+		<module>au.gov.ga.earthsci.jface.extras</module>
 		<module>au.gov.ga.earthsci.layer.ui</module>
 		<module>au.gov.ga.earthsci.bookmark</module>
 		<module>au.gov.ga.earthsci.bookmark.tests</module>
