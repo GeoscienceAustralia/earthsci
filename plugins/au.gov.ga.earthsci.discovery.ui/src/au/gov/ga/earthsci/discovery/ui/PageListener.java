@@ -15,48 +15,18 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery.ui;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
-
 /**
- * The activator class controls the plug-in life cycle
+ * Listener used by he {@link PageLinks} component to notify of selected page
+ * changes.
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class Activator extends AbstractUIPlugin
+public interface PageListener
 {
-	// The plug-in ID
-	public static final String PLUGIN_ID = "au.gov.ga.earthsci.discovery.ui"; //$NON-NLS-1$
-
-	// The shared instance
-	private static Activator plugin;
-
 	/**
-	 * The constructor
-	 */
-	public Activator()
-	{
-	}
-
-	@Override
-	public void start(BundleContext context) throws Exception
-	{
-		super.start(context);
-		plugin = this;
-	}
-
-	@Override
-	public void stop(BundleContext context) throws Exception
-	{
-		plugin = null;
-		super.stop(context);
-	}
-
-	/**
-	 * Returns the shared instance
+	 * Called when the selected page changes.
 	 * 
-	 * @return the shared instance
+	 * @param page
 	 */
-	public static Activator getDefault()
-	{
-		return plugin;
-	}
+	void pageChanged(int page);
 }
