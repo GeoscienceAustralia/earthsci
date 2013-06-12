@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
 
-import au.gov.ga.earthsci.common.ui.util.UIUtil;
+import au.gov.ga.earthsci.common.ui.util.SWTUtil;
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
 import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 
@@ -107,7 +107,7 @@ public class DiscoveryResultLabelProvider extends OwnerDrawLabelProvider
 			if (title != null)
 			{
 				TextLayout titleLayout =
-						UIUtil.shortenText(event.display, title, boldFont, width, SWT.DEFAULT, false, true);
+						SWTUtil.shortenText(event.display, title, boldFont, width, SWT.DEFAULT, false, true);
 				titleLayout.draw(event.gc, event.x, event.y);
 				offset += titleLayout.getBounds().height;
 			}
@@ -117,7 +117,7 @@ public class DiscoveryResultLabelProvider extends OwnerDrawLabelProvider
 				if (height - offset > 0)
 				{
 					TextLayout descriptionLayout =
-							UIUtil.shortenText(event.display, description, normalFont, width, height - offset, true,
+							SWTUtil.shortenText(event.display, description, normalFont, width, height - offset, true,
 									true);
 					descriptionLayout.draw(event.gc, event.x, event.y + offset);
 				}

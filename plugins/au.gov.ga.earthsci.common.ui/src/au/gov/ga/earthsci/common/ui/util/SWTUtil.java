@@ -15,8 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.common.ui.util;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -29,6 +34,9 @@ import org.eclipse.swt.widgets.Display;
 public class SWTUtil
 {
 	private static final float RGB_VALUE_MULTIPLIER = 0.8f;
+
+	//could use the ellipsis glyph on some platforms "\u2026"
+	private static final String ELLIPSIS = "..."; //$NON-NLS-1$
 
 	/**
 	 * Create a color with a darker hue than the given color.
@@ -92,5 +100,85 @@ public class SWTUtil
 	public static void debug(Control control)
 	{
 		control.setBackground(new Color(Display.getCurrent(), new RGB(255, 0, 0)));
+	}
+
+	/**
+	 * Create a TextLayout that contains the given text, shorted to fit within
+	 * the given width (and optional height).
+	 * 
+	 * @param device
+	 *            Current device
+	 * @param text
+	 *            Text to shorten
+	 * @param font
+	 *            Font to use when calculating shortened text
+	 * @param maxWidth
+	 *            Maximum width available for text; if {@link SWT#DEFAULT}, text
+	 *            is unshortened
+	 * @param maxHeight
+	 *            Maximum height available for text; only used if multiline is
+	 *            <code>true</code>
+	 * @param multiline
+	 *            Should the text be wrapped over multiple lines
+	 * @param addEllipsis
+	 *            Should an ellipsis be added on the end if the text requires
+	 *            shortening
+	 * @return TextLayout containing the shortened and constrained text
+	 */
+	public static TextLayout shortenText(Device device, String text, Font font, int maxWidth, int maxHeight,
+			boolean multiline, boolean addEllipsis)
+	{
+		TextLayout layout = new TextLayout(device);
+		layout.setText(text);
+		layout.setFont(font);
+
+		//multiline can fit into any width, so if no maxHeight is defined return unshortened
+		if (maxWidth == SWT.DEFAULT || (multiline && maxHeight == SWT.DEFAULT))
+		{
+			return layout;
+		}
+
+		if (multiline)
+		{
+			layout.setWidth(maxWidth);
+		}
+
+		Rectangle bounds = layout.getBounds();
+		boolean fits = multiline ? (bounds.height <= maxHeight) : (bounds.width <= maxWidth);
+		if (fits)
+		{
+			return layout;
+		}
+
+		int end = 0;
+		while (true)
+		{
+			int nextEnd = layout.getNextOffset(end, SWT.MOVEMENT_CLUSTER);
+			bounds = layout.getBounds(0, nextEnd);
+			fits = multiline ? (bounds.height <= maxHeight) : (bounds.width <= maxWidth);
+			if (!fits)
+			{
+				break;
+			}
+			end = nextEnd;
+		}
+
+		String shortenedText = text.substring(0, end);
+		while (true)
+		{
+			String textWithSuffix = shortenedText;
+			if (addEllipsis)
+			{
+				textWithSuffix += ELLIPSIS;
+			}
+			layout.setText(textWithSuffix);
+			bounds = layout.getBounds();
+			fits = multiline ? (bounds.height <= maxHeight) : (bounds.width <= maxWidth);
+			if (fits || shortenedText.length() == 0)
+			{
+				return layout;
+			}
+			shortenedText = shortenedText.substring(0, shortenedText.length() - 1);
+		}
 	}
 }
