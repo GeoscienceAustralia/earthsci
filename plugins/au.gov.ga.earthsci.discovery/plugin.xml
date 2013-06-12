@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="au.gov.ga.earthsci.discovery.providers" name="Discovery Providers" schema="schema/au.gov.ga.earthsci.discovery.providers.exsd"/>
+   <extension
+         point="au.gov.ga.earthsci.injectables">
+      <injectable
+            class="au.gov.ga.earthsci.discovery.DiscoveryProviderRegistry"
+            priority="0">
+      </injectable>
+      <inject
+            class="au.gov.ga.earthsci.discovery.DiscoveryServiceManager"
+            priority="0">
+      </inject>
+   </extension>
+
+</plugin>
