@@ -249,6 +249,22 @@ public class ColorMapTest
 		assertEquals(null, classUnderTest.getLastEntry());
 	}
 
+	@Test
+	public void testGetEntryWithValid()
+	{
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(0.7, classUnderTest.getEntry(0.7).getKey(), 0.001);
+	}
+
+	@Test
+	public void testGetEntryWithInvalid()
+	{
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(null, classUnderTest.getEntry(0.5));
+	}
+
 	private static void assertColorsEqual(Color expected, Color actual)
 	{
 		if (expected == null)

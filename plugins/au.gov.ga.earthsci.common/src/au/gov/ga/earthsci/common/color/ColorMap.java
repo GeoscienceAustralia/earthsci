@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.common.color;
 
 import java.awt.Color;
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -409,7 +410,7 @@ public class ColorMap implements INamed, IDescribed
 		{
 			return null;
 		}
-		return entries.floorEntry(Math.nextAfter(value, Double.NEGATIVE_INFINITY));
+		return entries.lowerEntry(value);
 	}
 
 	/**
@@ -427,7 +428,31 @@ public class ColorMap implements INamed, IDescribed
 		{
 			return null;
 		}
-		return entries.ceilingEntry(Math.nextUp(value));
+		return entries.higherEntry(value);
+	}
+
+	/**
+	 * Return the entry with the given value, if one exists.
+	 * 
+	 * @param value
+	 *            The value to retrieve the entry for
+	 * 
+	 * @return The entry for the given value, or <code>null</code> if one cannot
+	 *         be found
+	 */
+	public Entry<Double, Color> getEntry(Double value)
+	{
+		if (value == null)
+		{
+			return null;
+		}
+
+		if (!entries.containsKey(value))
+		{
+			return null;
+		}
+
+		return new AbstractMap.SimpleEntry<Double, Color>(value, entries.get(value));
 	}
 
 	@Override
