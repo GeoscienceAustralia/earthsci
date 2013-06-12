@@ -11,12 +11,16 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenu;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenuElement;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenuItem;
+import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.swt.internal.copy.FilteredTree;
 import org.eclipse.e4.ui.workbench.swt.internal.copy.PatternFilter;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -37,9 +41,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
+import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
 import au.gov.ga.earthsci.notification.INotification;
 import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.NotificationLevel;
@@ -103,6 +109,10 @@ public class NotificationPart
 
 	private int acknowledgedOrder = DESCENDING;
 	private TreeColumn acknowledgedColumn;
+
+	@Inject
+	@Named(IServiceConstants.ACTIVE_SHELL)
+	private Shell shell;
 
 	/**
 	 * Initialise this view with the given parent component
@@ -192,6 +202,23 @@ public class NotificationPart
 		filteredTree.getViewer().setContentProvider(new NotificationViewContentProvider(this));
 		filteredTree.getViewer().setLabelProvider(new NotificationViewTreeLabelProvider());
 		filteredTree.getViewer().setInput(this);
+
+		filteredTree.getViewer().getTree().addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e)
+			{
+				Object data = e.item.getData();
+				if (data instanceof INotification)
+				{
+					INotification notification = (INotification) data;
+					IStatus status =
+							new Status(notification.getLevel().getStatusSeverity(), Activator.PLUGIN_ID, notification
+									.getText(), notification.getThrowable());
+					StackTraceDialog.openError(shell, notification.getTitle(), null, status);
+				}
+			}
+		});
 	}
 
 	private void createColumns(Tree tree)
