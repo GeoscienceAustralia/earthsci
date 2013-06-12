@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.ColorSelector;
-import org.eclipse.jface.resource.JFaceColors;
+import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -46,13 +46,15 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -99,6 +101,8 @@ public class ColorMapEditor extends Composite
 
 	private MutableColorMap map;
 
+	private ColorRegistry colorRegistry;
+
 	private List<Marker> markers = new ArrayList<Marker>();
 	private Color[] colors;
 
@@ -109,6 +113,9 @@ public class ColorMapEditor extends Composite
 
 	private Composite gradientContainer;
 	private Canvas gradientCanvas;
+
+	// Marker area
+	private Canvas markerCanvas;
 
 	// Options area
 	private Composite optionsContainer;
@@ -198,7 +205,9 @@ public class ColorMapEditor extends Composite
 		// TODO: Support vertical / horizontal style
 
 		super(parent, style);
-		setLayout(new GridLayout(2, false));
+		setLayout(new GridLayout(3, false));
+
+		colorRegistry = new ColorRegistry(getDisplay());
 
 		map = new MutableColorMap(seed);
 
@@ -209,6 +218,161 @@ public class ColorMapEditor extends Composite
 			this.maxDataValue = maxDataValue;
 		}
 
+		addUIElements();
+		wireListeners();
+	}
+
+	//******************************************
+	// Public API
+	//******************************************
+
+	/**
+	 * Create a new {@link ColorMap} instance from the configuration captured in
+	 * this editor.
+	 * 
+	 * @return A new {@link ColorMap} instance created from the configuration
+	 *         captured in this editor.
+	 */
+	public ColorMap createColorMap()
+	{
+		return map.snapshot();
+	}
+
+	@Override
+	public void dispose()
+	{
+		super.dispose();
+	}
+
+	//******************************************
+	// Wire up listener behaviour
+	//******************************************
+
+	/**
+	 * Wire all the listeners that coordinate refreshes and updates between the
+	 * model and the various UI elements
+	 */
+	private void wireListeners()
+	{
+		wireMapListeners();
+		wireTableListeners();
+		wireMarkerListeners();
+		wireGradientListeners();
+	}
+
+	private void wireMapListeners()
+	{
+		map.addPropertyChangeListener(MutableColorMap.COLOR_MAP_ENTRY_CHANGE_EVENT, new PropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(java.beans.PropertyChangeEvent evt)
+			{
+				Display.getCurrent().asyncExec(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						entriesTable.refresh();
+
+						populateColors();
+						gradientCanvas.redraw();
+
+						populateMarkers();
+						markerCanvas.redraw();
+
+						updateSelectionsForCurrentValue();
+					}
+				});
+			}
+		});
+
+		map.addPropertyChangeListener(MutableColorMap.MODE_CHANGE_EVENT, new PropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(java.beans.PropertyChangeEvent evt)
+			{
+				Display.getCurrent().asyncExec(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						populateColors();
+						gradientCanvas.redraw();
+					};
+				});
+			}
+		});
+	}
+
+	private void wireTableListeners()
+	{
+		entriesTable.addSelectionChangedListener(new ISelectionChangedListener()
+		{
+			@Override
+			public void selectionChanged(SelectionChangedEvent event)
+			{
+				Entry<Double, Color> selection = getSelectedTableEntry();
+				if (selection != null)
+				{
+					setCurrentEntry(selection);
+					enableEntryEditor();
+
+					selectMarkerByValue(currentEntryValue);
+
+					removeEntryButton.setEnabled(true);
+				}
+			}
+		});
+	}
+
+	private void wireGradientListeners()
+	{
+		gradientCanvas.addControlListener(new ControlAdapter()
+		{
+			@Override
+			public void controlResized(ControlEvent e)
+			{
+				populateColors();
+			}
+		});
+
+		gradientCanvas.addListener(SWT.Paint, new Listener()
+		{
+			@Override
+			public void handleEvent(Event e)
+			{
+				paintGradient(e.gc, e.display);
+			}
+		});
+	}
+
+	private void wireMarkerListeners()
+	{
+		markerCanvas.addListener(SWT.Paint, new Listener()
+		{
+			@Override
+			public void handleEvent(Event e)
+			{
+				paintMarkers(e.gc, e.display);
+			}
+		});
+
+		markerCanvas.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseDown(MouseEvent e)
+			{
+				selectMarkerByCoordinate(e.x, e.y);
+			}
+		});
+	}
+
+	//******************************************
+	// GUI elements
+	//******************************************
+
+	private void addUIElements()
+	{
 		addGradientArea();
 		addOptionsArea();
 	}
@@ -251,8 +415,6 @@ public class ColorMapEditor extends Composite
 				{
 					map.setMode(newMode);
 					modeDescription.setText(newMode.getDescription());
-					populateColors();
-					gradientCanvas.redraw();
 				}
 			}
 		});
@@ -371,42 +533,6 @@ public class ColorMapEditor extends Composite
 		disableEntryEditor();
 	}
 
-	private void updateCurrentEntryColor()
-	{
-		currentEntryColor = fromRGB(editorColorField.getColorValue(),
-				editorAlphaScale.getSelection());
-		map.changeColor(currentEntryValue, currentEntryColor);
-	}
-
-	private void updateEntryEditor(Entry<Double, Color> entry)
-	{
-		currentEntryValue = entry.getKey();
-		currentEntryColor = entry.getValue();
-
-		editorValueField.setEnabled(true);
-		editorValueField.setNumber(entry.getKey());
-		editorColorField.setEnabled(true);
-		editorColorField.setColorValue(toRGB(entry.getValue()));
-		editorAlphaScale.setEnabled(true);
-		editorAlphaScale.setSelection(entry.getValue().getAlpha());
-		editorAlphaField.setEnabled(true);
-		editorAlphaField.setNumber(entry.getValue().getAlpha());
-	}
-
-	private void disableEntryEditor()
-	{
-		currentEntryValue = null;
-		currentEntryColor = null;
-
-		editorValueField.setNumber(null);
-		editorValueField.setEnabled(false);
-		editorColorField.setEnabled(false);
-		editorAlphaScale.setSelection(255);
-		editorAlphaScale.setEnabled(false);
-		editorAlphaField.setNumber(null);
-		editorAlphaField.setEnabled(false);
-	}
-
 	private void addAddRemoveButtons(Composite parent)
 	{
 		Composite buttonContainer = new Composite(parent, SWT.NONE);
@@ -434,10 +560,383 @@ public class ColorMapEditor extends Composite
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				removeSelectedEntry();
+				removeCurrentEntry();
 			}
 		});
 	}
+
+	private void addEntriesList(Composite parent)
+	{
+		Composite tableContainer = new Composite(parent, SWT.NONE);
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		gd.horizontalSpan = 2;
+		tableContainer.setLayoutData(gd);
+		TableColumnLayout layout = new TableColumnLayout();
+		tableContainer.setLayout(layout);
+
+		// Not sure why, but columns and column label providers only work when SWT.VIRTUAL is used
+		entriesTable = new TableViewer(tableContainer, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER | SWT.VIRTUAL);
+		entriesTable.setContentProvider(ArrayContentProvider.getInstance());
+		entriesTable.getTable().setHeaderVisible(true);
+		entriesTable.getTable().setLinesVisible(true);
+		entriesTable.setInput(map.getEntries().entrySet());
+
+		TableViewerColumn valueColumn = new TableViewerColumn(entriesTable, SWT.NONE);
+		valueColumn.getColumn().setText("Value");
+		valueColumn.setLabelProvider(new ColumnLabelProvider()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public String getText(Object element)
+			{
+				Double value = ((Entry<Double, Color>) element).getKey();
+				String result = "" + value;
+				if (map.isPercentageBased())
+				{
+					result += " (" + (int) (value * 100) + "%)";
+				}
+				return result;
+			}
+		});
+		layout.setColumnData(valueColumn.getColumn(), new ColumnPixelData(80, false));
+
+		TableViewerColumn colorNameColumn = new TableViewerColumn(entriesTable, SWT.NONE);
+		colorNameColumn.getColumn().setText("Color");
+		colorNameColumn.setLabelProvider(new ColumnLabelProvider()
+		{
+
+			@SuppressWarnings("nls")
+			@Override
+			public String getText(Object element)
+			{
+				Color color = getColorFromElement(element);
+				return "RGBA(" + color.getRed() + ", "
+						+ color.getGreen() + ", "
+						+ color.getBlue() + ", "
+						+ color.getAlpha() + ")";
+			}
+
+			@SuppressWarnings("nls")
+			@Override
+			public String getToolTipText(Object element)
+			{
+				return "#" + getColorKey(getColorFromElement(element));
+			}
+
+			@SuppressWarnings("unchecked")
+			private Color getColorFromElement(Object element)
+			{
+				return ((Entry<Double, Color>) element).getValue();
+			}
+
+			private String getColorKey(Color color)
+			{
+				return Integer.toHexString(color.getRGB());
+			}
+
+		});
+		layout.setColumnData(colorNameColumn.getColumn(), new ColumnWeightData(100, false));
+
+		ColumnViewerToolTipSupport.enableFor(entriesTable, ToolTip.NO_RECREATE);
+	}
+
+	/**
+	 * Add an editor area for changing the NODATA colour used
+	 */
+	private void addNodataEditor(Composite parent)
+	{
+		Composite editorContainer = new Composite(parent, SWT.BORDER);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		editorContainer.setLayoutData(gd);
+		editorContainer.setLayout(new GridLayout(7, false));
+
+		nodataCheckBox = new Button(editorContainer, SWT.CHECK);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 7;
+		nodataCheckBox.setLayoutData(gd);
+		nodataCheckBox.setText("Specify a NODATA colour");
+		nodataCheckBox.setToolTipText("If not specified, NODATA will be made transparent.");
+		nodataCheckBox.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				enableNodataEditor(nodataCheckBox.getSelection());
+				updateNodataColorFromEditor();
+			}
+		});
+
+		Label colorLabel = new Label(editorContainer, SWT.NONE);
+		colorLabel.setText("Color:");
+		nodataColorField = new ColorSelector(editorContainer);
+		nodataColorField.addListener(new IPropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(PropertyChangeEvent event)
+			{
+				updateNodataColorFromEditor();
+			}
+		});
+		nodataColorField.setColorValue(toRGB(Color.BLACK));
+
+		Label alphaLabel = new Label(editorContainer, SWT.NONE);
+		alphaLabel.setText("Alpha:");
+
+		nodataAlphaScale = new Scale(editorContainer, SWT.HORIZONTAL);
+		nodataAlphaScale.setMinimum(0);
+		nodataAlphaScale.setMaximum(255);
+		nodataAlphaScale.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		nodataAlphaScale.setSelection(255);
+
+		nodataAlphaField = new NumericTextField(editorContainer, SWT.BORDER, false, false);
+		nodataAlphaField.setMinValue(0);
+		nodataAlphaField.setMaxValue(255);
+		gd = new GridData();
+		gd.widthHint = 35;
+		nodataAlphaField.setLayoutData(gd);
+		nodataAlphaField.setNumber(255);
+
+		nodataAlphaScale.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				updateNodataColorFromEditor();
+				nodataAlphaField.setNumber(nodataAlphaScale.getSelection());
+			}
+		});
+
+		nodataAlphaField.addFocusListener(new FocusAdapter()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				nodataAlphaScale.setSelection(nodataAlphaField.getNumber().intValue());
+				updateNodataColorFromEditor();
+			}
+		});
+
+		Color nodataColor = map.getNodataColour();
+		if (nodataColor == null)
+		{
+			nodataCheckBox.setSelection(false);
+			enableNodataEditor(false);
+			return;
+		}
+
+		nodataColorField.setColorValue(toRGB(nodataColor));
+		nodataAlphaScale.setSelection(nodataColor.getAlpha());
+		nodataAlphaField.setNumber(nodataColor.getAlpha());
+	}
+
+	/**
+	 * Build the gradient edit area
+	 */
+	private void addGradientArea()
+	{
+		final int gradientWidth = 40;
+		final int markerAreaWidth = 40;
+
+		// Contains label-gradient+markers-label
+		gradientAreaContainer = new Composite(this, SWT.NONE);
+		gradientAreaContainer.setLayout(new GridLayout(1, false));
+		GridData gd = new GridData(GridData.FILL_VERTICAL);
+		gd.widthHint = gradientWidth + markerAreaWidth;
+		gradientAreaContainer.setLayoutData(gd);
+
+		minText = new Label(gradientAreaContainer, SWT.BORDER);
+		gd = new GridData();
+		gd.widthHint = gradientWidth;
+		minText.setLayoutData(gd);
+		minText.setText("" + minDataValue);
+		minText.setAlignment(SWT.CENTER);
+
+		// Contains gradient-markers
+		gradientContainer = new Composite(gradientAreaContainer, SWT.BORDER);
+		GridLayout layout = new GridLayout(2, false);
+		layout.horizontalSpacing = 0;
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		layout.verticalSpacing = 0;
+		gradientContainer.setLayout(layout);
+		gd = new GridData(GridData.FILL_BOTH);
+		gradientContainer.setLayoutData(gd);
+
+		maxText = new Label(gradientAreaContainer, SWT.BORDER);
+		gd = new GridData();
+		gd.widthHint = gradientWidth;
+		maxText.setLayoutData(gd);
+		maxText.setText("" + maxDataValue);
+		maxText.setAlignment(SWT.CENTER);
+
+		gradientCanvas = new Canvas(gradientContainer, SWT.BORDER);
+		gd = new GridData(GridData.FILL_VERTICAL);
+		gd.widthHint = gradientWidth;
+		gradientCanvas.setLayoutData(gd);
+
+		markerCanvas = new Canvas(gradientContainer, SWT.NONE);
+		gd = new GridData(GridData.FILL_BOTH);
+		gd.widthHint = markerAreaWidth;
+		markerCanvas.setLayoutData(gd);
+
+		gradientAreaContainer.layout();
+
+		populateColors();
+		populateMarkers();
+	}
+
+	//**********************************************
+	// Selection changes
+	//**********************************************
+
+	private void setCurrentEntry(Entry<Double, Color> entry)
+	{
+		if (entry != null)
+		{
+			currentEntryValue = entry.getKey();
+			currentEntryColor = entry.getValue();
+		}
+		else
+		{
+			currentEntryValue = null;
+			currentEntryColor = null;
+		}
+	}
+
+	private void updateCurrentEntryColor()
+	{
+		currentEntryColor = fromRGB(editorColorField.getColorValue(),
+				editorAlphaScale.getSelection());
+		map.changeColor(currentEntryValue, currentEntryColor);
+	}
+
+	private void updateSelectionsForCurrentValue()
+	{
+		selectMarkerByValue(currentEntryValue);
+		selectTableEntryByValue(currentEntryValue);
+	}
+
+	/**
+	 * Select the table entry with the given value
+	 */
+	private void selectTableEntryByValue(Double value)
+	{
+		if (value == null)
+		{
+			entriesTable.setSelection(null);
+			return;
+		}
+
+		Entry<Double, Color> entry = map.getEntry(value);
+		if (entry == null)
+		{
+			entriesTable.setSelection(null);
+		}
+		else
+		{
+			entriesTable.setSelection(new StructuredSelection(entry));
+		}
+	}
+
+	/**
+	 * @return The currently selected entry in the entries table, or
+	 *         <code>null</code> if none is selected.
+	 */
+	@SuppressWarnings("unchecked")
+	private Entry<Double, Color> getSelectedTableEntry()
+	{
+		Entry<Double, Color> selection =
+				(Entry<Double, Color>) ((IStructuredSelection) entriesTable.getSelection()).getFirstElement();
+		return selection;
+	}
+
+	/**
+	 * Select the marker at the given coordinate, if one exists
+	 */
+	private void selectMarkerByCoordinate(int x, int y)
+	{
+		Point p = new Point(x, y);
+		for (Marker m : markers)
+		{
+			m.setSelected(m.contains(p));
+			if (m.selected)
+			{
+				entriesTable.setSelection(new StructuredSelection(map.getEntry(m.value)));
+			}
+		}
+	}
+
+	/**
+	 * Select the marker with the given value, of one exists
+	 */
+	private void selectMarkerByValue(Double value)
+	{
+		if (value == null)
+		{
+			return;
+		}
+
+		for (Marker m : markers)
+		{
+			m.setSelected(m.value == value);
+		}
+		Display.getCurrent().asyncExec(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				markerCanvas.redraw();
+			}
+		});
+	}
+
+	private void enableEntryEditor()
+	{
+		editorValueField.setEnabled(true);
+		editorValueField.setNumber(currentEntryValue);
+		editorColorField.setEnabled(true);
+		editorColorField.setColorValue(toRGB(currentEntryColor));
+		editorAlphaScale.setEnabled(true);
+		editorAlphaScale.setSelection(currentEntryColor.getAlpha());
+		editorAlphaField.setEnabled(true);
+		editorAlphaField.setNumber(currentEntryColor.getAlpha());
+	}
+
+	private void disableEntryEditor()
+	{
+		editorValueField.setNumber(null);
+		editorValueField.setEnabled(false);
+		editorColorField.setEnabled(false);
+		editorAlphaScale.setSelection(255);
+		editorAlphaScale.setEnabled(false);
+		editorAlphaField.setNumber(null);
+		editorAlphaField.setEnabled(false);
+	}
+
+	private void enableNodataEditor(boolean enable)
+	{
+		nodataColorField.setEnabled(enable);
+		nodataAlphaScale.setEnabled(enable);
+		nodataAlphaField.setEnabled(enable);
+	}
+
+	private void updateNodataColorFromEditor()
+	{
+		if (!nodataCheckBox.getSelection())
+		{
+			map.setNodataColour(null);
+			return;
+		}
+
+		Color nodataColor = fromRGB(nodataColorField.getColorValue(),
+				nodataAlphaScale.getSelection());
+		map.setNodataColour(nodataColor);
+	}
+
+	//**********************************************
+	// Add / Remove entries
+	//**********************************************
 
 	/**
 	 * Add a new entry in the colour map that is:
@@ -459,7 +958,7 @@ public class ColorMapEditor extends Composite
 	{
 		Double newEntryValue = getMinValue();
 
-		Entry<Double, Color> selectedEntry = getSelectedEntry();
+		Entry<Double, Color> selectedEntry = getSelectedTableEntry();
 		if (selectedEntry == null)
 		{
 			// If nothing selected, either choose the first entry or the mid point
@@ -521,327 +1020,50 @@ public class ColorMapEditor extends Composite
 
 	}
 
-	private void removeSelectedEntry()
+	private void removeCurrentEntry()
 	{
-		Entry<Double, Color> currentEntry = getSelectedEntry();
-		if (currentEntry == null)
+		if (currentEntryValue == null)
 		{
 			return;
 		}
 
-		map.removeEntry(currentEntry.getKey());
+		map.removeEntry(currentEntryValue);
+
+		setCurrentEntry(null);
 		entriesTable.setSelection(null);
 		removeEntryButton.setEnabled(false);
 		disableEntryEditor();
 	}
 
-	private void addEntriesList(Composite parent)
+	//**********************************
+	// Data population
+	//**********************************
+
+	private void populateMarkers()
 	{
-		Composite tableContainer = new Composite(parent, SWT.NONE);
-		GridData gd = new GridData(GridData.FILL_BOTH);
-		gd.horizontalSpan = 2;
-		tableContainer.setLayoutData(gd);
-		TableColumnLayout layout = new TableColumnLayout();
-		tableContainer.setLayout(layout);
+		List<Marker> newMarkers = new ArrayList<Marker>(map.getSize());
 
-		// Not sure why, but columns and column label providers only work when SWT.VIRTUAL is used
-		entriesTable = new TableViewer(tableContainer, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER | SWT.VIRTUAL);
-		entriesTable.setContentProvider(ArrayContentProvider.getInstance());
-		entriesTable.getTable().setHeaderVisible(true);
-		entriesTable.getTable().setLinesVisible(true);
-		entriesTable.setInput(map.getEntries().entrySet());
-		entriesTable.addSelectionChangedListener(new ISelectionChangedListener()
-		{
-			@Override
-			public void selectionChanged(SelectionChangedEvent event)
-			{
-				Entry<Double, Color> selection = getSelectedEntry();
-				if (selection != null)
-				{
-					updateEntryEditor(selection);
-					removeEntryButton.setEnabled(true);
-				}
-			}
-		});
-		map.addPropertyChangeListener(MutableColorMap.COLOR_MAP_ENTRY_CHANGE_EVENT, new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(java.beans.PropertyChangeEvent evt)
-			{
-				entriesTable.refresh();
-			}
-		});
-
-		TableViewerColumn valueColumn = new TableViewerColumn(entriesTable, SWT.NONE);
-		valueColumn.getColumn().setText("Value");
-		valueColumn.setLabelProvider(new ColumnLabelProvider()
-		{
-			@SuppressWarnings("unchecked")
-			@Override
-			public String getText(Object element)
-			{
-				Double value = ((Entry<Double, Color>) element).getKey();
-				String result = "" + value;
-				if (map.isPercentageBased())
-				{
-					result += " (" + (int) (value * 100) + "%)";
-				}
-				return result;
-			}
-		});
-		layout.setColumnData(valueColumn.getColumn(), new ColumnPixelData(80, false));
-
-		TableViewerColumn colorNameColumn = new TableViewerColumn(entriesTable, SWT.NONE);
-		colorNameColumn.getColumn().setText("Color");
-		colorNameColumn.setLabelProvider(new ColumnLabelProvider()
-		{
-
-			@SuppressWarnings("nls")
-			@Override
-			public String getText(Object element)
-			{
-				Color color = getColorFromElement(element);
-				return "RGBA(" + color.getRed() + ", "
-						+ color.getGreen() + ", "
-						+ color.getBlue() + ", "
-						+ color.getAlpha() + ")";
-			}
-
-			@SuppressWarnings("nls")
-			@Override
-			public String getToolTipText(Object element)
-			{
-				return "#" + getColorKey(getColorFromElement(element));
-			}
-
-			@SuppressWarnings("unchecked")
-			private Color getColorFromElement(Object element)
-			{
-				return ((Entry<Double, Color>) element).getValue();
-			}
-
-			private String getColorKey(Color color)
-			{
-				return Integer.toHexString(color.getRGB());
-			}
-
-		});
-		layout.setColumnData(colorNameColumn.getColumn(), new ColumnWeightData(100, false));
-
-		ColumnViewerToolTipSupport.enableFor(entriesTable, ToolTip.NO_RECREATE);
-
-	}
-
-	/**
-	 * @return The currently selected entry in the entries table, or
-	 *         <code>null</code> if none is selected.
-	 */
-	@SuppressWarnings("unchecked")
-	private Entry<Double, Color> getSelectedEntry()
-	{
-		Entry<Double, Color> selection =
-				(Entry<Double, Color>) ((IStructuredSelection) entriesTable.getSelection()).getFirstElement();
-		return selection;
-	}
-
-	/**
-	 * Add an editor area for changing the NODATA colour used
-	 */
-	private void addNodataEditor(Composite parent)
-	{
-		Composite editorContainer = new Composite(parent, SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 2;
-		editorContainer.setLayoutData(gd);
-		editorContainer.setLayout(new GridLayout(7, false));
-
-		nodataCheckBox = new Button(editorContainer, SWT.CHECK);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 7;
-		nodataCheckBox.setLayoutData(gd);
-		nodataCheckBox.setText("Specify a NODATA colour");
-		nodataCheckBox.setToolTipText("If not specified, NODATA will be made transparent.");
-		nodataCheckBox.addSelectionListener(new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				enableNodataEditor(nodataCheckBox.getSelection());
-				updateNodataColor();
-			}
-		});
-
-		Label colorLabel = new Label(editorContainer, SWT.NONE);
-		colorLabel.setText("Color:");
-		nodataColorField = new ColorSelector(editorContainer);
-		nodataColorField.addListener(new IPropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent event)
-			{
-				updateNodataColor();
-			}
-		});
-		nodataColorField.setColorValue(toRGB(Color.BLACK));
-
-		Label alphaLabel = new Label(editorContainer, SWT.NONE);
-		alphaLabel.setText("Alpha:");
-
-		nodataAlphaScale = new Scale(editorContainer, SWT.HORIZONTAL);
-		nodataAlphaScale.setMinimum(0);
-		nodataAlphaScale.setMaximum(255);
-		nodataAlphaScale.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		nodataAlphaScale.setSelection(255);
-
-		nodataAlphaField = new NumericTextField(editorContainer, SWT.BORDER, false, false);
-		nodataAlphaField.setMinValue(0);
-		nodataAlphaField.setMaxValue(255);
-		gd = new GridData();
-		gd.widthHint = 35;
-		nodataAlphaField.setLayoutData(gd);
-		nodataAlphaField.setNumber(255);
-
-		nodataAlphaScale.addSelectionListener(new SelectionAdapter()
-		{
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				updateNodataColor();
-				nodataAlphaField.setNumber(nodataAlphaScale.getSelection());
-			}
-		});
-
-		nodataAlphaField.addFocusListener(new FocusAdapter()
-		{
-			@Override
-			public void focusLost(FocusEvent e)
-			{
-				nodataAlphaScale.setSelection(nodataAlphaField.getNumber().intValue());
-				updateNodataColor();
-			}
-		});
-
-		updateNodataEditor(map.getNodataColour());
-	}
-
-	private void enableNodataEditor(boolean enable)
-	{
-		nodataColorField.setEnabled(enable);
-		nodataAlphaScale.setEnabled(enable);
-		nodataAlphaField.setEnabled(enable);
-	}
-
-	private void updateNodataEditor(Color nodataColor)
-	{
-		if (nodataColor == null)
-		{
-			nodataCheckBox.setSelection(false);
-			enableNodataEditor(false);
-			return;
-		}
-
-		nodataColorField.setColorValue(toRGB(nodataColor));
-		nodataAlphaScale.setSelection(nodataColor.getAlpha());
-		nodataAlphaField.setNumber(nodataColor.getAlpha());
-	}
-
-	private void updateNodataColor()
-	{
-		if (!nodataCheckBox.getSelection())
-		{
-			map.setNodataColour(null);
-			return;
-		}
-
-		Color nodataColor = fromRGB(nodataColorField.getColorValue(),
-				nodataAlphaScale.getSelection());
-		map.setNodataColour(nodataColor);
-	}
-
-	/**
-	 * Build the gradient edit area
-	 */
-	private void addGradientArea()
-	{
-		gradientAreaContainer = new Composite(this, SWT.NONE);
-		gradientAreaContainer.setLayout(new GridLayout(1, true));
-		GridData gd = new GridData(GridData.FILL_VERTICAL);
-		gd.widthHint = 40;
-		gradientAreaContainer.setLayoutData(gd);
-
-		minText = new Label(gradientAreaContainer, SWT.BORDER);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.widthHint = 30;
-		minText.setLayoutData(gd);
-		minText.setText("" + minDataValue);
-		minText.setAlignment(SWT.CENTER);
-
-		gradientContainer = new Composite(gradientAreaContainer, SWT.BORDER);
-		gradientContainer.setLayout(new FillLayout());
-		gd = new GridData(GridData.FILL_BOTH);
-		gradientContainer.setLayoutData(gd);
-
-		maxText = new Label(gradientAreaContainer, SWT.BORDER);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.widthHint = 30;
-		maxText.setLayoutData(gd);
-		maxText.setText("" + maxDataValue);
-		maxText.setAlignment(SWT.CENTER);
-
-		gradientCanvas = new Canvas(gradientContainer, SWT.NONE);
-		gradientCanvas.setBackground(JFaceColors.getActiveHyperlinkText(getDisplay()));
-
-		gradientCanvas.addControlListener(new ControlAdapter()
-		{
-			@Override
-			public void controlResized(ControlEvent e)
-			{
-				populateColors();
-			}
-		});
-
-		gradientCanvas.addListener(SWT.Paint, new Listener()
-		{
-			@Override
-			public void handleEvent(Event e)
-			{
-				paintGradient(e.gc, e.display);
-				paintMarkers(e.gc, e.display);
-			}
-		});
-
-		map.addPropertyChangeListener(MutableColorMap.COLOR_MAP_ENTRY_CHANGE_EVENT, new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(java.beans.PropertyChangeEvent evt)
-			{
-				Display.getCurrent().asyncExec(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						populateColors();
-						gradientCanvas.redraw();
-					}
-				});
-			}
-		});
-
+		int z = 0;
 		for (Entry<Double, Color> entry : map.getEntries().entrySet())
 		{
-			Marker marker = new Marker(entry.getKey(), entry.getValue());
-			markers.add(marker);
+			Marker marker = new Marker(z++, entry.getKey(), entry.getValue());
+			newMarkers.add(marker);
 		}
+		Collections.sort(newMarkers);
 
-		Collections.sort(markers);
-
-		gradientCanvas.layout();
-		populateColors();
+		markers = newMarkers;
 	}
 
 	private void populateColors()
 	{
-		Color[] newColors = new Color[gradientCanvas.getBounds().height];
+		Point canvasSize = gradientCanvas.getSize();
+		if (canvasSize.y == 0)
+		{
+			colors = new Color[0];
+			return;
+		}
+
+		Color[] newColors = new Color[canvasSize.y - 2 * gradientCanvas.getBorderWidth()];
 
 		double minValue = getMinValue();
 		double maxValue = getMaxValue();
@@ -856,10 +1078,12 @@ public class ColorMapEditor extends Composite
 		colors = newColors;
 	}
 
+	//**********************************
+	// Painting
+	//**********************************
+
 	private void paintGradient(GC gc, Display display)
 	{
-		Rectangle rect = gradientCanvas.getBounds();
-
 		// Allow colours array to be changed mid-render without locking
 		Color[] paintColors = colors;
 
@@ -868,12 +1092,13 @@ public class ColorMapEditor extends Composite
 		// colours created etc. when eg. nearest_match is used 
 		org.eclipse.swt.graphics.Color swtColor = null;
 		org.eclipse.swt.graphics.Color backgroundColor = gradientCanvas.getBackground();
-		for (int pixel = 0; pixel < rect.height; pixel++)
+		Point size = gradientCanvas.getSize();
+		for (int pixel = 0; pixel < paintColors.length; pixel++)
 		{
 			Color paintColor = paintColors[pixel];
 			if (paintColor != null)
 			{
-				swtColor = toSwtColor(paintColor, display, backgroundColor);
+				swtColor = toSwtColor(paintColor, backgroundColor);
 			}
 			else
 			{
@@ -881,22 +1106,76 @@ public class ColorMapEditor extends Composite
 			}
 
 			gc.setForeground(swtColor);
-			gc.drawLine(rect.x, pixel, rect.width, pixel);
-
-			if (paintColor != null)
-			{
-				swtColor.dispose();
-			}
+			gc.drawLine(0, pixel, size.x, pixel);
 		}
 	}
 
+	/**
+	 * Paint the current list of markers in the marker canvas
+	 */
+	private void paintMarkers(GC gc, Display display)
+	{
+		List<Marker> markers = this.markers;
+
+		for (Marker m : markers)
+		{
+			m.paint(gc);
+		}
+	}
+
+	//**********************************
+	// Utilities
+	//**********************************
+
+	/**
+	 * @return The minimum data value for the current map
+	 */
+	private double getMinValue()
+	{
+		if (map.isPercentageBased() || !hasDataValues)
+		{
+			return 0.0;
+		}
+		return minDataValue;
+	}
+
+	/**
+	 * @return The maximum data value for the current map
+	 */
+	private double getMaxValue()
+	{
+		if (map.isPercentageBased() || !hasDataValues)
+		{
+			return 1.0;
+		}
+		return maxDataValue;
+	}
+
+	/**
+	 * Convert an AWT {@link Color} instance to an equivalent SWT {@link RGB}.
+	 * <p/>
+	 * Note that this conversion will ignore the alpha value of the AWT
+	 * {@link Color} as SWT does not support alpha.
+	 */
 	private static RGB toRGB(Color color)
 	{
+		if (color == null)
+		{
+			return null;
+		}
 		return new RGB(color.getRed(), color.getGreen(), color.getBlue());
 	}
 
+	/**
+	 * Convert the given SWT {@link RGB} instance to an equivalent AWT
+	 * {@link Color} instance, applying the given alpha value.
+	 */
 	private static Color fromRGB(RGB rgb, int alpha)
 	{
+		if (rgb == null)
+		{
+			return null;
+		}
 		return new Color(rgb.red, rgb.green, rgb.blue, alpha);
 	}
 
@@ -917,10 +1196,15 @@ public class ColorMapEditor extends Composite
 	 * 
 	 * @return A new SWT colour
 	 */
-	private static org.eclipse.swt.graphics.Color toSwtColor(Color awtColor,
-			Display display,
+	private org.eclipse.swt.graphics.Color toSwtColor(Color awtColor,
 			org.eclipse.swt.graphics.Color backgroundColor)
 	{
+		String key = "" + awtColor.getRGB() + "+" + backgroundColor.getRGB().hashCode(); //$NON-NLS-1$ //$NON-NLS-2$
+		if (colorRegistry.hasValueFor(key))
+		{
+			return colorRegistry.get(key);
+		}
+
 		int red;
 		int green;
 		int blue;
@@ -943,67 +1227,98 @@ public class ColorMapEditor extends Composite
 			blue = awtColor.getBlue();
 		}
 
-		return new org.eclipse.swt.graphics.Color(display, red, green, blue);
-	}
+		colorRegistry.put(key, new RGB(red, green, blue));
 
-	private void paintMarkers(GC gc, Display display)
-	{
-		// TODO
+		return colorRegistry.get(key);
 	}
 
 	/**
-	 * Create a new {@link ColorMap} instance from the configuration captured in
-	 * this editor.
-	 * 
-	 * @return A new {@link ColorMap} instance created from the configuration
-	 *         captured in this editor.
-	 */
-	public ColorMap createColorMap()
-	{
-		return null;
-	}
-
-	private double getMinValue()
-	{
-		if (map.isPercentageBased() || !hasDataValues)
-		{
-			return 0.0;
-		}
-		return minDataValue;
-	}
-
-	private double getMaxValue()
-	{
-		if (map.isPercentageBased() || !hasDataValues)
-		{
-			return 1.0;
-		}
-		return maxDataValue;
-	}
-
-	/**
-	 * Represents a single marker in the color gradient
+	 * Represents a single marker in the colour gradient
+	 * <p/>
+	 * Coordinates stored are relative to the
+	 * {@link ColorMapEditor#markerCanvas}
 	 */
 	private class Marker implements Comparable<Marker>
 	{
+		final static int markerThickness = 4;
+		final static int borderWidth = 2;
+		final static int borderThickness = markerThickness + 2 * borderWidth;
+
+		final Color unselectedBorderColor = new Color(0, 0, 0);
+		final Color selectedBorderColor = new Color(100, 100, 220);
+
+		public int zIndex; // Drawn in reverse order of zIndex: 0 = top.
 		public double value;
 		public Color color;
 
-		public Marker(double value, Color color)
-		{
+		private int midPointY;
+		private Rectangle bounds;
+		private boolean selected;
 
+		public Marker(int zIndex, double value, Color color)
+		{
+			this.zIndex = zIndex;
+			this.value = value;
+			this.color = color;
+
+			markerCanvas.addControlListener(new ControlAdapter()
+			{
+				@Override
+				public void controlResized(ControlEvent e)
+				{
+					updateBounds();
+				}
+			});
+			updateBounds();
+		}
+
+		private void updateBounds()
+		{
+			int centreX = markerCanvas.getSize().x / 2;
+
+			double percent = (value - getMinValue()) / (getMaxValue() - getMinValue());
+
+			midPointY = (int) (percent * (markerCanvas.getSize().y - 2 * gradientCanvas.getBorderWidth()))
+					+ gradientCanvas.getBorderWidth();
+
+			bounds = new Rectangle(0, midPointY - borderThickness / 2, centreX + borderWidth, borderThickness);
 		}
 
 		@Override
 		public int compareTo(Marker o)
 		{
-			return (int) (value - o.value);
+			return o.zIndex - zIndex;
 		}
-	}
 
-	@Override
-	public void dispose()
-	{
-		super.dispose();
+		public void paint(GC gc)
+		{
+			if (selected)
+			{
+				gc.setForeground(toSwtColor(selectedBorderColor, markerCanvas.getBackground()));
+			}
+			else
+			{
+				gc.setForeground(toSwtColor(unselectedBorderColor, markerCanvas.getBackground()));
+			}
+
+			// Draw border
+			gc.setLineWidth(borderThickness);
+			gc.drawLine(0, midPointY, bounds.width, midPointY);
+
+			// Draw colour dash
+			gc.setForeground(toSwtColor(color, markerCanvas.getBackground()));
+			gc.setLineWidth(markerThickness);
+			gc.drawLine(0, midPointY, bounds.width - borderWidth, midPointY);
+		}
+
+		public boolean contains(Point p)
+		{
+			return bounds.contains(p);
+		}
+
+		public void setSelected(boolean selected)
+		{
+			this.selected = selected;
+		}
 	}
 }
