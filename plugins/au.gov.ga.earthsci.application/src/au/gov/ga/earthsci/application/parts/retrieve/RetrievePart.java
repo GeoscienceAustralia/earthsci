@@ -39,12 +39,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TableItem;
 
+import au.gov.ga.earthsci.common.ui.util.SWTUtil;
 import au.gov.ga.earthsci.core.retrieve.IRetrieval;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalListener;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalServiceListener;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
-import au.gov.ga.earthsci.core.util.SWTUtil;
 
 /**
  * Part that displays progress of {@link IRetrieval}s running in the

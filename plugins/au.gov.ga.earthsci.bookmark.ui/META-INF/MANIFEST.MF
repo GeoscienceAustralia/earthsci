@@ -27,7 +27,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.e4.ui.services,
  org.eclipse.e4.core.di.extensions,
  javax.inject;bundle-version="1.0.0",
- au.gov.ga.earthsci.bookmark;bundle-version="1.0.0"
+ au.gov.ga.earthsci.bookmark;bundle-version="1.0.0",
+ au.gov.ga.earthsci.common.ui;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.annotation;version="1.1.0"

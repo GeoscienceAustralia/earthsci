@@ -17,8 +17,8 @@ import org.gdal.osr.SpatialReference;
 
 import au.gov.ga.earthsci.common.spatial.SpatialReferences.SpatialReferenceSummary;
 import au.gov.ga.earthsci.common.ui.dialogs.SpatialReferenceSelectorDialog;
+import au.gov.ga.earthsci.common.ui.util.SWTUtil;
 import au.gov.ga.earthsci.common.util.Util;
-import au.gov.ga.earthsci.core.util.SWTUtil;
 import au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters;
 
 /**

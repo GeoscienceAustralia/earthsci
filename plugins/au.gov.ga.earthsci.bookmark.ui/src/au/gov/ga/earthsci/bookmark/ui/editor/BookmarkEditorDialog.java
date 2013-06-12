@@ -61,7 +61,7 @@ import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
 import au.gov.ga.earthsci.bookmark.ui.Messages;
 import au.gov.ga.earthsci.bookmark.ui.editor.IBookmarkEditorMessage.Level;
-import au.gov.ga.earthsci.core.util.SWTUtil;
+import au.gov.ga.earthsci.common.ui.util.SWTUtil;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
