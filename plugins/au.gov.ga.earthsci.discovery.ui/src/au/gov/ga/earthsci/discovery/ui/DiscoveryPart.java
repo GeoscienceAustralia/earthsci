@@ -48,6 +48,8 @@ import au.gov.ga.earthsci.application.Activator;
 import au.gov.ga.earthsci.application.util.StackTraceDialog;
 import au.gov.ga.earthsci.common.ui.information.IInformationProvider;
 import au.gov.ga.earthsci.common.ui.information.InformationProviderHoverInformationControlManager;
+import au.gov.ga.earthsci.common.ui.widgets.PageLinks;
+import au.gov.ga.earthsci.common.ui.widgets.PageListener;
 import au.gov.ga.earthsci.discovery.DiscoveryParameters;
 import au.gov.ga.earthsci.discovery.DiscoveryServiceManager;
 import au.gov.ga.earthsci.discovery.IDiscovery;

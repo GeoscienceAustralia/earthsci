@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.discovery.ui;
+package au.gov.ga.earthsci.common.ui.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
