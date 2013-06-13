@@ -1,6 +1,6 @@
 /**
  * The classes contained in this package are the hover tooltip classes copied
- * from org.eclipse.jface.internal.text and org.eclipse.jface.text. The have
+ * from org.eclipse.jface.internal.text and org.eclipse.jface.text. They have
  * been modified slightly to work with any control, rather than just a Text
  * widget. Also some internal classes have been copied out to be resistant to
  * internal API change.
