@@ -123,14 +123,17 @@ public class PartInstantiator
 		for (int i = placeholders.size() - 1; i >= 0; i--)
 		{
 			MPlaceholder placeholder = placeholders.get(i);
-			MPart part = partService.createPart(placeholder.getElementId());
-			if (part != null)
+			if (placeholder.isVisible())
 			{
-				List<MUIElement> siblings = placeholder.getParent().getChildren();
-				int index = siblings.indexOf(placeholder);
-				siblings.add(index, part);
-				siblings.remove(placeholder);
-				partService.activate(part);
+				MPart part = partService.createPart(placeholder.getElementId());
+				if (part != null)
+				{
+					List<MUIElement> siblings = placeholder.getParent().getChildren();
+					int index = siblings.indexOf(placeholder);
+					siblings.add(index, part);
+					siblings.remove(placeholder);
+					partService.activate(part);
+				}
 			}
 		}
 	}
