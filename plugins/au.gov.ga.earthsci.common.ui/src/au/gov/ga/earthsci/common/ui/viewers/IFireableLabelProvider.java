@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application;
+package au.gov.ga.earthsci.common.ui.viewers;
 
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.jface.viewers.BaseLabelProvider;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 
 /**
- * A listener that listens to new frame events on the
- * {@link LoadingIconAnimator}.
+ * Represents a {@link ILabelProvider} that provides access to the
+ * {@link #fireLabelProviderChanged(LabelProviderChangedEvent)} method of the
+ * {@link BaseLabelProvider} class.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILoadingIconFrameListener
+public interface IFireableLabelProvider extends IBaseLabelProvider
 {
-	void nextFrame(Image image);
+	void fireLabelProviderChanged(LabelProviderChangedEvent event);
 }

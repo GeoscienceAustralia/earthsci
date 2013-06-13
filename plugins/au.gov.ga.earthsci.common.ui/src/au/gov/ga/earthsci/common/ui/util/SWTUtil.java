@@ -15,10 +15,16 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.common.ui.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.TextLayout;
@@ -180,5 +186,18 @@ public class SWTUtil
 			}
 			shortenedText = shortenedText.substring(0, shortenedText.length() - 1);
 		}
+	}
+
+	public static Image[] loadAnimatedImage(Display display, InputStream stream) throws IOException
+	{
+		ImageLoader imageLoader = new ImageLoader();
+		imageLoader.load(stream);
+		Image[] images = new Image[imageLoader.data.length];
+		for (int i = 0; i < imageLoader.data.length; ++i)
+		{
+			ImageData nextFrameData = imageLoader.data[i];
+			images[i] = new Image(display, nextFrameData);
+		}
+		return images;
 	}
 }

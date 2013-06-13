@@ -43,11 +43,11 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 
-import au.gov.ga.earthsci.application.IFireableLabelProvider;
 import au.gov.ga.earthsci.application.IconLoader;
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.common.ui.util.SWTUtil;
 import au.gov.ga.earthsci.common.ui.util.TextStyler;
+import au.gov.ga.earthsci.common.ui.viewers.IFireableLabelProvider;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;

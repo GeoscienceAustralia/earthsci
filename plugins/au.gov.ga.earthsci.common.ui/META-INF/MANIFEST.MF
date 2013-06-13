@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.9.0",
  com.ibm.icu;bundle-version="50.1.0",
  au.gov.ga.earthsci.jface.extras,
  org.gdal,
- au.gov.ga.earthsci.common
+ au.gov.ga.earthsci.common,
+ au.gov.ga.earthsci.logging
 Export-Package: au.gov.ga.earthsci.common.ui.color,
  au.gov.ga.earthsci.common.ui.dialogs,
  au.gov.ga.earthsci.common.ui.information,

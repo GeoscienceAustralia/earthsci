@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application;
+package au.gov.ga.earthsci.common.ui.viewers;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +21,9 @@ import java.util.Set;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+
+import au.gov.ga.earthsci.common.ui.util.ILoadingIconFrameListener;
+import au.gov.ga.earthsci.common.ui.util.LoadingIconAnimator;
 
 /**
  * Helper class for getting the animated loading icon for loading tree nodes.

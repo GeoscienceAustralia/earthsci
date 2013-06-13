@@ -20,9 +20,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Image;
 
-import au.gov.ga.earthsci.application.IFireableLabelProvider;
 import au.gov.ga.earthsci.application.ImageRegistry;
-import au.gov.ga.earthsci.application.LoadingIconHelper;
+import au.gov.ga.earthsci.common.ui.viewers.IFireableLabelProvider;
+import au.gov.ga.earthsci.common.ui.viewers.LoadingIconHelper;
 import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.discovery.IDiscovery;
 

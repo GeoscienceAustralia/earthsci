@@ -15,19 +15,12 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +53,6 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_TRANSPARENT = "icon.transparent"; //$NON-NLS-1$
 	public static final String ICON_APPLY = "icon.apply"; //$NON-NLS-1$
 	public static final String ICON_EDIT = "icon.edit"; //$NON-NLS-1$
-	public static final String ICON_LOADING = "icon.loading"; //$NON-NLS-1$
 	public static final String ICON_BOOKMARKS = "icon.bookmarks"; //$NON-NLS-1$
 	public static final String DECORATION_INCLUDED = "decoration.included"; //$NON-NLS-1$
 
@@ -101,8 +93,6 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 		putResource(ICON_BOOKMARKS, "/icons/bookmarks.gif"); //$NON-NLS-1$
 
 		putResource(DECORATION_INCLUDED, "/icons/included_dec.gif"); //$NON-NLS-1$
-
-		putAnimatedResource(ICON_LOADING, "/icons/loading.gif"); //$NON-NLS-1$
 	}
 
 	protected void putResource(String key, String resourceName)
@@ -117,58 +107,6 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 		{
 			logger.error("Error adding image resource", e); //$NON-NLS-1$
 		}
-	}
-
-	protected void putAnimatedResource(String key, String resourceName)
-	{
-		putAnimated(key, getClass().getResource(resourceName));
-	}
-
-	public void putAnimated(String key, URL url)
-	{
-		try
-		{
-			Image[] images = loadAnimated(url);
-			for (int i = 0; i < images.length; i++)
-			{
-				String frameKey = key + "." + i; //$NON-NLS-1$
-				put(frameKey, images[i]);
-			}
-		}
-		catch (IOException e)
-		{
-			logger.error("Error loading animated image", e); //$NON-NLS-1$
-		}
-	}
-
-	public Image[] getAnimated(String key)
-	{
-		List<Image> images = new ArrayList<Image>();
-		for (int i = 0;; i++)
-		{
-			String frameKey = key + "." + i; //$NON-NLS-1$
-			Image image = get(frameKey);
-			if (image == null)
-			{
-				break;
-			}
-			images.add(image);
-		}
-		return images.toArray(new Image[images.size()]);
-	}
-
-	private Image[] loadAnimated(URL url) throws IOException
-	{
-		Display display = Display.getDefault();
-		ImageLoader imageLoader = new ImageLoader();
-		imageLoader.load(url.openStream());
-		Image[] images = new Image[imageLoader.data.length];
-		for (int i = 0; i < imageLoader.data.length; ++i)
-		{
-			ImageData nextFrameData = imageLoader.data[i];
-			images[i] = new Image(display, nextFrameData);
-		}
-		return images;
 	}
 
 	/**

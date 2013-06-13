@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application;
+package au.gov.ga.earthsci.common.ui.util;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +41,7 @@ public final class LoadingIconAnimator
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(LoadingIconAnimator.class);
-	private final Image[] loadingFrames = ImageRegistry.getInstance().getAnimated(ImageRegistry.ICON_LOADING);
+	private final Image[] loadingFrames;
 	private int frame = 0;
 	private final Set<ILoadingIconFrameListener> listeners = new HashSet<ILoadingIconFrameListener>();
 	private boolean dirty = false;
@@ -46,6 +49,28 @@ public final class LoadingIconAnimator
 
 	private LoadingIconAnimator()
 	{
+		Image[] loadingFramesLocal = null;
+		InputStream stream = getClass().getResourceAsStream("/icons/loading.gif"); //$NON-NLS-1$
+		try
+		{
+			loadingFramesLocal = SWTUtil.loadAnimatedImage(Display.getDefault(), stream);
+		}
+		catch (IOException e)
+		{
+			logger.error("Error reading loading icon", e); //$NON-NLS-1$
+		}
+		finally
+		{
+			try
+			{
+				stream.close();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+		this.loadingFrames = loadingFramesLocal;
+
 		Thread thread = new Thread(new Runnable()
 		{
 			@Override
