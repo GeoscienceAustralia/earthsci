@@ -23,6 +23,7 @@ import org.eclipse.e4.ui.model.application.ui.menu.MMenuItem;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.swt.internal.copy.FilteredTree;
 import org.eclipse.e4.ui.workbench.swt.internal.copy.PatternFilter;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -212,10 +213,20 @@ public class NotificationPart
 				if (data instanceof INotification)
 				{
 					INotification notification = (INotification) data;
-					IStatus status =
-							new Status(notification.getLevel().getStatusSeverity(), Activator.PLUGIN_ID, notification
-									.getText(), notification.getThrowable());
-					StackTraceDialog.openError(shell, notification.getTitle(), null, status);
+					if (notification.getThrowable() != null)
+					{
+						IStatus status =
+								new Status(notification.getLevel().getStatusSeverity(), Activator.PLUGIN_ID,
+										notification.getThrowable().getLocalizedMessage(), notification.getThrowable());
+						StackTraceDialog.openError(shell, notification.getTitle(), notification.getText(), status);
+					}
+					else
+					{
+						IStatus status =
+								new Status(notification.getLevel().getStatusSeverity(), Activator.PLUGIN_ID,
+										notification.getText());
+						ErrorDialog.openError(shell, notification.getTitle(), null, status);
+					}
 				}
 			}
 		});
