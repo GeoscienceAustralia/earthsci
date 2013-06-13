@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.common.ui.util;
 
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * A listener that listens to new frame events on the
@@ -25,5 +26,13 @@ import org.eclipse.swt.graphics.Image;
  */
 public interface ILoadingIconFrameListener
 {
+	/**
+	 * Called when the {@link LoadingIconAnimator} animates to the next frame.
+	 * <p/>
+	 * Note that this is called by a non-UI thread; UI updates should be
+	 * executed on the UI thread using {@link Display#asyncExec(Runnable)}.
+	 * 
+	 * @param image
+	 */
 	void nextFrame(Image image);
 }
