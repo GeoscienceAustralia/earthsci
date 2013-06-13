@@ -10,6 +10,7 @@
           <children xsi:type="basic:PartSashContainer" xmi:id="_y24REA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partsashcontainer.0.1" containerData="70">
             <children xsi:type="basic:PartStack" xmi:id="_QfsYYPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0.1.0" containerData="70">
               <children xsi:type="advanced:Placeholder" xmi:id="_ckC_wGNsEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.globe.part" toBeRendered="false"/>
+              <children xsi:type="advanced:Placeholder" xmi:id="_Vo-MwNP2EeKXbtYtbNp0TQ" elementId="au.gov.ga.earthsci.application.browser.part" toBeRendered="false" visible="false"/>
             </children>
             <children xsi:type="basic:PartStack" xmi:id="_0HDfgA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partstack.0.1.1" containerData="30">
               <children xsi:type="advanced:Placeholder" xmi:id="_VGKi4EfWEeKlQKEC4ZU57g" elementId="au.gov.ga.earthsci.application.retrieve.part" toBeRendered="false"/>

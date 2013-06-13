@@ -25,6 +25,8 @@ import javax.inject.Named;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.model.application.ui.MUIElement;
+import org.eclipse.e4.ui.model.application.ui.advanced.MPlaceholder;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.basic.MWindow;
 import org.eclipse.e4.ui.services.IServiceConstants;
@@ -95,6 +97,16 @@ public class BrowserPart
 		{
 			//create the part from the PartDescriptor
 			part = partService.createPart(PART_ID);
+
+			//if there's a placeholder for the part, put it there
+			List<MPlaceholder> placeholders = modelService.findElements(window, PART_ID, MPlaceholder.class, null);
+			if (!placeholders.isEmpty())
+			{
+				MPlaceholder placeholder = placeholders.get(0);
+				List<MUIElement> siblings = placeholder.getParent().getChildren();
+				int index = siblings.indexOf(placeholder);
+				siblings.add(index, part);
+			}
 		}
 
 		//show and return the part
