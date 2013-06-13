@@ -90,5 +90,35 @@
             label="Default theme">
       </theme>
    </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="html"
+            id="org.eclipse.core.runtime.html"
+            name="HTML"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.core.mimeTypes">
+      <mime-type
+            content-type-id="org.eclipse.core.runtime.html"
+            name="text/html">
+      </mime-type>
+      <mime-type
+            content-type-id="org.eclipse.core.runtime.html"
+            name="application/xhtml+xml">
+      </mime-type>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.intent.filters">
+      <filter
+            class="au.gov.ga.earthsci.application.intent.HtmlIntentHandler"
+            priority="0">
+         <content-type
+               id="org.eclipse.core.runtime.html">
+         </content-type>
+      </filter>
+   </extension>
 
 </plugin>

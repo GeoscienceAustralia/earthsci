@@ -92,11 +92,17 @@
   <descriptors xmi:id="_h_5SgGNuEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.retrieve.part" label="Downloads" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/progress_none.gif" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.retrieve.RetrievePart"/>
   <descriptors xmi:id="_vhcroGNxEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.information.part" label="Information" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/info.gif" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.info.InfoPart">
     <handlers xmi:id="_-VQfsCoBEeKSQfx7uoupxA" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.info.handlers.LinkHandler" command="_21JkQCoBEeKSQfx7uoupxA"/>
-    <toolbar xmi:id="_OIqFgGNyEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.toolbar.0">
+    <toolbar xmi:id="_OIqFgGNyEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.part.information.toolbar">
       <children xsi:type="menu:HandledToolItem" xmi:id="_bsJTcCn9EeKSQfx7uoupxA" elementId="au.gov.ga.earthsci.application.information.toolbar.link" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/synced.gif" tooltip="Link with Layers" type="Check" command="_21JkQCoBEeKSQfx7uoupxA"/>
     </toolbar>
   </descriptors>
   <descriptors xmi:id="_vz7iwGNxEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.progress.part" label="Progress" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/progress_task.gif" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.progress.ProgressPart"/>
+  <descriptors xmi:id="_X5DD4NP0EeKXbtYtbNp0TQ" elementId="au.gov.ga.earthsci.application.browser.part" label="Browser" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/browser.gif" allowMultiple="true" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.browser.BrowserPart">
+    <handlers xmi:id="_5i8ysNP0EeKXbtYtbNp0TQ" elementId="au.gov.ga.earthsci.application.browser.externalBrowserHandler" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.browser.handlers.ExternalBrowserHandler" command="_0csqkNP0EeKXbtYtbNp0TQ"/>
+    <toolbar xmi:id="_f6ULoNP0EeKXbtYtbNp0TQ" elementId="au.gov.ga.earthsci.application.part.browser.toolbar">
+      <children xsi:type="menu:HandledToolItem" xmi:id="_pPWBUNP0EeKXbtYtbNp0TQ" elementId="au.gov.ga.earthsci.application.browser.toolbar.externalBrowser" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/browser_external.gif" tooltip="Open page in external browser" command="_0csqkNP0EeKXbtYtbNp0TQ"/>
+    </toolbar>
+  </descriptors>
   <commands xmi:id="_007tWvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.exit" commandName="exitCommand"/>
   <commands xmi:id="_007tXvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.command.open" commandName="openCommand"/>
   <commands xmi:id="_007tYfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.save" commandName="saveCommand"/>
@@ -137,6 +143,7 @@
     <parameters xmi:id="_c4RpcGtmEeKDSIOW1jGh1g" elementId="au.gov.ga.earthsci.application.command.movetogroup.parameter.groupid" name="groupId" optional="false"/>
   </commands>
   <commands xmi:id="_XmoOkGvzEeKrKcTgfbYJiQ" elementId="au.gov.ga.earthsci.application.command.renameGroup" commandName="renameGroupCommand"/>
+  <commands xmi:id="_0csqkNP0EeKXbtYtbNp0TQ" elementId="au.gov.ga.earthsci.application.externalBrowserCommand" commandName="externalBrowserCommand"/>
   <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_007tVfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_007tVvsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
