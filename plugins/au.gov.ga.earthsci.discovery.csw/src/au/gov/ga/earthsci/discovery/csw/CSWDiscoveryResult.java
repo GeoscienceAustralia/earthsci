@@ -17,12 +17,18 @@ package au.gov.ga.earthsci.discovery.csw;
 
 import gov.nasa.worldwind.util.WWXML;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
 
@@ -79,6 +85,7 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 	private final int index;
 	private final String title;
 	private final String description;
+	private final URL endpoint;
 
 	public CSWDiscoveryResult(int index, Element cswRecordElement) throws XPathExpressionException
 	{
@@ -98,12 +105,46 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 
 		this.title = title;
 		this.description = description;
+
+
+		URL endpoint = null;
+		NodeList references = (NodeList) xpath.compile("references").evaluate(cswRecordElement, XPathConstants.NODESET); //$NON-NLS-1$
+		for (int i = 0; i < references.getLength(); i++)
+		{
+			Element reference = (Element) references.item(i);
+			if (reference.getAttribute("scheme").contains("Server")) //$NON-NLS-1$ //$NON-NLS-2$
+			{
+				try
+				{
+					endpoint = new URL(reference.getTextContent());
+					break;
+				}
+				catch (MalformedURLException e)
+				{
+				}
+			}
+		}
+
+		this.endpoint = endpoint;
 	}
 
 	@Override
 	public int getIndex()
 	{
 		return index;
+	}
+
+	@Override
+	public URI getContentURI() throws URISyntaxException
+	{
+		String urlString = endpoint.toString();
+		int queryStart = urlString.indexOf('?');
+		if (queryStart >= 0)
+		{
+			urlString = urlString.substring(0, queryStart);
+		}
+		urlString += "?request=GetCapabilities"; //$NON-NLS-1$
+		return new URI(urlString);
 	}
 
 	public String getTitle()

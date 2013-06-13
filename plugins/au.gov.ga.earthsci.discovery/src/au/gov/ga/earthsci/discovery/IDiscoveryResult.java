@@ -15,6 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 /**
  * Single result contained by an {@link IDiscovery}.
  * <p/>
@@ -30,4 +33,10 @@ public interface IDiscoveryResult
 	 * @return Index of this result in the {@link IDiscovery}
 	 */
 	int getIndex();
+
+	//TODO replace this with a way that results define their own way of opening their content, eg raise their own intent once they know the content type
+	/**
+	 * @return The URI of this result's content. Passed to the intent system.
+	 */
+	URI getContentURI() throws URISyntaxException;
 }
