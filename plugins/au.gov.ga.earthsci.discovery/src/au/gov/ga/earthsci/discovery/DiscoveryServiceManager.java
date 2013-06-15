@@ -204,6 +204,7 @@ public class DiscoveryServiceManager
 		{
 			setProviderId(service.getProvider().getId());
 			setServiceURL(service.getServiceURL());
+			setName(service.getName());
 			boolean enabled =
 					(service instanceof MissingPluginPlaceholderDiscoveryService)
 							? ((MissingPluginPlaceholderDiscoveryService) service).wasEnabled() : service.isEnabled();
