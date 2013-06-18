@@ -16,6 +16,12 @@
 package au.gov.ga.earthsci.catalog;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.e4.ui.workbench.modeling.EPartService;
+import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
+import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.intent.dispatch.IDispatchHandler;
 
@@ -26,8 +32,17 @@ import au.gov.ga.earthsci.intent.dispatch.IDispatchHandler;
  */
 public class CatalogTreeNodeDispatchHandler implements IDispatchHandler
 {
+	private static final String CATALOG_PART_ID = "au.gov.ga.earthsci.application.catalog.part"; //$NON-NLS-1$
+
 	@Inject
 	private ICatalogModel model;
+
+	@Inject
+	private EPartService partService;
+
+	@Inject
+	@Named(IServiceConstants.ACTIVE_SHELL)
+	private Shell shell;
 
 	@Override
 	public void handle(Object object)
@@ -36,6 +51,15 @@ public class CatalogTreeNodeDispatchHandler implements IDispatchHandler
 		{
 			ICatalogTreeNode node = (ICatalogTreeNode) object;
 			model.addTopLevelCatalog(node);
+
+			shell.getDisplay().asyncExec(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					partService.showPart(CATALOG_PART_ID, PartState.ACTIVATE);
+				}
+			});
 		}
 	}
 }
