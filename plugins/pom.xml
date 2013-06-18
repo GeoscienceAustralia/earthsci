@@ -20,6 +20,7 @@
 	<modules>
 		<module>au.gov.ga.earthsci.testbase</module>
 		<module>au.gov.ga.earthsci.common</module>
+		<module>au.gov.ga.earthsci.eclipse.extras</module>
 		<module>au.gov.ga.earthsci.common.tests</module>
 		<module>au.gov.ga.earthsci.common.ui</module>
 		<module>au.gov.ga.earthsci.logging</module>
