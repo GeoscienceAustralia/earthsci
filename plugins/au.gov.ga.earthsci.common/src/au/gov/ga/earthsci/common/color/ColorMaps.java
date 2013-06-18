@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.common.color;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +51,17 @@ public class ColorMaps
 
 	private static final Logger logger = LoggerFactory.getLogger(ColorMaps.class);
 
+	private static final List<ColorMap> maps = new ArrayList<ColorMap>();
+	private static final ReadWriteLock mapsLock = new ReentrantReadWriteLock();
+
 	private static List<IColorMapReader> readers = new ArrayList<IColorMapReader>();
 	private static ReadWriteLock readersLock = new ReentrantReadWriteLock();
+
+	static
+	{
+		maps.add(getRGBRainbowMap());
+		maps.add(getRBGRainbowMap());
+	}
 
 	private ColorMaps()
 	{
@@ -59,6 +69,56 @@ public class ColorMaps
 
 	private static ColorMap RBG_RAINBOW_MAP;
 	private static ColorMap RGB_RAINBOW_MAP;
+
+	/**
+	 * Return a read-only view of the list of registered {@link ColorMaps}
+	 * 
+	 * @return The list of registered color maps
+	 */
+	public static List<ColorMap> get()
+	{
+		return Collections.unmodifiableList(maps);
+	}
+
+	/**
+	 * Add the given {@link ColorMap} to the list of maps maintained by this
+	 * class
+	 * 
+	 * @param map
+	 *            The color map to add
+	 */
+	public static void add(ColorMap map)
+	{
+		mapsLock.writeLock().lock();
+		try
+		{
+			maps.add(map);
+		}
+		finally
+		{
+			mapsLock.writeLock().unlock();
+		}
+	}
+
+	/**
+	 * Remove the given {@link ColorMap} from the list of maps maintained by
+	 * this class
+	 * 
+	 * @param map
+	 *            The color map to add
+	 */
+	public static void remove(ColorMap map)
+	{
+		mapsLock.writeLock().lock();
+		try
+		{
+			maps.remove(map);
+		}
+		finally
+		{
+			mapsLock.writeLock().unlock();
+		}
+	}
 
 	/**
 	 * Return a standard red-blue-green rainbow colour map

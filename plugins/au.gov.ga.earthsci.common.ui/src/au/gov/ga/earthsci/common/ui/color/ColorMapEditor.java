@@ -229,6 +229,25 @@ public class ColorMapEditor extends Composite
 	//******************************************
 
 	/**
+	 * Set the seed map used in this editor.
+	 * <p/>
+	 * This will reset the editor and remove all user edits, re-initialising
+	 * with the new seed map.
+	 * 
+	 * @param seed
+	 *            The seed map to base the editor on
+	 */
+	public void setSeed(ColorMap seed)
+	{
+		map.updateTo(seed);
+
+		setCurrentEntry(null);
+		entriesTable.setSelection(null);
+		removeEntryButton.setEnabled(false);
+		disableEntryEditor();
+	}
+
+	/**
 	 * Create a new {@link ColorMap} instance from the configuration captured in
 	 * this editor.
 	 * 
@@ -338,8 +357,19 @@ public class ColorMapEditor extends Composite
 					{
 						populateColors();
 						gradientCanvas.redraw();
+
+						modeCombo.setSelection(new StructuredSelection(map.getMode()));
 					};
 				});
+			}
+		});
+
+		map.addPropertyChangeListener(MutableColorMap.NODATA_CHANGE_EVENT, new PropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(java.beans.PropertyChangeEvent evt)
+			{
+				updateNodataEditorFromMap();
 			}
 		});
 	}
@@ -750,17 +780,7 @@ public class ColorMapEditor extends Composite
 			}
 		});
 
-		Color nodataColor = map.getNodataColour();
-		if (nodataColor == null)
-		{
-			nodataCheckBox.setSelection(false);
-			enableNodataEditor(false);
-			return;
-		}
-
-		nodataColorField.setColorValue(toRGB(nodataColor));
-		nodataAlphaScale.setSelection(nodataColor.getAlpha());
-		nodataAlphaField.setNumber(nodataColor.getAlpha());
+		updateNodataEditorFromMap();
 	}
 
 	/**
@@ -957,6 +977,21 @@ public class ColorMapEditor extends Composite
 		Color nodataColor = fromRGB(nodataColorField.getColorValue(),
 				nodataAlphaScale.getSelection());
 		map.setNodataColour(nodataColor);
+	}
+
+	private void updateNodataEditorFromMap()
+	{
+		Color nodataColor = map.getNodataColour();
+		if (nodataColor == null)
+		{
+			nodataCheckBox.setSelection(false);
+			enableNodataEditor(false);
+			return;
+		}
+
+		nodataColorField.setColorValue(toRGB(nodataColor));
+		nodataAlphaScale.setSelection(nodataColor.getAlpha());
+		nodataAlphaField.setNumber(nodataColor.getAlpha());
 	}
 
 	//**********************************************

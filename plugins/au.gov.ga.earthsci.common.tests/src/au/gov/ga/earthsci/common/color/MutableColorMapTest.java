@@ -302,11 +302,74 @@ public class MutableColorMapTest
 		assertListenersNotHit(MutableColorMap.COLOR_MAP_ENTRY_CHANGE_EVENT);
 	}
 
+	@Test
+	public void testUpdateToWithNull()
+	{
+		ColorMap seed = null;
+
+		MutableColorMap classUnderTest = new MutableColorMap();
+		classUnderTest.addPropertyChangeListener(testListener);
+
+		classUnderTest.updateTo(seed);
+
+		assertNoListenersHit();
+	}
+
+	@Test
+	public void testUpdateToWithSelf()
+	{
+		MutableColorMap classUnderTest = new MutableColorMap();
+		classUnderTest.addPropertyChangeListener(testListener);
+
+		classUnderTest.updateTo(classUnderTest);
+
+		assertNoListenersHit();
+	}
+
+	@Test
+	public void testUpdateToWithAllDifferent()
+	{
+		MutableColorMap seed =
+				new MutableColorMap("seed", "seed", null, null, InterpolationMode.INTERPOLATE_HUE, false);
+		seed.addEntry(0.3, Color.PINK);
+
+		Map<Double, Color> entries = new HashMap<Double, Color>();
+		entries.put(0.0, Color.RED);
+		entries.put(0.5, Color.GREEN);
+		entries.put(1.0, Color.BLUE);
+
+		MutableColorMap classUnderTest =
+				new MutableColorMap("test", "test", entries, Color.BLACK, InterpolationMode.INTERPOLATE_RGB, true);
+
+		classUnderTest.addPropertyChangeListener(testListener);
+
+		classUnderTest.updateTo(seed);
+
+		assertListenersHit(
+				MutableColorMap.NAME_CHANGE_EVENT,
+				MutableColorMap.DESCRIPTION_CHANGE_EVENT,
+				MutableColorMap.MODE_CHANGE_EVENT,
+				MutableColorMap.NODATA_CHANGE_EVENT,
+				MutableColorMap.ENTRY_REMOVED_EVENT,
+				MutableColorMap.ENTRY_ADDED_EVENT,
+				MutableColorMap.COLOR_MAP_ENTRY_CHANGE_EVENT);
+
+		assertListenersNotHit(
+				MutableColorMap.VALUE_TYPE_CHANGE_EVENT,
+				MutableColorMap.ENTRY_MOVED_EVENT,
+				MutableColorMap.COLOR_CHANGED_EVENT);
+	}
+
+	private void assertNoListenersHit()
+	{
+		assertTrue(listenerHits.isEmpty());
+	}
+
 	private void assertListenersHit(String... events)
 	{
 		for (String s : events)
 		{
-			assertTrue(listenerHits.contains(s));
+			assertTrue("Missing event " + s, listenerHits.contains(s));
 		}
 	}
 
@@ -314,7 +377,7 @@ public class MutableColorMapTest
 	{
 		for (String s : events)
 		{
-			assertFalse(listenerHits.contains(s));
+			assertFalse("Extra event " + s, listenerHits.contains(s));
 		}
 	}
 }

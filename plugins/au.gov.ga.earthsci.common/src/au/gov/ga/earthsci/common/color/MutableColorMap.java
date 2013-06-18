@@ -19,6 +19,7 @@ import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -151,6 +152,38 @@ public class MutableColorMap extends ColorMap
 				nodataColour,
 				mode,
 				valuesArePercentages);
+	}
+
+	/**
+	 * Update this mutable map to the same values as those contained in the
+	 * provided {@link ColorMap}. Similar to the copy constructor
+	 * {@link #MutableColorMap(ColorMap)} but changes the current instance
+	 * rather than creating a new one.
+	 * <p/>
+	 * All listener events will be fired as appropriate.
+	 * 
+	 * @param map
+	 *            The map to update this instance to
+	 */
+	public void updateTo(ColorMap map)
+	{
+		if (map == null || this.equals(map))
+		{
+			return;
+		}
+
+		setName(map.getName());
+		setDescription(map.getDescription());
+		setNodataColour(map.getNodataColour());
+		setMode(map.getMode());
+		for (Entry<Double, Color> existing : new HashSet<Entry<Double, Color>>(entries.entrySet()))
+		{
+			removeEntry(existing.getKey());
+		}
+		for (Entry<Double, Color> newEntry : map.getEntries().entrySet())
+		{
+			addEntry(newEntry.getKey(), newEntry.getValue());
+		}
 	}
 
 	@Override
