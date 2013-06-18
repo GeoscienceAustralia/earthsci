@@ -150,7 +150,10 @@ public class GDALRasterModelFactory
 						.putFloat((float) projectedCoords[1])
 						.putFloat((float) projectedCoords[2]);
 
-				stats.updateStats(projectedCoords[1], projectedCoords[0], projectedCoords[2]);
+				if (!isNoData(nodata, datasetValue))
+				{
+					stats.updateStats(projectedCoords[1], projectedCoords[0], projectedCoords[2]);
+				}
 
 				int step = Math.min(stride, rasterXSize - x) - 1; // Skip stride values, or move to the end of the column
 				skipValues(step, buffer, sourceBufferType);

@@ -85,7 +85,7 @@ public class GDALRasterModelFactoryTest
 				24, 4, 6,
 				0, 150,
 				50, 300,
-				-9999, 100,
+				1.0, 100,
 				new int[] { 0, 4, 1, 5, 2, 6, 3, 7, 7, 7, 4, 4, 4, 8, 5, 9 });
 	}
 
@@ -102,7 +102,7 @@ public class GDALRasterModelFactoryTest
 				4, 2, 2,
 				0, 150,
 				150, 300,
-				-9999, 32,
+				2.0, 32,
 				new int[] { 0, 2, 1, 3 });
 	}
 
@@ -154,7 +154,7 @@ public class GDALRasterModelFactoryTest
 			vertex.x = vertexData.getBufferType().getValueFrom(source).doubleValue();
 			vertex.y = vertexData.getBufferType().getValueFrom(source).doubleValue();
 			vertex.z = vertexData.getBufferType().getValueFrom(source).doubleValue();
-			assertTrue(bounds.contains(vertex));
+			assertTrue(vertex.z == (Float) vertexData.getNoDataValue() || bounds.contains(vertex));
 			count++;
 		}
 		assertEquals(expectedNumVertices, count);
