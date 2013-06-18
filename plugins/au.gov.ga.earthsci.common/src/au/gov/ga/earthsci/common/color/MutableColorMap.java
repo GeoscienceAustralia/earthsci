@@ -35,8 +35,20 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * <b>Events:</b>
  * <dl>
  * <dt>{@value #COLOR_MAP_ENTRY_CHANGE_EVENT}</dt>
- * <dd>Fired when a color map entry changes. The contents of the event will
+ * <dd>Fired when a colour map entry changes. The contents of the event will
  * include the value that has changed.</dt>
+ * <dt>{@value #ENTRY_ADDED_EVENT}</dt>
+ * <dd>Fired when a new entry is added to the colour map. Value will the be
+ * added {@link Entry}.</dd>
+ * <dt>{@value #ENTRY_REMOVED_EVENT}</dt>
+ * <dd>Fired when a new entry is added to the colour map. Value will be the
+ * removed {@link Entry}</dd>
+ * <dt>{@value #ENTRY_MOVED_EVENT}</dt>
+ * <dd>Fired when an entry is moved in the colour map. Value will be the moved
+ * {@link Entry}</dd>
+ * <dt>{@value #COLOR_CHANGED_EVENT}</dt>
+ * <dd>Fired when a new entry is added to the colour map. Value will be the
+ * changed {@link Entry}</dd>
  * <dt>{@value #MODE_CHANGE_EVENT}</dt>
  * <dd>Fired when the interpolation mode changes</dd>
  * <dt>{@value #VALUE_TYPE_CHANGE_EVENT}</dt>
@@ -58,6 +70,18 @@ public class MutableColorMap extends ColorMap
 
 	/** The event fired when the colour map changes */
 	public static final String COLOR_MAP_ENTRY_CHANGE_EVENT = "colorMapEntry"; //$NON-NLS-1$
+
+	/** The event fired when an entry is added to the map */
+	public static final String ENTRY_ADDED_EVENT = "entryAdded"; //$NON-NLS-1$
+
+	/** The event fired when an entry is removed from the map */
+	public static final String ENTRY_REMOVED_EVENT = "entryRemoved"; //$NON-NLS-1$
+
+	/** The event fired when an entry is moved in the map */
+	public static final String ENTRY_MOVED_EVENT = "entryMoved"; //$NON-NLS-1$
+
+	/** The event fired when an entry colour changes in the map */
+	public static final String COLOR_CHANGED_EVENT = "colorChanged"; //$NON-NLS-1$
 
 	/** The event fired when the mode changes */
 	public static final String MODE_CHANGE_EVENT = "mode"; //$NON-NLS-1$
@@ -167,15 +191,19 @@ public class MutableColorMap extends ColorMap
 	 */
 	public void addEntry(double value, Color color)
 	{
+		Entry<Double, Color> entry = null;
 		entriesLock.writeLock().lock();
 		try
 		{
 			entries.put(value, color);
+			entry = getEntry(value);
 		}
 		finally
 		{
 			entriesLock.writeLock().unlock();
 		}
+
+		propertyChange.firePropertyChange(ENTRY_ADDED_EVENT, null, entry);
 		propertyChange.firePropertyChange(COLOR_MAP_ENTRY_CHANGE_EVENT, null, value);
 	}
 
@@ -187,15 +215,18 @@ public class MutableColorMap extends ColorMap
 	 */
 	public void removeEntry(double value)
 	{
+		Entry<Double, Color> entry = null;
 		entriesLock.writeLock().lock();
 		try
 		{
+			entry = getEntry(value);
 			entries.remove(value);
 		}
 		finally
 		{
 			entriesLock.writeLock().unlock();
 		}
+		propertyChange.firePropertyChange(ENTRY_REMOVED_EVENT, entry, null);
 		propertyChange.firePropertyChange(COLOR_MAP_ENTRY_CHANGE_EVENT, value, null);
 	}
 
@@ -209,6 +240,10 @@ public class MutableColorMap extends ColorMap
 	 */
 	public void moveEntry(double oldValue, double newValue)
 	{
+		if (oldValue == newValue)
+		{
+			return;
+		}
 
 		entriesLock.readLock().lock();
 		try
@@ -223,16 +258,25 @@ public class MutableColorMap extends ColorMap
 			entriesLock.readLock().unlock();
 		}
 
+		Entry<Double, Color> oldEntry = null;
+		Entry<Double, Color> newEntry = null;
+
 		entriesLock.writeLock().lock();
 		try
 		{
-			entries.put(newValue, entries.get(oldValue));
+			oldEntry = getEntry(oldValue);
+
+			entries.put(newValue, oldEntry.getValue());
 			entries.remove(oldValue);
+
+			newEntry = getEntry(newValue);
 		}
 		finally
 		{
 			entriesLock.writeLock().unlock();
 		}
+
+		propertyChange.firePropertyChange(ENTRY_MOVED_EVENT, oldEntry, newEntry);
 		propertyChange.firePropertyChange(COLOR_MAP_ENTRY_CHANGE_EVENT, oldValue, newValue);
 	}
 
@@ -246,6 +290,8 @@ public class MutableColorMap extends ColorMap
 	 */
 	public void changeColor(double value, Color newColor)
 	{
+		Entry<Double, Color> oldEntry = null;
+		Entry<Double, Color> newEntry = null;
 		entriesLock.writeLock().lock();
 		try
 		{
@@ -253,12 +299,15 @@ public class MutableColorMap extends ColorMap
 			{
 				return;
 			}
+			oldEntry = getEntry(value);
 			entries.put(value, newColor);
+			newEntry = getEntry(value);
 		}
 		finally
 		{
 			entriesLock.writeLock().unlock();
 		}
+		propertyChange.firePropertyChange(COLOR_CHANGED_EVENT, oldEntry, newEntry);
 		propertyChange.firePropertyChange(COLOR_MAP_ENTRY_CHANGE_EVENT, value, null);
 	}
 

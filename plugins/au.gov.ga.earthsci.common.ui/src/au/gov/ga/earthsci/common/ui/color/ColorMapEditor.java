@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.common.ui.color;
 
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +49,7 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -276,12 +278,50 @@ public class ColorMapEditor extends Composite
 
 						populateColors();
 						gradientCanvas.redraw();
-
-						populateMarkers();
-						markerCanvas.redraw();
-
-						updateSelectionsForCurrentValue();
 					}
+				});
+			}
+		});
+
+		map.addPropertyChangeListener(MutableColorMap.ENTRY_MOVED_EVENT, new PropertyChangeListener()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public void propertyChange(java.beans.PropertyChangeEvent evt)
+			{
+				Entry<Double, Color> oldEntry = (Entry<Double, Color>) evt.getOldValue();
+				Entry<Double, Color> newEntry = (Entry<Double, Color>) evt.getNewValue();
+				if (currentEntryValue == null || oldEntry.getKey().equals(currentEntryValue))
+				{
+					currentEntryValue = newEntry.getKey();
+
+					entriesTable.refresh();
+					selectTableEntry(newEntry);
+				}
+			}
+		});
+
+		map.addPropertyChangeListener(MutableColorMap.ENTRY_ADDED_EVENT, new PropertyChangeListener()
+		{
+
+			@Override
+			public void propertyChange(java.beans.PropertyChangeEvent evt)
+			{
+				@SuppressWarnings("unchecked")
+				Entry<Double, Color> newEntry = (Entry<Double, Color>) evt.getNewValue();
+				final Marker newMarker = addMarker(newEntry);
+
+				Display.getCurrent().asyncExec(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						markerCanvas.redraw(newMarker.bounds.x,
+								newMarker.bounds.y,
+								newMarker.bounds.width,
+								newMarker.bounds.height,
+								true);
+					};
 				});
 			}
 		});
@@ -353,18 +393,13 @@ public class ColorMapEditor extends Composite
 			@Override
 			public void handleEvent(Event e)
 			{
-				paintMarkers(e.gc, e.display);
+				paintMarkers(e.gc, e.display, e.getBounds());
 			}
 		});
 
-		markerCanvas.addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseDown(MouseEvent e)
-			{
-				selectMarkerByCoordinate(e.x, e.y);
-			}
-		});
+		MarkerMouseListener markerMouseListener = new MarkerMouseListener();
+		markerCanvas.addMouseListener(markerMouseListener);
+		markerCanvas.addMouseMoveListener(markerMouseListener);
 	}
 
 	//******************************************
@@ -389,7 +424,7 @@ public class ColorMapEditor extends Composite
 		optionsContainer.setLayout(new GridLayout(2, false));
 
 		Label modeLabel = new Label(optionsContainer, SWT.NONE);
-		modeLabel.setText("Mode:");
+		modeLabel.setText(Messages.ColorMapEditor_ModeLabel);
 		modeCombo = new ComboViewer(optionsContainer, SWT.DROP_DOWN);
 		modeCombo.setContentProvider(ArrayContentProvider.getInstance());
 		modeCombo.setInput(InterpolationMode.values());
@@ -422,7 +457,7 @@ public class ColorMapEditor extends Composite
 		if (hasDataValues)
 		{
 			percentageBasedButton = new Button(optionsContainer, SWT.CHECK);
-			percentageBasedButton.setText("Use percentages");
+			percentageBasedButton.setText(Messages.ColorMapEditor_UsePercentagesLabel);
 			percentageBasedButton.setSelection(map.isPercentageBased());
 			gd = new GridData();
 			gd.horizontalSpan = 2;
@@ -471,7 +506,7 @@ public class ColorMapEditor extends Composite
 		editorContainer.setLayout(new GridLayout(7, false));
 
 		Label valueLabel = new Label(editorContainer, SWT.NONE);
-		valueLabel.setText("Value:");
+		valueLabel.setText(Messages.ColorMapEditor_EntryValueLabel);
 		editorValueField = new NumericTextField(editorContainer, SWT.SINGLE | SWT.BORDER);
 		editorValueField.addFocusListener(new FocusAdapter()
 		{
@@ -484,7 +519,7 @@ public class ColorMapEditor extends Composite
 		});
 
 		Label colorLabel = new Label(editorContainer, SWT.NONE);
-		colorLabel.setText("Color:");
+		colorLabel.setText(Messages.ColorMapEditor_EntryColorLabel);
 		editorColorField = new ColorSelector(editorContainer);
 		editorColorField.addListener(new IPropertyChangeListener()
 		{
@@ -496,7 +531,7 @@ public class ColorMapEditor extends Composite
 		});
 
 		Label alphaLabel = new Label(editorContainer, SWT.NONE);
-		alphaLabel.setText("Alpha:");
+		alphaLabel.setText(Messages.ColorMapEditor_EntryAlphaLabel);
 
 		editorAlphaScale = new Scale(editorContainer, SWT.HORIZONTAL);
 		editorAlphaScale.setMinimum(0);
@@ -542,7 +577,7 @@ public class ColorMapEditor extends Composite
 		buttonContainer.setLayout(new GridLayout(2, false));
 
 		addEntryButton = new Button(buttonContainer, SWT.PUSH);
-		addEntryButton.setText("Add");
+		addEntryButton.setText(Messages.ColorMapEditor_AddEntryLabel);
 		addEntryButton.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -553,7 +588,7 @@ public class ColorMapEditor extends Composite
 		});
 
 		removeEntryButton = new Button(buttonContainer, SWT.PUSH);
-		removeEntryButton.setText("Remove");
+		removeEntryButton.setText(Messages.ColorMapEditor_RemoveEntryLabel);
 		removeEntryButton.setEnabled(false);
 		removeEntryButton.addSelectionListener(new SelectionAdapter()
 		{
@@ -582,7 +617,7 @@ public class ColorMapEditor extends Composite
 		entriesTable.setInput(map.getEntries().entrySet());
 
 		TableViewerColumn valueColumn = new TableViewerColumn(entriesTable, SWT.NONE);
-		valueColumn.getColumn().setText("Value");
+		valueColumn.getColumn().setText(Messages.ColorMapEditor_TableValueColumnLabel);
 		valueColumn.setLabelProvider(new ColumnLabelProvider()
 		{
 			@SuppressWarnings("unchecked")
@@ -590,10 +625,10 @@ public class ColorMapEditor extends Composite
 			public String getText(Object element)
 			{
 				Double value = ((Entry<Double, Color>) element).getKey();
-				String result = "" + value;
+				String result = "" + value; //$NON-NLS-1$
 				if (map.isPercentageBased())
 				{
-					result += " (" + (int) (value * 100) + "%)";
+					result += " (" + (int) (value * 100) + "%)"; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				return result;
 			}
@@ -601,26 +636,24 @@ public class ColorMapEditor extends Composite
 		layout.setColumnData(valueColumn.getColumn(), new ColumnPixelData(80, false));
 
 		TableViewerColumn colorNameColumn = new TableViewerColumn(entriesTable, SWT.NONE);
-		colorNameColumn.getColumn().setText("Color");
+		colorNameColumn.getColumn().setText(Messages.ColorMapEditor_TableColorColumnLabel);
 		colorNameColumn.setLabelProvider(new ColumnLabelProvider()
 		{
 
-			@SuppressWarnings("nls")
 			@Override
 			public String getText(Object element)
 			{
 				Color color = getColorFromElement(element);
-				return "RGBA(" + color.getRed() + ", "
-						+ color.getGreen() + ", "
-						+ color.getBlue() + ", "
-						+ color.getAlpha() + ")";
+				return "RGBA(" + color.getRed() + ", " //$NON-NLS-1$ //$NON-NLS-2$
+						+ color.getGreen() + ", " //$NON-NLS-1$
+						+ color.getBlue() + ", " //$NON-NLS-1$
+						+ color.getAlpha() + ")"; //$NON-NLS-1$
 			}
 
-			@SuppressWarnings("nls")
 			@Override
 			public String getToolTipText(Object element)
 			{
-				return "#" + getColorKey(getColorFromElement(element));
+				return "#" + getColorKey(getColorFromElement(element)); //$NON-NLS-1$
 			}
 
 			@SuppressWarnings("unchecked")
@@ -655,8 +688,8 @@ public class ColorMapEditor extends Composite
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 7;
 		nodataCheckBox.setLayoutData(gd);
-		nodataCheckBox.setText("Specify a NODATA colour");
-		nodataCheckBox.setToolTipText("If not specified, NODATA will be made transparent.");
+		nodataCheckBox.setText(Messages.ColorMapEditor_NoDataOptionLabel);
+		nodataCheckBox.setToolTipText(Messages.ColorMapEditor_NoDataOptionTooltip);
 		nodataCheckBox.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -668,7 +701,7 @@ public class ColorMapEditor extends Composite
 		});
 
 		Label colorLabel = new Label(editorContainer, SWT.NONE);
-		colorLabel.setText("Color:");
+		colorLabel.setText("Color:"); //$NON-NLS-1$
 		nodataColorField = new ColorSelector(editorContainer);
 		nodataColorField.addListener(new IPropertyChangeListener()
 		{
@@ -681,7 +714,7 @@ public class ColorMapEditor extends Composite
 		nodataColorField.setColorValue(toRGB(Color.BLACK));
 
 		Label alphaLabel = new Label(editorContainer, SWT.NONE);
-		alphaLabel.setText("Alpha:");
+		alphaLabel.setText("Alpha:"); //$NON-NLS-1$
 
 		nodataAlphaScale = new Scale(editorContainer, SWT.HORIZONTAL);
 		nodataAlphaScale.setMinimum(0);
@@ -749,7 +782,7 @@ public class ColorMapEditor extends Composite
 		gd = new GridData();
 		gd.widthHint = gradientWidth;
 		minText.setLayoutData(gd);
-		minText.setText("" + minDataValue);
+		minText.setText("" + minDataValue); //$NON-NLS-1$
 		minText.setAlignment(SWT.CENTER);
 
 		// Contains gradient-markers
@@ -767,10 +800,10 @@ public class ColorMapEditor extends Composite
 		gd = new GridData();
 		gd.widthHint = gradientWidth;
 		maxText.setLayoutData(gd);
-		maxText.setText("" + maxDataValue);
+		maxText.setText("" + maxDataValue); //$NON-NLS-1$
 		maxText.setAlignment(SWT.CENTER);
 
-		gradientCanvas = new Canvas(gradientContainer, SWT.BORDER);
+		gradientCanvas = new Canvas(gradientContainer, SWT.BORDER | SWT.NO_BACKGROUND);
 		gd = new GridData(GridData.FILL_VERTICAL);
 		gd.widthHint = gradientWidth;
 		gradientCanvas.setLayoutData(gd);
@@ -811,32 +844,15 @@ public class ColorMapEditor extends Composite
 		map.changeColor(currentEntryValue, currentEntryColor);
 	}
 
-	private void updateSelectionsForCurrentValue()
+	private void selectTableEntry(Entry<Double, Color> entry)
 	{
-		selectMarkerByValue(currentEntryValue);
-		selectTableEntryByValue(currentEntryValue);
-	}
-
-	/**
-	 * Select the table entry with the given value
-	 */
-	private void selectTableEntryByValue(Double value)
-	{
-		if (value == null)
+		if (entry == null)
 		{
 			entriesTable.setSelection(null);
 			return;
 		}
 
-		Entry<Double, Color> entry = map.getEntry(value);
-		if (entry == null)
-		{
-			entriesTable.setSelection(null);
-		}
-		else
-		{
-			entriesTable.setSelection(new StructuredSelection(entry));
-		}
+		entriesTable.setSelection(new StructuredSelection(entry));
 	}
 
 	/**
@@ -854,32 +870,40 @@ public class ColorMapEditor extends Composite
 	/**
 	 * Select the marker at the given coordinate, if one exists
 	 */
-	private void selectMarkerByCoordinate(int x, int y)
+	private Marker selectMarkerByCoordinate(int x, int y)
 	{
 		Point p = new Point(x, y);
+		Marker result = null;
 		for (Marker m : markers)
 		{
 			m.setSelected(m.contains(p));
 			if (m.selected)
 			{
-				entriesTable.setSelection(new StructuredSelection(map.getEntry(m.value)));
+				result = m;
+				entriesTable.setSelection(new StructuredSelection(m.getEntry()));
 			}
 		}
+		return result;
 	}
 
 	/**
 	 * Select the marker with the given value, of one exists
 	 */
-	private void selectMarkerByValue(Double value)
+	private Marker selectMarkerByValue(Double value)
 	{
 		if (value == null)
 		{
-			return;
+			return null;
 		}
 
+		Marker result = null;
 		for (Marker m : markers)
 		{
-			m.setSelected(m.value == value);
+			m.setSelected(m.getValue().equals(value));
+			if (m.selected)
+			{
+				result = m;
+			}
 		}
 		Display.getCurrent().asyncExec(new Runnable()
 		{
@@ -889,6 +913,7 @@ public class ColorMapEditor extends Composite
 				markerCanvas.redraw();
 			}
 		});
+		return result;
 	}
 
 	private void enableEntryEditor()
@@ -1046,12 +1071,18 @@ public class ColorMapEditor extends Composite
 		int z = 0;
 		for (Entry<Double, Color> entry : map.getEntries().entrySet())
 		{
-			Marker marker = new Marker(z++, entry.getKey(), entry.getValue());
-			newMarkers.add(marker);
+			newMarkers.add(new Marker(z++, entry));
 		}
 		Collections.sort(newMarkers);
 
 		markers = newMarkers;
+	}
+
+	private Marker addMarker(Entry<Double, Color> newEntry)
+	{
+		Marker newMarker = new Marker(0, newEntry);
+		markers.add(newMarker);
+		return newMarker;
 	}
 
 	private void populateColors()
@@ -1113,13 +1144,16 @@ public class ColorMapEditor extends Composite
 	/**
 	 * Paint the current list of markers in the marker canvas
 	 */
-	private void paintMarkers(GC gc, Display display)
+	private void paintMarkers(GC gc, Display display, Rectangle bounds)
 	{
 		List<Marker> markers = this.markers;
 
 		for (Marker m : markers)
 		{
-			m.paint(gc);
+			if (m.bounds.intersects(bounds))
+			{
+				m.paint(gc);
+			}
 		}
 	}
 
@@ -1149,6 +1183,16 @@ public class ColorMapEditor extends Composite
 			return 1.0;
 		}
 		return maxDataValue;
+	}
+
+	private int getGradientSize()
+	{
+		return gradientCanvas.getSize().y - 2 * gradientCanvas.getBorderWidth();
+	}
+
+	private int getMarkerCanvasOffset()
+	{
+		return gradientCanvas.getBorderWidth();
 	}
 
 	/**
@@ -1232,6 +1276,11 @@ public class ColorMapEditor extends Composite
 		return colorRegistry.get(key);
 	}
 
+
+	//*********************************
+	// Markers
+	//*********************************
+
 	/**
 	 * Represents a single marker in the colour gradient
 	 * <p/>
@@ -1247,28 +1296,104 @@ public class ColorMapEditor extends Composite
 		final Color unselectedBorderColor = new Color(0, 0, 0);
 		final Color selectedBorderColor = new Color(100, 100, 220);
 
-		public int zIndex; // Drawn in reverse order of zIndex: 0 = top.
-		public double value;
-		public Color color;
+		private int zIndex; // Drawn in reverse order of zIndex: 0 = top.
+		private Double value;
+		private Color color;
 
 		private int midPointY;
 		private Rectangle bounds;
 		private boolean selected;
 
-		public Marker(int zIndex, double value, Color color)
+		private PropertyChangeListener entryMovedListener = new PropertyChangeListener()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public void propertyChange(java.beans.PropertyChangeEvent evt)
+			{
+				Entry<Double, Color> oldEntry = (Entry<Double, Color>) evt.getOldValue();
+				if (!isThisMarker(oldEntry.getKey()))
+				{
+					return;
+				}
+
+				value = ((Entry<Double, Color>) evt.getNewValue()).getKey();
+
+				final Rectangle oldBounds = bounds;
+				updateBounds();
+
+				Display.getCurrent().asyncExec(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						markerCanvas.redraw(oldBounds.x, oldBounds.y, oldBounds.width, oldBounds.height, true);
+						markerCanvas.redraw(bounds.x, bounds.y, bounds.width, bounds.height, true);
+					}
+				});
+			}
+		};
+
+		private PropertyChangeListener entryRemovedListener = new PropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(java.beans.PropertyChangeEvent evt)
+			{
+				@SuppressWarnings("unchecked")
+				Entry<Double, Color> removed = (Entry<Double, Color>) evt.getOldValue();
+				if (!isThisMarker(removed.getKey()))
+				{
+					return;
+				}
+
+				dispose();
+			}
+		};
+
+		private PropertyChangeListener colorChangedListener = new PropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(java.beans.PropertyChangeEvent evt)
+			{
+				@SuppressWarnings("unchecked")
+				Entry<Double, Color> entry = (Entry<Double, Color>) evt.getNewValue();
+				if (!isThisMarker(entry.getKey()))
+				{
+					return;
+				}
+
+				color = entry.getValue();
+
+				Display.getCurrent().asyncExec(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						markerCanvas.redraw(bounds.x, bounds.y, bounds.width, bounds.height, true);
+					}
+				});
+			}
+		};
+
+		private ControlAdapter controlAdapter = new ControlAdapter()
+		{
+			@Override
+			public void controlResized(ControlEvent e)
+			{
+				updateBounds();
+			}
+		};
+
+		public Marker(int zIndex, Entry<Double, Color> entry)
 		{
 			this.zIndex = zIndex;
-			this.value = value;
-			this.color = color;
+			this.value = entry.getKey();
+			this.color = entry.getValue();
 
-			markerCanvas.addControlListener(new ControlAdapter()
-			{
-				@Override
-				public void controlResized(ControlEvent e)
-				{
-					updateBounds();
-				}
-			});
+			markerCanvas.addControlListener(controlAdapter);
+			map.addPropertyChangeListener(MutableColorMap.ENTRY_MOVED_EVENT, entryMovedListener);
+			map.addPropertyChangeListener(MutableColorMap.COLOR_CHANGED_EVENT, colorChangedListener);
+			map.addPropertyChangeListener(MutableColorMap.ENTRY_REMOVED_EVENT, entryRemovedListener);
+
 			updateBounds();
 		}
 
@@ -1276,10 +1401,9 @@ public class ColorMapEditor extends Composite
 		{
 			int centreX = markerCanvas.getSize().x / 2;
 
-			double percent = (value - getMinValue()) / (getMaxValue() - getMinValue());
+			double percent = (getValue() - getMinValue()) / (getMaxValue() - getMinValue());
 
-			midPointY = (int) (percent * (markerCanvas.getSize().y - 2 * gradientCanvas.getBorderWidth()))
-					+ gradientCanvas.getBorderWidth();
+			midPointY = (int) (percent * getGradientSize()) + getMarkerCanvasOffset();
 
 			bounds = new Rectangle(0, midPointY - borderThickness / 2, centreX + borderWidth, borderThickness);
 		}
@@ -1306,7 +1430,7 @@ public class ColorMapEditor extends Composite
 			gc.drawLine(0, midPointY, bounds.width, midPointY);
 
 			// Draw colour dash
-			gc.setForeground(toSwtColor(color, markerCanvas.getBackground()));
+			gc.setForeground(toSwtColor(getColor(), markerCanvas.getBackground()));
 			gc.setLineWidth(markerThickness);
 			gc.drawLine(0, midPointY, bounds.width - borderWidth, midPointY);
 		}
@@ -1320,5 +1444,136 @@ public class ColorMapEditor extends Composite
 		{
 			this.selected = selected;
 		}
+
+		public void setValue(double value)
+		{
+			map.moveEntry(getValue(), value);
+		}
+
+		public boolean isThisMarker(Double value)
+		{
+			return getValue().equals(value);
+		}
+
+		public Double getValue()
+		{
+			return value;
+		}
+
+		public Color getColor()
+		{
+			return color;
+		}
+
+		public Entry<Double, Color> getEntry()
+		{
+			return new AbstractMap.SimpleEntry<Double, Color>(value, color);
+		}
+
+		public int getZIndex()
+		{
+			return zIndex;
+		}
+
+		private void dispose()
+		{
+			map.removePropertyChangeListener(entryRemovedListener);
+			markerCanvas.removeControlListener(controlAdapter);
+			map.removePropertyChangeListener(colorChangedListener);
+			map.removePropertyChangeListener(entryMovedListener);
+			markers.remove(this);
+
+			Display.getCurrent().asyncExec(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					markerCanvas.redraw(bounds.x, bounds.y, bounds.width, bounds.height, true);
+				}
+			});
+		}
+
+		@Override
+		public String toString()
+		{
+			return "Marker" + hashCode() + "[" + getValue() + ", " + getColor() + "](" + getZIndex() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+		}
+	}
+
+	private class MarkerMouseListener extends MouseAdapter implements MouseMoveListener
+	{
+
+		private final double minValueChange = 0.001;
+
+		private boolean mouseDown = false;
+		private int lastY = -1;
+
+		private Marker heldMarker = null;
+
+		@Override
+		public void mouseDown(MouseEvent e)
+		{
+			mouseDown = true;
+			lastY = e.y;
+
+			heldMarker = selectMarkerByCoordinate(e.x, e.y);
+		}
+
+		@Override
+		public void mouseUp(MouseEvent e)
+		{
+			mouseDown = false;
+			lastY = -1;
+
+			heldMarker = null;
+		}
+
+		@Override
+		public void mouseMove(MouseEvent e)
+		{
+			if (!mouseDown || heldMarker == null)
+			{
+				return;
+			}
+
+			int deltaY = e.y - lastY;
+
+			double valueChange =
+					((double) deltaY / getGradientSize()) * (getMaxValue() - getMinValue()) + getMinValue();
+
+			double newValue = heldMarker.getValue() + valueChange;
+
+			if (doMove(valueChange, newValue))
+			{
+				lastY = e.y;
+				heldMarker.setValue(newValue);
+				heldMarker.setSelected(true);
+			}
+		}
+
+		private boolean doMove(double valueChange, double newValue)
+		{
+			if (Math.abs(valueChange) < minValueChange ||
+					newValue < getMinValue() || newValue > getMaxValue())
+			{
+				return false;
+			}
+
+			// Check that we don't replace an existing map entry when moving markers around
+			Entry<Double, Color> nextEntry = map.getNextEntry(newValue);
+			if (nextEntry != null && Math.abs(newValue - nextEntry.getKey()) < minValueChange)
+			{
+				return false;
+			}
+
+			Entry<Double, Color> previousEntry = map.getNextEntry(newValue);
+			if (previousEntry != null && Math.abs(newValue - previousEntry.getKey()) < minValueChange)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 	}
 }
