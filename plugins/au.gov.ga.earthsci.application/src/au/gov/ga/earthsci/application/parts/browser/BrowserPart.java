@@ -110,6 +110,6 @@ public class BrowserPart
 		}
 
 		//show and return the part
-		return partService.showPart(part, PartState.VISIBLE);
+		return partService.showPart(part, PartState.ACTIVATE);
 	}
 }

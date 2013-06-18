@@ -166,7 +166,7 @@ public class LegendPart
 
 		//show and return the part
 		part.setLabel(label);
-		partService.showPart(part, PartState.VISIBLE);
+		partService.showPart(part, PartState.ACTIVATE);
 		return part;
 	}
 
