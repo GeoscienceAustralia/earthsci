@@ -83,6 +83,9 @@ import au.gov.ga.earthsci.common.ui.widgets.NumericTextField;
  * used to seed configuration values. {@link ColorMap} instances can be created
  * from the editor using {@link #createColorMap()}.
  * <p/>
+ * The editor can be re-seeded after creation using {@link #setSeed(ColorMap)}.
+ * This will replace all user edits with the values from the provided map.
+ * <p/>
  * <b>Supported Styles</b>
  * <dl>
  * <dt>{@link SWT#BORDER}</dt>
@@ -91,11 +94,16 @@ import au.gov.ga.earthsci.common.ui.widgets.NumericTextField;
  * <dd>Orient the gradient editor vertically (default)</dd>
  * </dl>
  * 
- * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class ColorMapEditor extends Composite
 {
+
+	/*
+	 * This implementation uses events and listeners to respond to changes to the model (MutableColorMap).
+	 * Where possible, changes in the UI are applied to the model and then other areas of the UI 
+	 * respond to events issued by the model.
+	 */
 
 	private double minDataValue = 0.0;
 	private double maxDataValue = 1.0;
@@ -370,6 +378,18 @@ public class ColorMapEditor extends Composite
 			public void propertyChange(java.beans.PropertyChangeEvent evt)
 			{
 				updateNodataEditorFromMap();
+				if (map.getMode() == InterpolationMode.EXACT_MATCH)
+				{
+					Display.getCurrent().asyncExec(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							populateColors();
+							gradientCanvas.redraw();
+						}
+					});
+				}
 			}
 		});
 	}
@@ -1122,6 +1142,8 @@ public class ColorMapEditor extends Composite
 
 	private void populateColors()
 	{
+		final int exactMatchBarWidth = 3;
+
 		Point canvasSize = gradientCanvas.getSize();
 		if (canvasSize.y == 0)
 		{
@@ -1134,11 +1156,43 @@ public class ColorMapEditor extends Composite
 		double minValue = getMinValue();
 		double maxValue = getMaxValue();
 
-		for (int i = 0; i < newColors.length; i++)
+		if (map.getMode() == InterpolationMode.EXACT_MATCH)
 		{
-			double pixelValue = ((double) i / newColors.length) * (maxValue - minValue) + minValue;
-			Color color = map.getColor(pixelValue, minValue, maxValue);
-			newColors[i] = color;
+			// Need a special case here where pixel values don't match exactly with values in the map
+			// We still want to draw the lines in the gradient
+			for (int i = 0; i < newColors.length; i++)
+			{
+				double pixelValue = ((double) i / newColors.length) * (maxValue - minValue) + minValue;
+
+				Entry<Double, Color> nearestEntry = map.getNearestEntry(pixelValue);
+				if (nearestEntry == null)
+				{
+					newColors[i] = map.getNodataColour();
+				}
+				else
+				{
+					int nearestPixel =
+							(int) ((nearestEntry.getKey() - minValue) / (maxValue - minValue) * newColors.length);
+					if (Math.abs(nearestPixel - i) < exactMatchBarWidth)
+					{
+						newColors[i] = nearestEntry.getValue();
+					}
+					else
+					{
+						newColors[i] = map.getNodataColour();
+					}
+				}
+			}
+
+		}
+		else
+		{
+			for (int i = 0; i < newColors.length; i++)
+			{
+				double pixelValue = ((double) i / newColors.length) * (maxValue - minValue) + minValue;
+				Color color = map.getColor(pixelValue, minValue, maxValue);
+				newColors[i] = color;
+			}
 		}
 
 		colors = newColors;

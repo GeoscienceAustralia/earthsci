@@ -432,6 +432,44 @@ public class ColorMap implements INamed, IDescribed
 	}
 
 	/**
+	 * Return the nearest entry in the map to the provided value, or
+	 * <code>null</code> if there are no entries in the map.
+	 * 
+	 * @param value
+	 *            The value to find the nearest entry for
+	 * 
+	 * @return The nearest entry to the provided value, or <code>null</code> if
+	 *         none exists
+	 */
+	public Entry<Double, Color> getNearestEntry(Double value)
+	{
+		if (value == null)
+		{
+			return null;
+		}
+		Entry<Double, Color> ceiling = entries.ceilingEntry(value);
+		Entry<Double, Color> floor = entries.floorEntry(value);
+
+		if (ceiling == null && floor == null)
+		{
+			return null;
+		}
+		if (ceiling == null && floor != null)
+		{
+			return floor;
+		}
+		if (ceiling != null && floor == null)
+		{
+			return ceiling;
+		}
+		if (Math.abs(ceiling.getKey() - value) > Math.abs(floor.getKey() - value))
+		{
+			return floor;
+		}
+		return ceiling;
+	}
+
+	/**
 	 * Return the entry with the given value, if one exists.
 	 * 
 	 * @param value

@@ -265,6 +265,78 @@ public class ColorMapTest
 		assertEquals(null, classUnderTest.getEntry(0.5));
 	}
 
+	@Test
+	public void testGetNearestWithNull()
+	{
+		Double value = null;
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertNull(classUnderTest.getNearestEntry(value));
+	}
+
+	@Test
+	public void testGetNearestWithNoEntries()
+	{
+		Double value = 0.5;
+		ColorMap classUnderTest = new ColorMap(null);
+
+		assertNull(classUnderTest.getNearestEntry(value));
+	}
+
+	@Test
+	public void testGetNearestWithBeforeFirst()
+	{
+		Double value = -1.0;
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(0.0, classUnderTest.getNearestEntry(value).getKey(), 0.001);
+	}
+
+	@Test
+	public void testGetNearestWithAfterLast()
+	{
+		Double value = 1.1;
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(1.0, classUnderTest.getNearestEntry(value).getKey(), 0.001);
+	}
+
+	@Test
+	public void testGetNearestBeforeNearest()
+	{
+		Double value = 0.6;
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(0.7, classUnderTest.getNearestEntry(value).getKey(), 0.001);
+	}
+
+	@Test
+	public void testGetNearestAfterNearest()
+	{
+		Double value = 0.8;
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(0.7, classUnderTest.getNearestEntry(value).getKey(), 0.001);
+	}
+
+	@Test
+	public void testGetNearestExactMatch()
+	{
+		Double value = 0.7;
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(0.7, classUnderTest.getNearestEntry(value).getKey(), 0.001);
+	}
+
+	@Test
+	public void testGetNearestMidway()
+	{
+		Double value = 0.85;
+		ColorMap classUnderTest = new ColorMap(PERCENTAGE_ENTRIES);
+
+		assertEquals(1.0, classUnderTest.getNearestEntry(value).getKey(), 0.001);
+	}
+
 	private static void assertColorsEqual(Color expected, Color actual)
 	{
 		if (expected == null)
