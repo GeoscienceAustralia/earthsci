@@ -67,14 +67,10 @@
                class="au.gov.ga.earthsci.core.retrieve.IRetrievalService">
          </type>
       </inject>
-      <injectable
-            class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory"
+      <inject
+            class="au.gov.ga.earthsci.common.color.ColorMaps"
             priority="10">
-      </injectable>
-      <injectable
-            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences"
-            priority="0">
-      </injectable>
+      </inject>
       <injectable
             class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration"
             priority="0">
@@ -97,6 +93,14 @@
                class="au.gov.ga.earthsci.core.worldwind.ITreeModel">
          </type>
       </inject>
+      <injectable
+            class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory"
+            priority="10">
+      </injectable>
+      <injectable
+            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences"
+            priority="0">
+      </injectable>
    </extension>
    <extension
          point="au.gov.ga.earthsci.intent.filters">

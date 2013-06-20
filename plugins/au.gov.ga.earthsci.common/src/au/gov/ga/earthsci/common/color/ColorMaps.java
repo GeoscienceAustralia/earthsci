@@ -25,6 +25,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -40,9 +41,14 @@ import au.gov.ga.earthsci.common.util.ExtensionRegistryUtil.Callback;
 /**
  * A class that gives static access to commonly used colour maps, and acts as a
  * factory for reading/writing colour maps.
+ * <p/>
+ * <strong>Important:</strong> This class should be accessed via the static
+ * methods. Clients should not create instances of this class. The constructor
+ * is public to allow this class to participate in dependency injection.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
+@Singleton
 public class ColorMaps
 {
 
@@ -63,12 +69,19 @@ public class ColorMaps
 		maps.add(getRBGRainbowMap());
 	}
 
-	private ColorMaps()
-	{
-	}
-
 	private static ColorMap RBG_RAINBOW_MAP;
 	private static ColorMap RGB_RAINBOW_MAP;
+
+	/**
+	 * Constructor made public to participate in dependency injection.
+	 * <p/>
+	 * All interactions with this class should go through the its static
+	 * methods.
+	 */
+	public ColorMaps()
+	{
+
+	}
 
 	/**
 	 * Return a read-only view of the list of registered {@link ColorMaps}

@@ -1,0 +1,11 @@
+# Some other comment
+# MODE = EXACT_MATCH
+
+# NAME = Test map
+
+0% 50, 50, 50, 255
+20% red
+50% 100  100  100  255
+100% 200:200:200:255
+
+# DESCRIPTION = A test map

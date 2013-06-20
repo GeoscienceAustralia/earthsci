@@ -1,0 +1,9 @@
+#MODE=INTERPOLATE_HUE
+#NAME=Hue map
+
+0 50, 50, 50, 255
+
+20% red
+# Some comment
+50 100  100  100  255
+100 200:200:200:255

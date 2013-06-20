@@ -28,6 +28,8 @@ public class Messages extends NLS
 	public static String CompactStringColorMapReader_ReaderName;
 	public static String CompactStringColorMapWriter_WriterDescription;
 	public static String CompactStringColorMapWriter_WriterName;
+	public static String GDALDEMColorMapReader_ReaderDescription;
+	public static String GDALDEMColorMapReader_ReaderName;
 	static
 	{
 		// initialize resource bundle

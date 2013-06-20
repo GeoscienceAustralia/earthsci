@@ -7,6 +7,9 @@
       <reader
             class="au.gov.ga.earthsci.common.color.io.CompactStringColorMapReader">
       </reader>
+      <reader
+            class="au.gov.ga.earthsci.common.color.io.GDALDEMColorMapReader">
+      </reader>
    </extension>
 
 </plugin>

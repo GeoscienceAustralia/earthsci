@@ -1,0 +1,12 @@
+#MODE=S=INTERPOLATE_RGB
+#NAME Dummy map
+#DESRIPTION=A dummy map
+
+0x 50, 50, 50, 255
+20%% red
+50 orangey
+100..2 200:200:200:255
+100 30 30
+100 3a 30 30
+
+nv	-255	0	0	255
