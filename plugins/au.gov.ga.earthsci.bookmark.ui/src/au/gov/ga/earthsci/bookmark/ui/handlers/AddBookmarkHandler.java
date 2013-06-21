@@ -36,6 +36,7 @@ public class AddBookmarkHandler
 	@Execute
 	public void execute(TableViewer viewer)
 	{
+		viewer.getControl().setFocus();
 		IBookmark b = controller.createNew();
 		viewer.editElement(b, 0);
 	}
