@@ -74,7 +74,8 @@ public class CatalogBrowserPart
 
 		viewer.setInput(model.getRoot());
 
-		viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
+		viewer.addDropSupport(DND.DROP_DEFAULT | DND.DROP_COPY | DND.DROP_MOVE,
+				new Transfer[] { FileTransfer.getInstance() },
 				new CatalogTreeDropAdapter(viewer, model, context));
 		viewer.addDragSupport(DND.DROP_DEFAULT | DND.DROP_COPY, new Transfer[] { LayerTransfer.getInstance() },
 				new CatalogTreeDragSourceListener(viewer, controller));

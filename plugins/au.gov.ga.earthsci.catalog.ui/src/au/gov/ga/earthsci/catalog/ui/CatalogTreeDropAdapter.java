@@ -21,6 +21,8 @@ import java.net.URI;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.slf4j.Logger;
@@ -120,5 +122,27 @@ class CatalogTreeDropAdapter extends ViewerDropAdapter
 		}
 
 		return location == LOCATION_BEFORE ? target.index() : target.index() + 1;
+	}
+
+	@Override
+	public void dropAccept(DropTargetEvent event)
+	{
+		event.detail = DND.DROP_COPY;
+		super.dropAccept(event);
+	}
+
+	@Override
+	public void dragOperationChanged(DropTargetEvent event)
+	{
+		event.detail = DND.DROP_COPY;
+		super.dragOperationChanged(event);
+	}
+
+	@Override
+	public void dragEnter(DropTargetEvent event)
+	{
+		// Convert all operations to copy ops
+		event.detail = DND.DROP_COPY;
+		super.dragEnter(event);
 	}
 }
