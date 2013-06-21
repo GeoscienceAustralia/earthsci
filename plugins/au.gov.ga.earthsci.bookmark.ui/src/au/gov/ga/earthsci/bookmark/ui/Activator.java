@@ -3,6 +3,8 @@ package au.gov.ga.earthsci.bookmark.ui;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import au.gov.ga.earthsci.bookmark.ui.preferences.BookmarksPreferenceInitializer;
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -27,6 +29,7 @@ public class Activator extends AbstractUIPlugin
 	{
 		super.start(context);
 		plugin = this;
+		new BookmarksPreferenceInitializer().initializeDefaultPreferences();
 	}
 
 	@Override
