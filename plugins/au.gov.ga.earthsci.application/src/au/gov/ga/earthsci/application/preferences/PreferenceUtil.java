@@ -33,10 +33,8 @@ import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
+
+import au.gov.ga.earthsci.common.ui.preferences.EmptyPreferencePage;
 
 /**
  * Utility class containing methods used to handle the application preferences.
@@ -56,7 +54,7 @@ public class PreferenceUtil
 	private static final Set<String> BLACKLIST_PREFERENCES = new HashSet<String>();
 	static
 	{
-		BLACKLIST_PREFERENCES.add("org.eclipse.help.ui"); //$NON-NLS-1$
+		//BLACKLIST_PREFERENCES.add("org.eclipse.help.ui"); //$NON-NLS-1$
 	}
 
 	@Inject
@@ -222,7 +220,9 @@ public class PreferenceUtil
 		}
 		else
 		{
-			return new PreferenceNode(elmt.getAttribute(ATTR_ID), new EmptyPreferencePage(elmt.getAttribute(ATTR_NAME)));
+			EmptyPreferencePage empty = new EmptyPreferencePage();
+			empty.setTitle(elmt.getAttribute(ATTR_NAME));
+			return new PreferenceNode(elmt.getAttribute(ATTR_ID), empty);
 		}
 	}
 
@@ -251,26 +251,6 @@ public class PreferenceUtil
 	private static boolean isEmpty(String value)
 	{
 		return value == null || value.trim().isEmpty();
-	}
-
-	/**
-	 * A simple {@link PreferencePage} that is blank except for a title
-	 * <p/>
-	 * Used to provide a stub page
-	 */
-	private static class EmptyPreferencePage extends PreferencePage
-	{
-		public EmptyPreferencePage(String title)
-		{
-			setTitle(title);
-			noDefaultAndApplyButton();
-		}
-
-		@Override
-		protected Control createContents(Composite parent)
-		{
-			return new Label(parent, SWT.NONE);
-		}
 	}
 
 	public static void setLogger(Logger logger)
