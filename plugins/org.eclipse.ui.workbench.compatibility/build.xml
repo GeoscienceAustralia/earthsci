@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<project name="org.eclipse.ui.workbench.compatibility" default="jar">
+	<target name="jar">
+		<jar jarfile="compatibility.jar" basedir="bin" />
+	</target>
+</project>

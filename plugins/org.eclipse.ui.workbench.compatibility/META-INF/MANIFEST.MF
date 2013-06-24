@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Workbench Compatibility Fix (bug 411468)
+Bundle-SymbolicName: org.eclipse.ui.workbench.compatibility
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.eclipse.ui.workbench;bundle-version="3.105.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-PatchFragment: true
+Bundle-ClassPath: compatibility.jar
+Bundle-Vendor: Geoscience Australia
