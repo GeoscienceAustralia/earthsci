@@ -37,7 +37,7 @@ public class QuitHandler
 	public void execute(IWorkbench workbench, IEclipseContext context,
 			@Named(IServiceConstants.ACTIVE_SHELL) Shell shell) throws InvocationTargetException, InterruptedException
 	{
-		if (MessageDialog.openConfirm(shell, "Confirmation", "Do you want to exit?"))
+		if (MessageDialog.openQuestion(shell, Messages.QuitHandler_DialogTitle, Messages.QuitHandler_DialogMessage))
 		{
 			workbench.close();
 		}
