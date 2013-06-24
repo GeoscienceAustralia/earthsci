@@ -101,7 +101,7 @@ public class ModelResourceHandler extends ResourceHandler
 
 		if (resource != null)
 		{
-			InjectorFactory.getDefault().addBinding(ModelAssembler.class).implementedBy(NoOpModelAssembler.class);
+			InjectorFactory.getDefault().addBinding(ModelAssembler.class).implementedBy(ProcessorModelAssembler.class);
 		}
 		return super.loadMostRecentModel();
 	}
