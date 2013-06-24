@@ -16,14 +16,25 @@
 package au.gov.ga.earthsci.application.handlers;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.inject.Named;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
+
+import au.gov.ga.earthsci.application.Activator;
+import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
+import au.gov.ga.earthsci.intent.IIntentCallback;
+import au.gov.ga.earthsci.intent.Intent;
+import au.gov.ga.earthsci.intent.IntentManager;
+import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
 
 /**
  * Handler used to open files.
@@ -33,10 +44,66 @@ import org.eclipse.swt.widgets.Shell;
 public class OpenHandler
 {
 	@Execute
-	public void execute(IEclipseContext context, @Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
+	public void execute(final IEclipseContext context, @Named(IServiceConstants.ACTIVE_SHELL) final Shell shell)
 			throws InvocationTargetException, InterruptedException
 	{
 		FileDialog dialog = new FileDialog(shell);
-		dialog.open();
+		String file = dialog.open();
+
+		if (file == null)
+		{
+			return;
+		}
+
+		URI uri = null;
+		try
+		{
+			uri = new URI(file);
+		}
+		catch (URISyntaxException e)
+		{
+		}
+		if (uri == null)
+		{
+			return;
+		}
+
+		Intent intent = new Intent();
+		intent.setURI(uri);
+		IIntentCallback callback = new IIntentCallback()
+		{
+			@Override
+			public void error(final Exception e, Intent intent)
+			{
+				shell.getDisplay().asyncExec(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						IStatus status =
+								new Status(IStatus.ERROR, Activator.getBundleName(), e.getLocalizedMessage(), e);
+						StackTraceDialog.openError(shell, "Error", "Error opening file.",
+								status);
+					}
+				});
+			}
+
+			@Override
+			public void completed(Object result, Intent intent)
+			{
+				Dispatcher.getInstance().dispatch(result, context);
+			}
+
+			@Override
+			public void canceled(Intent intent)
+			{
+			}
+
+			@Override
+			public void aborted(Intent intent)
+			{
+			}
+		};
+		IntentManager.getInstance().start(intent, callback, context);
 	}
 }
