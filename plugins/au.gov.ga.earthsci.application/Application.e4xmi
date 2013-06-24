@@ -23,7 +23,7 @@
     </children>
     <mainMenu xmi:id="_007taPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu">
       <children xsi:type="menu:Menu" xmi:id="_007tafsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.file" label="%menu.file.label">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_007tavsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.file.open" label="%menu.file.open.label" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_007tavsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.file.open" label="%menu.file.open.label" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/open.gif" tooltip="%menu.file.open.tooltip" command="_007tXvsMEeG36NOaHUgVKA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tbPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.file.quit" label="%menu.file.exit.label" command="_007tWvsMEeG36NOaHUgVKA"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_4tZvcCfJEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.menu.edit" label="%menu.edit.label">
@@ -44,7 +44,7 @@
     </mainMenu>
     <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.windowtrim">
       <children xsi:type="menu:ToolBar" xmi:id="_007tdPsMEeG36NOaHUgVKA" elementId="toolbar:org.eclipse.ui.main.toolbar">
-        <children xsi:type="menu:HandledToolItem" xmi:id="_007tdfsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.toolbar.open" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_007tdfsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.toolbar.open" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/open.gif" tooltip="%menu.file.open.tooltip" command="_007tXvsMEeG36NOaHUgVKA"/>
       </children>
     </trimBars>
   </children>
@@ -101,7 +101,7 @@
     </toolbar>
   </descriptors>
   <commands xmi:id="_007tWvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.exit" commandName="exitCommand"/>
-  <commands xmi:id="_007tXvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.command.open" commandName="openCommand"/>
+  <commands xmi:id="_007tXvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.command.open" commandName="openCommand" description="Open a file"/>
   <commands xmi:id="_007tZPsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
   <commands xmi:id="_O1ivcCfDEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.undo" commandName="undoCommand"/>
   <commands xmi:id="_RYtPwCfDEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.redo" commandName="redoCommand"/>
