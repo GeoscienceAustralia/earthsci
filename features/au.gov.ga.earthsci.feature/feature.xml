@@ -33,6 +33,10 @@
          id="org.gdal.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.equinox.p2.user.ui"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.equinox.launcher"/>
