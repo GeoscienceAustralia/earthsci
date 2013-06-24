@@ -27,13 +27,13 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.application.preferences.PreferenceConstants;
 import au.gov.ga.earthsci.application.preferences.PreferenceUtil;
+import au.gov.ga.earthsci.common.ui.preferences.LazyPreferenceDialog;
 import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 
 /**
@@ -60,7 +60,7 @@ public class ShowPreferencesHandler
 			throws InvocationTargetException, InterruptedException
 	{
 		PreferenceManager pm = PreferenceUtil.createLegacyPreferenceManager(context, registry);
-		PreferenceDialog dialog = new PreferenceDialog(shell, pm);
+		LazyPreferenceDialog dialog = new LazyPreferenceDialog(shell, pm);
 		dialog.setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, PreferenceConstants.QUALIFIER_ID));
 		dialog.create();
 		dialog.getTreeViewer().setComparator(new ViewerComparator());
