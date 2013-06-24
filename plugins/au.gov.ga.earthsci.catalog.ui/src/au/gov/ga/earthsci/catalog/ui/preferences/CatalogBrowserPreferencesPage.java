@@ -16,12 +16,12 @@
 package au.gov.ga.earthsci.catalog.ui.preferences;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 
 import au.gov.ga.earthsci.application.util.UserActionPreference;
 import au.gov.ga.earthsci.catalog.ui.Messages;
+import au.gov.ga.earthsci.common.ui.preferences.FieldEditorPreferencePage;
 import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 import au.gov.ga.earthsci.core.preferences.SpacerFieldEditor;
 

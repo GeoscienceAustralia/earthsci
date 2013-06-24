@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.PreferencePage;
@@ -20,6 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
+import au.gov.ga.earthsci.common.ui.preferences.FieldEditorPreferencePage;
 import au.gov.ga.earthsci.core.preferences.LabelFieldEditor;
 import au.gov.ga.earthsci.core.preferences.MultiSelectTableListFieldEditor;
 import au.gov.ga.earthsci.core.preferences.MultiSelectTableListFieldEditor.IItemSerializer;

@@ -16,10 +16,10 @@
 package au.gov.ga.earthsci.core.worldwind;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 
+import au.gov.ga.earthsci.common.ui.preferences.FieldEditorPreferencePage;
 import au.gov.ga.earthsci.core.preferences.PreferenceConstants;
 import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
 

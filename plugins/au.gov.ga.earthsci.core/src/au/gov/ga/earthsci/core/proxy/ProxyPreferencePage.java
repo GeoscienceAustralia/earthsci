@@ -17,12 +17,12 @@ package au.gov.ga.earthsci.core.proxy;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 
+import au.gov.ga.earthsci.common.ui.preferences.FieldEditorPreferencePage;
 import au.gov.ga.earthsci.core.preferences.ListenableRadioGroupFieldEditor;
 import au.gov.ga.earthsci.core.preferences.ListenableRadioGroupFieldEditor.ChangeListener;
 import au.gov.ga.earthsci.core.preferences.PreferenceConstants;

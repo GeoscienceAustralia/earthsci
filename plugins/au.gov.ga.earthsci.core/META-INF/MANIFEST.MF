@@ -43,7 +43,9 @@ Require-Bundle: gov.nasa.worldwind,
  au.gov.ga.earthsci.common;bundle-version="1.0.0",
  com.btr.proxy;bundle-version="1.0.0",
  au.gov.ga.earthsci.notification,
- org.gdal;bundle-version="1.7.2"
+ org.gdal;bundle-version="1.7.2",
+ au.gov.ga.earthsci.common.ui,
+ org.eclipse.ui;bundle-version="3.105.0"
 Import-Package: javax.annotation;version="1.0.0",
  org.eclipse.osgi.util,
  org.slf4j

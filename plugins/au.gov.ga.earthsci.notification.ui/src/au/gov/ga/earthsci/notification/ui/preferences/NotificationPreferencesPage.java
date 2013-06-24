@@ -1,7 +1,6 @@
 package au.gov.ga.earthsci.notification.ui.preferences;
 
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-
+import au.gov.ga.earthsci.common.ui.preferences.FieldEditorPreferencePage;
 import au.gov.ga.earthsci.notification.Messages;
 
 /**
