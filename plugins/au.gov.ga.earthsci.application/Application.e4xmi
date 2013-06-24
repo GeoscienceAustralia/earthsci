@@ -24,7 +24,6 @@
     <mainMenu xmi:id="_007taPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu">
       <children xsi:type="menu:Menu" xmi:id="_007tafsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.file" label="%menu.file.label">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tavsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.file.open" label="%menu.file.open.label" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_007ta_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.file.save" label="Save" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/save_edit.gif" command="_007tYfsMEeG36NOaHUgVKA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tbPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.file.quit" label="%menu.file.exit.label" command="_007tWvsMEeG36NOaHUgVKA"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_4tZvcCfJEeKGOtKz07iBzg" elementId="au.gov.ga.earthsci.application.menu.edit" label="%menu.edit.label">
@@ -46,13 +45,11 @@
     <trimBars xmi:id="_007tc_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.windowtrim">
       <children xsi:type="menu:ToolBar" xmi:id="_007tdPsMEeG36NOaHUgVKA" elementId="toolbar:org.eclipse.ui.main.toolbar">
         <children xsi:type="menu:HandledToolItem" xmi:id="_007tdfsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.toolbar.open" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/sample.gif" command="_007tXvsMEeG36NOaHUgVKA"/>
-        <children xsi:type="menu:HandledToolItem" xmi:id="_007tdvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.toolbar.save" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/save_edit.gif" command="_007tYfsMEeG36NOaHUgVKA"/>
       </children>
     </trimBars>
   </children>
   <handlers xmi:id="_007tW_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.handlers.exit" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.QuitHandler" command="_007tWvsMEeG36NOaHUgVKA"/>
   <handlers xmi:id="_007tX_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.handlers.open" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.OpenHandler" command="_007tXvsMEeG36NOaHUgVKA"/>
-  <handlers xmi:id="_007tYvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.handlers.save" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.SaveHandler" command="_007tYfsMEeG36NOaHUgVKA"/>
   <handlers xmi:id="_007tZfsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.handlers.about" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.AboutHandler" command="_007tZPsMEeG36NOaHUgVKA"/>
   <handlers xmi:id="_GJ_xEPvQEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.handlers.showView" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.ShowViewHandler" command="_pU-REPvQEeG36NOaHUgVKA"/>
   <handlers xmi:id="_BbnXUPyJEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.handlers.preferences" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.ShowPreferencesHandler" command="_940mAPyIEeG36NOaHUgVKA"/>
@@ -60,7 +57,6 @@
   <bindingTables xmi:id="_007tXPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.tables.dialogAndWindow" bindingContext="_007tUfsMEeG36NOaHUgVKA">
     <bindings xmi:id="_007tXfsMEeG36NOaHUgVKA" keySequence="M1+Q" command="_007tWvsMEeG36NOaHUgVKA"/>
     <bindings xmi:id="_007tYPsMEeG36NOaHUgVKA" keySequence="M1+O" command="_007tXvsMEeG36NOaHUgVKA"/>
-    <bindings xmi:id="_007tY_sMEeG36NOaHUgVKA" keySequence="M1+S" command="_007tYfsMEeG36NOaHUgVKA"/>
     <bindings xmi:id="_007tZvsMEeG36NOaHUgVKA" keySequence="M1+A" command="_007tZPsMEeG36NOaHUgVKA"/>
     <bindings xmi:id="_fpbdkAOLEeK17JdaarPZug" keySequence="F1" command="_t3D6kAODEeK17JdaarPZug"/>
     <bindings xmi:id="_s4zkMCfCEeKGOtKz07iBzg" keySequence="M1+C" command="_1NhMYCfCEeKGOtKz07iBzg"/>
@@ -106,7 +102,6 @@
   </descriptors>
   <commands xmi:id="_007tWvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.exit" commandName="exitCommand"/>
   <commands xmi:id="_007tXvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.command.open" commandName="openCommand"/>
-  <commands xmi:id="_007tYfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.file.save" commandName="saveCommand"/>
   <commands xmi:id="_007tZPsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
   <commands xmi:id="_O1ivcCfDEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.undo" commandName="undoCommand"/>
   <commands xmi:id="_RYtPwCfDEeKGOtKz07iBzg" elementId="org.eclipse.ui.edit.redo" commandName="redoCommand"/>
