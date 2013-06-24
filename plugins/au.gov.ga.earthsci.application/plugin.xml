@@ -3,13 +3,25 @@
 <plugin>
    <extension-point id="au.gov.ga.earthsci.application.defaultTheme" name="Application Default Theme" schema="schema/au.gov.ga.earthsci.application.defaultTheme.exsd"/>
    <extension-point id="au.gov.ga.earthsci.application.iconReplacementProviders" name="Icon Replacement Providers" schema="schema/au.gov.ga.earthsci.application.iconReplacementProviders.exsd"/>
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="au.gov.ga.earthsci.application.compatibility.Application">
+         </run>
+      </application>
+   </extension>
 
    <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
             name="EarthSci"
-            application="org.eclipse.e4.ui.workbench.swt.E4Application">
+            application="au.gov.ga.earthsci.application.application">
          <property
                name="appName"
                value="EarthSci">
