@@ -13,7 +13,7 @@
 
    <windowImages/>
 
-   <launcher>
+   <launcher name="earthsci">
       <solaris/>
       <win useIco="false">
          <bmp/>
