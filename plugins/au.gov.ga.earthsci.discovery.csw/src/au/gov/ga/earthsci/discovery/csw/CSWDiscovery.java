@@ -17,6 +17,8 @@ package au.gov.ga.earthsci.discovery.csw;
 
 import gov.nasa.worldwind.util.WWXML;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,10 +42,10 @@ import au.gov.ga.earthsci.discovery.DiscoveryIndexOutOfBoundsException;
 import au.gov.ga.earthsci.discovery.DiscoveryListenerList;
 import au.gov.ga.earthsci.discovery.DiscoveryResultNotFoundException;
 import au.gov.ga.earthsci.discovery.IDiscovery;
-import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryListener;
 import au.gov.ga.earthsci.discovery.IDiscoveryParameters;
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
+import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
 
 /**
@@ -252,10 +254,13 @@ public class CSWDiscovery implements IDiscovery
 
 				if (retrieval.getResult().isSuccessful())
 				{
+					InputStream is = null;
 					try
 					{
+						is = retrieval.getData().getInputStream();
+
 						DocumentBuilder builder = WWXML.createDocumentBuilder(false);
-						Document document = builder.parse(retrieval.getData().getInputStream());
+						Document document = builder.parse(is);
 
 						XPath xpath = WWXML.makeXPath();
 						Double totalRecordCount =
@@ -287,7 +292,7 @@ public class CSWDiscovery implements IDiscovery
 							if (recordElements.getLength() != count)
 							{
 								throw new Exception(
-										"Number of record elements in the CSW response doesn't match the number of records attribute");
+										"Number of record elements in the CSW response doesn't match the number of records attribute"); //$NON-NLS-1$
 							}
 							for (int i = 0; i < count; i++)
 							{
@@ -303,6 +308,20 @@ public class CSWDiscovery implements IDiscovery
 					{
 						e.printStackTrace(); //TODO
 						error = e;
+					}
+					finally
+					{
+						if (is != null)
+						{
+							try
+							{
+								is.close();
+							}
+							catch (IOException e)
+							{
+								// Do nothing
+							}
+						}
 					}
 				}
 				else if (error == null)

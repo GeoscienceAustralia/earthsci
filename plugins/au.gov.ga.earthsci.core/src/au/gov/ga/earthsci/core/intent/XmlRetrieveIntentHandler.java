@@ -17,6 +17,8 @@ package au.gov.ga.earthsci.core.intent;
 
 import gov.nasa.worldwind.util.WWXML;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.inject.Inject;
@@ -47,10 +49,13 @@ public class XmlRetrieveIntentHandler extends AbstractRetrieveIntentHandler
 	@Override
 	protected void handle(IRetrievalData data, URL url, Intent intent, final IIntentCallback callback)
 	{
+		InputStream is = null;
 		try
 		{
+			is = data.getInputStream();
+
 			DocumentBuilder builder = WWXML.createDocumentBuilder(true);
-			Document document = builder.parse(data.getInputStream());
+			Document document = builder.parse(is);
 			IXmlLoaderCallback loaderCallback = new IXmlLoaderCallback()
 			{
 				@Override
@@ -70,6 +75,20 @@ public class XmlRetrieveIntentHandler extends AbstractRetrieveIntentHandler
 		catch (Exception e)
 		{
 			callback.error(e, intent);
+		}
+		finally
+		{
+			try
+			{
+				if (is != null)
+				{
+					is.close();
+				}
+			}
+			catch (IOException e)
+			{
+				// Do nothing
+			}
 		}
 	}
 }

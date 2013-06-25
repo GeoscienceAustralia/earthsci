@@ -20,6 +20,7 @@ import gov.nasa.worldwind.retrieve.URLRetriever;
 import gov.nasa.worldwind.util.WWUtil;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
@@ -96,7 +97,15 @@ public class URLRetrieverWrapper extends JarRetriever
 				//see URLRetriever:
 				if ("application/zip".equalsIgnoreCase(contentType) && !WWUtil.isEmpty(this.getValue(EXTRACT_ZIP_ENTRY))) //$NON-NLS-1$
 				{
-					return readZipStream(data.getInputStream(), getUrl());
+					InputStream is = data.getInputStream();
+					try
+					{
+						return readZipStream(is, getUrl());
+					}
+					finally
+					{
+						is.close();
+					}
 				}
 
 				return data.getByteBuffer();
