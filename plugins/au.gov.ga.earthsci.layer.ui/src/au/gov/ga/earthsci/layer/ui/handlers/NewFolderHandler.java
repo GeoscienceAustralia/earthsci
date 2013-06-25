@@ -41,7 +41,7 @@ public class NewFolderHandler
 	public void execute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode parent, TreeViewer viewer)
 	{
 		FolderNode folder = new FolderNode();
-		folder.setName("New Folder");
+		folder.setName(Messages.NewFolderHandler_DefaultNewFolderName);
 		if (parent == null)
 		{
 			model.getRootNode().addChild(folder);
