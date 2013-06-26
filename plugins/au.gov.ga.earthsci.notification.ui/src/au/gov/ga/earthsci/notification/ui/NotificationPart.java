@@ -16,6 +16,7 @@ import javax.inject.Named;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenu;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenuElement;
@@ -112,6 +113,7 @@ public class NotificationPart
 	private TreeColumn acknowledgedColumn;
 
 	@Inject
+	@Optional
 	@Named(IServiceConstants.ACTIVE_SHELL)
 	private Shell shell;
 
@@ -235,9 +237,9 @@ public class NotificationPart
 	private void createColumns(Tree tree)
 	{
 		String[] titles =
-				{ Messages.NotificationView_TitleColumnLabel, Messages.NotificationView_DescriptionColumnLabel,
-						Messages.NotificationView_CategoryColumnLabel, Messages.NotificationView_CreateColumnLabel,
-						Messages.NotificationView_AcknowledgedColumnLabel };
+		{ Messages.NotificationView_TitleColumnLabel, Messages.NotificationView_DescriptionColumnLabel,
+				Messages.NotificationView_CategoryColumnLabel, Messages.NotificationView_CreateColumnLabel,
+				Messages.NotificationView_AcknowledgedColumnLabel };
 
 		int[] widths = { 300, 300, 100, 100, 100 };
 

@@ -27,6 +27,7 @@ import javax.inject.Named;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -74,6 +75,7 @@ import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
 public class DiscoveryPart implements IDiscoveryListener, PageListener
 {
 	@Inject
+	@Optional
 	@Named(IServiceConstants.ACTIVE_SHELL)
 	private Shell shell;
 

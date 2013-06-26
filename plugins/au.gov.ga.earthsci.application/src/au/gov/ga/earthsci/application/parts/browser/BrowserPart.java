@@ -29,12 +29,10 @@ import org.eclipse.e4.ui.model.application.ui.MUIElement;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPlaceholder;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.basic.MWindow;
-import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.eclipse.extras.browser.BrowserViewer;
 
@@ -47,10 +45,6 @@ public class BrowserPart
 {
 	public static final String PART_ID = "au.gov.ga.earthsci.application.browser.part"; //$NON-NLS-1$
 	public static final String INPUT_NAME = PART_ID + ".input"; //$NON-NLS-1$
-
-	@Inject
-	@Named(IServiceConstants.ACTIVE_SHELL)
-	private Shell shell;
 
 	@Inject
 	private IEclipseContext context;

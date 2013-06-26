@@ -42,6 +42,7 @@ import org.eclipse.core.databinding.property.list.MultiListProperty;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
@@ -107,6 +108,7 @@ public class LayerTreePart
 	private ESelectionService selectionService;
 
 	@Inject
+	@Optional
 	@Named(IServiceConstants.ACTIVE_SHELL)
 	private Shell shell;
 
@@ -121,7 +123,7 @@ public class LayerTreePart
 		viewer.getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
 		context.set(TreeViewer.class, viewer);
 
-		clipboard = new Clipboard(shell.getDisplay());
+		clipboard = new Clipboard(parent.getDisplay());
 		context.set(Clipboard.class, clipboard);
 
 		IListProperty childrenProperty = new MultiListProperty(new IListProperty[] { BeanProperties.list("children") }); //$NON-NLS-1$
