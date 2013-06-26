@@ -30,7 +30,7 @@
 		<repository>
 			<id>uomo</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/uomo/rc4</url>
+			<url>http://download.eclipse.org/uomo/0.7/kepler/repository</url>
 		</repository>
 	</repositories>
 
