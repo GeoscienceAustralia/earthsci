@@ -32,6 +32,7 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
+import org.eclipse.e4.ui.workbench.swt.internal.copy.ShowViewDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 
@@ -55,7 +56,8 @@ public class ShowViewHandler
 	public void execute(IEclipseContext context, @Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 			throws InvocationTargetException, InterruptedException
 	{
-		final ShowViewDialog dialog = new ShowViewDialog(shell, application);
+		// XXX: Warning - this dialog is from the internal package. Expect behaviour/API to change!
+		final ShowViewDialog dialog = new ShowViewDialog(shell, application, context);
 		dialog.open();
 		if (dialog.getReturnCode() != Window.OK)
 		{
