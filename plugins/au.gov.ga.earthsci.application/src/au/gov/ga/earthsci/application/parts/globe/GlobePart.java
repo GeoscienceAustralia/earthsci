@@ -271,10 +271,11 @@ public class GlobePart
 					service.findElements(toolbar, null, null, Arrays.asList(new String[] { HUD_ELEMENT_TAG }));
 			for (MUIElement hudElement : hudElements)
 			{
-				hudElement.getParent().getChildren().remove(hudElement);
-				//for some reason removing the element from it's parent doesn't hide the element, so make it invisible
+				// For some reason removing the element from it's parent doesn't hide the element, so make it invisible
+				// Important - change the visibility before removing from the toolbar
 				hudElement.setToBeRendered(false);
 				hudElement.setVisible(false);
+				toolbar.getChildren().remove(hudElement);
 			}
 
 			//find the hud toggle command
@@ -323,7 +324,7 @@ public class GlobePart
 						toolItem.setElementId(toolItemId);
 						toolItem.setType(ItemType.CHECK);
 						toolItem.setSelected(l.isEnabled());
-						toolItem.setTooltip("Toggle" + ' ' + layer.getName());
+						toolItem.setTooltip(Messages.bind(Messages.GlobePart_ToggleHUDTooltip, layer.getName()));
 
 						MParameter parameter = MCommandsFactory.INSTANCE.createParameter();
 						parameter.setName(ToggleHudHandler.HUD_ID_PARAMETER_ID);
