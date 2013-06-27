@@ -150,4 +150,5 @@
   <addons xmi:id="_EMDAAPu3EeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.workbench.cleanupAddon" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.addons.swt/org.eclipse.e4.ui.workbench.addons.cleanupaddon.CleanupAddon"/>
   <addons xmi:id="_QK5iMPu4EeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.workbench.dragAndDropAddon" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.addons.swt/org.eclipse.e4.ui.workbench.addons.dndaddon.DnDAddon"/>
   <addons xmi:id="_8Cy7EGNrEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.partInstantiator" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.PartInstantiator"/>
+  <addons xmi:id="_nLWVUN7hEeKQ1Za-Hn8GhQ" elementId="au.gov.ga.earthsci.application.mainMenuFix" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.compatibility.bugfix398847.MainMenuFix"/>
 </application:Application>
