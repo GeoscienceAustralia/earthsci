@@ -91,6 +91,7 @@ public class ShowViewHandler
 					{
 						part = sibling;
 						part.setToBeRendered(true);
+						break;
 					}
 				}
 			}
