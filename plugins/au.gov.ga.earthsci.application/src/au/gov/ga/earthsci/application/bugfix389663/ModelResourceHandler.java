@@ -31,8 +31,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.osgi.service.datalocation.Location;
 
 /**
- * Workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=389663,
- * until 4.3M7 is released.
+ * Workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=389663.
  * 
  * Fragments are by default loaded every time the application loads, even when
  * restoring from a previous state. This causes NPEs on load. This fix ignores
