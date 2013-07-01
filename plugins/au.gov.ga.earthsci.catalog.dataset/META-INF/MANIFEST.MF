@@ -8,7 +8,6 @@ Bundle-Vendor: Geoscience Australia
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  au.gov.ga.earthsci.catalog;bundle-version="1.0.0",
- au.gov.ga.earthsci.catalog.ui;bundle-version="1.0.0",
  au.gov.ga.earthsci.core;bundle-version="1.0.0",
  au.gov.ga.earthsci.common;bundle-version="1.0.0",
  au.gov.ga.earthsci.intent,
