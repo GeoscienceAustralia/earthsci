@@ -81,10 +81,15 @@ public class IntentCatalogLoader
 						public void run()
 						{
 							MessageDialog dialog =
-									new MessageDialog(shell, "Unknown catalog", null,
-											"Not a catalog. This object can be handled as a " + filter.getName()
-													+ ". Do you want to continue?", MessageDialog.QUESTION,
-											new String[] { "Yes", "Cancel" }, 0);
+									new MessageDialog(shell,
+											Messages.IntentCatalogLoader_UnknownCatalogDialogTitle, null,
+											Messages.bind(Messages.IntentCatalogLoader_UnknownCatalogDialogMessage,
+													filter.getName()),
+											MessageDialog.QUESTION,
+											new String[] {
+													Messages.IntentCatalogLoader_UnknownCatalogDialogYes,
+													Messages.IntentCatalogLoader_UnknownCatalogDialogNo
+											}, 0);
 							if (dialog.open() == 0)
 							{
 								Dispatcher.getInstance().dispatch(result, catalogIntent.context);
@@ -94,8 +99,11 @@ public class IntentCatalogLoader
 				}
 				else
 				{
-					error(new Exception("Expected " + ICatalogTreeNode.class.getSimpleName() + ", got " //$NON-NLS-1$ //$NON-NLS-2$
-							+ result.getClass().getSimpleName()), intent);
+					error(new Exception(
+							Messages.bind(Messages.IntentCatalogLoader_UnknownResultMessage,
+									ICatalogTreeNode.class.getSimpleName(),
+									result.getClass().getSimpleName())),
+							intent);
 				}
 			}
 		}
@@ -105,15 +113,17 @@ public class IntentCatalogLoader
 		{
 			//TODO cannot let this notification require acknowledgement during initial loading (catalog unpersistence)
 			//as it causes the parts to be created incorrectly (bad parent window perhaps?)
-			String title = "Failed to load catalog";
-			String message =
-					"Failed to load catalog from URI " + UTF8URLEncoder.decode(intent.getURI().toString()) + ": "
-							+ e.getLocalizedMessage();
+			String title = Messages.bind(Messages.IntentCatalogLoader_FailedToLoadCatalogTitle,
+					UTF8URLEncoder.decode(intent.getURI().toString()));
+			String message = Messages.bind(Messages.IntentCatalogLoader_FailedToLoadCatalogMessage,
+					UTF8URLEncoder.decode(intent.getURI().toString()),
+					e.getLocalizedMessage());
+
 			NotificationManager.error(title, message, NotificationCategory.FILE_IO, e);
 			logger.error(message, e);
 
 			CatalogLoadIntent catalogIntent = (CatalogLoadIntent) intent;
-			ErrorCatalogTreeNode errorNode = new ErrorCatalogTreeNode(intent.getURI(), e);
+			ErrorCatalogTreeNode errorNode = new ErrorCatalogTreeNode(intent.getURI(), title, e);
 			errorNode.setRemoveable(true);
 			replaceWithNode(catalogIntent, errorNode);
 		}
@@ -122,8 +132,9 @@ public class IntentCatalogLoader
 		public void canceled(Intent intent)
 		{
 			CatalogLoadIntent catalogIntent = (CatalogLoadIntent) intent;
-			ErrorCatalogTreeNode errorNode =
-					new ErrorCatalogTreeNode(intent.getURI(), new Exception("Catalog load canceled"));
+			ErrorCatalogTreeNode errorNode = new ErrorCatalogTreeNode(
+					intent.getURI(),
+					new Exception(Messages.IntentCatalogLoader_CatalogLoadCanceledMessage));
 			errorNode.setRemoveable(true);
 			replaceWithNode(catalogIntent, errorNode);
 		}

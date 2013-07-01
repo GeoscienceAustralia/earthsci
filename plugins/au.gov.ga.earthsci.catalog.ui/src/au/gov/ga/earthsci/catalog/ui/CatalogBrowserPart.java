@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.property.list.IListProperty;
 import org.eclipse.core.databinding.property.list.MultiListProperty;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
@@ -17,15 +19,22 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 
+import au.gov.ga.earthsci.application.Activator;
 import au.gov.ga.earthsci.application.tree.LazyObservableListTreeContentProvider;
+import au.gov.ga.earthsci.catalog.ErrorCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogModel;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
 import au.gov.ga.earthsci.common.ui.viewers.ControlTreeViewer;
 import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
 
@@ -63,7 +72,6 @@ public class CatalogBrowserPart
 	private void initViewer(final Composite parent, final MPart part, final EMenuService menuService)
 	{
 		viewer = new ControlTreeViewer(parent, SWT.MULTI);
-		//viewer.setContentProvider(new CatalogContentProvider(viewer));
 		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(labelProvider, labelProvider, null));
 		viewer.setSorter(null);
 
@@ -98,6 +106,31 @@ public class CatalogBrowserPart
 					array = new ICatalogTreeNode[0];
 				}
 				selectionService.setSelection(array);
+			}
+		});
+
+		viewer.getTree().addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseDoubleClick(MouseEvent e)
+			{
+				ViewerCell cell = viewer.getCell(new Point(e.x, e.y));
+				if (cell == null)
+				{
+					return;
+				}
+
+				ICatalogTreeNode catalog = (ICatalogTreeNode) cell.getElement();
+				if (catalog instanceof ErrorCatalogTreeNode)
+				{
+					ErrorCatalogTreeNode errorNode = (ErrorCatalogTreeNode) catalog;
+					IStatus status = new Status(IStatus.ERROR,
+							Activator.getBundleName(),
+							errorNode.getMessage(),
+							errorNode.getError());
+					StackTraceDialog.openError(viewer.getTree().getShell(),
+							Messages.CatalogBrowserPart_ErrorDialogTitle, null, status);
+				}
 			}
 		});
 

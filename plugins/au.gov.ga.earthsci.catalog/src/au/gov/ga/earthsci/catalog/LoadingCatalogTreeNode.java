@@ -65,7 +65,7 @@ public class LoadingCatalogTreeNode extends AbstractCatalogTreeNode
 	@Override
 	public String getName()
 	{
-		return "Loading...";
+		return Messages.LoadingCatalogTreeNode_LoadingMessage;
 	}
 
 	@Override

@@ -30,7 +30,12 @@ import au.gov.ga.earthsci.common.util.ExceptionFormatter;
  */
 public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 {
+	/** The exception that caused the error */
 	private final Throwable error;
+
+	/** A localised, human readable message to associate with the error */
+	private final String message;
+
 	private boolean removeable = false;
 
 	public ErrorCatalogTreeNode(Throwable error)
@@ -40,8 +45,14 @@ public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 
 	public ErrorCatalogTreeNode(URI nodeURI, Throwable error)
 	{
+		this(nodeURI, null, error);
+	}
+
+	public ErrorCatalogTreeNode(URI nodeURI, String message, Throwable error)
+	{
 		super(nodeURI);
 		this.error = error;
+		this.message = message == null ? error.getLocalizedMessage() : message;
 	}
 
 	@Override
@@ -76,12 +87,17 @@ public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 	@Override
 	public String getName()
 	{
-		return error.getLocalizedMessage();
+		return message;
 	}
 
 	public Throwable getError()
 	{
 		return error;
+	}
+
+	public String getMessage()
+	{
+		return message;
 	}
 
 	@Override
