@@ -197,7 +197,7 @@ public class WireframeRectangularTessellator extends RectangularTessellatorAcces
 	}
 
 	@Override
-	public SectorGeometryList tessellate(DrawContext dc)
+	public synchronized SectorGeometryList tessellate(DrawContext dc)
 	{
 		SectorGeometryList currentTiles = super.tessellate(dc);
 

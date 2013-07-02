@@ -40,7 +40,7 @@ public class ExtendedSurfaceTileRenderer extends GeographicSurfaceTileRenderer
 	protected boolean ignoreElevation = false;
 
 	@Override
-	public void renderTiles(DrawContext dc, Iterable<? extends SurfaceTile> tiles)
+	public synchronized void renderTiles(DrawContext dc, Iterable<? extends SurfaceTile> tiles)
 	{
 		ExtendedDrawContext.applyWireframePolygonMode(dc);
 

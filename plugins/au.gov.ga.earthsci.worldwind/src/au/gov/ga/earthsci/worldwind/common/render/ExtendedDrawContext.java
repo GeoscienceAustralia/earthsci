@@ -78,6 +78,13 @@ public class ExtendedDrawContext extends DrawContextDelegate implements Vertical
 		VerticalExaggerationService.INSTANCE.set(verticalExaggeration);
 	}
 
+	@Override
+	public void setSurfaceGeometry(SectorGeometryList surfaceGeometry)
+	{
+		SectorGeometryList dest = new SectorGeometryList(surfaceGeometry);
+		super.setSurfaceGeometry(dest);
+	}
+
 	/**
 	 * @return Is wireframe enabled?
 	 */
