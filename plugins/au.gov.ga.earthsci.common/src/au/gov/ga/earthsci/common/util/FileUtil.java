@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 public class FileUtil
 {
 
-	private static final String FILE_PATH_PATTERN = "(file://)?[a-zA-Z]:[/\\\\]([^/\\\\]+[/\\\\]?)+";
+	private static final String FILE_PATH_PATTERN = "(file://)?[a-zA-Z]:[/\\\\]([^/\\\\]+[/\\\\]?)+"; //$NON-NLS-1$
 
 	/**
 	 * Return whether or not the provided string is possibly a valid file path.
@@ -65,7 +65,7 @@ public class FileUtil
 			return null;
 		}
 
-		String[] components = path.split("\\\\|/");
+		String[] components = path.split("\\\\|/"); //$NON-NLS-1$
 		return components[components.length - 1];
 	}
 }
