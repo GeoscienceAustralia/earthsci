@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.tree;
 
+import org.eclipse.core.databinding.observable.IObservable;
 import org.eclipse.core.databinding.observable.masterdetail.IObservableFactory;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.databinding.viewers.TreeStructureAdvisor;
@@ -31,13 +32,15 @@ import au.gov.ga.earthsci.core.tree.ILazyTreeNodeCallback;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LazyObservableListTreeContentProvider extends ObservableListTreeContentProvider
+public class LazyObservableListTreeContentProvider<T, E extends IObservable> extends ObservableListTreeContentProvider
 {
 	private ColumnViewer viewer;
 
-	public LazyObservableListTreeContentProvider(IObservableFactory listFactory, TreeStructureAdvisor structureAdvisor)
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public LazyObservableListTreeContentProvider(IObservableFactory<T, E> listFactory,
+			TreeStructureAdvisor structureAdvisor)
 	{
-		super(listFactory, structureAdvisor);
+		super((IObservableFactory) listFactory, structureAdvisor);
 	}
 
 	@Override

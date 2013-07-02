@@ -6,8 +6,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.property.list.IListProperty;
-import org.eclipse.core.databinding.property.list.MultiListProperty;
+import org.eclipse.core.databinding.beans.IBeanListProperty;
+import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
@@ -75,9 +75,11 @@ public class CatalogBrowserPart
 		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(labelProvider, labelProvider, null));
 		viewer.setSorter(null);
 
-		IListProperty childrenProperty = new MultiListProperty(new IListProperty[] { BeanProperties.list("children") }); //$NON-NLS-1$
-		LazyObservableListTreeContentProvider contentProvider =
-				new LazyObservableListTreeContentProvider(childrenProperty.listFactory(), null);
+		IBeanListProperty<ICatalogTreeNode, ICatalogTreeNode> childrenProperty =
+				BeanProperties.list(ICatalogTreeNode.class, "children", ICatalogTreeNode.class); //$NON-NLS-1$
+		LazyObservableListTreeContentProvider<ICatalogTreeNode, IObservableList<ICatalogTreeNode>> contentProvider =
+				new LazyObservableListTreeContentProvider<ICatalogTreeNode, IObservableList<ICatalogTreeNode>>(
+						childrenProperty.listFactory(), null);
 		viewer.setContentProvider(contentProvider);
 
 		viewer.setInput(model.getRoot());

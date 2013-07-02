@@ -23,9 +23,12 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.beans.IBeanListProperty;
+import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.map.IMapChangeListener;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.core.databinding.observable.map.MapChangeEvent;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.internal.workbench.swt.AbstractPartRenderer;
 import org.eclipse.e4.ui.model.application.MApplication;
@@ -84,6 +87,7 @@ import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.bookmark.model.Bookmarks;
 import au.gov.ga.earthsci.bookmark.model.IBookmark;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkList;
+import au.gov.ga.earthsci.bookmark.model.IBookmarks;
 import au.gov.ga.earthsci.bookmark.ui.handlers.CopyToListHandler;
 import au.gov.ga.earthsci.bookmark.ui.handlers.MoveToListHandler;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
@@ -194,7 +198,10 @@ public class BookmarksPart
 
 	private void setupBookmarkListInput()
 	{
-		bookmarkListTableViewer.setInput(BeanProperties.list("bookmarks").observe(getSelectedBookmarkList())); //$NON-NLS-1$
+		IBeanListProperty<IBookmarkList, IBookmark> bookmarksProperty =
+				BeanProperties.list(IBookmarkList.class, "bookmarks", IBookmark.class); //$NON-NLS-1$
+		IObservableList<IBookmark> observableList = bookmarksProperty.observe(getSelectedBookmarkList());
+		bookmarkListTableViewer.setInput(observableList);
 		bookmarkListsComboViewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
 			@Override
@@ -229,21 +236,27 @@ public class BookmarksPart
 
 		// Trigger a label refresh if a list name changes etc.
 		ObservableListContentProvider contentProvider = new ObservableListContentProvider();
-		IObservableMap nameMap = BeanProperties.value("name").observeDetail(contentProvider.getKnownElements()); //$NON-NLS-1$
-		nameMap.addMapChangeListener(new IMapChangeListener()
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		IObservableSet<IBookmarkList> knownElements = (IObservableSet) contentProvider.getKnownElements();
+		IObservableMap<IBookmarkList, String> nameMap =
+				BeanProperties.value(IBookmarkList.class, "name", String.class).observeDetail(knownElements); //$NON-NLS-1$
+		nameMap.addMapChangeListener(new IMapChangeListener<IBookmarkList, String>()
 		{
 			@Override
-			public void handleMapChange(MapChangeEvent event)
+			public void handleMapChange(MapChangeEvent<IBookmarkList, String> event)
 			{
-				for (Object key : event.diff.getChangedKeys())
+				for (IBookmarkList key : event.diff.getChangedKeys())
 				{
 					bookmarkListsComboViewer.refresh(key, true);
 				}
 			}
 		});
 
+		IBeanListProperty<IBookmarks, IBookmarkList> listsProperty =
+				BeanProperties.list(IBookmarks.class, "lists", IBookmarkList.class); //$NON-NLS-1$
+		IObservableList<IBookmarkList> observableList = listsProperty.observe(bookmarks);
 		bookmarkListsComboViewer.setContentProvider(contentProvider);
-		bookmarkListsComboViewer.setInput(BeanProperties.list("lists").observe(bookmarks)); //$NON-NLS-1$
+		bookmarkListsComboViewer.setInput(observableList);
 		bookmarkListsComboViewer.setSelection(new StructuredSelection(bookmarks.getDefaultList()));
 
 		bookmarkListsComboViewer.addSelectionChangedListener(new ISelectionChangedListener()
@@ -278,11 +291,16 @@ public class BookmarksPart
 		ObservableListContentProvider contentProvider = new ObservableListContentProvider();
 		bookmarkListTableViewer.setContentProvider(contentProvider);
 
-		IObservableMap labelMap = BeanProperties.value("name").observeDetail(contentProvider.getKnownElements()); //$NON-NLS-1$
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		IObservableSet<IBookmark> knownElements = (IObservableSet) contentProvider.getKnownElements();
+		IObservableMap<IBookmark, String> nameMap =
+				BeanProperties.value(IBookmark.class, "name", String.class).observeDetail(knownElements); //$NON-NLS-1$
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		IObservableMap<Object, Object> objectNameMap = (IObservableMap) nameMap;
 
 		TableViewerColumn column = new TableViewerColumn(bookmarkListTableViewer, SWT.LEFT);
 		column.setEditingSupport(new BookmarkNameEditingSupport(bookmarkListTableViewer));
-		column.setLabelProvider(new ObservableMapCellLabelProvider(labelMap)
+		column.setLabelProvider(new ObservableMapCellLabelProvider(objectNameMap)
 		{
 			@Override
 			public void update(ViewerCell cell)
