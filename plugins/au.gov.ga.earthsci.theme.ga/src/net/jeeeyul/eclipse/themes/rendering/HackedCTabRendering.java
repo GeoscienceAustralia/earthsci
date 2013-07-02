@@ -25,8 +25,6 @@ import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
-import shared.SharedImages;
-
 public class HackedCTabRendering extends CTabFolderRenderer {
 	public static Field HACK_CTabItem_closeRect;
 	public static Field HACK_CTabItem_shortenText;
