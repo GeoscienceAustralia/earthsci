@@ -3,6 +3,7 @@ package au.gov.ga.earthsci.application.compatibility;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
@@ -11,6 +12,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Application implements IApplication
 {
+	private static final String PROP_EXIT_CODE = "eclipse.exitcode"; //$NON-NLS-1$
+
 	@Override
 	public Object start(IApplicationContext context)
 	{
@@ -34,12 +37,30 @@ public class Application implements IApplication
 		Display display = PlatformUI.createDisplay();
 		try
 		{
-			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
-			if (returnCode == PlatformUI.RETURN_RESTART)
+			Shell shell = new Shell(display);
+			Object instanceLocationCheck = WorkspaceHelper.checkInstanceLocation(shell, context.getArguments());
+			if (instanceLocationCheck != null)
 			{
-				return IApplication.EXIT_RESTART;
+				//WorkbenchPlugin.unsetSplashShell(display);
+				// //Platform.endSplash();
+				//context.applicationRunning();
+				return instanceLocationCheck;
 			}
-			return IApplication.EXIT_OK;
+
+			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
+
+			// the workbench doesn't support relaunch yet (bug 61809) so
+			// for now restart is used, and exit data properties are checked
+			// here to substitute in the relaunch return code if needed
+			if (returnCode != PlatformUI.RETURN_RESTART)
+			{
+				return EXIT_OK;
+			}
+
+			// if the exit code property has been set to the relaunch code, then
+			// return that code now, otherwise this is a normal restart
+			return EXIT_RELAUNCH.equals(Integer.getInteger(PROP_EXIT_CODE)) ? EXIT_RELAUNCH
+					: EXIT_RESTART;
 		}
 		finally
 		{
