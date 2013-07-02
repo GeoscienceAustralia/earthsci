@@ -92,6 +92,7 @@ public class IntentCatalogLoader
 											}, 0);
 							if (dialog.open() == 0)
 							{
+								replaceWithNode(catalogIntent, null);
 								Dispatcher.getInstance().dispatch(result, catalogIntent.context);
 							}
 						}

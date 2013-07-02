@@ -8,5 +8,19 @@
             uri="fragment.e4xmi">
       </fragment>
    </extension>
+   <extension
+         point="au.gov.ga.earthsci.intent.dispatchFilters">
+      <filter
+            class="au.gov.ga.earthsci.layer.ui.LayerTreeNodeDispatchHandler"
+            name="Layer"
+            priority="0">
+         <type
+               class="au.gov.ga.earthsci.core.model.layer.ILayerTreeNode">
+         </type>
+         <type
+               class="gov.nasa.worldwind.layers.Layer">
+         </type>
+      </filter>
+   </extension>
 
 </plugin>
