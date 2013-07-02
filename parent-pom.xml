@@ -32,6 +32,11 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/uomo/0.7/kepler/repository</url>
 		</repository>
+		<repository>
+			<id>e4</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/e4/downloads/drops/R-0.14-201306242200/repository</url>
+		</repository>
 	</repositories>
 
 	<build>
