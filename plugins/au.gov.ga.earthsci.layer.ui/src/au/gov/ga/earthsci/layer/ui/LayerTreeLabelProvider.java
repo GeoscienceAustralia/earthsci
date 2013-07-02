@@ -25,11 +25,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.eclipse.core.databinding.observable.map.IObservableMap;
-import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -63,7 +62,7 @@ import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
+public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider implements IFireableLabelProvider
 {
 	private final LayerTreeLabelProviderDelegate delegate;
 	private final IRetrievalService retrievalService;
@@ -82,9 +81,9 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 				darken ? SWTUtil.darker(DOWNLOAD_BACKGROUND_COLOR) : SWTUtil.lighter(DOWNLOAD_BACKGROUND_COLOR);
 	}
 
-	public LayerTreeLabelProvider(IObservableMap[] attributeMaps)
+	public LayerTreeLabelProvider()
 	{
-		this(new LayerTreeLabelProviderDelegate(attributeMaps));
+		this(new LayerTreeLabelProviderDelegate());
 	}
 
 	private LayerTreeLabelProvider(LayerTreeLabelProviderDelegate delegate)
@@ -196,6 +195,12 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 		}
 	}
 
+	@Override
+	public void fireLabelProviderChanged(LabelProviderChangedEvent event)
+	{
+		super.fireLabelProviderChanged(event);
+	}
+
 	private IRetrievalServiceListener retrievalServiceListener = new IRetrievalServiceListener()
 	{
 		@Override
@@ -228,7 +233,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 		}
 	};
 
-	private static class LayerTreeLabelProviderDelegate extends ObservableMapLabelProvider implements ILabelDecorator,
+	private static class LayerTreeLabelProviderDelegate extends LabelProvider implements ILabelDecorator,
 			IStyledLabelProvider, IFireableLabelProvider
 	{
 		private WeakHashMap<Layer, WeakReference<LayerNode>> weakLayerToNodeMap =
@@ -242,9 +247,8 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 		private final TextStyler informationStyler = new TextStyler();
 		private final TextStyler legendStyler = new TextStyler();
 
-		public LayerTreeLabelProviderDelegate(IObservableMap[] attributeMaps)
+		public LayerTreeLabelProviderDelegate()
 		{
-			super(attributeMaps);
 			FontData[] fontDatas = Display.getDefault().getSystemFont().getFontData();
 			for (FontData fontData : fontDatas)
 			{
@@ -276,7 +280,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 		}
 
 		@Override
-		public String getColumnText(Object element, int columnIndex)
+		public String getText(Object element)
 		{
 			if (element instanceof LayerNode)
 			{
@@ -300,7 +304,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 				FolderNode folder = (FolderNode) element;
 				return folder.getLabelOrName();
 			}
-			return super.getColumnText(element, columnIndex);
+			return super.getText(element);
 		}
 
 		@Override
@@ -348,7 +352,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider
 		@Override
 		public StyledString getStyledText(Object element)
 		{
-			StyledString string = new StyledString(getColumnText(element, 0));
+			StyledString string = new StyledString(getText(element));
 			if (element instanceof ILayerTreeNode)
 			{
 				ILayerTreeNode layerNode = (ILayerTreeNode) element;

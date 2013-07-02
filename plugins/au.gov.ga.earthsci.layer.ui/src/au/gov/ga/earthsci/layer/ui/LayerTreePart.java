@@ -23,9 +23,10 @@ import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -33,12 +34,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.observable.map.IMapChangeListener;
-import org.eclipse.core.databinding.observable.map.IObservableMap;
-import org.eclipse.core.databinding.observable.map.MapChangeEvent;
-import org.eclipse.core.databinding.observable.set.IObservableSet;
-import org.eclipse.core.databinding.property.list.IListProperty;
-import org.eclipse.core.databinding.property.list.MultiListProperty;
+import org.eclipse.core.databinding.beans.IBeanListProperty;
+import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.masterdetail.IObservableFactory;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
@@ -59,6 +57,7 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -73,8 +72,8 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
@@ -82,6 +81,9 @@ import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.application.Activator;
 import au.gov.ga.earthsci.application.ImageRegistry;
+import au.gov.ga.earthsci.common.databinding.ITreeChangeListener;
+import au.gov.ga.earthsci.common.databinding.ObservableListTreeSupport;
+import au.gov.ga.earthsci.common.databinding.TreeChangeAdapter;
 import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
@@ -115,6 +117,7 @@ public class LayerTreePart
 	private CheckboxTreeViewer viewer;
 	private LayerTreeLabelProvider labelProvider;
 	private Clipboard clipboard;
+	private ObservableListTreeSupport<ILayerTreeNode> observableListTreeSupport;
 
 	@PostConstruct
 	public void init(Composite parent, EMenuService menuService)
@@ -126,76 +129,91 @@ public class LayerTreePart
 		clipboard = new Clipboard(parent.getDisplay());
 		context.set(Clipboard.class, clipboard);
 
-		IListProperty childrenProperty = new MultiListProperty(new IListProperty[] { BeanProperties.list("children") }); //$NON-NLS-1$
+		//create a property change listener for updating the labels whenever a property
+		//changes on an ILayerTreeNode instance
+		final PropertyChangeListener anyChangeListener = new PropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt)
+			{
+				updateElementLabel(evt.getSource());
+			}
+		};
+		//create a property change listener that ensures the expanded state of the tree
+		//is kept in sync with the value of the expanded property for each node
+		final PropertyChangeListener expandedChangeListener = new PropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(PropertyChangeEvent evt)
+			{
+				syncExpandedNodes();
+			}
+		};
 
-		ObservableListTreeContentProvider contentProvider =
-				new ObservableListTreeContentProvider(childrenProperty.listFactory(), null);
+		//setup the label provider
+		labelProvider = new LayerTreeLabelProvider();
+
+		//create a bean list property associated with ILayerTreeNode's children property
+		IBeanListProperty<ILayerTreeNode, ILayerTreeNode> childrenProperty =
+				BeanProperties.list(ILayerTreeNode.class, "children", ILayerTreeNode.class); //$NON-NLS-1$
+		//setup a factory for creating observables observing ILayerTreeNodes
+		IObservableFactory<ILayerTreeNode, IObservableList<ILayerTreeNode>> observableFactory =
+				childrenProperty.listFactory();
+
+		//listen for any changes (additions/removals) to any of the children in the tree
+		observableListTreeSupport = new ObservableListTreeSupport<ILayerTreeNode>(observableFactory);
+		observableListTreeSupport.addListener(new ITreeChangeListener<ILayerTreeNode>()
+		{
+			@Override
+			public void elementAdded(ILayerTreeNode element)
+			{
+				element.addPropertyChangeListener(anyChangeListener);
+				element.addPropertyChangeListener("expanded", expandedChangeListener); //$NON-NLS-1$
+			}
+
+			@Override
+			public void elementRemoved(ILayerTreeNode element)
+			{
+				element.removePropertyChangeListener(anyChangeListener);
+				element.removePropertyChangeListener("expanded", expandedChangeListener); //$NON-NLS-1$
+			}
+		});
+
+		//create a content provider that listens for changes to any children in the tree
+		@SuppressWarnings("rawtypes")
+		IObservableFactory rawFactory = observableFactory;
+		@SuppressWarnings("unchecked")
+		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(rawFactory, null);
+
+		//set the viewer's providers
 		viewer.setContentProvider(contentProvider);
-
-		//TreeViewerEditor.create(viewer, new SecondClickColumnViewerEditorActivationStrategy(viewer), ColumnViewerEditor.DEFAULT);
-
-		IObservableSet knownElements = contentProvider.getKnownElements();
-		IObservableMap enabledMap = BeanProperties.value("enabled").observeDetail(knownElements); //$NON-NLS-1$
-		IObservableMap layerMap = BeanProperties.value("layer").observeDetail(knownElements); //$NON-NLS-1$
-		IObservableMap opacityMap = BeanProperties.value("opacity").observeDetail(knownElements); //$NON-NLS-1$
-		IObservableMap nameMap = BeanProperties.value("name").observeDetail(knownElements); //$NON-NLS-1$
-		IObservableMap labelMap = BeanProperties.value("label").observeDetail(knownElements); //$NON-NLS-1$
-		IObservableMap statusMap = BeanProperties.value("status").observeDetail(knownElements); //$NON-NLS-1$
-		IObservableMap anyChildrenEnabledMap = BeanProperties.value("anyChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
-		IObservableMap allChildrenEnabledMap = BeanProperties.value("allChildrenEnabled").observeDetail(knownElements); //$NON-NLS-1$
-		IObservableMap childrenMap = BeanProperties.value("children").observeDetail(knownElements); //$NON-NLS-1$
-		IObservableMap expandedMap = BeanProperties.value("expanded").observeDetail(knownElements); //$NON-NLS-1$
-
-		IObservableMap[] labelAttributeMaps =
-				new IObservableMap[] { enabledMap, layerMap, opacityMap, nameMap, labelMap, anyChildrenEnabledMap,
-						allChildrenEnabledMap, statusMap };
-
-		labelProvider = new LayerTreeLabelProvider(labelAttributeMaps);
 		viewer.setLabelProvider(labelProvider);
 		viewer.setCheckStateProvider(new LayerTreeCheckStateProvider());
 
+		//set the viewer and listener inputs
 		viewer.setInput(model.getRootNode());
-		viewer.setExpandedElements(getExpandedNodes());
+		observableListTreeSupport.setInput(model.getRootNode());
 
-		IMapChangeListener childrenListener = new IMapChangeListener()
+		//Listen for any additions to the tree, and expand added node's parent, so that
+		//added nodes are always visible. This is done after the input is set up, so that
+		//we don't expand all the nodes that are already in the tree.
+		observableListTreeSupport.addListener(new TreeChangeAdapter<ILayerTreeNode>()
 		{
 			@Override
-			public void handleMapChange(MapChangeEvent event)
+			public void elementAdded(ILayerTreeNode element)
 			{
 				//for any children added, expand the nodes
-				Set<?> addedKeys = event.diff.getAddedKeys();
-				for (Object o : addedKeys)
+				if (!element.isRoot())
 				{
-					if (o instanceof ILayerTreeNode)
-					{
-						((ILayerTreeNode) o).getParent().setExpanded(true);
-					}
+					element.getParent().setExpanded(true);
 				}
 			}
-		};
-		IMapChangeListener expandedListener = new IMapChangeListener()
-		{
-			@Override
-			public void handleMapChange(MapChangeEvent event)
-			{
-				//ensure the expanded elements are kept in sync with the model
-				viewer.getTree().getDisplay().asyncExec(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						if (!viewer.getTree().isDisposed())
-						{
-							viewer.setExpandedElements(getExpandedNodes());
-						}
-					}
-				});
-			}
-		};
-		childrenMap.addMapChangeListener(childrenListener);
-		childrenMap.addMapChangeListener(expandedListener);
-		expandedMap.addMapChangeListener(expandedListener);
+		});
 
+		//expand any nodes that should be expanded after unpersisting
+		syncExpandedNodes();
+
+		//enable/disable any nodes that are checked/unchecked
 		viewer.addCheckStateListener(new ICheckStateListener()
 		{
 			@Override
@@ -210,6 +228,7 @@ public class LayerTreePart
 			}
 		});
 
+		//setup the selection tracking
 		viewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
 			@Override
@@ -221,7 +240,21 @@ public class LayerTreePart
 				selectionService.setSelection(array.length == 1 ? array[0] : array);
 			}
 		});
+		viewer.getTree().addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e)
+			{
+				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+				ILayerTreeNode firstElement = (ILayerTreeNode) selection.getFirstElement();
+				if (firstElement != null)
+				{
+					selectLayer(firstElement);
+				}
+			}
+		});
 
+		//setup tree expansion/collapse listening
 		viewer.addTreeListener(new ITreeViewerListener()
 		{
 			@Override
@@ -239,21 +272,9 @@ public class LayerTreePart
 			}
 		});
 
+		//make tree cells unselectable by selecting outside
 		viewer.getTree().addMouseListener(new MouseAdapter()
 		{
-			@Override
-			public void mouseDoubleClick(MouseEvent e)
-			{
-				ViewerCell cell = viewer.getCell(new Point(e.x, e.y));
-				if (cell == null)
-				{
-					return;
-				}
-
-				ILayerTreeNode layer = (ILayerTreeNode) cell.getElement();
-				selectLayer(layer);
-			}
-
 			@Override
 			public void mouseDown(MouseEvent e)
 			{
@@ -265,26 +286,9 @@ public class LayerTreePart
 			}
 		});
 
-		viewer.getTree().addTraverseListener(new TraverseListener()
-		{
-			@Override
-			public void keyTraversed(TraverseEvent e)
-			{
-				if (e.detail == SWT.TRAVERSE_RETURN)
-				{
-					IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-					if (selection.size() == 1)
-					{
-						ILayerTreeNode layer = (ILayerTreeNode) selection.getFirstElement();
-						selectLayer(layer);
-					}
-				}
-			}
-		});
-
+		//setup cell editing
 		viewer.setCellEditors(new CellEditor[] { new TextCellEditor(viewer.getTree(), SWT.BORDER) });
 		viewer.setColumnProperties(new String[] { "layer" }); //$NON-NLS-1$
-
 		viewer.setCellModifier(new ICellModifier()
 		{
 			@Override
@@ -338,6 +342,7 @@ public class LayerTreePart
 	@PreDestroy
 	private void packup()
 	{
+		observableListTreeSupport.dispose();
 		context.remove(TreeViewer.class);
 		context.remove(Clipboard.class);
 		labelProvider.packup();
@@ -347,6 +352,38 @@ public class LayerTreePart
 	private void setFocus()
 	{
 		viewer.getTree().setFocus();
+	}
+
+	private void updateElementLabel(final Object element)
+	{
+		if (!viewer.getControl().isDisposed())
+		{
+			viewer.getControl().getDisplay().asyncExec(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					LabelProviderChangedEvent event = new LabelProviderChangedEvent(labelProvider, element);
+					labelProvider.fireLabelProviderChanged(event);
+				}
+			});
+		}
+	}
+
+	private void syncExpandedNodes()
+	{
+		//ensure the expanded elements are kept in sync with the model
+		viewer.getControl().getDisplay().asyncExec(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (!viewer.getControl().isDisposed())
+				{
+					viewer.setExpandedElements(getExpandedNodes());
+				}
+			}
+		});
 	}
 
 	private ILayerTreeNode[] getExpandedNodes()
