@@ -16,7 +16,7 @@
 package au.gov.ga.earthsci.application;
 
 import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.osgi.framework.BundleActivator;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import au.gov.ga.earthsci.common.ui.util.KeyboardFocusManagerFix;
@@ -26,9 +26,15 @@ import au.gov.ga.earthsci.common.ui.util.KeyboardFocusManagerFix;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class Activator implements BundleActivator
+public class Activator extends AbstractUIPlugin
 {
 	private static BundleContext context;
+
+	// The plug-in ID
+	public static final String PLUGIN_ID = "au.gov.ga.earthsci.application"; //$NON-NLS-1$
+
+	// The shared instance
+	private static Activator plugin;
 
 	static BundleContext getContext()
 	{
@@ -38,7 +44,11 @@ public class Activator implements BundleActivator
 	@Override
 	public void start(BundleContext bundleContext) throws Exception
 	{
+		super.start(bundleContext);
+		plugin = this;
 		Activator.context = bundleContext;
+
+		//bugfix:
 		KeyboardFocusManagerFix.initialize();
 
 		//create the preference initializers
@@ -48,11 +58,23 @@ public class Activator implements BundleActivator
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception
 	{
+		super.stop(bundleContext);
+		plugin = null;
 		Activator.context = null;
 	}
 
 	public static String getBundleName()
 	{
 		return context.getBundle().getSymbolicName();
+	}
+
+	/**
+	 * Returns the shared instance
+	 * 
+	 * @return the shared instance
+	 */
+	public static Activator getDefault()
+	{
+		return plugin;
 	}
 }
