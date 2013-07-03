@@ -15,38 +15,16 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.common.ui.preferences;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbench;
 
 /**
- * {@link org.eclipse.jface.preference.FieldEditorPreferencePage} subclass that
- * implements {@link IPreferencePage} with empty methods.
+ * {@link org.eclipse.jface.preference.PreferencePage} subclass that implements
+ * {@link IPreferencePage} with empty methods.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class FieldEditorPreferencePage extends org.eclipse.jface.preference.FieldEditorPreferencePage
-		implements IPreferencePage
+public abstract class PreferencePage extends org.eclipse.jface.preference.PreferencePage implements IPreferencePage
 {
-	public FieldEditorPreferencePage()
-	{
-		super();
-	}
-
-	protected FieldEditorPreferencePage(int style)
-	{
-		super(style);
-	}
-
-	protected FieldEditorPreferencePage(String title, ImageDescriptor image, int style)
-	{
-		super(title, image, style);
-	}
-
-	protected FieldEditorPreferencePage(String title, int style)
-	{
-		super(title, style);
-	}
-
 	@Override
 	public void init(IWorkbench workbench)
 	{
