@@ -107,7 +107,7 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 		searchText = new Text(searchComposite, SWT.SEARCH);
 		searchText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
 		searchText.setMessage("Search text");
-		searchText.setText("australia");
+		searchText.setText("australia"); //TODO remove
 
 		Button searchButton = new Button(searchComposite, SWT.PUSH);
 		searchButton.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false));
@@ -254,6 +254,7 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 					pageLinks.setPageCount(pageCount);
 				}
 				pageLinks.setSelectedPage(0);
+				pageChanged(0);
 			}
 
 			IDiscoveryResultLabelProvider labelProvider = discovery.getLabelProvider();
