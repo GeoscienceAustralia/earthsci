@@ -24,8 +24,8 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.Transfer;
 
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
-import au.gov.ga.earthsci.core.model.layer.LayerTransferData;
+import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
+import au.gov.ga.earthsci.layer.ui.dnd.LayerTransferData;
 
 /**
  * Handles copy commands for the layer tree.

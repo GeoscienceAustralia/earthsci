@@ -25,8 +25,8 @@ import org.eclipse.swt.dnd.DragSourceListener;
 
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
-import au.gov.ga.earthsci.core.model.layer.LayerTransferData;
+import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
+import au.gov.ga.earthsci.layer.ui.dnd.LayerTransferData;
 
 /**
  * {@link DragSourceListener} implementation for the catalog browser tree

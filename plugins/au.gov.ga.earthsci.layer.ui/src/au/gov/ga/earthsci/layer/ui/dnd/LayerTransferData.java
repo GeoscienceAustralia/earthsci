@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer;
+package au.gov.ga.earthsci.layer.ui.dnd;
 
 import gov.nasa.worldwind.util.WWXML;
 
@@ -29,6 +29,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import au.gov.ga.earthsci.common.util.XmlUtil;
+import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.core.persistence.Persistent;

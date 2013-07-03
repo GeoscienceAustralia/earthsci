@@ -30,10 +30,10 @@ import org.eclipse.swt.dnd.FileTransfer;
 
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
-import au.gov.ga.earthsci.core.model.layer.LayerTransfer;
-import au.gov.ga.earthsci.core.model.layer.LayerTransferData;
-import au.gov.ga.earthsci.core.model.layer.LayerTransferData.TransferredLayer;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
+import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
+import au.gov.ga.earthsci.layer.ui.dnd.LayerTransferData;
+import au.gov.ga.earthsci.layer.ui.dnd.LayerTransferData.TransferredLayer;
 
 /**
  * Handles paste commands for the layer tree.
