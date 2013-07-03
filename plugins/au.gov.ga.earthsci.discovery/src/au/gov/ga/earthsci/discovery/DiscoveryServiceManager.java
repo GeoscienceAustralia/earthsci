@@ -62,6 +62,29 @@ public class DiscoveryServiceManager
 	private static final File servicesFile = ConfigurationUtil.getWorkspaceFile(servicesFilename);
 	private static final List<IDiscoveryService> services = new ArrayList<IDiscoveryService>();
 	private static final Logger logger = LoggerFactory.getLogger(DiscoveryServiceManager.class);
+	private static final Listeners listeners = new Listeners();
+
+	/**
+	 * Add a listener for change events on this manager.
+	 * 
+	 * @param listener
+	 *            Listener to add
+	 */
+	public static void addListener(IDiscoveryServiceManagerListener listener)
+	{
+		listeners.add(listener);
+	}
+
+	/**
+	 * Remove a listener from this manager.
+	 * 
+	 * @param listener
+	 *            Listener to remove
+	 */
+	public static void removeListener(IDiscoveryServiceManagerListener listener)
+	{
+		listeners.remove(listener);
+	}
 
 	/**
 	 * Add a new {@link IDiscoveryService}.
@@ -72,6 +95,7 @@ public class DiscoveryServiceManager
 	public static void addService(IDiscoveryService service)
 	{
 		services.add(service);
+		listeners.serviceAdded(service);
 	}
 
 	/**
@@ -85,6 +109,7 @@ public class DiscoveryServiceManager
 	public static void addService(int index, IDiscoveryService service)
 	{
 		services.add(index, service);
+		listeners.serviceAdded(service);
 	}
 
 	/**
@@ -96,6 +121,7 @@ public class DiscoveryServiceManager
 	public static void removeService(IDiscoveryService service)
 	{
 		services.remove(service);
+		listeners.serviceRemoved(service);
 	}
 
 	/**
@@ -267,5 +293,28 @@ public class DiscoveryServiceManager
 		{
 			this.enabled = enabled;
 		}
+	}
+
+	private static class Listeners extends ArrayList<IDiscoveryServiceManagerListener> implements
+			IDiscoveryServiceManagerListener
+	{
+		@Override
+		public void serviceAdded(IDiscoveryService service)
+		{
+			for (int i = size() - 1; i >= 0; i--)
+			{
+				get(i).serviceAdded(service);
+			}
+		}
+
+		@Override
+		public void serviceRemoved(IDiscoveryService service)
+		{
+			for (int i = size() - 1; i >= 0; i--)
+			{
+				get(i).serviceRemoved(service);
+			}
+		}
+
 	}
 }
