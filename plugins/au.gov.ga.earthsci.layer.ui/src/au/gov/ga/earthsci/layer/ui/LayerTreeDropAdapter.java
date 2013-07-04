@@ -34,6 +34,7 @@ import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransferData;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransferData.TransferredLayer;
+import au.gov.ga.earthsci.layer.ui.dnd.LocalLayerTransfer;
 
 /**
  * {@link DropTargetListener} implementation for the layer tree.
@@ -81,7 +82,8 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 			}
 		}
 
-		if (LayerTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType))
+		if (LocalLayerTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType) ||
+				LayerTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType))
 		{
 			LayerTransferData data = (LayerTransferData) d;
 
@@ -105,6 +107,10 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 				getViewer().add(target, node);
 				getViewer().reveal(node);
 			}
+
+			// Deselect all of the moved nodes so they dont get removed by the LayerTreeDragSourceListener#dragFinished
+			getViewer().setSelection(null);
+
 			return true;
 		}
 		else if (FileTransfer.getInstance().isSupportedType(getCurrentEvent().currentDataType))
@@ -153,7 +159,9 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 	@Override
 	public boolean validateDrop(Object target, int op, TransferData type)
 	{
-		return LayerTransfer.getInstance().isSupportedType(type) || FileTransfer.getInstance().isSupportedType(type);
+		return LocalLayerTransfer.getInstance().isSupportedType(type) ||
+				LayerTransfer.getInstance().isSupportedType(type) ||
+				FileTransfer.getInstance().isSupportedType(type);
 	}
 
 	@Override

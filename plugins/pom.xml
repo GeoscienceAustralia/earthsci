@@ -47,6 +47,7 @@
 		<module>au.gov.ga.earthsci.discovery.ui</module>
 		<module>au.gov.ga.earthsci.jface.extras</module>
 		<module>au.gov.ga.earthsci.layer.ui</module>
+		<module>au.gov.ga.earthsci.layer.ui.tests</module>
 		<module>au.gov.ga.earthsci.bookmark</module>
 		<module>au.gov.ga.earthsci.bookmark.tests</module>
 		<module>au.gov.ga.earthsci.bookmark.ui</module>

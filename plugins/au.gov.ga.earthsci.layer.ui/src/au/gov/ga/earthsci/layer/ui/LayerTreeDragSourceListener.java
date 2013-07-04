@@ -30,6 +30,7 @@ import au.gov.ga.earthsci.application.Activator;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransferData;
+import au.gov.ga.earthsci.layer.ui.dnd.LocalLayerTransfer;
 
 /**
  * {@link DragSourceListener} implementation for the layer tree.
@@ -53,7 +54,7 @@ public class LayerTreeDragSourceListener implements DragSourceListener
 			return;
 		}
 		//if the gadget was moved, remove it from the source viewer
-		if (event.detail == DND.DROP_MOVE)
+		if (isMoveEvent(event))
 		{
 			IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 			for (Iterator<?> it = selection.iterator(); it.hasNext();)
@@ -70,13 +71,15 @@ public class LayerTreeDragSourceListener implements DragSourceListener
 	{
 		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 		List<?> selectionList = selection.toList();
+
 		ILayerTreeNode[] nodes = selectionList.toArray(new ILayerTreeNode[selectionList.size()]);
 		LayerTransferData data = LayerTransferData.fromNodes(nodes);
-		if (LayerTransfer.getInstance().isSupportedType(event.dataType))
+
+		if (isLocalLayerTransfer(event) || isOtherLayerTransfer(event))
 		{
 			event.data = data;
 		}
-		else if (PluginTransfer.getInstance().isSupportedType(event.dataType))
+		else if (isPluginTransfer(event))
 		{
 			byte[] bytes = LayerTransfer.getInstance().toByteArray(data);
 			event.data = new PluginTransferData(Activator.getBundleName(), bytes);
@@ -87,5 +90,25 @@ public class LayerTreeDragSourceListener implements DragSourceListener
 	public void dragStart(DragSourceEvent event)
 	{
 		event.doit = !viewer.getSelection().isEmpty();
+	}
+
+	private boolean isMoveEvent(DragSourceEvent e)
+	{
+		return e.detail == DND.DROP_MOVE;
+	}
+
+	private boolean isOtherLayerTransfer(DragSourceEvent event)
+	{
+		return LayerTransfer.getInstance().isSupportedType(event.dataType);
+	}
+
+	private boolean isLocalLayerTransfer(DragSourceEvent event)
+	{
+		return LocalLayerTransfer.getInstance().isSupportedType(event.dataType);
+	}
+
+	private boolean isPluginTransfer(DragSourceEvent event)
+	{
+		return PluginTransfer.getInstance().isSupportedType(event.dataType);
 	}
 }

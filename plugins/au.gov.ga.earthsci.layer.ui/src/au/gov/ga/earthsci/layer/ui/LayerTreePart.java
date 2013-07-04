@@ -88,6 +88,7 @@ import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
+import au.gov.ga.earthsci.layer.ui.dnd.LocalLayerTransfer;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 import au.gov.ga.earthsci.worldwind.common.util.FlyToSectorAnimator;
@@ -330,9 +331,11 @@ public class LayerTreePart
 
 		//add drag and drop support
 		int ops = DND.DROP_COPY | DND.DROP_MOVE;
-		viewer.addDragSupport(ops, new Transfer[] { LayerTransfer.getInstance() }, new LayerTreeDragSourceListener(
-				viewer));
-		viewer.addDropSupport(ops, new Transfer[] { LayerTransfer.getInstance(), FileTransfer.getInstance() },
+		viewer.addDragSupport(ops, new Transfer[] { LocalLayerTransfer.getInstance(), LayerTransfer.getInstance() },
+				new LayerTreeDragSourceListener(
+						viewer));
+		viewer.addDropSupport(ops, new Transfer[] { LocalLayerTransfer.getInstance(), LayerTransfer.getInstance(),
+				FileTransfer.getInstance() },
 				new LayerTreeDropAdapter(viewer, model, context));
 
 		//add context menu
