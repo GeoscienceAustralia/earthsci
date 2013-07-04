@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,6 +77,14 @@ public class DiscoveryProviderRegistry
 	public static IDiscoveryProvider getProviderForId(String id)
 	{
 		return providers.get(id);
+	}
+
+	/**
+	 * @return The collection of providers registered in this registry.
+	 */
+	public static Collection<IDiscoveryProvider> getProviders()
+	{
+		return Collections.unmodifiableCollection(providers.values());
 	}
 
 	@Inject
