@@ -23,20 +23,27 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.TransformerException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import au.gov.ga.earthsci.common.util.XmlUtil;
 import au.gov.ga.earthsci.core.persistence.Exportable;
+import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.persistence.Persister;
 import au.gov.ga.earthsci.core.util.ConfigurationUtil;
@@ -60,7 +67,7 @@ public class DiscoveryServiceManager
 
 	private static final String servicesFilename = "discoveryServices.xml"; //$NON-NLS-1$
 	private static final File servicesFile = ConfigurationUtil.getWorkspaceFile(servicesFilename);
-	private static final List<IDiscoveryService> services = new ArrayList<IDiscoveryService>();
+	private static final Set<IDiscoveryService> services = new HashSet<IDiscoveryService>();
 	private static final Logger logger = LoggerFactory.getLogger(DiscoveryServiceManager.class);
 	private static final Listeners listeners = new Listeners();
 
@@ -99,20 +106,6 @@ public class DiscoveryServiceManager
 	}
 
 	/**
-	 * Add a new {@link IDiscoveryService} at a specific index.
-	 * 
-	 * @param index
-	 *            Index at which to add the service
-	 * @param service
-	 *            Service to add
-	 */
-	public static void addService(int index, IDiscoveryService service)
-	{
-		services.add(index, service);
-		listeners.serviceAdded(service);
-	}
-
-	/**
 	 * Remove the given {@link IDiscoveryService}.
 	 * 
 	 * @param service
@@ -127,23 +120,65 @@ public class DiscoveryServiceManager
 	/**
 	 * @return List of discovery services
 	 */
-	public static List<IDiscoveryService> getServices()
+	public static Set<IDiscoveryService> getServices()
 	{
-		return services;
+		return Collections.unmodifiableSet(services);
 	}
 
 	@PostConstruct
 	protected void loadServices()
 	{
-		if (!servicesFile.exists())
+		try
 		{
-			return;
+			List<IDiscoveryService> services = loadServices(servicesFile);
+			if (services != null)
+			{
+				DiscoveryServiceManager.services.clear();
+				DiscoveryServiceManager.services.addAll(services);
+			}
+		}
+		catch (Exception e)
+		{
+			logger.error("Error unpersisting discovery services", e); //$NON-NLS-1$		
+		}
+	}
+
+	@PreDestroy
+	protected void saveServices()
+	{
+		try
+		{
+			saveServices(services, servicesFile);
+		}
+		catch (Exception e)
+		{
+			logger.error("Error persisting discovery services", e); //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * Load a list of discovery services from an XML file. Returns
+	 * <code>null</code> if the file doesn't exist.
+	 * 
+	 * @param inputFile
+	 *            XML file to load from
+	 * @return List of loaded discovery services
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws PersistenceException
+	 */
+	public static List<IDiscoveryService> loadServices(File inputFile) throws IOException, SAXException,
+			PersistenceException
+	{
+		if (!inputFile.exists())
+		{
+			return null;
 		}
 
 		FileInputStream is = null;
 		try
 		{
-			is = new FileInputStream(servicesFile);
+			is = new FileInputStream(inputFile);
 			Document document = WWXML.createDocumentBuilder(false).parse(is);
 			Element parent = document.getDocumentElement();
 			Element[] elements = XmlUtil.getElements(parent);
@@ -153,12 +188,7 @@ public class DiscoveryServiceManager
 				PersistentDiscoveryService persistent = (PersistentDiscoveryService) persister.load(element, null);
 				services.add(persistent.createService());
 			}
-			DiscoveryServiceManager.services.clear();
-			DiscoveryServiceManager.services.addAll(services);
-		}
-		catch (Exception e)
-		{
-			logger.error("Error unpersisting discovery services", e); //$NON-NLS-1$		
+			return services;
 		}
 		finally
 		{
@@ -175,13 +205,25 @@ public class DiscoveryServiceManager
 		}
 	}
 
-	@PreDestroy
-	protected void saveServices()
+	/**
+	 * Save the given collection of discovery services to a file as formatted
+	 * XML.
+	 * 
+	 * @param services
+	 *            Services to save
+	 * @param outputFile
+	 *            Output file to save to
+	 * @throws TransformerException
+	 * @throws IOException
+	 * @throws PersistenceException
+	 */
+	public static void saveServices(Collection<IDiscoveryService> services, File outputFile)
+			throws TransformerException, IOException, PersistenceException
 	{
 		FileOutputStream os = null;
 		try
 		{
-			os = new FileOutputStream(servicesFile);
+			os = new FileOutputStream(outputFile);
 			DocumentBuilder documentBuilder = WWXML.createDocumentBuilder(false);
 			Document document = documentBuilder.newDocument();
 			Element element = document.createElement("Services"); //$NON-NLS-1$
@@ -192,10 +234,6 @@ public class DiscoveryServiceManager
 				persister.save(persistent, element, null);
 			}
 			XmlUtil.saveDocumentToFormattedStream(document, os);
-		}
-		catch (Exception e)
-		{
-			logger.error("Error persisting discovery services", e); //$NON-NLS-1$
 		}
 		finally
 		{
