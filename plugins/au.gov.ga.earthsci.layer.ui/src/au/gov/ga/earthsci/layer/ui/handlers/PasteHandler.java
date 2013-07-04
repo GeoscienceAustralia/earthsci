@@ -20,6 +20,7 @@ import java.io.File;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.annotations.Optional;
@@ -29,6 +30,7 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.FileTransfer;
 
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
@@ -44,6 +46,9 @@ public class PasteHandler
 {
 	@Inject
 	private ITreeModel model;
+
+	@Inject
+	private IEclipseContext context;
 
 	@Execute
 	public void execute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode target, TreeViewer viewer,
@@ -63,6 +68,8 @@ public class PasteHandler
 				target.addChild(node);
 				viewer.add(target, node);
 				viewer.reveal(node);
+
+				loadAllLayers(node, context);
 			}
 		}
 
@@ -81,8 +88,23 @@ public class PasteHandler
 					target.addChild(node);
 					viewer.add(target, node);
 					viewer.reveal(node);
+
+					loadAllLayers(node, context);
 				}
 			}
+		}
+	}
+
+	public static void loadAllLayers(ILayerTreeNode node, IEclipseContext context)
+	{
+		if (node instanceof LayerNode)
+		{
+			final LayerNode layerNode = (LayerNode) node;
+			IntentLayerLoader.load(layerNode, context);
+		}
+		for (ILayerTreeNode child : node.getChildren())
+		{
+			loadAllLayers(child, context);
 		}
 	}
 
