@@ -4,9 +4,9 @@
     <elements xsi:type="basic:PartDescriptor" xmi:id="_qWCWALeMEeKHso0qTaNhhg" elementId="au.gov.ga.earthsci.application.discovery.part" label="%au.gov.ga.earthsci.application.discovery.part.label" iconURI="platform:/plugin/au.gov.ga.earthsci.discovery.ui/icons/search.gif" tooltip="%au.gov.ga.earthsci.application.discovery.part.tooltip" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.discovery.ui/au.gov.ga.earthsci.discovery.ui.DiscoveryPart">
       <tags>View</tags>
       <tags>categoryTag:Data</tags>
-      <handlers xmi:id="_LWS9UMdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.serversHandler" contributionURI="bundleclass://au.gov.ga.earthsci.discovery.ui/au.gov.ga.earthsci.discovery.ui.handler.ServersHandler" command="_iZJ08MdkEeKLHJVniFVq1Q"/>
+      <handlers xmi:id="_LWS9UMdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.servicesHandler" contributionURI="bundleclass://au.gov.ga.earthsci.discovery.ui/au.gov.ga.earthsci.discovery.ui.handler.ServicesHandler" command="_iZJ08MdkEeKLHJVniFVq1Q"/>
       <toolbar xmi:id="_ldtLEMdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.toolbar">
-        <children xsi:type="menu:HandledToolItem" xmi:id="_mH9B8MdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.toolbar.servers" label="Servers" command="_iZJ08MdkEeKLHJVniFVq1Q"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_mH9B8MdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.toolbar.servers" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.discovery.ui/icons/server.gif" tooltip="Services" command="_iZJ08MdkEeKLHJVniFVq1Q"/>
       </toolbar>
     </elements>
   </fragments>
@@ -14,6 +14,6 @@
     <elements xsi:type="advanced:Placeholder" xmi:id="_6Rg7QLeMEeKHso0qTaNhhg" elementId="au.gov.ga.earthsci.application.discovery.part" toBeRendered="false"/>
   </fragments>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_Sv5BEMdkEeKLHJVniFVq1Q" featurename="commands" parentElementId="au.gov.ga.earthsci.application">
-    <elements xsi:type="commands:Command" xmi:id="_iZJ08MdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.servers" commandName="discoveryServersCommand"/>
+    <elements xsi:type="commands:Command" xmi:id="_iZJ08MdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.services" commandName="discoveryServicesCommand"/>
   </fragments>
 </fragment:ModelFragments>

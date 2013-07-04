@@ -19,21 +19,22 @@ import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 
 /**
  * Shows the discovery servers preferences page.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ServersHandler
+public class ServicesHandler
 {
 	@Execute
 	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell)
 	{
-		MessageBox message = new MessageBox(shell);
-		message.setMessage("NOT YET IMPLEMENTED");
-		message.open();
+		PreferenceDialog dialog =
+				PreferencesUtil.createPreferenceDialogOn(shell, "au.gov.ga.earthsci.discovery.services", null, null); //$NON-NLS-1$
+		dialog.open();
 	}
 }
