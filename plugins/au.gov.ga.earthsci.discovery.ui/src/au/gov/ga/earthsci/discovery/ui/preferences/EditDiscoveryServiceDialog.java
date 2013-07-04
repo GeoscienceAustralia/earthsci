@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Text;
 import au.gov.ga.earthsci.common.ui.util.TextURLDropAdapter;
 import au.gov.ga.earthsci.discovery.DiscoveryProviderRegistry;
 import au.gov.ga.earthsci.discovery.IDiscoveryProvider;
+import au.gov.ga.earthsci.discovery.ui.Messages;
 
 /**
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
@@ -143,7 +144,7 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 		}
 
 		Label typeLabel = new Label(parent, SWT.NONE);
-		typeLabel.setText("Type:");
+		typeLabel.setText(Messages.EditDiscoveryServiceDialog_TypeLabel);
 		typeCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
 		typeCombo.setItems(items);
 		typeCombo.select(selectedIndex);
@@ -164,7 +165,7 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 	protected void createNameField(Composite parent)
 	{
 		Label nameLabel = new Label(parent, SWT.NONE);
-		nameLabel.setText("Name:");
+		nameLabel.setText(Messages.EditDiscoveryServiceDialog_NameLabel);
 		nameText = new Text(parent, SWT.BORDER);
 		nameText.setText(name != null ? name : ""); //$NON-NLS-1$
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
@@ -184,7 +185,7 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 	protected void createLocationField(Composite parent)
 	{
 		Label urlLabel = new Label(parent, SWT.NONE);
-		urlLabel.setText("Location:");
+		urlLabel.setText(Messages.EditDiscoveryServiceDialog_LocationLabel);
 		urlText = new Text(parent, SWT.BORDER);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);

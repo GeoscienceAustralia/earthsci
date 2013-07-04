@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 import au.gov.ga.earthsci.discovery.IDiscoveryProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
+import au.gov.ga.earthsci.discovery.ui.Messages;
 
 /**
  * Enumeration of columns to use for a {@link Viewer} displaying a list of
@@ -31,7 +32,7 @@ public enum DiscoveryServiceViewerColumn
 	/**
 	 * {@link IDiscoveryService#getName()}
 	 */
-	NAME("Name")
+	NAME(Messages.DiscoveryServiceViewerColumn_NameColumn)
 	{
 		@Override
 		public String getText(IDiscoveryService discoveryService)
@@ -49,7 +50,7 @@ public enum DiscoveryServiceViewerColumn
 	/**
 	 * {@link IDiscoveryProvider#getName()}
 	 */
-	TYPE("Type")
+	TYPE(Messages.DiscoveryServiceViewerColumn_TypeColumn)
 	{
 		@Override
 		public String getText(IDiscoveryService discoveryService)
@@ -67,7 +68,7 @@ public enum DiscoveryServiceViewerColumn
 	/**
 	 * {@link IDiscoveryService#getServiceURL()}
 	 */
-	URL("Location")
+	URL(Messages.DiscoveryServiceViewerColumn_LocationColumn)
 	{
 		@Override
 		public String getText(IDiscoveryService discoveryService)
@@ -85,12 +86,12 @@ public enum DiscoveryServiceViewerColumn
 	/**
 	 * {@link IDiscoveryService#isEnabled()}
 	 */
-	ENABLED("Enabled")
+	ENABLED(Messages.DiscoveryServiceViewerColumn_EnabledColumn)
 	{
 		@Override
 		public String getText(IDiscoveryService discoveryService)
 		{
-			return discoveryService.isEnabled() ? "Enabled" : "Disabled";
+			return discoveryService.isEnabled() ? Messages.DiscoveryServiceViewerColumn_Enabled : Messages.DiscoveryServiceViewerColumn_Disabled;
 		}
 
 		@Override

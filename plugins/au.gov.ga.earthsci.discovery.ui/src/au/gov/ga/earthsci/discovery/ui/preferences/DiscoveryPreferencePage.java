@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.discovery.ui.preferences;
 
 import au.gov.ga.earthsci.common.ui.preferences.FieldEditorPreferencePage;
+import au.gov.ga.earthsci.discovery.ui.Messages;
 
 /**
  * Root Discovery preferences page.
@@ -28,8 +29,8 @@ public class DiscoveryPreferencePage extends FieldEditorPreferencePage
 	{
 		super(FLAT);
 		noDefaultAndApplyButton();
-		setTitle("Discovery");
-		setDescription("Configure the discovery of data in the application");
+		setTitle(Messages.DiscoveryPreferencePage_Title);
+		setDescription(Messages.DiscoveryPreferencePage_Description);
 	}
 
 	@Override

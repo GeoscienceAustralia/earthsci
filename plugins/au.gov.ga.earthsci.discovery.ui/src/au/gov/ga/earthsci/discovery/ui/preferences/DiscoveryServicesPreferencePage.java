@@ -67,6 +67,7 @@ import au.gov.ga.earthsci.discovery.IDiscoveryProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
 import au.gov.ga.earthsci.discovery.ui.Activator;
 import au.gov.ga.earthsci.discovery.ui.ILayoutConstants;
+import au.gov.ga.earthsci.discovery.ui.Messages;
 
 /**
  * PreferencePage for editing discovery services.
@@ -91,8 +92,8 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 	public DiscoveryServicesPreferencePage()
 	{
 		noDefaultAndApplyButton();
-		setTitle("Services");
-		setDescription("Configure the services used for data discovery");
+		setTitle(Messages.DiscoveryServicesPreferencePage_Title);
+		setDescription(Messages.DiscoveryServicesPreferencePage_Description);
 	}
 
 	@Override
@@ -343,7 +344,7 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 
 	private void createVerticalButtons(Composite parent)
 	{
-		addButton = createVerticalButton(parent, "Add...", false);
+		addButton = createVerticalButton(parent, Messages.DiscoveryServicesPreferencePage_AddButton, false);
 		addButton.addListener(SWT.Selection, new Listener()
 		{
 			@Override
@@ -353,7 +354,7 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 			}
 		});
 
-		editButton = createVerticalButton(parent, "Edit", false);
+		editButton = createVerticalButton(parent, Messages.DiscoveryServicesPreferencePage_EditButton, false);
 		editButton.addListener(SWT.Selection, new Listener()
 		{
 			@Override
@@ -363,7 +364,7 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 			}
 		});
 
-		removeButton = createVerticalButton(parent, "Remove", false);
+		removeButton = createVerticalButton(parent, Messages.DiscoveryServicesPreferencePage_RemoveButton, false);
 		removeButton.addListener(SWT.Selection, new Listener()
 		{
 			@Override
@@ -373,7 +374,7 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 			}
 		});
 
-		disableButton = createVerticalButton(parent, "Disable", false);
+		disableButton = createVerticalButton(parent, Messages.DiscoveryServicesPreferencePage_DisableButton, false);
 		disableButton.addListener(SWT.Selection, new Listener()
 		{
 			@Override
@@ -383,7 +384,7 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 			}
 		});
 
-		selectAllButton = createVerticalButton(parent, "Select All", false);
+		selectAllButton = createVerticalButton(parent, Messages.DiscoveryServicesPreferencePage_SelectAllButton, false);
 		selectAllButton.addListener(SWT.Selection, new Listener()
 		{
 			@Override
@@ -393,7 +394,7 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 			}
 		});
 
-		Button button = createVerticalButton(parent, "Import...", false);
+		Button button = createVerticalButton(parent, Messages.DiscoveryServicesPreferencePage_ImportButton, false);
 		button.addListener(SWT.Selection, new Listener()
 		{
 			@Override
@@ -403,7 +404,7 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 			}
 		});
 
-		exportButton = createVerticalButton(parent, "Export...", false);
+		exportButton = createVerticalButton(parent, Messages.DiscoveryServicesPreferencePage_ExportButton, false);
 		exportButton.addListener(SWT.Selection, new Listener()
 		{
 			@Override
@@ -454,11 +455,11 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 		editButton.setEnabled(selected.length == 1);
 		if (selected.length >= 1 && toggleMeansDisable(selected))
 		{
-			disableButton.setText("Disable");
+			disableButton.setText(Messages.DiscoveryServicesPreferencePage_Disable);
 		}
 		else
 		{
-			disableButton.setText("Enable");
+			disableButton.setText(Messages.DiscoveryServicesPreferencePage_Enable);
 		}
 	}
 
@@ -478,7 +479,7 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 	private void addService()
 	{
 		EditDiscoveryServiceDialog dialog = new EditDiscoveryServiceDialog(getShell());
-		dialog.setTitle("Add Discovery Service");
+		dialog.setTitle(Messages.DiscoveryServicesPreferencePage_AddDialogTitle);
 		if (dialog.open() == Window.OK)
 		{
 			IDiscoveryProvider provider = dialog.getProvider();
@@ -505,7 +506,7 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 
 		IDiscoveryService oldService = selected[0];
 		EditDiscoveryServiceDialog dialog = new EditDiscoveryServiceDialog(getShell());
-		dialog.setTitle("Edit Discovery Service");
+		dialog.setTitle(Messages.DiscoveryServicesPreferencePage_EditDialogTitle);
 		dialog.setProvider(oldService.getProvider());
 		dialog.setName(oldService.getName());
 		dialog.setURL(oldService.getServiceURL());
@@ -574,7 +575,8 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 			catch (Exception e)
 			{
 				IStatus status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getLocalizedMessage(), e);
-				StackTraceDialog.openError(getShell(), "Error", "Error importing Discovery services.", status);
+				StackTraceDialog.openError(getShell(), Messages.DiscoveryServicesPreferencePage_Error,
+						Messages.DiscoveryServicesPreferencePage_ImportError, status);
 			}
 
 			viewer.refresh();
@@ -597,7 +599,8 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 			catch (Exception e)
 			{
 				IStatus status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getLocalizedMessage(), e);
-				StackTraceDialog.openError(getShell(), "Error", "Error exporting Discovery services.", status);
+				StackTraceDialog.openError(getShell(), Messages.DiscoveryServicesPreferencePage_Error,
+						Messages.DiscoveryServicesPreferencePage_ExportError, status);
 			}
 		}
 	}
