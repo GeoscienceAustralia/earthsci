@@ -8,5 +8,19 @@
             uri="fragment.e4xmi">
       </fragment>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="au.gov.ga.earthsci.discovery"
+            class="au.gov.ga.earthsci.discovery.ui.preferences.DiscoveryServicesPreferencePage"
+            id="au.gov.ga.earthsci.discovery.services"
+            name="Services">
+      </page>
+      <page
+            class="au.gov.ga.earthsci.discovery.ui.preferences.DiscoveryPreferencePage"
+            id="au.gov.ga.earthsci.discovery"
+            name="Discovery">
+      </page>
+   </extension>
 
 </plugin>
