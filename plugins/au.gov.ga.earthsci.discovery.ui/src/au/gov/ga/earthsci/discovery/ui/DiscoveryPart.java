@@ -106,12 +106,11 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 
 		searchText = new Text(searchComposite, SWT.SEARCH);
 		searchText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
-		searchText.setMessage("Search text");
-		searchText.setText("australia"); //TODO remove
+		searchText.setMessage(Messages.DiscoveryPart_SearchPlaceholder);
 
 		Button searchButton = new Button(searchComposite, SWT.PUSH);
 		searchButton.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false));
-		searchButton.setText("Search");
+		searchButton.setText(Messages.DiscoveryPart_Search);
 		searchButton.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -282,7 +281,7 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 		{
 			Throwable e = discovery.getError();
 			IStatus status = new Status(IStatus.ERROR, Activator.getBundleName(), e.getLocalizedMessage(), e);
-			StackTraceDialog.openError(shell, "Error", null, status);
+			StackTraceDialog.openError(shell, Messages.DiscoveryPart_Error, null, status);
 		}
 	}
 
@@ -338,16 +337,16 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 		catch (URISyntaxException e)
 		{
 			IStatus status = new Status(IStatus.ERROR, Activator.getBundleName(), e.getLocalizedMessage(), e);
-			StackTraceDialog.openError(shell, "Error", "Error obtaining content URI from discovery result.", status);
+			StackTraceDialog.openError(shell, Messages.DiscoveryPart_Error,
+					Messages.DiscoveryPart_ContentURIParsingError, status);
 			return;
 		}
 
 		if (uri == null)
 		{
 			IStatus status =
-					new Status(IStatus.ERROR, Activator.getBundleName(),
-							"Discovery result does not contain a content URI.");
-			ErrorDialog.openError(shell, "Error", null, status);
+					new Status(IStatus.ERROR, Activator.getBundleName(), Messages.DiscoveryPart_ContentURIMissingError);
+			ErrorDialog.openError(shell, Messages.DiscoveryPart_Error, null, status);
 			return;
 		}
 
@@ -366,8 +365,8 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 					{
 						IStatus status =
 								new Status(IStatus.ERROR, Activator.getBundleName(), e.getLocalizedMessage(), e);
-						StackTraceDialog.openError(shell, "Error", "Error reading content from discovery result URI.",
-								status);
+						StackTraceDialog.openError(shell, Messages.DiscoveryPart_Error,
+								Messages.DiscoveryPart_ContentReadError, status);
 					}
 				});
 			}
