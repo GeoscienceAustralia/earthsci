@@ -132,6 +132,7 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 		discoveriesViewer = new TableViewer(resultsSashForm, SWT.BORDER);
 		discoveriesViewer.setContentProvider(new ArrayContentProvider());
 		discoveriesViewer.setLabelProvider(new DiscoveryLabelProvider());
+		discoveriesViewer.setComparator(new DiscoveryComparator());
 
 		resultsComposite = new Composite(resultsSashForm, SWT.NONE);
 		resultsComposite.setLayout(createGridLayout(1, 0));
@@ -178,14 +179,17 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 
 		for (IDiscoveryService service : DiscoveryServiceManager.getServices())
 		{
-			DiscoveryParameters parameters = new DiscoveryParameters();
-			parameters.setQuery(searchText.getText());
-			IDiscovery discovery = service.createDiscovery(parameters);
-			if (discovery != null)
+			if (service.isEnabled())
 			{
-				currentDiscoveries.add(discovery);
-				discovery.addListener(DiscoveryPart.this);
-				discovery.start();
+				DiscoveryParameters parameters = new DiscoveryParameters();
+				parameters.setQuery(searchText.getText());
+				IDiscovery discovery = service.createDiscovery(parameters);
+				if (discovery != null)
+				{
+					currentDiscoveries.add(discovery);
+					discovery.addListener(DiscoveryPart.this);
+					discovery.start();
+				}
 			}
 		}
 
