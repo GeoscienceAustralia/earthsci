@@ -25,6 +25,7 @@ import au.gov.ga.earthsci.common.ui.viewers.IFireableLabelProvider;
 import au.gov.ga.earthsci.common.ui.viewers.LoadingIconHelper;
 import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.discovery.IDiscovery;
+import au.gov.ga.earthsci.discovery.IDiscoveryService;
 
 /**
  * {@link ILabelProvider} implementation that provides labels for the list of
@@ -42,11 +43,12 @@ public class DiscoveryLabelProvider extends LabelProvider implements IFireableLa
 		if (element instanceof IDiscovery)
 		{
 			IDiscovery discovery = (IDiscovery) element;
+			IDiscoveryService service = discovery.getService();
 			StringBuilder sb = new StringBuilder();
-			String name = discovery.getService().getName();
-			if (Util.isEmpty(name))
+			String name = service.getName();
+			if (Util.isEmpty(name) && service.getServiceURL() != null)
 			{
-				name = discovery.getService().getServiceURL().toString();
+				name = service.getServiceURL().toString();
 			}
 			sb.append(name);
 			sb.append(" ("); //$NON-NLS-1$
