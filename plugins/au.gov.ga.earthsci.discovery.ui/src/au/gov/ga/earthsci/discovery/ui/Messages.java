@@ -28,6 +28,8 @@ public class Messages extends NLS
 	public static String DiscoveryPart_ContentURIMissingError;
 	public static String DiscoveryPart_ContentURIParsingError;
 	public static String DiscoveryPart_Error;
+	public static String DiscoveryPart_NoServicesDialogMessage;
+	public static String DiscoveryPart_NoServicesDialogTitle;
 	public static String DiscoveryPart_Search;
 	public static String DiscoveryPart_SearchPlaceholder;
 	public static String DiscoveryPreferencePage_Description;

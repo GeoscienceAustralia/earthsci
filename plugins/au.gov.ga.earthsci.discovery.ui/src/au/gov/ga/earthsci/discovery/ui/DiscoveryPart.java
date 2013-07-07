@@ -30,14 +30,19 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -62,6 +67,7 @@ import au.gov.ga.earthsci.discovery.IDiscoveryListener;
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
 import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
+import au.gov.ga.earthsci.discovery.ui.handler.ServicesHandler;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentManager;
@@ -83,6 +89,7 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 	private IEclipseContext context;
 
 	private Text searchText;
+	private Button searchButton;
 	private SashForm resultsSashForm;
 
 	private TableViewer discoveriesViewer;
@@ -107,8 +114,19 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 		searchText = new Text(searchComposite, SWT.SEARCH);
 		searchText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
 		searchText.setMessage(Messages.DiscoveryPart_SearchPlaceholder);
+		searchText.addTraverseListener(new TraverseListener()
+		{
+			@Override
+			public void keyTraversed(TraverseEvent e)
+			{
+				if (e.detail == SWT.TRAVERSE_RETURN)
+				{
+					performSearch();
+				}
+			}
+		});
 
-		Button searchButton = new Button(searchComposite, SWT.PUSH);
+		searchButton = new Button(searchComposite, SWT.PUSH);
 		searchButton.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false));
 		searchButton.setText(Messages.DiscoveryPart_Search);
 		searchButton.addSelectionListener(new SelectionAdapter()
@@ -119,6 +137,15 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 				performSearch();
 			}
 		});
+		searchText.addModifyListener(new ModifyListener()
+		{
+			@Override
+			public void modifyText(ModifyEvent e)
+			{
+				searchButton.setEnabled(searchText.getText().length() != 0);
+			}
+		});
+		searchButton.setEnabled(false);
 
 
 		Composite resultsRootComposite = new Composite(parent, SWT.NONE);
@@ -193,6 +220,15 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 		}
 
 		discoveriesViewer.setInput(currentDiscoveries);
+
+		if (currentDiscoveries.isEmpty())
+		{
+			if (MessageDialog.openQuestion(shell, Messages.DiscoveryPart_NoServicesDialogTitle,
+					Messages.DiscoveryPart_NoServicesDialogMessage))
+			{
+				new ServicesHandler().execute(shell);
+			}
+		}
 	}
 
 	private void createResultsViewer()
