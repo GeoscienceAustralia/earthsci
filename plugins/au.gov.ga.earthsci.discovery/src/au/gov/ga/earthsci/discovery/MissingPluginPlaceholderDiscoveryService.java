@@ -97,7 +97,13 @@ public class MissingPluginPlaceholderDiscoveryService implements IDiscoveryServi
 		@Override
 		public String getName()
 		{
-			return "Discovery provider plugin missing";
+			return "'" + id + "' discovery provider plugin missing";
+		}
+
+		@Override
+		public URL getIconURL()
+		{
+			return Icons.ERROR;
 		}
 
 		@Override

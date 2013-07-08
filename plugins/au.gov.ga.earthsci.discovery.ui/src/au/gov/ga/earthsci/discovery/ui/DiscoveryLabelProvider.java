@@ -15,11 +15,14 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery.ui;
 
+import java.net.URL;
+
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Image;
 
+import au.gov.ga.earthsci.application.IconLoader;
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.common.ui.viewers.IFireableLabelProvider;
 import au.gov.ga.earthsci.common.ui.viewers.LoadingIconHelper;
@@ -36,6 +39,7 @@ import au.gov.ga.earthsci.discovery.IDiscoveryService;
 public class DiscoveryLabelProvider extends LabelProvider implements IFireableLabelProvider
 {
 	private final LoadingIconHelper loadingIconHelper = new LoadingIconHelper(this);
+	private final IconLoader iconLoader = new IconLoader(this);
 
 	@Override
 	public String getText(Object element)
@@ -73,6 +77,14 @@ public class DiscoveryLabelProvider extends LabelProvider implements IFireableLa
 			else if (discovery.getError() != null)
 			{
 				return ImageRegistry.getInstance().get(ImageRegistry.ICON_ERROR);
+			}
+			else
+			{
+				URL iconURL = discovery.getService().getProvider().getIconURL();
+				if (iconURL != null)
+				{
+					return iconLoader.getImage(element, iconURL);
+				}
 			}
 		}
 		return super.getImage(element);

@@ -39,6 +39,12 @@ public interface IDiscoveryProvider
 	String getName();
 
 	/**
+	 * @return Image to show as the icon for this discovery provider; used in
+	 *         the UI
+	 */
+	URL getIconURL();
+
+	/**
 	 * Create a new discovery service for discovering data from the given URL,
 	 * which should be a URL pointing to a service that implements this
 	 * particular provider's method of discovering data.

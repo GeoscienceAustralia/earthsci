@@ -13,42 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.discovery.csw;
+package au.gov.ga.earthsci.discovery;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
-import au.gov.ga.earthsci.discovery.IDiscoveryProvider;
-import au.gov.ga.earthsci.discovery.IDiscoveryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Helper class for getting access to icon URLs.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class CSWDiscoveryProvider implements IDiscoveryProvider
+public class Icons
 {
-	@Override
-	public String getId()
+	public static final URL ERROR;
+
+	static
 	{
-		// TODO Auto-generated method stub
-		return "csw";
+		ERROR = getURL("icons/error.gif"); //$NON-NLS-1$
 	}
 
-	@Override
-	public String getName()
+	private static final Logger logger = LoggerFactory.getLogger(Icons.class);
+
+	private static URL getURL(String resourceName)
 	{
-		// TODO Auto-generated method stub
-		return "CSW";
+		try
+		{
+			return new URL("platform:/plugin/" + Activator.PLUGIN_ID + "/" + resourceName); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		catch (MalformedURLException e)
+		{
+			logger.error("Error creating icon url", e); //$NON-NLS-1$
+			return null;
+		}
 	}
 
-	@Override
-	public URL getIconURL()
+	private Icons()
 	{
-		return Icons.MAP_SERVER;
-	}
-
-	@Override
-	public IDiscoveryService createService(String name, URL serviceURL)
-	{
-		return new CSWDiscoveryService(name, serviceURL, this);
 	}
 }
