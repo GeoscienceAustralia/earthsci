@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+
+<project name="earthsci-verify" basedir="." default="run">
+
+	<property name="plugins.dir" value="${basedir}/../plugins" />
+
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="lib2.dir" value="${basedir}/../webstart/lib" />
+	<property name="target.dir" value="${basedir}/target" />
+	<property name="build.dir" value="${target.dir}/build" />
+	<property name="package.dir" value="${target.dir}/package" />
+	<property name="ant.task.jar" value="${package.dir}/jnlp.resources.jar" />
+
+	<target name="clean">
+		<delete dir="${target.dir}" />
+	</target>
+
+	<path id="classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${lib2.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="package-ant-task">
+		<mkdir dir="${build.dir}" />
+		<javac source="1.6" target="1.6" destdir="${build.dir}" classpathref="classpath" listfiles="no" fork="true" debug="false" includeantruntime="no">
+			<src path="${src.dir}" />
+		</javac>
+		<mkdir dir="${package.dir}" />
+		<jar destfile="${ant.task.jar}">
+			<fileset dir="${build.dir}" />
+		</jar>
+	</target>
+
+	<target name="verify" depends="package-ant-task">
+		<taskdef name="verifyplugins" classname="au.gov.ga.earthsci.verifier.VerifyPlugins" classpath="${ant.task.jar}" classpathref="classpath" />
+		<verifyplugins pluginsdir="${plugins.dir}" />
+	</target>
+
+	<target name="run" depends="verify" />
+
+</project>
