@@ -10,7 +10,7 @@
 	<property name="target.dir" value="${basedir}/target" />
 	<property name="build.dir" value="${target.dir}/build" />
 	<property name="package.dir" value="${target.dir}/package" />
-	<property name="ant.task.jar" value="${package.dir}/jnlp.resources.jar" />
+	<property name="ant.task.jar" value="${package.dir}/verify-plugins.jar" />
 
 	<target name="clean">
 		<delete dir="${target.dir}" />
