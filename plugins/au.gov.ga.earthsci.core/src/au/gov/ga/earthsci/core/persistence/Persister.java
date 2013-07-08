@@ -1040,7 +1040,7 @@ public class Persister
 	/**
 	 * Calculate the type for the given name. If the name has been registered
 	 * using {@link #registerNamedExportable(Class, String)}, that type is
-	 * returned. Otherwise {@link Class#forName(String)} is used.
+	 * returned. Otherwise {@link ClassLoader#loadClass(String)} is used.
 	 * 
 	 * @param name
 	 *            Name to calculate type for
