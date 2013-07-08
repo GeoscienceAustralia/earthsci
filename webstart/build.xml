@@ -137,8 +137,4 @@
 
 	<target name="run" depends="generate-jnlp" />
 
-	<target name="ifwebstart" if="${webstart}">
-		<antcall target="run" />
-	</target>
-
 </project>

@@ -26,10 +26,9 @@
 						<id>package</id>
 						<phase>package</phase>
 						<configuration>
-							<tasks>
-								<property name="webstart" value="${webstart}" />
-								<ant antfile="${basedir}/build.xml" target="ifwebstart" dir="${basedir}" />
-							</tasks>
+							<target if="${webstart}">
+								<ant antfile="${basedir}/build.xml" target="run" dir="${basedir}" />
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
@@ -39,9 +38,9 @@
 						<id>clean</id>
 						<phase>clean</phase>
 						<configuration>
-							<tasks>
+							<target>
 								<ant antfile="${basedir}/build.xml" target="clean" dir="${basedir}" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
