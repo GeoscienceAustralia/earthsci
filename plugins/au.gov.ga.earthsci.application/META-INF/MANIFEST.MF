@@ -97,7 +97,9 @@ Require-Bundle: javax.inject;bundle-version="1.0.0",
  au.gov.ga.earthsci.common.ui,
  org.eclipse.emf.ecore;bundle-version="2.9.0",
  au.gov.ga.earthsci.eclipse.extras,
- au.gov.ga.earthsci.intent
+ au.gov.ga.earthsci.intent,
+ au.gov.ga.earthsci.notification;bundle-version="1.0.0",
+ au.gov.ga.earthsci.notification.ui;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.annotation;version="1.1.0",
  org.osgi.framework;version="1.3.0"
