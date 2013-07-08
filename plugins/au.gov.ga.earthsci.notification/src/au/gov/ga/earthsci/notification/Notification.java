@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * The default implementation of the {@link INotification} interface
  * <p/>
@@ -245,6 +247,28 @@ public class Notification implements INotification
 			this.text = text;
 		}
 
+		public Builder(IStatus status)
+		{
+			this.text = status.getMessage();
+			this.title = status.getMessage();
+			this.level = getLevel(status.getSeverity());
+		}
+
+		private NotificationLevel getLevel(int statusSeverity)
+		{
+			switch (statusSeverity)
+			{
+			case IStatus.ERROR:
+				return NotificationLevel.ERROR;
+			case IStatus.WARNING:
+				return NotificationLevel.WARNING;
+			case IStatus.INFO:
+				return NotificationLevel.INFORMATION;
+			default:
+				return NotificationLevel.INFORMATION;
+			}
+		}
+
 		/**
 		 * @see INotification#getCategory()
 		 */
@@ -280,17 +304,21 @@ public class Notification implements INotification
 			return this;
 		}
 
+		public Builder requiringAcknowledgement(boolean required)
+		{
+			this.requiresAcknowledgement = required;
+			this.acknowledgementAction = required ? new DefaultAcknowledgementAction() : null;
+			return this;
+		}
+
 		/**
 		 * @see INotification#requiresAcknowledgment()
 		 * @see INotification#getAcknowledgementAction()
 		 */
 		public Builder requiringAcknowledgement()
 		{
-			this.requiresAcknowledgement = true;
-			this.acknowledgementAction = new DefaultAcknowledgementAction();
-			return this;
+			return requiringAcknowledgement(true);
 		}
-
 
 		/**
 		 * @see INotification#requiresAcknowledgment()

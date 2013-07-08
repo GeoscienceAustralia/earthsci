@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 public class SLF4JOSGiLogServiceBridge implements LogService
 {
 
-	private static final Logger logger = LoggerFactory.getLogger("e4"); //$NON-NLS-1$
+	protected static final Logger logger = LoggerFactory.getLogger("e4"); //$NON-NLS-1$
 
 	@Override
 	public void log(int level, String message)

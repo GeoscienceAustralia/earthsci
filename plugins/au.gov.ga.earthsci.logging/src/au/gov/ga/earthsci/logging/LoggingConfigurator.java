@@ -21,10 +21,14 @@ import java.net.URL;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
+import org.eclipse.core.internal.runtime.PlatformLogWriter;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.services.log.ILoggerProvider;
+import org.eclipse.equinox.log.ExtendedLogService;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
+import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -44,6 +48,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
+@SuppressWarnings("deprecation")
 public class LoggingConfigurator
 {
 	private static final String LOGBACK_XML = "logback.xml"; //$NON-NLS-1$
@@ -65,6 +70,7 @@ public class LoggingConfigurator
 	{
 		configureLogback();
 		registerOSGiLogService(bundleContext);
+		bypassRuntimeLog(bundleContext);
 
 		logger.debug("Logging configuration initialised."); //$NON-NLS-1$
 	}
@@ -132,5 +138,17 @@ public class LoggingConfigurator
 	{
 		bundleContext.registerService(LogService.class, new SLF4JOSGiLogServiceBridge(), null);
 		bundleContext.registerService(ILoggerProvider.class, new SLF4JE4BridgeLoggerProvider(), null);
+		bundleContext.registerService(ExtendedLogService.class, new SLF4JExtendedLogService(), null);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static void bypassRuntimeLog(BundleContext context)
+	{
+		ServiceReference packageAdminRef = context.getServiceReference(PackageAdmin.class.getName());
+		PackageAdmin packageAdmin = (PackageAdmin) context.getService(packageAdminRef);
+		PlatformLogWriter writer =
+				new PlatformLogWriter(new SLF4JExtendedLogService(), packageAdmin, context.getBundle());
+
+		RuntimeLogBypass.apply(writer);
 	}
 }
