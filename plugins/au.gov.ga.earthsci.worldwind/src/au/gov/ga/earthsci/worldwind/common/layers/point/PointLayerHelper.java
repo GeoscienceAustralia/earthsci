@@ -57,9 +57,11 @@ public class PointLayerHelper
 
 		styleProvider.setStyles((List<Style>) params.getValue(AVKeyMore.DATA_LAYER_STYLES));
 		styleProvider.setAttributes((List<Attribute>) params.getValue(AVKeyMore.DATA_LAYER_ATTRIBUTES));
-		
-		Validate.notBlank(url, "Point data url not set");
-		Validate.notBlank(dataCacheName, "Point data cache name not set");
+
+		// Disable validation of URL and DataCacheName, because some point providers
+		// (such as the XMLPointProvider) don't require them:
+		//Validate.notBlank(url, "Point data url not set");
+		//Validate.notBlank(dataCacheName, "Point data cache name not set");
 
 		Validate.notNull(pointProvider, "Point data provider is null");
 		Validate.notNull(styleProvider.getStyles(), "Point style list is null");
