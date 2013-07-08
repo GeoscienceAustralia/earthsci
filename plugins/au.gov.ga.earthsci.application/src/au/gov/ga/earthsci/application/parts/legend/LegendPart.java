@@ -15,11 +15,11 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.legend;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -37,6 +37,7 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
  * Part that displays layer legends.
@@ -49,23 +50,18 @@ public class LegendPart
 	public static final String WINDOW_ID = PART_ID + ".window"; //$NON-NLS-1$
 	public static final String STACK_ID = PART_ID + ".stack"; //$NON-NLS-1$
 	public static final String INPUT_NAME = PART_ID + ".input"; //$NON-NLS-1$
+	public static final String PERSISTED_URL_KEY = PART_ID + ".persistedUrl"; //$NON-NLS-1$
 
 	private Browser browser;
 
 	@Inject
+	private MPart part;
+
+	@PostConstruct
 	public void init(Composite parent)
 	{
 		browser = new Browser(parent, SWT.NONE);
-	}
-
-	@PostConstruct
-	private void postConstruct()
-	{
-	}
-
-	@PreDestroy
-	private void preDestroy()
-	{
+		setUrl(part.getPersistedState().get(PERSISTED_URL_KEY));
 	}
 
 	@Inject
@@ -73,9 +69,16 @@ public class LegendPart
 	private void setPartInput(@Named(INPUT_NAME) ILayerTreeNode partInput)
 	{
 		ILayerTreeNode layer = partInput;
-		if (layer.getLegendURL() != null)
+		URL url = layer.getLegendURL();
+		setUrl(url != null ? url.toString() : null);
+	}
+
+	public void setUrl(String url)
+	{
+		part.getPersistedState().put(PERSISTED_URL_KEY, url);
+		if (!Util.isBlank(url))
 		{
-			browser.setUrl(layer.getLegendURL().toString());
+			browser.setUrl(url);
 		}
 		else
 		{
@@ -85,7 +88,8 @@ public class LegendPart
 
 	private String generateMissingHtml()
 	{
-		return "<html><body>No legend defined.</body></html>";
+		String message = "No legend defined.";
+		return "<html><body>" + message + "</body></html>"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public static MPart showPart(EPartService partService, EModelService modelService, MWindow window, String reuseTag,
