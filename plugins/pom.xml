@@ -36,12 +36,15 @@
 		<module>au.gov.ga.earthsci.application</module>
 		<module>au.gov.ga.earthsci.application.tests</module>
 		<module>au.gov.ga.earthsci.model.ui</module>
+		<module>au.gov.ga.earthsci.model.tests</module>
 		<module>au.gov.ga.earthsci.catalog</module>
 		<module>au.gov.ga.earthsci.catalog.tests</module>
 		<module>au.gov.ga.earthsci.catalog.ui</module>
 		<module>au.gov.ga.earthsci.catalog.ui.tests</module>
 		<module>au.gov.ga.earthsci.catalog.dataset</module>
 		<module>au.gov.ga.earthsci.catalog.dataset.tests</module>
+		<module>au.gov.ga.earthsci.catalog.wms</module>
+		<module>au.gov.ga.earthsci.catalog.directory</module>
 		<module>au.gov.ga.earthsci.discovery</module>
 		<module>au.gov.ga.earthsci.discovery.csw</module>
 		<module>au.gov.ga.earthsci.discovery.ui</module>
