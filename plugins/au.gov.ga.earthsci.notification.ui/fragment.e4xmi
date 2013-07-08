@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="ASCII"?>
 <fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/descriptor/basic" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="___ZCIJchEeKJF7M24guKoA">
   <imports xsi:type="commands:Command" xmi:id="_D6eXoJciEeKJF7M24guKoA" elementId="au.gov.ga.earthsci.application.command.groupBy"/>
+  <imports xsi:type="commands:Command" xmi:id="_kD-6AOgcEeKDKYCx5tWecQ" elementId="au.gov.ga.earthsci.application.command.clear"/>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="___ZCIZchEeKJF7M24guKoA" featurename="descriptors" parentElementId="au.gov.ga.earthsci.application">
     <elements xsi:type="basic:PartDescriptor" xmi:id="___ZCIpchEeKJF7M24guKoA" elementId="au.gov.ga.earthsci.notification.notifications.part" label="%au.gov.ga.earthsci.notification.notifications.part.label" iconURI="platform:/plugin/au.gov.ga.earthsci.notification.ui/icons/problems.gif" tooltip="%au.gov.ga.earthsci.notification.notifications.part.tooltip" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.notification.ui/au.gov.ga.earthsci.notification.ui.NotificationPart">
       <tags>View</tags>
       <tags>categoryTag:Other</tags>
       <handlers xmi:id="___ZCI5chEeKJF7M24guKoA" elementId="au.gov.ga.earthsci.notification.part.groupby" contributionURI="bundleclass://au.gov.ga.earthsci.notification.ui/au.gov.ga.earthsci.notification.ui.handlers.GroupByHandler" command="_D6eXoJciEeKJF7M24guKoA"/>
+      <handlers xmi:id="_rCx4IOgcEeKDKYCx5tWecQ" elementId="au.gov.ga.earthsci.notification.ui.handler.clear" contributionURI="bundleclass://au.gov.ga.earthsci.notification.ui/au.gov.ga.earthsci.notification.ui.handlers.ClearHandler" command="_kD-6AOgcEeKDKYCx5tWecQ"/>
       <menus xmi:id="___ZCJJchEeKJF7M24guKoA" elementId="au.gov.ga.earthsci.notification.notifications.viewmenu" label="">
         <tags>ViewMenu</tags>
         <children xsi:type="menu:Menu" xmi:id="___ZCJZchEeKJF7M24guKoA" elementId="au.gov.ga.earthsci.notification.notifications.viewmenu.group" label="Group by">
@@ -14,6 +16,9 @@
           <children xsi:type="menu:HandledMenuItem" xmi:id="___ZCKJchEeKJF7M24guKoA" elementId="au.gov.ga.earthsci.notification.notifications.viewmenu.group.category" label="Category" type="Radio" command="_D6eXoJciEeKJF7M24guKoA"/>
         </children>
       </menus>
+      <toolbar xmi:id="_mIKYQOgcEeKDKYCx5tWecQ" elementId="au.gov.ga.earthsci.notification.ui.toolbar">
+        <children xsi:type="menu:HandledToolItem" xmi:id="_nRySwOgcEeKDKYCx5tWecQ" elementId="au.gov.ga.earthsci.notification.ui.handledtoolitem.clear" iconURI="platform:/plugin/au.gov.ga.earthsci.notification.ui/icons/remove.gif" tooltip="Clear" command="_kD-6AOgcEeKDKYCx5tWecQ"/>
+      </toolbar>
     </elements>
   </fragments>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_sMOkMJciEeKJF7M24guKoA" featurename="children" parentElementId="au.gov.ga.earthsci.application.partstack.0.1.1">
