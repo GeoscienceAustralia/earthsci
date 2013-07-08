@@ -3,9 +3,6 @@ package au.gov.ga.earthsci.notification.ui.handlers;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Singleton;
-
-import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenuItem;
 
@@ -18,8 +15,6 @@ import au.gov.ga.earthsci.notification.ui.NotificationPart.Grouping;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-@Singleton
-@Creatable
 public class GroupByHandler
 {
 	public static final String ID = "au.gov.ga.earthsci.notification.part.groupby"; //$NON-NLS-1$
@@ -48,21 +43,14 @@ public class GroupByHandler
 		return idToGrouping.get(id);
 	}
 
-	private NotificationPart view;
-
-	public void setView(NotificationPart view)
-	{
-		this.view = view;
-	}
-
 	@Execute
-	public void execute(MMenuItem item)
+	public void execute(MMenuItem item, NotificationPart part)
 	{
 		if (!item.isSelected())
 		{
 			return;
 		}
-		view.setGrouping(getGroupingForMenuItemId(item.getElementId()));
+		part.setGrouping(getGroupingForMenuItemId(item.getElementId()));
 	}
 
 }

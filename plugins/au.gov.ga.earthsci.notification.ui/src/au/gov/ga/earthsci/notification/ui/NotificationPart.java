@@ -10,12 +10,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenu;
@@ -58,8 +61,7 @@ import au.gov.ga.earthsci.notification.ui.handlers.GroupByHandler;
  * {@link INotification}s
  * <p/>
  * The model for this view is maintained by an injected
- * {@link NotificationPartReceiver} instance, which can be changed at any time
- * using the {@link #setReceiver(NotificationPartReceiver)} method
+ * {@link NotificationPartReceiver} instance.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
@@ -117,12 +119,17 @@ public class NotificationPart
 	@Named(IServiceConstants.ACTIVE_SHELL)
 	private Shell shell;
 
+	@Inject
+	private IEclipseContext context;
+
 	/**
 	 * Initialise this view with the given parent component
 	 */
-	@Inject
+	@PostConstruct
 	public void init(Composite parent, MPart part, NotificationPartReceiver receiver)
 	{
+		context.set(NotificationPart.class, this);
+
 		GridLayout layout = new GridLayout(1, false);
 		parent.setLayout(layout);
 
@@ -131,20 +138,16 @@ public class NotificationPart
 		setReceiver(receiver);
 	}
 
-	/**
-	 * Set the handler to use when receiving user menu events to control
-	 * grouping in this view
-	 */
-	@Inject
-	public void setNotificationViewGroupByHandler(GroupByHandler handler)
+	@PreDestroy
+	public void dispose()
 	{
-		handler.setView(this);
+		context.remove(NotificationPart.class);
 	}
 
 	/**
 	 * Set the receiver that this view should listen to for notifications
 	 */
-	public void setReceiver(NotificationPartReceiver receiver)
+	private void setReceiver(NotificationPartReceiver receiver)
 	{
 		this.receiver = receiver;
 		this.receiver.setView(this);
@@ -397,7 +400,7 @@ public class NotificationPart
 	 * Re-build the notification tree from the notification list on the attached
 	 * receiver using the current grouping/filtering settings.
 	 */
-	private void reloadNotificationTree()
+	public void reloadNotificationTree()
 	{
 		if (receiver == null)
 		{
