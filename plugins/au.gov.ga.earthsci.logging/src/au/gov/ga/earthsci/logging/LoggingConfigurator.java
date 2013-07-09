@@ -28,7 +28,6 @@ import org.eclipse.equinox.log.ExtendedLogService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
-import org.osgi.service.packageadmin.PackageAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -48,7 +47,6 @@ import ch.qos.logback.core.util.StatusPrinter;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-@SuppressWarnings("deprecation")
 public class LoggingConfigurator
 {
 	private static final String LOGBACK_XML = "logback.xml"; //$NON-NLS-1$
@@ -141,11 +139,13 @@ public class LoggingConfigurator
 		bundleContext.registerService(ExtendedLogService.class, new SLF4JExtendedLogService(), null);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
 	private static void bypassRuntimeLog(BundleContext context)
 	{
-		ServiceReference packageAdminRef = context.getServiceReference(PackageAdmin.class.getName());
-		PackageAdmin packageAdmin = (PackageAdmin) context.getService(packageAdminRef);
+		ServiceReference packageAdminRef =
+				context.getServiceReference(org.osgi.service.packageadmin.PackageAdmin.class.getName());
+		org.osgi.service.packageadmin.PackageAdmin packageAdmin =
+				(org.osgi.service.packageadmin.PackageAdmin) context.getService(packageAdminRef);
 		PlatformLogWriter writer =
 				new PlatformLogWriter(new SLF4JExtendedLogService(), packageAdmin, context.getBundle());
 
