@@ -91,8 +91,9 @@ public class TailByteArrayOutputStream extends ByteArrayOutputStream
 	@Override
 	public synchronized void write(int b)
 	{
-		moveTail(1);
+		int movement = moveTail(1);
 		super.write(b);
+		tailUpdated(movement, start, count);
 	}
 
 	@Override
@@ -105,8 +106,9 @@ public class TailByteArrayOutputStream extends ByteArrayOutputStream
 			off += len - limit;
 			len = limit;
 		}
-		moveTail(len);
+		int movement = moveTail(len);
 		super.write(b, off, len);
+		tailUpdated(movement, start, count);
 	}
 
 	/**
@@ -114,8 +116,9 @@ public class TailByteArrayOutputStream extends ByteArrayOutputStream
 	 * will increase the size of the buffer beyond the allowed capacity.
 	 * 
 	 * @param len
+	 * @return Distance the tail moved towards the start of the array
 	 */
-	protected void moveTail(int len)
+	protected int moveTail(int len)
 	{
 		if (limit > 0)
 		{
@@ -123,15 +126,18 @@ public class TailByteArrayOutputStream extends ByteArrayOutputStream
 			if (newcount > limit * (1 + loadFactor))
 			{
 				newcount = Math.max(0, limit - len);
-				System.arraycopy(buf, count - newcount, buf, 0, newcount);
+				int pos = count - newcount;
+				System.arraycopy(buf, pos, buf, 0, newcount);
 				count = newcount;
 				setStart(0);
+				return pos;
 			}
 			else
 			{
 				setStart(Math.max(0, newcount - limit));
 			}
 		}
+		return 0;
 	}
 
 	@Override
@@ -139,21 +145,37 @@ public class TailByteArrayOutputStream extends ByteArrayOutputStream
 	{
 		super.reset();
 		setStart(0);
+		tailUpdated(0, 0, 0);
 	}
 
 	/**
 	 * Set the position of the first byte in the tail. If the <code>count</code>
 	 * is greater than the <code>limit</code>, then
 	 * <code>start = count - limit</code>.
-	 * <p/>
-	 * This method is designed to be overridden by subclasses that are required
-	 * to handle changes to the start offet.
 	 * 
 	 * @param start
 	 */
 	protected void setStart(int start)
 	{
 		this.start = start;
+	}
+
+	/**
+	 * Called when the tail is updated/written to.
+	 * <p/>
+	 * Subclasses can override this to react to changes.
+	 * 
+	 * @param movement
+	 *            Amount the tail was moved backward in the array (non-zero if
+	 *            the tail was moved due to the length of the new data written
+	 *            being greater than the allowed capacity)
+	 * @param start
+	 *            New start of the tail
+	 * @param count
+	 *            New length of the tail
+	 */
+	protected void tailUpdated(int movement, int start, int count)
+	{
 	}
 
 	@Override
