@@ -115,11 +115,8 @@ public class RetrievalJob extends Job
 		//mark the job as done
 		monitor.done();
 
-		//TODO not sure about this return value
-		boolean error = result.status == RetrieverResultStatus.ERROR;
-		Exception exception = result.result == null ? null : result.result.getError();
-		String message = exception == null ? null : exception.getLocalizedMessage();
-		return !error ? JobStatus.OK_STATUS : new JobStatus(IStatus.ERROR, this, message);
+		//errors are handled by the caller of the retrieval, so consider this job successful:
+		return JobStatus.OK_STATUS;
 	}
 
 	public RetrieverResult getRetrievalResult()
