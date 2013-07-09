@@ -28,7 +28,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class TailByteArrayOutputStream extends ByteArrayOutputStream
 {
-	protected int limit = 0; //0 means unlimited
+	protected int limit = 0;
 	protected float loadFactor = 0.5f;
 	protected int start = 0;
 
@@ -125,11 +125,11 @@ public class TailByteArrayOutputStream extends ByteArrayOutputStream
 				newcount = Math.max(0, limit - len);
 				System.arraycopy(buf, count - newcount, buf, 0, newcount);
 				count = newcount;
-				start = 0;
+				setStart(0);
 			}
 			else
 			{
-				start = Math.max(0, newcount - limit);
+				setStart(Math.max(0, newcount - limit));
 			}
 		}
 	}
@@ -138,7 +138,22 @@ public class TailByteArrayOutputStream extends ByteArrayOutputStream
 	public synchronized void reset()
 	{
 		super.reset();
-		start = 0;
+		setStart(0);
+	}
+
+	/**
+	 * Set the position of the first byte in the tail. If the <code>count</code>
+	 * is greater than the <code>limit</code>, then
+	 * <code>start = count - limit</code>.
+	 * <p/>
+	 * This method is designed to be overridden by subclasses that are required
+	 * to handle changes to the start offet.
+	 * 
+	 * @param start
+	 */
+	protected void setStart(int start)
+	{
+		this.start = start;
 	}
 
 	@Override
