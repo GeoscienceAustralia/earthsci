@@ -54,6 +54,7 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 	public static final String ICON_APPLY = "icon.apply"; //$NON-NLS-1$
 	public static final String ICON_EDIT = "icon.edit"; //$NON-NLS-1$
 	public static final String ICON_BOOKMARKS = "icon.bookmarks"; //$NON-NLS-1$
+	public static final String ICON_CONSOLE = "icon.console"; //$NON-NLS-1$
 	public static final String DECORATION_INCLUDED = "decoration.included"; //$NON-NLS-1$
 
 	private final Map<String, URL> urlMap = new ConcurrentHashMap<String, URL>();
@@ -91,6 +92,7 @@ public class ImageRegistry extends org.eclipse.jface.resource.ImageRegistry
 		putResource(ICON_TRANSPARENT, "/icons/transparent.gif"); //$NON-NLS-1$
 
 		putResource(ICON_BOOKMARKS, "/icons/bookmarks.gif"); //$NON-NLS-1$
+		putResource(ICON_CONSOLE, "/icons/console.gif"); //$NON-NLS-1$
 
 		putResource(DECORATION_INCLUDED, "/icons/included_dec.gif"); //$NON-NLS-1$
 	}
