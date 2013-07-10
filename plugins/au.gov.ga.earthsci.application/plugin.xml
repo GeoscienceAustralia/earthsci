@@ -184,5 +184,13 @@
             tooltip="RCP">
       </splashExtension>
    </extension>
+   <extension
+         point="org.eclipse.ui.console.consoleFactories">
+      <consoleFactory
+            class="au.gov.ga.earthsci.application.console.StandardOutConsoleFactory"
+            icon="icons/console.gif"
+            label="Console">
+      </consoleFactory>
+   </extension>
 
 </plugin>

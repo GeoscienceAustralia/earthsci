@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import au.gov.ga.earthsci.application.console.StandardOutputCollector;
 import au.gov.ga.earthsci.common.ui.util.KeyboardFocusManagerFix;
 
 /**
@@ -47,6 +48,9 @@ public class Activator extends AbstractUIPlugin
 		super.start(bundleContext);
 		plugin = this;
 		Activator.context = bundleContext;
+
+		//add System.out/System.err collection:
+		StandardOutputCollector.getInstance().install();
 
 		//bugfix:
 		KeyboardFocusManagerFix.initialize();
