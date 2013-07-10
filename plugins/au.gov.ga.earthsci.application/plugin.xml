@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="au.gov.ga.earthsci.application.defaultTheme" name="Application Default Theme" schema="schema/au.gov.ga.earthsci.application.defaultTheme.exsd"/>
    <extension-point id="au.gov.ga.earthsci.application.iconReplacementProviders" name="Icon Replacement Providers" schema="schema/au.gov.ga.earthsci.application.iconReplacementProviders.exsd"/>
+   <extension-point id="splashExtension" name="Splash Extensions" schema="schema/splashExtension.exsd"/>
    <extension
          id="application"
          point="org.eclipse.core.runtime.applications">
@@ -45,6 +46,18 @@
          <property
                name="rendererFactoryUri"
                value="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.compatibility.WorkbenchRendererFactoryFixed">
+         </property>
+         <property
+               name="aboutText"
+               value="EarthSci - The Earth Science visualisation platform.&#x0A; &#x0A;Version 0.1&#x0A; &#x0A;Visit https://github.com/ga-m3dv/ga-earthsci-rcp/wiki for more information.&#x0A; &#x0A;Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0">
+         </property>
+         <property
+               name="windowImages"
+               value="branding/earthsci-icon-16px.png,branding/earthsci-icon-32px.png,branding/earthsci-icon-48px.png,branding/earthsci-icon-64px.png,branding/earthsci-icon-128px.png">
+         </property>
+         <property
+               name="aboutImage"
+               value="branding/earthsci-about-150x250px.png">
          </property>
       </product>
    </extension>
@@ -135,6 +148,41 @@
                id="org.eclipse.core.runtime.html">
          </content-type>
       </filter>
+   </extension>
+   <extension
+         point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="au.gov.ga.earthsci.application.splashHandlers.ExtensibleSplashHandler"
+            id="au.gov.ga.earthsci.application.splashHandlers.extensible">
+      </splashHandler>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.application.splashExtension">
+      <splashExtension
+            icon="icons/af.png"
+            id="af"
+            tooltip="Application Framework">
+      </splashExtension>
+      <splashExtension
+            icon="icons/embedded.png"
+            id="embedded"
+            tooltip="Embedded">
+      </splashExtension>
+      <splashExtension
+            icon="icons/enterprise.png"
+            id="enterprise"
+            tooltip="Enterprise">
+      </splashExtension>
+      <splashExtension
+            icon="icons/languages.png"
+            id="languages"
+            tooltip="Languages">
+      </splashExtension>
+      <splashExtension
+            icon="icons/rcp.png"
+            id="rcp"
+            tooltip="RCP">
+      </splashExtension>
    </extension>
 
 </plugin>

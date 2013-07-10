@@ -3,6 +3,19 @@
 
 <product name="EarthSci" uid="au.gov.ga.earthsci.product" id="au.gov.ga.earthsci.application.product" application="au.gov.ga.earthsci.application.application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
+   <aboutInfo>
+      <image path="/au.gov.ga.earthsci.application/branding/earthsci-about-150x250px.png"/>
+      <text>
+         EarthSci - The Earth Science visualisation platform.
+ 
+Version 0.1
+ 
+Visit https://github.com/ga-m3dv/ga-earthsci-rcp/wiki for more information.
+ 
+Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+      </text>
+   </aboutInfo>
+
    <configIni use="default">
    </configIni>
 
@@ -11,17 +24,28 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages/>
+   <windowImages i16="/au.gov.ga.earthsci.application/branding/earthsci-icon-16px.png" i32="/au.gov.ga.earthsci.application/branding/earthsci-icon-32px.png" i48="/au.gov.ga.earthsci.application/branding/earthsci-icon-48px.png" i64="/au.gov.ga.earthsci.application/branding/earthsci-icon-64px.png" i128="/au.gov.ga.earthsci.application/branding/earthsci-icon-128px.png"/>
 
+   <splash
+      location="au.gov.ga.earthsci.application" />
    <launcher name="earthsci">
       <solaris/>
-      <win useIco="false">
+      <win useIco="true">
+         <ico path="earthsci-icon.ico"/>
          <bmp/>
       </win>
    </launcher>
 
    <vm>
    </vm>
+
+   <license>
+        <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        <text>
+   Licensed under the Apache License, version 2.0
+http://www.apache.org/licenses/LICENSE-2.0
+         </text>
+   </license>
 
    <plugins>
    </plugins>
