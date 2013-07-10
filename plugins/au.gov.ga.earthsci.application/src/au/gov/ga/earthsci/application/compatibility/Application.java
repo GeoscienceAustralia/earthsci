@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.WorkbenchPlugin;
 
 /**
  * This class controls all aspects of the application's execution
@@ -15,7 +16,7 @@ public class Application implements IApplication
 	private static final String PROP_EXIT_CODE = "eclipse.exitcode"; //$NON-NLS-1$
 
 	@Override
-	public Object start(IApplicationContext context)
+	public Object start(IApplicationContext context) throws Exception
 	{
 		//this is a dodgy way to override the model factory used by everything to create model
 		//elements (the org.eclipse.e4.ui.model.application.ui.basic.impl.BasicFactoryImpl class)
@@ -37,13 +38,18 @@ public class Application implements IApplication
 		Display display = PlatformUI.createDisplay();
 		try
 		{
-			Shell shell = new Shell(display);
+			// look and see if there's a splash shell we can parent off of
+			Shell shell = WorkbenchPlugin.getSplashShell(display);
+			if (shell == null)
+			{
+				shell = new Shell(display);
+			}
+
 			Object instanceLocationCheck = WorkspaceHelper.checkInstanceLocation(shell, context.getArguments());
 			if (instanceLocationCheck != null)
 			{
-				//WorkbenchPlugin.unsetSplashShell(display);
-				// //Platform.endSplash();
-				//context.applicationRunning();
+				WorkbenchPlugin.unsetSplashShell(display);
+				context.applicationRunning();
 				return instanceLocationCheck;
 			}
 
