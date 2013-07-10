@@ -27,5 +27,7 @@ Export-Package: org.eclipse.uomo.core,
  org.unitsofmeasurement.service,
  org.unitsofmeasurement.unit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: libs/unit-api-0.6.1.jar,
- .
+Bundle-ClassPath: .,
+ org.eclipse.uomo.core_0.7.0.201306062021.jar,
+ org.eclipse.uomo.units_0.7.0.201306062021.jar,
+ unit-api-0.6.1.jar
