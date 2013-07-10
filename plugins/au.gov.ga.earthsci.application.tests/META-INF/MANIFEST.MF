@@ -6,9 +6,4 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Fragment-Host: au.gov.ga.earthsci.application;bundle-version="1.0.0"
-Require-Bundle: au.gov.ga.earthsci.core;bundle-version="1.0.0",
- org.eclipse.core.runtime;bundle-version="3.8.0",
- au.gov.ga.earthsci.worldwind;bundle-version="1.0.0",
- org.eclipse.swt;bundle-version="3.100.0",
- au.gov.ga.earthsci.testbase;bundle-version="1.0.0"
-Import-Package: javax.annotation
+Require-Bundle: au.gov.ga.earthsci.testbase;bundle-version="1.0.0"
