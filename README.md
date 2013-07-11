@@ -12,9 +12,9 @@ The vision for `EarthSci` is to take the best features of the [GA World Wind Sui
 ## Contents: ##
 
 * [Wiki](https://github.com/ga-m3dv/ga-earthsci-rcp/wiki)
-* <a href="#basics"/>Project basics</a>
-* <a href="#reportBugs"/>Reporting bugs and requesting features</a>
-* <a href="#contribute"/>How to contribute</a>
+* <a href="#basics">Project basics</a>
+* <a href="#reportBugs">Reporting bugs and requesting features</a>
+* <a href="#contribute">How to contribute</a>
 * <a href="#projectStructure">Project structure</a>
 * <a href="#pluginsFeatures">Plugins and features</a>
 * <a href="#license">License</a>
@@ -24,7 +24,7 @@ The vision for `EarthSci` is to take the best features of the [GA World Wind Sui
 
 >**Important:** 
 >
->`EarthSci` is still under development and is not intended for use in any production environment. 
+>`EarthSci` is still under development. We encourage you to try it out, but if you choose to use it in a production environment you do so at your own risk. 
 >
 >Development is ongoing - stay tuned! Feel free to help out and shape the direction of the platform.
 >
