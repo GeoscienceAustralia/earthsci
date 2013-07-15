@@ -33,9 +33,28 @@ public class StandardOutConsole extends IOConsole
 	public StandardOutConsole()
 	{
 		super("Console", ImageRegistry.getInstance().getDescriptor(ImageRegistry.ICON_CONSOLE));
+
 		IOConsoleOutputStream out = newOutputStream();
 		IOConsoleOutputStream err = newOutputStream();
 		err.setColor(new Color(Display.getCurrent(), 255, 0, 0));
-		StandardOutputCollector.getInstance().addStreams(out, err, true);
+
+		RegexOutputStream regexOutputStream = new RegexOutputStream(out);
+
+		//FATAL > ERROR > WARN > INFO > DEBUG > TRACE
+		addColor(regexOutputStream, ".*FATAL.*", new Color(Display.getCurrent(), 255, 0, 128)); //$NON-NLS-1$
+		addColor(regexOutputStream, ".*ERROR.*", new Color(Display.getCurrent(), 255, 0, 0)); //$NON-NLS-1$
+		addColor(regexOutputStream, ".*WARN.*", new Color(Display.getCurrent(), 255, 128, 0)); //$NON-NLS-1$
+		addColor(regexOutputStream, ".*INFO.*", new Color(Display.getCurrent(), 0, 128, 0)); //$NON-NLS-1$
+		addColor(regexOutputStream, ".*DEBUG.*", new Color(Display.getCurrent(), 0, 0, 128)); //$NON-NLS-1$
+		addColor(regexOutputStream, ".*TRACE.*", new Color(Display.getCurrent(), 0, 0, 255)); //$NON-NLS-1$
+
+		StandardOutputCollector.getInstance().addStreams(regexOutputStream, err, true);
+	}
+
+	public void addColor(RegexOutputStream os, String regex, Color color)
+	{
+		IOConsoleOutputStream cos = newOutputStream();
+		cos.setColor(color);
+		os.add(regex, cos);
 	}
 }
