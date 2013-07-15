@@ -199,7 +199,8 @@ public class HttpRetriever implements IRetriever
 			else if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_PARTIAL)
 			{
 				// response not ok
-				throw new IOException("Received " + responseCode + " when requesting url: " + url); //$NON-NLS-1$ //$NON-NLS-2$
+				throw new IOException("Received " + responseCode + " " + connection.getResponseMessage() //$NON-NLS-1$ //$NON-NLS-2$
+						+ " when requesting url: " + url); //$NON-NLS-1$
 			}
 			if (responseCode != HttpURLConnection.HTTP_PARTIAL)
 			{
