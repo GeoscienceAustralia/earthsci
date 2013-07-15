@@ -74,10 +74,7 @@
     <children xmi:id="_007tUvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
     <children xmi:id="_007tU_sMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
   </rootContext>
-  <descriptors xmi:id="_OzkNsC1OEeK0vtabFDqVSw" elementId="au.gov.ga.earthsci.application.legend.part" label="%au.gov.ga.earthsci.application.legend.part.label" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/legend.gif" tooltip="%au.gov.ga.earthsci.application.legend.part.tooltip" allowMultiple="true" category="" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.legend.LegendPart">
-    <tags>View</tags>
-    <tags>categoryTag:Information</tags>
-  </descriptors>
+  <descriptors xmi:id="_OzkNsC1OEeK0vtabFDqVSw" elementId="au.gov.ga.earthsci.application.legend.part" label="%au.gov.ga.earthsci.application.legend.part.label" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/legend.gif" tooltip="%au.gov.ga.earthsci.application.legend.part.tooltip" allowMultiple="true" category="" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.legend.LegendPart"/>
   <descriptors xmi:id="_q4L6MGA_EeKICM2QMruAHQ" elementId="au.gov.ga.earthsci.application.globe.part" label="%au.gov.ga.earthsci.application.globe.part.label" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/world.gif" tooltip="%au.gov.ga.earthsci.application.globe.part.tooltip" allowMultiple="true" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.GlobePart">
     <tags>View</tags>
     <tags>categoryTag:View</tags>
