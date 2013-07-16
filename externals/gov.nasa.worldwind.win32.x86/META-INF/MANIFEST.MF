@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: World Wind natives for Windows x86
 Bundle-SymbolicName: gov.nasa.worldwind.win32.x86
-Bundle-Version: 2.0.0.rev1269
+Bundle-Version: 2.0.0.rev1501
 Bundle-Vendor: NASA
 Bundle-NativeCode: WebView32.dll; osname="win32"; processor="x86"
 Fragment-Host: gov.nasa.worldwind;bundle-version="2.0.0.rev1269"

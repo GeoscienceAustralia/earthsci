@@ -12,7 +12,7 @@
 
 	<groupId>gov.nasa.worldwind</groupId>
 	<artifactId>gov.nasa.worldwind</artifactId>
-	<version>2.0.0.rev1269</version>
+	<version>2.0.0.rev1501</version>
 	<packaging>eclipse-plugin</packaging>
 
 </project>

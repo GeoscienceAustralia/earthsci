@@ -2,7 +2,7 @@
 <feature
       id="gov.nasa.worldwind.feature"
       label="NASA World Wind"
-      version="2.0.0.rev1269"
+      version="2.0.0.rev1501"
       provider-name="NASA"
       plugin="gov.nasa.worldwind"
       os="linux,macosx,win32"

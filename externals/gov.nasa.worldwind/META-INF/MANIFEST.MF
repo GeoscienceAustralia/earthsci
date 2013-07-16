@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NASA World Wind Java
 Bundle-SymbolicName: gov.nasa.worldwind
-Bundle-Version: 2.0.0.rev1269
+Bundle-Version: 2.0.0.rev1501
 Bundle-ClassPath: worldwind.jar,
  worldwindx.jar
 Bundle-Vendor: NASA
