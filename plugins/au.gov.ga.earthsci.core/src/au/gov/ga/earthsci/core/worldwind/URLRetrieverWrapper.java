@@ -25,6 +25,9 @@ import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import au.gov.ga.earthsci.core.retrieve.IRetrieval;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalResult;
@@ -49,6 +52,8 @@ public class URLRetrieverWrapper extends JarRetriever
 
 	private int responseCode = -1;
 	private String responseMessage = "FAILED"; //$NON-NLS-1$
+
+	private static final Logger logger = LoggerFactory.getLogger(URLRetrieverWrapper.class);
 
 	public URLRetrieverWrapper(URLRetriever wrapped)
 	{
@@ -112,7 +117,8 @@ public class URLRetrieverWrapper extends JarRetriever
 			}
 			else if (result.getError() != null)
 			{
-				throw result.getError();
+				logger.error(result.getError().getLocalizedMessage());
+				return null;
 			}
 		}
 		else if (retrieval.isCanceled())
