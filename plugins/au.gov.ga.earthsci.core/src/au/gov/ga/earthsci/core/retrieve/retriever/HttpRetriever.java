@@ -64,7 +64,6 @@ public class HttpRetriever implements IRetriever
 		try
 		{
 			cacheDir = ConfigurationUtil.getWorkspaceFile("retriever/http"); //$NON-NLS-1$
-			//cacheDir = new File("c:/Temp/HTTPCache");
 			logger.info("Initialized http cache directory: " + cacheDir); //$NON-NLS-1$
 		}
 		catch (Exception e)
