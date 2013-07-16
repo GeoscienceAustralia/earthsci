@@ -45,6 +45,10 @@
    </extension>
    <extension
          point="au.gov.ga.earthsci.injectables">
+      <injectable
+            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences"
+            priority="1000">
+      </injectable>
       <inject
             class="au.gov.ga.earthsci.core.xml.XmlLoaderManager"
             priority="10">
@@ -96,10 +100,6 @@
       <injectable
             class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory"
             priority="10">
-      </injectable>
-      <injectable
-            class="au.gov.ga.earthsci.core.proxy.ProxyPreferences"
-            priority="0">
       </injectable>
    </extension>
    <extension
