@@ -16,31 +16,32 @@
 package au.gov.ga.earthsci.core.persistence;
 
 import java.net.URI;
+import java.util.Collection;
 
 import org.w3c.dom.Element;
 
 @Exportable
-public class ExportableWithAdapter
+public class ExportableWithAdapterAndCollection
 {
 	@Persistent
 	@Adapter(AdaptableAdapter.class)
-	private Adaptable adaptable;
+	private Collection<Adaptable> adaptables;
 
-	public Adaptable getAdaptable()
+	public Collection<Adaptable> getAdaptables()
 	{
-		return adaptable;
+		return adaptables;
 	}
 
-	public void setAdaptable(Adaptable adaptable)
+	public void setAdaptables(Collection<Adaptable> adaptables)
 	{
-		this.adaptable = adaptable;
+		this.adaptables = adaptables;
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		ExportableWithAdapter ewa = (ExportableWithAdapter) obj;
-		return ewa.adaptable.equals(adaptable);
+		ExportableWithAdapterAndCollection ewa = (ExportableWithAdapterAndCollection) obj;
+		return ewa.adaptables.equals(adaptables);
 	}
 
 	public static class Adaptable

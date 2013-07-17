@@ -176,6 +176,35 @@ public class PersisterTest
 	}
 
 	@Test
+	public void testAdapterAndCollection() throws PersistenceException
+	{
+		ExportableWithAdapterAndCollection adapter = new ExportableWithAdapterAndCollection();
+		List<ExportableWithAdapterAndCollection.Adaptable> adaptables =
+				new ArrayList<ExportableWithAdapterAndCollection.Adaptable>();
+		ExportableWithAdapterAndCollection.Adaptable adaptable1 = new ExportableWithAdapterAndCollection.Adaptable();
+		adaptable1.setValue("adaptable value 1");
+		ExportableWithAdapterAndCollection.Adaptable adaptable2 = new ExportableWithAdapterAndCollection.Adaptable();
+		adaptable2.setValue("adaptable value 2");
+		adaptables.add(adaptable1);
+		adaptables.add(adaptable2);
+		adapter.setAdaptables(adaptables);
+		performTest(adapter, "testAdapterAndCollection.xml");
+	}
+
+	@Test
+	public void testAdapterAndArray() throws PersistenceException
+	{
+		ExportableWithAdapterAndArray adapter = new ExportableWithAdapterAndArray();
+		ExportableWithAdapterAndArray.Adaptable[] adaptables = new ExportableWithAdapterAndArray.Adaptable[2];
+		adaptables[0] = new ExportableWithAdapterAndArray.Adaptable();
+		adaptables[0].setValue("adaptable value 1");
+		adaptables[1] = new ExportableWithAdapterAndArray.Adaptable();
+		adaptables[1].setValue("adaptable value 2");
+		adapter.setAdaptables(adaptables);
+		performTest(adapter, "testAdapterAndArray.xml");
+	}
+
+	@Test
 	public void testNamedNonExportableWithAdapter() throws PersistenceException
 	{
 		IPersistentAdapter<Date> adapter = new IPersistentAdapter<Date>()
@@ -222,10 +251,11 @@ public class PersisterTest
 			document.appendChild(element);
 			persister.save(saved, element, null);
 
+			//XMLUtil.saveDocumentToFormattedFile(document, expectedResourceName);
+
 			Element child = XmlUtil.getFirstChildElement(element);
 			Object loaded = persister.load(child, null);
 			Assert.assertEquals(saved, loaded);
-
 
 			XMLUnit.setIgnoreWhitespace(true);
 			XMLUnit.setIgnoreAttributeOrder(true);
@@ -239,7 +269,6 @@ public class PersisterTest
 				msg.append(o);
 			}
 			assertTrue(msg.toString(), dd.similar());
-
 		}
 		catch (PersistenceException e)
 		{

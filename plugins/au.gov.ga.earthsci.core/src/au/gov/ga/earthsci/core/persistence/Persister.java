@@ -377,7 +377,9 @@ public class Persister
 			boolean boxed =
 					baseType != null && baseType.isPrimitive()
 							&& Util.primitiveClassToBoxed(baseType).equals(value.getClass());
-			if (!boxed && !(persistentAdapter == null && isExportable))
+			boolean isBoxedOrAdapterOrExportable =
+					boxed || (adapter != null && persistentAdapter != null) || isExportable;
+			if (value instanceof Collection<?> || !isBoxedOrAdapterOrExportable)
 			{
 				nameElement.setAttribute(TYPE_ATTRIBUTE, getNameFromType(value.getClass()));
 				classNameSaved = true;
@@ -661,7 +663,9 @@ public class Persister
 			}
 		}
 
-		if (type == null)
+		IPersistentAdapter<?> persistentAdapter = getAdapter(type, adapter);
+		//if there is no type, and no adapter, the first element must be exportable
+		if (type == null && persistentAdapter == null)
 		{
 			Element firstChild = element == null ? null : XmlUtil.getFirstChildElement(element);
 			if (firstChild == null)
@@ -672,10 +676,11 @@ public class Persister
 			//if the type isn't defined, assume the first child element is exportable
 			type = getTypeFromName(firstChild.getTagName());
 			assertIsExportable(type);
+			persistentAdapter = getAdapter(type, adapter);
 		}
 
 		//handle array/collection types
-		if (type.isArray() || Collection.class.isAssignableFrom(type))
+		if (type != null && (type.isArray() || Collection.class.isAssignableFrom(type)))
 		{
 			if (element == null)
 			{
@@ -742,7 +747,7 @@ public class Persister
 		}
 
 		String stringValue = null;
-		IPersistentAdapter<?> persistentAdapter = getAdapter(type, adapter);
+
 		if (element != null)
 		{
 			if (persistentAdapter != null)
@@ -1016,7 +1021,7 @@ public class Persister
 	 */
 	protected IPersistentAdapter<?> getAdapter(Class<?> type, Adapter adapter) throws PersistenceException
 	{
-		IPersistentAdapter<?> persistentAdapter = adapters.get(type);
+		IPersistentAdapter<?> persistentAdapter = type != null ? adapters.get(type) : null;
 		if (persistentAdapter == null && adapter != null)
 		{
 			Class<? extends IPersistentAdapter<?>> adapterClass = adapter.value();
@@ -1024,7 +1029,7 @@ public class Persister
 			{
 				try
 				{
-					Constructor<? extends IPersistentAdapter<?>> constructor = adapterClass.getConstructor();
+					Constructor<? extends IPersistentAdapter<?>> constructor = adapterClass.getDeclaredConstructor();
 					constructor.setAccessible(true);
 					persistentAdapter = constructor.newInstance();
 				}
