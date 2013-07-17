@@ -3,7 +3,6 @@
 <plugin>
    <extension-point id="au.gov.ga.earthsci.application.defaultTheme" name="Application Default Theme" schema="schema/au.gov.ga.earthsci.application.defaultTheme.exsd"/>
    <extension-point id="au.gov.ga.earthsci.application.iconReplacementProviders" name="Icon Replacement Providers" schema="schema/au.gov.ga.earthsci.application.iconReplacementProviders.exsd"/>
-   <extension-point id="splashExtension" name="Splash Extensions" schema="schema/splashExtension.exsd"/>
    <extension
          id="application"
          point="org.eclipse.core.runtime.applications">
@@ -16,7 +15,6 @@
          </run>
       </application>
    </extension>
-
    <extension
          id="product"
          point="org.eclipse.core.runtime.products">
@@ -148,34 +146,6 @@
                id="org.eclipse.core.runtime.html">
          </content-type>
       </filter>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.application.splashExtension">
-      <splashExtension
-            icon="icons/af.png"
-            id="af"
-            tooltip="Application Framework">
-      </splashExtension>
-      <splashExtension
-            icon="icons/embedded.png"
-            id="embedded"
-            tooltip="Embedded">
-      </splashExtension>
-      <splashExtension
-            icon="icons/enterprise.png"
-            id="enterprise"
-            tooltip="Enterprise">
-      </splashExtension>
-      <splashExtension
-            icon="icons/languages.png"
-            id="languages"
-            tooltip="Languages">
-      </splashExtension>
-      <splashExtension
-            icon="icons/rcp.png"
-            id="rcp"
-            tooltip="RCP">
-      </splashExtension>
    </extension>
    <extension
          point="org.eclipse.ui.console.consoleFactories">
