@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.discovery;
 
 import java.net.URL;
+import java.util.Map;
 
 /**
  * {@link IDiscoveryService} implementation that can be used as a placeholder
@@ -107,7 +108,14 @@ public class MissingPluginPlaceholderDiscoveryService implements IDiscoveryServi
 		}
 
 		@Override
-		public IDiscoveryService createService(String label, URL url)
+		public IDiscoveryService createService(String name, URL url,
+				Map<IDiscoveryServiceProperty<?>, Object> propertyValues)
+		{
+			return null;
+		}
+
+		@Override
+		public IDiscoveryServiceProperty<?>[] getProperties()
 		{
 			return null;
 		}

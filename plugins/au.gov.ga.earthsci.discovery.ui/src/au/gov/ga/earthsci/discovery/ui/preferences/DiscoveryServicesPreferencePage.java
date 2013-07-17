@@ -16,7 +16,6 @@
 package au.gov.ga.earthsci.discovery.ui.preferences;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,8 +62,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
 import au.gov.ga.earthsci.common.ui.preferences.PreferencePage;
 import au.gov.ga.earthsci.discovery.DiscoveryServiceManager;
-import au.gov.ga.earthsci.discovery.IDiscoveryProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
+import au.gov.ga.earthsci.discovery.IDiscoveryServiceProperty;
 import au.gov.ga.earthsci.discovery.ui.Activator;
 import au.gov.ga.earthsci.discovery.ui.ILayoutConstants;
 import au.gov.ga.earthsci.discovery.ui.Messages;
@@ -159,7 +158,7 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 			}
 
 			@Override
-			public void modify(Object element, String property, Object value)
+			public void modify(Object element, String prop, Object value)
 			{
 				if (value != null && value.toString().length() >= 0)
 				{
@@ -178,8 +177,20 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 					}
 					if (!value.toString().equals(service.getName()))
 					{
+						Map<IDiscoveryServiceProperty<?>, Object> propertyValues =
+								new HashMap<IDiscoveryServiceProperty<?>, Object>();
+						IDiscoveryServiceProperty<?>[] properties = service.getProvider().getProperties();
+						if (properties != null)
+						{
+							for (IDiscoveryServiceProperty<?> property : properties)
+							{
+								propertyValues.put(property, property.getValue(service));
+							}
+						}
+
 						IDiscoveryService replacement =
-								service.getProvider().createService(value.toString(), service.getServiceURL());
+								service.getProvider().createService(value.toString(), service.getServiceURL(),
+										propertyValues);
 						replacement.setEnabled(service.isEnabled());
 						stagingSet.remove(service);
 						stagingSet.add(replacement);
@@ -187,7 +198,6 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 					}
 				}
 			}
-
 		});
 		viewer.setColumnProperties(new String[] { "name" }); //$NON-NLS-1$
 		viewer.setCellEditors(new CellEditor[] { new TextCellEditor(table) });
@@ -482,14 +492,11 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 		dialog.setTitle(Messages.DiscoveryServicesPreferencePage_AddDialogTitle);
 		if (dialog.open() == Window.OK)
 		{
-			IDiscoveryProvider provider = dialog.getProvider();
-			String name = dialog.getName();
-			URL url = dialog.getURL();
-			if (provider != null && url != null)
+			IDiscoveryService service = dialog.getService();
+			if (service != null)
 			{
-				IDiscoveryService service = provider.createService(name, url);
+				service.setEnabled(true);
 				stagingSet.add(service);
-
 				viewer.refresh();
 				validateButtons();
 			}
@@ -507,17 +514,12 @@ public class DiscoveryServicesPreferencePage extends PreferencePage
 		IDiscoveryService oldService = selected[0];
 		EditDiscoveryServiceDialog dialog = new EditDiscoveryServiceDialog(getShell());
 		dialog.setTitle(Messages.DiscoveryServicesPreferencePage_EditDialogTitle);
-		dialog.setProvider(oldService.getProvider());
-		dialog.setName(oldService.getName());
-		dialog.setURL(oldService.getServiceURL());
+		dialog.setService(oldService);
 		if (dialog.open() == Window.OK)
 		{
-			IDiscoveryProvider provider = dialog.getProvider();
-			String name = dialog.getName();
-			URL url = dialog.getURL();
-			if (provider != null && url != null)
+			IDiscoveryService newService = dialog.getService();
+			if (newService != null)
 			{
-				IDiscoveryService newService = provider.createService(name, url);
 				newService.setEnabled(oldService.isEnabled());
 
 				stagingSet.remove(oldService);

@@ -25,23 +25,30 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import au.gov.ga.earthsci.common.util.XmlUtil;
+import au.gov.ga.earthsci.core.persistence.Adapter;
+import au.gov.ga.earthsci.core.persistence.ElementPersistentAdapter;
 import au.gov.ga.earthsci.core.persistence.Exportable;
 import au.gov.ga.earthsci.core.persistence.PersistenceException;
 import au.gov.ga.earthsci.core.persistence.Persistent;
@@ -253,10 +260,14 @@ public class DiscoveryServiceManager
 	@Exportable
 	protected static class PersistentDiscoveryService
 	{
+		private static final String PROPERTY_ELEMENT_NAME = "property"; //$NON-NLS-1$
+		private static final String ID_ATTRIBUTE_NAME = "id"; //$NON-NLS-1$
+
 		private String providerId;
 		private String name;
 		private URL serviceURL;
 		private boolean enabled;
+		private Element propertiesElement;
 
 		@SuppressWarnings("unused")
 		private PersistentDiscoveryService()
@@ -273,6 +284,8 @@ public class DiscoveryServiceManager
 					(service instanceof MissingPluginPlaceholderDiscoveryService)
 							? ((MissingPluginPlaceholderDiscoveryService) service).wasEnabled() : service.isEnabled();
 			setEnabled(enabled);
+
+			setupPropertiesElement(service);
 		}
 
 		public IDiscoveryService createService()
@@ -283,9 +296,78 @@ public class DiscoveryServiceManager
 				return new MissingPluginPlaceholderDiscoveryService(getProviderId(), getName(), getServiceURL(),
 						isEnabled());
 			}
-			IDiscoveryService service = provider.createService(getName(), getServiceURL());
+
+			Map<IDiscoveryServiceProperty<?>, Object> propertyValues = getPropertyValues(provider);
+			IDiscoveryService service = provider.createService(getName(), getServiceURL(), propertyValues);
 			service.setEnabled(isEnabled());
 			return service;
+		}
+
+		private void setupPropertiesElement(IDiscoveryService service)
+		{
+			propertiesElement = null;
+			if (service == null || service.getProvider() == null || service.getProvider().getProperties() == null)
+			{
+				return;
+			}
+
+			try
+			{
+				@SuppressWarnings("unchecked")
+				IDiscoveryServiceProperty<Object>[] objectProperties =
+						(IDiscoveryServiceProperty<Object>[]) service.getProvider().getProperties();
+				Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+				propertiesElement = document.createElement("root"); //$NON-NLS-1$
+
+				for (IDiscoveryServiceProperty<Object> property : objectProperties)
+				{
+					Object value = property.getValue(service);
+					Element propertyElement = document.createElement(PROPERTY_ELEMENT_NAME);
+					propertyElement.setAttribute(ID_ATTRIBUTE_NAME, property.getId());
+					property.persist(propertyElement, value);
+					propertiesElement.appendChild(propertyElement);
+				}
+			}
+			catch (ParserConfigurationException e)
+			{
+				logger.error("Error creating discovery properties XML element", e); //$NON-NLS-1$
+			}
+		}
+
+		private Map<IDiscoveryServiceProperty<?>, Object> getPropertyValues(IDiscoveryProvider provider)
+		{
+			Map<IDiscoveryServiceProperty<?>, Object> propertyValues =
+					new HashMap<IDiscoveryServiceProperty<?>, Object>();
+
+			@SuppressWarnings("unchecked")
+			IDiscoveryServiceProperty<Object>[] properties =
+					(IDiscoveryServiceProperty<Object>[]) provider.getProperties();
+			if (properties != null)
+			{
+				Map<String, Element> propertyElements = new HashMap<String, Element>();
+				if (propertiesElement != null)
+				{
+					NodeList children = propertiesElement.getElementsByTagName(PROPERTY_ELEMENT_NAME);
+					for (int i = 0; i < children.getLength(); i++)
+					{
+						Element child = (Element) children.item(i);
+						String id = child.getAttribute(ID_ATTRIBUTE_NAME);
+						if (id != null)
+						{
+							propertyElements.put(id, child);
+						}
+					}
+				}
+
+				for (IDiscoveryServiceProperty<Object> property : properties)
+				{
+					Element propertyElement = propertyElements.get(property.getId());
+					Object value = propertyElement == null ? null : property.unpersist(propertyElement);
+					propertyValues.put(property, value);
+				}
+			}
+
+			return propertyValues;
 		}
 
 		@Persistent(attribute = true)
@@ -331,6 +413,18 @@ public class DiscoveryServiceManager
 		{
 			this.enabled = enabled;
 		}
+
+		@Persistent
+		@Adapter(ElementPersistentAdapter.class)
+		public Element getProperties()
+		{
+			return propertiesElement;
+		}
+
+		public void setProperties(Element propertiesElement)
+		{
+			this.propertiesElement = propertiesElement;
+		}
 	}
 
 	private static class Listeners extends ArrayList<IDiscoveryServiceManagerListener> implements
@@ -353,6 +447,5 @@ public class DiscoveryServiceManager
 				get(i).serviceRemoved(service);
 			}
 		}
-
 	}
 }

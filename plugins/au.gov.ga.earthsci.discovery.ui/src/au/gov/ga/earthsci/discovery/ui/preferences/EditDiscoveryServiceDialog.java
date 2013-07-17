@@ -19,7 +19,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -45,57 +47,40 @@ import org.eclipse.swt.widgets.Text;
 import au.gov.ga.earthsci.common.ui.util.TextURLDropAdapter;
 import au.gov.ga.earthsci.discovery.DiscoveryProviderRegistry;
 import au.gov.ga.earthsci.discovery.IDiscoveryProvider;
+import au.gov.ga.earthsci.discovery.IDiscoveryService;
+import au.gov.ga.earthsci.discovery.IDiscoveryServiceProperty;
 import au.gov.ga.earthsci.discovery.ui.Messages;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Dialog used to edit/create discovery services.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class EditDiscoveryServiceDialog extends StatusDialog
 {
-	private IDiscoveryProvider provider = null;
-	private String name = null;
-	private URL url = null;
+	private IDiscoveryService service = null;
 
 	private Button okButton;
 	private Combo typeCombo;
 	private Text nameText;
 	private Text urlText;
 	private List<IDiscoveryProvider> providers;
+	private Label[] propertyLabels;
+	private Control[] propertyControls;
 
 	public EditDiscoveryServiceDialog(Shell parent)
 	{
 		super(parent);
 	}
 
-	public IDiscoveryProvider getProvider()
+	public IDiscoveryService getService()
 	{
-		return provider;
+		return service;
 	}
 
-	public void setProvider(IDiscoveryProvider provider)
+	public void setService(IDiscoveryService service)
 	{
-		this.provider = provider;
-	}
-
-	public String getName()
-	{
-		return name;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
-	public URL getURL()
-	{
-		return url;
-	}
-
-	public void setURL(URL url)
-	{
-		this.url = url;
+		this.service = service;
 	}
 
 	@Override
@@ -118,6 +103,7 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 		createTypeCombo(comp);
 		createNameField(comp);
 		createLocationField(comp);
+		createProviderPropertyControls(comp, false);
 
 		comp.setLayout(layout);
 		GridData data = new GridData();
@@ -127,7 +113,7 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 		return comp;
 	}
 
-	protected void createTypeCombo(Composite parent)
+	protected void createTypeCombo(final Composite parent)
 	{
 		providers = new ArrayList<IDiscoveryProvider>(DiscoveryProviderRegistry.getProviders());
 		Collections.sort(providers, new DiscoveryProviderComparator());
@@ -137,7 +123,7 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 		{
 			IDiscoveryProvider provider = providers.get(i);
 			items[i] = provider.getName() != null ? provider.getName() : ""; //$NON-NLS-1$
-			if (provider == this.provider)
+			if (service != null && service.getProvider() == provider)
 			{
 				selectedIndex = i;
 			}
@@ -157,6 +143,7 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 			@Override
 			public void modifyText(ModifyEvent e)
 			{
+				createProviderPropertyControls(parent, true);
 				validate();
 			}
 		});
@@ -167,6 +154,7 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 		Label nameLabel = new Label(parent, SWT.NONE);
 		nameLabel.setText(Messages.EditDiscoveryServiceDialog_NameLabel);
 		nameText = new Text(parent, SWT.BORDER);
+		String name = service == null ? null : service.getName();
 		nameText.setText(name != null ? name : ""); //$NON-NLS-1$
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
@@ -193,6 +181,7 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 		DropTarget target = new DropTarget(urlText, DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
 		target.setTransfer(new Transfer[] { URLTransfer.getInstance(), FileTransfer.getInstance() });
 		target.addDropListener(new TextURLDropAdapter(urlText, true));
+		URL url = service == null ? null : service.getServiceURL();
 		urlText.setText(url != null ? url.toString() : ""); //$NON-NLS-1$
 		urlText.setSelection(0, urlText.getText().length());
 
@@ -206,17 +195,84 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 		});
 	}
 
-	protected void validate()
+	protected void createProviderPropertyControls(Composite parent, boolean packShell)
 	{
-		provider = null;
+		if (propertyControls != null)
+		{
+			for (Control control : propertyControls)
+			{
+				control.dispose();
+			}
+			for (Label label : propertyLabels)
+			{
+				label.dispose();
+			}
+		}
+		IDiscoveryProvider provider = null;
 		int selectedIndex = typeCombo.getSelectionIndex();
 		if (selectedIndex >= 0)
 		{
 			provider = providers.get(selectedIndex);
 		}
 
-		name = nameText.getText();
+		@SuppressWarnings("unchecked")
+		IDiscoveryServiceProperty<Object>[] properties =
+				provider == null ? null : (IDiscoveryServiceProperty<Object>[]) provider.getProperties();
+		if (properties == null)
+		{
+			propertyControls = new Control[0];
+			propertyLabels = new Label[0];
+		}
+		else
+		{
+			propertyControls = new Control[properties.length];
+			propertyLabels = new Label[properties.length];
 
+			for (int i = 0; i < properties.length; i++)
+			{
+				IDiscoveryServiceProperty<Object> property = properties[i];
+
+				String label = property.getLabel();
+				label = label != null ? label + ":" : ""; //$NON-NLS-1$ //$NON-NLS-2$
+				propertyLabels[i] = new Label(parent, SWT.NONE);
+				propertyLabels[i].setText(label);
+
+				Object value = service == null ? null : property.getValue(service);
+				propertyControls[i] = property.createControl(parent, value, new ModifyListener()
+				{
+					@Override
+					public void modifyText(ModifyEvent e)
+					{
+						validate();
+					}
+				});
+				GridData data = new GridData(GridData.FILL_HORIZONTAL);
+				data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
+				propertyControls[i].setLayoutData(data);
+			}
+		}
+
+		parent.pack();
+		if (packShell)
+		{
+			getShell().pack();
+		}
+	}
+
+	protected void validate()
+	{
+		service = null;
+
+		IDiscoveryProvider provider = null;
+		int selectedIndex = typeCombo.getSelectionIndex();
+		if (selectedIndex >= 0)
+		{
+			provider = providers.get(selectedIndex);
+		}
+
+		String name = nameText.getText();
+
+		URL url;
 		try
 		{
 			url = new URL(urlText.getText());
@@ -226,6 +282,41 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 			url = null;
 		}
 
-		okButton.setEnabled(provider != null && url != null);
+		if (provider != null)
+		{
+			IDiscoveryServiceProperty<?>[] properties = provider.getProperties();
+
+			boolean valid = name != null && url != null;
+			if (valid)
+			{
+				if (properties != null)
+				{
+					for (int i = 0; i < properties.length && valid; i++)
+					{
+						IDiscoveryServiceProperty<?> property = properties[i];
+						valid &= property.validate(propertyControls[i]);
+					}
+				}
+			}
+
+			if (valid)
+			{
+				Map<IDiscoveryServiceProperty<?>, Object> propertyValues =
+						new HashMap<IDiscoveryServiceProperty<?>, Object>();
+				if (properties != null)
+				{
+					for (int i = 0; i < properties.length && valid; i++)
+					{
+						IDiscoveryServiceProperty<?> property = properties[i];
+						Object value = property.getValue(propertyControls[i]);
+						propertyValues.put(property, value);
+					}
+				}
+
+				service = provider.createService(name, url, propertyValues);
+			}
+		}
+
+		okButton.setEnabled(service != null);
 	}
 }

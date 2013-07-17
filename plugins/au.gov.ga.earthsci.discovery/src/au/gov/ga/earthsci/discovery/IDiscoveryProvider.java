@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.discovery;
 
 import java.net.URL;
+import java.util.Map;
 
 /**
  * A provider of discovery services. Handles creating services for each service
@@ -52,6 +53,9 @@ public interface IDiscoveryProvider
 	 * For example, if this provider was a CSW discovery provider, the URL
 	 * should point to a CSW endpoint, and a CSW discovery service should be
 	 * returned by this method.
+	 * <p/>
+	 * The implementation of this method should be lightweight. It should not
+	 * perform any network activity.
 	 * 
 	 * @param name
 	 *            Name of the service; used in the UI
@@ -60,5 +64,11 @@ public interface IDiscoveryProvider
 	 * @return {@link IDiscoveryService} that can be used to discover results
 	 *         from the given URL
 	 */
-	IDiscoveryService createService(String name, URL url);
+	IDiscoveryService createService(String name, URL url, Map<IDiscoveryServiceProperty<?>, Object> propertyValues);
+
+	/**
+	 * @return Array of properties that can be changed for services created by
+	 *         this provider
+	 */
+	IDiscoveryServiceProperty<?>[] getProperties();
 }
