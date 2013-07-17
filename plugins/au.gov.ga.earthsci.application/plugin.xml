@@ -192,5 +192,13 @@
             label="Console">
       </consoleFactory>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="au.gov.ga.earthsci.common.ui.preferences.EmptyPreferencePage"
+            id="org.eclipse.ui.preferencePages.Workbench"
+            name="General">
+      </page>
+   </extension>
 
 </plugin>
