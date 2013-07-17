@@ -23,21 +23,32 @@ import au.gov.ga.earthsci.discovery.IDiscoveryProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * {@link IDiscoveryService} implementation for CSW.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class CSWDiscoveryService implements IDiscoveryService
 {
+	private final CSWFormat format;
 	private final String name;
 	private final URL serviceURL;
 	private final IDiscoveryProvider provider;
 	private boolean enabled;
 
-	public CSWDiscoveryService(String name, URL serviceURL, IDiscoveryProvider provider)
+	public CSWDiscoveryService(CSWFormat format, String name, URL serviceURL, IDiscoveryProvider provider)
 	{
+		this.format = format;
 		this.name = name;
 		this.serviceURL = serviceURL;
 		this.provider = provider;
+	}
+
+	/**
+	 * @return Format of the CSW server
+	 */
+	public CSWFormat getFormat()
+	{
+		return format;
 	}
 
 	@Override

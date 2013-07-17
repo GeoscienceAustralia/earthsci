@@ -20,8 +20,9 @@ import au.gov.ga.earthsci.discovery.IDiscoveryResult;
 import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Label provider for the CSW discovery implementation.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class CSWDiscoveryResultLabelProvider implements IDiscoveryResultLabelProvider
 {

@@ -1,0 +1,7 @@
+<ogc:BBOX>
+<ogc:PropertyName>Geometry</ogc:PropertyName>
+<csw:Envelope>
+<csw:lowerCorner>$XMIN $YMIN</csw:lowerCorner>
+<csw:upperCorner>$XMAX $YMAX</csw:upperCorner>
+</csw:Envelope>
+</ogc:BBOX>

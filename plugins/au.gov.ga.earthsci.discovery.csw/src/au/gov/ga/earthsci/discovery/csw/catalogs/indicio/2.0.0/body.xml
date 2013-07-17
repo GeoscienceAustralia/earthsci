@@ -1,0 +1,22 @@
+
+<GetRecords xmlns="http://www.opengis.net/cat/csw" 
+xmlns:gml="http://www.opengis.net/gml" 
+xmlns:ogc="http://www.opengis.net/ogc" 
+resultType="results" 
+outputFormat="application/xml;charset=UTF-8" 
+startPosition="1" maxRecords="10">
+<Query typeNames="Dataset">
+<ElementSetName typeNames="Dataset">summary</ElementSetName>
+<Constraint version="1.0.20">
+<ogc:Filter>
+<ogc:And>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>/Dataset/@objectType</ogc:PropertyName>
+<ogc:Literal>Dataset</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+$FILTER
+</ogc:And>
+</ogc:Filter>
+</Constraint>
+</Query>
+</GetRecords>

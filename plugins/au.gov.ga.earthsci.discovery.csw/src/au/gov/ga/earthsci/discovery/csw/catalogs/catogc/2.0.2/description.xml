@@ -1,0 +1,5 @@
+<PropertyIsLike escapeChar="\" singleChar="?" wildCard="*">
+<PropertyName>description</PropertyName>
+<Literal>*$VALUE*</Literal>
+</PropertyIsLike>
+      

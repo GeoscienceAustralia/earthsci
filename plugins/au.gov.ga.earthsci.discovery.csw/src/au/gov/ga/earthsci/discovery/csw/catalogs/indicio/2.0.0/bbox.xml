@@ -1,0 +1,8 @@
+
+<BBOX>
+<PropertyName>ows:BoundingBox</PropertyName>
+<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#63266405">
+<gml:lowerCorner>$XMIN $YMIN</gml:lowerCorner>
+<gml:upperCorner>$XMAX $YMAX</gml:upperCorner>
+</gml:Envelope>
+</BBOX>

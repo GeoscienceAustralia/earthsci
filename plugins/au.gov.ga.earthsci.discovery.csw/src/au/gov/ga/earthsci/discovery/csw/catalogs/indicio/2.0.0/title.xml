@@ -1,0 +1,4 @@
+<ogc:PropertyIsLike wildCard="*" singleChar="?" escape="\" xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:PropertyName>/Dataset/Name/LocalizedString/@value</ogc:PropertyName>
+      <ogc:Literal>*$VALUE*</ogc:Literal>
+	  </ogc:PropertyIsLike>

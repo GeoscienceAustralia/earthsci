@@ -1,0 +1,9 @@
+<ogc:PropertyIsEqualTo> 
+<ogc:PropertyName>/$d/$keywordSlot/@name</ogc:PropertyName> 
+<ogc:Literal>http://purl.org/dc/elements/1.1/subject</ogc:Literal> 
+</ogc:PropertyIsEqualTo> 
+<ogc:PropertyIsLike wildCard="*" singleChar="?" escapeChar="\" xmlns:ogc="http://www.opengis.net/ogc">
+<ogc:PropertyName>/$d/$keywordSlot/ValueList/Value</ogc:PropertyName> 
+<?indicio-case-sensitive false?>
+<ogc:Literal>*$VALUE*</ogc:Literal> 
+</ogc:PropertyIsLike>

@@ -1,0 +1,6 @@
+<ogc:BBOX>
+<ogc:PropertyName>apiso:BoundingBox</ogc:PropertyName>
+<gml:Box>
+<gml:coordinates>$XMIN,$YMIN $XMAX,$YMAX</gml:coordinates>
+</gml:Box>
+</ogc:BBOX>

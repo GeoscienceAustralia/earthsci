@@ -1,0 +1,7 @@
+<ogc:PropertyIsLike wildCard="%" singleChar="_" escape="/">
+<ogc:PropertyName>apiso:subject</ogc:PropertyName>
+<ogc:Literal>%$VALUE%</ogc:Literal>
+</ogc:PropertyIsLike>
+
+               
+               

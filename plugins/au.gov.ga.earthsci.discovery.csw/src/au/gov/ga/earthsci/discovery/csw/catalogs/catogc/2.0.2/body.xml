@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GetRecords xmlns="http://www.opengis.net/cat/csw/2.0.2"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:ows="http://www.opengis.net/ows"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.opengis.net/cat/csw/2.0.2
+	http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd"
+	service="CSW" version="2.0.2" resultType="results"
+	outputFormat="application/xml"
+	outputSchema="http://www.opengis.net/cat/csw/2.0.2" startPosition="$STARTPOSITION" maxRecords="$MAXRECORDS">
+
+	<Query typeNames="csw:Record">
+		<ElementSetName>full</ElementSetName>
+		<Constraint version="1.1.0">
+			<Filter>$FILTER</Filter>
+		</Constraint>
+	</Query>
+</GetRecords>
+

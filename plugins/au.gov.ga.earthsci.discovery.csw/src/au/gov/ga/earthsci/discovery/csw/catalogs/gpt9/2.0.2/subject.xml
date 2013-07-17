@@ -1,0 +1,7 @@
+<ogc:PropertyIsEqualTo>
+	<ogc:PropertyName>dc:subject</ogc:PropertyName>
+	<ogc:Literal>$VALUE</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+
+               
+               

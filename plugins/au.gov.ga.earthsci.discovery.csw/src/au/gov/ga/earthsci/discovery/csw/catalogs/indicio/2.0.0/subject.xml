@@ -1,0 +1,8 @@
+<ogc:PropertyIsEqualTo>
+      <ogc:PropertyName>/Dataset/Slot:s2/@name</ogc:PropertyName> 
+      <ogc:Literal>subject</ogc:Literal> 
+    </ogc:PropertyIsEqualTo>
+    <ogc:PropertyIsLike wildCard="*" singleChar="?" escape="\" xmlns:ogc="http://www.opengis.net/ogc" >
+      <ogc:PropertyName>/Dataset/Slot:s2/ValueList/Value</ogc:PropertyName>
+      <ogc:Literal>*$VALUE*</ogc:Literal>
+    </ogc:PropertyIsLike>

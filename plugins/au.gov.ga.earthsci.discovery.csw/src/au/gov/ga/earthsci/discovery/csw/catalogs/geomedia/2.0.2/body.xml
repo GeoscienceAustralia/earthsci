@@ -1,0 +1,23 @@
+<csw:GetRecords 
+	service="CSW" 
+	version="2.0.2"
+	maxRecords="$MAXRECORDS"
+    startPosition="$STARTPOSITION"
+    resultType="RESULTS"
+	outputFormat="application/xml"
+	outputSchema="http://www.isotc211.org/2005/gmd"
+	xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"
+	xmlns:gml="http://www.opengis.net/gml"
+	xmlns:app="http://www.deegree.org/app"
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:gmd="http://www.isotc211.org/2005/gmd"
+	xmlns:apiso="http://www.opengis.net/cat/csw/apiso/1.0">
+	<csw:Query typeNames="gmd:MD_Metadata">
+		<csw:ElementSetName>full</csw:ElementSetName>
+		<csw:Constraint version="1.1.0">
+			<ogc:Filter>
+				$FILTER
+			</ogc:Filter>
+		</csw:Constraint>
+	</csw:Query>
+</csw:GetRecords>

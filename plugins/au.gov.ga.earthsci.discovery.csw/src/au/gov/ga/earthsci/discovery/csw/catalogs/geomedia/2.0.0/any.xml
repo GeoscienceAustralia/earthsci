@@ -1,0 +1,10 @@
+<ogc:Or>
+<ogc:PropertyIsLike wildCard="%" singleChar="_" escape="\">
+          <ogc:PropertyName>title</ogc:PropertyName>
+          <ogc:Literal>%$VALUE%</ogc:Literal>
+        </ogc:PropertyIsLike>
+<ogc:PropertyIsLike wildCard="%" singleChar="_" escape="\">
+          <ogc:PropertyName>abstract</ogc:PropertyName>
+          <ogc:Literal>%$VALUE%</ogc:Literal>
+        </ogc:PropertyIsLike>
+        </ogc:Or>

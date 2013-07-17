@@ -1,0 +1,6 @@
+<ogc:PropertyIsLike wildCard="%" singleChar="_" escape="\">
+<ogc:PropertyName>AnyText</ogc:PropertyName>
+<ogc:Literal>%$VALUE%</ogc:Literal>
+</ogc:PropertyIsLike>
+
+

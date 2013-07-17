@@ -33,8 +33,10 @@ import org.w3c.dom.NodeList;
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * {@link IDiscoveryResult} implementation for CSW. Represents a single
+ * &lt;csw:Record&gt; element from the GetRecordsResponse XML response.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class CSWDiscoveryResult implements IDiscoveryResult
 {
@@ -80,6 +82,22 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 			<ows:UpperCorner>168.0 -9.0</ows:UpperCorner>
 		</ows:BoundingBox>
 	</csw:Record>
+	
+	AFTER TRANSFORMATION:
+	<Record>
+		<title>Multibeam_50m_Bathymetry_2012</title>
+		<description>This map service contains the extents of the multibeam bathymetry data held by GA, as at August 2012, which lies within the boundaries of Australia's Extended Continental Shelf, as well as some data in international waters.</description>
+		<identifier>{B7E441D4-238D-4BC2-9704-41E76BD43E10}</identifier>
+		<references>
+			<reference scheme="urn:x-esri:specification:ServiceType:ArcIMS:Metadata:Server">http://www.ga.gov.au/gisimg/services/marine_coastal/Multibeam_50m_Bathymetry_2012/ImageServer?</reference>
+			<reference scheme="urn:x-esri:specification:ServiceType:ArcIMS:Metadata:Document">http://www.ga.gov.au/geoportal/csw?getxml=%7B9AF28228-C06F-4C50-A2B3-AD3F61A611A8%7D</reference>
+		</references>
+		<boundingBox>
+		<latlon>1</latlon>
+			<lowerCorner>107.2503 -53.6251</lowerCorner>
+			<upperCorner>161.2612 1.929</upperCorner>
+		</boundingBox>
+	</Record>	
 	 */
 
 	private final int index;
@@ -97,7 +115,7 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 		title = StringEscapeUtils.unescapeXml(title);
 
 		String description =
-				(String) xpath.compile("abstract/text()").evaluate(cswRecordElement, XPathConstants.STRING); //$NON-NLS-1$
+				(String) xpath.compile("description/text()").evaluate(cswRecordElement, XPathConstants.STRING); //$NON-NLS-1$
 		description = StringEscapeUtils.unescapeXml(description);
 
 		//normalize newlines
@@ -108,7 +126,8 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 
 
 		URL endpoint = null;
-		NodeList references = (NodeList) xpath.compile("references").evaluate(cswRecordElement, XPathConstants.NODESET); //$NON-NLS-1$
+		NodeList references =
+				(NodeList) xpath.compile("references/reference").evaluate(cswRecordElement, XPathConstants.NODESET); //$NON-NLS-1$
 		for (int i = 0; i < references.getLength(); i++)
 		{
 			Element reference = (Element) references.item(i);

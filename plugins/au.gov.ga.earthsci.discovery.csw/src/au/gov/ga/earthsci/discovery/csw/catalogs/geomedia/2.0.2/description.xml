@@ -1,0 +1,4 @@
+<ogc:PropertyIsLike wildCard="*" singleChar="?" escapeChar="\">
+  <ogc:PropertyName>apiso:abstract</ogc:PropertyName>
+  <ogc:Literal>*$VALUE*</ogc:Literal>
+</ogc:PropertyIsLike>

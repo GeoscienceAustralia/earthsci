@@ -1,0 +1,22 @@
+<csw:GetRecords 
+	service="CSW" 
+	version="2.0.2"
+	maxRecords="$MAXRECORDS"
+    startPosition="$STARTPOSITION"
+    resultType="RESULTS"
+	outputFormat="application/xml"
+	outputSchema="DublinCore"
+	xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"
+	xmlns:gml="http://www.opengis.net/gml"
+	xmlns:app="http://www.deegree.org/app"
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:apiso="http://www.opengis.net/cat/csw/apiso/1.0">
+	<csw:Query typeNames="csw:Record">
+		<csw:ElementSetName>full</csw:ElementSetName>
+		<csw:Constraint version="1.1.0">
+			<ogc:Filter>
+				$FILTER
+			</ogc:Filter>
+		</csw:Constraint>
+	</csw:Query>
+</csw:GetRecords>

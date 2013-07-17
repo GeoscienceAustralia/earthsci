@@ -1,0 +1,8 @@
+<ogc:BBOX> 
+<ogc:PropertyName>/$d/$slotBbox/wrs:ValueList/wrs:AnyValue</ogc:PropertyName> 
+<gml:Envelope> 
+<gml:lowerCorner>$YMIN $XMIN</gml:lowerCorner>
+<gml:upperCorner>$YMAX $XMAX</gml:upperCorner>
+</gml:Envelope> 
+</ogc:BBOX> 
+

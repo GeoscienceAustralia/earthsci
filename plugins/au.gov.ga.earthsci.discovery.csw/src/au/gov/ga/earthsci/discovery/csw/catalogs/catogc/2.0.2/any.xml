@@ -1,0 +1,17 @@
+                    <Or>
+                <Or>
+                  <PropertyIsLike escapeChar="\" singleChar="?" wildCard="*">
+                    <PropertyName>description</PropertyName>
+                    <Literal>*$VALUE*</Literal>
+                  </PropertyIsLike>
+                  <PropertyIsLike escapeChar="\" singleChar="?" wildCard="*">
+                    <PropertyName>subject</PropertyName>
+                    <Literal>*$VALUE*</Literal>
+                  </PropertyIsLike>
+                </Or>
+                <PropertyIsLike escapeChar="\" singleChar="?" wildCard="*">
+                  <PropertyName>title</PropertyName>
+                  <Literal>*$VALUE*</Literal>
+                </PropertyIsLike>
+              </Or>
+      

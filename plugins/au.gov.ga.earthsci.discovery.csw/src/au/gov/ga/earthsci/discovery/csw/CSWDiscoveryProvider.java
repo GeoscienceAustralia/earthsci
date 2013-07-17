@@ -16,28 +16,32 @@
 package au.gov.ga.earthsci.discovery.csw;
 
 import java.net.URL;
+import java.util.Map;
 
 import au.gov.ga.earthsci.discovery.IDiscoveryProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
+import au.gov.ga.earthsci.discovery.IDiscoveryServiceProperty;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * {@link IDiscoveryProvider} implementation for CSW discoveries.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class CSWDiscoveryProvider implements IDiscoveryProvider
 {
+	private final CSWFormatProperty formatProperty = new CSWFormatProperty();
+	private final IDiscoveryServiceProperty<?>[] properties = new IDiscoveryServiceProperty[] { formatProperty };
+
 	@Override
 	public String getId()
 	{
-		// TODO Auto-generated method stub
-		return "csw";
+		return "csw"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getName()
 	{
-		// TODO Auto-generated method stub
-		return "CSW";
+		return "CSW"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -47,8 +51,20 @@ public class CSWDiscoveryProvider implements IDiscoveryProvider
 	}
 
 	@Override
-	public IDiscoveryService createService(String name, URL serviceURL)
+	public IDiscoveryService createService(String name, URL url,
+			Map<IDiscoveryServiceProperty<?>, Object> propertyValues)
 	{
-		return new CSWDiscoveryService(name, serviceURL, this);
+		CSWFormat format = (CSWFormat) propertyValues.get(formatProperty);
+		if (format == null)
+		{
+			format = CSWFormat.GEONETWORK2;
+		}
+		return new CSWDiscoveryService(format, name, url, this);
+	}
+
+	@Override
+	public IDiscoveryServiceProperty<?>[] getProperties()
+	{
+		return properties;
 	}
 }

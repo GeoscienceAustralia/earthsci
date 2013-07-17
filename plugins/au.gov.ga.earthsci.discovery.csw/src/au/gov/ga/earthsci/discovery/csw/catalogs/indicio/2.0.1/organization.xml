@@ -1,0 +1,13 @@
+<ogc:PropertyIsEqualTo> 
+<ogc:PropertyName>/$d/@id</ogc:PropertyName> 
+<ogc:PropertyName>/$a1/@sourceObject</ogc:PropertyName> 
+</ogc:PropertyIsEqualTo> 
+<ogc:PropertyIsEqualTo> 
+<ogc:PropertyName>/$a1/@targetObject</ogc:PropertyName> 
+<ogc:PropertyName>/$o/@id</ogc:PropertyName> 
+</ogc:PropertyIsEqualTo> 
+<ogc:PropertyIsLike wildCard="*" singleChar="?" escapeChar="\"> 
+<ogc:PropertyName>/$o/Name/LocalizedString/@value</ogc:PropertyName> 
+<?indicio-case-sensitive false?>
+<ogc:Literal>*$VALUE*</ogc:Literal> 
+</ogc:PropertyIsLike > 

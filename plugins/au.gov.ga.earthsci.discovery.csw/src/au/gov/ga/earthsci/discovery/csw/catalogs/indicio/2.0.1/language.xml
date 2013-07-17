@@ -1,0 +1,12 @@
+<ogc:PropertyIsEqualTo> 
+<ogc:PropertyName>/$d/@objectType</ogc:PropertyName> 
+<ogc:Literal>urn:x-ogc:specification:csw-ebrim:ObjectType:Dataset</ogc:Literal> 
+</ogc:PropertyIsEqualTo> 
+<ogc:PropertyIsEqualTo> 
+<ogc:PropertyName>/$d/$slotLanguage/@name</ogc:PropertyName> 
+<ogc:Literal>http://purl.org/dc/elements/1.1/language</ogc:Literal> 
+</ogc:PropertyIsEqualTo> 
+<ogc:PropertyIsEqualTo> 
+<ogc:PropertyName>/$d/$slotLanguage/ValueList/Value</ogc:PropertyName> 
+<ogc:Literal>$LANGUAGE</ogc:Literal> 
+</ogc:PropertyIsEqualTo> 

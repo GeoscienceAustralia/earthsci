@@ -1,0 +1,16 @@
+<ogc:PropertyIsEqualTo>
+      <ogc:PropertyName>/Dataset/@objectType</ogc:PropertyName>
+      <ogc:Literal>Dataset</ogc:Literal>
+    </ogc:PropertyIsEqualTo>
+    <ogc:PropertyIsEqualTo>
+      <ogc:PropertyName>/Dataset/@id</ogc:PropertyName>
+      <ogc:PropertyName>/$a1/@sourceObject</ogc:PropertyName>
+    </ogc:PropertyIsEqualTo>
+    <ogc:PropertyIsEqualTo>
+      <ogc:PropertyName>/$a1/@targetObject</ogc:PropertyName>
+      <ogc:PropertyName>/Organization/@id</ogc:PropertyName>
+    </ogc:PropertyIsEqualTo>
+    <ogc:PropertyIsLike wildCard="*" singleChar="?" escape="\" xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:PropertyName>/Organization/Name/LocalizedString/@value</ogc:PropertyName>
+      <ogc:Literal>*$VALUE*</ogc:Literal>
+    </ogc:PropertyIsLike>

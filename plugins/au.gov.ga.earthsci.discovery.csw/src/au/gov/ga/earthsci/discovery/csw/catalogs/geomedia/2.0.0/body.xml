@@ -1,0 +1,17 @@
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw" 
+xmlns:ogc="http://www.opengis.net/ogc" 
+xmlns="http://www.opengis.net/cat/csw" 
+version="2.0.0" 
+outputFormat="text/xml" 
+outputSchema="OGCCORE" startPosition="$STARTPOSITION" maxRecords="$MAXRECORDS"  resultType='results'>
+<csw:Query typeNames='Dataset DatasetCollection Application Service'>
+<csw:ElementName>full</csw:ElementName>
+<csw:Constraint version='1.0.20'>
+      <ogc:Filter xmlns="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+       $FILTER
+      </ogc:Filter>
+    </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>
+
+

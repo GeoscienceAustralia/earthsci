@@ -1,0 +1,5 @@
+<ogc:PropertyIsLike escapeChar="\" singleChar="?" wildCard="*">
+<ogc:PropertyName>dc:publisher</ogc:PropertyName>
+<ogc:Literal>*$VALUE*</ogc:Literal>
+</ogc:PropertyIsLike>
+      

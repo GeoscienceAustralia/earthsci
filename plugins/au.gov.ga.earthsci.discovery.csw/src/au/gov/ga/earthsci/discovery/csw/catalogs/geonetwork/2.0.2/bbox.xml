@@ -1,0 +1,7 @@
+<ogc:BBOX>
+<ogc:PropertyName>ows:BoundingBox</ogc:PropertyName>
+<gml:Envelope>
+<gml:lowerCorner>$XMIN $YMIN</gml:lowerCorner>
+<gml:upperCorner>$XMAX $YMAX</gml:upperCorner>
+</gml:Envelope>
+</ogc:BBOX>
