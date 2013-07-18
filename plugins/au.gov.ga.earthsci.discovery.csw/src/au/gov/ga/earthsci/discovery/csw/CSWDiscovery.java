@@ -70,6 +70,7 @@ public class CSWDiscovery implements IDiscovery
 	private final Map<Integer, IDiscoveryResult> results = new HashMap<Integer, IDiscoveryResult>();
 
 	private final Map<IRetrieval, String> retrievals = new HashMap<IRetrieval, String>();
+	private final Map<IRetrieval, Integer> retrievalStarts = new HashMap<IRetrieval, Integer>();
 	private final Set<String> retrievalIds = new HashSet<String>();
 
 	public CSWDiscovery(IDiscoveryParameters parameters, CSWDiscoveryService service)
@@ -229,6 +230,7 @@ public class CSWDiscovery implements IDiscovery
 							retrievalProperties, true);
 			retrievalIds.add(id);
 			retrievals.put(retrieval, id);
+			retrievalStarts.put(retrieval, start);
 			retrieval.addListener(retrievalListener);
 			retrieval.start();
 			loading = true;
@@ -243,7 +245,12 @@ public class CSWDiscovery implements IDiscovery
 			synchronized (retrievals)
 			{
 				String id = retrievals.remove(retrieval);
+				if (id == null)
+				{
+					return;
+				}
 				retrievalIds.remove(id);
+				int startIndex = retrievalStarts.remove(retrieval);
 				loading = !retrievals.isEmpty();
 
 				if (retrieval.getResult().isSuccessful())
@@ -263,8 +270,6 @@ public class CSWDiscovery implements IDiscovery
 							Double totalRecordCount =
 									(Double) xpath.compile("/GetRecordsResponse/numberOfRecordsMatched") //$NON-NLS-1$
 											.evaluate(document, XPathConstants.NUMBER);
-							Double nextRecordIndex = (Double) xpath.compile("/GetRecordsResponse/nextRecord").evaluate( //$NON-NLS-1$
-									document, XPathConstants.NUMBER);
 							Double numberOfRecordsReturned =
 									(Double) xpath.compile("/GetRecordsResponse/numberOfRecordsReturned") //$NON-NLS-1$
 											.evaluate(document, XPathConstants.NUMBER);
@@ -277,11 +282,9 @@ public class CSWDiscovery implements IDiscovery
 									listeners.resultCountChanged(CSWDiscovery.this);
 								}
 							}
-							if (!Double.isNaN(numberOfRecordsReturned) && !Double.isNaN(nextRecordIndex)
-									&& numberOfRecordsReturned > 0)
+							if (!Double.isNaN(numberOfRecordsReturned) && numberOfRecordsReturned > 0)
 							{
 								int count = numberOfRecordsReturned.intValue();
-								int startIndex = nextRecordIndex.intValue() - 1 - count;
 								NodeList recordElements =
 										(NodeList) xpath.compile("/GetRecordsResponse/Record").evaluate( //$NON-NLS-1$
 												document, XPathConstants.NODESET);
