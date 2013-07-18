@@ -15,31 +15,16 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery;
 
-import gov.nasa.worldwind.geom.Sector;
-
 /**
- * Single result contained by an {@link IDiscovery}.
+ * Handles opening of discovery results.
  * <p/>
- * Implementations can add whatever methods/fields they like; these can be
- * displayed to the user through the {@link IDiscoveryResultLabelProvider}
- * implementation.
+ * Implementations are injected with the Eclipse context before being called.
+ * For example, an implementation can inject the active shell of the application
+ * if it needs to perform some UI action.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IDiscoveryResult
+public interface IDiscoveryResultHandler
 {
-	/**
-	 * @return Discovery that this result is from
-	 */
-	IDiscovery getDiscovery();
-
-	/**
-	 * @return Index of this result in the {@link IDiscovery}
-	 */
-	int getIndex();
-
-	/**
-	 * @return Bounds that this result covers, <code>null</code> if unknown
-	 */
-	Sector getBounds();
+	void open(IDiscoveryResult result);
 }

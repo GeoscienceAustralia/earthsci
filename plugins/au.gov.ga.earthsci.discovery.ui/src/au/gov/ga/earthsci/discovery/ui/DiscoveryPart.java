@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery.ui;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +24,10 @@ import javax.inject.Named;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -65,13 +63,10 @@ import au.gov.ga.earthsci.discovery.DiscoveryServiceManager;
 import au.gov.ga.earthsci.discovery.IDiscovery;
 import au.gov.ga.earthsci.discovery.IDiscoveryListener;
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
+import au.gov.ga.earthsci.discovery.IDiscoveryResultHandler;
 import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
 import au.gov.ga.earthsci.discovery.ui.handler.ServicesHandler;
-import au.gov.ga.earthsci.intent.IIntentCallback;
-import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.intent.IntentManager;
-import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
 
 /**
  * The Discovery UI part.
@@ -202,6 +197,7 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 			discovery.cancel();
 		}
 		currentDiscoveries.clear();
+		discoverySelected(null);
 
 		for (IDiscoveryService service : DiscoveryServiceManager.getServices())
 		{
@@ -365,64 +361,8 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 
 	private void resultDefaultSelected(IDiscoveryResult result)
 	{
-		URI uri = null;
-		try
-		{
-			uri = result.getContentURI();
-		}
-		catch (URISyntaxException e)
-		{
-			IStatus status = new Status(IStatus.ERROR, Activator.getBundleName(), e.getLocalizedMessage(), e);
-			StackTraceDialog.openError(shell, Messages.DiscoveryPart_Error,
-					Messages.DiscoveryPart_ContentURIParsingError, status);
-			return;
-		}
-
-		if (uri == null)
-		{
-			IStatus status =
-					new Status(IStatus.ERROR, Activator.getBundleName(), Messages.DiscoveryPart_ContentURIMissingError);
-			ErrorDialog.openError(shell, Messages.DiscoveryPart_Error, null, status);
-			return;
-		}
-
-		Intent intent = new Intent();
-		intent.setURI(uri);
-		IIntentCallback callback = new IIntentCallback()
-		{
-
-			@Override
-			public void error(final Exception e, Intent intent)
-			{
-				shell.getDisplay().asyncExec(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						IStatus status =
-								new Status(IStatus.ERROR, Activator.getBundleName(), e.getLocalizedMessage(), e);
-						StackTraceDialog.openError(shell, Messages.DiscoveryPart_Error,
-								Messages.DiscoveryPart_ContentReadError, status);
-					}
-				});
-			}
-
-			@Override
-			public void completed(Object result, Intent intent)
-			{
-				Dispatcher.getInstance().dispatch(result, context);
-			}
-
-			@Override
-			public void canceled(Intent intent)
-			{
-			}
-
-			@Override
-			public void aborted(Intent intent)
-			{
-			}
-		};
-		IntentManager.getInstance().start(intent, callback, context);
+		IDiscoveryResultHandler handler = result.getDiscovery().getService().getProvider().getHandler();
+		ContextInjectionFactory.inject(handler, context);
+		handler.open(result);
 	}
 }

@@ -24,9 +24,6 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.discovery.ui.messages"; //$NON-NLS-1$
-	public static String DiscoveryPart_ContentReadError;
-	public static String DiscoveryPart_ContentURIMissingError;
-	public static String DiscoveryPart_ContentURIParsingError;
 	public static String DiscoveryPart_Error;
 	public static String DiscoveryPart_NoServicesDialogMessage;
 	public static String DiscoveryPart_NoServicesDialogTitle;

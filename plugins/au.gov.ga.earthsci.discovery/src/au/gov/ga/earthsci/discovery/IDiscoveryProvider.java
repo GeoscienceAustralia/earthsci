@@ -71,4 +71,10 @@ public interface IDiscoveryProvider
 	 *         this provider
 	 */
 	IDiscoveryServiceProperty<?>[] getProperties();
+
+	/**
+	 * @return Handler that can handle opening discovery results created by this
+	 *         provider's services
+	 */
+	IDiscoveryResultHandler getHandler();
 }

@@ -119,5 +119,11 @@ public class MissingPluginPlaceholderDiscoveryService implements IDiscoveryServi
 		{
 			return null;
 		}
+
+		@Override
+		public IDiscoveryResultHandler getHandler()
+		{
+			return null;
+		}
 	}
 }
