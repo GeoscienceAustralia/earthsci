@@ -136,6 +136,14 @@
             content-type-id="org.eclipse.core.runtime.html"
             name="application/xhtml+xml">
       </mime-type>
+      <mime-type
+            content-type-id="org.eclipse.core.runtime.xml"
+            name="application/vnd.ogc.se_xml">
+      </mime-type>
+      <mime-type
+            content-type-id="org.eclipse.core.runtime.xml"
+            name="application/vnd.ogc.wms_xml">
+      </mime-type>
    </extension>
    <extension
          point="au.gov.ga.earthsci.intent.filters">
