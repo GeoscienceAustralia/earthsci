@@ -45,7 +45,6 @@ import au.gov.ga.earthsci.discovery.DiscoveryIndexOutOfBoundsException;
 import au.gov.ga.earthsci.discovery.DiscoveryResultNotFoundException;
 import au.gov.ga.earthsci.discovery.IDiscovery;
 import au.gov.ga.earthsci.discovery.IDiscoveryParameters;
-import au.gov.ga.earthsci.discovery.IDiscoveryResult;
 import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 
 /**
@@ -56,7 +55,7 @@ import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 public class CSWDiscovery extends AbstractDiscovery<CSWDiscoveryService, IDiscoveryParameters>
 {
 	private final IDiscoveryResultLabelProvider labelProvider = new CSWDiscoveryResultLabelProvider();
-	private final Map<Integer, IDiscoveryResult> results = new HashMap<Integer, IDiscoveryResult>();
+	private final Map<Integer, CSWDiscoveryResult> results = new HashMap<Integer, CSWDiscoveryResult>();
 
 	private final Map<IRetrieval, String> retrievals = new HashMap<IRetrieval, String>();
 	private final Map<IRetrieval, Integer> retrievalStarts = new HashMap<IRetrieval, Integer>();
@@ -95,7 +94,7 @@ public class CSWDiscovery extends AbstractDiscovery<CSWDiscoveryService, IDiscov
 	}
 
 	@Override
-	public IDiscoveryResult getResult(int index) throws DiscoveryResultNotFoundException,
+	public CSWDiscoveryResult getResult(int index) throws DiscoveryResultNotFoundException,
 			DiscoveryIndexOutOfBoundsException
 	{
 		synchronized (retrievals)
