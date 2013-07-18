@@ -18,6 +18,8 @@ package au.gov.ga.earthsci.discovery;
 import java.net.URL;
 import java.util.Map;
 
+import org.eclipse.osgi.util.NLS;
+
 /**
  * {@link IDiscoveryService} implementation that can be used as a placeholder
  * for discovery services that have been saved but whose contributing plugin is
@@ -98,7 +100,7 @@ public class MissingPluginPlaceholderDiscoveryService implements IDiscoveryServi
 		@Override
 		public String getName()
 		{
-			return "'" + id + "' discovery provider plugin missing";
+			return NLS.bind(Messages.MissingPluginPlaceholderDiscoveryService_PluginMissing, id);
 		}
 
 		@Override
