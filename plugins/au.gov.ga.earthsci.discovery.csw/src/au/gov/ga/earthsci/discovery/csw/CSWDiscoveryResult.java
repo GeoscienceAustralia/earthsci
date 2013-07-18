@@ -33,6 +33,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import au.gov.ga.earthsci.discovery.AbstractDiscoveryResult;
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
@@ -42,7 +43,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class CSWDiscoveryResult implements IDiscoveryResult
+public class CSWDiscoveryResult extends AbstractDiscoveryResult<CSWDiscovery>
 {
 	/*
 	FULL RESPONSE:
@@ -104,8 +105,6 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 	</Record>	
 	 */
 
-	private final CSWDiscovery discovery;
-	private final int index;
 	private final String title;
 	private final String description;
 	private final List<URL> references = new ArrayList<URL>();
@@ -115,8 +114,7 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 	public CSWDiscoveryResult(CSWDiscovery discovery, int index, Element cswRecordElement)
 			throws XPathExpressionException
 	{
-		this.discovery = discovery;
-		this.index = index;
+		super(discovery, index);
 
 		XPath xpath = WWXML.makeXPath();
 
@@ -176,18 +174,6 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 			}
 		}
 		this.bounds = bounds;
-	}
-
-	@Override
-	public CSWDiscovery getDiscovery()
-	{
-		return discovery;
-	}
-
-	@Override
-	public int getIndex()
-	{
-		return index;
 	}
 
 	@Override

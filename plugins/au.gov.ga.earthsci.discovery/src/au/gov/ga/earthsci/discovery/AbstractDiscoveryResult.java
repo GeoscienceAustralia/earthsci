@@ -13,41 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.discovery.csw;
-
-import java.net.URL;
-
-import au.gov.ga.earthsci.discovery.AbstractDiscoveryService;
-import au.gov.ga.earthsci.discovery.IDiscovery;
-import au.gov.ga.earthsci.discovery.IDiscoveryParameters;
-import au.gov.ga.earthsci.discovery.IDiscoveryService;
+package au.gov.ga.earthsci.discovery;
 
 /**
- * {@link IDiscoveryService} implementation for CSW.
+ * Abstract implementation of {@link IDiscoveryResult}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class CSWDiscoveryService extends AbstractDiscoveryService<CSWDiscoveryProvider>
+public abstract class AbstractDiscoveryResult<D extends IDiscovery> implements IDiscoveryResult
 {
-	private final CSWFormat format;
+	protected final D discovery;
+	protected final int index;
 
-	public CSWDiscoveryService(CSWDiscoveryProvider provider, String name, URL serviceURL, CSWFormat format)
+	public AbstractDiscoveryResult(D discovery, int index)
 	{
-		super(provider, name, serviceURL);
-		this.format = format;
-	}
-
-	/**
-	 * @return Format of the CSW server
-	 */
-	public CSWFormat getFormat()
-	{
-		return format;
+		this.discovery = discovery;
+		this.index = index;
 	}
 
 	@Override
-	public IDiscovery createDiscovery(IDiscoveryParameters parameters)
+	public D getDiscovery()
 	{
-		return new CSWDiscovery(this, parameters);
+		return discovery;
+	}
+
+	@Override
+	public int getIndex()
+	{
+		return index;
 	}
 }

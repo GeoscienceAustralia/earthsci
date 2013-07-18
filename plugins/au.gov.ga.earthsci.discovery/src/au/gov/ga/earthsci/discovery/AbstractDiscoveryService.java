@@ -49,7 +49,7 @@ public abstract class AbstractDiscoveryService<P extends IDiscoveryProvider> imp
 	}
 
 	@Override
-	public IDiscoveryProvider getProvider()
+	public P getProvider()
 	{
 		return provider;
 	}

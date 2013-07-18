@@ -40,55 +40,31 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalListener;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
 import au.gov.ga.earthsci.core.retrieve.retriever.HttpRetrievalProperties;
+import au.gov.ga.earthsci.discovery.AbstractDiscovery;
 import au.gov.ga.earthsci.discovery.DiscoveryIndexOutOfBoundsException;
-import au.gov.ga.earthsci.discovery.DiscoveryListenerList;
 import au.gov.ga.earthsci.discovery.DiscoveryResultNotFoundException;
 import au.gov.ga.earthsci.discovery.IDiscovery;
-import au.gov.ga.earthsci.discovery.IDiscoveryListener;
 import au.gov.ga.earthsci.discovery.IDiscoveryParameters;
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
 import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
-import au.gov.ga.earthsci.discovery.IDiscoveryService;
 
 /**
  * {@link IDiscovery} implementation for a CSW service.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class CSWDiscovery implements IDiscovery
+public class CSWDiscovery extends AbstractDiscovery<CSWDiscoveryService, IDiscoveryParameters>
 {
-	private final IDiscoveryParameters parameters;
-	private final CSWDiscoveryService service;
-	private final DiscoveryListenerList listeners = new DiscoveryListenerList();
 	private final IDiscoveryResultLabelProvider labelProvider = new CSWDiscoveryResultLabelProvider();
-	private int pageSize = DEFAULT_PAGE_SIZE;
-
-	private Integer resultCount;
-	private boolean loading;
-	private Exception error;
-
 	private final Map<Integer, IDiscoveryResult> results = new HashMap<Integer, IDiscoveryResult>();
 
 	private final Map<IRetrieval, String> retrievals = new HashMap<IRetrieval, String>();
 	private final Map<IRetrieval, Integer> retrievalStarts = new HashMap<IRetrieval, Integer>();
 	private final Set<String> retrievalIds = new HashSet<String>();
 
-	public CSWDiscovery(IDiscoveryParameters parameters, CSWDiscoveryService service)
+	public CSWDiscovery(CSWDiscoveryService service, IDiscoveryParameters parameters)
 	{
-		this.parameters = parameters;
-		this.service = service;
-	}
-
-	@Override
-	public IDiscoveryService getService()
-	{
-		return service;
-	}
-
-	@Override
-	public IDiscoveryParameters getParameters()
-	{
-		return parameters;
+		super(service, parameters);
 	}
 
 	@Override
@@ -118,36 +94,6 @@ public class CSWDiscovery implements IDiscovery
 	}
 
 	@Override
-	public void addListener(IDiscoveryListener listener)
-	{
-		listeners.add(listener);
-	}
-
-	@Override
-	public void removeListener(IDiscoveryListener listener)
-	{
-		listeners.remove(listener);
-	}
-
-	@Override
-	public boolean isLoading()
-	{
-		return loading;
-	}
-
-	@Override
-	public Exception getError()
-	{
-		return error;
-	}
-
-	@Override
-	public int getResultCount()
-	{
-		return resultCount != null ? resultCount : 0;
-	}
-
-	@Override
 	public IDiscoveryResult getResult(int index) throws DiscoveryResultNotFoundException,
 			DiscoveryIndexOutOfBoundsException
 	{
@@ -172,27 +118,9 @@ public class CSWDiscovery implements IDiscovery
 	}
 
 	@Override
-	public int getPageSize()
-	{
-		return pageSize;
-	}
-
-	@Override
 	public boolean supportsCustomPageSize()
 	{
 		return true;
-	}
-
-	@Override
-	public int getCustomPageSize()
-	{
-		return pageSize;
-	}
-
-	@Override
-	public void setCustomPageSize(int customPageSize)
-	{
-		this.pageSize = Math.max(1, customPageSize);
 	}
 
 	protected void retrieve(int start, int length)
