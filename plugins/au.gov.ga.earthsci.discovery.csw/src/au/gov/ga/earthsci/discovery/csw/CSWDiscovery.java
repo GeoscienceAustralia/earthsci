@@ -90,6 +90,7 @@ public class CSWDiscovery extends AbstractDiscovery<CSWDiscoveryService, IDiscov
 			}
 			retrievals.clear();
 			retrievalIds.clear();
+			retrievalStarts.clear();
 		}
 	}
 
