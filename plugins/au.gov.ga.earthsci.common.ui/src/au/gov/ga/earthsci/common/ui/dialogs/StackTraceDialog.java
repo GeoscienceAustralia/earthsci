@@ -40,6 +40,7 @@ public class StackTraceDialog extends ErrorDialog
 
 	private Clipboard clipboard;
 	private StringBuffer copyBuffer;
+	private final String newline = System.getProperty("line.separator"); //$NON-NLS-1$
 
 	public StackTraceDialog(Shell parentShell, String dialogTitle, String message, IStatus status, int displayMask)
 	{
@@ -68,7 +69,7 @@ public class StackTraceDialog extends ErrorDialog
 		copyBuffer.append(status.getMessage());
 		if (status != null && status.getException() != null)
 		{
-			copyBuffer.append("\n\n");
+			copyBuffer.append(newline + newline);
 			list.add("");
 			addThrowable(list, status.getException(), true);
 		}
@@ -107,14 +108,14 @@ public class StackTraceDialog extends ErrorDialog
 		str += t.getClass().getCanonicalName() + ": " + t.getLocalizedMessage();
 
 		list.add(str);
-		copyBuffer.append(str).append('\n');
+		copyBuffer.append(str).append(newline);
 
 		StackTraceElement[] elements = status.getException().getStackTrace();
 		for (StackTraceElement element : elements)
 		{
 			str = "     at " + element.toString(); //$NON-NLS-1$
 			list.add(str);
-			copyBuffer.append(str).append('\n');
+			copyBuffer.append(str).append(newline);
 		}
 
 		if (t.getCause() != null)
