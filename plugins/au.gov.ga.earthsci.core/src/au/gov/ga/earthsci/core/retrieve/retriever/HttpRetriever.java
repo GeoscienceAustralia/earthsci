@@ -152,6 +152,10 @@ public class HttpRetriever implements IRetriever
 				{
 					connection.setRequestMethod(httpRetrievalProperties.getRequestMethod());
 				}
+				if (!Util.isEmpty(httpRetrievalProperties.getContentType()))
+				{
+					connection.setRequestProperty("Content-Type", httpRetrievalProperties.getContentType()); //$NON-NLS-1$
+				}
 				payload = httpRetrievalProperties.getRequestPayload();
 			}
 

@@ -26,6 +26,7 @@ public class HttpRetrievalProperties extends RetrievalProperties implements IHtt
 {
 	private String requestMethod;
 	private byte[] requestPayload;
+	private String contentType;
 
 	@Override
 	public String getRequestMethod()
@@ -47,5 +48,16 @@ public class HttpRetrievalProperties extends RetrievalProperties implements IHtt
 	public void setRequestPayload(byte[] requestPayload)
 	{
 		this.requestPayload = requestPayload;
+	}
+
+	@Override
+	public String getContentType()
+	{
+		return contentType;
+	}
+
+	public void setContentType(String contentType)
+	{
+		this.contentType = contentType;
 	}
 }

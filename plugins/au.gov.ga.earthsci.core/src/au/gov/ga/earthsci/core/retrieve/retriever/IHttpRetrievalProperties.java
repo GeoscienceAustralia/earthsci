@@ -27,4 +27,6 @@ public interface IHttpRetrievalProperties extends IRetrievalProperties
 	String getRequestMethod();
 
 	byte[] getRequestPayload();
+
+	String getContentType();
 }

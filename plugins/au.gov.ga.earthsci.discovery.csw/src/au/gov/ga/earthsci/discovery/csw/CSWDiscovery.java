@@ -138,6 +138,7 @@ public class CSWDiscovery extends AbstractDiscovery<CSWDiscoveryService, IDiscov
 			HttpRetrievalProperties retrievalProperties = new HttpRetrievalProperties();
 			retrievalProperties.setRequestMethod("POST"); //$NON-NLS-1$
 			retrievalProperties.setUseCache(false);
+			retrievalProperties.setContentType("text/xml"); //$NON-NLS-1$
 
 			CSWRequestParameters requestParameters = new CSWRequestParameters();
 			requestParameters.any = parameters.getQuery();
