@@ -17,9 +17,9 @@ package au.gov.ga.earthsci.discovery.csw;
 
 import java.net.URL;
 
+import au.gov.ga.earthsci.discovery.AbstractDiscoveryService;
 import au.gov.ga.earthsci.discovery.IDiscovery;
 import au.gov.ga.earthsci.discovery.IDiscoveryParameters;
-import au.gov.ga.earthsci.discovery.IDiscoveryProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
 
 /**
@@ -27,20 +27,14 @@ import au.gov.ga.earthsci.discovery.IDiscoveryService;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class CSWDiscoveryService implements IDiscoveryService
+public class CSWDiscoveryService extends AbstractDiscoveryService<CSWDiscoveryProvider>
 {
 	private final CSWFormat format;
-	private final String name;
-	private final URL serviceURL;
-	private final IDiscoveryProvider provider;
-	private boolean enabled;
 
-	public CSWDiscoveryService(CSWFormat format, String name, URL serviceURL, IDiscoveryProvider provider)
+	public CSWDiscoveryService(CSWDiscoveryProvider provider, String name, URL serviceURL, CSWFormat format)
 	{
+		super(provider, name, serviceURL);
 		this.format = format;
-		this.name = name;
-		this.serviceURL = serviceURL;
-		this.provider = provider;
 	}
 
 	/**
@@ -52,38 +46,8 @@ public class CSWDiscoveryService implements IDiscoveryService
 	}
 
 	@Override
-	public String getName()
-	{
-		return name;
-	}
-
-	@Override
-	public URL getServiceURL()
-	{
-		return serviceURL;
-	}
-
-	@Override
-	public IDiscoveryProvider getProvider()
-	{
-		return provider;
-	}
-
-	@Override
 	public IDiscovery createDiscovery(IDiscoveryParameters parameters)
 	{
 		return new CSWDiscovery(parameters, this);
-	}
-
-	@Override
-	public boolean isEnabled()
-	{
-		return enabled;
-	}
-
-	@Override
-	public void setEnabled(boolean enabled)
-	{
-		this.enabled = enabled;
 	}
 }

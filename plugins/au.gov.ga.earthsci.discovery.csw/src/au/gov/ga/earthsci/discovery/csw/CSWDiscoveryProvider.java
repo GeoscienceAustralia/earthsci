@@ -60,7 +60,7 @@ public class CSWDiscoveryProvider implements IDiscoveryProvider
 		{
 			format = CSWFormat.GEONETWORK2;
 		}
-		return new CSWDiscoveryService(format, name, url, this);
+		return new CSWDiscoveryService(this, name, url, format);
 	}
 
 	@Override
