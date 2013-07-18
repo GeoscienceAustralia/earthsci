@@ -200,6 +200,19 @@ public class CSWURLSelectionDialog extends StatusDialog
 		}
 
 		String urlString = selectedUrl.toString();
+		String lower = urlString.toLowerCase();
+		if (lower.contains("wms")) //$NON-NLS-1$
+		{
+			urlString = addQueryParameter(urlString, "service=WMS"); //$NON-NLS-1$
+		}
+		else if (lower.contains("wfs")) //$NON-NLS-1$
+		{
+			urlString = addQueryParameter(urlString, "service=WFS"); //$NON-NLS-1$
+		}
+		else if (lower.contains("wcs")) //$NON-NLS-1$
+		{
+			urlString = addQueryParameter(urlString, "service=WCS"); //$NON-NLS-1$
+		}
 		urlString = addQueryParameter(urlString, "request=GetCapabilities"); //$NON-NLS-1$
 
 		try
