@@ -297,7 +297,8 @@ public class CSWDiscovery implements IDiscovery
 								{
 									Element recordElement = (Element) recordElements.item(i);
 									int index = startIndex + i;
-									CSWDiscoveryResult result = new CSWDiscoveryResult(index, recordElement);
+									CSWDiscoveryResult result =
+											new CSWDiscoveryResult(CSWDiscovery.this, index, recordElement);
 									results.put(index, result);
 									listeners.resultAdded(CSWDiscovery.this, result);
 								}

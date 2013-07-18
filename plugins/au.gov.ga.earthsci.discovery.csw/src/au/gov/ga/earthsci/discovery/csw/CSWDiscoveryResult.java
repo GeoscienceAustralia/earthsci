@@ -15,12 +15,15 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery.csw;
 
+import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.util.WWXML;
 
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -31,6 +34,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
+import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
  * {@link IDiscoveryResult} implementation for CSW. Represents a single
@@ -100,13 +104,18 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 	</Record>	
 	 */
 
+	private final CSWDiscovery discovery;
 	private final int index;
 	private final String title;
 	private final String description;
-	private final URL endpoint;
+	private final List<URL> references = new ArrayList<URL>();
+	private final List<String> referenceSchemes = new ArrayList<String>();
+	private final Sector bounds;
 
-	public CSWDiscoveryResult(int index, Element cswRecordElement) throws XPathExpressionException
+	public CSWDiscoveryResult(CSWDiscovery discovery, int index, Element cswRecordElement)
+			throws XPathExpressionException
 	{
+		this.discovery = discovery;
 		this.index = index;
 
 		XPath xpath = WWXML.makeXPath();
@@ -125,26 +134,54 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 		this.description = description;
 
 
-		URL endpoint = null;
-		NodeList references =
+		NodeList referenceElements =
 				(NodeList) xpath.compile("references/reference").evaluate(cswRecordElement, XPathConstants.NODESET); //$NON-NLS-1$
-		for (int i = 0; i < references.getLength(); i++)
+		for (int i = 0; i < referenceElements.getLength(); i++)
 		{
-			Element reference = (Element) references.item(i);
-			if (reference.getAttribute("scheme").contains("Server")) //$NON-NLS-1$ //$NON-NLS-2$
+			Element referenceElement = (Element) referenceElements.item(i);
+			String scheme = referenceElement.getAttribute("scheme"); //$NON-NLS-1$
+			try
 			{
-				try
-				{
-					endpoint = new URL(reference.getTextContent());
-					break;
-				}
-				catch (MalformedURLException e)
-				{
-				}
+				URL url = new URL(referenceElement.getTextContent());
+				references.add(url);
+				referenceSchemes.add(scheme);
+			}
+			catch (MalformedURLException e)
+			{
 			}
 		}
 
-		this.endpoint = endpoint;
+		Sector bounds = null;
+		String min =
+				(String) xpath
+						.compile("boundingBox/lowerCorner/text()").evaluate(cswRecordElement, XPathConstants.STRING); //$NON-NLS-1$
+		String max =
+				(String) xpath
+						.compile("boundingBox/upperCorner/text()").evaluate(cswRecordElement, XPathConstants.STRING); //$NON-NLS-1$
+		if (!Util.isBlank(min) && !Util.isBlank(max))
+		{
+			min = StringEscapeUtils.unescapeXml(min);
+			max = StringEscapeUtils.unescapeXml(max);
+			String doubleGroup = "([-+]?(?:\\d*\\.?\\d+)|(?:\\d+\\.))"; //$NON-NLS-1$
+			Pattern pattern = Pattern.compile("\\s*" + doubleGroup + "\\s+" + doubleGroup + "\\s*"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			Matcher minMatcher = pattern.matcher(min);
+			Matcher maxMatcher = pattern.matcher(max);
+			if (minMatcher.matches() && maxMatcher.matches())
+			{
+				double minLat = Double.parseDouble(minMatcher.group(1));
+				double minLon = Double.parseDouble(minMatcher.group(2));
+				double maxLat = Double.parseDouble(maxMatcher.group(1));
+				double maxLon = Double.parseDouble(maxMatcher.group(2));
+				bounds = Sector.fromDegrees(minLat, maxLat, minLon, maxLon);
+			}
+		}
+		this.bounds = bounds;
+	}
+
+	@Override
+	public CSWDiscovery getDiscovery()
+	{
+		return discovery;
 	}
 
 	@Override
@@ -154,6 +191,17 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 	}
 
 	@Override
+	public Sector getBounds()
+	{
+		return bounds;
+	}
+
+	public List<URL> getReferences()
+	{
+		return references;
+	}
+
+	/*@Override
 	public URI getContentURI() throws URISyntaxException
 	{
 		String urlString = endpoint.toString();
@@ -164,7 +212,7 @@ public class CSWDiscoveryResult implements IDiscoveryResult
 		}
 		urlString += "?request=GetCapabilities"; //$NON-NLS-1$
 		return new URI(urlString);
-	}
+	}*/
 
 	public String getTitle()
 	{

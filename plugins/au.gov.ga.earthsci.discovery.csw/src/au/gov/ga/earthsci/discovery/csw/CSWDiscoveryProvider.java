@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.Map;
 
 import au.gov.ga.earthsci.discovery.IDiscoveryProvider;
+import au.gov.ga.earthsci.discovery.IDiscoveryResultHandler;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
 import au.gov.ga.earthsci.discovery.IDiscoveryServiceProperty;
 
@@ -66,5 +67,11 @@ public class CSWDiscoveryProvider implements IDiscoveryProvider
 	public IDiscoveryServiceProperty<?>[] getProperties()
 	{
 		return properties;
+	}
+
+	@Override
+	public IDiscoveryResultHandler getHandler()
+	{
+		return new CSWDiscoveryResultHandler();
 	}
 }

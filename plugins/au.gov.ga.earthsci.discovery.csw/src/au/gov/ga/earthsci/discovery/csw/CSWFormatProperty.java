@@ -47,7 +47,7 @@ public class CSWFormatProperty implements IDiscoveryServiceProperty<CSWFormat>
 	@Override
 	public String getLabel()
 	{
-		return "Format";
+		return Messages.CSWFormatProperty_FormatLabel;
 	}
 
 	@Override
