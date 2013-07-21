@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui,
  au.gov.ga.earthsci.notification,
  au.gov.ga.earthsci.common.ui,
  org.eclipse.e4.ui.services,
- org.eclipse.e4.core.contexts
+ org.eclipse.e4.core.contexts,
+ au.gov.ga.earthsci.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.annotation;version="1.1.0",

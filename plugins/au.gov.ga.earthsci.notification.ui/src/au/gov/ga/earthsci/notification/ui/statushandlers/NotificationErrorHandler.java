@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.statushandlers.AbstractStatusHandler;
 import org.eclipse.ui.statushandlers.StatusAdapter;
 import org.eclipse.ui.statushandlers.StatusManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.notification.INotification;
 import au.gov.ga.earthsci.notification.Notification;
@@ -36,21 +38,33 @@ import au.gov.ga.earthsci.notification.NotificationManager;
  */
 public class NotificationErrorHandler extends AbstractStatusHandler
 {
+	private static final Logger logger = LoggerFactory.getLogger(NotificationErrorHandler.class);
 
 	@Override
 	public void handle(StatusAdapter statusAdapter, int style)
 	{
-		NotificationManager.notify(createNotification(statusAdapter, style));
+		IStatus status = statusAdapter.getStatus();
+		NotificationManager.notify(createNotification(status, style));
+		switch (status.getSeverity())
+		{
+		case IStatus.ERROR:
+			logger.error(status.getMessage(), status.getException());
+			break;
+		case IStatus.WARNING:
+			logger.warn(status.getMessage(), status.getException());
+			break;
+		default:
+			logger.info(status.getMessage(), status.getException());
+			break;
+		}
 	}
 
-	private INotification createNotification(StatusAdapter adapter, int style)
+	private INotification createNotification(IStatus status, int style)
 	{
-
-		INotification notification = new Notification.Builder(adapter.getStatus())
+		INotification notification = new Notification.Builder(status)
 				.requiringAcknowledgement(style == StatusManager.BLOCK)
-				.inCategory(getCategory(adapter.getStatus()))
+				.inCategory(getCategory(status)).withThrowable(status.getException())
 				.build();
-
 		return notification;
 	}
 
@@ -62,7 +76,7 @@ public class NotificationErrorHandler extends AbstractStatusHandler
 			return NotificationCategory.GENERAL;
 		}
 
-		if (s.getException().getClass().getPackage().getName().equalsIgnoreCase("java.net"))
+		if (s.getException().getClass().getPackage().getName().startsWith("java.net")) //$NON-NLS-1$
 		{
 			return NotificationCategory.DOWNLOAD;
 		}
