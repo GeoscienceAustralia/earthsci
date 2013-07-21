@@ -54,6 +54,10 @@ public class DiscoveryResultInformationProvider extends TableViewerInformationPr
 		{
 			IDiscoveryResult result = (IDiscoveryResult) information;
 			String tooltip = labelProvider.getToolTip(result);
+			if (tooltip == null)
+			{
+				return null;
+			}
 			StringBuffer sb = new StringBuffer(tooltip);
 			//add the HTML prefix/suffix to style the HTML like a tooltip:
 			HTMLPrinter.insertPageProlog(sb, 0, loadStyleSheet(STYLESHEET_FILENAME));
