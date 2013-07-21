@@ -299,6 +299,7 @@ public class DiscoveryServiceManager
 			IDiscoveryProvider provider = DiscoveryProviderRegistry.getProviderForId(getProviderId());
 			if (provider == null)
 			{
+				logger.warn("Missing Discovery provider with id '" + getProviderId() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 				return new MissingPluginPlaceholderDiscoveryService(getProviderId(), getName(), getServiceURL(),
 						isEnabled(), propertiesElement);
 			}
