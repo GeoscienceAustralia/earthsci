@@ -59,6 +59,7 @@ import au.gov.ga.earthsci.discovery.ui.Messages;
 public class EditDiscoveryServiceDialog extends StatusDialog
 {
 	private IDiscoveryService service = null;
+	private IDiscoveryService originalService = null;
 
 	private Button okButton;
 	private Combo typeCombo;
@@ -81,6 +82,7 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 	public void setService(IDiscoveryService service)
 	{
 		this.service = service;
+		this.originalService = service;
 	}
 
 	@Override
@@ -201,11 +203,17 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 		{
 			for (Control control : propertyControls)
 			{
-				control.dispose();
+				if (control != null)
+				{
+					control.dispose();
+				}
 			}
 			for (Label label : propertyLabels)
 			{
-				label.dispose();
+				if (label != null)
+				{
+					label.dispose();
+				}
 			}
 		}
 		IDiscoveryProvider provider = null;
@@ -237,7 +245,15 @@ public class EditDiscoveryServiceDialog extends StatusDialog
 				propertyLabels[i] = new Label(parent, SWT.NONE);
 				propertyLabels[i].setText(label);
 
-				Object value = service == null ? null : property.getValue(service);
+				Object value = null;
+				if (originalService != null && originalService.getProvider() == provider)
+				{
+					value = property.getValue(originalService);
+				}
+				else if (service != null && service.getProvider() == provider)
+				{
+					value = property.getValue(service);
+				}
 				propertyControls[i] = property.createControl(parent, value, new ModifyListener()
 				{
 					@Override
