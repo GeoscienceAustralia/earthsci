@@ -280,12 +280,18 @@ public class DiscoveryServiceManager
 			setProviderId(service.getProvider().getId());
 			setServiceURL(service.getServiceURL());
 			setName(service.getName());
-			boolean enabled =
-					(service instanceof MissingPluginPlaceholderDiscoveryService)
-							? ((MissingPluginPlaceholderDiscoveryService) service).wasEnabled() : service.isEnabled();
-			setEnabled(enabled);
 
-			setupPropertiesElement(service);
+			if (service instanceof MissingPluginPlaceholderDiscoveryService)
+			{
+				MissingPluginPlaceholderDiscoveryService missing = (MissingPluginPlaceholderDiscoveryService) service;
+				setEnabled(missing.wasEnabled());
+				setProperties(missing.getPropertiesElement());
+			}
+			else
+			{
+				setEnabled(service.isEnabled());
+				setupPropertiesElement(service);
+			}
 		}
 
 		public IDiscoveryService createService()
@@ -294,7 +300,7 @@ public class DiscoveryServiceManager
 			if (provider == null)
 			{
 				return new MissingPluginPlaceholderDiscoveryService(getProviderId(), getName(), getServiceURL(),
-						isEnabled());
+						isEnabled(), propertiesElement);
 			}
 
 			Map<IDiscoveryServiceProperty<?>, Object> propertyValues = getPropertyValues(provider);

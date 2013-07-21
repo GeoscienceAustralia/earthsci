@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.eclipse.osgi.util.NLS;
+import org.w3c.dom.Element;
 
 /**
  * {@link IDiscoveryService} implementation that can be used as a placeholder
@@ -33,13 +34,16 @@ public class MissingPluginPlaceholderDiscoveryService implements IDiscoveryServi
 	private final URL serviceURL;
 	private final IDiscoveryProvider provider;
 	private final boolean wasEnabled;
+	private final Element propertiesElement;
 
-	public MissingPluginPlaceholderDiscoveryService(String providerId, String name, URL serviceURL, boolean wasEnabled)
+	public MissingPluginPlaceholderDiscoveryService(String providerId, String name, URL serviceURL, boolean wasEnabled,
+			Element propertiesElement)
 	{
 		this.name = name;
 		this.serviceURL = serviceURL;
 		this.provider = new MissingPluginPlaceholderDiscoveryProvider(providerId);
 		this.wasEnabled = wasEnabled;
+		this.propertiesElement = propertiesElement;
 	}
 
 	@Override
@@ -74,6 +78,11 @@ public class MissingPluginPlaceholderDiscoveryService implements IDiscoveryServi
 	public boolean wasEnabled()
 	{
 		return wasEnabled;
+	}
+
+	public Element getPropertiesElement()
+	{
+		return propertiesElement;
 	}
 
 	@Override
