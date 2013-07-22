@@ -177,7 +177,7 @@ public class CSWDiscoveryResult extends AbstractDiscoveryResult<CSWDiscovery>
 	}
 
 	@Override
-	public Sector getBounds()
+	public Sector getSector()
 	{
 		return bounds;
 	}

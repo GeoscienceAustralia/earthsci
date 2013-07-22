@@ -15,7 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery;
 
-import gov.nasa.worldwind.geom.Sector;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 
 /**
  * Single result contained by an {@link IDiscovery}.
@@ -26,7 +26,7 @@ import gov.nasa.worldwind.geom.Sector;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IDiscoveryResult
+public interface IDiscoveryResult extends Bounded
 {
 	/**
 	 * @return Discovery that this result is from
@@ -37,9 +37,4 @@ public interface IDiscoveryResult
 	 * @return Index of this result in the {@link IDiscovery}
 	 */
 	int getIndex();
-
-	/**
-	 * @return Bounds that this result covers, <code>null</code> if unknown
-	 */
-	Sector getBounds();
 }
