@@ -29,38 +29,23 @@ public class CSWDiscoveryResultLabelProvider implements IDiscoveryResultLabelPro
 	@Override
 	public String getTitle(IDiscoveryResult result)
 	{
-		if (result instanceof CSWDiscoveryResult)
-		{
-			CSWDiscoveryResult cswResult = (CSWDiscoveryResult) result;
-			return cswResult.getTitle();
-		}
-		return null;
+		return ((CSWDiscoveryResult) result).getTitle();
 	}
 
 	@Override
 	public String getDescription(IDiscoveryResult result)
 	{
-		if (result instanceof CSWDiscoveryResult)
-		{
-			CSWDiscoveryResult cswResult = (CSWDiscoveryResult) result;
-			return cswResult.getDescription();
-		}
-		return null;
+		return ((CSWDiscoveryResult) result).getDescription();
 	}
 
 	@Override
 	public String getToolTip(IDiscoveryResult result)
 	{
-		if (result instanceof CSWDiscoveryResult)
-		{
-			CSWDiscoveryResult cswResult = (CSWDiscoveryResult) result;
-
-			String title = HtmlUtil.convertToHTMLContent(cswResult.getTitle());
-			String description = HtmlUtil.convertToHTMLContentWithWhitespace(cswResult.getDescription());
-			String html = "<h3 style='margin-top: 0'>" + title + "</h3>" + description; //$NON-NLS-1$ //$NON-NLS-2$
-			return html;
-		}
-		return null;
+		CSWDiscoveryResult cswResult = (CSWDiscoveryResult) result;
+		String title = HtmlUtil.convertToHTMLContent(cswResult.getTitle());
+		String description = HtmlUtil.convertToHTMLContentWithWhitespace(cswResult.getDescription());
+		String html = "<h3 style='margin-top: 0'>" + title + "</h3>" + description; //$NON-NLS-1$ //$NON-NLS-2$
+		return html;
 	}
 
 	@Override
