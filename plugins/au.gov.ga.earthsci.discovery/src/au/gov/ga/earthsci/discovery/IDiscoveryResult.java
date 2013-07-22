@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery;
 
+import au.gov.ga.earthsci.common.util.IInformationed;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 
 /**
@@ -26,7 +27,7 @@ import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IDiscoveryResult extends Bounded
+public interface IDiscoveryResult extends Bounded, IInformationed
 {
 	/**
 	 * @return Discovery that this result is from

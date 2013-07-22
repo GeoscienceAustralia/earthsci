@@ -187,19 +187,6 @@ public class CSWDiscoveryResult extends AbstractDiscoveryResult<CSWDiscovery>
 		return references;
 	}
 
-	/*@Override
-	public URI getContentURI() throws URISyntaxException
-	{
-		String urlString = endpoint.toString();
-		int queryStart = urlString.indexOf('?');
-		if (queryStart >= 0)
-		{
-			urlString = urlString.substring(0, queryStart);
-		}
-		urlString += "?request=GetCapabilities"; //$NON-NLS-1$
-		return new URI(urlString);
-	}*/
-
 	public String getTitle()
 	{
 		return title;
@@ -214,5 +201,17 @@ public class CSWDiscoveryResult extends AbstractDiscoveryResult<CSWDiscovery>
 	public String toString()
 	{
 		return getIndex() + ": " + getTitle(); //$NON-NLS-1$
+	}
+
+	@Override
+	public String getInformationString()
+	{
+		return getDiscovery().getLabelProvider().getToolTip(this);
+	}
+
+	@Override
+	public URL getInformationURL()
+	{
+		return null;
 	}
 }

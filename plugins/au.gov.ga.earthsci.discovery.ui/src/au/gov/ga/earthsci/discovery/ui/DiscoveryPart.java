@@ -28,6 +28,7 @@ import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -82,6 +83,9 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 
 	@Inject
 	private IEclipseContext context;
+
+	@Inject
+	private ESelectionService selectionService;
 
 	private Text searchText;
 	private Button searchButton;
@@ -357,6 +361,7 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 
 	private void resultSelected(IDiscoveryResult result)
 	{
+		selectionService.setSelection(result);
 	}
 
 	private void resultDefaultSelected(IDiscoveryResult result)
