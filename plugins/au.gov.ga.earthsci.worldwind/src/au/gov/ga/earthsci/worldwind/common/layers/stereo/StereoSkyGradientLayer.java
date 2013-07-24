@@ -15,19 +15,50 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.stereo;
 
-import gov.nasa.worldwind.View;
+import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.layers.SkyGradientLayer;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.util.OGLStackHandler;
+
+import javax.media.opengl.GL2;
+
+import au.gov.ga.earthsci.worldwind.common.view.stereo.StereoView;
 
 /**
- * An extension of the {@link SkyGradientLayer} that is modified to use {@link View#computeHorizonDistance()} rather than
- * {@link View#getFarClipDistance()} to make it suitable for use in views that dynamically modify the far clip distance 
- * (e.g. for occasions when {@link View#getFarClipDistance()} != {@link View#computeHorizonDistance()}).
- * 
- * @deprecated The standard {@link SkyGradientLayer} makes use of the horizon distance rather than the clip plane 
- * (as of build worldwind-71-66). This change makes this class redundant, and it will be removed in future releases.
+ * An extension of the {@link SkyGradientLayer} that, if rendering in stereo,
+ * correctly calculates the projection matrix so that the sky gradient is
+ * correctly offset for each eye.
  */
-@Deprecated
 public class StereoSkyGradientLayer extends SkyGradientLayer
 {
-	// TODO: Base class now uses horizon instead of far clip. Remove when all layer definitions update.
+	@Override
+	protected void applyDrawProjection(DrawContext dc, OGLStackHandler ogsh)
+	{
+		boolean loaded = false;
+		if (dc.getView() instanceof StereoView && ((StereoView) dc.getView()).isStereo())
+		{
+			StereoView stereo = (StereoView) dc.getView();
+			//near is the distance from the origin
+			double near = 100;
+			double far = stereo.getHorizonDistance() + 10e3;
+			Matrix projection = stereo.calculateProjectionMatrix(near, far);
+
+			if (projection != null)
+			{
+				double[] matrixArray = new double[16];
+				GL2 gl = dc.getGL().getGL2();
+				ogsh.pushProjection(gl);
+
+				projection.toArray(matrixArray, 0, false);
+				gl.glLoadMatrixd(matrixArray, 0);
+
+				loaded = true;
+			}
+		}
+
+		if (!loaded)
+		{
+			super.applyDrawProjection(dc, ogsh);
+		}
+	}
 }
