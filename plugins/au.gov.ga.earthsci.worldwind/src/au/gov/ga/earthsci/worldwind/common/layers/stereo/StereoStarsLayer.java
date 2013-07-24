@@ -48,8 +48,7 @@ public class StereoStarsLayer extends ProjectionStarsLayer
 			{
 				double[] matrixArray = new double[16];
 				GL2 gl = dc.getGL().getGL2();
-				gl.glMatrixMode(GL2.GL_PROJECTION);
-				gl.glPushMatrix();
+				ogsh.pushProjection(gl);
 
 				projection.toArray(matrixArray, 0, false);
 				gl.glLoadMatrixd(matrixArray, 0);
