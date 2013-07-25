@@ -72,7 +72,6 @@ public class HtmlIntentHandler implements IIntentHandler
 						MPart part = BrowserPart.showPart(partService, modelService, window);
 						part.getContext().modify(BrowserPart.INPUT_NAME, url);
 						part.getContext().declareModifiable(BrowserPart.INPUT_NAME);
-						//TODO should the entire browser part just be in the application plugin? probably...
 					}
 				});
 			}
