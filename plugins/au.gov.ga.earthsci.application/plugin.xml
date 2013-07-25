@@ -155,6 +155,17 @@
                id="org.eclipse.core.runtime.html">
          </content-type>
       </filter>
+      <filter
+            class="au.gov.ga.earthsci.application.intent.HttpIntentHandler"
+            priority="-10000"
+            returns-result="false">
+         <uri
+               scheme="http">
+         </uri>
+         <uri
+               scheme="https">
+         </uri>
+      </filter>
    </extension>
    <extension
          point="org.eclipse.ui.console.consoleFactories">
