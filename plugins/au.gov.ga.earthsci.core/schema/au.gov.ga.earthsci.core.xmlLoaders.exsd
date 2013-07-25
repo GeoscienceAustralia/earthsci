@@ -73,7 +73,7 @@
                   Filter class that defines if this loader supports the XML document being loaded.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.intent.xml.XmlLoaderFilter"/>
+                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.core.xml.IXmlLoaderFilter"/>
                </appinfo>
             </annotation>
          </attribute>
