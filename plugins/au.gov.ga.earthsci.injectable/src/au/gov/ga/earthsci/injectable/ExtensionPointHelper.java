@@ -59,6 +59,29 @@ public class ExtensionPointHelper
 	}
 
 	/**
+	 * Get a boolean value from the extension point configuration element under
+	 * the given property name.
+	 * 
+	 * @param element
+	 *            Extension point configuration element
+	 * @param propertyName
+	 *            Property name in the element that defines the boolean value
+	 * @param defaultValue
+	 *            Value to return if the attribute doesn't exist
+	 * @return Boolean value of the configuration element's attribute for the
+	 *         given property name
+	 */
+	public static boolean getBooleanForProperty(IConfigurationElement element, String propertyName, boolean defaultValue)
+	{
+		String s = element.getAttribute(propertyName);
+		if (s != null)
+		{
+			return Boolean.parseBoolean(s);
+		}
+		return defaultValue;
+	}
+
+	/**
 	 * Load the class defined in the extension point configuration element under
 	 * the given property name.
 	 * 
