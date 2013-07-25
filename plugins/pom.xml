@@ -47,6 +47,7 @@
 		<module>au.gov.ga.earthsci.catalog.directory</module>
 		<module>au.gov.ga.earthsci.discovery</module>
 		<module>au.gov.ga.earthsci.discovery.csw</module>
+		<module>au.gov.ga.earthsci.discovery.darwin</module>
 		<module>au.gov.ga.earthsci.discovery.ui</module>
 		<module>au.gov.ga.earthsci.jface.extras</module>
 		<module>au.gov.ga.earthsci.layer.ui</module>

@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DARWIN Discovery
+Bundle-SymbolicName: au.gov.ga.earthsci.discovery.darwin;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: au.gov.ga.earthsci.discovery.darwin.Activator
+Bundle-Vendor: Geoscience Australia
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ au.gov.ga.earthsci.discovery,
+ au.gov.ga.earthsci.logging,
+ gov.nasa.worldwind,
+ au.gov.ga.earthsci.common;bundle-version="1.0.0",
+ org.eclipse.e4.ui.services,
+ org.eclipse.e4.core.contexts,
+ au.gov.ga.earthsci.intent,
+ au.gov.ga.earthsci.common.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Import-Package: javax.inject

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="au.gov.ga.earthsci.discovery.providers">
+      <provider
+            class="au.gov.ga.earthsci.discovery.darwin.DarwinDiscoveryProvider">
+      </provider>
+   </extension>
+
+</plugin>
