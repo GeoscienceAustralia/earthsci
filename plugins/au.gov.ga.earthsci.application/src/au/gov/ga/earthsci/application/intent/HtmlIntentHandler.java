@@ -78,7 +78,8 @@ public class HtmlIntentHandler implements IIntentHandler
 		}
 		catch (Exception e)
 		{
-			logger.error("Error loading intent HTML content", e); //$NON-NLS-1$
+			logger.error("Error loading intent Browser content", e); //$NON-NLS-1$
 		}
+		callback.completed(null, intent);
 	}
 }
