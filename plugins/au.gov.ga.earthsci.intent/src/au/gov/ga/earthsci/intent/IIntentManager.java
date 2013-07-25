@@ -15,16 +15,23 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.intent;
 
+import java.util.List;
+
 import org.eclipse.e4.core.contexts.IEclipseContext;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Intent manager, responsible for maintaining a list of intent filters. Used to
+ * start intents, or to find filter(s) that can handle intents.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public interface IIntentManager
 {
 	/**
-	 * Start the given Intent.
+	 * Start the given Intent. If the intent defines it's own handler, that
+	 * handler is used. Otherwise the best matching filter's handler is used. If
+	 * no filter is found, an exception is passed to the callback's
+	 * {@link IIntentCallback#error(Exception, Intent)} method.
 	 * 
 	 * @param intent
 	 *            Intent to start
@@ -36,8 +43,51 @@ public interface IIntentManager
 	void start(Intent intent, IIntentCallback callback, IEclipseContext context);
 
 	/**
-	 * Find an intent filter that best matches the given intent, or null if none
-	 * could be found.
+	 * Start the given Intent. If the intent defines it's own handler, that
+	 * handler is used. Otherwise the given filter's handler is used.
+	 * 
+	 * @param intent
+	 *            Intent to start
+	 * @param filter
+	 *            Filter whose handler will handle the intent (unless the intent
+	 *            defines it's own handler)
+	 * @param callback
+	 *            Callback of the intent that is notified of intent completion
+	 * @param context
+	 *            Eclipse context in which to run the intent
+	 */
+	void start(Intent intent, IntentFilter filter, IIntentCallback callback, IEclipseContext context);
+
+	/**
+	 * Start the given Intent, using the given handler. The intent's own
+	 * handler, if defined, is ignored.
+	 * 
+	 * @param intent
+	 *            Intent to start
+	 * @param handlerClass
+	 *            Handler to handle the intent
+	 * @param callback
+	 *            Callback of the intent that is notified of intent completion
+	 * @param context
+	 *            Eclipse context in which to run the intent
+	 */
+	void start(Intent intent, Class<? extends IIntentHandler> handlerClass, IIntentCallback callback,
+			IEclipseContext context);
+
+	/**
+	 * Find the best intent filter that matches the given intent. Returns null
+	 * if none could be found.
+	 * 
+	 * @param intent
+	 *            Intent to find a filter for
+	 * @return Intent filter that matches the given intent
+	 * @see IIntentManager#findFilters(Intent)
+	 */
+	IntentFilter findFilter(Intent intent);
+
+	/**
+	 * Find the intent filters that match the given intent. Returns an empty
+	 * list if none could be found.
 	 * <p/>
 	 * The best match is defined as follows:
 	 * <ul>
@@ -50,9 +100,9 @@ public interface IIntentManager
 	 * 
 	 * @param intent
 	 *            Intent to find a filter for
-	 * @return Intent filter that matches the given intent
+	 * @return Intent filters that match the given intent
 	 */
-	IntentFilter findFilter(Intent intent);
+	List<IntentFilter> findFilters(Intent intent);
 
 	/**
 	 * Add an intent filter.

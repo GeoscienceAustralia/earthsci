@@ -16,8 +16,11 @@
 package au.gov.ga.earthsci.intent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Singleton;
 
@@ -28,8 +31,6 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
-import au.gov.ga.earthsci.common.collection.ListSortedMap;
 import au.gov.ga.earthsci.intent.util.ContextInjectionFactoryThreadSafe;
 
 /**
@@ -65,16 +66,7 @@ public class IntentManager implements IIntentManager
 	private static final String INTENT_FILTERS_ID = "au.gov.ga.earthsci.intent.filters"; //$NON-NLS-1$
 	private static final Logger logger = LoggerFactory.getLogger(IntentManager.class);
 
-	//filters, sorted descending by priority
-	private final ListSortedMap<Integer, IntentFilter> filters = new ArrayListTreeMap<Integer, IntentFilter>(
-			new Comparator<Integer>()
-			{
-				@Override
-				public int compare(Integer o1, Integer o2)
-				{
-					return -o1.compareTo(o2);
-				}
-			});
+	private final List<IntentFilter> filters = new ArrayList<IntentFilter>();
 
 	/**
 	 * Intent manager constructor, should not be called directly. Instead the
@@ -97,7 +89,7 @@ public class IntentManager implements IIntentManager
 				if (isFilter)
 				{
 					IntentFilter filter = new IntentFilter(element);
-					filters.putSingle(filter.getPriority(), filter);
+					filters.add(filter);
 				}
 			}
 			catch (Exception e)
@@ -110,28 +102,68 @@ public class IntentManager implements IIntentManager
 	@Override
 	public void start(Intent intent, IIntentCallback callback, IEclipseContext context)
 	{
-		Class<? extends IIntentHandler> handlerClass = intent.getHandler();
-		if (handlerClass == null)
-		{
-			IntentFilter filter = findFilter(intent);
-			if (filter != null)
-			{
-				handlerClass = filter.getHandler();
-			}
-		}
-
 		try
 		{
-			if (handlerClass != null)
+			Class<? extends IIntentHandler> handlerClass = intent.getHandler();
+			if (handlerClass == null)
 			{
-				IEclipseContext child = context.createChild();
-				IIntentHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
-				handler.handle(intent, callback);
+				IntentFilter filter = findFilter(intent);
+				if (filter != null)
+				{
+					handlerClass = filter.getHandler();
+				}
 			}
-			else
+			if (handlerClass == null)
 			{
 				throw new Exception("Could not find filter to handle intent: " + intent); //$NON-NLS-1$
 			}
+			start(intent, handlerClass, callback, context);
+		}
+		catch (Exception e)
+		{
+			callback.error(e, intent);
+		}
+	}
+
+	@Override
+	public void start(Intent intent, IntentFilter filter, IIntentCallback callback, IEclipseContext context)
+	{
+		Class<? extends IIntentHandler> handlerClass = intent.getHandler();
+		if (filter == null && handlerClass == null)
+		{
+			throw new NullPointerException("Intent filter is null"); //$NON-NLS-1$
+		}
+		try
+		{
+			if (handlerClass == null)
+			{
+				handlerClass = filter.getHandler();
+				if (handlerClass == null)
+				{
+					throw new Exception("Filter does not contain a handler to handle intent: " + intent); //$NON-NLS-1$
+				}
+			}
+			start(intent, handlerClass, callback, context);
+		}
+		catch (Exception e)
+		{
+			callback.error(e, intent);
+		}
+	}
+
+	@Override
+	public void start(Intent intent, Class<? extends IIntentHandler> handlerClass, IIntentCallback callback,
+			IEclipseContext context)
+	{
+		if (handlerClass == null)
+		{
+			throw new NullPointerException("Intent handler class is null"); //$NON-NLS-1$
+		}
+		try
+		{
+			IEclipseContext child = context.createChild();
+			IIntentHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
+			handler.handle(intent, callback);
 		}
 		catch (Exception e)
 		{
@@ -142,30 +174,38 @@ public class IntentManager implements IIntentManager
 	@Override
 	public IntentFilter findFilter(Intent intent)
 	{
+		List<IntentFilter> filters = findFilters(intent);
+		if (!filters.isEmpty())
+		{
+			return filters.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	public List<IntentFilter> findFilters(Intent intent)
+	{
 		//add matching filters to a list, prioritising any that have a matching return type
 		List<IntentFilter> matches = new ArrayList<IntentFilter>();
 		boolean anyMatchExpectedReturnType = false;
-		for (List<IntentFilter> list : filters.values())
+		for (IntentFilter filter : filters)
 		{
-			for (IntentFilter filter : list)
+			if (filter.matches(intent))
 			{
-				if (filter.matches(intent))
+				if (filter.anyReturnTypesMatch(intent.getExpectedReturnType()))
 				{
-					if (filter.anyReturnTypesMatch(intent.getExpectedReturnType()))
+					if (!anyMatchExpectedReturnType)
 					{
-						if (!anyMatchExpectedReturnType)
-						{
-							//we've found the first filter that matches the intent's return type, so
-							//clear any that we've previously added that don't
-							matches.clear();
-							anyMatchExpectedReturnType = true;
-						}
-						matches.add(filter);
+						//we've found the first filter that matches the intent's return type, so
+						//clear any that we've previously added that don't
+						matches.clear();
+						anyMatchExpectedReturnType = true;
 					}
-					else if (!anyMatchExpectedReturnType)
-					{
-						matches.add(filter);
-					}
+					matches.add(filter);
+				}
+				else if (!anyMatchExpectedReturnType)
+				{
+					matches.add(filter);
 				}
 			}
 		}
@@ -173,44 +213,61 @@ public class IntentManager implements IIntentManager
 		//if no matches, return null
 		if (matches.isEmpty())
 		{
-			return null;
+			return matches;
 		}
 
-		//if the content type is defined or guessed, find the filter in the list of matches that most closely matches it
+		//if the content type is defined or guessed, find the distances to the filter's content type
+		Map<IntentFilter, Integer> contentTypeDistances = null;
 		IContentType contentType = intent.getOrGuessContentType();
 		if (contentType != null)
 		{
-			int minDistance = Integer.MAX_VALUE;
-			IntentFilter closest = null;
+			contentTypeDistances = new HashMap<IntentFilter, Integer>();
 			for (IntentFilter filter : matches)
 			{
 				int distance = ContentTypeHelper.distanceToClosestMatching(contentType, filter.getContentTypes());
-				if (distance >= 0 && distance < minDistance)
+				if (distance < 0)
 				{
-					minDistance = distance;
-					closest = filter;
+					//content type doesn't match, put at the end
+					distance = Integer.MAX_VALUE;
 				}
-			}
-			//none may match; this occurs if no matches define content types, and the content type was guessed
-			if (closest != null)
-			{
-				return closest;
+				contentTypeDistances.put(filter, distance);
 			}
 		}
+		final Map<IntentFilter, Integer> contentTypeDistancesFinal = contentTypeDistances;
 
-		//if no content types matched, return the first
-		return matches.get(0);
+		//sort matches by content type distance
+		//if distances are the same (or no distances were calculated), sort by priority
+		Collections.sort(matches, new Comparator<IntentFilter>()
+		{
+			@Override
+			public int compare(IntentFilter o1, IntentFilter o2)
+			{
+				if (contentTypeDistancesFinal != null)
+				{
+					Integer d1 = contentTypeDistancesFinal.get(o1);
+					Integer d2 = contentTypeDistancesFinal.get(o2);
+					int compare = d1.compareTo(d2);
+					if (compare != 0)
+					{
+						return compare;
+					}
+				}
+				return -((Integer) o1.getPriority()).compareTo(o2.getPriority());
+			}
+		});
+
+		return matches;
 	}
 
 	@Override
 	public void addFilter(IntentFilter filter)
 	{
-		filters.putSingle(filter.getPriority(), filter);
+		filters.add(filter);
 	}
 
 	@Override
 	public void removeFilter(IntentFilter filter)
 	{
-		filters.removeSingle(filter.getPriority(), filter);
+		filters.remove(filter);
 	}
 }

@@ -15,9 +15,12 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog;
 
+import java.util.List;
+
 import org.eclipse.e4.core.contexts.IEclipseContext;
 
 import au.gov.ga.earthsci.intent.IIntentCallback;
+import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.IIntentManager;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentFilter;
@@ -35,6 +38,17 @@ public class DummyIntentManager implements IIntentManager
 	}
 
 	@Override
+	public void start(Intent intent, IntentFilter filter, IIntentCallback callback, IEclipseContext context)
+	{
+	}
+
+	@Override
+	public void start(Intent intent, Class<? extends IIntentHandler> handlerClass, IIntentCallback callback,
+			IEclipseContext context)
+	{
+	}
+
+	@Override
 	public IntentFilter findFilter(Intent intent)
 	{
 		return null;
@@ -48,5 +62,11 @@ public class DummyIntentManager implements IIntentManager
 	@Override
 	public void removeFilter(IntentFilter filter)
 	{
+	}
+
+	@Override
+	public List<IntentFilter> findFilters(Intent intent)
+	{
+		return null;
 	}
 }
