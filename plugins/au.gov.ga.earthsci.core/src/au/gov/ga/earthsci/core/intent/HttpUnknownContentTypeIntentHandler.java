@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.core.intent;
 
 import java.net.URL;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -68,22 +69,25 @@ public class HttpUnknownContentTypeIntentHandler extends AbstractRetrieveIntentH
 			}
 		}
 		IContentType contentType = MIMEHelper.getContentTypeForMIMEType(mimeType);
-		if (contentType == null)
+		if (contentType != null)
 		{
-			callback.error(new Exception("Could not determine content type for MIME type: " + mimeType), intent); //$NON-NLS-1$
-			return;
+			//set the content type
+			intent.setContentType(contentType);
 		}
-		//set the content type and forward it back to the intent manager
-		intent.setContentType(contentType);
-		IntentFilter filter = IntentManager.getInstance().findFilter(intent);
-		//don't allow this class to handle the intent again (causing a infinite intent loop)
-		if (filter != null && !getClass().equals(filter.getHandler()))
+
+		List<IntentFilter> filters = IntentManager.getInstance().findFilters(intent);
+		if (!filters.isEmpty())
 		{
-			IntentManager.getInstance().start(intent, callback, context);
+			for (IntentFilter filter : filters)
+			{
+				//don't allow this class to handle the intent again (causing a infinite intent loop)
+				if (!getClass().equals(filter.getHandler()))
+				{
+					IntentManager.getInstance().start(intent, filter, callback, context);
+					return;
+				}
+			}
 		}
-		else
-		{
-			callback.error(new Exception("Could not find filter to handle intent for MIME type: " + mimeType), intent); //$NON-NLS-1$
-		}
+		callback.error(new Exception("Could not find filter to handle intent for MIME type: " + mimeType), intent); //$NON-NLS-1$
 	}
 }
