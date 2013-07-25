@@ -84,6 +84,9 @@ public class IntentFilter
 		Class<? extends IIntentHandler> handler =
 				(Class<? extends IIntentHandler>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
 		setHandler(handler);
+
+		int priority = ExtensionPointHelper.getIntegerForProperty(element, "priority", 0); //$NON-NLS-1$
+		setPriority(priority);
 	}
 
 	protected static void addToSetFromElements(IConfigurationElement element, String childrenName,
