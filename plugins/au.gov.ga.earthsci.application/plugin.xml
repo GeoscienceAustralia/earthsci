@@ -149,7 +149,8 @@
          point="au.gov.ga.earthsci.intent.filters">
       <filter
             class="au.gov.ga.earthsci.application.intent.HtmlIntentHandler"
-            priority="0">
+            priority="0"
+            returns-result="false">
          <content-type
                id="org.eclipse.core.runtime.html">
          </content-type>

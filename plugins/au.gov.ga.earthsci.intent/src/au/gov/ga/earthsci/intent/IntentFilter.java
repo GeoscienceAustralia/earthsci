@@ -40,6 +40,8 @@ import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
  * categories in this filter.</li>
  * <li>Content type matches if any of the given values match the Intent content
  * type, or both the Intent and the filter don't specify a content type.</li>
+ * <li>Returns result matches if the intent's expected return type is defined,
+ * and this filter returns a result.</li>
  * <li>Return type matches if any of the given values match the Intent expected
  * return type if defined, or if the filter defines no return types.</li>
  * <li>Data scheme matches if any of the given values match the Intent URI's
@@ -59,6 +61,7 @@ public class IntentFilter
 	private final Set<String> actions = new HashSet<String>();
 	private final Set<String> categories = new HashSet<String>();
 	private final Set<IContentType> contentTypes = new HashSet<IContentType>();
+	private boolean returnsResult = false;
 	private final Set<Class<?>> returnTypes = new HashSet<Class<?>>();
 	private final Set<URIFilter> uriFilters = new HashSet<URIFilter>();
 	private Class<? extends IIntentHandler> handler;
@@ -87,6 +90,9 @@ public class IntentFilter
 
 		int priority = ExtensionPointHelper.getIntegerForProperty(element, "priority", 0); //$NON-NLS-1$
 		setPriority(priority);
+
+		boolean returnsResult = ExtensionPointHelper.getBooleanForProperty(element, "returns-result", false); //$NON-NLS-1$
+		setReturnsResult(returnsResult);
 	}
 
 	protected static void addToSetFromElements(IConfigurationElement element, String childrenName,
@@ -291,7 +297,29 @@ public class IntentFilter
 	}
 
 	/**
-	 * @return The return types that this filter supports.
+	 * @return Does this filter's handler return a result to the intent
+	 *         callback?
+	 */
+	public boolean isReturnsResult()
+	{
+		return returnsResult;
+	}
+
+	/**
+	 * Set whether this filter's handler results a result to the intent
+	 * callback.
+	 * 
+	 * @param returnsResult
+	 * @return this
+	 */
+	public IntentFilter setReturnsResult(boolean returnsResult)
+	{
+		this.returnsResult = returnsResult;
+		return this;
+	}
+
+	/**
+	 * @return The return types that this filter supports, if known
 	 */
 	public Set<Class<?>> getReturnTypes()
 	{
@@ -389,13 +417,27 @@ public class IntentFilter
 			}
 		}
 
-		//if both intent and filter have a return type defined, check that at least one matches
-		if (intent.getExpectedReturnType() != null && !returnTypes.isEmpty())
+		//TODO may need to revisit the following return-type matching logic:
+
+		//if the intent has an expected return type
+		if (intent.getExpectedReturnType() != null)
 		{
-			if (!anyReturnTypesMatch(intent.getExpectedReturnType()))
+			//check that this filter returns a result
+			if (!returnsResult)
 			{
 				return false;
 			}
+
+			//if the filter knows which types it returns, check that at least one matches
+			if (!returnTypes.isEmpty() && !anyReturnTypesMatch(intent.getExpectedReturnType()))
+			{
+				return false;
+			}
+		}
+		else if (!returnTypes.isEmpty())
+		{
+			//if the intent doesn't expect a result, don't match if the filter knows which types it returns
+			return false;
 		}
 
 		//if there are any schemes/authorities/paths defined, check if any match the URI of the intent (in that order)

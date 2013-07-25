@@ -5,7 +5,8 @@
          point="au.gov.ga.earthsci.intent.filters">
       <filter
             class="au.gov.ga.earthsci.model.ui.raster.GDALRasterModelParametersIntentHandler"
-            priority="0">
+            priority="0"
+            returns-result="true">
          <return-type
                class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters">
          </return-type>

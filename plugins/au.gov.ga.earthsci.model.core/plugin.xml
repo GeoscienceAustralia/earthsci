@@ -11,7 +11,8 @@
          point="au.gov.ga.earthsci.intent.filters">
           <filter
             class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelIntentHandler"
-            priority="0">
+            priority="0"
+            returns-result="true">
          <content-type
                id="au.gov.ga.earthsci.core.content.gdalraster">
          </content-type>
@@ -24,7 +25,8 @@
       </filter>
           <filter
                 class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelIntentHandler"
-                priority="0">
+                priority="0"
+                returns-result="true">
              <uri
                    scheme="gdalrastermodel">
              </uri>

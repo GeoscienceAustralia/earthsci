@@ -106,7 +106,8 @@
          point="au.gov.ga.earthsci.intent.filters">
       <filter
             class="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
-            priority="0">
+            priority="0"
+            returns-result="true">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
@@ -116,14 +117,16 @@
       </filter>
       <filter
             class="au.gov.ga.earthsci.core.intent.XmlRetrieveIntentHandler"
-            priority="0">
+            priority="0"
+            returns-result="true">
          <content-type
                id="org.eclipse.core.runtime.xml">
          </content-type>
       </filter>
       <filter
             class="au.gov.ga.earthsci.core.intent.HttpUnknownContentTypeIntentHandler"
-            priority="0">
+            priority="10000"
+            returns-result="true">
          <uri
                scheme="http">
          </uri>

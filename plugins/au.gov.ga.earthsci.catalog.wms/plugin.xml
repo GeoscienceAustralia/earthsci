@@ -22,7 +22,8 @@
          point="au.gov.ga.earthsci.intent.filters">
       <filter
             class="au.gov.ga.earthsci.catalog.wms.WMSLayerIntentHandler"
-            priority="0">
+            priority="0"
+            returns-result="true">
          <content-type
                id="au.gov.ga.earthsci.catalog.wms.wmslayer">
          </content-type>

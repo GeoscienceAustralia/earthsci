@@ -61,7 +61,6 @@
             <element ref="action"/>
             <element ref="category"/>
             <element ref="content-type"/>
-            <element ref="return-type"/>
             <element ref="uri"/>
          </choice>
          <attribute name="class" type="string" use="required">
@@ -78,6 +77,13 @@
             <annotation>
                <documentation>
                   Priority of this filter. Filters with a higher priority are preferred over those with a lower priority.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="returns-result" type="boolean" use="required">
+            <annotation>
+               <documentation>
+                  Does the handler associated with this filter return a result?
                </documentation>
             </annotation>
          </attribute>
@@ -130,26 +136,6 @@
                <documentation>
                   Id of the Eclipse content type that this filter will match by checking an Intent&apos;s defined content type.
                </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="return-type">
-      <annotation>
-         <documentation>
-            Class of an object that this filter&apos;s handler can return to the Intent&apos;s caller after completion.
-         </documentation>
-      </annotation>
-      <complexType>
-         <attribute name="class" type="string" use="required">
-            <annotation>
-               <documentation>
-                  Class of an object that this filter&apos;s handler can return to the Intent&apos;s caller after completion.
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java"/>
-               </appinfo>
             </annotation>
          </attribute>
       </complexType>
