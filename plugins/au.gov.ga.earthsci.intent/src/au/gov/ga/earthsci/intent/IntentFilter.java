@@ -291,6 +291,38 @@ public class IntentFilter
 	}
 
 	/**
+	 * @return The return types that this filter supports.
+	 */
+	public Set<Class<?>> getReturnTypes()
+	{
+		return returnTypes;
+	}
+
+	/**
+	 * Add a return type to this filter.
+	 * 
+	 * @param returnType
+	 * @return this
+	 */
+	public IntentFilter addReturnType(Class<?> returnType)
+	{
+		returnTypes.add(returnType);
+		return this;
+	}
+
+	/**
+	 * Remove a return type from this filter.
+	 * 
+	 * @param returnType
+	 * @return this
+	 */
+	public IntentFilter removeReturnType(Class<?> returnType)
+	{
+		returnTypes.remove(returnType);
+		return this;
+	}
+
+	/**
 	 * @return Class associated with this filter, used to perform the actual
 	 *         Intent handling.
 	 */
