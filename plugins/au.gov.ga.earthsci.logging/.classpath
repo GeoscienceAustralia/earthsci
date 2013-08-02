@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="ch.qos.logback.classic-0.9.28.jar"/>
+	<classpathentry exported="true" kind="lib" path="ch.qos.logback.classic-0.9.28.jar" sourcepath="ch.qos.logback.classic-0.9.28-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="ch.qos.logback.core-0.9.28.jar"/>
 	<classpathentry exported="true" kind="lib" path="slf4j.api-1.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="slf4j.bridge-1.6.1.jar"/>

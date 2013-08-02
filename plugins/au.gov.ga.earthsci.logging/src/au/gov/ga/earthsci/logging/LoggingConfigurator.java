@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.jul.LevelChangePropagator;
@@ -49,9 +50,12 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class LoggingConfigurator
 {
+
 	private static final String LOGBACK_XML = "logback.xml"; //$NON-NLS-1$
 
 	private static final Logger logger = LoggerFactory.getLogger(LoggingConfigurator.class);
+
+	private static int defaultLoggingLevel;
 
 	private LoggingConfigurator()
 	{
@@ -71,6 +75,100 @@ public class LoggingConfigurator
 		bypassRuntimeLog(bundleContext);
 
 		logger.debug("Logging configuration initialised."); //$NON-NLS-1$
+	}
+
+	/**
+	 * @return The current global logging level:
+	 *         <ol>
+	 *         <li>Trace
+	 *         <li>Debug
+	 *         <li>Info
+	 *         <li>Warn
+	 *         <li>Error
+	 *         <li>Fatal
+	 *         </ol>
+	 */
+	public static int getGlobalLoggingLevel()
+	{
+		ch.qos.logback.classic.Logger root =
+				(ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+
+		return toLoggingLevel(root.getLevel());
+	}
+
+	/**
+	 * @return The default global logging level as set in the configuration
+	 *         files
+	 * 
+	 * @see #getGlobalLoggingLevel()
+	 */
+	public static int getDefaultLoggingLevel()
+	{
+		return defaultLoggingLevel;
+	}
+
+	private static int toLoggingLevel(Level l)
+	{
+		switch (l.levelInt)
+		{
+		case Level.TRACE_INT:
+			return 1;
+		case Level.DEBUG_INT:
+			return 2;
+		case Level.INFO_INT:
+			return 3;
+		case Level.WARN_INT:
+			return 4;
+		case Level.ERROR_INT:
+			return 5;
+		default:
+			return 5;
+		}
+	}
+
+	/**
+	 * Set the global logging level, overriding any settings found in the
+	 * configuration files
+	 * 
+	 * @param l
+	 *            The level to set:
+	 *            <ol>
+	 *            <li>Trace
+	 *            <li>Debug
+	 *            <li>Info
+	 *            <li>Warn
+	 *            <li>Error
+	 *            <li>Fatal
+	 *            </ol>
+	 */
+	public static void setGlobalLoggingLevel(int l)
+	{
+		ch.qos.logback.classic.Logger root =
+				(ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+
+		Level level = Level.DEBUG;
+		switch (l)
+		{
+		case 1:
+			level = Level.TRACE;
+			break;
+		case 2:
+			level = Level.DEBUG;
+			break;
+		case 3:
+			level = Level.INFO;
+			break;
+		case 4:
+			level = Level.WARN;
+			break;
+		case 5:
+			level = Level.ERROR;
+			break;
+		case 6:
+			level = Level.ERROR;
+			break;
+		}
+		root.setLevel(level);
 	}
 
 	private static void configureLogback()
@@ -93,6 +191,10 @@ public class LoggingConfigurator
 		}
 
 		StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+
+		ch.qos.logback.classic.Logger root =
+				(ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+		defaultLoggingLevel = toLoggingLevel(root.getLevel());
 	}
 
 	private static void configureJULBridge(LoggerContext loggerContext)
@@ -106,7 +208,9 @@ public class LoggingConfigurator
 		}
 
 		// Install the bridge
-		loggerContext.addListener(new LevelChangePropagator());
+		LevelChangePropagator levelChangePropagator = new LevelChangePropagator();
+		levelChangePropagator.setResetJUL(true);
+		loggerContext.addListener(levelChangePropagator);
 		SLF4JBridgeHandler.install();
 	}
 

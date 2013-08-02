@@ -32,7 +32,8 @@ public class StandardOutConsole extends IOConsole
 {
 	public StandardOutConsole()
 	{
-		super("Console", ImageRegistry.getInstance().getDescriptor(ImageRegistry.ICON_CONSOLE));
+		super(Messages.StandardOutConsole_Name,
+				ImageRegistry.getInstance().getDescriptor(ImageRegistry.ICON_CONSOLE));
 
 		IOConsoleOutputStream out = newOutputStream();
 		IOConsoleOutputStream err = newOutputStream();

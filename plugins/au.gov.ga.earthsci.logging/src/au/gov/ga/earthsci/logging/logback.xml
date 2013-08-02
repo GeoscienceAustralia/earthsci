@@ -11,7 +11,7 @@
             <pattern>%date %-5level [%thread] %msg%n</pattern>
         </encoder>
     </appender>
-    <root level="debug">
+    <root level="error">
         <appender-ref ref="FILE" />
         <appender-ref ref="STDOUT" />
     </root>

@@ -171,6 +171,8 @@ public class GDALRasterModelFactory
 				.withGroupSize(3)
 				.build();
 
+		logger.trace(vertices.toString());
+
 		geometry.setVertices(vertices);
 		geometry.setUseZMasking(nodata != null);
 	}

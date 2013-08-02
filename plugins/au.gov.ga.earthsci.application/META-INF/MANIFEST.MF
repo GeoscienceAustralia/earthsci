@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: au.gov.ga.earthsci.application.Activator
 Bundle-Vendor: %plugin.vendor
 Export-Package: au.gov.ga.earthsci.application,
+ au.gov.ga.earthsci.application.console,
  au.gov.ga.earthsci.application.handlers,
  au.gov.ga.earthsci.application.parts,
  au.gov.ga.earthsci.application.parts.globe,
@@ -57,6 +58,7 @@ Require-Bundle: javax.inject;bundle-version="1.0.0",
  org.eclipse.e4.ui.workbench;bundle-version="0.10.2",
  org.eclipse.e4.core.services;bundle-version="1.0.0",
  org.eclipse.e4.core.di;bundle-version="1.1.0",
+ org.eclipse.e4.core.di.extensions;bundle-version="0.11.100",
  org.eclipse.e4.core.contexts;bundle-version="1.1.0",
  org.eclipse.e4.ui.workbench.swt;bundle-version="0.10.1",
  com.jogamp.jogl;bundle-version="2.0.0",

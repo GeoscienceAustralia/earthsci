@@ -69,6 +69,10 @@
             class="au.gov.ga.earthsci.application.theme.ThemeLoader"
             priority="0">
       </inject>
+      <inject
+            class="au.gov.ga.earthsci.application.console.LoggingPreferences"
+            priority="1000">
+      </inject>
    </extension>
    <extension
          point="au.gov.ga.earthsci.core.hudLayers">
@@ -181,6 +185,11 @@
             class="au.gov.ga.earthsci.common.ui.preferences.EmptyPreferencePage"
             id="org.eclipse.ui.preferencePages.Workbench"
             name="General">
+      </page>
+      <page
+            class="au.gov.ga.earthsci.application.console.LoggingPreferencePage"
+            id="au.gov.ga.earthsci.application.logging"
+            name="Logging">
       </page>
    </extension>
 
