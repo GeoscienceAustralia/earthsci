@@ -49,7 +49,7 @@ public class FrameBufferDepthBuffer
 		}
 		if (renderBuffers[0] <= 0)
 		{
-			throw new IllegalStateException("Error generating depth buffer for frame buffer");
+			throw new IllegalStateException("Error generating depth buffer for frame buffer"); //$NON-NLS-1$
 		}
 		id = renderBuffers[0];
 
@@ -82,11 +82,11 @@ public class FrameBufferDepthBuffer
 		{
 			if (texture)
 			{
-				gl.glDeleteRenderbuffers(1, new int[] { id }, 0);
+				gl.glDeleteTextures(1, new int[] { id }, 0);
 			}
 			else
 			{
-				gl.glDeleteTextures(1, new int[] { id }, 0);
+				gl.glDeleteRenderbuffers(1, new int[] { id }, 0);
 			}
 			id = 0;
 		}
