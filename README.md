@@ -1,17 +1,27 @@
 ## Geoscience Australia ##
 
-<img src="https://github.com/ga-m3dv/ga-earthsci-rcp/wiki/images/earthsci-logo.png"/>
+<img src="https://github.com/GeoscienceAustralia/earthsci/wiki/images/earthsci-logo.png"/>
 
 
 `EarthSci` is an Eclipse RCP platform for creating applications for the visualisation of earth science data. It is an evolution of the existing [GA World Wind Suite](https://github.com/ga-m3dv/ga-worldwind-suite) built on the [NASA World Wind Java SDK](http://worldwind.arc.nasa.gov/java/).
 
 The vision for `EarthSci` is to take the best features of the [GA World Wind Suite](https://github.com/ga-m3dv/ga-worldwind-suite) (Geological model support, WMS/WFS support, tiled data preparation, keyframe animation etc.) and combine them with the best features of the Eclipse platform (modular plugin architecture, in-built help, native windowing, model-based UI) to create a flexible platform with powerful science visualisation features. As development progresses more and more features will be added.
 
-**For more information on the project, see the [Wiki](https://github.com/ga-m3dv/ga-earthsci-rcp/wiki)**
+**For more information on the project, see the [Wiki](https://github.com/GeoscienceAustralia/earthsci/wiki)**
+
+- - -
+
+>**EarthSci has moved!** 
+>
+>The `EarthSci` project has been brought into the [GeoscienceAustralia](https://github.com/GeoscienceAustralia) organisation account on Github.
+>
+>Redirects are in place, so your existing URLs should still work. However, we recommend that you update URLs to the new location: **https://github.com/geoscienceaustralia/earthsci** 
+
+- - -
 
 ## Contents: ##
 
-* [Wiki](https://github.com/ga-m3dv/ga-earthsci-rcp/wiki)
+* [Wiki](https://github.com/GeoscienceAustralia/earthsci/wiki)
 * <a href="#basics">Project basics</a>
 * <a href="#reportBugs">Reporting bugs and requesting features</a>
 * <a href="#contribute">How to contribute</a>
@@ -32,7 +42,7 @@ The vision for `EarthSci` is to take the best features of the [GA World Wind Sui
 
 - - -
 
-<img src="https://github.com/ga-m3dv/ga-earthsci-rcp/wiki/images/screenshots/3dmodels.jpg"/>
+<img src="https://github.com/GeoscienceAustralia/earthsci/wiki/images/screenshots/3dmodels.jpg"/>
 
 <a name="basics"/>
 ## Project basics ##
@@ -45,14 +55,14 @@ A lot of the geospatial data visualisation functionality has been ported across 
 
 The project uses [Maven 3.0+](http://maven.apache.org) and [Tycho](http://eclipse.org/tycho/) for dependency and build management.
 
-For information on getting up and running with the project, see the [Developer's guide](https://github.com/ga-m3dv/ga-earthsci-rcp/wiki/Developer%27s-guide).
+For information on getting up and running with the project, see the [Developer's guide](https://github.com/GeoscienceAustralia/earthsci/wiki/Developer%27s-guide).
 
 <a name="reportBugs"/>
 ## Reporting bugs and requesting features ##
 
 Our goal is to make `EarthSci` a solid platform for developing earth science visualisation applications. 
 If you find any bugs/issues with the platform, or would like to see new features added, please report them 
-via the [project issue tracker](https://github.com/ga-m3dv/ga-earthsci-rcp/issues).
+via the [project issue tracker](https://github.com/GeoscienceAustralia/earthsci/issues).
 Better yet, implement the changes yourself and then open a [pull request](http://help.github.com/send-pull-requests/).
 
 Please note that your bug/issue/feature may already be registered in the issue tracker. Please take a quick look before
@@ -75,7 +85,7 @@ We will endeavour to respond to your request ASAP.
 
 Some ideas for how to contribute:
 
-* Find a bug/issue/feature request in the [project issue tracker](https://github.com/ga-m3dv/ga-earthsci-rcp/issues) and fix it!
+* Find a bug/issue/feature request in the [project issue tracker](https://github.com/GeoscienceAustralia/earthsci/issues) and fix it!
 * Implement a feature/plugin you would like to see
 * Conduct some user testing and report any issues you find
 * Add some unit tests to the test suite
