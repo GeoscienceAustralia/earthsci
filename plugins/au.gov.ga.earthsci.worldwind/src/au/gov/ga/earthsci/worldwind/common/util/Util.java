@@ -98,12 +98,18 @@ public class Util
 			String format, String defaultExt)
 	{
 		if (dataset == null || dataset.length() <= 0)
+		{
 			dataset = service;
+		}
 		else if (service != null && service.length() > 0)
+		{
 			dataset = service + "/" + dataset;
+		}
 
 		if (dataset == null)
+		{
 			dataset = "";
+		}
 
 		boolean isZip = true;
 		int filenameLevel = 0;
@@ -137,7 +143,9 @@ public class Util
 		}
 
 		if (parent == null)
+		{
 			return null;
+		}
 
 		//default to JPG
 		String ext = defaultExt;
@@ -145,22 +153,37 @@ public class Util
 		{
 			format = format.toLowerCase();
 			if (format.contains("jpg") || format.contains("jpeg"))
+			{
 				ext = "jpg";
+			}
 			else if (format.contains("png"))
+			{
 				ext = "png";
+			}
 			else if (format.contains("zip"))
+			{
 				ext = "zip";
+			}
 			else if (format.contains("dds"))
+			{
 				ext = "dds";
+			}
 			else if (format.contains("bmp"))
+			{
 				ext = "bmp";
+			}
 			else if (format.contains("gif"))
+			{
 				ext = "gif";
-			//for elevation models:
+			}
 			else if (format.contains("bil"))
+			{
 				ext = "bil";
+			}
 			else if (format.contains("zip"))
+			{
 				ext = "zip";
+			}
 		}
 
 		//build the filename relative to the parent level found above
@@ -217,7 +240,9 @@ public class Util
 			URL url = context == null ? new URL(path) : new URL(context, path);
 			File file = URLUtil.urlToFile(url);
 			if (file != null && file.exists())
+			{
 				return file;
+			}
 		}
 		catch (Exception e)
 		{
@@ -232,7 +257,9 @@ public class Util
 			{
 				parent = file.getParentFile();
 				if (parent != null && !parent.isDirectory())
+				{
 					parent = null;
+				}
 			}
 		}
 
@@ -243,7 +270,9 @@ public class Util
 			{
 				File file = new File(parent, path);
 				if (file.exists())
+				{
 					return file;
+				}
 			}
 			catch (Exception e)
 			{
@@ -253,7 +282,9 @@ public class Util
 		//otherwise ignore the parent and just attempt the path
 		File file = new File(path);
 		if (file.exists())
+		{
 			return file;
+		}
 		return null;
 	}
 
@@ -356,9 +387,13 @@ public class Util
 	public static double mixDouble(double amount, double value1, double value2)
 	{
 		if (amount < 0)
+		{
 			return value1;
+		}
 		else if (amount > 1)
+		{
 			return value2;
+		}
 		return value1 * (1.0 - amount) + value2 * amount;
 	}
 
@@ -370,9 +405,13 @@ public class Util
 	public static double percentDouble(double value, double min, double max)
 	{
 		if (value < min)
+		{
 			return 0;
+		}
 		if (value > max)
+		{
 			return 1;
+		}
 		return (value - min) / (max - min);
 	}
 
@@ -398,7 +437,9 @@ public class Util
 	{
 		int lastIndexOfSpace = positionString.trim().lastIndexOf(' ');
 		if (lastIndexOfSpace < 0)
+		{
 			return null;
+		}
 		String latlonString = positionString.substring(0, lastIndexOfSpace);
 		String elevationString = positionString.substring(lastIndexOfSpace + 1);
 
@@ -414,7 +455,9 @@ public class Util
 
 		LatLon ll = computeLatLonFromString(latlonString, globe);
 		if (ll == null)
+		{
 			return null;
+		}
 
 		return new Position(ll, elevation);
 	}
@@ -601,7 +644,9 @@ public class Util
 		double s = DMS.length > 2 ? Integer.parseInt(DMS[2]) : 0;
 
 		if (m >= 0 && m <= 60 && s >= 0 && s <= 60)
+		{
 			return Angle.fromDegrees(d * sign + m / 60 * sign + s / 3600 * sign);
+		}
 
 		return null;
 	}
@@ -959,15 +1004,25 @@ public class Util
 	public static Color interpolateColor(Color color0, Color color1, double mixer, boolean useHue)
 	{
 		if (color0 == null && color1 == null)
+		{
 			return Color.black;
+		}
 		if (color1 == null)
+		{
 			return color0;
+		}
 		if (color0 == null)
+		{
 			return color1;
+		}
 		if (mixer <= 0d)
+		{
 			return color0;
+		}
 		if (mixer >= 1d)
+		{
 			return color1;
+		}
 
 		if (useHue)
 		{
@@ -977,9 +1032,13 @@ public class Util
 			float h1 = hsb1[0];
 
 			if (h1 < h0)
+			{
 				h1 += 1f;
+			}
 			if (h1 - h0 > 0.5f)
+			{
 				h0 += 1f;
+			}
 
 			float h = interpolateFloat(h0, h1, mixer);
 			float s = interpolateFloat(hsb0[1], hsb1[1], mixer);
@@ -1011,11 +1070,15 @@ public class Util
 	public static int indexInArray(Object[] array, Object object)
 	{
 		if (array == null)
+		{
 			return -1;
+		}
 		for (int i = 0; i < array.length; i++)
 		{
 			if (array[i] == object)
+			{
 				return i;
+			}
 		}
 		return -1;
 	}
@@ -1053,10 +1116,14 @@ public class Util
 	public static String stringByTruncatingToFitInWidth(String s, int width, Graphics g, String truncatedSuffix)
 	{
 		if (s == null)
+		{
 			return null;
+		}
 
 		if (truncatedSuffix == null)
+		{
 			truncatedSuffix = "";
+		}
 
 		int length = s.length();
 		String truncated = s;
@@ -1071,5 +1138,22 @@ public class Util
 			truncated = s.substring(0, length) + truncatedSuffix;
 		}
 		return "";
+	}
+
+	/**
+	 * Calculate the previous power of 2. If x is a power of 2, x is returned,
+	 * otherwise the greatest power of two that is less than x is returned.
+	 * 
+	 * @param x
+	 * @return Greatest power of two less than or equal to x
+	 */
+	public static int previousPowerOfTwo(int x)
+	{
+		x = x | (x >> 1);
+		x = x | (x >> 2);
+		x = x | (x >> 4);
+		x = x | (x >> 8);
+		x = x | (x >> 16);
+		return x - (x >> 1);
 	}
 }
