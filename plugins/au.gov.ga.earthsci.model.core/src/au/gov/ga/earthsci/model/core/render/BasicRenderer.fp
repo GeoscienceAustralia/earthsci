@@ -15,5 +15,5 @@ varying float mask;
 
 void main(void)
 {
-	gl_FragColor = vec4(gl_Color.rgb, gl_Color.a * step(1.0f, mask));
+	gl_FragColor = vec4(gl_Color.rgb, gl_Color.a * step(1.0, mask));
 }

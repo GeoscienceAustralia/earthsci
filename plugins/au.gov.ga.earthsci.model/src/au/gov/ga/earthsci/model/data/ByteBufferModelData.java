@@ -205,4 +205,30 @@ public class ByteBufferModelData implements IModelData
 	{
 		return numGroups;
 	}
+
+	private String stringRepresentation;
+
+	@SuppressWarnings("nls")
+	@Override
+	public String toString()
+	{
+		if (stringRepresentation != null)
+		{
+			return stringRepresentation;
+		}
+
+		StringBuffer result = new StringBuffer();
+		result.append("ByteBufferModelData [").append('\n');
+		result.append("   ").append("ID: ").append(id).append('\n');
+		result.append("   ").append("Name: ").append(name).append('\n');
+		result.append("   ").append("Description: ").append(description).append('\n');
+		result.append("   ").append("Type: ").append(type).append('\n');
+		result.append("   ").append("NumValues: ").append(numValues).append('\n');
+		result.append("   ").append("NumGroups: ").append(numGroups).append('\n');
+		result.append("   ").append("GroupSize: ").append(groupSize).append('\n');
+		result.append("   ").append("NODATA: ").append(nodata).append('\n');
+		result.append("]");
+		stringRepresentation = result.toString();
+		return stringRepresentation;
+	}
 }

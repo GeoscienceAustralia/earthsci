@@ -31,7 +31,7 @@ void main(void)
 	vec3 geodetic = vec3(radians(gl_Vertex.xy), ve * gl_Vertex.z);
 	
 	// Mask will be 0 where Z == zNodata; 1 everywhere else.
-	mask = step(zNodata, gl_Vertex.z) * (1 - step(gl_Vertex.z, zNodata)); 
+	mask = step(zNodata, gl_Vertex.z) * (1.0 - step(gl_Vertex.z, zNodata)); 
 	
 	//calculate the sine and cosine of the latitude/longitude angles
 	vec4 cosSinLatLon = vec4(cos(geodetic.y), sin(geodetic.y), cos(geodetic.x), sin(geodetic.x));
