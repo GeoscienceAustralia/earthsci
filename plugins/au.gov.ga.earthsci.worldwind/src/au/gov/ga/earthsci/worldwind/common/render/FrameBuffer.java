@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.render;
 
+import gov.nasa.worldwind.util.OGLStackHandler;
+
 import java.awt.Dimension;
 
 import javax.media.opengl.GL2;
@@ -65,7 +67,7 @@ public class FrameBuffer
 	{
 		if (textureCount < 1)
 		{
-			throw new IllegalArgumentException("Must be at least one texture bound to the frame buffer");
+			throw new IllegalArgumentException("Must be at least one texture bound to the frame buffer"); //$NON-NLS-1$
 		}
 		textures = new FrameBufferTexture[textureCount];
 		for (int i = 0; i < textureCount; i++)
@@ -133,7 +135,7 @@ public class FrameBuffer
 	 */
 	public void resize(GL2 gl, Dimension dimensions)
 	{
-		Validate.notNull(dimensions, "Dimensions cannot be null");
+		Validate.notNull(dimensions, "Dimensions cannot be null"); //$NON-NLS-1$
 
 		if (isCreated() && dimensions.equals(currentDimensions))
 		{
@@ -182,7 +184,7 @@ public class FrameBuffer
 	 * Delete if created.
 	 * 
 	 * @param gl
-	 * @see FrameBuffer#delete(GL)
+	 * @see FrameBuffer#delete(GL2)
 	 */
 	public void deleteIfCreated(GL2 gl)
 	{
@@ -226,7 +228,7 @@ public class FrameBuffer
 		gl.glGenFramebuffers(1, frameBuffers, 0);
 		if (frameBuffers[0] <= 0)
 		{
-			throw new IllegalStateException("Error generating frame buffer");
+			throw new IllegalStateException("Error generating frame buffer"); //$NON-NLS-1$
 		}
 		return frameBuffers[0];
 	}
@@ -239,11 +241,11 @@ public class FrameBuffer
 		int status = gl.glCheckFramebufferStatus(GL2.GL_FRAMEBUFFER);
 		if (status == GL2.GL_FRAMEBUFFER_UNSUPPORTED)
 		{
-			throw new IllegalStateException("Frame buffer unsupported, or parameters incorrect");
+			throw new IllegalStateException("Frame buffer unsupported, or parameters incorrect"); //$NON-NLS-1$
 		}
 		else if (status != GL2.GL_FRAMEBUFFER_COMPLETE)
 		{
-			throw new IllegalStateException("Frame buffer incomplete");
+			throw new IllegalStateException("Frame buffer incomplete"); //$NON-NLS-1$
 		}
 	}
 
@@ -260,14 +262,10 @@ public class FrameBuffer
 	 */
 	public static void renderTexturedQuadUsingTarget(GL2 gl, int target, int... textureIds)
 	{
-		gl.glMatrixMode(GL2.GL_MODELVIEW);
-		gl.glPushMatrix();
-		gl.glLoadIdentity();
-		gl.glMatrixMode(GL2.GL_PROJECTION);
-		gl.glPushMatrix();
-		gl.glLoadIdentity();
-		gl.glPushAttrib(GL2.GL_ENABLE_BIT);
-
+		OGLStackHandler oglsh = new OGLStackHandler();
+		oglsh.pushModelviewIdentity(gl);
+		oglsh.pushProjectionIdentity(gl);
+		oglsh.pushAttrib(gl, GL2.GL_ENABLE_BIT);
 		try
 		{
 			gl.glEnable(target);
@@ -292,10 +290,7 @@ public class FrameBuffer
 		}
 		finally
 		{
-			gl.glPopMatrix();
-			gl.glMatrixMode(GL2.GL_MODELVIEW);
-			gl.glPopMatrix();
-			gl.glPopAttrib();
+			oglsh.pop(gl);
 		}
 	}
 }
