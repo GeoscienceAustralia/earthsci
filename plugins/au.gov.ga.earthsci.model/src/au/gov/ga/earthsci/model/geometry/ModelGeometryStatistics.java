@@ -241,4 +241,18 @@ public class ModelGeometryStatistics
 	{
 		this.numPoints = numPoints;
 	}
+
+	@SuppressWarnings("nls")
+	@Override
+	public String toString()
+	{
+		StringBuffer result = new StringBuffer();
+		result.append("ModelGeometryStatistics[").append('\n');
+		result.append("   Lat: [").append(minLat).append(", ").append(maxLat).append("]\n");
+		result.append("   Lon: [").append(minLon).append(", ").append(maxLon).append("]\n");
+		result.append("   Elevation: [").append(minElevation).append(", ").append(maxElevation).append("]\n");
+		result.append("   Num points: " + numPoints).append('\n');
+		result.append("]");
+		return result.toString();
+	}
 }
