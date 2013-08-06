@@ -181,12 +181,11 @@ public enum GocadColor
 	public final String pretty;
 	public final Color color;
 
-	private final static Pattern color4Pattern = Pattern
-			.compile("[^:]+:\\s*([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s*");
-	private final static Pattern color3Pattern = Pattern
-			.compile("[^:]+:\\s*([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s*");
+	private final static Pattern color4Pattern = Pattern.compile("[^:]+:\\s*([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s*");
+	private final static Pattern color3Pattern = Pattern.compile("[^:]+:\\s*([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s*");
 	private final static Pattern colorNamePattern = Pattern.compile("[^:]+:(.+)");
-
+	private final static Pattern hexCodePattern = Pattern.compile("[^:]+:\\s*\\#(.+)");
+	
 	private GocadColor(int hex)
 	{
 		this.color = new Color(hex);
@@ -218,6 +217,7 @@ public enum GocadColor
 	 * <li>*solid*color:1 0.447059 0.337255</li>
 	 * <li>*solid*color:dark olive green</li>
 	 * <li>*solid*color:darkolivegreen</li>
+	 * <li>*solid*color:#006600</li>
 	 * </ul>
 	 * The "*solid*color" part can be replaced by any text that doesn't contain
 	 * a ':'.
@@ -255,7 +255,7 @@ public enum GocadColor
 		matcher = colorNamePattern.matcher(gocadLine);
 		if (matcher.matches())
 		{
-			String name = matcher.group(1).toLowerCase();
+			String name = matcher.group(1).trim().toLowerCase();
 			GocadColor gc = prettyToColor.get(name);
 			if (gc == null)
 			{
@@ -267,6 +267,20 @@ public enum GocadColor
 			}
 		}
 
+		matcher = hexCodePattern.matcher(gocadLine);
+		if (matcher.matches())
+		{
+			try
+			{
+				int hex = Integer.parseInt(matcher.group(1), 16);
+				return new Color(hex);
+			}
+			catch (NumberFormatException e)
+			{
+				return null;
+			}
+		}
+		
 		return null;
 	}
 }
