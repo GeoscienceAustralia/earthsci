@@ -113,8 +113,6 @@ public class GDALRasterModelFactory
 
 		ByteBuffer buffer = readRasterBuffer(band, rasterXSize, rasterYSize);
 
-		Double nodata = getNodata(band);
-
 		// Transform pixel coords -> source coordinate system coords
 		double[] geoTransform = ds.GetGeoTransform();
 
@@ -131,6 +129,13 @@ public class GDALRasterModelFactory
 
 		int stride = parameters.getNormalisedSubsample();
 		ByteBuffer vertexBuffer = allocateVerticesBuffer(rasterXSize, rasterYSize, stride);
+
+		Double nodata = getNodata(band);
+		Double scaledNodata = nodata;
+		if (nodata != null)
+		{
+			scaledNodata = toElevation(elevationOffset, elevationScale, nodata, nodata);
+		}
 
 		for (int y = 0; y < rasterYSize; y += stride)
 		{
@@ -150,7 +155,7 @@ public class GDALRasterModelFactory
 						.putFloat((float) projectedCoords[1])
 						.putFloat((float) projectedCoords[2]);
 
-				if (!isNoData(nodata, datasetValue))
+				if (!isNoData(scaledNodata, elevation))
 				{
 					stats.updateStats(projectedCoords[1], projectedCoords[0], projectedCoords[2]);
 				}
@@ -165,13 +170,14 @@ public class GDALRasterModelFactory
 		// TODO Move name/description to constant somewhere for reuse as standard name
 		IModelData vertices = ModelDataBuilder.createFromBuffer(vertexBuffer)
 				.ofType(BufferType.FLOAT)
-				.withNodata(nodata == null ? null : nodata.floatValue())
+				.withNodata(scaledNodata == null ? null : scaledNodata.floatValue())
 				.named("Vertices")
 				.describedAs("Vertices")
 				.withGroupSize(3)
 				.build();
 
-		logger.trace(vertices.toString());
+		logger.debug("Loaded vertices: {}", vertices); //$NON-NLS-1$
+		logger.debug("Vertex stats: {}", stats); //$NON-NLS-1$
 
 		geometry.setVertices(vertices);
 		geometry.setUseZMasking(nodata != null);
@@ -359,10 +365,10 @@ public class GDALRasterModelFactory
 
 	private static double toElevation(double elevationOffset, double elevationScale, double datasetValue, double nodata)
 	{
-		if (isNoData(nodata, datasetValue))
-		{
-			return nodata;
-		}
+		//		if (isNoData(nodata, datasetValue))
+		//		{
+		//			return nodata;
+		//		}
 		return elevationOffset + (elevationScale * datasetValue);
 	}
 
@@ -468,9 +474,34 @@ public class GDALRasterModelFactory
 	/**
 	 * @return <code>true</code> if any value in the provided values is NODATA
 	 */
-	private static boolean isNoData(double nodata, double... values)
+	private static boolean isNoData(Double nodata, double... values)
 	{
+		if (nodata == null)
+		{
+			return false;
+		}
+
 		for (double f : values)
+		{
+			if (f == nodata)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @return <code>true</code> if any value in the provided values is NODATA
+	 */
+	private static boolean isNoData(Float nodata, float... values)
+	{
+		if (nodata == null)
+		{
+			return false;
+		}
+
+		for (float f : values)
 		{
 			if (f == nodata)
 			{
