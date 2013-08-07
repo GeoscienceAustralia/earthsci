@@ -39,8 +39,8 @@ public class BasicRenderer implements IModelGeometryRenderer
 
 	private static final Logger logger = LoggerFactory.getLogger(BasicRenderer.class);
 
-	private static final String FRAGMENT_SHADER = "BasicRenderer.fp"; //$NON-NLS-1$
-	private static final String VERTEX_SHADER = "BasicRenderer.vp"; //$NON-NLS-1$
+	private static final String FRAGMENT_SHADER = "BasicRenderer.frag"; //$NON-NLS-1$
+	private static final String VERTEX_SHADER = "BasicRenderer.vert"; //$NON-NLS-1$
 
 	private static final String OPACITY = "opacity"; //$NON-NLS-1$
 	private static final String VE = "ve"; //$NON-NLS-1$
