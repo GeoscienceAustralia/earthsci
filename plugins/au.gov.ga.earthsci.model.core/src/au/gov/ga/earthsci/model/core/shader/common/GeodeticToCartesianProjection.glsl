@@ -10,7 +10,6 @@
 
 uniform float radius; //globe radius
 uniform float es; //eccentricity squared
-uniform float ve; //vertical exaggeration
 
 // Project the given geodetic coordinates [lon, lat, elevation] into 
 // the correct cartesian coordinates [x, y, z].
