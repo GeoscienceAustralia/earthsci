@@ -1,13 +1,11 @@
 package au.gov.ga.earthsci.model.core.render;
 
-import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.util.OGLStackHandler;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLContext;
-import javax.media.opengl.GLUniformData;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +21,6 @@ import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationService;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.AbstractVBO;
 
-import com.jogamp.opengl.util.glsl.ShaderCode;
-import com.jogamp.opengl.util.glsl.ShaderProgram;
-import com.jogamp.opengl.util.glsl.ShaderState;
-
 /**
  * A basic {@link IModelGeometryRenderer} that supports
  * {@link IVertexBasedGeometry} and {@link IVertexColouredGeometry} instances
@@ -38,15 +32,6 @@ public class BasicRenderer implements IModelGeometryRenderer
 {
 
 	private static final Logger logger = LoggerFactory.getLogger(BasicRenderer.class);
-
-	private static final String FRAGMENT_SHADER = "BasicRenderer.frag"; //$NON-NLS-1$
-	private static final String VERTEX_SHADER = "BasicRenderer.vert"; //$NON-NLS-1$
-
-	private static final String OPACITY = "opacity"; //$NON-NLS-1$
-	private static final String VE = "ve"; //$NON-NLS-1$
-	private static final String ES = "es"; //$NON-NLS-1$
-	private static final String RADIUS = "radius"; //$NON-NLS-1$
-	private static final String ZNODATA = "zNodata"; //$NON-NLS-1$
 
 	private VerticalExaggerationService veService = VerticalExaggerationService.INSTANCE;
 	private WorldWindowRegistry wwRegistry;
@@ -60,10 +45,7 @@ public class BasicRenderer implements IModelGeometryRenderer
 
 	private Integer renderMode;
 
-	private ShaderState shaderState;
-	private ShaderProgram shaderProgram;
-	private ShaderCode vertexShader;
-	private ShaderCode fragmentShader;
+	private BasicRendererShader shader = new BasicRendererShader();
 
 	/**
 	 * Create a new instance of the renderer for the given geometry
@@ -102,23 +84,16 @@ public class BasicRenderer implements IModelGeometryRenderer
 		stack.pushClientAttrib(gl, GL2.GL_CLIENT_VERTEX_ARRAY_BIT);
 		try
 		{
-			initShader(gl);
+			shader.setGlobe(wwRegistry.getRenderingView().getGlobe());
+			shader.setVerticalExaggeration((float) veService.get());
+			shader.setNodata((Float) geometry.getVertices().getNoDataValue());
+			shader.setOpacity((float) geometry.getOpacity());
 
-			shaderState.useProgram(gl, true);
-
-			Globe globe = wwRegistry.getRenderingView().getGlobe();
-			boolean uniformsSet = true;
-			uniformsSet &= shaderState.uniform(gl, new GLUniformData(OPACITY, (float) geometry.getOpacity()));
-			uniformsSet &= shaderState.uniform(gl, new GLUniformData(RADIUS, (float) globe.getRadius()));
-			uniformsSet &= shaderState.uniform(gl, new GLUniformData(ES, (float) globe.getEccentricitySquared()));
-			uniformsSet &= shaderState.uniform(gl, new GLUniformData(VE, (float) veService.get()));
-			uniformsSet &=
-					shaderState
-							.uniform(gl, new GLUniformData(ZNODATA, (Float) geometry.getVertices().getNoDataValue()));
-
-			if (!uniformsSet)
+			boolean bound = shader.bind(gl);
+			if (!bound)
 			{
-				throw new IllegalStateException("Uniforms not set correctly."); //$NON-NLS-1$
+				logger.debug("Unable to bind shader. Aborting.", shader.getLastError()); //$NON-NLS-1$
+				return;
 			}
 
 			gl.glEnable(GL2.GL_BLEND);
@@ -152,7 +127,7 @@ public class BasicRenderer implements IModelGeometryRenderer
 		}
 		finally
 		{
-			shaderState.useProgram(gl, false);
+			shader.unbind(gl);
 			stack.pop(gl);
 		}
 	}
@@ -225,37 +200,6 @@ public class BasicRenderer implements IModelGeometryRenderer
 			}
 			buf.append(". Relaunch with -Djogl.debug=all and -Dnewt.debug=all for more information."); //$NON-NLS-1$
 			logger.error(buf.toString());
-		}
-	}
-
-	private void initShader(GL2 gl)
-	{
-		// TODO: Move shader codes to a repository so the same shader can be shared amongst programs
-		try
-		{
-			if (shaderProgram == null)
-			{
-				vertexShader = ShaderCode.create(gl, GL2.GL_VERTEX_SHADER, 1, getClass(),
-						new String[] { VERTEX_SHADER }, false);
-
-				fragmentShader = ShaderCode.create(gl, GL2.GL_FRAGMENT_SHADER, 1, getClass(),
-						new String[] { FRAGMENT_SHADER }, false);
-
-				shaderProgram = new ShaderProgram();
-				shaderProgram.add(gl, vertexShader, null);
-				shaderProgram.add(gl, fragmentShader, null);
-			}
-
-			if (shaderState == null)
-			{
-				shaderState = new ShaderState();
-			}
-
-			shaderState.attachShaderProgram(gl, shaderProgram, true);
-		}
-		catch (Exception e)
-		{
-			logger.error("Unable to initialise shader", e); //$NON-NLS-1$
 		}
 	}
 

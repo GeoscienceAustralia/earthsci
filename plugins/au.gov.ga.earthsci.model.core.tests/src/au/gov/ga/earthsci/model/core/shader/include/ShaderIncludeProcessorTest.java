@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import au.gov.ga.earthsci.common.util.Util;
+import au.gov.ga.earthsci.model.core.tests.util.GLTestUtil;
 
 /**
  * Unit tests for the {@link ShaderIncludeProcessor}
@@ -138,9 +139,75 @@ public class ShaderIncludeProcessorTest
 		assertEqualsIgnoreLineEndings(expected, result);
 	}
 
+	@Test
+	public void testProcessResourceWithNullLoader() throws Exception
+	{
+		Class<?> loader = null;
+		String expected = loadSource("testNoIncludes.vert");
+
+		String result = classUnderTest.processResource(loader, "testNoIncludes.vert");
+
+		assertEqualsIgnoreLineEndings(expected, result);
+
+	}
+
+	@Test
+	public void testProcessResourceWithNonNullLoader() throws Exception
+	{
+		Class<?> loader = getClass();
+		String expected = loadSource("testNoIncludes.vert");
+
+		String result = classUnderTest.processResource(loader, "testNoIncludes.vert");
+
+		assertEqualsIgnoreLineEndings(expected, result);
+
+	}
+
+	@Test(expected = IOException.class)
+	public void testProcessResourceWithWrongLoaderLocationRelativeResource() throws Exception
+	{
+		Class<?> loader = String.class;
+		String expected = null;
+
+		String result = classUnderTest.processResource(loader, "testNoIncludes.vert");
+
+		assertEqualsIgnoreLineEndings(expected, result);
+
+	}
+
+	@Test
+	public void testProcessResourceWithWrongLoaderLocationRelativeResourceQiet() throws Exception
+	{
+		Class<?> loader = String.class;
+		String expected = null;
+
+		String result = classUnderTest.processResource(loader, "testNoIncludes.vert", true);
+
+		assertEqualsIgnoreLineEndings(expected, result);
+
+	}
+
+	@Test
+	public void testProcessResourceWithWrongLoaderLocationAbsoluteResource() throws Exception
+	{
+		Class<?> loader = GLTestUtil.class;
+		String expected = loadSource("testNoIncludes.vert");
+
+		String result =
+				classUnderTest.processResource(loader,
+						"/au/gov/ga/earthsci/model/core/shader/include/testNoIncludes.vert");
+
+		assertEqualsIgnoreLineEndings(expected, result);
+
+	}
 
 	private static void assertEqualsIgnoreLineEndings(String expected, String result)
 	{
+		if (expected == null)
+		{
+			assertNull(result);
+			return;
+		}
 		assertEquals(expected.replaceAll("[\n\r]+", "\n"), result.replaceAll("[\n\r]+", "\n"));
 	}
 

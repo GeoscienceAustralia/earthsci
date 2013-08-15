@@ -16,10 +16,14 @@
 package au.gov.ga.earthsci.model.core.shader.include;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
@@ -41,6 +45,8 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  */
 public class ShaderIncludeProcessor
 {
+
+	private static final Logger logger = LoggerFactory.getLogger(ShaderIncludeProcessor.class);
 
 	private static final Pattern INCLUDE_PATTERN = Pattern.compile("\\s*#include (\\S+)"); //$NON-NLS-1$
 
@@ -69,6 +75,96 @@ public class ShaderIncludeProcessor
 	public void deleteNamedString(String name)
 	{
 		namedStrings.remove(name);
+	}
+
+	/**
+	 * Equivalent to {@link #processResource(Class, String, false)}
+	 * 
+	 * @param loader
+	 *            The loader to use for loading resource
+	 * @param name
+	 *            The name of the resource to load and process
+	 * @return The processed resource, or <code>null</code> if no resource with
+	 *         the given name could be found.
+	 * @throws IOException
+	 */
+	public String processResource(Class<?> loader, String name) throws IOException
+	{
+		return processResource(loader, name, false);
+	}
+
+	/**
+	 * Process the resource with the given name.
+	 * <p/>
+	 * Uses the standard java resource loading mechanism, with the provided
+	 * {@link Class} serving as the resource loader.
+	 * 
+	 * @param loader
+	 *            The class to use for loading resources
+	 * @param name
+	 *            The name of the shader resource to process
+	 * @param failQuietly
+	 *            If <code>true</code>, {@code #includes} that are unable to be
+	 *            processed will cause an exception. If <code>false</code>, the
+	 *            missing {@code #includes} will be replaced with the empty
+	 *            string.
+	 * 
+	 * @return The processed resource; or <code>null</code> if no resource could
+	 *         be found.
+	 * @throws IOException
+	 *             If failQuietly is <code>false</code> and a problem occurs
+	 *             processing the resource and/or its {@code #includes}
+	 * 
+	 * @see ShaderIncludeProcessor#process(String, boolean)
+	 */
+	public String processResource(Class<?> loader, String name, boolean failQuietly) throws IOException
+	{
+		if (loader == null)
+		{
+			loader = getClass();
+		}
+		if (name == null)
+		{
+			if (!failQuietly)
+			{
+				throw new IOException("Unable to open resource null"); //$NON-NLS-1$
+			}
+			return null;
+		}
+
+		String resource = null;
+		try
+		{
+			InputStream stream = loader.getResourceAsStream(name);
+			if (stream == null)
+			{
+				if (!failQuietly)
+				{
+					throw new IOException("Unable to open resource " + name); //$NON-NLS-1$
+				}
+				return null;
+			}
+			resource = Util.readStreamToString(stream);
+		}
+		catch (IOException e)
+		{
+			logger.debug("Unable to process resource " + name, e); //$NON-NLS-1$
+			if (!failQuietly)
+			{
+				throw e;
+			}
+		}
+		catch (Exception e)
+		{
+			logger.debug("Unable to process resource " + name, e); //$NON-NLS-1$
+		}
+
+		if (resource == null)
+		{
+			return null;
+		}
+
+		return process(resource, failQuietly);
 	}
 
 	/**
