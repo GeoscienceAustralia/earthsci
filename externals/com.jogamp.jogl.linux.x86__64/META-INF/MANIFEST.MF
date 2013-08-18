@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JOGL Natives for Linux x86_64
 Bundle-SymbolicName: com.jogamp.jogl.linux.x86_64
-Bundle-Version: 2.0.0.rc11
+Bundle-Version: 2.0.2
 Bundle-Vendor: JOGAMP
 Bundle-NativeCode: libjogl_desktop.so;
  libjogl_mobile.so;

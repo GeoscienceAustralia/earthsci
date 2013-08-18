@@ -76,12 +76,6 @@ public class NewtEventProcessorSWT implements com.jogamp.newt.event.MouseListene
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e)
-	{
-		forward(e);
-	}
-
-	@Override
 	public void mouseClicked(MouseEvent e)
 	{
 		//AWT doesn't raise click events after a drag, but NEWT does, so follow AWT behaviour.

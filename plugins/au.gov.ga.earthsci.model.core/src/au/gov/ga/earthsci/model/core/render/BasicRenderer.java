@@ -5,6 +5,7 @@ import gov.nasa.worldwind.util.OGLStackHandler;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.media.opengl.GL2;
+import javax.media.opengl.GL2GL3;
 import javax.media.opengl.GLContext;
 
 import org.slf4j.Logger;
@@ -186,10 +187,10 @@ public class BasicRenderer implements IModelGeometryRenderer
 			case GL2.GL_INVALID_OPERATION:
 				buf.append("GL_INVALID_OPERATION "); //$NON-NLS-1$
 				break;
-			case GL2.GL_STACK_OVERFLOW:
+			case GL2GL3.GL_STACK_OVERFLOW:
 				buf.append("GL_STACK_OVERFLOW "); //$NON-NLS-1$
 				break;
-			case GL2.GL_STACK_UNDERFLOW:
+			case GL2GL3.GL_STACK_UNDERFLOW:
 				buf.append("GL_STACK_UNDERFLOW "); //$NON-NLS-1$
 				break;
 			case GL2.GL_OUT_OF_MEMORY:

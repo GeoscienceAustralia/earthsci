@@ -76,7 +76,6 @@ public class NewtEventConverterAWT
 
 		map.put(com.jogamp.newt.event.KeyEvent.EVENT_KEY_PRESSED, java.awt.event.KeyEvent.KEY_PRESSED);
 		map.put(com.jogamp.newt.event.KeyEvent.EVENT_KEY_RELEASED, java.awt.event.KeyEvent.KEY_RELEASED);
-		map.put(com.jogamp.newt.event.KeyEvent.EVENT_KEY_TYPED, java.awt.event.KeyEvent.KEY_TYPED);
 
 		eventTypeAWT2NEWT = map;
 		
@@ -232,7 +231,7 @@ public class NewtEventConverterAWT
 		if (id != KEY_NOT_FOUND_VALUE)
 		{
 			// AWT/NEWT rotation is reversed - AWT +1 is down, NEWT +1 is up.
-			int rotation = -event.getWheelRotation();
+			int rotation = Math.round(-event.getRotation()[1]);
 			int mods = newtModifiers2Awt(event.getModifiers());
 			int button = newtButton2Awt(event.getButton());
 
