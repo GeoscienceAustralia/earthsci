@@ -42,7 +42,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.di.Focus;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
@@ -101,6 +103,8 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  */
 public class LayerTreePart
 {
+	public static final String PART_ID = "au.gov.ga.earthsci.application.layertree.part"; //$NON-NLS-1$
+
 	@Inject
 	private ITreeModel model;
 
@@ -109,6 +113,9 @@ public class LayerTreePart
 
 	@Inject
 	private ESelectionService selectionService;
+
+	@Inject
+	private EPartService partService;
 
 	@Inject
 	@Optional
@@ -208,6 +215,13 @@ public class LayerTreePart
 				{
 					element.getParent().setExpanded(true);
 				}
+
+				//if the nodes were already expanded, the expanded property change event
+				//is not fired, so we need to sync the expanded state anyway
+				syncExpandedNodes();
+
+				//when a layer is added, we should activate this part and select the added element
+				activateAndSelectElement(element);
 			}
 		});
 
@@ -476,5 +490,25 @@ public class LayerTreePart
 		orbitView.stopMovement();
 		orbitView.addAnimator(animator);
 		orbitView.firePropertyChange(AVKey.VIEW, null, orbitView);
+	}
+
+	protected void activateAndSelectElement(final ILayerTreeNode element)
+	{
+		if (!viewer.getControl().isDisposed())
+		{
+			viewer.getControl().getDisplay().asyncExec(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					MPart part = partService.findPart(PART_ID);
+					if (part != null)
+					{
+						partService.activate(part);
+						viewer.setSelection(new StructuredSelection(element), true);
+					}
+				}
+			});
+		}
 	}
 }
