@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.IBeanListProperty;
@@ -11,13 +12,16 @@ import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
@@ -63,6 +67,8 @@ public class CatalogBrowserPart
 	@Inject
 	private ESelectionService selectionService;
 
+	private boolean settingSelection = false;
+
 	@PostConstruct
 	public void init(final Composite parent, final MPart part, final EMenuService menuService)
 	{
@@ -107,7 +113,9 @@ public class CatalogBrowserPart
 					//occurs when the selection contains a loading node, which is not an ICatalogTreeNode
 					array = new ICatalogTreeNode[0];
 				}
+				settingSelection = true;
 				selectionService.setSelection(array);
+				settingSelection = false;
 			}
 		});
 
@@ -147,5 +155,26 @@ public class CatalogBrowserPart
 	public CatalogTreeLabelProvider getLabelProvider()
 	{
 		return labelProvider;
+	}
+
+	@Inject
+	private void select(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] nodes)
+	{
+		if (nodes == null || viewer == null || settingSelection)
+		{
+			return;
+		}
+		StructuredSelection selection = new StructuredSelection(nodes);
+		viewer.setSelection(selection, true);
+	}
+
+	@Inject
+	private void select(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode node)
+	{
+		if (node == null)
+		{
+			return;
+		}
+		select(new ICatalogTreeNode[] { node });
 	}
 }
