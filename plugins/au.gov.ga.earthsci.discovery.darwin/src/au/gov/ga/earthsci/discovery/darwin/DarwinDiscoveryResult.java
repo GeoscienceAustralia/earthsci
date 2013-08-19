@@ -270,6 +270,66 @@ public class DarwinDiscoveryResult extends AbstractDiscoveryResult<DarwinDiscove
 	        "identifier": "ce08e530-ace2-4855-e044-00144fdd4fa6",
 	        "key": "SR-8c2a8cca24cb808d4f0e675ce87ac5ee"
 	    },
+	    {
+			"date" : 1325336400000,
+			"dcUris" : [ { "description" : "Link to 50m bathymetry web coverage service",
+			    "name" : "Link to 50m bathymetry web coverage service",
+			    "protocol" : "OGC:WCS-1.0.0-http-get-capabilities",
+			    "value" : "http://www.ga.gov.au/gisimg/services/marine_coastal/Multibeam_50m_Bathymetry_2012/ImageServer/WCSServer"
+			  },
+			  { "description" : "Link to survey extents web feature service",
+			    "name" : "Link to survey extents web feature service",
+			    "protocol" : "OGC:WFS-1.1.0-http-get-capabilities",
+			    "value" : "http://www.ga.gov.au/gisimg/services/marine_coastal/Multibeam_Survey_Extents_2013/MapServer/WFSServer"
+			  },
+			  { "description" : "Link to 50m bathymetry web map service",
+			    "name" : "Link to 50m bathymetry web map service",
+			    "protocol" : "OGC:WMS-1.3.0-http-get-capabilities",
+			    "value" : "http://www.ga.gov.au/gisimg/services/marine_coastal/Multibeam_50m_Bathymetry_2012_RGB/MapServer/WMSServer"
+			  },
+			  { "description" : "Link to survey extents web map service",
+			    "name" : "Link to survey extents web map service",
+			    "protocol" : "OGC:WMS-1.3.0-http-get-capabilities",
+			    "value" : "http://www.ga.gov.au/gisimg/services/marine_coastal/Multibeam_Survey_Extents_2013/MapServer/WMSServer"
+			  },
+			  { "description" : "Related product: Individual map tile download - SC46",
+			    "name" : "Related product: Individual map tile download - SC46",
+			    "protocol" : "WWW:LINK-1.0-http--link",
+			    "value" : "https://www.ga.gov.au/products/servlet/controller?event=FILE_SELECTION&catno=74564"
+			  },
+			  { "description" : "Related product: Individual map tile download - SC47",
+			    "name" : "Related product: Individual map tile download - SC47",
+			    "protocol" : "WWW:LINK-1.0-http--link",
+			    "value" : "https://www.ga.gov.au/products/servlet/controller?event=FILE_SELECTION&catno=73852"
+			  },
+			  ...
+			  { "description" : "Related product: Individual map tile download - SO58",
+			    "name" : "Related product: Individual map tile download - SO58",
+			    "protocol" : "WWW:LINK-1.0-http--link",
+			    "value" : "https://www.ga.gov.au/products/servlet/controller?event=FILE_SELECTION&catno=73950"
+			  }
+			],
+			"downloads" : true,
+			"identifier" : "bc422803-0ab4-5350-e044-00144fdd4fa6",
+			"key" : "SR-a0fa6c6205b8e1eb5aefdb5023031d69",
+			"licence" : "Commonwealth of Australia (Geoscience Australia) ; Creative Commons Attribution 3.0 Australia Licence",
+			"listOfKeywords" : null,
+			"metadataLink" : "/metadata-gateway/metadata/record/gcat_bc422803-0ab4-5350-e044-00144fdd4fa6/50m+Multibeam+Dataset+of+Australia",
+			"showPolygon" : false,
+			"sourceSystemCode" : "gcat",
+			"spatial" : { "allNull" : false,
+			  "closed" : true,
+			  "eastLongitude" : 174,
+			  "northLatitude" : -8,
+			  "southLatitude" : -60,
+			  "valid" : true,
+			  "westLongitude" : 90
+			},
+			"supportedService" : true,
+			"theAbstract" : "This tile contains all multibeam data held by Geoscience Australia on August 2012 within the specified area. The data has been gridded to 50m resolution.  \n\nSome deeper data has also been interpolated within the mapped area.\n\nThe image provided can be viewed on the free software CARIS Easyview, available from the CARIS website: www.caris.com under Free Downloads.",
+			"thumbnail" : false,
+			"title" : "50m Multibeam Dataset of Australia"
+		}
 	],
 	"numberOfRecordsReturnedText": "10",
 	"numberOfRecordsReturned": "10",
