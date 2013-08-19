@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers;
 
+import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.avlist.AVListImpl;
@@ -22,6 +23,7 @@ import gov.nasa.worldwind.layers.BasicLayerFactory;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.mercator.BasicMercatorTiledImageLayer;
 import gov.nasa.worldwind.ogc.OGCConstants;
+import gov.nasa.worldwind.util.WWUtil;
 import gov.nasa.worldwind.util.WWXML;
 
 import org.w3c.dom.Element;
@@ -105,6 +107,19 @@ public class LayerFactory extends BasicLayerFactory
 			return SphereLayerFactory.createSphereLayer(domElement, params);
 		}
 
+		String className = WWXML.getText(domElement, "@className");
+		if (className != null && className.length() > 0)
+		{
+			//fix any layer definitions that are pointing to the legacy ga-worldwind-suite common classes:
+			className = className.replace("au.gov.ga.worldwind.common.", "au.gov.ga.earthsci.worldwind.common.");
+
+			Layer layer = (Layer) WorldWind.createComponent(className);
+			String actuate = WWXML.getText(domElement, "@actuate");
+			layer.setEnabled(WWUtil.isEmpty(actuate) || actuate.equals("onLoad"));
+			WWXML.invokePropertySetters(layer, domElement);
+			return layer;
+		}
+
 		return super.createFromLayerDocument(domElement, params);
 	}
 
@@ -132,7 +147,7 @@ public class LayerFactory extends BasicLayerFactory
 
 		return layer;
 	}
-	
+
 	protected Layer createTiledMercatorLayer(Element domElement, AVList params)
 	{
 		if (params == null)
