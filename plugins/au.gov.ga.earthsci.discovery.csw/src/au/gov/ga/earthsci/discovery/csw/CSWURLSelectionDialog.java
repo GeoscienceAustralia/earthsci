@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import au.gov.ga.earthsci.worldwind.common.util.URLUtil;
+
 /**
  * Dialog used to select a URL to open from a CSW discovery result.
  * 
@@ -203,17 +205,17 @@ public class CSWURLSelectionDialog extends StatusDialog
 		String lower = urlString.toLowerCase();
 		if (lower.contains("wms")) //$NON-NLS-1$
 		{
-			urlString = addQueryParameter(urlString, "service=WMS"); //$NON-NLS-1$
+			urlString = URLUtil.addQueryParameter(urlString, "service=WMS"); //$NON-NLS-1$
 		}
 		else if (lower.contains("wfs")) //$NON-NLS-1$
 		{
-			urlString = addQueryParameter(urlString, "service=WFS"); //$NON-NLS-1$
+			urlString = URLUtil.addQueryParameter(urlString, "service=WFS"); //$NON-NLS-1$
 		}
 		else if (lower.contains("wcs")) //$NON-NLS-1$
 		{
-			urlString = addQueryParameter(urlString, "service=WCS"); //$NON-NLS-1$
+			urlString = URLUtil.addQueryParameter(urlString, "service=WCS"); //$NON-NLS-1$
 		}
-		urlString = addQueryParameter(urlString, "request=GetCapabilities"); //$NON-NLS-1$
+		urlString = URLUtil.addQueryParameter(urlString, "request=GetCapabilities"); //$NON-NLS-1$
 
 		try
 		{
@@ -223,25 +225,6 @@ public class CSWURLSelectionDialog extends StatusDialog
 		{
 			e.printStackTrace();
 			finalUrl = selectedUrl;
-		}
-	}
-
-	private static String addQueryParameter(String urlString, String queryParameter)
-	{
-		int indexOfQuestion = urlString.indexOf('?');
-		if (indexOfQuestion < 0)
-		{
-			return urlString + "?" + queryParameter; //$NON-NLS-1$
-		}
-		else
-		{
-			String prefix = urlString.substring(0, indexOfQuestion + 1);
-			String suffix = urlString.substring(indexOfQuestion + 1);
-			if (suffix.length() > 0)
-			{
-				queryParameter += "&"; //$NON-NLS-1$
-			}
-			return prefix + queryParameter + suffix;
 		}
 	}
 

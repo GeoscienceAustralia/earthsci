@@ -15,7 +15,10 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery.darwin;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+
+import au.gov.ga.earthsci.worldwind.common.util.URLUtil;
 
 /**
  * URI that describes some data linked to a DARWIN discovery record.
@@ -48,5 +51,34 @@ public class DarwinDiscoveryResultURL
 	public String getProtocol()
 	{
 		return protocol;
+	}
+
+	public URL getUrlWithRequiredParameters() throws MalformedURLException
+	{
+		String lowerProtocol = protocol.toLowerCase();
+		String stringUrl = url.toString();
+
+		boolean ogc = false;
+		if (lowerProtocol.contains("wms"))
+		{
+			ogc = true;
+			stringUrl = URLUtil.addQueryParameterIfMissing(stringUrl, "service=WMS", true);
+		}
+		else if (lowerProtocol.contains("wfs"))
+		{
+			ogc = true;
+			stringUrl = URLUtil.addQueryParameterIfMissing(stringUrl, "service=WFS", true);
+		}
+		else if (lowerProtocol.contains("wcs"))
+		{
+			ogc = true;
+			stringUrl = URLUtil.addQueryParameterIfMissing(stringUrl, "service=WCS", true);
+		}
+		if (ogc)
+		{
+			stringUrl = URLUtil.addQueryParameterIfMissing(stringUrl, "request=GetCapabilities", true);
+		}
+
+		return new URL(stringUrl);
 	}
 }
