@@ -15,8 +15,10 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.model.core.shader.include;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -224,14 +226,19 @@ public class ShaderIncludeProcessor
 		{
 			return null;
 		}
+		if (source.length() == 0)
+		{
+			return source;
+		}
 
 		StringBuffer result = new StringBuffer();
 
 		// Process line at a time;
-		String[] lines = source.split("\n"); //$NON-NLS-1$
-		int i = 0;
-		for (String line : lines)
+		String line;
+		BufferedReader reader = new BufferedReader(new StringReader(source));
+		while ((line = reader.readLine()) != null)
 		{
+			result.append('\n');
 			if (isInclude(line))
 			{
 				String name = getIncludeName(line);
@@ -253,13 +260,8 @@ public class ShaderIncludeProcessor
 			{
 				result.append(line);
 			}
-			if (i < lines.length - 1)
-			{
-				result.append('\n');
-			}
-			i++;
 		}
-		return result.toString();
+		return result.substring(1);
 	}
 
 	private boolean isInclude(String line)
