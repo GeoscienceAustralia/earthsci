@@ -16,7 +16,6 @@
 package au.gov.ga.earthsci.discovery.darwin;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -63,7 +62,7 @@ public class DarwinDiscoveryResultHandler implements IDiscoveryResultHandler
 		DarwinDiscoveryResult result = (DarwinDiscoveryResult) r;
 		List<DarwinDiscoveryResultURL> urls = result.getUrls();
 
-		if (urls == null || urls.size() == 0)
+		if (urls == null || urls.isEmpty())
 		{
 			IStatus status =
 					new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Search result contains no referenced URLs.");
@@ -71,14 +70,22 @@ public class DarwinDiscoveryResultHandler implements IDiscoveryResultHandler
 			return;
 		}
 
-		DarwinURLSelectionDialog dialog = new DarwinURLSelectionDialog(shell, urls);
-		dialog.setTitle("Select URL to open");
-		if (dialog.open() != Window.OK)
+		DarwinDiscoveryResultURL url = null;
+		if (urls.size() == 1)
 		{
-			return;
+			url = urls.get(0);
+		}
+		else
+		{
+			DarwinURLSelectionDialog dialog = new DarwinURLSelectionDialog(shell, urls);
+			dialog.setTitle("Select URL to open");
+			if (dialog.open() != Window.OK)
+			{
+				return;
+			}
+			url = dialog.getSelected();
 		}
 
-		DarwinDiscoveryResultURL url = dialog.getSelected();
 		if (url == null)
 		{
 			return;
@@ -87,9 +94,9 @@ public class DarwinDiscoveryResultHandler implements IDiscoveryResultHandler
 		URI uri = null;
 		try
 		{
-			uri = url.getUrl().toURI();
+			uri = url.getUrlWithRequiredParameters().toURI();
 		}
-		catch (URISyntaxException e)
+		catch (Exception e)
 		{
 			IStatus status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getLocalizedMessage(), e);
 			StackTraceDialog.openError(shell, "Error", null, status);
