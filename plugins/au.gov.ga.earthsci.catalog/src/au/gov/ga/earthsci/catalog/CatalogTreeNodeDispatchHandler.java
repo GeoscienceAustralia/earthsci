@@ -18,9 +18,11 @@ package au.gov.ga.earthsci.catalog;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
+import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.intent.dispatch.IDispatchHandler;
@@ -49,7 +51,7 @@ public class CatalogTreeNodeDispatchHandler implements IDispatchHandler
 	{
 		if (object instanceof ICatalogTreeNode)
 		{
-			ICatalogTreeNode node = (ICatalogTreeNode) object;
+			final ICatalogTreeNode node = (ICatalogTreeNode) object;
 			model.addTopLevelCatalog(node);
 
 			shell.getDisplay().asyncExec(new Runnable()
@@ -57,7 +59,9 @@ public class CatalogTreeNodeDispatchHandler implements IDispatchHandler
 				@Override
 				public void run()
 				{
-					partService.showPart(CATALOG_PART_ID, PartState.ACTIVATE);
+					MPart part = partService.showPart(CATALOG_PART_ID, PartState.ACTIVATE);
+					ESelectionService selectionService = part.getContext().get(ESelectionService.class);
+					selectionService.setSelection(new ICatalogTreeNode[] { node });
 				}
 			});
 		}
