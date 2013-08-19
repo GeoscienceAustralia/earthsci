@@ -100,6 +100,7 @@ public class DarwinURLSelectionDialog extends StatusDialog
 
 		viewer = new TableViewer(comp, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION);
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		//set max size (actual size is calculated below):
 		gd.widthHint = 600;
 		gd.heightHint = 400;
 		viewer.getTable().setLayoutData(gd);
@@ -116,7 +117,11 @@ public class DarwinURLSelectionDialog extends StatusDialog
 			gd.widthHint = Math.min(gd.widthHint, point.x);
 		}
 		int height = viewer.getTable().getItemHeight() * urls.size() + viewer.getTable().getHeaderHeight();
-		gd.heightHint = Math.min(gd.heightHint, height);
+		if (height < gd.heightHint)
+		{
+			//if height of all rows is less than the max height, then use the default height:
+			gd.heightHint = SWT.DEFAULT;
+		}
 
 		//keep the column width in sync with the table width
 		final TableColumn resultsColumn = new TableColumn(viewer.getTable(), SWT.LEFT);
