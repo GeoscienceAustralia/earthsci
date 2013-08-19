@@ -152,23 +152,35 @@ public class IntentManager implements IIntentManager
 	}
 
 	@Override
-	public void start(Intent intent, Class<? extends IIntentHandler> handlerClass, IIntentCallback callback,
-			IEclipseContext context)
+	public void start(final Intent intent, final Class<? extends IIntentHandler> handlerClass,
+			final IIntentCallback callback,
+			final IEclipseContext context)
 	{
 		if (handlerClass == null)
 		{
 			throw new NullPointerException("Intent handler class is null"); //$NON-NLS-1$
 		}
-		try
+		//start the intent on a separate thread, so we can return to the caller immediately
+		Thread thread = new Thread(new Runnable()
 		{
-			IEclipseContext child = context.createChild();
-			IIntentHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
-			handler.handle(intent, callback);
-		}
-		catch (Exception e)
-		{
-			callback.error(e, intent);
-		}
+			@Override
+			public void run()
+			{
+				try
+				{
+					IEclipseContext child = context.createChild();
+					IIntentHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
+					handler.handle(intent, callback);
+				}
+				catch (Exception e)
+				{
+					callback.error(e, intent);
+				}
+			}
+		});
+		thread.setDaemon(true);
+		thread.setName("Intent thread: " + intent.getURI());
+		thread.start();
 	}
 
 	@Override
