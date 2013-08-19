@@ -110,4 +110,48 @@ public class WMSCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 		//TODO
 		return null;
 	}
+
+	/**
+	 * @return If this WMS server only publishes a single layer, return the
+	 *         catalog tree node that represents the layer
+	 */
+	public WMSLayerCapabilitiesCatalogTreeNode getSingleLayer()
+	{
+		try
+		{
+			return getSingleLayer(this, null);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
+
+	private static WMSLayerCapabilitiesCatalogTreeNode getSingleLayer(ICatalogTreeNode parent,
+			WMSLayerCapabilitiesCatalogTreeNode found) throws Exception
+	{
+		List<ICatalogTreeNode> children = parent.getChildren();
+		for (ICatalogTreeNode child : children)
+		{
+			if (child instanceof WMSLayerCapabilitiesCatalogTreeNode)
+			{
+				WMSLayerCapabilitiesCatalogTreeNode layerChild = (WMSLayerCapabilitiesCatalogTreeNode) child;
+				if (layerChild.isLayerNode())
+				{
+					if (found != null)
+					{
+						throw new Exception();
+					}
+					found = layerChild;
+				}
+			}
+			//recurse
+			WMSLayerCapabilitiesCatalogTreeNode childFound = getSingleLayer(child, found);
+			if (childFound != null)
+			{
+				found = childFound;
+			}
+		}
+		return found;
+	}
 }
