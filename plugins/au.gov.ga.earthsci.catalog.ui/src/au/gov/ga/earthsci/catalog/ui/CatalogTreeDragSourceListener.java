@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 
+import au.gov.ga.earthsci.catalog.CatalogLayerHelper;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
@@ -79,7 +80,7 @@ public class CatalogTreeDragSourceListener implements DragSourceListener
 				continue;
 			}
 
-			ILayerTreeNode layerTreeNode = controller.createLayerTreeNode(node);
+			ILayerTreeNode layerTreeNode = CatalogLayerHelper.createLayerTreeNode(node);
 			layerTreeNodes.add(layerTreeNode);
 		}
 

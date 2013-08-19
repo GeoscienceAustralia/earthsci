@@ -26,11 +26,11 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 
 import au.gov.ga.earthsci.application.util.UserActionPreference;
+import au.gov.ga.earthsci.catalog.CatalogLayerHelper;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ui.preferences.ICatalogBrowserPreferences;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 
@@ -149,9 +149,8 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		for (ICatalogTreeNode node : nodes)
 		{
 			ILayerTreeNode parent = fullNodePathRequiredOnAdd ? createNodePath(node) : currentLayerModel.getRootNode();
-			insertIntoLayerModel(parent, node);
+			CatalogLayerHelper.insertIntoLayerModel(parent, node, context);
 		}
-
 	}
 
 	/**
@@ -187,75 +186,12 @@ public class CatalogBrowserController implements ICatalogBrowserController
 
 		if (!node.isLayerNode())
 		{
-			ILayerTreeNode folder = createFolderNode(node);
+			ILayerTreeNode folder = CatalogLayerHelper.createFolderNode(node);
 			parent.addChild(folder);
 			return folder;
 		}
 
 		return parent;
-	}
-
-	/**
-	 * Insert the given catalog node (and it's subtree) into the child list of
-	 * the given parent layer tree node
-	 * 
-	 * @param parent
-	 *            The parent layer tree node to insert into
-	 * @param node
-	 *            The catalog node to insert
-	 */
-	private void insertIntoLayerModel(ILayerTreeNode parent, ICatalogTreeNode node)
-	{
-		if (node.isLayerNode())
-		{
-			LayerNode layer = createLayerNode(node);
-			parent.addChild(layer);
-			IntentLayerLoader.load(layer, context);
-		}
-		else
-		{
-			FolderNode folder = createFolderNode(node);
-			parent.addChild(folder);
-			for (ICatalogTreeNode child : node.getChildren())
-			{
-				insertIntoLayerModel(folder, child);
-			}
-		}
-	}
-
-	@Override
-	public ILayerTreeNode createLayerTreeNode(ICatalogTreeNode catalogTreeNode)
-	{
-		if (catalogTreeNode.isLayerNode())
-		{
-			return createLayerNode(catalogTreeNode);
-		}
-		return createFolderNode(catalogTreeNode);
-	}
-
-	private LayerNode createLayerNode(ICatalogTreeNode catalogTreeNode)
-	{
-		LayerNode layer = new LayerNode();
-		layer.setURI(catalogTreeNode.getLayerURI());
-		layer.setContentType(catalogTreeNode.getLayerContentType());
-		layer.setName(catalogTreeNode.getName());
-		layer.setLabel(catalogTreeNode.getLabel());
-		layer.setEnabled(true);
-		layer.setIconURL(catalogTreeNode.getIconURL());
-		layer.setNodeInformationURL(catalogTreeNode.getInformationURL());
-		return layer;
-	}
-
-	private FolderNode createFolderNode(ICatalogTreeNode catalogTreeNode)
-	{
-		FolderNode folder = new FolderNode();
-		folder.setName(catalogTreeNode.getName());
-		folder.setLabel(catalogTreeNode.getLabel());
-		folder.setURI(catalogTreeNode.getURI());
-		folder.setExpanded(true);
-		folder.setIconURL(catalogTreeNode.getIconURL());
-		folder.setNodeInformationURL(catalogTreeNode.getInformationURL());
-		return folder;
 	}
 
 	private boolean isFullNodePathRequiredOnAdd()
