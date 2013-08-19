@@ -100,6 +100,8 @@ public class DarwinURLSelectionDialog extends StatusDialog
 
 		viewer = new TableViewer(comp, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION);
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gd.widthHint = 600;
+		gd.heightHint = 400;
 		viewer.getTable().setLayoutData(gd);
 		viewer.setContentProvider(new ArrayContentProvider());
 		viewer.setLabelProvider(new LabelProvider());
@@ -111,8 +113,10 @@ public class DarwinURLSelectionDialog extends StatusDialog
 			GC gc = new GC(viewer.getTable());
 			Point point = gc.textExtent(longestUrl.getName());
 			gc.dispose();
-			gd.widthHint = point.x;
+			gd.widthHint = Math.min(gd.widthHint, point.x);
 		}
+		int height = viewer.getTable().getItemHeight() * urls.size() + viewer.getTable().getHeaderHeight();
+		gd.heightHint = Math.min(gd.heightHint, height);
 
 		//keep the column width in sync with the table width
 		final TableColumn resultsColumn = new TableColumn(viewer.getTable(), SWT.LEFT);
