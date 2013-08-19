@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -192,6 +193,12 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 				discoveryDefaultSelected(selection);
 			}
 		};
+	}
+
+	@Focus
+	private void setFocus()
+	{
+		searchText.setFocus();
 	}
 
 	private void performSearch()
