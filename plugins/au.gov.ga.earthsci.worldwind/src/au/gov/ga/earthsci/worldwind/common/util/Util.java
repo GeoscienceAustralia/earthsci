@@ -361,6 +361,11 @@ public class Util
 		return getScaledLengthMillis(beginLatLon, endLatLon, (long) (4000 / scale), (long) (20000 / scale));
 	}
 
+	public static long getScaledLengthMillis(double scale, double beginZoom, double endZoom)
+	{
+		return getScaledLengthMillis(beginZoom, endZoom, (long) (4000 / scale), (long) (20000 / scale));
+	}
+
 	public static long getScaledLengthMillis(LatLon beginLatLon, LatLon endLatLon, long minLengthMillis,
 			long maxLengthMillis)
 	{
@@ -415,7 +420,7 @@ public class Util
 		return (value - min) / (max - min);
 	}
 
-	private static double angularRatio(Angle x, Angle y)
+	public static double angularRatio(Angle x, Angle y)
 	{
 		if (x == null || y == null)
 		{

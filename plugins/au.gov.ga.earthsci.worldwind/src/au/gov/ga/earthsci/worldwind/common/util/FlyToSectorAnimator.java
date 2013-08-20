@@ -59,6 +59,25 @@ public class FlyToSectorAnimator
 			Position endCenterPos, Angle beginHeading, Angle beginPitch, double beginZoom, LatLon endVisibleDelta,
 			long timeToMove)
 	{
+		double endZoom = calculateEndZoom(orbitView, endVisibleDelta);
+		return FlyToOrbitViewAnimator.createFlyToOrbitViewAnimator(orbitView, beginCenterPos, endCenterPos,
+				beginHeading, Angle.ZERO, beginPitch, Angle.ZERO, beginZoom, endZoom, timeToMove, WorldWind.ABSOLUTE);
+	}
+
+	public static FlyToOrbitViewAnimator createScaledFlyToSectorAnimator(OrbitView orbitView, Position beginCenterPos,
+			Position endCenterPos, Angle beginHeading, Angle beginPitch, double beginZoom, LatLon endVisibleDelta,
+			double timeScale)
+	{
+		double endZoom = calculateEndZoom(orbitView, endVisibleDelta);
+		long timeToMove =
+				(Util.getScaledLengthMillis(timeScale, beginCenterPos, endCenterPos) + Util.getScaledLengthMillis(
+						timeScale, beginZoom, endZoom)) / 2;
+		return FlyToOrbitViewAnimator.createFlyToOrbitViewAnimator(orbitView, beginCenterPos, endCenterPos,
+				beginHeading, Angle.ZERO, beginPitch, Angle.ZERO, beginZoom, endZoom, timeToMove, WorldWind.ABSOLUTE);
+	}
+
+	public static double calculateEndZoom(OrbitView orbitView, LatLon endVisibleDelta)
+	{
 		Rectangle viewport = orbitView.getViewport();
 		Angle fieldOfView = orbitView.getFieldOfView();
 
@@ -75,9 +94,6 @@ public class FlyToSectorAnimator
 		double viewportWidth = viewport.getWidth();
 		double pixelSizeScale = 2 * fieldOfView.tanHalfAngle() / (viewportWidth <= 0 ? 1d : viewportWidth);
 
-		double endZoom = metersPerPixel / pixelSizeScale;
-
-		return FlyToOrbitViewAnimator.createFlyToOrbitViewAnimator(orbitView, beginCenterPos, endCenterPos,
-				beginHeading, Angle.ZERO, beginPitch, Angle.ZERO, beginZoom, endZoom, timeToMove, WorldWind.ABSOLUTE);
+		return metersPerPixel / pixelSizeScale;
 	}
 }
