@@ -314,7 +314,7 @@ public class GlobePart
 						}
 						layer.setEnabled(l.isEnabled());
 						layer.setPickEnabled(true);
-						sceneController.getHudLayers().add(layer);
+						sceneController.getPostLayers().add(layer);
 
 						String toolItemId = l.getId() + ".toolitem"; //$NON-NLS-1$
 						MHandledToolItem toolItem = MMenuFactory.INSTANCE.createHandledToolItem();

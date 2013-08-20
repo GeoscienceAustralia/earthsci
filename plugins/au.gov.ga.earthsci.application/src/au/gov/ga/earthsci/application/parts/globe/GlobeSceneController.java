@@ -32,15 +32,14 @@ import au.gov.ga.earthsci.worldwind.common.render.ExtendedSceneController;
  */
 public class GlobeSceneController extends ExtendedSceneController
 {
-	private final LayerList hudLayers = new LayerList();
+	private final LayerList postLayers = new LayerList();
 
 	/**
-	 * @return Heads up display layers to draw after drawing the model's layer
-	 *         list.
+	 * @return Layers to draw after drawing the model's layer list.
 	 */
-	public LayerList getHudLayers()
+	public LayerList getPostLayers()
 	{
-		return hudLayers;
+		return postLayers;
 	}
 
 	@Override
@@ -48,7 +47,7 @@ public class GlobeSceneController extends ExtendedSceneController
 	{
 		super.afterPickLayers(dc);
 
-		for (Layer layer : hudLayers)
+		for (Layer layer : postLayers)
 		{
 			try
 			{
@@ -75,7 +74,7 @@ public class GlobeSceneController extends ExtendedSceneController
 	{
 		super.afterPreRenderLayers(dc);
 
-		for (Layer layer : hudLayers)
+		for (Layer layer : postLayers)
 		{
 			try
 			{
@@ -103,7 +102,7 @@ public class GlobeSceneController extends ExtendedSceneController
 	{
 		super.afterDrawLayers(dc);
 
-		for (Layer layer : hudLayers)
+		for (Layer layer : postLayers)
 		{
 			try
 			{
