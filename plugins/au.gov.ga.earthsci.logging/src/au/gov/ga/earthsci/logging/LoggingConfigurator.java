@@ -209,6 +209,7 @@ public class LoggingConfigurator
 
 		// Install the bridge
 		LevelChangePropagator levelChangePropagator = new LevelChangePropagator();
+		levelChangePropagator.setContext(loggerContext);
 		levelChangePropagator.setResetJUL(true);
 		loggerContext.addListener(levelChangePropagator);
 		SLF4JBridgeHandler.install();
