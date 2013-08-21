@@ -22,7 +22,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.CoreException;
@@ -31,7 +30,9 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
-import org.eclipse.e4.core.services.log.Logger;
+import org.eclipse.e4.core.di.annotations.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.core.retrieve.retriever.DefaultRetriever;
 
@@ -52,8 +53,7 @@ public class RetrieverFactory implements IRetrieverFactory
 
 	private IRetriever defaultRetriever = new DefaultRetriever();
 
-	@Inject
-	private Logger logger;
+	private final static Logger logger = LoggerFactory.getLogger(RetrieverFactory.class);
 
 	/**
 	 * Load registered {@link IRetriever}s from the provided extension registry.
@@ -67,12 +67,15 @@ public class RetrieverFactory implements IRetrieverFactory
 	 *            The context to use for dependency injection etc.
 	 */
 	@PostConstruct
-	public void loadRetrievers(IExtensionRegistry registry, IEclipseContext context)
+	public void loadRetrievers(@Optional IExtensionRegistry registry, IEclipseContext context)
 	{
-		if (logger != null)
+		if (registry == null)
 		{
-			logger.info("Registering retrieval service retrievers"); //$NON-NLS-1$
+			logger.warn("Extension registry not found, no retrieval service retrievers are registered"); //$NON-NLS-1$
+			return;
 		}
+
+		logger.info("Registering retrieval service retrievers"); //$NON-NLS-1$
 		IConfigurationElement[] config = registry.getConfigurationElementsFor(RETRIEVER_EXTENSION_POINT_ID);
 		try
 		{
@@ -89,10 +92,7 @@ public class RetrieverFactory implements IRetrieverFactory
 		}
 		catch (CoreException e)
 		{
-			if (logger != null)
-			{
-				logger.error(e, "Exception while loading retrievers"); //$NON-NLS-1$
-			}
+			logger.error("Exception while loading retrievers", e); //$NON-NLS-1$
 		}
 	}
 
