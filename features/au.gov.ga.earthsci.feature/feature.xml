@@ -183,4 +183,11 @@ http://www.apache.org/licenses/
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="au.gov.ga.earthsci.discovery.darwin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
