@@ -17,8 +17,8 @@ Require-Bundle: org.eclipse.e4.core.contexts;bundle-version="1.1.0",
 Export-Package: au.gov.ga.earthsci.logging,
  ch.qos.logback.core,
  org.slf4j
-Bundle-ClassPath: ch.qos.logback.classic-0.9.28.jar,
- ch.qos.logback.core-0.9.28.jar,
- slf4j.api-1.6.1.jar,
- slf4j.bridge-1.6.1.jar,
- .
+Bundle-ClassPath: .,
+ lib/jul-to-slf4j-1.6.1.jar,
+ lib/logback-core-0.9.28.jar,
+ lib/slf4j-api-1.6.1.jar,
+ lib/logback-classic-0.9.28.jar

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="ch.qos.logback.classic-0.9.28.jar" sourcepath="ch.qos.logback.classic-0.9.28-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="ch.qos.logback.core-0.9.28.jar" sourcepath="ch.qos.logback.core-0.9.28-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="slf4j.api-1.6.1.jar" sourcepath="slf4j.api-1.6.1-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="slf4j.bridge-1.6.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib/jul-to-slf4j-1.6.1.jar" sourcepath="lib/jul-to-slf4j-1.6.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/logback-core-0.9.28.jar" sourcepath="lib/logback-core-0.9.28-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.6.1.jar" sourcepath="lib/slf4j-api-1.6.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/logback-classic-0.9.28.jar" sourcepath="lib/logback-classic-0.9.28-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
