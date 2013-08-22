@@ -177,18 +177,20 @@ public class RetrievalService implements IRetrievalService
 	@Override
 	public void addListener(IRetrievalServiceListener listener)
 	{
+		Collection<Retrieval> currentRetrievals;
 		synchronized (listeners)
 		{
 			synchronized (urlToRetrieval)
 			{
 				listeners.add(listener);
-
-				//notify the newly added listener of all current retrievals:
-				for (Retrieval retrieval : urlToRetrieval.values())
-				{
-					listener.retrievalAdded(retrieval);
-				}
+				currentRetrievals = new ArrayList<Retrieval>(urlToRetrieval.values());
 			}
+		}
+
+		//notify the newly added listener of all current retrievals:
+		for (Retrieval retrieval : currentRetrievals)
+		{
+			listener.retrievalAdded(retrieval);
 		}
 	}
 
