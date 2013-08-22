@@ -50,6 +50,10 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class LoggingConfigurator
 {
+	static
+	{
+		DevelopmentModeMultipleBindingsFix.apply();
+	}
 
 	private static final String LOGBACK_XML = "logback.xml"; //$NON-NLS-1$
 
