@@ -15,6 +15,17 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.discovery.ui;
 
+import gov.nasa.worldwind.SceneController;
+import gov.nasa.worldwind.View;
+import gov.nasa.worldwind.WorldWindow;
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Sector;
+import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
+import gov.nasa.worldwind.view.orbit.OrbitView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,14 +46,19 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -55,6 +71,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import au.gov.ga.earthsci.application.Activator;
+import au.gov.ga.earthsci.application.parts.globe.GlobeSceneController;
 import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
 import au.gov.ga.earthsci.common.ui.information.IInformationProvider;
 import au.gov.ga.earthsci.common.ui.information.InformationProviderHoverInformationControlManager;
@@ -69,6 +86,9 @@ import au.gov.ga.earthsci.discovery.IDiscoveryResultHandler;
 import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
 import au.gov.ga.earthsci.discovery.ui.handler.ServicesHandler;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.retrieve.SectorPolyline;
+import au.gov.ga.earthsci.worldwind.common.util.FlyToSectorAnimator;
 
 /**
  * The Discovery UI part.
@@ -100,6 +120,10 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 
 	private final List<IDiscovery> currentDiscoveries = new ArrayList<IDiscovery>();
 	private final DiscoveryResultContentProvider discoveryContentProvider = new DiscoveryResultContentProvider();
+
+	private IDiscoveryResult lastResultMouseOver;
+	private RenderableLayer mouseOverLayer;
+	private GlobeSceneController mouseOverSceneController;
 
 	@PostConstruct
 	public void init(final Composite parent)
@@ -277,6 +301,29 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 				resultDefaultSelected(selection);
 			}
 		};
+
+		resultsViewer.getTable().addMouseMoveListener(new MouseMoveListener()
+		{
+			@Override
+			public void mouseMove(MouseEvent e)
+			{
+				IDiscoveryResult result = null;
+				ViewerCell cell = resultsViewer.getCell(new Point(e.x, e.y));
+				if (cell != null)
+				{
+					result = (IDiscoveryResult) cell.getElement();
+				}
+				resultMouseOver(result);
+			}
+		});
+		resultsViewer.getTable().addMouseTrackListener(new MouseTrackAdapter()
+		{
+			@Override
+			public void mouseExit(MouseEvent e)
+			{
+				resultMouseOver(null);
+			}
+		});
 	}
 
 	private void discoverySelected(IDiscovery discovery)
@@ -376,5 +423,82 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 		IDiscoveryResultHandler handler = result.getDiscovery().getService().getProvider().getHandler();
 		ContextInjectionFactory.inject(handler, context);
 		handler.open(result);
+	}
+
+	private void resultMouseOver(IDiscoveryResult result)
+	{
+		if (lastResultMouseOver != result)
+		{
+			lastResultMouseOver = result;
+
+			if (mouseOverLayer == null)
+			{
+				mouseOverLayer = new RenderableLayer();
+			}
+
+			Sector sector = null;
+			mouseOverLayer.removeAllRenderables();
+			if (result != null)
+			{
+				sector = result.getSector();
+				if (sector != null)
+				{
+					mouseOverLayer.addRenderable(new SectorPolyline(result.getSector()));
+				}
+			}
+
+			WorldWindow wwd = WorldWindowRegistry.INSTANCE.getActive();
+			if (wwd != null)
+			{
+				SceneController sceneController = wwd.getSceneController();
+				if (sector != null && sceneController instanceof GlobeSceneController)
+				{
+					GlobeSceneController gsc = (GlobeSceneController) sceneController;
+					if (mouseOverSceneController != gsc)
+					{
+						if (mouseOverSceneController != null)
+						{
+							mouseOverSceneController.getPostLayers().remove(mouseOverLayer);
+						}
+						mouseOverSceneController = gsc;
+						mouseOverSceneController.getPostLayers().add(mouseOverLayer);
+					}
+				}
+				else if (mouseOverSceneController != null)
+				{
+					mouseOverSceneController.getPostLayers().remove(mouseOverLayer);
+					mouseOverSceneController = null;
+				}
+				wwd.redraw();
+
+				//TODO the view movement should possibly be optional - preference?
+
+				View view = WorldWindowRegistry.INSTANCE.getActiveView();
+				if (view instanceof OrbitView && sector != null)
+				{
+					OrbitView orbitView = (OrbitView) view;
+					Position center = orbitView.getCenterPosition();
+					Position newCenter;
+					if (sector.contains(center) && sector.getDeltaLatDegrees() > 90 && sector.getDeltaLonDegrees() > 90)
+					{
+						newCenter = center;
+					}
+					else
+					{
+						newCenter = new Position(sector.getCentroid(), 0);
+					}
+
+					LatLon endVisibleDelta = new LatLon(sector.getDeltaLat(), sector.getDeltaLon());
+					FlyToOrbitViewAnimator animator =
+							FlyToSectorAnimator.createScaledFlyToSectorAnimator(orbitView, center, newCenter,
+									orbitView.getHeading(), orbitView.getPitch(), orbitView.getZoom(), endVisibleDelta,
+									10);
+					orbitView.stopAnimations();
+					orbitView.stopMovement();
+					orbitView.addAnimator(animator);
+					orbitView.firePropertyChange(AVKey.VIEW, null, orbitView);
+				}
+			}
+		}
 	}
 }
