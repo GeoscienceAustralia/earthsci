@@ -49,6 +49,7 @@
 		<module>org.jmock</module>
 		
 		<module>org.eclipse.uomo.noicu</module>
+		<module>org.apache.commons.lang</module>
 	</modules>
 
 </project>
