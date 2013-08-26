@@ -49,9 +49,16 @@ public class DarwinDiscoveryResultLabelProvider implements IDiscoveryResultLabel
 	{
 		DarwinDiscoveryResult darwinResult = (DarwinDiscoveryResult) result;
 
+		String thumbnail = ""; //$NON-NLS-1$
+		DarwinDiscoveryResultURL thumbnailUrl = darwinResult.getThumbnailUrl();
+		if (thumbnailUrl != null)
+		{
+			thumbnail = "<img src=\"" + thumbnailUrl.getUrl() + "\"/>"; //$NON-NLS-1$ //$NON-NLS-2$
+		}
+
 		String title = HtmlUtil.convertToHTMLContent(darwinResult.getTitle());
 		String description = HtmlUtil.convertToHTMLContentWithWhitespace(darwinResult.getDescription());
-		String html = "<h3 style='margin-top: 0'>" + title + "</h3>" + description; //$NON-NLS-1$ //$NON-NLS-2$
+		String html = thumbnail + "<h3 style='margin-top: 0'>" + title + "</h3>" + description; //$NON-NLS-1$ //$NON-NLS-2$
 		return html;
 	}
 }

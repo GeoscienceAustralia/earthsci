@@ -26,6 +26,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import au.gov.ga.earthsci.common.collection.ArrayListHashMap;
+import au.gov.ga.earthsci.common.collection.ListMap;
 import au.gov.ga.earthsci.discovery.AbstractDiscoveryResult;
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
 
@@ -41,6 +43,8 @@ public class DarwinDiscoveryResult extends AbstractDiscoveryResult<DarwinDiscove
 	private final Sector bounds;
 	private final URL metadataUrl;
 	private final List<DarwinDiscoveryResultURL> urls = new ArrayList<DarwinDiscoveryResultURL>();
+	private final ListMap<String, DarwinDiscoveryResultURL> urlMap =
+			new ArrayListHashMap<String, DarwinDiscoveryResultURL>();
 
 	public DarwinDiscoveryResult(DarwinDiscovery discovery, int index, JSONObject json)
 	{
@@ -97,7 +101,9 @@ public class DarwinDiscoveryResult extends AbstractDiscoveryResult<DarwinDiscove
 						String name = uriObject.getString("name"); //$NON-NLS-1$
 						URL url = new URL(getDiscovery().getService().getServiceURL(), uriObject.getString("value")); //$NON-NLS-1$
 						String protocol = uriObject.getString("protocol"); //$NON-NLS-1$
-						urls.add(new DarwinDiscoveryResultURL(name, url, protocol));
+						DarwinDiscoveryResultURL ddrurl = new DarwinDiscoveryResultURL(name, url, protocol);
+						urls.add(ddrurl);
+						urlMap.putSingle(protocol, ddrurl);
 					}
 					catch (Exception e)
 					{
@@ -132,6 +138,26 @@ public class DarwinDiscoveryResult extends AbstractDiscoveryResult<DarwinDiscove
 	public List<DarwinDiscoveryResultURL> getUrls()
 	{
 		return Collections.unmodifiableList(urls);
+	}
+
+	public List<DarwinDiscoveryResultURL> getUrls(String protocol)
+	{
+		List<DarwinDiscoveryResultURL> list = urlMap.get(protocol);
+		if (list == null)
+		{
+			list = new ArrayList<DarwinDiscoveryResultURL>();
+		}
+		return Collections.unmodifiableList(list);
+	}
+
+	public DarwinDiscoveryResultURL getThumbnailUrl()
+	{
+		List<DarwinDiscoveryResultURL> list = urlMap.get("thumbnail"); //$NON-NLS-1$
+		if (list == null || list.isEmpty())
+		{
+			return null;
+		}
+		return list.get(0);
 	}
 
 	@Override
