@@ -166,10 +166,10 @@ public class CSWDiscoveryResult extends AbstractDiscoveryResult<CSWDiscovery>
 			Matcher maxMatcher = pattern.matcher(max);
 			if (minMatcher.matches() && maxMatcher.matches())
 			{
-				double minLat = Double.parseDouble(minMatcher.group(1));
-				double minLon = Double.parseDouble(minMatcher.group(2));
-				double maxLat = Double.parseDouble(maxMatcher.group(1));
-				double maxLon = Double.parseDouble(maxMatcher.group(2));
+				double minLon = Double.parseDouble(minMatcher.group(1));
+				double minLat = Double.parseDouble(minMatcher.group(2));
+				double maxLon = Double.parseDouble(maxMatcher.group(1));
+				double maxLat = Double.parseDouble(maxMatcher.group(2));
 				bounds = Sector.fromDegrees(minLat, maxLat, minLon, maxLon);
 			}
 		}
