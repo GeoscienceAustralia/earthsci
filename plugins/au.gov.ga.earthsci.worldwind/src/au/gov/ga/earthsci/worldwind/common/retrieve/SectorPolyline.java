@@ -44,7 +44,7 @@ public class SectorPolyline extends Polyline
 		setPositions(latlons, 0);
 		setFollowTerrain(true);
 		setClosed(true);
-		setPathType(RHUMB_LINE);
+		setPathType(LINEAR);
 	}
 
 	@Override
