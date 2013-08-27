@@ -416,6 +416,7 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 	private void resultSelected(IDiscoveryResult result)
 	{
 		selectionService.setSelection(result);
+		displaySectorAndZoom(result, true);
 	}
 
 	private void resultDefaultSelected(IDiscoveryResult result)
@@ -426,6 +427,10 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 	}
 
 	private void resultMouseOver(IDiscoveryResult result)
+	{
+	}
+
+	private void displaySectorAndZoom(IDiscoveryResult result, boolean zoom)
 	{
 		if (lastResultMouseOver != result)
 		{
@@ -471,32 +476,34 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 				}
 				wwd.redraw();
 
-				//TODO the view movement should possibly be optional - preference?
-
-				View view = WorldWindowRegistry.INSTANCE.getActiveView();
-				if (view instanceof OrbitView && sector != null)
+				if (zoom)
 				{
-					OrbitView orbitView = (OrbitView) view;
-					Position center = orbitView.getCenterPosition();
-					Position newCenter;
-					if (sector.contains(center) && sector.getDeltaLatDegrees() > 90 && sector.getDeltaLonDegrees() > 90)
+					View view = WorldWindowRegistry.INSTANCE.getActiveView();
+					if (view instanceof OrbitView && sector != null)
 					{
-						newCenter = center;
-					}
-					else
-					{
-						newCenter = new Position(sector.getCentroid(), 0);
-					}
+						OrbitView orbitView = (OrbitView) view;
+						Position center = orbitView.getCenterPosition();
+						Position newCenter;
+						if (sector.contains(center) && sector.getDeltaLatDegrees() > 90
+								&& sector.getDeltaLonDegrees() > 90)
+						{
+							newCenter = center;
+						}
+						else
+						{
+							newCenter = new Position(sector.getCentroid(), 0);
+						}
 
-					LatLon endVisibleDelta = new LatLon(sector.getDeltaLat(), sector.getDeltaLon());
-					FlyToOrbitViewAnimator animator =
-							FlyToSectorAnimator.createScaledFlyToSectorAnimator(orbitView, center, newCenter,
-									orbitView.getHeading(), orbitView.getPitch(), orbitView.getZoom(), endVisibleDelta,
-									10);
-					orbitView.stopAnimations();
-					orbitView.stopMovement();
-					orbitView.addAnimator(animator);
-					orbitView.firePropertyChange(AVKey.VIEW, null, orbitView);
+						LatLon endVisibleDelta = new LatLon(sector.getDeltaLat(), sector.getDeltaLon());
+						FlyToOrbitViewAnimator animator =
+								FlyToSectorAnimator.createScaledFlyToSectorAnimator(orbitView, center, newCenter,
+										orbitView.getHeading(), orbitView.getPitch(), orbitView.getZoom(),
+										endVisibleDelta, 10);
+						orbitView.stopAnimations();
+						orbitView.stopMovement();
+						orbitView.addAnimator(animator);
+						orbitView.firePropertyChange(AVKey.VIEW, null, orbitView);
+					}
 				}
 			}
 		}
