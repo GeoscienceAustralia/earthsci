@@ -114,10 +114,17 @@ public class IntentResourceLocatorManager
 		{
 			for (IIntentResourceLocator locator : list)
 			{
-				URL url = locator.locate(intent);
-				if (url != null)
+				try
 				{
-					return url;
+					URL url = locator.locate(intent);
+					if (url != null)
+					{
+						return url;
+					}
+				}
+				catch (Exception e)
+				{
+					//ignore any exceptions caused by locator
 				}
 			}
 		}
