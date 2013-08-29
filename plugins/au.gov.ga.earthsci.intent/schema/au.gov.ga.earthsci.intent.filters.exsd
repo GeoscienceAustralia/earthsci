@@ -61,6 +61,7 @@
             <element ref="action"/>
             <element ref="category"/>
             <element ref="content-type"/>
+            <element ref="return-type"/>
             <element ref="uri"/>
          </choice>
          <attribute name="class" type="string" use="required">
@@ -167,6 +168,26 @@
                <documentation>
                   Matches the Intent&apos;s URI&apos;s path part, after the authority part has already been matched. Can contain the &apos;*&apos; wildcard character. If blank or &quot;*&quot;, matches any path.
                </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="return-type">
+      <annotation>
+         <documentation>
+            Matches the Intent&apos;s expected or required return type.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
