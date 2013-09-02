@@ -252,21 +252,21 @@ public class RetrievePart implements IRetrievalServiceListener
 		synchronized (retrievals)
 		{
 			retrievals.add(retrieval);
-			retrieval.addListener(retrievalListener);
-			if (viewer != null && !viewer.getControl().isDisposed())
+		}
+		retrieval.addListener(retrievalListener);
+		if (viewer != null && !viewer.getControl().isDisposed())
+		{
+			viewer.getControl().getDisplay().asyncExec(new Runnable()
 			{
-				viewer.getControl().getDisplay().asyncExec(new Runnable()
+				@Override
+				public void run()
 				{
-					@Override
-					public void run()
+					if (!viewer.getControl().isDisposed())
 					{
-						if (!viewer.getControl().isDisposed())
-						{
-							viewer.add(retrieval);
-						}
+						viewer.add(retrieval);
 					}
-				});
-			}
+				}
+			});
 		}
 	}
 
@@ -276,21 +276,21 @@ public class RetrievePart implements IRetrievalServiceListener
 		synchronized (retrievals)
 		{
 			retrievals.remove(retrieval);
-			retrieval.removeListener(retrievalListener);
-			if (viewer != null && !viewer.getControl().isDisposed())
+		}
+		retrieval.removeListener(retrievalListener);
+		if (viewer != null && !viewer.getControl().isDisposed())
+		{
+			viewer.getControl().getDisplay().asyncExec(new Runnable()
 			{
-				viewer.getControl().getDisplay().asyncExec(new Runnable()
+				@Override
+				public void run()
 				{
-					@Override
-					public void run()
+					if (!viewer.getControl().isDisposed())
 					{
-						if (!viewer.getControl().isDisposed())
-						{
-							viewer.remove(retrieval);
-						}
+						viewer.remove(retrieval);
 					}
-				});
-			}
+				}
+			});
 		}
 	}
 
