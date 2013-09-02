@@ -1,14 +1,10 @@
 package au.gov.ga.earthsci.notification.popup.ui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.inject.Inject;
-
-import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.ui.css.core.engine.CSSEngine;
 import org.eclipse.e4.ui.css.swt.dom.WidgetElement;
 import org.eclipse.swt.SWT;
@@ -31,6 +27,8 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.notification.INotification;
 import au.gov.ga.earthsci.notification.INotificationAction;
@@ -89,11 +87,9 @@ public class PopupNotification
 	private static List<PopupNotification> activePopups = new ArrayList<PopupNotification>();
 
 	/** Preferences used to control the appearance and behaviour of the popups */
-	@Inject
 	private static IPopupNotificationPreferences preferences;
 
-	@Inject
-	private static Logger logger;
+	private static final Logger logger = LoggerFactory.getLogger(PopupNotification.class);
 
 	/** Whether the plugin-specifc CSS has been loaded */
 	private static AtomicBoolean cssLoaded = new AtomicBoolean(false);
@@ -372,6 +368,12 @@ public class PopupNotification
 	private void applyCSSStyling()
 	{
 		CSSEngine cssEngine = WidgetElement.getEngine(Display.getCurrent());
+		if (cssEngine == null)
+		{
+			//this occurs when the display hasn't yet been created
+			logger.debug("Error finding CSS engine for the current display"); //$NON-NLS-1$
+			return;
+		}
 
 		if (!cssLoaded.get())
 		{
@@ -379,9 +381,9 @@ public class PopupNotification
 			{
 				cssEngine.parseStyleSheet(getClass().getResourceAsStream(POPUPS_CSS));
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
-				logger.error(e, "Exception occurred while loading popup notification CSS"); //$NON-NLS-1$
+				logger.error("Exception occurred while loading popup notification CSS", e); //$NON-NLS-1$
 			}
 			cssLoaded.set(true);
 		}
@@ -446,7 +448,7 @@ public class PopupNotification
 				}
 				catch (Exception e)
 				{
-					logger.error(e);
+					logger.error("Error fading in", e); //$NON-NLS-1$
 				}
 			}
 
@@ -476,7 +478,7 @@ public class PopupNotification
 				}
 				catch (Exception e)
 				{
-					logger.error(e);
+					logger.error("Error running display timer", e); //$NON-NLS-1$
 				}
 			}
 
@@ -515,7 +517,7 @@ public class PopupNotification
 				}
 				catch (Exception e)
 				{
-					logger.error(e);
+					logger.error("Error fading out", e); //$NON-NLS-1$
 				}
 			}
 		};
