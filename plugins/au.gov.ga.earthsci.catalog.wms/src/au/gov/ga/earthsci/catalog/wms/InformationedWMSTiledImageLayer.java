@@ -15,16 +15,22 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog.wms;
 
+import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.ogc.wms.WMSCapabilities;
+import gov.nasa.worldwind.util.Tile;
 import gov.nasa.worldwind.wms.WMSTiledImageLayer;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import au.gov.ga.earthsci.common.util.IInformationed;
 
 /**
  * {@link WMSTiledImageLayer} subclass that implements {@link IInformationed}.
+ * Also fixes the superclass' URLBuilder implementation where the version
+ * parameter is set to "1.3" instead of "1.3.0" if capabilities version is 1.3.0
+ * or greater.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -34,7 +40,7 @@ public class InformationedWMSTiledImageLayer extends WMSTiledImageLayer implemen
 
 	public InformationedWMSTiledImageLayer(WMSCapabilities caps, AVList params, URL informationURL)
 	{
-		super(caps, params);
+		super(fixUrlBuilder(wmsGetParamsFromCapsDoc(caps, params), caps));
 		this.informationURL = informationURL;
 	}
 
@@ -48,5 +54,35 @@ public class InformationedWMSTiledImageLayer extends WMSTiledImageLayer implemen
 	public String getInformationString()
 	{
 		return null;
+	}
+
+	protected static AVList fixUrlBuilder(AVList params, WMSCapabilities caps)
+	{
+		params.setValue(AVKey.TILE_URL_BUILDER, new VersionURLBuilder(params, caps));
+		return params;
+	}
+
+	public static class VersionURLBuilder extends URLBuilder
+	{
+		private final String capsVersion;
+
+		public VersionURLBuilder(AVList params, WMSCapabilities caps)
+		{
+			super(params);
+			capsVersion = caps.getVersion();
+		}
+
+		@Override
+		public URL getURL(Tile tile, String altImageFormat) throws MalformedURLException
+		{
+			URL url = super.getURL(tile, altImageFormat);
+			if (capsVersion == null)
+			{
+				return url;
+			}
+			String urlString = url.toExternalForm();
+			urlString = urlString.replaceAll("&version=[^&]*&", "&version=" + capsVersion + "&"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			return new URL(urlString);
+		}
 	}
 }
