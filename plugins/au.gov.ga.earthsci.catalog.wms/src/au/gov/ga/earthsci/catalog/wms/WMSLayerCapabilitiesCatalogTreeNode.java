@@ -75,7 +75,7 @@ public class WMSLayerCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 		}
 
 		//if this layer has multiple styles, add them as children
-		if (layer.getStyles() != null && layer.getStyles().size() > 1)
+		if (style == null && layer.getStyles() != null && layer.getStyles().size() > 1)
 		{
 			for (WMSLayerStyle style : layer.getStyles())
 			{
