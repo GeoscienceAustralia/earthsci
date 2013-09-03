@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -149,6 +150,18 @@ public class IntentManager implements IIntentManager
 
 							//search through all registered filters for those that can handle the intent
 							List<IntentFilter> filters = findFilters(intent);
+							if (selectionPolicy != null)
+							{
+								//remove any filters that the selection filter disallows
+								Iterator<IntentFilter> iterator = filters.iterator();
+								while (iterator.hasNext())
+								{
+									if (!selectionPolicy.allowed(intent, iterator.next()))
+									{
+										iterator.remove();
+									}
+								}
+							}
 							if (!callback.filters(filters, intent))
 							{
 								return;
@@ -159,7 +172,7 @@ public class IntentManager implements IIntentManager
 							}
 
 							//select the filter to use to handle the intent
-							filter = selectFilter(filters, selectionPolicy, intent, context);
+							filter = selectFilter(filters, intent, context);
 							if (filter == null)
 							{
 								return;
@@ -306,22 +319,14 @@ public class IntentManager implements IIntentManager
 		}
 	}
 
-	protected IntentFilter selectFilter(List<IntentFilter> filters, IIntentFilterSelectionPolicy selectionPolicy,
-			Intent intent, IEclipseContext context)
+	protected IntentFilter selectFilter(List<IntentFilter> filters, Intent intent, IEclipseContext context)
 	{
 		if (filters == null || filters.isEmpty())
 		{
 			return null;
 		}
 		//TODO show dialog
-		for (IntentFilter filter : filters)
-		{
-			if (selectionPolicy == null || selectionPolicy.allowed(intent, filter))
-			{
-				return filter;
-			}
-		}
-		return null;
+		return filters.get(0);
 	}
 
 	/**
