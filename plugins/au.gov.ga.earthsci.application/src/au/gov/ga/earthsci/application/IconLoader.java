@@ -135,6 +135,28 @@ public class IconLoader implements ILoadingIconFrameListener
 
 	private void retrievalDone(IRetrievalData data, URL url)
 	{
+		Image image = null;
+		if (data != null)
+		{
+			try
+			{
+				InputStream is = data.getInputStream();
+				try
+				{
+					image = new Image(Display.getDefault(), is);
+				}
+				finally
+				{
+					is.close();
+				}
+			}
+			catch (Exception e)
+			{
+				logger.error("Error loading image from " + url, e); //$NON-NLS-1$
+			}
+		}
+
+		Object[] loadingElementsArray = null;
 		synchronized (semaphore)
 		{
 			final Set<Object> elements = urlElements.remove(url);
@@ -142,43 +164,26 @@ public class IconLoader implements ILoadingIconFrameListener
 			{
 				setLoading(element, false);
 			}
-			boolean success = false;
-			if (data != null)
+			if (image != null)
 			{
-				try
-				{
-					InputStream is = data.getInputStream();
-					try
-					{
-						Image image = new Image(Display.getDefault(), is);
-						setImageForURL(url, image);
-						success = true;
-					}
-					finally
-					{
-						is.close();
-					}
-				}
-				catch (Exception e)
-				{
-					logger.error("Error loading image from " + url, e); //$NON-NLS-1$
-				}
+				setImageForURL(url, image);
 			}
-			if (!success)
+			else
 			{
 				errorElements.addAll(elements);
 			}
-
-			Display.getDefault().asyncExec(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					labelProvider.fireLabelProviderChanged(new LabelProviderChangedEvent(labelProvider, elements
-							.toArray()));
-				}
-			});
+			loadingElementsArray = elements.toArray();
 		}
+
+		final Object[] array = loadingElementsArray;
+		Display.getDefault().asyncExec(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				labelProvider.fireLabelProviderChanged(new LabelProviderChangedEvent(labelProvider, array));
+			}
+		});
 	}
 
 	private Image getImageForURL(URL url)
@@ -221,21 +226,25 @@ public class IconLoader implements ILoadingIconFrameListener
 	@Override
 	public void nextFrame(Image image)
 	{
+		Object[] loadingElementsArray = null;
 		synchronized (semaphore)
 		{
 			if (!loadingElements.isEmpty())
 			{
-				final Object[] loadingElementsArray = loadingElements.toArray(new Object[loadingElements.size()]);
-				Display.getDefault().asyncExec(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						labelProvider.fireLabelProviderChanged(new LabelProviderChangedEvent(labelProvider,
-								loadingElementsArray));
-					}
-				});
+				loadingElementsArray = loadingElements.toArray(new Object[loadingElements.size()]);
 			}
+		}
+		if (loadingElementsArray != null)
+		{
+			final Object[] elements = loadingElementsArray;
+			Display.getDefault().asyncExec(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					labelProvider.fireLabelProviderChanged(new LabelProviderChangedEvent(labelProvider, elements));
+				}
+			});
 		}
 	}
 }
