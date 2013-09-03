@@ -17,6 +17,7 @@ import javax.inject.Named;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
@@ -151,7 +152,7 @@ public class NotificationPart
 	{
 		this.receiver = receiver;
 		this.receiver.setView(this);
-		reloadNotificationTree();
+		reloadNotificationTree(false);
 	}
 
 	/**
@@ -162,13 +163,18 @@ public class NotificationPart
 	 */
 	public void setGrouping(Grouping g)
 	{
+		setGrouping(g, true);
+	}
+
+	public void setGrouping(Grouping g, boolean showProgress)
+	{
 		if (g == groupBy)
 		{
 			return;
 		}
 
 		this.groupBy = g;
-		reloadNotificationTree();
+		reloadNotificationTree(showProgress);
 	}
 
 	private void createViewer(Composite parent)
@@ -400,7 +406,7 @@ public class NotificationPart
 	 * Re-build the notification tree from the notification list on the attached
 	 * receiver using the current grouping/filtering settings.
 	 */
-	public void reloadNotificationTree()
+	public void reloadNotificationTree(final boolean showProgress)
 	{
 		if (receiver == null)
 		{
@@ -461,10 +467,17 @@ public class NotificationPart
 			@Override
 			public void run()
 			{
-				ProgressMonitorDialog pmd = new ProgressMonitorDialog(tree.getShell());
 				try
 				{
-					pmd.run(true, true, op);
+					if (showProgress)
+					{
+						ProgressMonitorDialog pmd = new ProgressMonitorDialog(tree.getShell());
+						pmd.run(true, true, op);
+					}
+					else
+					{
+						op.run(new NullProgressMonitor());
+					}
 				}
 				catch (InvocationTargetException e)
 				{
@@ -613,7 +626,7 @@ public class NotificationPart
 		}
 
 		Grouping grouping = GroupByHandler.getGroupingForMenuItemId(selectedId);
-		setGrouping(grouping);
+		setGrouping(grouping, false);
 	}
 
 	/**

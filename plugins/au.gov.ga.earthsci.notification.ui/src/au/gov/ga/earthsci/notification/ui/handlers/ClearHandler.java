@@ -32,7 +32,7 @@ public class ClearHandler
 	public void execute(NotificationPartReceiver receiver, NotificationPart part)
 	{
 		receiver.getNotifications().clear();
-		part.reloadNotificationTree();
+		part.reloadNotificationTree(true);
 	}
 
 	@CanExecute
