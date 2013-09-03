@@ -159,7 +159,7 @@ public class IntentManager implements IIntentManager
 							}
 
 							//select the filter to use to handle the intent
-							filter = selectFilter(filters, intent, context);
+							filter = selectFilter(filters, selectionPolicy, intent, context);
 							if (filter == null)
 							{
 								return;
@@ -306,14 +306,22 @@ public class IntentManager implements IIntentManager
 		}
 	}
 
-	protected IntentFilter selectFilter(List<IntentFilter> filters, Intent intent, IEclipseContext context)
+	protected IntentFilter selectFilter(List<IntentFilter> filters, IIntentFilterSelectionPolicy selectionPolicy,
+			Intent intent, IEclipseContext context)
 	{
 		if (filters == null || filters.isEmpty())
 		{
 			return null;
 		}
 		//TODO show dialog
-		return filters.get(0);
+		for (IntentFilter filter : filters)
+		{
+			if (selectionPolicy == null || selectionPolicy.allowed(intent, filter))
+			{
+				return filter;
+			}
+		}
+		return null;
 	}
 
 	/**
