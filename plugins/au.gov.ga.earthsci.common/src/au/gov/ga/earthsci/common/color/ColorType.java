@@ -1,9 +1,9 @@
-package au.gov.ga.earthsci.model.geometry;
+package au.gov.ga.earthsci.common.color;
 
 /**
  * An enumeration of supported colour spaces
  */
-public enum ColourType
+public enum ColorType
 {
 	/**
 	 * 3 components per colour: Red, Green, Blue
@@ -17,7 +17,7 @@ public enum ColourType
 	
 	private int numComponents;
 	
-	private ColourType(int n)
+	private ColorType(int n)
 	{
 		numComponents = n;
 	}
