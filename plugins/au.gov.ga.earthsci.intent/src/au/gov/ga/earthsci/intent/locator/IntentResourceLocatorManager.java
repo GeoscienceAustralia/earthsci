@@ -40,7 +40,7 @@ import au.gov.ga.earthsci.intent.Intent;
 @Singleton
 public class IntentResourceLocatorManager
 {
-	private static IntentResourceLocatorManager instance;
+	private static IntentResourceLocatorManager instance = new IntentResourceLocatorManager();
 
 	public static IntentResourceLocatorManager getInstance()
 	{
@@ -61,19 +61,8 @@ public class IntentResourceLocatorManager
 				}
 			});
 
-	/**
-	 * Constructor, should not be called directly. Instead it should be
-	 * injected, or accessed via the static singleton method.
-	 */
-	public IntentResourceLocatorManager()
+	private IntentResourceLocatorManager()
 	{
-		if (instance != null)
-		{
-			throw new IllegalStateException(IntentResourceLocatorManager.class.getSimpleName()
-					+ " should not be instantiated"); //$NON-NLS-1$
-		}
-		instance = this;
-
 		IConfigurationElement[] config = RegistryFactory.getRegistry().getConfigurationElementsFor(LOCATOR_FILTER_ID);
 		for (IConfigurationElement element : config)
 		{

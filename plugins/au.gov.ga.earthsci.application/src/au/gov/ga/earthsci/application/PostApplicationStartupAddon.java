@@ -27,6 +27,8 @@ import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
+import au.gov.ga.earthsci.intent.IntentManager;
+
 /**
  * Addon that runs some initialization after the application startup is
  * complete.
@@ -51,6 +53,7 @@ public class PostApplicationStartupAddon
 				{
 					PartDescriptorFilter.run(application, service);
 					PartInstantiator.createParts(application, service, partService);
+					IntentManager.getInstance().beginExecution();
 
 					unsubscribe();
 				}

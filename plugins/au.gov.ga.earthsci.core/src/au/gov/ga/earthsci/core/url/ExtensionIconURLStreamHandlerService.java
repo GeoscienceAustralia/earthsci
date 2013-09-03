@@ -57,23 +57,28 @@ public class ExtensionIconURLStreamHandlerService extends AbstractURLStreamHandl
 			public InputStream getInputStream() throws IOException
 			{
 				String extension = getURL().getHost();
-				Program program = Program.findProgram(extension);
-				if (program == null)
-				{
-					throw new IOException("Program not found for extension: " + extension); //$NON-NLS-1$
-				}
-				ImageData data = program.getImageData();
-				if (data == null)
-				{
-					throw new IOException("Icon not found for program for extension: " + extension); //$NON-NLS-1$
-				}
-				ImageLoader loader = new ImageLoader();
-				loader.data = new ImageData[] { data };
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				loader.save(baos, SWT.IMAGE_PNG);
-				baos.close();
-				return new ByteArrayInputStream(baos.toByteArray());
+				return getImageInputStreamForExtension(extension);
 			}
 		};
+	}
+
+	public static InputStream getImageInputStreamForExtension(String extension) throws IOException
+	{
+		Program program = Program.findProgram(extension);
+		if (program == null)
+		{
+			throw new IOException("Program not found for extension: " + extension); //$NON-NLS-1$
+		}
+		ImageData data = program.getImageData();
+		if (data == null)
+		{
+			throw new IOException("Icon not found for program for extension: " + extension); //$NON-NLS-1$
+		}
+		ImageLoader loader = new ImageLoader();
+		loader.data = new ImageData[] { data };
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		loader.save(baos, SWT.IMAGE_PNG);
+		baos.close();
+		return new ByteArrayInputStream(baos.toByteArray());
 	}
 }

@@ -10,6 +10,8 @@ Require-Bundle: org.eclipse.ui,
  au.gov.ga.earthsci.intent;bundle-version="1.0.0",
  au.gov.ga.earthsci.core;bundle-version="1.0.0",
  au.gov.ga.earthsci.catalog;bundle-version="1.0.0",
- gov.nasa.worldwind
+ gov.nasa.worldwind,
+ org.eclipse.e4.core.contexts
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
+Import-Package: javax.inject

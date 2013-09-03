@@ -124,7 +124,7 @@
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
-            file-extensions="html"
+            file-extensions="html,htm"
             id="org.eclipse.core.runtime.html"
             name="HTML"
             priority="normal">
@@ -169,6 +169,20 @@
          <uri
                scheme="https">
          </uri>
+      </filter>
+      <filter
+            class="au.gov.ga.earthsci.application.intent.HttpIntentHandler"
+            priority="-10000"
+            returns-result="false">
+         <uri
+               scheme="http">
+         </uri>
+         <uri
+               scheme="https">
+         </uri>
+         <content-type
+               id="*">
+         </content-type>
       </filter>
    </extension>
    <extension

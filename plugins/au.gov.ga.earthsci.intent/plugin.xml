@@ -4,41 +4,11 @@
    <extension-point id="au.gov.ga.earthsci.intent.filters" name="IntentFilters" schema="schema/au.gov.ga.earthsci.intent.filters.exsd"/>
    <extension-point id="au.gov.ga.earthsci.intent.dispatchFilters" name="DispatchFilters" schema="schema/au.gov.ga.earthsci.intent.dispatchFilters.exsd"/>
    <extension-point id="au.gov.ga.earthsci.intent.resourceLocators" name="IntentResourceLocators" schema="schema/au.gov.ga.earthsci.intent.resourceLocators.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.intent.guessableContentTypeURIs" name="Guessable Content Type URIs" schema="schema/au.gov.ga.earthsci.intent.guessableContentTypeURIs.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.intent.contentTypeResolvers" name="ContentTypeResolvers" schema="schema/au.gov.ga.earthsci.intent.contentTypeResolvers.exsd"/>
    <extension
-         point="au.gov.ga.earthsci.injectables">
-      <inject
-            class="au.gov.ga.earthsci.intent.locator.IntentResourceLocatorManager"
-            priority="10">
-      </inject>
-      <inject
-            class="au.gov.ga.earthsci.intent.dispatch.Dispatcher"
-            priority="10">
-      </inject>
-      <inject
-            class="au.gov.ga.earthsci.intent.IntentManager"
-            priority="10">
-         <type
-               class="au.gov.ga.earthsci.intent.IIntentManager">
-         </type>
-         <type
-               class="au.gov.ga.earthsci.intent.IntentManager">
-         </type>
-      </inject>
-   </extension>
-   <extension
-         point="au.gov.ga.earthsci.intent.guessableContentTypeURIs">
-      <uri
-            scheme="file">
-      </uri>
-      <uri
-            scheme="jar">
-      </uri>
-      <uri
-            scheme="platform">
-      </uri>
-      <uri
-            scheme="bundleresource">
-      </uri>
+         point="au.gov.ga.earthsci.intent.contentTypeResolvers">
+      <resolver
+            class="au.gov.ga.earthsci.intent.resolver.FileContentTypeResolver">
+      </resolver>
    </extension>
 </plugin>

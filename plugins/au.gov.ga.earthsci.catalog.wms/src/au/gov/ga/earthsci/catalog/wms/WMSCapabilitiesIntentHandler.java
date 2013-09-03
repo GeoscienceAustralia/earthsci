@@ -16,13 +16,16 @@
 package au.gov.ga.earthsci.catalog.wms;
 
 import gov.nasa.worldwind.ogc.wms.WMSCapabilities;
+import gov.nasa.worldwind.util.WWXML;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
 import javax.inject.Inject;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
@@ -32,25 +35,24 @@ import javax.xml.transform.stream.StreamResult;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.catalog.CatalogLayerHelper;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.core.intent.AbstractRetrieveIntentHandler;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
+import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
-import au.gov.ga.earthsci.core.xml.IXmlLoader;
-import au.gov.ga.earthsci.core.xml.IXmlLoaderCallback;
-import au.gov.ga.earthsci.core.xml.IXmlLoaderFilter;
+import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 
 /**
- * {@link IXmlLoader} for loading WMS_Capabilities documents.
+ * Intent handler that handles WMS capabilities documents.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class WMSCapabilitiesXmlLoader implements IXmlLoader, IXmlLoaderFilter
+public class WMSCapabilitiesIntentHandler extends AbstractRetrieveIntentHandler
 {
 	@Inject
 	private IEclipseContext context;
@@ -60,14 +62,38 @@ public class WMSCapabilitiesXmlLoader implements IXmlLoader, IXmlLoaderFilter
 	private ITreeModel currentLayerModel;
 
 	@Override
-	public boolean canLoad(Document document, Intent intent)
+	protected void handle(IRetrievalData data, URL url, Intent intent, final IIntentCallback callback)
 	{
-		Element element = document.getDocumentElement();
-		return "WMS_Capabilities".equals(element.getNodeName()) || "WMT_MS_Capabilities".equals(element.getNodeName()); //$NON-NLS-1$ //$NON-NLS-2$
+		InputStream is = null;
+		try
+		{
+			is = data.getInputStream();
+
+			DocumentBuilder builder = WWXML.createDocumentBuilder(true);
+			Document document = builder.parse(is);
+			load(document, url, intent, callback);
+		}
+		catch (Exception e)
+		{
+			callback.error(e, intent);
+		}
+		finally
+		{
+			try
+			{
+				if (is != null)
+				{
+					is.close();
+				}
+			}
+			catch (IOException e)
+			{
+				// Do nothing
+			}
+		}
 	}
 
-	@Override
-	public void load(Document document, URL url, Intent intent, IXmlLoaderCallback callback)
+	protected void load(Document document, URL url, Intent intent, IIntentCallback callback)
 	{
 		try
 		{
@@ -90,7 +116,7 @@ public class WMSCapabilitiesXmlLoader implements IXmlLoader, IXmlLoaderFilter
 			if (singleLayer == null || currentLayerModel == null
 					|| ICatalogTreeNode.class.equals(intent.getExpectedReturnType()))
 			{
-				callback.completed(catalogTreeNode, document, url, intent);
+				callback.completed(catalogTreeNode, intent);
 			}
 			else
 			{
@@ -100,11 +126,12 @@ public class WMSCapabilitiesXmlLoader implements IXmlLoader, IXmlLoaderFilter
 				folder.addChild(layer);
 				currentLayerModel.getRootNode().addChild(folder);
 				IntentLayerLoader.load(layer, context);
+				callback.aborted(intent); //consider the intent aborted, because it has been handled as a layer load
 			}
 		}
 		catch (Exception e)
 		{
-			callback.error(e, document, url, intent);
+			callback.error(e, intent);
 		}
 	}
 }

@@ -16,10 +16,10 @@
 package au.gov.ga.earthsci.catalog.directory;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
@@ -32,9 +32,14 @@ import au.gov.ga.earthsci.core.url.SystemIconURLStreamHandlerService;
  */
 public class FileCatalogTreeNode extends AbstractCatalogTreeNode
 {
-	public FileCatalogTreeNode(URI fileURI)
+	private final IContentType contentType;
+	private boolean iconURLLoaded = false;
+	private URL iconURL;
+
+	public FileCatalogTreeNode(URI fileURI, IContentType contentType)
 	{
 		super(fileURI);
+		this.contentType = contentType;
 	}
 
 	@Override
@@ -58,7 +63,7 @@ public class FileCatalogTreeNode extends AbstractCatalogTreeNode
 	@Override
 	public IContentType getLayerContentType()
 	{
-		return Platform.getContentTypeManager().findContentTypeFor(getURI().getPath());
+		return contentType;
 	}
 
 	@Override
@@ -83,6 +88,17 @@ public class FileCatalogTreeNode extends AbstractCatalogTreeNode
 	@Override
 	public URL getIconURL()
 	{
-		return SystemIconURLStreamHandlerService.createURL(new File(getURI()));
+		if (!iconURLLoaded)
+		{
+			try
+			{
+				iconURL = SystemIconURLStreamHandlerService.createURL(getURI());
+			}
+			catch (MalformedURLException e)
+			{
+			}
+			iconURLLoaded = true;
+		}
+		return iconURL;
 	}
 }

@@ -20,9 +20,8 @@ import java.net.URL;
 import org.w3c.dom.Document;
 
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.core.xml.IXmlLoader;
-import au.gov.ga.earthsci.core.xml.IXmlLoaderCallback;
-import au.gov.ga.earthsci.core.xml.IXmlLoaderFilter;
+import au.gov.ga.earthsci.core.intent.AbstractXmlRetrieveIntentHandler;
+import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 
 /**
@@ -30,25 +29,19 @@ import au.gov.ga.earthsci.intent.Intent;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class DatasetXmlLoader implements IXmlLoader, IXmlLoaderFilter
+public class DatasetIntentHandler extends AbstractXmlRetrieveIntentHandler
 {
 	@Override
-	public boolean canLoad(Document document, Intent intent)
-	{
-		return "DatasetList".equalsIgnoreCase(document.getDocumentElement().getNodeName()); //$NON-NLS-1$
-	}
-
-	@Override
-	public void load(Document document, URL url, Intent intent, IXmlLoaderCallback callback)
+	protected void handle(Document document, URL url, Intent intent, IIntentCallback callback)
 	{
 		try
 		{
 			ICatalogTreeNode catalogTreeNode = DatasetReader.read(document, url);
-			callback.completed(catalogTreeNode, document, url, intent);
+			callback.completed(catalogTreeNode, intent);
 		}
 		catch (Exception e)
 		{
-			callback.error(e, document, url, intent);
+			callback.error(e, intent);
 		}
 	}
 }

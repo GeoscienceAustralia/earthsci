@@ -8,7 +8,7 @@
             priority="0"
             returns-result="true">
          <return-type
-               class="au.gov.ga.earthsci.catalog.ICatalogTreeNode">
+               class="au.gov.ga.earthsci.catalog.directory.DirectoryCatalogTreeNode">
          </return-type>
          <uri
                authority="*"

@@ -18,6 +18,7 @@ package au.gov.ga.earthsci.intent;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -116,10 +117,25 @@ public class IntentFilter
 			String value = child.getAttribute(attributeName);
 			if (!isEmpty(value))
 			{
-				IContentType contentType = Platform.getContentTypeManager().getContentType(value);
-				if (contentType != null)
+				if (value.indexOf('*') < 0)
 				{
-					set.add(contentType);
+					IContentType contentType = Platform.getContentTypeManager().getContentType(value);
+					if (contentType != null)
+					{
+						set.add(contentType);
+					}
+				}
+				else
+				{
+					IContentType[] types = Platform.getContentTypeManager().getAllContentTypes();
+					String wildcardRegex = URIFilter.wildcardRegex(value);
+					for (IContentType type : types)
+					{
+						if (Pattern.matches(wildcardRegex, type.getId()))
+						{
+							set.add(type);
+						}
+					}
 				}
 			}
 		}
@@ -395,14 +411,8 @@ public class IntentFilter
 			return false;
 		}
 
-		//check if the content type can be guessed (only if this filter has content types defined)
-		IContentType contentType = intent.getContentType();
-		if (contentType == null && !contentTypes.isEmpty())
-		{
-			contentType = intent.guessContentType();
-		}
-
 		//if a content type is defined by one but not the other, no chance of matching
+		IContentType contentType = intent.getContentType();
 		if ((contentType == null) != contentTypes.isEmpty())
 		{
 			return false;
@@ -417,10 +427,27 @@ public class IntentFilter
 			}
 		}
 
-		//TODO may need to revisit the following return-type matching logic:
+		/*
+		//check content type
+		IContentType contentType = intent.getContentType();
+		if (contentType != null)
+		{
+			//if a content type is defined, but intent doesn't handle any content types, no chance of matching
+			if (contentTypes.isEmpty())
+			{
+				return false;
+			}
 
-		//if the intent has an expected return type
-		if (intent.getExpectedReturnType() != null)
+			//if there are content types defined, check if any match the content type of the intent
+			if (!anyContentTypesMatch(contentType))
+			{
+				return false;
+			}
+		}
+		*/
+
+		//if the intent has an expected or required return type
+		if (intent.getExpectedReturnType() != null || intent.getRequiredReturnType() != null)
 		{
 			//check that this filter returns a result
 			if (!returnsResult)
@@ -428,21 +455,36 @@ public class IntentFilter
 				return false;
 			}
 
-			//if the filter knows which types it returns, check that at least one matches
-			if (!returnTypes.isEmpty() && !anyReturnTypesMatch(intent.getExpectedReturnType()))
+			//if the intent requires a certain type, check that one matches
+			if (intent.getRequiredReturnType() != null)
 			{
-				return false;
+				if (!anyReturnTypesMatch(intent.getRequiredReturnType()))
+				{
+					return false;
+				}
+			}
+			//if the filter knows which types it returns, check that at least one matches
+			else if (!returnTypes.isEmpty()) //expectedReturnType is non-null
+			{
+				if (!anyReturnTypesMatch(intent.getExpectedReturnType()))
+				{
+					return false;
+				}
 			}
 		}
-		else if (!returnTypes.isEmpty())
+		else
 		{
-			//if the intent doesn't expect a result, don't match if the filter knows which types it returns
-			return false;
+			//Sometimes an intent will be raised that doesn't know if it will produce a result or not, so an expected/required
+			//return type is not set. These intents should still be able to be matched by filters that return results.
 		}
 
 		//if there are any schemes/authorities/paths defined, check if any match the URI of the intent (in that order)
 		if (!uriFilters.isEmpty())
 		{
+			if (intent.getURI() == null)
+			{
+				return false;
+			}
 			if (!anyURIFiltersMatch(intent.getURI()))
 			{
 				return false;

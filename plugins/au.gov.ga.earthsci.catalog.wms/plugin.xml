@@ -2,20 +2,29 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="au.gov.ga.earthsci.core.xmlLoaders">
-      <loader
-            class="au.gov.ga.earthsci.catalog.wms.WMSCapabilitiesXmlLoader"
-            filter="au.gov.ga.earthsci.catalog.wms.WMSCapabilitiesXmlLoader"
-            priority="0">
-      </loader>
-   </extension>
-   <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
-            base-type="org.eclipse.core.runtime.xml"
             id="au.gov.ga.earthsci.catalog.wms.wmslayer"
             name="WMS layer"
             priority="normal">
+      </content-type>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="xml"
+            id="au.gov.ga.earthsci.catalog.wms.capabilities.xml"
+            name="WMS capabilities"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="WMS_Capabilities">
+            </parameter>
+            <parameter
+                  name="element"
+                  value="WMT_MS_Capabilities">
+            </parameter>
+         </describer>
       </content-type>
    </extension>
    <extension
@@ -33,6 +42,17 @@
          <uri
                scheme="wmslayer">
          </uri>
+      </filter>
+      <filter
+            class="au.gov.ga.earthsci.catalog.wms.WMSCapabilitiesIntentHandler"
+            priority="0"
+            returns-result="true">
+         <content-type
+               id="au.gov.ga.earthsci.catalog.wms.capabilities.xml">
+         </content-type>
+         <return-type
+               class="au.gov.ga.earthsci.catalog.wms.WMSCapabilitiesCatalogTreeNode">
+         </return-type>
       </filter>
    </extension>
 

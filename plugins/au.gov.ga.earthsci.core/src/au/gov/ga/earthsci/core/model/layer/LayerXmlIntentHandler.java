@@ -25,9 +25,8 @@ import java.net.URL;
 
 import org.w3c.dom.Document;
 
-import au.gov.ga.earthsci.core.xml.IXmlLoader;
-import au.gov.ga.earthsci.core.xml.IXmlLoaderCallback;
-import au.gov.ga.earthsci.core.xml.IXmlLoaderFilter;
+import au.gov.ga.earthsci.core.intent.AbstractXmlRetrieveIntentHandler;
+import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
@@ -36,17 +35,10 @@ import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerXmlLoader implements IXmlLoader, IXmlLoaderFilter
+public class LayerXmlIntentHandler extends AbstractXmlRetrieveIntentHandler
 {
 	@Override
-	public boolean canLoad(Document document, Intent intent)
-	{
-		return "Layer".equalsIgnoreCase(document.getDocumentElement().getNodeName()) //$NON-NLS-1$
-				|| "ElevationModel".equalsIgnoreCase(document.getDocumentElement().getNodeName()); //$NON-NLS-1$
-	}
-
-	@Override
-	public void load(Document document, URL url, Intent intent, IXmlLoaderCallback callback)
+	protected void handle(Document document, URL url, Intent intent, IIntentCallback callback)
 	{
 		AVList params = new AVListImpl();
 		params.setValue(AVKeyMore.CONTEXT_URL, url);
@@ -54,11 +46,11 @@ public class LayerXmlLoader implements IXmlLoader, IXmlLoaderFilter
 		{
 			Factory factory = (Factory) WorldWind.createConfigurationComponent(AVKey.LAYER_FACTORY);
 			Object result = factory.createFromConfigSource(document.getDocumentElement(), params);
-			callback.completed(result, document, url, intent);
+			callback.completed(result, intent);
 		}
 		catch (Exception e)
 		{
-			callback.error(e, document, url, intent);
+			callback.error(e, intent);
 		}
 	}
 }

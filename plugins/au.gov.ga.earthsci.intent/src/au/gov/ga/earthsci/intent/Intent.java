@@ -43,6 +43,7 @@ public class Intent
 	private IContentType contentType;
 	private URI uri;
 	private Class<?> expectedReturnType;
+	private Class<?> requiredReturnType;
 	private Class<? extends IIntentHandler> handler;
 	private final Map<String, Object> extras = new HashMap<String, Object>();
 	private int flags;
@@ -120,31 +121,6 @@ public class Intent
 	}
 
 	/**
-	 * Guess the content type for this Intent's URI.
-	 * <p/>
-	 * Uses the {@link GuessableContentTypeURIManager} to guess.
-	 * 
-	 * @return The content type guessed for this Intent's URI
-	 */
-	public IContentType guessContentType()
-	{
-		return GuessableContentTypeURIManager.guessContentType(getURI());
-	}
-
-	/**
-	 * @return Explicit content type of the data associated with this intnet. If
-	 *         null, the value from {@link #guessContentType()} is returned.
-	 */
-	public IContentType getOrGuessContentType()
-	{
-		if (contentType != null)
-		{
-			return contentType;
-		}
-		return guessContentType();
-	}
-
-	/**
 	 * @return The URI of the data associated with this intent.
 	 */
 	public URI getURI()
@@ -204,6 +180,28 @@ public class Intent
 	public Intent setExpectedReturnType(Class<?> expectedReturnType)
 	{
 		this.expectedReturnType = expectedReturnType;
+		return this;
+	}
+
+	/**
+	 * @return The type of the object required to be returned by the intent
+	 *         handler.
+	 */
+	public Class<?> getRequiredReturnType()
+	{
+		return requiredReturnType;
+	}
+
+	/**
+	 * Set the required return type of the object returned by the intent
+	 * handler.
+	 * 
+	 * @param requiredReturnType
+	 * @return this
+	 */
+	public Intent setRequiredReturnType(Class<?> requiredReturnType)
+	{
+		this.requiredReturnType = requiredReturnType;
 		return this;
 	}
 
@@ -332,6 +330,11 @@ public class Intent
 		if (expectedReturnType != null)
 		{
 			sb.append(", expected return-type: " + expectedReturnType.getName()); //$NON-NLS-1$
+		}
+
+		if (requiredReturnType != null)
+		{
+			sb.append(", required return-type: " + requiredReturnType.getName()); //$NON-NLS-1$
 		}
 
 		return String.format("%s [%s]", getClass().getSimpleName(), sb.length() > 0 ? sb.substring(2) : ""); //$NON-NLS-1$ //$NON-NLS-2$

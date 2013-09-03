@@ -21,33 +21,39 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 
-import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.w3c.dom.Document;
 
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
-import au.gov.ga.earthsci.core.xml.IXmlLoader;
-import au.gov.ga.earthsci.core.xml.IXmlLoaderCallback;
-import au.gov.ga.earthsci.core.xml.XmlLoaderManager;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 
 /**
  * IntentHandler that uses the retrieval service to retrieve the Intent's data,
- * then loads the data as an XML document, and passes the document to the
- * {@link IXmlLoader} system.
+ * then loads the data as an XML document, and passes the document an abstract
+ * method for subclasses to handle.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class XmlRetrieveIntentHandler extends AbstractRetrieveIntentHandler
+public abstract class AbstractXmlRetrieveIntentHandler extends AbstractRetrieveIntentHandler
 {
-	@Inject
-	private IEclipseContext context;
+	/**
+	 * Handle the XML document, notifying the callback of the result (or error).
+	 * 
+	 * @param document
+	 *            XML document to handle
+	 * @param url
+	 *            URL that the document was retrieved from
+	 * @param intent
+	 *            Intent that started the retrieval
+	 * @param callback
+	 *            Intent callback to notify of success/failure
+	 */
+	protected abstract void handle(Document document, URL url, Intent intent, IIntentCallback callback);
 
 	@Override
-	protected void handle(IRetrievalData data, URL url, Intent intent, final IIntentCallback callback)
+	protected void handle(IRetrievalData data, URL url, Intent intent, IIntentCallback callback)
 	{
 		InputStream is = null;
 		try
@@ -56,21 +62,7 @@ public class XmlRetrieveIntentHandler extends AbstractRetrieveIntentHandler
 
 			DocumentBuilder builder = WWXML.createDocumentBuilder(true);
 			Document document = builder.parse(is);
-			IXmlLoaderCallback loaderCallback = new IXmlLoaderCallback()
-			{
-				@Override
-				public void completed(Object result, Document document, URL url, Intent intent)
-				{
-					callback.completed(result, intent);
-				}
-
-				@Override
-				public void error(Exception e, Document document, URL url, Intent intent)
-				{
-					callback.error(e, intent);
-				}
-			};
-			XmlLoaderManager.getInstance().load(document, url, intent, loaderCallback, context);
+			handle(document, url, intent, callback);
 		}
 		catch (Exception e)
 		{

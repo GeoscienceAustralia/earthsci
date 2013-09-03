@@ -155,12 +155,16 @@ public class URIFilter
 		return true;
 	}
 
-	protected static boolean matchesUsingWildcards(String input, String pattern)
+	public static boolean matchesUsingWildcards(String input, String wildcardPattern)
 	{
 		input = input == null ? "" : input; //$NON-NLS-1$
-		String quoted = Pattern.quote(pattern);
-		String regex = quoted.replace("*", "\\E.*\\Q"); //$NON-NLS-1$ //$NON-NLS-2$
-		return Pattern.matches(regex, input);
+		return Pattern.matches(wildcardRegex(wildcardPattern), input);
+	}
+
+	public static String wildcardRegex(String wildcardPattern)
+	{
+		String quoted = "\\Q" + wildcardPattern + "\\E"; //$NON-NLS-1$ //$NON-NLS-2$
+		return quoted.replace("*", "\\E.*\\Q"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	protected static boolean isEmpty(String s)

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.intent;
 
+import java.util.List;
+
 /**
  * Callback of an {@link Intent}, used to get a result from the handling of an
  * Intent. This called by an {@link IIntentHandler} to notify the caller of the
@@ -24,6 +26,36 @@ package au.gov.ga.earthsci.intent;
  */
 public interface IIntentCallback
 {
+	/**
+	 * Called by the Intent manager after it has calculated which filters can
+	 * handle the given intent. If multiple filters are found, the intent system
+	 * will display a dialog, allowing the user to select which filter to use.
+	 * The dialog is shown after this function is called. If <code>false</code>
+	 * is returned, the intent is canceled (and the dialog is not shown).
+	 * 
+	 * @param filters
+	 *            Filters that can handle the intent
+	 * @param intent
+	 *            Intent for which the filters have been found
+	 * @return True if the intent should continue, false to cancel the intent
+	 */
+	boolean filters(List<IntentFilter> filters, Intent intent);
+
+	/**
+	 * Called by the Intent manager immediately prior to calling a filter's
+	 * intent handler (ie starting the intent). If <code>false</code> is
+	 * returned, the intent is canceled.
+	 * 
+	 * @param filter
+	 *            Filter that has been selected to handle the intent
+	 * @param handler
+	 *            Handler that will handle the intent
+	 * @param intent
+	 *            Intent that will be started
+	 * @return True if the intent should continue, false to cancel the intent
+	 */
+	boolean starting(IntentFilter filter, IIntentHandler handler, Intent intent);
+
 	/**
 	 * Called by the Intent handler when it has completed successfully. If the
 	 * handler didn't produce a result, result will be null.

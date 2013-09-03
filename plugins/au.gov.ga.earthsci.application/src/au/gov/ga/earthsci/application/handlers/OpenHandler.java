@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.application.Activator;
 import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
+import au.gov.ga.earthsci.intent.AbstractIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentManager;
@@ -70,7 +71,7 @@ public class OpenHandler
 
 		Intent intent = new Intent();
 		intent.setURI(uri);
-		IIntentCallback callback = new IIntentCallback()
+		IIntentCallback callback = new AbstractIntentCallback()
 		{
 			@Override
 			public void error(final Exception e, Intent intent)
@@ -92,16 +93,6 @@ public class OpenHandler
 			public void completed(Object result, Intent intent)
 			{
 				Dispatcher.getInstance().dispatch(result, context);
-			}
-
-			@Override
-			public void canceled(Intent intent)
-			{
-			}
-
-			@Override
-			public void aborted(Intent intent)
-			{
 			}
 		};
 		IntentManager.getInstance().start(intent, callback, context);

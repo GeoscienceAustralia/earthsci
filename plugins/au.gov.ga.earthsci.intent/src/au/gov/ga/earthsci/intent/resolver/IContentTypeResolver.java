@@ -13,48 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.xml;
+package au.gov.ga.earthsci.intent.resolver;
 
+import java.io.IOException;
 import java.net.URL;
 
-import org.w3c.dom.Document;
+import org.eclipse.core.runtime.content.IContentType;
 
 import au.gov.ga.earthsci.intent.Intent;
 
 /**
- * Callback used to get a result from the handling of an XML load. This called
- * by an {@link IXmlLoader} to notify the caller of the result.
+ * Class that can resolve a content type from an Intent's URL.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IXmlLoaderCallback
+public interface IContentTypeResolver
 {
 	/**
-	 * Called by the XML loader when it has completed successfully. If the
-	 * loader didn't produce a result, result will be null.
+	 * Check if this resolver supports the given URL/intent.
 	 * 
-	 * @param result
-	 *            Result of the XML load
-	 * @param document
-	 *            Document that was loaded
 	 * @param url
-	 *            URL of the document that was loaded
 	 * @param intent
-	 *            Intent that completed
+	 * @return True if this resolver supports the URL/intent
 	 */
-	void completed(Object result, Document document, URL url, Intent intent);
+	boolean supports(URL url, Intent intent);
 
 	/**
-	 * Called when the Intent handler failed with an error.
+	 * Attempt to resolve the content type for the given URL/intent.
 	 * 
-	 * @param e
-	 *            Error generated from handling the Intent
-	 * @param document
-	 *            Document that failed
 	 * @param url
-	 *            URL of the document that failed
 	 * @param intent
-	 *            Intent that failed
+	 * @return The content type for the URL/intent, else <code>null</code>
 	 */
-	void error(Exception e, Document document, URL url, Intent intent);
+	IContentType resolve(URL url, Intent intent) throws IOException;
 }

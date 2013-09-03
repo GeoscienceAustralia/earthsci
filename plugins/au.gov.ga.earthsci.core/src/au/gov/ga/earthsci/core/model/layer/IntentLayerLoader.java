@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.core.model.ModelStatus;
+import au.gov.ga.earthsci.intent.AbstractIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentManager;
@@ -52,7 +53,7 @@ public class IntentLayerLoader
 		IntentManager.getInstance().start(intent, callback, context);
 	}
 
-	protected static IIntentCallback callback = new IIntentCallback()
+	protected static IIntentCallback callback = new AbstractIntentCallback()
 	{
 		@Override
 		public void completed(final Object result, Intent intent)

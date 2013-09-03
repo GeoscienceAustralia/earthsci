@@ -37,6 +37,7 @@ import au.gov.ga.earthsci.core.intent.AbstractRetrieveIntentHandler;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.RetrievalProperties;
+import au.gov.ga.earthsci.intent.AbstractIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentManager;
 import au.gov.ga.earthsci.intent.Intent;
@@ -161,10 +162,10 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 		}
 
 		Intent paramsIntent = new Intent();
-		paramsIntent.setExpectedReturnType(GDALRasterModelParameters.class);
+		paramsIntent.setRequiredReturnType(GDALRasterModelParameters.class);
 		paramsIntent.putExtra(DATASET_EXTRAS_KEY, ds);
 
-		intentManager.start(paramsIntent, new IIntentCallback()
+		intentManager.start(paramsIntent, new AbstractIntentCallback()
 		{
 			@Override
 			public void error(Exception e, Intent paramsIntent)
@@ -200,9 +201,9 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 			@Override
 			public void canceled(Intent paramsIntent)
 			{
-				logger.debug("Raster parameter collection cancelled"); //$NON-NLS-1$
+				logger.debug("Raster parameter collection canceled"); //$NON-NLS-1$
 
-				callback.aborted(intent);
+				callback.canceled(intent);
 			}
 
 		}, eclipseContext);

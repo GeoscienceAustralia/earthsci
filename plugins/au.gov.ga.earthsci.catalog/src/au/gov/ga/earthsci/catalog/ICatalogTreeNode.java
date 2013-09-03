@@ -71,6 +71,9 @@ public interface ICatalogTreeNode extends ITreeNode<ICatalogTreeNode>, IProperty
 	IContentType getLayerContentType();
 
 	/**
+	 * This method can be called many times during icon load, and therefore the
+	 * result should be cached.
+	 * 
 	 * @return URL pointing to the icon to display for this node
 	 */
 	URL getIconURL();

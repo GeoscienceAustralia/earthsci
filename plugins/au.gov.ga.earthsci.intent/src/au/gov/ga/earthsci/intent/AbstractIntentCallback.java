@@ -13,28 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.xml;
+package au.gov.ga.earthsci.intent;
 
-import org.w3c.dom.Document;
-
-import au.gov.ga.earthsci.intent.Intent;
+import java.util.List;
 
 /**
- * Defines a filter that checks if an XML document can be loaded by the
- * associated {@link IXmlLoader}.
+ * Abstract implementation of {@link IIntentCallback}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IXmlLoaderFilter
+public abstract class AbstractIntentCallback implements IIntentCallback
 {
-	/**
-	 * Can this document be loaded by this loader?
-	 * 
-	 * @param document
-	 *            Document to check
-	 * @param intent
-	 *            Intent associated with the document
-	 * @return True if this document can be loaded by this loader
-	 */
-	boolean canLoad(Document document, Intent intent);
+	@Override
+	public boolean filters(List<IntentFilter> filters, Intent intent)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean starting(IntentFilter filter, IIntentHandler handler, Intent intent)
+	{
+		return true;
+	}
+
+	@Override
+	public void canceled(Intent intent)
+	{
+	}
+
+	@Override
+	public void aborted(Intent intent)
+	{
+	}
 }

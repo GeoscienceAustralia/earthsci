@@ -19,8 +19,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.inject.Singleton;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
@@ -48,10 +46,9 @@ import au.gov.ga.earthsci.intent.util.ContextInjectionFactoryThreadSafe;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@Singleton
 public class Dispatcher
 {
-	private static Dispatcher instance;
+	private static Dispatcher instance = new Dispatcher();
 
 	public static Dispatcher getInstance()
 	{
@@ -72,18 +69,8 @@ public class Dispatcher
 				}
 			});
 
-	/**
-	 * Constructor, should not be called directly. Instead it should be
-	 * injected, or accessed via the static singleton method.
-	 */
-	public Dispatcher()
+	private Dispatcher()
 	{
-		if (instance != null)
-		{
-			throw new IllegalStateException(Dispatcher.class.getSimpleName() + " should not be instantiated"); //$NON-NLS-1$
-		}
-		instance = this;
-
 		IConfigurationElement[] config = RegistryFactory.getRegistry().getConfigurationElementsFor(DISPATCH_FILTER_ID);
 		for (IConfigurationElement element : config)
 		{

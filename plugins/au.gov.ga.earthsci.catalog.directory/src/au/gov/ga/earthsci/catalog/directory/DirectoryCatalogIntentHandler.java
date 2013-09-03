@@ -17,6 +17,10 @@ package au.gov.ga.earthsci.catalog.directory;
 
 import java.io.File;
 
+import javax.inject.Inject;
+
+import org.eclipse.e4.core.contexts.IEclipseContext;
+
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
@@ -28,13 +32,16 @@ import au.gov.ga.earthsci.intent.Intent;
  */
 public class DirectoryCatalogIntentHandler implements IIntentHandler
 {
+	@Inject
+	private IEclipseContext context;
+
 	@Override
 	public void handle(Intent intent, IIntentCallback callback)
 	{
 		File directory = new File(intent.getURI());
 		if (directory.isDirectory())
 		{
-			DirectoryCatalogTreeNode node = new DirectoryCatalogTreeNode(directory.toURI(), true);
+			DirectoryCatalogTreeNode node = new DirectoryCatalogTreeNode(directory.toURI(), true, context);
 			callback.completed(node, intent);
 		}
 		else

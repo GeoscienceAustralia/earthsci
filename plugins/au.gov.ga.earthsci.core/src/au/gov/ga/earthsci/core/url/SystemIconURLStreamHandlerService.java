@@ -24,11 +24,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 import org.osgi.service.url.AbstractURLStreamHandlerService;
 import org.osgi.service.url.URLStreamHandlerService;
@@ -65,13 +68,47 @@ public class SystemIconURLStreamHandlerService extends AbstractURLStreamHandlerS
 				try
 				{
 					URL fileURL = new URL("file:" + getURL().getPath()); //$NON-NLS-1$
-					File file = new File(fileURL.toURI());
+					final File file = new File(fileURL.toURI());
+					/*String filename = file.getName();
+					int lastIndexOfDot = filename.lastIndexOf('.');
+					String extension = lastIndexOfDot >= 0 ? filename.substring(lastIndexOfDot + 1) : null;
+					if (extension != null)
+					{
+						try
+						{
+							return ExtensionIconURLStreamHandlerService.getImageInputStreamForExtension(extension);
+						}
+						catch (IOException e)
+						{
+							//ignore, try the swing way below instead
+						}
+					}*/
 					if (!file.exists())
 					{
 						throw new FileNotFoundException(file.getAbsolutePath());
 					}
-					ImageIcon icon =
-							(ImageIcon) javax.swing.filechooser.FileSystemView.getFileSystemView().getSystemIcon(file);
+
+					final ImageIcon[] iconResult = new ImageIcon[1];
+					Runnable task = new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							iconResult[0] =
+									(ImageIcon) javax.swing.filechooser.FileSystemView.getFileSystemView()
+											.getSystemIcon(file);
+						}
+					};
+					if (SwingUtilities.isEventDispatchThread())
+					{
+						task.run();
+					}
+					else
+					{
+						SwingUtilities.invokeAndWait(task);
+					}
+
+					ImageIcon icon = iconResult[0];
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					Image image = icon.getImage();
 					BufferedImage bi =
@@ -99,12 +136,17 @@ public class SystemIconURLStreamHandlerService extends AbstractURLStreamHandlerS
 	{
 		try
 		{
-			return new URL(PROTOCOL, null, file.toURI().toURL().getPath());
+			return createURL(file.toURI());
 		}
 		catch (Exception e)
 		{
 			//not possible
 			throw new IllegalStateException();
 		}
+	}
+
+	public static URL createURL(URI uri) throws MalformedURLException
+	{
+		return new URL(PROTOCOL, null, uri.toURL().getPath());
 	}
 }

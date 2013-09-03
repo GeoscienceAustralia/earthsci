@@ -2,11 +2,34 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="au.gov.ga.earthsci.core.xmlLoaders">
-      <loader
-            class="au.gov.ga.earthsci.catalog.dataset.DatasetXmlLoader"
-            filter="au.gov.ga.earthsci.catalog.dataset.DatasetXmlLoader"
-            priority="0">
-      </loader>
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="xml"
+            id="au.gov.ga.earthsci.catalog.dataset.xml"
+            name="Dataset XML"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{}DatasetList">
+            </parameter>
+         </describer>
+      </content-type>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.intent.filters">
+      <filter
+            class="au.gov.ga.earthsci.catalog.dataset.DatasetIntentHandler"
+            priority="0"
+            returns-result="true">
+         <content-type
+               id="au.gov.ga.earthsci.catalog.dataset.xml">
+         </content-type>
+         <return-type
+               class="au.gov.ga.earthsci.catalog.dataset.DatasetCatalogTreeNode">
+         </return-type>
+      </filter>
    </extension>
 </plugin>

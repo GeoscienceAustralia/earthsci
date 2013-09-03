@@ -18,15 +18,16 @@ package au.gov.ga.earthsci.catalog.directory;
 import gov.nasa.worldwind.layers.Layer;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ErrorCatalogTreeNode;
@@ -36,6 +37,7 @@ import au.gov.ga.earthsci.core.tree.ILazyTreeNodeCallback;
 import au.gov.ga.earthsci.core.tree.lazy.AsynchronousLazyTreeNodeHelper;
 import au.gov.ga.earthsci.core.tree.lazy.IAsynchronousLazyTreeNode;
 import au.gov.ga.earthsci.core.url.SystemIconURLStreamHandlerService;
+import au.gov.ga.earthsci.intent.AbstractIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentFilter;
 import au.gov.ga.earthsci.intent.IntentManager;
@@ -48,19 +50,23 @@ import au.gov.ga.earthsci.intent.IntentManager;
 public class DirectoryCatalogTreeNode extends AbstractCatalogTreeNode implements
 		IAsynchronousLazyTreeNode<ICatalogTreeNode>
 {
+	private final IEclipseContext context;
 	private final boolean root;
 	private final AsynchronousLazyTreeNodeHelper<ICatalogTreeNode> helper =
 			new AsynchronousLazyTreeNodeHelper<ICatalogTreeNode>(this);
+	private boolean iconURLLoaded = false;
+	private URL iconURL;
 
-	public DirectoryCatalogTreeNode(URI directoryURI)
+	public DirectoryCatalogTreeNode(URI directoryURI, IEclipseContext context)
 	{
-		this(directoryURI, false);
+		this(directoryURI, false, context);
 	}
 
-	public DirectoryCatalogTreeNode(URI directoryURI, boolean root)
+	public DirectoryCatalogTreeNode(URI directoryURI, boolean root, IEclipseContext context)
 	{
 		super(directoryURI);
 		this.root = root;
+		this.context = context;
 	}
 
 	@Override
@@ -114,7 +120,18 @@ public class DirectoryCatalogTreeNode extends AbstractCatalogTreeNode implements
 	@Override
 	public URL getIconURL()
 	{
-		return SystemIconURLStreamHandlerService.createURL(new File(getURI()));
+		if (!iconURLLoaded)
+		{
+			try
+			{
+				iconURL = SystemIconURLStreamHandlerService.createURL(getURI());
+			}
+			catch (MalformedURLException e)
+			{
+			}
+			iconURLLoaded = true;
+		}
+		return iconURL;
 	}
 
 	@Override
@@ -146,24 +163,41 @@ public class DirectoryCatalogTreeNode extends AbstractCatalogTreeNode implements
 			{
 				if (directory.isDirectory())
 				{
-					addChild(new DirectoryCatalogTreeNode(directory.toURI()));
+					addChild(new DirectoryCatalogTreeNode(directory.toURI(), context));
 				}
 			}
-			for (File file : files)
+			for (final File file : files)
 			{
 				if (file.isFile())
 				{
 					Intent intent = new Intent();
-					IContentType contentType = Platform.getContentTypeManager().findContentTypeFor(file.getName());
-					intent.setContentType(contentType);
 					intent.setExpectedReturnType(Layer.class);
 					intent.setURI(file.toURI());
-					IntentFilter filter = IntentManager.getInstance().findFilter(intent);
-					if (filter != null)
+					IntentManager.getInstance().start(intent, null, false, new AbstractIntentCallback()
 					{
-						//some intent filter knows how to open this, so add it as a child
-						addChild(new FileCatalogTreeNode(file.toURI()));
-					}
+						@Override
+						public boolean filters(List<IntentFilter> filters, Intent intent)
+						{
+							if (!filters.isEmpty())
+							{
+								//some intent filter knows how to open this, so add it as a child
+								addChild(new FileCatalogTreeNode(file.toURI(), intent.getContentType()));
+							}
+
+							//don't actually run the intent, just want to know if there's any filters
+							return false;
+						}
+
+						@Override
+						public void error(Exception e, Intent intent)
+						{
+						}
+
+						@Override
+						public void completed(Object result, Intent intent)
+						{
+						}
+					}, context);
 				}
 			}
 		}
