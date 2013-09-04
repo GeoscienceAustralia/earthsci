@@ -253,7 +253,7 @@ public class BookmarkPropertyFactory
 		{
 			result.add(createProperty(type));
 		}
-		return result.toArray(new IBookmarkProperty[creators.size()]);
+		return result.toArray(new IBookmarkProperty[result.size()]);
 	}
 
 }
