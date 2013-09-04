@@ -33,7 +33,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.core.di.annotations.Optional;
 import org.w3c.dom.Document;
 
 import au.gov.ga.earthsci.catalog.CatalogLayerHelper;
@@ -43,7 +42,6 @@ import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
-import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 
@@ -56,10 +54,6 @@ public class WMSCapabilitiesIntentHandler extends AbstractRetrieveIntentHandler
 {
 	@Inject
 	private IEclipseContext context;
-
-	@Optional
-	@Inject
-	private ITreeModel currentLayerModel;
 
 	@Override
 	protected void handle(IRetrievalData data, URL url, Intent intent, final IIntentCallback callback)
@@ -113,8 +107,7 @@ public class WMSCapabilitiesIntentHandler extends AbstractRetrieveIntentHandler
 					new WMSCapabilitiesCatalogTreeNode(intent.getURI(), wmsCapabilities);
 
 			WMSLayerCapabilitiesCatalogTreeNode singleLayer = catalogTreeNode.getSingleLayer();
-			if (singleLayer == null || currentLayerModel == null
-					|| ICatalogTreeNode.class.equals(intent.getExpectedReturnType()))
+			if (singleLayer == null || ICatalogTreeNode.class.equals(intent.getExpectedReturnType()))
 			{
 				callback.completed(catalogTreeNode, intent);
 			}
@@ -124,9 +117,8 @@ public class WMSCapabilitiesIntentHandler extends AbstractRetrieveIntentHandler
 				FolderNode folder = CatalogLayerHelper.createFolderNode(catalogTreeNode);
 				LayerNode layer = CatalogLayerHelper.createLayerNode(singleLayer);
 				folder.addChild(layer);
-				currentLayerModel.getRootNode().addChild(folder);
 				IntentLayerLoader.load(layer, context);
-				callback.aborted(intent); //consider the intent aborted, because it has been handled as a layer load
+				callback.completed(folder, intent);
 			}
 		}
 		catch (Exception e)
