@@ -4,7 +4,8 @@ import static org.junit.Assert.*;
 
 import java.nio.ByteBuffer;
 
-import org.eclipse.uomo.units.SI;
+import javax.measure.unit.SI;
+
 import org.junit.Test;
 
 import au.gov.ga.earthsci.common.buffer.BufferType;

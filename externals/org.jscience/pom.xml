@@ -10,9 +10,9 @@
 		<relativePath>../../parent-pom.xml</relativePath>
 	</parent>
 
-	<groupId>org.eclipse.uomo</groupId>
-	<artifactId>org.eclipse.uomo.noicu</artifactId>
-	<version>0.7.0.201306062021</version>
+	<groupId>org.jscience</groupId>
+	<artifactId>org.jscience</artifactId>
+	<version>4.3.1</version>
 	<packaging>eclipse-plugin</packaging>
 
 </project>

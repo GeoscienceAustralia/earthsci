@@ -2,7 +2,7 @@ package au.gov.ga.earthsci.model.data;
 
 import java.nio.ByteBuffer;
 
-import org.unitsofmeasurement.unit.Unit;
+import javax.measure.unit.Unit;
 
 import au.gov.ga.earthsci.common.buffer.BufferType;
 import au.gov.ga.earthsci.common.util.IDescribed;

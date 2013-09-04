@@ -47,8 +47,8 @@
 		<module>org.custommonkey.xmlunit</module>
 		<module>org.hamcrest</module>
 		<module>org.jmock</module>
+		<module>org.jscience</module>
 		
-		<module>org.eclipse.uomo.noicu</module>
 		<module>org.apache.commons.lang</module>
 	</modules>
 
