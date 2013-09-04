@@ -20,8 +20,7 @@ Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
    </configIni>
 
    <launcherArgs>
-      <programArgs>-showsplash
-au.gov.ga.earthsci.application</programArgs>
+      <programArgs>-showsplash au.gov.ga.earthsci.application</programArgs>
       <vmArgs>-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
@@ -37,6 +36,7 @@ au.gov.ga.earthsci.application</programArgs>
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
