@@ -88,6 +88,12 @@ public class BrowserViewer extends Composite {
      * LOCATION_BAR style.
      */
     public static final int BUTTON_BAR = 1 << 2;
+
+    /**
+     * Style parameter (value 4) indicating that the new window events should
+     * not result in a new browser window being opened.
+     */
+    public static final int DISABLE_NEW_WINDOW = 1 << 3;
 	 
 	 protected static final String PROPERTY_TITLE = "title"; //$NON-NLS-1$
 
@@ -100,6 +106,8 @@ public class BrowserViewer extends Composite {
     protected boolean showToolbar;
 
     protected boolean showURLbar;
+    
+    protected boolean openNewWindow = true;
 
     protected ToolItem back;
 
@@ -174,6 +182,9 @@ public class BrowserViewer extends Composite {
 
         if ((style & BUTTON_BAR) != 0)
             showToolbar = true;
+
+        if ((style & DISABLE_NEW_WINDOW) != 0)
+        	openNewWindow = false;
 
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
@@ -313,6 +324,7 @@ public class BrowserViewer extends Composite {
             }
         });
 
+    if(openNewWindow) {
         // Add listener for new window creation so that we can instead of
         // opening a separate
         // new window in which the session is lost, we can instead open a new
@@ -367,6 +379,7 @@ public class BrowserViewer extends Composite {
                     container.close();
             }
         });
+    }
 
         browser.addProgressListener(new ProgressListener() {
             public void changed(ProgressEvent event) {
