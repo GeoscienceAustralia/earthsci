@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.browser;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -61,6 +62,7 @@ public class BrowserPart
 {
 	public static final String PART_ID = "au.gov.ga.earthsci.application.browser.part"; //$NON-NLS-1$
 	public static final String INPUT_NAME = PART_ID + ".input"; //$NON-NLS-1$
+	public static final String PERSISTED_URL_KEY = PART_ID + ".persistedUrl"; //$NON-NLS-1$
 
 	@Inject
 	private IEclipseContext context;
@@ -76,6 +78,11 @@ public class BrowserPart
 	@Inject
 	private MWindow window;
 
+	@Inject
+	private MPart part;
+
+	private boolean dontStartIntent = false;
+
 	@PostConstruct
 	public void init(final Composite parent)
 	{
@@ -89,7 +96,12 @@ public class BrowserPart
 			@Override
 			public void changing(LocationEvent event)
 			{
-				startIntent(parent, event.location);
+				if (!dontStartIntent)
+				{
+					startIntent(parent, event.location);
+				}
+				dontStartIntent = false;
+				part.getPersistedState().put(PERSISTED_URL_KEY, event.location);
 			}
 		});
 		viewer.getBrowser().addOpenWindowListener(new OpenWindowListener()
@@ -110,6 +122,20 @@ public class BrowserPart
 				}
 			}
 		});
+
+		String persistedUrl = part.getPersistedState().get(PERSISTED_URL_KEY);
+		if (persistedUrl != null)
+		{
+			try
+			{
+				dontStartIntent = true;
+				URL url = new URL(persistedUrl);
+				setPartInput(url);
+			}
+			catch (MalformedURLException e)
+			{
+			}
+		}
 	}
 
 	@PreDestroy
