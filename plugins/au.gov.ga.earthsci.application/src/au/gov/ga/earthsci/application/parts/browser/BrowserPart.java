@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.browser;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
@@ -32,9 +34,23 @@ import org.eclipse.e4.ui.model.application.ui.basic.MWindow;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.browser.LocationAdapter;
+import org.eclipse.swt.browser.LocationEvent;
+import org.eclipse.swt.browser.OpenWindowListener;
+import org.eclipse.swt.browser.WindowEvent;
 import org.eclipse.swt.widgets.Composite;
 
+import au.gov.ga.earthsci.application.intent.HtmlIntentHandler;
+import au.gov.ga.earthsci.application.intent.HttpIntentHandler;
 import au.gov.ga.earthsci.eclipse.extras.browser.BrowserViewer;
+import au.gov.ga.earthsci.intent.AbstractIntentCallback;
+import au.gov.ga.earthsci.intent.IIntentCallback;
+import au.gov.ga.earthsci.intent.IIntentFilterSelectionPolicy;
+import au.gov.ga.earthsci.intent.Intent;
+import au.gov.ga.earthsci.intent.IntentFilter;
+import au.gov.ga.earthsci.intent.IntentManager;
+import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
 
 /**
  * Displays a web browser.
@@ -51,18 +67,122 @@ public class BrowserPart
 
 	private BrowserViewer viewer;
 
+	@Inject
+	private EPartService partService;
+
+	@Inject
+	private EModelService modelService;
+
+	@Inject
+	private MWindow window;
+
 	@PostConstruct
 	public void init(final Composite parent)
 	{
 		context.set(BrowserPart.class, this);
 
-		viewer = new BrowserViewer(parent, BrowserViewer.BUTTON_BAR | BrowserViewer.LOCATION_BAR);
+		viewer =
+				new BrowserViewer(parent, BrowserViewer.BUTTON_BAR | BrowserViewer.LOCATION_BAR
+						| BrowserViewer.DISABLE_NEW_WINDOW);
+		viewer.getBrowser().addLocationListener(new LocationAdapter()
+		{
+			@Override
+			public void changing(LocationEvent event)
+			{
+				startIntent(parent, event.location);
+			}
+		});
+		viewer.getBrowser().addOpenWindowListener(new OpenWindowListener()
+		{
+			@Override
+			public void open(WindowEvent event)
+			{
+				MPart part = BrowserPart.showPart(partService, modelService, window, true);
+				Object object = part.getObject();
+				if (object instanceof BrowserPart)
+				{
+					BrowserPart browserPart = (BrowserPart) object;
+					event.browser = browserPart.viewer.getBrowser();
+				}
+				else
+				{
+					partService.hidePart(part, true);
+				}
+			}
+		});
 	}
 
 	@PreDestroy
 	public void dispose()
 	{
 		context.remove(BrowserPart.class);
+	}
+
+	protected void startIntent(final Composite parent, String location)
+	{
+		//Raise an "optional" intent for event.location. For example, if it is a WMS
+		//capabilities document, the user can optionally open it as a catalog or layer.
+		URI uri;
+		try
+		{
+			uri = new URI(location);
+		}
+		catch (URISyntaxException e)
+		{
+			return;
+		}
+		Intent intent = new Intent();
+		intent.setURI(uri);
+		IIntentFilterSelectionPolicy filterSelectionPolicy = new IIntentFilterSelectionPolicy()
+		{
+			@Override
+			public boolean allowed(Intent intent, IntentFilter filter)
+			{
+				//don't allow the filter to be the one that opens in the browser, causing a looping intent
+				return !(HtmlIntentHandler.class.equals(filter.getHandler()) || HttpIntentHandler.class
+						.equals(filter.getHandler()));
+			}
+		};
+		IIntentCallback callback = new AbstractIntentCallback()
+		{
+			@Override
+			public boolean filters(List<IntentFilter> filters, Intent intent)
+			{
+				if (filters.isEmpty())
+				{
+					return false;
+				}
+				final boolean[] result = new boolean[1];
+				if (!parent.isDisposed())
+				{
+					parent.getDisplay().syncExec(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							result[0] = MessageDialog.openQuestion(parent.getShell(), "Open URL",
+									"This URL can be handled by EarthSci. Would you like to continue?");
+						}
+					});
+				}
+				return result[0];
+			}
+
+			@Override
+			public void error(Exception e, Intent intent)
+			{
+			}
+
+			@Override
+			public void completed(Object result, Intent intent)
+			{
+				if (result != null)
+				{
+					Dispatcher.getInstance().dispatch(result, context);
+				}
+			}
+		};
+		IntentManager.getInstance().start(intent, filterSelectionPolicy, false, callback, context);
 	}
 
 	public String getURL()
@@ -77,14 +197,17 @@ public class BrowserPart
 		viewer.setURL(url.toString());
 	}
 
-	public static MPart showPart(EPartService partService, EModelService modelService, MWindow window)
+	public static MPart showPart(EPartService partService, EModelService modelService, MWindow window, boolean newPart)
 	{
 		MPart part = null;
 
-		List<MPart> reuse = modelService.findElements(window, PART_ID, MPart.class, null);
-		if (!reuse.isEmpty())
+		if (!newPart)
 		{
-			part = reuse.get(reuse.size() - 1);
+			List<MPart> reuse = modelService.findElements(window, PART_ID, MPart.class, null);
+			if (!reuse.isEmpty())
+			{
+				part = reuse.get(reuse.size() - 1);
+			}
 		}
 
 		if (part == null)

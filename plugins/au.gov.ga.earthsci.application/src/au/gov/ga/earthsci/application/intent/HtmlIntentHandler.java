@@ -69,7 +69,7 @@ public class HtmlIntentHandler implements IIntentHandler
 					@Override
 					public void run()
 					{
-						MPart part = BrowserPart.showPart(partService, modelService, window);
+						MPart part = BrowserPart.showPart(partService, modelService, window, false);
 						part.getContext().modify(BrowserPart.INPUT_NAME, url);
 						part.getContext().declareModifiable(BrowserPart.INPUT_NAME);
 					}
