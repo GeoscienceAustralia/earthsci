@@ -110,8 +110,8 @@ public class OsgiBundles extends Task
 						sb.append(startLevel != null ? "@" + startLevel + ":start," : "@:start,");
 					}
 				}
-				sb.deleteCharAt(sb.length() - 1);
 			}
+			sb.deleteCharAt(sb.length() - 1);
 			sb.append("\" />\n");
 			sb.append("\t</resources>\n");
 		}
