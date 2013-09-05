@@ -110,21 +110,25 @@ public class IntentManager implements IIntentManager
 	{
 		synchronized (executorQueue)
 		{
-			executor = Executors.newFixedThreadPool(5, new ThreadFactory()
+			if (executor == null)
 			{
-				private int count = 0;
-
-				@Override
-				public Thread newThread(Runnable r)
+				executor = Executors.newFixedThreadPool(5, new ThreadFactory()
 				{
-					Thread thread = new Thread(r);
-					thread.setName("Intent thread " + (++count)); //$NON-NLS-1$
-					return thread;
+					private int count = 0;
+
+					@Override
+					public Thread newThread(Runnable r)
+					{
+						Thread thread = new Thread(r);
+						thread.setName("Intent thread " + (++count)); //$NON-NLS-1$
+						return thread;
+					}
+				});
+				for (Runnable runnable : executorQueue)
+				{
+					executor.execute(runnable);
 				}
-			});
-			for (Runnable runnable : executorQueue)
-			{
-				executor.execute(runnable);
+				executorQueue.clear();
 			}
 		}
 	}
