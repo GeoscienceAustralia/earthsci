@@ -75,6 +75,23 @@ public class BundleProperties
 
 			List<String> oss = properties.get("osgi.os");
 			List<String> archs = properties.get("osgi.arch");
+			//on some 64-bit platforms, webstart uses x86_64, others use amd64, so add both
+			if (archs != null)
+			{
+				boolean x86_64 = archs.contains("x86_64");
+				boolean amd64 = archs.contains("amd64");
+				if (x86_64 || amd64)
+				{
+					if (!x86_64)
+					{
+						archs.add("x86_64");
+					}
+					if (!amd64)
+					{
+						archs.add("amd64");
+					}
+				}
+			}
 			if (oss != null && !oss.isEmpty())
 			{
 				String[] combinations = new String[oss.size() * Math.max(1, archs == null ? 0 : archs.size())];
