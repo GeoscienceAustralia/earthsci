@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -109,7 +110,18 @@ public class IntentManager implements IIntentManager
 	{
 		synchronized (executorQueue)
 		{
-			executor = Executors.newFixedThreadPool(5);
+			executor = Executors.newFixedThreadPool(5, new ThreadFactory()
+			{
+				private int count = 0;
+
+				@Override
+				public Thread newThread(Runnable r)
+				{
+					Thread thread = new Thread(r);
+					thread.setName("Intent thread " + (++count)); //$NON-NLS-1$
+					return thread;
+				}
+			});
 			for (Runnable runnable : executorQueue)
 			{
 				executor.execute(runnable);
@@ -134,7 +146,6 @@ public class IntentManager implements IIntentManager
 				@Override
 				public void run()
 				{
-					Thread.currentThread().setName("Intent: " + intent); //$NON-NLS-1$
 					try
 					{
 						IntentFilter filter = null;
@@ -199,7 +210,6 @@ public class IntentManager implements IIntentManager
 					{
 						callback.error(e, intent);
 					}
-					Thread.currentThread().setName("Intent: idle"); //$NON-NLS-1$
 				}
 			};
 
