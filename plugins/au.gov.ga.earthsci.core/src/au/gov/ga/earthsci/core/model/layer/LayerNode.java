@@ -26,6 +26,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
@@ -57,6 +58,16 @@ public class LayerNode extends AbstractLayerTreeNode implements Layer, IEnableab
 	private Set<String> propertiesChanged = new HashSet<String>();
 	private boolean copyingProperties = false;
 	private final Object layerSemaphore = new Object();
+
+	@Override
+	public void setURI(URI uri)
+	{
+		super.setURI(uri);
+		if (layer instanceof DummyLayer)
+		{
+			layer.setName(uri.toString());
+		}
+	}
 
 	/**
 	 * @return The {@link Layer} that this node delegates to.
