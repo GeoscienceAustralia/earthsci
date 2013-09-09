@@ -154,13 +154,6 @@
       </filter>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.intent.resourceLocators">
-      <locator
-            class="au.gov.ga.earthsci.core.intent.ClasspathIntentResourceLocator"
-            priority="0">
-      </locator>
-   </extension>
-   <extension
          point="au.gov.ga.earthsci.core.urlStreamHandlers">
       <handler
             class="au.gov.ga.earthsci.core.url.ExtensionIconURLStreamHandlerService">

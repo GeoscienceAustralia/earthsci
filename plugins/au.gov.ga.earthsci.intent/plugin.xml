@@ -3,7 +3,6 @@
 <plugin>
    <extension-point id="au.gov.ga.earthsci.intent.filters" name="IntentFilters" schema="schema/au.gov.ga.earthsci.intent.filters.exsd"/>
    <extension-point id="au.gov.ga.earthsci.intent.dispatchFilters" name="DispatchFilters" schema="schema/au.gov.ga.earthsci.intent.dispatchFilters.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.intent.resourceLocators" name="IntentResourceLocators" schema="schema/au.gov.ga.earthsci.intent.resourceLocators.exsd"/>
    <extension-point id="au.gov.ga.earthsci.intent.contentTypeResolvers" name="ContentTypeResolvers" schema="schema/au.gov.ga.earthsci.intent.contentTypeResolvers.exsd"/>
    <extension
          point="au.gov.ga.earthsci.intent.contentTypeResolvers">

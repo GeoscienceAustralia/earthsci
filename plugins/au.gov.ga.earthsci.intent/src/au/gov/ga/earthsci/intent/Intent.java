@@ -26,8 +26,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
 
-import au.gov.ga.earthsci.intent.locator.IntentResourceLocatorManager;
-
 /**
  * Description of an intent to be performed. Plugins can define an
  * {@link IntentFilter} that can handle matching intents.
@@ -145,17 +143,10 @@ public class Intent
 
 	/**
 	 * @return A URL pointing to the resource identified by this Intent's URI.
-	 *         Uses the {@link IntentResourceLocatorManager} for resolving URLs
-	 *         from the URI.
 	 * @throws MalformedURLException
 	 */
 	public URL getURL() throws MalformedURLException
 	{
-		URL url = IntentResourceLocatorManager.getInstance().locate(this);
-		if (url != null)
-		{
-			return url;
-		}
 		if (getURI() == null)
 		{
 			return null;
