@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.internal.content.Activator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
@@ -62,6 +63,8 @@ public class ContentTypeResolverManager
 
 	public static IContentType resolveContentType(URL url, Intent intent) throws IOException
 	{
+		nullSaxParserFactoryWorkaround();
+
 		for (IContentTypeResolver resolver : resolvers)
 		{
 			if (resolver.supports(url, intent))
@@ -71,5 +74,32 @@ public class ContentTypeResolverManager
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Make a call into the Eclipse content activator to make sure the
+	 * SAXParserFactory is non-null. Sometimes on startup, this is null, which
+	 * causes the XML content type describers to fail.
+	 */
+	private static void nullSaxParserFactoryWorkaround()
+	{
+		//FIXME This is a workaround for a bug which is probably threading related, fix properly.
+
+		int tries = 0;
+		while (Activator.getDefault().getFactory() == null)
+		{
+			try
+			{
+				Thread.sleep(100);
+			}
+			catch (InterruptedException e)
+			{
+			}
+			if (tries++ > 50)
+			{
+				//5 seconds
+				break;
+			}
+		}
 	}
 }
