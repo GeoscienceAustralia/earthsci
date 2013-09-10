@@ -32,10 +32,10 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
+import au.gov.ga.earthsci.common.util.AnnotationUtil;
 import au.gov.ga.earthsci.common.util.StringInstantiable;
 import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.common.util.XmlUtil;
-import au.gov.ga.earthsci.core.util.AnnotationUtil;
 
 /**
  * Persists annotated {@link Exportable} types.
