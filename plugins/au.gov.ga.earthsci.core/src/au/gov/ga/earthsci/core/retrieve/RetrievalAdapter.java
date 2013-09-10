@@ -20,7 +20,7 @@ package au.gov.ga.earthsci.core.retrieve;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class RetrievalAdapter implements IRetrievalListener
+public abstract class RetrievalAdapter implements IRetrievalListener
 {
 	@Override
 	public void statusChanged(IRetrieval retrieval)
