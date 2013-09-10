@@ -21,7 +21,7 @@ import java.net.URI;
 
 import org.w3c.dom.Element;
 
-import au.gov.ga.earthsci.core.persistence.IPersistentAdapter;
+import au.gov.ga.earthsci.common.persistence.IPersistentAdapter;
 import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
 /**

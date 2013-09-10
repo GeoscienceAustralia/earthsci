@@ -23,7 +23,7 @@ import au.gov.ga.earthsci.bookmark.BookmarkPropertyFactory;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyCreator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyExporter;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.core.persistence.IPersistentAdapter;
+import au.gov.ga.earthsci.common.persistence.IPersistentAdapter;
 
 /**
  * An {@link IPersistentAdapter} that uses registered

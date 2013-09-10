@@ -13,36 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.worldwind.adapters;
-
-import gov.nasa.worldwind.geom.Vec4;
-
-import java.net.URI;
-
-import org.w3c.dom.Element;
-
-import au.gov.ga.earthsci.common.persistence.IPersistentAdapter;
-import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
+package au.gov.ga.earthsci.common.persistence;
 
 /**
- * An {@link IPersistentAdapter} used to persist {@link Vec4} instances
+ * An exception thrown when an error occurs during persistance (loading or
+ * saving objects from XML).
  * 
- * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class Vec4PersistentAdapter implements IPersistentAdapter<Vec4>
+public class PersistenceException extends Exception
 {
-	private static final String ELEMENT_NAME = "vector"; //$NON-NLS-1$
-
-	@Override
-	public void toXML(Vec4 object, Element element, URI context)
+	public PersistenceException()
 	{
-		XMLUtil.appendVec4(element, ELEMENT_NAME, object);
+		super();
 	}
 
-	@Override
-	public Vec4 fromXML(Element element, URI context)
+	public PersistenceException(String message, Throwable cause)
 	{
-		return XMLUtil.getVec4(element, ELEMENT_NAME, null);
+		super(message, cause);
 	}
 
+	public PersistenceException(String message)
+	{
+		super(message);
+	}
+
+	public PersistenceException(Throwable cause)
+	{
+		super(cause);
+	}
 }

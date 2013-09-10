@@ -26,7 +26,7 @@ import java.net.URL;
 import org.junit.Test;
 import org.xml.sax.SAXParseException;
 
-import au.gov.ga.earthsci.core.persistence.PersistenceException;
+import au.gov.ga.earthsci.common.persistence.PersistenceException;
 import au.gov.ga.earthsci.intent.IntentManager;
 
 /**

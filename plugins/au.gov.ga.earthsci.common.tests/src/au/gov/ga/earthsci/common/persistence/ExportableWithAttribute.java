@@ -13,36 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.worldwind.adapters;
+package au.gov.ga.earthsci.common.persistence;
 
-import gov.nasa.worldwind.geom.Vec4;
-
-import java.net.URI;
-
-import org.w3c.dom.Element;
-
-import au.gov.ga.earthsci.common.persistence.IPersistentAdapter;
-import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
-
-/**
- * An {@link IPersistentAdapter} used to persist {@link Vec4} instances
- * 
- * @author James Navin (james.navin@ga.gov.au)
- */
-public class Vec4PersistentAdapter implements IPersistentAdapter<Vec4>
+@Exportable
+public class ExportableWithAttribute
 {
-	private static final String ELEMENT_NAME = "vector"; //$NON-NLS-1$
+	@Persistent(attribute = true)
+	private int attribute;
 
-	@Override
-	public void toXML(Vec4 object, Element element, URI context)
+	public int getAttribute()
 	{
-		XMLUtil.appendVec4(element, ELEMENT_NAME, object);
+		return attribute;
+	}
+
+	public void setAttribute(int attribute)
+	{
+		this.attribute = attribute;
 	}
 
 	@Override
-	public Vec4 fromXML(Element element, URI context)
+	public boolean equals(Object obj)
 	{
-		return XMLUtil.getVec4(element, ELEMENT_NAME, null);
+		ExportableWithAttribute ewa = (ExportableWithAttribute) obj;
+		return ewa.attribute == attribute;
 	}
-
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <au.gov.ga.earthsci.common.persistence.ExportableWithDoubleArray>
+        <collectionArray>
+            <element>
+                <element null="true"/>
+                <element null="true"/>
+                <element null="true"/>
+                <element null="true"/>
+                <element null="true"/>
+            </element>
+            <element>
+                <element null="true"/>
+                <element null="true"/>
+                <element null="true"/>
+                <element null="true"/>
+                <element null="true"/>
+            </element>
+            <element>
+                <element null="true"/>
+                <element null="true"/>
+                <element null="true"/>
+                <element null="true"/>
+                <element null="true"/>
+            </element>
+        </collectionArray>
+    </au.gov.ga.earthsci.common.persistence.ExportableWithDoubleArray>
+</root>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <au.gov.ga.earthsci.common.persistence.ExportableWithInterfaceArray>
+        <array>
+            <element>
+                <au.gov.ga.earthsci.common.persistence.ExportableInterfaceImpementation>
+                    <name>name value</name>
+                </au.gov.ga.earthsci.common.persistence.ExportableInterfaceImpementation>
+            </element>
+            <element>
+                <au.gov.ga.earthsci.common.persistence.ExportableInterfaceImpementation>
+                    <name>name value</name>
+                </au.gov.ga.earthsci.common.persistence.ExportableInterfaceImpementation>
+            </element>
+        </array>
+    </au.gov.ga.earthsci.common.persistence.ExportableWithInterfaceArray>
+</root>

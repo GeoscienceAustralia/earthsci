@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <au.gov.ga.earthsci.common.persistence.ExportableWithArrayList>
+        <arrayList>
+            <element type="int">5</element>
+            <element type="int">7</element>
+            <element type="int">435</element>
+        </arrayList>
+    </au.gov.ga.earthsci.common.persistence.ExportableWithArrayList>
+</root>

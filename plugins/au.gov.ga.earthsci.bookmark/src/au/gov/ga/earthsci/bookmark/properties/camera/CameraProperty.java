@@ -19,10 +19,10 @@ import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
 import au.gov.ga.earthsci.bookmark.Messages;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
+import au.gov.ga.earthsci.common.persistence.Adapter;
+import au.gov.ga.earthsci.common.persistence.Exportable;
+import au.gov.ga.earthsci.common.persistence.Persistent;
 import au.gov.ga.earthsci.common.util.Validate;
-import au.gov.ga.earthsci.core.persistence.Adapter;
-import au.gov.ga.earthsci.core.persistence.Exportable;
-import au.gov.ga.earthsci.core.persistence.Persistent;
 import au.gov.ga.earthsci.core.worldwind.adapters.PositionPersistentAdapter;
 import au.gov.ga.earthsci.core.worldwind.adapters.Vec4PersistentAdapter;
 

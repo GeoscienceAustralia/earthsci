@@ -21,8 +21,8 @@ import java.net.URL;
 import org.eclipse.core.runtime.content.IContentType;
 
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.core.persistence.Exportable;
-import au.gov.ga.earthsci.core.persistence.Persistent;
+import au.gov.ga.earthsci.common.persistence.Exportable;
+import au.gov.ga.earthsci.common.persistence.Persistent;
 
 /**
  * An {@link ICatalogTreeNode} that represents a {@code Layer} element from the

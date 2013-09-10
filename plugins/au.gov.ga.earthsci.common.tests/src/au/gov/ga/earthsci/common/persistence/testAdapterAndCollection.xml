@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <au.gov.ga.earthsci.common.persistence.ExportableWithAdapterAndCollection>
+        <adaptables type="java.util.ArrayList">
+            <element value="adaptable value 1"/>
+            <element value="adaptable value 2"/>
+        </adaptables>
+    </au.gov.ga.earthsci.common.persistence.ExportableWithAdapterAndCollection>
+</root>
