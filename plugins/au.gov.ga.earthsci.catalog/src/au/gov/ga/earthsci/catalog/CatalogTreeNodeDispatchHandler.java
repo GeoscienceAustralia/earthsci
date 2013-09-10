@@ -51,8 +51,17 @@ public class CatalogTreeNodeDispatchHandler implements IDispatchHandler
 	{
 		if (object instanceof ICatalogTreeNode)
 		{
-			final ICatalogTreeNode node = (ICatalogTreeNode) object;
-			model.addTopLevelCatalog(node);
+			ICatalogTreeNode node = (ICatalogTreeNode) object;
+			ICatalogTreeNode existing = model.getTopLevelCatalogForURI(node.getURI());
+			if (existing == null)
+			{
+				model.addTopLevelCatalog(node);
+			}
+			else
+			{
+				node = existing;
+			}
+			final ICatalogTreeNode selection = node;
 
 			shell.getDisplay().asyncExec(new Runnable()
 			{
@@ -61,7 +70,7 @@ public class CatalogTreeNodeDispatchHandler implements IDispatchHandler
 				{
 					MPart part = partService.showPart(CATALOG_PART_ID, PartState.ACTIVATE);
 					ESelectionService selectionService = part.getContext().get(ESelectionService.class);
-					selectionService.setSelection(new ICatalogTreeNode[] { node });
+					selectionService.setSelection(new ICatalogTreeNode[] { selection });
 				}
 			});
 		}
