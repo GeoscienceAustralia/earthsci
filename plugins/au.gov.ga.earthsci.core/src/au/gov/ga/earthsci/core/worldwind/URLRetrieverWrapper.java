@@ -73,7 +73,11 @@ public class URLRetrieverWrapper extends JarRetriever
 		Object caller = RetrievalListenerHelper.getLayer(wrapped);
 		if (caller == null)
 		{
-			caller = wrapped;
+			caller = RetrievalListenerHelper.getElevationModel(wrapped);
+			if (caller == null)
+			{
+				caller = wrapped;
+			}
 		}
 		IRetrievalService service = RetrievalServiceFactory.getServiceInstance();
 		RetrievalProperties retrievalProperties = new RetrievalProperties();
