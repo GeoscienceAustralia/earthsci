@@ -30,6 +30,7 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.common.util.ConfigurationUtil;
 import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
@@ -45,7 +46,6 @@ import au.gov.ga.earthsci.core.retrieve.result.BasicRetrievalResult;
 import au.gov.ga.earthsci.core.retrieve.result.ByteBufferRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.result.FileRetrievalData;
 import au.gov.ga.earthsci.core.retrieve.result.URLCacheRetrievalData;
-import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 
 /**
  * {@link IRetriever} implementation used for retrieving HTTP URLs.

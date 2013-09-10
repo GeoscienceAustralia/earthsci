@@ -33,13 +33,13 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.common.util.ConfigurationUtil;
 import au.gov.ga.earthsci.core.model.layer.DefaultLayers;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.model.layer.LayerPersister;
-import au.gov.ga.earthsci.core.util.ConfigurationUtil;
 
 /**
  * {@link BasicModel} subclass used to override specific functionality, such as
