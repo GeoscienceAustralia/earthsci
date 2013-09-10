@@ -22,4 +22,11 @@
          </type>
       </filter>
    </extension>
+   <extension
+         point="au.gov.ga.earthsci.seeders">
+      <seeder
+            class="au.gov.ga.earthsci.catalog.CatalogSeeder"
+            element="CatalogModel">
+      </seeder>
+   </extension>
 </plugin>
