@@ -15,11 +15,14 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.layer.ui;
 
+import gov.nasa.worldwind.globes.ElevationModel;
 import gov.nasa.worldwind.layers.Layer;
+import gov.nasa.worldwind.terrain.CompoundElevationModel;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,6 +51,7 @@ import au.gov.ga.earthsci.common.ui.util.SWTUtil;
 import au.gov.ga.earthsci.common.ui.util.TextStyler;
 import au.gov.ga.earthsci.common.ui.viewers.IFireableLabelProvider;
 import au.gov.ga.earthsci.core.model.layer.FolderNode;
+import au.gov.ga.earthsci.core.model.layer.IElevationModelLayer;
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.retrieve.IRetrieval;
@@ -114,8 +118,16 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 	{
 		if (element instanceof LayerNode)
 		{
-			IRetrieval[] retrievals = retrievalService.getRetrievals(((LayerNode) element).getLayer());
-			if (retrievals.length > 0)
+			LayerNode layerNode = (LayerNode) element;
+			Layer layer = layerNode.getLayer();
+			List<IRetrieval> retrievals = Arrays.asList(retrievalService.getRetrievals(layer));
+			if (retrievals.size() == 0 && layer instanceof IElevationModelLayer)
+			{
+				ElevationModel elevationModel = ((IElevationModelLayer) layer).getElevationModel();
+				retrievals = new ArrayList<IRetrieval>();
+				addRetrievalsForElevationModel(elevationModel, retrievals);
+			}
+			if (retrievals.size() > 0)
 			{
 				GC gc = event.gc;
 				Color oldBackground = gc.getBackground();
@@ -126,7 +138,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 				{
 					percentage += Math.max(0, retrieval.getPercentage());
 				}
-				percentage /= retrievals.length;
+				percentage /= retrievals.size();
 
 				int height = event.height / 2;
 				int width = (int) (DOWNLOAD_WIDTH * percentage);
@@ -140,6 +152,23 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 			}
 		}
 		super.paint(event, element);
+	}
+
+	private void addRetrievalsForElevationModel(ElevationModel elevationModel, List<IRetrieval> retrievals)
+	{
+		IRetrieval[] array = retrievalService.getRetrievals(elevationModel);
+		if (array.length > 0)
+		{
+			retrievals.addAll(Arrays.asList(array));
+		}
+		if (elevationModel instanceof CompoundElevationModel)
+		{
+			CompoundElevationModel cem = (CompoundElevationModel) elevationModel;
+			for (ElevationModel child : cem.getElevationModels())
+			{
+				addRetrievalsForElevationModel(child, retrievals);
+			}
+		}
 	}
 
 	private void refreshCallers(final IRetrieval retrieval)
@@ -158,9 +187,13 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 			{
 				elements.add(caller);
 			}
-			else if (caller instanceof Layer)
+			else if (caller instanceof Layer || caller instanceof ElevationModel)
 			{
 				WeakReference<LayerNode> weak = delegate.weakLayerToNodeMap.get(caller);
+				if (weak == null)
+				{
+					weak = delegate.weakElevationModelToNodeMap.get(caller);
+				}
 				if (weak != null)
 				{
 					LayerNode node = weak.get();
@@ -238,6 +271,8 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 	{
 		private WeakHashMap<Layer, WeakReference<LayerNode>> weakLayerToNodeMap =
 				new WeakHashMap<Layer, WeakReference<LayerNode>>();
+		private WeakHashMap<ElevationModel, WeakReference<LayerNode>> weakElevationModelToNodeMap =
+				new WeakHashMap<ElevationModel, WeakReference<LayerNode>>();
 
 		private final IconLoader iconLoader = new IconLoader(this);
 
@@ -288,7 +323,13 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 
 				if (layer.getLayer() != null)
 				{
-					weakLayerToNodeMap.put(layer.getLayer(), new WeakReference<LayerNode>(layer));
+					WeakReference<LayerNode> layerNodeReference = new WeakReference<LayerNode>(layer);
+					weakLayerToNodeMap.put(layer.getLayer(), layerNodeReference);
+					if (layer.getLayer() instanceof IElevationModelLayer)
+					{
+						ElevationModel elevationModel = ((IElevationModelLayer) layer.getLayer()).getElevationModel();
+						addElevationModelToMap(elevationModel, layerNodeReference);
+					}
 				}
 
 				String label = layer.getLabelOrName();
@@ -305,6 +346,19 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 				return folder.getLabelOrName();
 			}
 			return super.getText(element);
+		}
+
+		private void addElevationModelToMap(ElevationModel elevationModel, WeakReference<LayerNode> layerNodeReference)
+		{
+			weakElevationModelToNodeMap.put(elevationModel, layerNodeReference);
+			if (elevationModel instanceof CompoundElevationModel)
+			{
+				CompoundElevationModel cem = (CompoundElevationModel) elevationModel;
+				for (ElevationModel child : cem.getElevationModels())
+				{
+					addElevationModelToMap(child, layerNodeReference);
+				}
+			}
 		}
 
 		@Override
