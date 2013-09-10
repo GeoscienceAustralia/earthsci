@@ -188,14 +188,7 @@ public class DiscoveryServiceManager
 			is = new FileInputStream(inputFile);
 			Document document = WWXML.createDocumentBuilder(false).parse(is);
 			Element parent = document.getDocumentElement();
-			Element[] elements = XmlUtil.getElements(parent);
-			List<IDiscoveryService> services = new ArrayList<IDiscoveryService>(elements.length);
-			for (Element element : elements)
-			{
-				PersistentDiscoveryService persistent = (PersistentDiscoveryService) persister.load(element, null);
-				services.add(persistent.createService());
-			}
-			return services;
+			return loadServices(parent);
 		}
 		finally
 		{
@@ -210,6 +203,18 @@ public class DiscoveryServiceManager
 				}
 			}
 		}
+	}
+
+	public static List<IDiscoveryService> loadServices(Element servicesElement) throws PersistenceException
+	{
+		Element[] elements = XmlUtil.getElements(servicesElement);
+		List<IDiscoveryService> services = new ArrayList<IDiscoveryService>(elements.length);
+		for (Element element : elements)
+		{
+			PersistentDiscoveryService persistent = (PersistentDiscoveryService) persister.load(element, null);
+			services.add(persistent.createService());
+		}
+		return services;
 	}
 
 	/**
