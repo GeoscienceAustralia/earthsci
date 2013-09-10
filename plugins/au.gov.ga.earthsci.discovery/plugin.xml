@@ -13,5 +13,12 @@
             priority="0">
       </inject>
    </extension>
+   <extension
+         point="au.gov.ga.earthsci.seeders">
+      <seeder
+            class="au.gov.ga.earthsci.discovery.DiscoverySeeder"
+            element="DiscoveryServices">
+      </seeder>
+   </extension>
 
 </plugin>
