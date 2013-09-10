@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="au.gov.ga.earthsci.seeders" name="Seeders" schema="schema/au.gov.ga.earthsci.seeders.exsd"/>
+   <extension
+         point="au.gov.ga.earthsci.injectables">
+      <injectable
+            class="au.gov.ga.earthsci.seeder.SeederManager"
+            priority="0">
+      </injectable>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="xml"
+            id="au.gov.ga.earthsci.seed.xml"
+            name="Seed file"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{}Seed">
+            </parameter>
+         </describer>
+      </content-type>
+   </extension>
+
+</plugin>
