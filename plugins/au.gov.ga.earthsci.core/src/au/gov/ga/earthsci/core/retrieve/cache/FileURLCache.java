@@ -37,7 +37,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.core.util.HashReadWriteLocker;
+import au.gov.ga.earthsci.common.util.HashReadWriteLocker;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
