@@ -31,7 +31,7 @@
       </toolbar>
     </elements>
   </fragments>
-  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_socUQJZgEeKo0s_wGDk0-Q" featurename="children" parentElementId="au.gov.ga.earthsci.application.partstack.0.0.0">
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_socUQJZgEeKo0s_wGDk0-Q" featurename="children" parentElementId="au.gov.ga.earthsci.application.partstack.0.0.1" positionInList="first">
     <elements xsi:type="advanced:Placeholder" xmi:id="_09nPcJZgEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalog.part" toBeRendered="false"/>
   </fragments>
 </fragment:ModelFragments>

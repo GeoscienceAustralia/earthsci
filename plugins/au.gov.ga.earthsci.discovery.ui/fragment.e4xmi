@@ -10,7 +10,7 @@
       </toolbar>
     </elements>
   </fragments>
-  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_3f8LgLeMEeKHso0qTaNhhg" featurename="children" parentElementId="au.gov.ga.earthsci.application.partstack.0.0.0">
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_3f8LgLeMEeKHso0qTaNhhg" featurename="children" parentElementId="au.gov.ga.earthsci.application.partstack.0.0.1">
     <elements xsi:type="advanced:Placeholder" xmi:id="_6Rg7QLeMEeKHso0qTaNhhg" elementId="au.gov.ga.earthsci.application.discovery.part" toBeRendered="false"/>
   </fragments>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_Sv5BEMdkEeKLHJVniFVq1Q" featurename="commands" parentElementId="au.gov.ga.earthsci.application">
