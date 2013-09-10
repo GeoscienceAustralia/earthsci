@@ -79,4 +79,12 @@ public interface ICatalogModel
 	 * @return True if this catalog contains a catalog for this URI
 	 */
 	boolean containsTopLevelCatalogURI(URI uri);
+
+	/**
+	 * Get the catalog tree node for the catalog loaded from the given URI.
+	 * 
+	 * @param uri
+	 * @return Catalog tree node for URI, null if one doesn't exist
+	 */
+	ICatalogTreeNode getTopLevelCatalogForURI(URI uri);
 }
