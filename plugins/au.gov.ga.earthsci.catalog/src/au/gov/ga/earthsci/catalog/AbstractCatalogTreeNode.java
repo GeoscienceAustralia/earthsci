@@ -13,7 +13,7 @@ import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
  */
 public abstract class AbstractCatalogTreeNode extends AbstractTreeNode<ICatalogTreeNode> implements ICatalogTreeNode
 {
-	private URI nodeURI;
+	private final URI nodeURI;
 	private String label;
 
 	public AbstractCatalogTreeNode(URI nodeURI)
