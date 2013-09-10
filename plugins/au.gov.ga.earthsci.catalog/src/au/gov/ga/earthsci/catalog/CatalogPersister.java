@@ -243,7 +243,7 @@ public class CatalogPersister
 		}
 		try
 		{
-			return loadCatalogModel(workspaceFile, result, context);
+			return loadCatalogModel(workspaceFile, result, context, false);
 		}
 		catch (Exception e)
 		{
@@ -277,7 +277,8 @@ public class CatalogPersister
 	 *             If there is a problem recreating the model tree from the
 	 *             persistence mechanism
 	 */
-	public static ICatalogModel loadCatalogModel(File source, ICatalogModel result, IEclipseContext context)
+	public static ICatalogModel loadCatalogModel(File source, ICatalogModel result, IEclipseContext context,
+			boolean onlyAddUniqueUris)
 			throws SAXException, IOException, PersistenceException
 	{
 		Validate.notNull(source, "An input file is required"); //$NON-NLS-1$
@@ -286,7 +287,7 @@ public class CatalogPersister
 		try
 		{
 			is = new FileInputStream(source);
-			return loadCatalogModel(is, result, context);
+			return loadCatalogModel(is, result, context, onlyAddUniqueUris);
 		}
 		finally
 		{
@@ -320,7 +321,8 @@ public class CatalogPersister
 	 *             If there is a problem recreating the model from the
 	 *             persistence mechanism
 	 */
-	public static ICatalogModel loadCatalogModel(InputStream is, ICatalogModel result, IEclipseContext context)
+	public static ICatalogModel loadCatalogModel(InputStream is, ICatalogModel result, IEclipseContext context,
+			boolean onlyAddUniqueUris)
 			throws SAXException, IOException, PersistenceException
 	{
 		Validate.notNull(is, "An input stream is required"); //$NON-NLS-1$
@@ -333,7 +335,7 @@ public class CatalogPersister
 					"Provided document is not a valid catalog model document. Expected root node " + ROOT_NODE_NAME + " but found " + parent.getNodeName()); //$NON-NLS-1$//$NON-NLS-2$
 		}
 		Element element = XmlUtil.getFirstChildElement(parent);
-		return loadCatalogModel(element, result, context);
+		return loadCatalogModel(element, result, context, onlyAddUniqueUris);
 	}
 
 	/**
@@ -348,6 +350,9 @@ public class CatalogPersister
 	 *            null, a new model is created.
 	 * @param context
 	 *            An Eclipse context
+	 * @param onlyAddUniqueUris
+	 *            Only add catalogs if their URIs don't already exist in the
+	 *            catalog
 	 * 
 	 * @return The loaded catalog model
 	 * 
@@ -357,7 +362,8 @@ public class CatalogPersister
 	 *             If there is a problem recreating the model from the
 	 *             persistence mechanism
 	 */
-	public static ICatalogModel loadCatalogModel(Element parentElement, ICatalogModel result, IEclipseContext context)
+	public static ICatalogModel loadCatalogModel(Element parentElement, ICatalogModel result, IEclipseContext context,
+			boolean onlyAddUniqueUris)
 			throws PersistenceException
 	{
 		Validate.notNull(parentElement, "A parent XML element is required"); //$NON-NLS-1$
@@ -374,6 +380,10 @@ public class CatalogPersister
 			URI uri = dto.catalogs[i].nodeURI;
 			if (uri != null)
 			{
+				if (onlyAddUniqueUris && result.containsTopLevelCatalogURI(uri))
+				{
+					continue;
+				}
 				LoadingCatalogTreeNode loadingNode = new LoadingCatalogTreeNode(uri);
 				loadingNode.setLabel(dto.catalogs[i].label);
 				result.addTopLevelCatalog(loadingNode);

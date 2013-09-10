@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -69,4 +70,13 @@ public interface ICatalogModel
 	 *            The catalog to insert
 	 */
 	void addTopLevelCatalog(int index, ICatalogTreeNode catalog);
+
+	/**
+	 * Does this catalog model contain a top level catalog pointing to the given
+	 * URI?
+	 * 
+	 * @param uri
+	 * @return True if this catalog contains a catalog for this URI
+	 */
+	boolean containsTopLevelCatalogURI(URI uri);
 }

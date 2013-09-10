@@ -17,7 +17,9 @@ package au.gov.ga.earthsci.catalog;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -37,7 +39,7 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 @Singleton
 public class CatalogModel implements ICatalogModel
 {
-	private final ICatalogTreeNode root = new RootNode();
+	private final RootNode root = new RootNode();
 
 	@Inject
 	private IEclipseContext context;
@@ -96,8 +98,16 @@ public class CatalogModel implements ICatalogModel
 		root.addChild(index, catalog);
 	}
 
+	@Override
+	public boolean containsTopLevelCatalogURI(URI uri)
+	{
+		return root.containsChildURI(uri);
+	}
+
 	private static class RootNode extends AbstractCatalogTreeNode
 	{
+		private final Set<URI> uris = new HashSet<URI>();
+
 		public RootNode()
 		{
 			super(null);
@@ -143,6 +153,25 @@ public class CatalogModel implements ICatalogModel
 		public String getInformationString()
 		{
 			return null;
+		}
+
+		@Override
+		protected void fireChildrenPropertyChange(List<ICatalogTreeNode> oldChildren, List<ICatalogTreeNode> newChildren)
+		{
+			super.fireChildrenPropertyChange(oldChildren, newChildren);
+			synchronized (uris)
+			{
+				uris.clear();
+				for (ICatalogTreeNode child : newChildren)
+				{
+					uris.add(child.getURI());
+				}
+			}
+		}
+
+		public boolean containsChildURI(URI uri)
+		{
+			return uris.contains(uri);
 		}
 	}
 }
