@@ -140,8 +140,10 @@ public class DiscoveryServiceManager
 			List<IDiscoveryService> services = loadServices(servicesFile);
 			if (services != null)
 			{
-				DiscoveryServiceManager.services.clear();
-				DiscoveryServiceManager.services.addAll(services);
+				for (IDiscoveryService service : services)
+				{
+					DiscoveryServiceManager.addService(service);
+				}
 			}
 		}
 		catch (Exception e)
