@@ -130,7 +130,6 @@ public class SeederManager
 			{
 				//ignore
 			}
-			maxRevision = Math.max(maxRevision, revision);
 
 			//if newer than last, then apply this revision
 			if (revision > lastRevision)
@@ -145,6 +144,7 @@ public class SeederManager
 						seederCache.put(seederClass, seeder);
 					}
 					seeder.seed(child, url);
+					maxRevision = Math.max(maxRevision, revision);
 				}
 				else
 				{
@@ -153,7 +153,10 @@ public class SeederManager
 			}
 		}
 
-		history.setRevision(url, maxRevision);
+		if (maxRevision > lastRevision)
+		{
+			history.setRevision(url, maxRevision);
+		}
 	}
 
 	@PostConstruct
