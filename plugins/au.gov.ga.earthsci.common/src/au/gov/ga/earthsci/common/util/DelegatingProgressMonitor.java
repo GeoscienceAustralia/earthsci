@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.core.util;
+package au.gov.ga.earthsci.common.util;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
