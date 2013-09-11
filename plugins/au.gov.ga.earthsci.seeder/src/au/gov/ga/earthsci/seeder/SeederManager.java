@@ -146,6 +146,10 @@ public class SeederManager
 					}
 					seeder.seed(child, url);
 				}
+				else
+				{
+					logger.error("No seeder found for element: " + child.getNodeName()); //$NON-NLS-1$
+				}
 			}
 		}
 
