@@ -4,10 +4,10 @@
    <extension-point id="au.gov.ga.earthsci.seeders" name="Seeders" schema="schema/au.gov.ga.earthsci.seeders.exsd"/>
    <extension
          point="au.gov.ga.earthsci.injectables">
-      <injectable
+      <inject
             class="au.gov.ga.earthsci.seeder.SeederManager"
             priority="0">
-      </injectable>
+      </inject>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
