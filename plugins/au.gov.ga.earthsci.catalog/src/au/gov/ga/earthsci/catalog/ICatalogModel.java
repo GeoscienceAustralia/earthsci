@@ -81,10 +81,18 @@ public interface ICatalogModel
 	boolean containsTopLevelCatalogURI(URI uri);
 
 	/**
-	 * Get the catalog tree node for the catalog loaded from the given URI.
+	 * Get the catalog tree node for the catalog loaded from the given URI. If
+	 * multiple catalog nodes exist for the URI, the last one is returned.
 	 * 
 	 * @param uri
 	 * @return Catalog tree node for URI, null if one doesn't exist
 	 */
 	ICatalogTreeNode getTopLevelCatalogForURI(URI uri);
+
+	/**
+	 * Remove all top level catalogs loaded from the given URI.
+	 * 
+	 * @param uri
+	 */
+	void removeTopLevelCatalogsForURI(URI uri);
 }
