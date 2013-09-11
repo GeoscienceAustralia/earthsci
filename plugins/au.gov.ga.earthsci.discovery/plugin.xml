@@ -19,6 +19,10 @@
             class="au.gov.ga.earthsci.discovery.DiscoverySeeder"
             element="DiscoveryServices">
       </seeder>
+      <seeder
+            class="au.gov.ga.earthsci.discovery.DiscoveryRemoveSeeder"
+            element="DiscoveryRemove">
+      </seeder>
    </extension>
 
 </plugin>
