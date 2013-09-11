@@ -23,7 +23,6 @@ Export-Package: au.gov.ga.earthsci.core,
  au.gov.ga.earthsci.core.tree,
  au.gov.ga.earthsci.core.tree.lazy,
  au.gov.ga.earthsci.core.url,
- au.gov.ga.earthsci.core.util,
  au.gov.ga.earthsci.core.worldwind,
  au.gov.ga.earthsci.core.worldwind.adapters
 Require-Bundle: gov.nasa.worldwind,
