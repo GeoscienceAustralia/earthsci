@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.util;
+package au.gov.ga.earthsci.common.util;
 
 import java.util.List;
 import java.util.Map;
 
 import au.gov.ga.earthsci.common.collection.ArrayListHashMap;
-import au.gov.ga.earthsci.common.util.UTF8URLEncoder;
 
 /**
  * Class that parses a URL query string into a key/value map.

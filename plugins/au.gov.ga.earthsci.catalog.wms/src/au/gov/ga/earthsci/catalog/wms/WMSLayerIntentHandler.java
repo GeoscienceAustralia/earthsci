@@ -31,9 +31,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import au.gov.ga.earthsci.common.util.QueryString;
 import au.gov.ga.earthsci.core.intent.AbstractRetrieveIntentHandler;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
-import au.gov.ga.earthsci.core.util.QueryString;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
