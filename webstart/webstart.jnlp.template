@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://marl.ga.gov.au:8500/apps/world-wind/rcp/"
-	href="webstart.jnlp">
+<jnlp spec="1.0+" codebase="http://hostname.com/directory/" href="webstart.jnlp">
 	<information>
 		<title>EarthSci</title>
 		<vendor>Geoscience Australia</vendor>
@@ -14,7 +13,6 @@
 	<component-desc />
 
 	<application-desc main-class="au.gov.ga.earthsci.application.WebStartMain">
-		<argument>-showsplash au.gov.ga.earthsci.application</argument>
 	</application-desc>
 
 	<resources os="Windows">
@@ -35,8 +33,7 @@
 		<property name="osgi.install.area" value="@user.home/.earthsci/install" />
 		<property name="osgi.configuration.area" value="@user.home/.earthsci/configuration" />
 		<property name="osgi.user.area" value="@user.home/.earthsci/user" />
-		<!-- <property name="osgi.splashPath" value="platform:/base/plugins/au.gov.ga.earthsci.branding.blue" 
-			/> -->
+		<property name="osgi.splashPath" value="platform:/base/plugins/au.gov.ga.earthsci.application" />
 	</resources>
 
 @osgibundles@
