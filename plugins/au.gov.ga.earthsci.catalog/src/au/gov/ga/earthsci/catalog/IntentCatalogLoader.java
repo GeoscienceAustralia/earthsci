@@ -155,7 +155,9 @@ public class IntentCatalogLoader
 				ICatalogTreeNode placeholder = intent.replacement != null ? intent.replacement : intent.placeholder;
 				if (placeholder.getParent() == null)
 				{
-					throw new IllegalStateException("Placeholder parent cannot be null"); //$NON-NLS-1$
+					//If placeholder parent is null, probably means the placeholder has been removed from
+					//the tree by the user, which means it shouldn't be replaced by the actual loaded node.
+					return;
 				}
 
 				intent.replacement = node;
