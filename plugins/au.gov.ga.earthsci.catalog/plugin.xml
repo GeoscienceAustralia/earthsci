@@ -28,5 +28,9 @@
             class="au.gov.ga.earthsci.catalog.CatalogSeeder"
             element="CatalogModel">
       </seeder>
+      <seeder
+            class="au.gov.ga.earthsci.catalog.CatalogRemoveSeeder"
+            element="CatalogRemove">
+      </seeder>
    </extension>
 </plugin>
