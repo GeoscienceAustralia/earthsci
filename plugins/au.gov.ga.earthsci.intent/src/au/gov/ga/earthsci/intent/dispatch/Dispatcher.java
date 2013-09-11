@@ -104,6 +104,10 @@ public class Dispatcher
 	 */
 	public boolean dispatch(Object object, IEclipseContext context)
 	{
+		if (object == null)
+		{
+			return false;
+		}
 		DispatchFilter filter = findFilter(object);
 		Class<? extends IDispatchHandler> handlerClass = filter == null ? null : filter.getHandler();
 		if (handlerClass == null)
