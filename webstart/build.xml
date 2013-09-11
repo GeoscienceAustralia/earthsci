@@ -20,7 +20,9 @@
 	<property name="signed.dir" value="${webstart.dir}/signed" />
 
 	<property name="jnlp.file" value="${webstart.dir}/webstart.jnlp" />
+	<property name="jsp.file" value="${webstart.dir}/webstart.jnlp.jsp" />
 	<property name="jnlp.template" value="${basedir}/webstart.jnlp.template" />
+	<property name="jsp.template" value="${basedir}/webstart.jnlp.jsp.template" />
 
 	<property name="keystore_file" value="${basedir}/keystore" />
 	<property name="keystore_alias" value="selfsigned" />
@@ -126,6 +128,14 @@
 		</osgibundles>
 
 		<copy file="${jnlp.template}" tofile="${jnlp.file}" overwrite="true">
+			<filterchain>
+				<replacetokens>
+					<token key="jarresources" value="${jnlp.resources.string}" />
+					<token key="osgibundles" value="${osgi.bundles.string}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		<copy file="${jsp.template}" tofile="${jsp.file}" overwrite="true">
 			<filterchain>
 				<replacetokens>
 					<token key="jarresources" value="${jnlp.resources.string}" />

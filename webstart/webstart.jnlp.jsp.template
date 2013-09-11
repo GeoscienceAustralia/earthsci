@@ -1,0 +1,93 @@
+<%
+	StringBuffer url = HttpUtils.getRequestURL(request);
+	int indexOfLastSlash = url.lastIndexOf("/");
+	String codebase = url.substring(0, indexOfLastSlash + 1);
+	String document = url.substring(indexOfLastSlash + 1);
+	
+	response.setContentType("application/x-java-jnlp-file");
+	String filename = document.substring(0, document.indexOf('.')) + ".jnlp";	
+	response.addHeader("Content-disposition", "inline; filename=" + filename);
+	
+	String[] parameters = null;
+	String query = request.getQueryString();
+	if(query != null && query.length() > 0)
+	{
+		document += "?" + query;
+		
+		java.net.URL baseURL = new java.net.URL(url.toString());
+		parameters = query.split("&");
+		for(int i = 0; i < parameters.length; i++)
+		{
+			//decode encoded URL
+			parameters[i] = java.net.URLDecoder.decode(parameters[i], "UTF-8");
+			try
+			{
+				//make URL absolute
+				parameters[i] = new java.net.URL(baseURL, parameters[i]).toExternalForm();
+			}
+			catch(Exception e)
+			{
+				parameters[i] = null;
+			}
+		}
+	}
+%>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0" codebase="<%= codebase %>" href="<%= document %>">
+	<information>
+		<title>EarthSci</title>
+		<vendor>Geoscience Australia</vendor>
+		<offline-allowed />
+	</information>
+
+	<security>
+		<all-permissions />
+	</security>
+
+	<component-desc />
+
+	<application-desc main-class="au.gov.ga.earthsci.application.WebStartMain">
+		<argument>-showsplash</argument>
+<%
+	if(parameters != null)
+	{
+		for(String parameter : parameters)
+		{
+			if(parameter != null && parameter.length() > 0)
+			{
+%>
+		<argument>--open</argument>
+		<argument><%= parameter %></argument>
+<%
+			}
+		}
+	}
+%>
+	</application-desc>
+
+	<resources os="Windows">
+		<j2se version="1.6+" java-vm-args="-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none"/>
+	</resources>
+	<resources os="Mac">
+		<j2se version="1.6+" java-vm-args="-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none -XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts" />
+	</resources>
+	<resources os="Linux">
+		<j2se version="1.6+" java-vm-args="-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none"/>
+	</resources>
+
+	<resources>
+		<property name="jnlp.packEnabled" value="true" />
+		<property name="eclipse.product" value="au.gov.ga.earthsci.application.product" />
+		<property name="eclipse.application" value="au.gov.ga.earthsci.application.application" />
+		<property name="osgi.instance.area" value="@user.home/.earthsci/instance" />
+		<property name="osgi.install.area" value="@user.home/.earthsci/install" />
+		<property name="osgi.configuration.area" value="@user.home/.earthsci/configuration" />
+		<property name="osgi.user.area" value="@user.home/.earthsci/user" />
+		<property name="osgi.splashPath" value="platform:/base/plugins/au.gov.ga.earthsci.application" />
+	</resources>
+
+@osgibundles@
+@jarresources@
+
+</jnlp>
