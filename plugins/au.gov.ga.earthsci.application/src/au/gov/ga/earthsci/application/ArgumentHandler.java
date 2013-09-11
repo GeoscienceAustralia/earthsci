@@ -23,6 +23,7 @@ import java.util.Vector;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.equinox.internal.app.CommandLineArgs;
@@ -40,6 +41,7 @@ import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
+@Singleton
 public class ArgumentHandler
 {
 	private static final Logger logger = LoggerFactory.getLogger(ArgumentHandler.class);
@@ -67,6 +69,7 @@ public class ArgumentHandler
 
 		for (final String arg : openValues)
 		{
+			logger.info("Starting Intent for resource provided via command line: " + arg); //$NON-NLS-1$
 			try
 			{
 				URL url = new URL(arg);
