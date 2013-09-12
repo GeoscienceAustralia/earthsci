@@ -15,9 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.handlers;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.inject.Named;
 
@@ -56,19 +56,7 @@ public class OpenHandler
 			return;
 		}
 
-		URI uri = null;
-		try
-		{
-			uri = new URI(file);
-		}
-		catch (URISyntaxException e)
-		{
-		}
-		if (uri == null)
-		{
-			return;
-		}
-
+		URI uri = new File(file).toURI();
 		Intent intent = new Intent();
 		intent.setURI(uri);
 		IIntentCallback callback = new AbstractIntentCallback()
