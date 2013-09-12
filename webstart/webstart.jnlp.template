@@ -18,16 +18,6 @@
 		<argument>-showsplash</argument>
 	</application-desc>
 
-	<resources os="Windows">
-		<j2se version="1.6+" java-vm-args="-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none"/>
-	</resources>
-	<resources os="Mac">
-		<j2se version="1.6+" java-vm-args="-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none -XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts" />
-	</resources>
-	<resources os="Linux">
-		<j2se version="1.6+" java-vm-args="-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none"/>
-	</resources>
-
 	<resources>
 		<property name="jnlp.packEnabled" value="true" />
 		<property name="eclipse.product" value="au.gov.ga.earthsci.application.product" />
@@ -39,6 +29,7 @@
 		<property name="osgi.splashPath" value="platform:/base/plugins/au.gov.ga.earthsci.application" />
 	</resources>
 
+@javaargs@
 @osgibundles@
 @jarresources@
 

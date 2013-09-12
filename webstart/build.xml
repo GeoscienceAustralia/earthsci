@@ -119,6 +119,8 @@
 		<taskdef name="jnlpresources" classname="au.gov.ga.earthsci.ant.JnlpResources" classpath="${ant.task.jar}" />
 		<taskdef name="osgibundles" classname="au.gov.ga.earthsci.ant.OsgiBundles" classpath="${ant.task.jar}" />
 		<typedef name="startlevel" classname="au.gov.ga.earthsci.ant.StartLevel" classpath="${ant.task.jar}" />
+		<typedef name="javaarg" classname="au.gov.ga.earthsci.ant.JavaArg" classpath="${ant.task.jar}" />
+		<typedef name="javaargs" classname="au.gov.ga.earthsci.ant.JavaArgs" classpath="${ant.task.jar}" />
 
 		<jnlpresources property="jnlp.resources.string" prefix="signed/">
 			<fileset dir="${signed.dir}" id="signed.fileset.id">
@@ -132,10 +134,21 @@
 			<startlevel bundle="org.eclipse.equinox.ds" level="1" />
 			<startlevel bundle="org.eclipse.equinox.common" level="2" />
 		</osgibundles>
+		
+		<javaargs property="java.args.string" version="1.6+">
+			<fileset refid="signed.fileset.id" />
+			<javaarg argument="-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none" />
+			<javaarg os="Mac OS X" argument="-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts" />
+			<javaarg arch="x86" argument="-Xmx1024m" />
+			<javaarg arch="ppc" argument="-Xmx1024m" />
+			<javaarg arch="x86_64" argument="-Xmx2048m" />
+			<javaarg arch="amd64" argument="-Xmx2048m" />
+		</javaargs>
 
 		<copy file="${jnlp.template}" tofile="${jnlp.file}" overwrite="true">
 			<filterchain>
 				<replacetokens>
+					<token key="javaargs" value="${java.args.string}" />
 					<token key="jarresources" value="${jnlp.resources.string}" />
 					<token key="osgibundles" value="${osgi.bundles.string}" />
 				</replacetokens>
@@ -144,6 +157,7 @@
 		<copy file="${jsp.template}" tofile="${jsp.file}" overwrite="true">
 			<filterchain>
 				<replacetokens>
+					<token key="javaargs" value="${java.args.string}" />
 					<token key="jarresources" value="${jnlp.resources.string}" />
 					<token key="osgibundles" value="${osgi.bundles.string}" />
 				</replacetokens>
