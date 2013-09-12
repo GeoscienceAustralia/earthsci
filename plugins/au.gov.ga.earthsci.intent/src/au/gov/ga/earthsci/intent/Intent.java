@@ -38,8 +38,9 @@ public class Intent
 {
 	private String action;
 	private final Set<String> categories = new HashSet<String>();
-	private IContentType contentType;
 	private URI uri;
+	private IContentType contentType;
+	private boolean determineContentType = true;
 	private Class<?> expectedReturnType;
 	private Class<?> requiredReturnType;
 	private Class<? extends IIntentHandler> handler;
@@ -99,26 +100,6 @@ public class Intent
 	}
 
 	/**
-	 * @return Explicit content type of the data associated with this intent.
-	 */
-	public IContentType getContentType()
-	{
-		return contentType;
-	}
-
-	/**
-	 * Set the explicit content type of the data associated with this intent.
-	 * 
-	 * @param type
-	 * @return this
-	 */
-	public Intent setContentType(IContentType contentType)
-	{
-		this.contentType = contentType;
-		return this;
-	}
-
-	/**
 	 * @return The URI of the data associated with this intent.
 	 */
 	public URI getURI()
@@ -139,6 +120,50 @@ public class Intent
 	{
 		this.uri = uri;
 		return this;
+	}
+
+	/**
+	 * @return Explicit content type of the data associated with this intent.
+	 */
+	public IContentType getContentType()
+	{
+		return contentType;
+	}
+
+	/**
+	 * Set the explicit content type of the data associated with this intent.
+	 * 
+	 * @param type
+	 * @return this
+	 */
+	public Intent setContentType(IContentType contentType)
+	{
+		this.contentType = contentType;
+		return this;
+	}
+
+	/**
+	 * @return If a content type is not set, should it be determined?
+	 */
+	public boolean isDetermineContentType()
+	{
+		return determineContentType;
+	}
+
+	/**
+	 * Set if the content type should be determined if it is not set. Defaults
+	 * to true.
+	 * <p/>
+	 * If this is true, and the content type cannot be determined, the intent
+	 * will fail. This should be true when using an intent to open a resource,
+	 * so that the intent manager can match the correct intent filter to the
+	 * resource's content type.
+	 * 
+	 * @param determineContentType
+	 */
+	public void setDetermineContentType(boolean determineContentType)
+	{
+		this.determineContentType = determineContentType;
 	}
 
 	/**

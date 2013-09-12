@@ -17,7 +17,6 @@ package au.gov.ga.earthsci.intent;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,14 +32,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,6 +144,8 @@ public class IntentManager implements IIntentManager
 				@Override
 				public void run()
 				{
+					//TODO add progress monitor if show progress is true
+
 					try
 					{
 						IntentFilter filter = null;
@@ -157,7 +153,7 @@ public class IntentManager implements IIntentManager
 						if (handlerClass == null)
 						{
 							//if intent has no content type, try to determine it
-							if (intent.getContentType() == null)
+							if (intent.getContentType() == null && intent.isDetermineContentType())
 							{
 								IContentType contentType = determineContentType(intent, showProgress, context);
 								intent.setContentType(contentType);
@@ -230,106 +226,35 @@ public class IntentManager implements IIntentManager
 	}
 
 	protected IContentType determineContentType(final Intent intent, boolean showProgress, IEclipseContext context)
+			throws IOException
 	{
-		//TODO fix support for showProgress
-		showProgress = false;
-
-		final boolean[] runnableComplete = new boolean[1];
-		final IContentType[] result = new IContentType[1];
-
-		URL urlLocal = null;
+		URL url = null;
 		try
 		{
-			urlLocal = intent.getURL();
+			url = intent.getURL();
 		}
 		catch (MalformedURLException e)
 		{
 		}
-		final URL url = urlLocal;
 		if (url == null)
 		{
 			return null;
 		}
 
-		final IRunnableWithProgress runnable = new IRunnableWithProgress()
+		InputStream is = new LazyURLInputStream(url);
+		try
 		{
-			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
-			{
-				IContentType contentType = null;
-				InputStream is = new LazyURLInputStream(url);
-				try
-				{
-					contentType = ContentTypeResolverManager.resolveContentType(url, intent);
-				}
-				catch (IOException e)
-				{
-					logger.error("Error determining intent content type", e); //$NON-NLS-1$
-				}
-				finally
-				{
-					try
-					{
-						is.close();
-					}
-					catch (IOException e)
-					{
-					}
-				}
-
-				synchronized (runnableComplete)
-				{
-					result[0] = contentType;
-					runnableComplete[0] = true;
-					runnableComplete.notify();
-				}
-			}
-		};
-
-		if (showProgress)
-		{
-			Display.getDefault().asyncExec(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					ProgressMonitorDialog pmd = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
-					try
-					{
-						pmd.run(true, true, runnable);
-					}
-					catch (Exception e)
-					{
-						logger.error("Error determining intent content type", e); //$NON-NLS-1$
-					}
-				}
-			});
+			return ContentTypeResolverManager.resolveContentType(url, intent);
 		}
-		else
+		finally
 		{
 			try
 			{
-				runnable.run(new NullProgressMonitor());
+				is.close();
 			}
-			catch (Exception e)
+			catch (IOException e)
 			{
-				logger.error("Error determining intent content type", e); //$NON-NLS-1$
 			}
-		}
-
-		synchronized (runnableComplete)
-		{
-			if (!runnableComplete[0])
-			{
-				try
-				{
-					runnableComplete.wait();
-				}
-				catch (InterruptedException e)
-				{
-				}
-			}
-			return result[0];
 		}
 	}
 
