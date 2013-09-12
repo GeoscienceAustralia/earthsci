@@ -4,6 +4,7 @@
 
 	<property name="srcproduct.dir" value="${basedir}/../features/au.gov.ga.earthsci.product/target" />
 	<property name="srcproduct.zip" value="au.gov.ga.earthsci.*.zip" />
+	<property name="appplugin.dir" value="${basedir}/../plugins/au.gov.ga.earthsci.application" />
 	<property name="target.dir" value="${basedir}/target" />
 
 	<property name="src.dir" value="${basedir}/src" />
@@ -23,6 +24,11 @@
 	<property name="jsp.file" value="${webstart.dir}/webstart.jnlp.jsp" />
 	<property name="jnlp.template" value="${basedir}/webstart.jnlp.template" />
 	<property name="jsp.template" value="${basedir}/webstart.jnlp.jsp.template" />
+
+	<property name="splash.src.file" value="${appplugin.dir}/splash.jpg" />
+	<property name="splash.dst.file" value="${webstart.dir}/splash.jpg" />
+	<property name="icon.src.file" value="${appplugin.dir}/branding/earthsci-icon-32px.png" />
+	<property name="icon.dst.file" value="${webstart.dir}/icon.png" />
 
 	<property name="keystore_file" value="${basedir}/keystore" />
 	<property name="keystore_alias" value="selfsigned" />
@@ -143,6 +149,9 @@
 				</replacetokens>
 			</filterchain>
 		</copy>
+
+		<copy file="${splash.src.file}" tofile="${splash.dst.file}" overwrite="true" />
+		<copy file="${icon.src.file}" tofile="${icon.dst.file}" overwrite="true" />
 	</target>
 
 	<target name="run" depends="generate-jnlp" />

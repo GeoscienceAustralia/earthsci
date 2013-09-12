@@ -3,6 +3,8 @@
 	<information>
 		<title>EarthSci</title>
 		<vendor>Geoscience Australia</vendor>
+		<icon href="icon.png" />
+		<icon kind="splash" href="splash.jpg" />
 		<offline-allowed />
 	</information>
 
