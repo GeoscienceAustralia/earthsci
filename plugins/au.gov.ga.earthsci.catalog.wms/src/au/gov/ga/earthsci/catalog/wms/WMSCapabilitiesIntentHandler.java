@@ -106,20 +106,21 @@ public class WMSCapabilitiesIntentHandler extends AbstractRetrieveIntentHandler
 			WMSCapabilitiesCatalogTreeNode catalogTreeNode =
 					new WMSCapabilitiesCatalogTreeNode(intent.getURI(), wmsCapabilities);
 
-			WMSLayerCapabilitiesCatalogTreeNode singleLayer = catalogTreeNode.getSingleLayer();
-			if (singleLayer == null || ICatalogTreeNode.class.equals(intent.getExpectedReturnType()))
+			if (!ICatalogTreeNode.class.equals(intent.getExpectedReturnType()))
 			{
-				callback.completed(catalogTreeNode, intent);
+				WMSLayerCapabilitiesCatalogTreeNode singleLayer = catalogTreeNode.getSingleLayer();
+				if (singleLayer != null)
+				{
+					FolderNode folder = CatalogLayerHelper.createFolderNode(catalogTreeNode);
+					LayerNode layer = CatalogLayerHelper.createLayerNode(singleLayer);
+					folder.addChild(layer);
+					IntentLayerLoader.load(layer, context);
+					callback.completed(folder, intent);
+					return;
+				}
 			}
-			else
-			{
-				//only a single layer in the WMS, treat it as a layer instead of a catalog
-				FolderNode folder = CatalogLayerHelper.createFolderNode(catalogTreeNode);
-				LayerNode layer = CatalogLayerHelper.createLayerNode(singleLayer);
-				folder.addChild(layer);
-				IntentLayerLoader.load(layer, context);
-				callback.completed(folder, intent);
-			}
+
+			callback.completed(catalogTreeNode, intent);
 		}
 		catch (Exception e)
 		{
