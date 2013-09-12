@@ -17,13 +17,19 @@ package au.gov.ga.earthsci.layer.ui;
 
 import gov.nasa.worldwind.layers.Layer;
 
+import java.net.URI;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
+import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
@@ -36,11 +42,13 @@ import au.gov.ga.earthsci.intent.dispatch.IDispatchHandler;
  * activating the {@link LayerTreePart}.
  * 
  * @author James Navin (james.navin@ga.gov.au)
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class LayerTreeNodeDispatchHandler implements IDispatchHandler
 {
-
 	private static final String LAYER_PART_ID = "au.gov.ga.earthsci.application.layertree.part"; //$NON-NLS-1$
+
+	private static final Logger logger = LoggerFactory.getLogger(LayerTreeNodeDispatchHandler.class);
 
 	@Inject
 	private ITreeModel model;
@@ -56,7 +64,11 @@ public class LayerTreeNodeDispatchHandler implements IDispatchHandler
 	public void handle(Object object)
 	{
 		ILayerTreeNode node = null;
-		if (object instanceof Layer)
+		if (object instanceof ILayerTreeNode)
+		{
+			node = (ILayerTreeNode) object;
+		}
+		else if (object instanceof Layer)
 		{
 			LayerNode layerNode = new LayerNode();
 			layerNode.setLayer((Layer) object);
@@ -64,26 +76,81 @@ public class LayerTreeNodeDispatchHandler implements IDispatchHandler
 			node = layerNode;
 		}
 
-		if (object instanceof ILayerTreeNode)
-		{
-			node = (ILayerTreeNode) object;
-		}
-
 		if (node == null)
 		{
 			return;
 		}
 
-		model.getRootNode().addChild(node);
+		ILayerTreeNode existing = findMatchingExistingNode(node, model.getRootNode());
+		if (existing != null)
+		{
+			node = existing;
+		}
+		else
+		{
+			model.getRootNode().addChild(node);
+		}
 
+		final ILayerTreeNode selection = node;
 		shell.getDisplay().asyncExec(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				partService.showPart(LAYER_PART_ID, PartState.ACTIVATE);
+				MPart part = partService.showPart(LAYER_PART_ID, PartState.ACTIVATE);
+				ESelectionService selectionService = part.getContext().get(ESelectionService.class);
+				selectionService.setSelection(new ILayerTreeNode[] { selection });
 			}
 		});
 	}
 
+	private ILayerTreeNode findMatchingExistingNode(ILayerTreeNode nodeToFind, ILayerTreeNode nodeToSearch)
+	{
+		if (nodesMatch(nodeToFind, nodeToSearch))
+		{
+			return nodeToSearch;
+		}
+		for (ILayerTreeNode child : nodeToSearch.getChildren())
+		{
+			ILayerTreeNode matching = findMatchingExistingNode(nodeToFind, child);
+			if (matching != null)
+			{
+				return matching;
+			}
+		}
+		return null;
+	}
+
+	private boolean nodesMatch(ILayerTreeNode node1, ILayerTreeNode node2)
+	{
+		if (node1 == null || node2 == null)
+		{
+			return node1 == node2;
+		}
+		if (!urisMatch(node1.getURI(), node2.getURI()))
+		{
+			return false;
+		}
+		if (node1.getChildCount() != node2.getChildCount())
+		{
+			return false;
+		}
+		for (int i = 0; i < node1.getChildCount(); i++)
+		{
+			if (!nodesMatch(node1.getChild(i), node2.getChild(i)))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean urisMatch(URI uri1, URI uri2)
+	{
+		if (uri1 == null || uri2 == null)
+		{
+			return uri1 == uri2;
+		}
+		return uri1.equals(uri2);
+	}
 }
