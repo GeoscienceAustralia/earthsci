@@ -105,10 +105,11 @@ public class IntentLayerLoader
 
 			//TODO cannot let this notification require acknowledgement during initial loading (layer unpersistence)
 			//as it causes the parts to be created incorrectly (bad parent window perhaps?)
+			String uriString = intent.getURI() != null ? UTF8URLEncoder.decode(intent.getURI().toString()) : "null"; //$NON-NLS-1$
 			String title = Messages.IntentLayerLoader_FailedLoadNotificationTitle;
 			String message =
 					Messages.IntentLayerLoader_FailedLoadNotificationDescription
-							+ UTF8URLEncoder.decode(intent.getURI().toString()) + ": " + e.getLocalizedMessage(); //$NON-NLS-1$
+							+ uriString + ": " + e.getLocalizedMessage(); //$NON-NLS-1$
 			NotificationManager.error(title, message, NotificationCategory.FILE_IO, e);
 			logger.error(message, e);
 		}
