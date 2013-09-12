@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2013 Geoscience Australia
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package au.gov.ga.earthsci.ant;
 
 import java.io.BufferedOutputStream;
@@ -18,6 +33,13 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 
+/**
+ * Ant task used to (re)pack200 JAR files. Repacking means packing and then
+ * immediately unpacking. This is useful if you need to sign a JAR before
+ * packing (as packing it changes the signature of the JAR file).
+ * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ */
 public class JarPack200 extends Task
 {
 	private Vector<FileSet> filesets = new Vector<FileSet>();
