@@ -15,9 +15,12 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.layer.ui;
 
+import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.layers.Layer;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,6 +38,7 @@ import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.worldwind.ITreeModel;
 import au.gov.ga.earthsci.intent.dispatch.IDispatchHandler;
+import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
  * An {@link IDispatchHandler} that receives {@link ILayerTreeNode} and/or
@@ -70,9 +74,34 @@ public class LayerTreeNodeDispatchHandler implements IDispatchHandler
 		}
 		else if (object instanceof Layer)
 		{
+			Layer layer = (Layer) object;
 			LayerNode layerNode = new LayerNode();
-			layerNode.setLayer((Layer) object);
+			layerNode.setLayer(layer);
 			layerNode.getLayer().setEnabled(true);
+			URL url = (URL) layer.getValue(AVKeyMore.CONTEXT_URL);
+			if (url == null)
+			{
+				AVList params = (AVList) layer.getValue(AVKeyMore.CONSTRUCTION_PARAMETERS);
+				if (params != null)
+				{
+					url = (URL) params.getValue(AVKeyMore.CONTEXT_URL);
+				}
+			}
+			if (url != null)
+			{
+				try
+				{
+					layerNode.setURI(url.toURI());
+				}
+				catch (URISyntaxException e)
+				{
+					logger.error("Error converting layer URL to URI", e); //$NON-NLS-1$
+				}
+			}
+			else
+			{
+				logger.warn("Dispatched Layer object doesn't contain a URL for persistence"); //$NON-NLS-1$
+			}
 			node = layerNode;
 		}
 
