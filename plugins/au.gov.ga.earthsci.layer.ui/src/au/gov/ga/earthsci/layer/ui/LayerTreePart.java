@@ -113,6 +113,7 @@ public class LayerTreePart
 
 	@Inject
 	private ESelectionService selectionService;
+	private boolean settingSelection = false;
 
 	@Inject
 	private EPartService partService;
@@ -252,7 +253,9 @@ public class LayerTreePart
 				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 				List<?> list = selection.toList();
 				ILayerTreeNode[] array = list.toArray(new ILayerTreeNode[list.size()]);
+				settingSelection = true;
 				selectionService.setSelection(array.length == 1 ? array[0] : array);
+				settingSelection = false;
 			}
 		});
 		viewer.getTree().addSelectionListener(new SelectionAdapter()
@@ -510,5 +513,30 @@ public class LayerTreePart
 				}
 			});
 		}
+	}
+
+	@Inject
+	private void select(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode[] nodes)
+	{
+		if (nodes == null || viewer == null || settingSelection)
+		{
+			return;
+		}
+		StructuredSelection selection = new StructuredSelection(nodes);
+		viewer.setSelection(selection, true);
+		for (ILayerTreeNode node : nodes)
+		{
+			viewer.expandToLevel(node, 1);
+		}
+	}
+
+	@Inject
+	private void select(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode node)
+	{
+		if (node == null)
+		{
+			return;
+		}
+		select(new ILayerTreeNode[] { node });
 	}
 }
