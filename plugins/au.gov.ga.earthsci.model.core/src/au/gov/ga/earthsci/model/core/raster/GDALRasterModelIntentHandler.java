@@ -159,6 +159,7 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 		}
 
 		Intent paramsIntent = new Intent();
+		paramsIntent.setAction("collectRasterParameters"); //$NON-NLS-1$
 		paramsIntent.setRequiredReturnType(GDALRasterModelParameters.class);
 		paramsIntent.putExtra(DATASET_EXTRAS_KEY, ds);
 

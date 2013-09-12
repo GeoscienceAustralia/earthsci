@@ -10,6 +10,9 @@
          <return-type
                class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters">
          </return-type>
+         <action
+               name="collectRasterParameters">
+         </action>
       </filter>
    </extension>
 
