@@ -39,8 +39,8 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalProperties;
 import au.gov.ga.earthsci.core.retrieve.RetrievalProperties;
 import au.gov.ga.earthsci.intent.AbstractIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentCallback;
-import au.gov.ga.earthsci.intent.IIntentManager;
 import au.gov.ga.earthsci.intent.Intent;
+import au.gov.ga.earthsci.intent.IntentManager;
 import au.gov.ga.earthsci.model.IModel;
 import au.gov.ga.earthsci.model.core.worldwind.BasicModelLayer;
 import au.gov.ga.earthsci.model.core.worldwind.IModelLayer;
@@ -62,9 +62,6 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 
 	public static String MODEL_PARAMS_EXTRAS_KEY = "gdalRasterModelParams"; //$NON-NLS-1$
 	public static String DATASET_EXTRAS_KEY = "dataset"; //$NON-NLS-1$
-
-	@Inject
-	private IIntentManager intentManager;
 
 	@Inject
 	private IEclipseContext eclipseContext;
@@ -165,7 +162,7 @@ public class GDALRasterModelIntentHandler extends AbstractRetrieveIntentHandler
 		paramsIntent.setRequiredReturnType(GDALRasterModelParameters.class);
 		paramsIntent.putExtra(DATASET_EXTRAS_KEY, ds);
 
-		intentManager.start(paramsIntent, new AbstractIntentCallback()
+		IntentManager.getInstance().start(paramsIntent, new AbstractIntentCallback()
 		{
 			@Override
 			public void error(Exception e, Intent paramsIntent)
