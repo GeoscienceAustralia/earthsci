@@ -196,7 +196,8 @@ public class IntentManager implements IIntentManager
 						}
 
 						//create the handler, and notify the callback
-						IEclipseContext child = context.createChild();
+						IEclipseContext activeLeaf = context.getActiveLeaf();
+						IEclipseContext child = activeLeaf.createChild();
 						IIntentHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
 						if (!callback.starting(filter, handler, intent))
 						{

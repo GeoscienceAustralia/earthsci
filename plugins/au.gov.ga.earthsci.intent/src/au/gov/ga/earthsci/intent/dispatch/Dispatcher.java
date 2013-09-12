@@ -115,7 +115,8 @@ public class Dispatcher
 			logger.error("Could not find dispatch handler for object: " + object); //$NON-NLS-1$
 			return false;
 		}
-		IEclipseContext child = context.createChild();
+		IEclipseContext activeLeaf = context.getActiveLeaf();
+		IEclipseContext child = activeLeaf.createChild();
 		IDispatchHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
 		handler.handle(object);
 		return true;
