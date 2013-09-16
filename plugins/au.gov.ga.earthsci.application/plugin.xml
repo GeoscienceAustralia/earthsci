@@ -210,5 +210,12 @@
             name="Logging">
       </page>
    </extension>
+   <extension
+         point="au.gov.ga.earthsci.seeders">
+      <seeder
+            class="au.gov.ga.earthsci.application.parts.globe.InitialViewSeeder"
+            element="InitialView">
+      </seeder>
+   </extension>
 
 </plugin>
