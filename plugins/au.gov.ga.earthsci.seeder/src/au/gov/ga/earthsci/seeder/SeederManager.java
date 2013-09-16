@@ -131,8 +131,8 @@ public class SeederManager
 				//ignore
 			}
 
-			//if newer than last, then apply this revision
-			if (revision > lastRevision)
+			//if newer than last (or revision attribute doesn't exist), then apply this revision
+			if (revision > lastRevision || revision < 0)
 			{
 				Class<ISeeder> seederClass = seeders.get(child.getNodeName());
 				if (seederClass != null)
