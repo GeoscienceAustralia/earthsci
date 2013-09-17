@@ -19,6 +19,7 @@
 	<property name="webstart.dir" value="${target.dir}/webstart" />
 	<property name="repacked.dir" value="${webstart.dir}/repacked" />
 	<property name="signed.dir" value="${webstart.dir}/signed" />
+	<property name="signscript.file" value="${webstart.dir}/sign.sh" />
 
 	<property name="jnlp.file" value="${webstart.dir}/webstart.jnlp" />
 	<property name="jsp.file" value="${webstart.dir}/webstart.jnlp.jsp" />
@@ -134,7 +135,7 @@
 			<startlevel bundle="org.eclipse.equinox.ds" level="1" />
 			<startlevel bundle="org.eclipse.equinox.common" level="2" />
 		</osgibundles>
-		
+
 		<javaargs property="java.args.string" version="1.6+">
 			<fileset refid="signed.fileset.id" />
 			<javaarg argument="-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none" />
@@ -168,6 +169,14 @@
 		<copy file="${icon.src.file}" tofile="${icon.dst.file}" overwrite="true" />
 	</target>
 
-	<target name="run" depends="generate-jnlp" />
+	<target name="generate-sign-script" depends="repack-jars">
+		<typedef name="signscript" classname="au.gov.ga.earthsci.ant.GenerateSignScript" classpath="${ant.task.jar}" />
+
+		<signscript filename="${signscript.file}" keystore="${keystore_file}" alias="${keystore_alias}" storepass="${keystore_password}" pack="true" firstline="#!/bin/sh">
+			<fileset dir="${repacked.dir}" includes="*.jar" />
+		</signscript>
+	</target>
+
+	<target name="run" depends="generate-jnlp, generate-sign-script" />
 
 </project>
