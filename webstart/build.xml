@@ -18,7 +18,7 @@
 	<property name="unsigned.dir" value="${target.dir}/unsigned" />
 	<property name="webstart.dir" value="${target.dir}/webstart" />
 	<property name="repacked.dir" value="${webstart.dir}/repacked" />
-	<property name="signed.dir" value="${webstart.dir}/signed" />
+	<property name="selfsigned.dir" value="${webstart.dir}/selfsigned" />
 	<property name="signscript.file" value="${webstart.dir}/sign.sh" />
 
 	<property name="jnlp.file" value="${webstart.dir}/webstart.jnlp" />
@@ -100,9 +100,9 @@
 	</target>
 
 	<target name="sign-jars" depends="repack-jars">
-		<mkdir dir="${signed.dir}" />
-		<syncdir fromdir="${repacked.dir}" todir="${signed.dir}" keeppacked="true" />
-		<signjar destDir="${signed.dir}" keystore="${keystore_file}" alias="${keystore_alias}" storepass="${keystore_password}">
+		<mkdir dir="${selfsigned.dir}" />
+		<syncdir fromdir="${repacked.dir}" todir="${selfsigned.dir}" keeppacked="true" />
+		<signjar destDir="${selfsigned.dir}" keystore="${keystore_file}" alias="${keystore_alias}" storepass="${keystore_password}">
 			<path>
 				<fileset dir="${repacked.dir}" includes="*.jar" />
 			</path>
@@ -112,7 +112,7 @@
 
 	<target name="pack-jars" depends="sign-jars">
 		<jarpack200>
-			<fileset dir="${signed.dir}" includes="*.jar" />
+			<fileset dir="${selfsigned.dir}" includes="*.jar" />
 		</jarpack200>
 	</target>
 
@@ -123,8 +123,8 @@
 		<typedef name="javaarg" classname="au.gov.ga.earthsci.ant.JavaArg" classpath="${ant.task.jar}" />
 		<typedef name="javaargs" classname="au.gov.ga.earthsci.ant.JavaArgs" classpath="${ant.task.jar}" />
 
-		<jnlpresources property="jnlp.resources.string" prefix="signed/">
-			<fileset dir="${signed.dir}" id="signed.fileset.id">
+		<jnlpresources property="jnlp.resources.string" basedir="${webstart.dir}">
+			<fileset dir="${selfsigned.dir}" id="signed.fileset.id">
 				<include name="*.jar" />
 			</fileset>
 		</jnlpresources>

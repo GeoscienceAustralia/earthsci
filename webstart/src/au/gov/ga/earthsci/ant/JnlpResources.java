@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.ant;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Vector;
@@ -35,7 +36,7 @@ import org.apache.tools.ant.types.FileSet;
 public class JnlpResources extends Task
 {
 	private String property;
-	private String prefix;
+	private String basedir;
 	private Vector<FileSet> filesets = new Vector<FileSet>();
 
 	public void setProperty(String property)
@@ -43,9 +44,9 @@ public class JnlpResources extends Task
 		this.property = property;
 	}
 
-	public void setPrefix(String prefix)
+	public void setBasedir(String basedir)
 	{
-		this.prefix = prefix;
+		this.basedir = basedir;
 	}
 
 	public void addFileset(FileSet fileset)
@@ -58,20 +59,28 @@ public class JnlpResources extends Task
 	{
 		MultiMap<String, String> resources = new MultiMap<String, String>();
 
+		File relativeBase = new File(basedir);
 		for (FileSet fileset : filesets)
 		{
 			DirectoryScanner directoryScanner = fileset.getDirectoryScanner(getProject());
 			String[] includedFiles = directoryScanner.getIncludedFiles();
 			for (String filename : includedFiles)
 			{
-				filename = filename.replace('\\', '/');
 				File base = directoryScanner.getBasedir();
 				File file = new File(base, filename);
 				BundleProperties bundleProperties = new BundleProperties(file);
 				String[] osArchs = bundleProperties.getOsArchs();
-				for (String osArch : osArchs)
+				try
 				{
-					resources.putSingle(osArch, filename);
+					File relative = Util.getRelativeFile(file, relativeBase);
+					for (String osArch : osArchs)
+					{
+						resources.putSingle(osArch, relative.getPath().replace('\\', '/'));
+					}
+				}
+				catch (IOException e)
+				{
+					throw new BuildException("Error generating relative path", e);
 				}
 			}
 		}
@@ -99,7 +108,6 @@ public class JnlpResources extends Task
 		for (String filename : filenames)
 		{
 			sb.append("\t\t<jar href=\"");
-			sb.append(prefix);
 			sb.append(filename);
 			sb.append("\" />\n");
 		}
