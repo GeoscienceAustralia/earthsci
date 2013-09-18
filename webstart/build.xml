@@ -35,6 +35,10 @@
 	<property name="keystore_alias" value="selfsigned" />
 	<property name="keystore_password" value="password" />
 
+	<property name="war.dir" value="${target.dir}/war" />
+	<property name="war.file" value="${war.dir}/earthsci.war" />
+	<property name="web.xml.file" value="${basedir}/web.xml" />
+
 	<target name="clean">
 		<delete dir="${target.dir}" />
 	</target>
@@ -177,6 +181,11 @@
 		</signscript>
 	</target>
 
-	<target name="run" depends="generate-jnlp, generate-sign-script" />
+	<target name="generate-war" depends="generate-jnlp, generate-sign-script">
+		<mkdir dir="${war.dir}" />
+		<war destfile="${war.file}" webxml="${web.xml.file}" basedir="${webstart.dir}" />
+	</target>
+
+	<target name="run" depends="generate-war" />
 
 </project>
