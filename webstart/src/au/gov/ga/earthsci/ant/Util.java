@@ -55,7 +55,7 @@ public class Util
 		}
 		return arch;
 	}
-	
+
 	/**
 	 * From <a
 	 * href="http://stackoverflow.com/a/1269907">http://stackoverflow.com
@@ -99,5 +99,61 @@ public class Util
 			result.delete(result.length() - File.separator.length(), result.length());
 		}
 		return new File(result.toString());
+	}
+
+	/**
+	 * Compare two version strings. Compares parts between '.' characters in
+	 * turn. If all parts are the same, but one string has more parts, it is
+	 * treated as greater.
+	 * <p/>
+	 * 1.0.0 == 1.0.0<br/>
+	 * 1.0.0 &lt; 1.0.1<br/>
+	 * 1.0 &lt; 1.0.1<br/>
+	 * 1.0.0 &lt; 1.1<br/>
+	 * 1.0.0.v20130101 &lt; 1.0.0.v20130102<br/>
+	 * 
+	 * @param version1
+	 * @param version2
+	 * @return 0 if versions are equal, negative integer if version 1 is less
+	 *         than version2, positive integer otherwise
+	 */
+	public static int compareVersionStrings(String version1, String version2)
+	{
+		String[] split1 = version1.split("\\.");
+		String[] split2 = version2.split("\\.");
+		int min = Math.min(split1.length, split2.length);
+		for (int i = 0; i < min; i++)
+		{
+			int c = compareIntString(split1[i], split2[i]);
+			if (c != 0)
+			{
+				return c;
+			}
+		}
+		return compareInts(split1.length, split2.length);
+	}
+
+	private static int compareIntString(String s1, String s2)
+	{
+		if (s1.equals(s2))
+		{
+			return 0;
+		}
+		try
+		{
+			int i1 = Integer.parseInt(s1);
+			int i2 = Integer.parseInt(s2);
+			return compareInts(i1, i2);
+		}
+		catch (Exception e)
+		{
+			//not ints, compare as strings
+			return s1.compareToIgnoreCase(s2);
+		}
+	}
+
+	private static int compareInts(int i1, int i2)
+	{
+		return i1 - i2;
 	}
 }
