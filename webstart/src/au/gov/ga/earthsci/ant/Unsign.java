@@ -84,10 +84,35 @@ public class Unsign extends Task
 
 				long lastModified = file.lastModified();
 				boolean sameFile = file.equals(output);
-				if (!force && !sameFile && output.exists() && output.lastModified() >= lastModified)
+				if (!force && !sameFile && output.exists())
 				{
-					//not modified, skip
-					continue;
+					if (output.lastModified() >= lastModified)
+					{
+						//destination file is newer than new file, so skip
+						System.out.println("JAR is not newer, skipping: " + file);
+						continue;
+					}
+
+					BundleProperties srcBundle = new BundleProperties(file);
+					BundleProperties dstBundle = new BundleProperties(output);
+					String srcVersion = srcBundle.getVersion();
+					String dstVersion = dstBundle.getVersion();
+					if (srcVersion != null && srcVersion.length() > 0 && dstVersion != null && dstVersion.length() > 0)
+					{
+						if (srcVersion.equals(dstVersion))
+						{
+							//bundle versions are the same, so skip
+							System.out.println("Skipping JAR with same version (" + srcVersion + ") as destination: "
+									+ file);
+							continue;
+						}
+						//We cannot perform version comparison here to see which one is newer, because the
+						//tycho-buildtimestamp-jgit plugin will fall back onto the default build timestamp
+						//provider if the working copy is dirty. This will mean that, if the user builds with
+						//a dirty working copy, and then discards changes, the build timestamp will revert to
+						//the last commit on that project, which will be older than the timestamp used when
+						//building with the dirty working copy.
+					}
 				}
 
 				System.out.println("Unsigning JAR: " + file + (sameFile ? "" : " to " + output));
