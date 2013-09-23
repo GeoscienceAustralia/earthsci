@@ -30,6 +30,8 @@
 	<property name="splash.dst.file" value="${webstart.dir}/splash.jpg" />
 	<property name="icon.src.file" value="${appplugin.dir}/branding/earthsci-icon-32px.png" />
 	<property name="icon.dst.file" value="${webstart.dir}/icon.png" />
+	<property name="seed.src.file" value="${basedir}/seed.xml" />
+	<property name="seed.dst.file" value="${webstart.dir}/seed.xml" />
 
 	<property name="keystore_file" value="${basedir}/keystore" />
 	<property name="keystore_alias" value="selfsigned" />
@@ -171,6 +173,7 @@
 
 		<copy file="${splash.src.file}" tofile="${splash.dst.file}" overwrite="true" />
 		<copy file="${icon.src.file}" tofile="${icon.dst.file}" overwrite="true" />
+		<copy file="${seed.src.file}" tofile="${seed.dst.file}" overwrite="true" />
 	</target>
 
 	<target name="generate-sign-script" depends="repack-jars">

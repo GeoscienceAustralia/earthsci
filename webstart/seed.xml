@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Seed>
+	<DiscoveryServices revision="1">
+		<Services>
+			<Service enabled="true" name="GA GeoPortal" providerId="csw" serviceURL="http://www.ga.gov.au/geoportal/csw/discovery">
+				<properties>
+					<property id="format" value="GEONETWORK2"/>
+				</properties>
+			</Service>
+			<Service enabled="true" name="NaviGAtor" providerId="darwin" serviceURL="http://www.ga.gov.au/search/api/search/results"/>
+		</Services>
+	</DiscoveryServices>
+	
+	<!--<DiscoveryRemove revision="3">
+		<Service serviceURL="http://host.com/badurl"/>
+	</DiscoveryRemove>-->
+	
+	<CatalogModel revision="1">
+		<catalogModel>
+			<model>
+				<catalogs>
+					<element>
+						<catalog label="Legacy Dataset" uri="http://www.ga.gov.au/apps/world-wind/dataset/dataset.xml"/>
+					</element>
+				</catalogs>
+			</model>
+		</catalogModel>
+	</CatalogModel>
+	
+	<!--<CatalogModel revision="2">
+		<catalogModel>
+			<model>
+				<catalogs>
+					<element>
+						<catalog label="Bad Dataset" uri="http://www.ga.gov.au/apps/world-wind/dataset/incorrectlyspelled.xml"/>
+					</element>
+				</catalogs>
+			</model>
+		</catalogModel>
+	</CatalogModel>-->
+	
+	<!--<CatalogRemove revision="3">
+		<catalog uri="http://www.ga.gov.au/apps/world-wind/dataset/incorrectlyspelled.xml"/>
+	</CatalogRemove>-->
+	
+	<InitialView>
+		<Latitude>-27.0</Latitude>
+		<Longitude>133.5</Longitude>
+		<!--<Altitude></Altitude>-->
+		<!--<Heading></Heading>-->
+		<!--<Pitch></Pitch>-->
+	</InitialView>
+</Seed>
