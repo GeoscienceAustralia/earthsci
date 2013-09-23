@@ -28,11 +28,6 @@
 			<url>http://download.eclipse.org/releases/kepler</url>
 		</repository>
 		<repository>
-			<id>uomo</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/uomo/0.7/kepler/repository</url>
-		</repository>
-		<repository>
 			<id>e4</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/e4/downloads/drops/R-0.14-201306242200/repository</url>
@@ -85,9 +80,9 @@
 							<arch>x86_64</arch>
 						</environment>
 					</environments>
-					  <dependency-resolution>
-				        <optionalDependencies>ignore</optionalDependencies>
-				      </dependency-resolution>
+					<dependency-resolution>
+						<optionalDependencies>ignore</optionalDependencies>
+					</dependency-resolution>
 				</configuration>
 			</plugin>
 		</plugins>
