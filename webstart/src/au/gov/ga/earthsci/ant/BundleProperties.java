@@ -36,12 +36,14 @@ public class BundleProperties
 {
 	private final String symbolicName;
 	private final String platformFilter;
+	private final String version;
 	private String[] osArchs = null;
 
 	public BundleProperties(File jarFile)
 	{
 		String platformFilter = null;
 		String symbolicName = null;
+		String version = null;
 		try
 		{
 			URL url = new URL("jar:" + jarFile.toURI().toURL() + "!/META-INF/MANIFEST.MF");
@@ -49,6 +51,7 @@ public class BundleProperties
 			Attributes attributes = manifest.getMainAttributes();
 			platformFilter = attributes.getValue("Eclipse-PlatformFilter");
 			symbolicName = attributes.getValue("Bundle-SymbolicName");
+			version = attributes.getValue("Bundle-Version");
 
 			int indexOfSemiColon = symbolicName.indexOf(';');
 			if (indexOfSemiColon >= 0)
@@ -62,11 +65,17 @@ public class BundleProperties
 
 		this.platformFilter = platformFilter;
 		this.symbolicName = symbolicName;
+		this.version = version;
 	}
 
 	public String getSymbolicName()
 	{
 		return symbolicName;
+	}
+
+	public String getVersion()
+	{
+		return version;
 	}
 
 	public String getPlatformFilter()
