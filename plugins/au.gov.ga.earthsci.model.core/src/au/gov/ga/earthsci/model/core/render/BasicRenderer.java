@@ -11,11 +11,12 @@ import javax.media.opengl.GLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.common.color.ColorType;
 import au.gov.ga.earthsci.common.util.Validate;
-import au.gov.ga.earthsci.model.geometry.ColourType;
 import au.gov.ga.earthsci.model.geometry.IMeshGeometry;
 import au.gov.ga.earthsci.model.geometry.IModelGeometry;
 import au.gov.ga.earthsci.model.geometry.IVertexBasedGeometry;
+import au.gov.ga.earthsci.model.geometry.IVertexColourMappedGeometry;
 import au.gov.ga.earthsci.model.geometry.IVertexColouredGeometry;
 import au.gov.ga.earthsci.model.render.IModelGeometryRenderer;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
@@ -157,6 +158,8 @@ public class BasicRenderer implements IModelGeometryRenderer
 			renderMode = getModeForGeometry();
 		}
 
+		shader.setUseVertexColouring(geometryHasVertexColours());
+
 		isInitialised.set(true);
 	}
 
@@ -168,6 +171,12 @@ public class BasicRenderer implements IModelGeometryRenderer
 	private boolean geometryHasVertexColours()
 	{
 		return geometry instanceof IVertexColouredGeometry && ((IVertexColouredGeometry) geometry).hasVertexColour();
+	}
+
+	private boolean geometryHasColourMap()
+	{
+		return geometry instanceof IVertexColourMappedGeometry
+				&& ((IVertexColourMappedGeometry) geometry).hasColorMap();
 	}
 
 	private void checkForError(GL2 gl)
@@ -243,13 +252,13 @@ public class BasicRenderer implements IModelGeometryRenderer
 		return mode;
 	}
 
-	private ColourType getColourTypeForGeometry()
+	private ColorType getColourTypeForGeometry()
 	{
 		if (geometry instanceof IVertexColouredGeometry)
 		{
 			return ((IVertexColouredGeometry) geometry).getColourType();
 		}
-		return ColourType.RGB;
+		return ColorType.RGB;
 	}
 
 	@Override

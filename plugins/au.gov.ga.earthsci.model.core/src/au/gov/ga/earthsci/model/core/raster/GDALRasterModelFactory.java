@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 import au.gov.ga.earthsci.common.buffer.BufferType;
 import au.gov.ga.earthsci.common.buffer.BufferUtil;
 import au.gov.ga.earthsci.common.color.ColorMap;
+import au.gov.ga.earthsci.common.color.ColorType;
+import au.gov.ga.earthsci.common.color.ColorMap.InterpolationMode;
 import au.gov.ga.earthsci.common.spatial.SpatialReferences;
 import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.model.IModel;
@@ -40,7 +42,6 @@ import au.gov.ga.earthsci.model.bounds.BoundingBox;
 import au.gov.ga.earthsci.model.data.IModelData;
 import au.gov.ga.earthsci.model.data.ModelDataBuilder;
 import au.gov.ga.earthsci.model.geometry.BasicColouredMeshGeometry;
-import au.gov.ga.earthsci.model.geometry.ColourType;
 import au.gov.ga.earthsci.model.geometry.FaceType;
 import au.gov.ga.earthsci.model.geometry.ModelGeometryStatistics;
 import au.gov.ga.earthsci.model.render.RendererCreatorRegistry;
@@ -199,6 +200,13 @@ public class GDALRasterModelFactory
 			return;
 		}
 
+		// TODO: Generalise this to support all map types
+		if (map.isPercentageBased() && map.getMode() != InterpolationMode.EXACT_MATCH)
+		{
+			geometry.setColorMap(map);
+			return;
+		}
+
 		IModelData vertices = geometry.getVertices();
 		int numVertices = vertices.getNumberOfGroups();
 
@@ -241,7 +249,7 @@ public class GDALRasterModelFactory
 				.build();
 
 		geometry.setVertexColour(vertexColours);
-		geometry.setColourType(ColourType.RGBA);
+		geometry.setColourType(ColorType.RGBA);
 	}
 
 	/**
