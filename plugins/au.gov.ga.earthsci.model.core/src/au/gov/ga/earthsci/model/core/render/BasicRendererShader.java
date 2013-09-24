@@ -74,6 +74,7 @@ public class BasicRendererShader extends Shader
 	private transient Float nodata;
 	private boolean nodataDirty = true;
 
+	private boolean useVertexColours = true;
 
 	@Override
 	protected String getVertexShaderSource()
@@ -179,4 +180,19 @@ public class BasicRendererShader extends Shader
 		}
 	}
 
+	/**
+	 * Sets whether vertex colouring is to be used. If false, will attempt to
+	 * use a provided colour map.
+	 * <p/>
+	 * Changing this value at render time will mark the shader as dirty and
+	 * trigger a re-compile.
+	 */
+	public void setUseVertexColouring(boolean use)
+	{
+		if (this.useVertexColours != use)
+		{
+			this.useVertexColours = use;
+			markDirty();
+		}
+	}
 }

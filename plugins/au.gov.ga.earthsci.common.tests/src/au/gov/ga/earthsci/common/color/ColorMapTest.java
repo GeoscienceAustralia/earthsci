@@ -137,6 +137,18 @@ public class ColorMapTest
 	}
 
 	@Test
+	public void testGetColorPercentagesSameMinMax()
+	{
+		ColorMap classUnderTest =
+				new ColorMap(null, null, PERCENTAGE_ENTRIES, null, InterpolationMode.INTERPOLATE_HUE, true);
+
+		Color expected = new Color(1.0f, 0.0f, 0.0f, 0.0f);
+		assertColorsEqual(expected, classUnderTest.getColor(0.0, 0.0, 0.0));
+		assertColorsEqual(expected, classUnderTest.getColor(10.0, 0.0, 0.0));
+		assertColorsEqual(expected, classUnderTest.getColor(10.0, 100.0, 100.0));
+	}
+
+	@Test
 	public void testEqualsWithSame()
 	{
 		ColorMap map1 = new ColorMap(null, null, PERCENTAGE_ENTRIES, null, InterpolationMode.NEAREST_MATCH, false);

@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import au.gov.ga.earthsci.common.color.ColorMap;
+import au.gov.ga.earthsci.common.color.ColorType;
 import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
 import au.gov.ga.earthsci.common.util.MathUtil;
 import au.gov.ga.earthsci.common.util.Validate;
@@ -13,13 +15,15 @@ import au.gov.ga.earthsci.model.render.IModelGeometryRenderer;
 
 /**
  * A basic implementation of the {@link IMeshGeometry} interface that also
- * implements {@link IVertexColouredGeometry} and allows colour information to
- * be stored at each vertex.
+ * implements {@link IVertexColouredGeometry} and
+ * {@link IVertexColourMappedGeometry}, allowing colour information to be stored
+ * per-vertex (for pre-calculated colouring) or as a colour map that can be used
+ * by a renderer to apply colour information at render time.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implements IMeshGeometry,
-		IVertexColouredGeometry, IMaskedGeometry
+		IVertexColouredGeometry, IVertexColourMappedGeometry, IMaskedGeometry
 {
 
 	private final String id;
@@ -36,7 +40,10 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	private IModelData normals;
 
 	private IModelData colours;
-	private ColourType colourType;
+	private ColorType colourType;
+
+	private ColorMap colorMap;
+	private int colouredAxis;
 
 	private IModelData edges;
 	private FaceType faceType;
@@ -141,12 +148,12 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	}
 
 	@Override
-	public ColourType getColourType()
+	public ColorType getColourType()
 	{
 		return colourType;
 	}
 
-	public void setColourType(ColourType colourType)
+	public void setColourType(ColorType colourType)
 	{
 		firePropertyChange(VERTEX_COLOUR_TYPE_EVENT_NAME, this.colourType, this.colourType = colourType);
 	}
@@ -248,6 +255,67 @@ public class BasicColouredMeshGeometry extends AbstractPropertyChangeBean implem
 	public void setOpacity(double opacity)
 	{
 		firePropertyChange(OPACITY_EVENT_NAME, this.opacity, this.opacity = MathUtil.clamp(opacity, 0.0, 1.0));
+	}
+
+	@Override
+	public ColorMap getColorMap()
+	{
+		return colorMap;
+	}
+
+	@Override
+	public boolean hasColorMap()
+	{
+		return colorMap != null;
+	}
+
+	public void setColorMap(ColorMap map)
+	{
+		firePropertyChange(COLOR_MAP_EVENT_NAME, this.colorMap, this.colorMap = map);
+	}
+
+	@Override
+	public int getColouredAxis()
+	{
+		return colouredAxis;
+	}
+
+	public void setColouredAxis(int axis)
+	{
+		this.colouredAxis = axis;
+	}
+
+	@Override
+	public boolean isXColoured()
+	{
+		return getColouredAxis() == 0;
+	}
+
+	public void setXColoured()
+	{
+		setColouredAxis(0);
+	}
+
+	@Override
+	public boolean isYColoured()
+	{
+		return getColouredAxis() == 1;
+	}
+
+	public void setYColoured()
+	{
+		setColouredAxis(1);
+	}
+
+	@Override
+	public boolean isZColoured()
+	{
+		return getColouredAxis() == 2;
+	}
+
+	public void setZColoured()
+	{
+		setColouredAxis(2);
 	}
 
 	private void updateMaps(IModelData oldData, IModelData newData, String key)

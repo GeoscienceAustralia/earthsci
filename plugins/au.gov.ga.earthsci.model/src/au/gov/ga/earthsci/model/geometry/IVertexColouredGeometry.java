@@ -1,5 +1,6 @@
 package au.gov.ga.earthsci.model.geometry;
 
+import au.gov.ga.earthsci.common.color.ColorType;
 import au.gov.ga.earthsci.model.data.IModelData;
 
 /**
@@ -55,5 +56,5 @@ public interface IVertexColouredGeometry extends IVertexBasedGeometry
 	 * 
 	 * @return The colour space used by this geometry
 	 */
-	ColourType getColourType();
+	ColorType getColourType();
 }
