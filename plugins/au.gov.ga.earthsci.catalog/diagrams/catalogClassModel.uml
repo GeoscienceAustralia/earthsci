@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20110701" xmlns:xmi="http://www.omg.org/spec/XMI/20110701" xmlns:uml="http://www.eclipse.org/uml2/4.0.0/UML" xmi:id="_DTQkAOqPEeKgaNTWPMWJ0w" name="model">
+  <packagedElement xmi:type="uml:Class" xmi:id="_zTthoOqPEeKgaNTWPMWJ0w" name="ErrorCatalogTreeNode">
+    <generalization xmi:type="uml:Generalization" xmi:id="_EZUFwOqSEeKgaNTWPMWJ0w" general="_2WiukOqREeKgaNTWPMWJ0w"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_KSxB4OqREeKgaNTWPMWJ0w" name="getError"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_IWxEsOqQEeKgaNTWPMWJ0w" name="ICatalogTreeNode">
+    <generalization xmi:type="uml:Generalization" xmi:id="_5mV18OqSEeKgaNTWPMWJ0w" general="_jzd_gOqSEeKgaNTWPMWJ0w"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_7uQ2oOqQEeKgaNTWPMWJ0w" name="getURI"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_Efqa0OqREeKgaNTWPMWJ0w" name="getIconURL"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_djLtMOqSEeKgaNTWPMWJ0w" name="isRemovable"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_nFowUOqREeKgaNTWPMWJ0w" name="LoadingCatalogTreeNode">
+    <generalization xmi:type="uml:Generalization" xmi:id="_E7V0wOqSEeKgaNTWPMWJ0w" general="_2WiukOqREeKgaNTWPMWJ0w"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_2WiukOqREeKgaNTWPMWJ0w" clientDependency="_98Im8OqREeKgaNTWPMWJ0w" name="AbstractCatalogTreeNode">
+    <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_98Im8OqREeKgaNTWPMWJ0w" name="" client="_2WiukOqREeKgaNTWPMWJ0w" supplier="_IWxEsOqQEeKgaNTWPMWJ0w" contract="_IWxEsOqQEeKgaNTWPMWJ0w"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_LVlw0OqREeKgaNTWPMWJ0w" name="getMessage"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_jzd_gOqSEeKgaNTWPMWJ0w" name="ITreeNode"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_vJrCwOqSEeKgaNTWPMWJ0w" name="" memberEnd="_vJrCxOqSEeKgaNTWPMWJ0w _vJrCweqSEeKgaNTWPMWJ0w" navigableOwnedEnd="_vJrCxOqSEeKgaNTWPMWJ0w _vJrCweqSEeKgaNTWPMWJ0w">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_vJrCweqSEeKgaNTWPMWJ0w" name="children" type="_jzd_gOqSEeKgaNTWPMWJ0w" association="_vJrCwOqSEeKgaNTWPMWJ0w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_vJrCwuqSEeKgaNTWPMWJ0w"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_vJrCw-qSEeKgaNTWPMWJ0w" value="*"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_vJrCxOqSEeKgaNTWPMWJ0w" name="parent" type="_jzd_gOqSEeKgaNTWPMWJ0w" association="_vJrCwOqSEeKgaNTWPMWJ0w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_vJrCxeqSEeKgaNTWPMWJ0w" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_vJrCxuqSEeKgaNTWPMWJ0w" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_JN4ykOqTEeKgaNTWPMWJ0w" name="ICatalogModel"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_3sUuYOqUEeKgaNTWPMWJ0w" name="" memberEnd="_3sUuZOqUEeKgaNTWPMWJ0w _3sUuYeqUEeKgaNTWPMWJ0w" navigableOwnedEnd="_3sUuYeqUEeKgaNTWPMWJ0w">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_3sUuYeqUEeKgaNTWPMWJ0w" name="rootNode" type="_IWxEsOqQEeKgaNTWPMWJ0w" association="_3sUuYOqUEeKgaNTWPMWJ0w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_3sUuYuqUEeKgaNTWPMWJ0w"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_3sUuY-qUEeKgaNTWPMWJ0w" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_3sUuZOqUEeKgaNTWPMWJ0w" name="model" type="_JN4ykOqTEeKgaNTWPMWJ0w" association="_3sUuYOqUEeKgaNTWPMWJ0w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_3sUuZeqUEeKgaNTWPMWJ0w" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_3sUuZuqUEeKgaNTWPMWJ0w" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_XmBq4OqVEeKgaNTWPMWJ0w" name="" memberEnd="_XmBq5OqVEeKgaNTWPMWJ0w _XmBq4eqVEeKgaNTWPMWJ0w" navigableOwnedEnd="_XmBq4eqVEeKgaNTWPMWJ0w">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_XmBq4eqVEeKgaNTWPMWJ0w" name="topLevelCatalogs" type="_IWxEsOqQEeKgaNTWPMWJ0w" association="_XmBq4OqVEeKgaNTWPMWJ0w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_XmBq4uqVEeKgaNTWPMWJ0w"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_XmBq4-qVEeKgaNTWPMWJ0w" value="*"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_XmBq5OqVEeKgaNTWPMWJ0w" name="model" type="_JN4ykOqTEeKgaNTWPMWJ0w" association="_XmBq4OqVEeKgaNTWPMWJ0w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_XmBq5eqVEeKgaNTWPMWJ0w" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_XmBq5uqVEeKgaNTWPMWJ0w" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_0KLn4OqVEeKgaNTWPMWJ0w" name="IntentCatalogLoader">
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_ywSnUOqWEeKgaNTWPMWJ0w" name="load"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_rhwkEOqWEeKgaNTWPMWJ0w" name="loads" memberEnd="_rhwkEeqWEeKgaNTWPMWJ0w _rhp2YOqWEeKgaNTWPMWJ0w" navigableOwnedEnd="_rhp2YOqWEeKgaNTWPMWJ0w">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_rhwkEeqWEeKgaNTWPMWJ0w" name="" type="_0KLn4OqVEeKgaNTWPMWJ0w" association="_rhwkEOqWEeKgaNTWPMWJ0w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_rhwkEuqWEeKgaNTWPMWJ0w" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_rhwkE-qWEeKgaNTWPMWJ0w" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_rhp2YOqWEeKgaNTWPMWJ0w" name="" type="_IWxEsOqQEeKgaNTWPMWJ0w" association="_rhwkEOqWEeKgaNTWPMWJ0w">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_rhp2YeqWEeKgaNTWPMWJ0w" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_rhp2YuqWEeKgaNTWPMWJ0w" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+</uml:Model>
