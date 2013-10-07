@@ -306,7 +306,15 @@ public class ColorMap implements INamed, IDescribed
 	{
 		if (valuesArePercentages)
 		{
-			double percentage = (absoluteValue - Math.min(min, max)) / (Math.max(min, max) - Math.min(min, max));
+			double percentage;
+			if (min == max)
+			{
+				percentage = 0;
+			}
+			else
+			{
+				percentage = (absoluteValue - Math.min(min, max)) / (Math.max(min, max) - Math.min(min, max));
+			}
 			return getColor(percentage);
 		}
 

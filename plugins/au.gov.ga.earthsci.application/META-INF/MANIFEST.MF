@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: au.gov.ga.earthsci.application.Activator
 Bundle-Vendor: %plugin.vendor
 Export-Package: au.gov.ga.earthsci.application,
+ au.gov.ga.earthsci.application.compatibility,
  au.gov.ga.earthsci.application.console,
  au.gov.ga.earthsci.application.handlers,
  au.gov.ga.earthsci.application.parts,
