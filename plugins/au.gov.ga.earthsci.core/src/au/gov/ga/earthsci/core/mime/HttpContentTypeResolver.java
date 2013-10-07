@@ -64,7 +64,7 @@ public class HttpContentTypeResolver implements IContentTypeResolver
 				}
 
 				//ignore types that are often used too generally (use the InputStream determination instead)
-				if (!mimeType.equals("text/xml")) //$NON-NLS-1$
+				if (!mimeType.equals("text/xml") && !mimeType.equals("application/xml")) //$NON-NLS-1$ //$NON-NLS-2$
 				{
 					IContentType contentType = MIMEHelper.getContentTypeForMIMEType(mimeType);
 					if (contentType != null)
