@@ -40,6 +40,11 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/e4/downloads/drops/R-0.14-201306242200/repository</url>
 		</repository>
+		<repository>
+			<id>sapphire</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/sapphire/0.6.4/repository</url>
+		</repository>
 	</repositories>
 
 	<build>
