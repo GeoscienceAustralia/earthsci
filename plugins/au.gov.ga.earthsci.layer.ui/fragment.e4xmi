@@ -8,6 +8,7 @@
   <imports xsi:type="commands:Command" xmi:id="_NRCbYJdDEeKAe5mIUYJvmg" elementId="org.eclipse.ui.edit.paste"/>
   <imports xsi:type="commands:Command" xmi:id="_OjStcJdDEeKAe5mIUYJvmg" elementId="org.eclipse.ui.edit.rename"/>
   <imports xsi:type="commands:Command" xmi:id="_PgYn0JdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.command.newFolder"/>
+  <imports xsi:type="commands:Command" xmi:id="__zAbMB6VEeOlpu5oZDxrXg" elementId="au.gov.ga.earthsci.application.command.properties"/>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_AKs3QZdDEeKAe5mIUYJvmg" featurename="descriptors" parentElementId="au.gov.ga.earthsci.application">
     <elements xsi:type="basic:PartDescriptor" xmi:id="_AKs3QpdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.part" label="%au.gov.ga.earthsci.application.layertree.part.label" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/layer.png" tooltip="%au.gov.ga.earthsci.application.layertree.part.tooltip" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.LayerTreePart">
       <tags>View</tags>
@@ -20,6 +21,7 @@
       <handlers xmi:id="_AKs3SJdDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.InformationHandler" command="_JYVrgJdDEeKAe5mIUYJvmg"/>
       <handlers xmi:id="_AKs3SZdDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.LegendHandler" command="_IehHkJdDEeKAe5mIUYJvmg"/>
       <handlers xmi:id="_AKs3SpdDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.NewFolderHandler" command="_PgYn0JdDEeKAe5mIUYJvmg"/>
+      <handlers xmi:id="_Y9dRcB6WEeOlpu5oZDxrXg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.PropertiesHandler" command="__zAbMB6VEeOlpu5oZDxrXg"/>
       <menus xsi:type="menu:PopupMenu" xmi:id="_AKs3S5dDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu" label="Layer Menu">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3TJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.rename" label="Rename" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/rename.gif" command="_OjStcJdDEeKAe5mIUYJvmg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3TZdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.delete" label="Delete" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/delete.gif" command="_KTDAQJdDEeKAe5mIUYJvmg"/>
@@ -29,6 +31,8 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3UZdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.paste" label="Paste" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/paste_edit.gif" command="_NRCbYJdDEeKAe5mIUYJvmg"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_AKs3UpdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3U5dDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.newfolder" label="New Folder" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/folder.gif" command="_PgYn0JdDEeKAe5mIUYJvmg"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_B0g_8B6WEeOlpu5oZDxrXg" elementId="au.gov.ga.earthsci.layer.ui.menuseparator.0"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_CQ72MB6WEeOlpu5oZDxrXg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.properties" label="Properties" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/properties.gif" command="__zAbMB6VEeOlpu5oZDxrXg"/>
       </menus>
       <toolbar xmi:id="_AKs3VJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.toolbar.0">
         <children xsi:type="menu:ToolControl" xmi:id="_AKs3VZdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.opacitycontrol" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.LayerOpacityToolControl"/>

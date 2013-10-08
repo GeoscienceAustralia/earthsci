@@ -156,6 +156,7 @@
   </commands>
   <commands xmi:id="_XmoOkGvzEeKrKcTgfbYJiQ" elementId="au.gov.ga.earthsci.application.command.renameGroup" commandName="renameGroupCommand"/>
   <commands xmi:id="_0csqkNP0EeKXbtYtbNp0TQ" elementId="au.gov.ga.earthsci.application.externalBrowserCommand" commandName="externalBrowserCommand"/>
+  <commands xmi:id="_vkwD4B6VEeOlpu5oZDxrXg" elementId="au.gov.ga.earthsci.application.command.properties" commandName="propertiesCommand"/>
   <addons xmi:id="_007tVPsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_007tVfsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_007tVvsMEeG36NOaHUgVKA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
