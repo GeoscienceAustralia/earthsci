@@ -43,8 +43,8 @@ import au.gov.ga.earthsci.common.persistence.Exportable;
 import au.gov.ga.earthsci.common.persistence.Persistent;
 import au.gov.ga.earthsci.common.persistence.Persister;
 import au.gov.ga.earthsci.common.util.ConfigurationUtil;
+import au.gov.ga.earthsci.common.util.ExtensionPointHelper;
 import au.gov.ga.earthsci.common.util.XmlUtil;
-import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
 
 /**
  * Manages a collection of seeders, defined by the

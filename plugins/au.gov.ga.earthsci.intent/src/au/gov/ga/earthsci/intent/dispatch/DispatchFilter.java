@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
+import au.gov.ga.earthsci.common.util.ExtensionPointHelper;
 
 /**
  * Filter used to match dispatched objects of certain type(s) to a

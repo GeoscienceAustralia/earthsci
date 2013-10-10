@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
 import au.gov.ga.earthsci.common.collection.ListSortedMap;
+import au.gov.ga.earthsci.common.util.ExtensionPointHelper;
 
 /**
  * Helper class for reading extensions that extend the injectable extension

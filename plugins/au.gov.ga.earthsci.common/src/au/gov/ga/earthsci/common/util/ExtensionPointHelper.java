@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.injectable;
+package au.gov.ga.earthsci.common.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.spi.RegistryContributor;
 import org.osgi.framework.Bundle;
+
+import au.gov.ga.earthsci.common.Activator;
 
 /**
  * Helper class for accessing classes and resources defined in extention point

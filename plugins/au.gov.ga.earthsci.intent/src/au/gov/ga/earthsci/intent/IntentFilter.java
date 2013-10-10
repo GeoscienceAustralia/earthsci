@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
+import au.gov.ga.earthsci.common.util.ExtensionPointHelper;
 
 /**
  * Description of {@link Intent} values to be matched. Can match against the

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.bookmark.BookmarkPropertyApplicatorRegistry;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
+import au.gov.ga.earthsci.common.util.ExtensionPointHelper;
 
 /**
  * A factory class used to obtain a new {@link IBookmarkPropertyEditor} instance

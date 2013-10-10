@@ -26,7 +26,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
 
-import au.gov.ga.earthsci.injectable.ExtensionPointHelper;
+import au.gov.ga.earthsci.common.util.ExtensionPointHelper;
 
 /**
  * Static accessor for the list of defined {@link HudLayer} extension points.
