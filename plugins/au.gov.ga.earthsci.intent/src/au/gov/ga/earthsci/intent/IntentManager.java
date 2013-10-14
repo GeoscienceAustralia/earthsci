@@ -49,6 +49,8 @@ import au.gov.ga.earthsci.intent.util.ContextInjectionFactoryThreadSafe;
  */
 public class IntentManager implements IIntentManager
 {
+	private static final String INTENT_FILTERS_ID = "au.gov.ga.earthsci.intent.filters"; //$NON-NLS-1$
+	private static final Logger logger = LoggerFactory.getLogger(IntentManager.class);
 	private static IIntentManager instance = new IntentManager();
 
 	/**
@@ -69,9 +71,6 @@ public class IntentManager implements IIntentManager
 	{
 		IntentManager.instance = instance;
 	}
-
-	private static final String INTENT_FILTERS_ID = "au.gov.ga.earthsci.intent.filters"; //$NON-NLS-1$
-	private static final Logger logger = LoggerFactory.getLogger(IntentManager.class);
 
 	private final List<IntentFilter> filters = new ArrayList<IntentFilter>();
 
