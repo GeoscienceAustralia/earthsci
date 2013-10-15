@@ -41,6 +41,12 @@
             </parameter>
          </describer>
       </content-type>
+      <content-type
+            file-extensions="kml,kmz"
+            id="au.gov.ga.earthsci.layer.kml"
+            name="KML layer"
+            priority="normal">
+      </content-type>
    </extension>
    <extension
          point="au.gov.ga.earthsci.core.retrieve.retrievers">
@@ -158,6 +164,17 @@
             returns-result="true">
          <content-type
                id="au.gov.ga.earthsci.seed.xml">
+         </content-type>
+      </filter>
+      <filter
+            class="au.gov.ga.earthsci.core.intent.KmlLayerIntentHandler"
+            priority="0"
+            returns-result="true">
+         <return-type
+               class="gov.nasa.worldwind.layers.Layer">
+         </return-type>
+         <content-type
+               id="au.gov.ga.earthsci.layer.kml">
          </content-type>
       </filter>
    </extension>
