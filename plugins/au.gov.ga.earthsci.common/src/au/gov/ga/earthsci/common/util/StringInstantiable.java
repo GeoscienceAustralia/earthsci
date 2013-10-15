@@ -103,6 +103,11 @@ public class StringInstantiable
 		{
 			type = (Class<E>) Util.primitiveClassToBoxed(type);
 		}
+		if (Util.boxedClassToPrimitive(type) != null && s.length() <= 0)
+		{
+			//don't try instantiating a boxed class with an empty string
+			return null;
+		}
 		if (type.isAssignableFrom(Character.class) && s.length() > 0)
 		{
 			return type.cast(s.charAt(0));
