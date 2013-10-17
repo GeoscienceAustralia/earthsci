@@ -7,6 +7,7 @@ Bundle-Vendor: Geoscience Australia
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: au.gov.ga.earthsci.common.buffer,
  au.gov.ga.earthsci.common.collection,
+ au.gov.ga.earthsci.common.collection.adapter,
  au.gov.ga.earthsci.common.color,
  au.gov.ga.earthsci.common.color.io,
  au.gov.ga.earthsci.common.databinding,
