@@ -15,7 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.common.collection.adapter;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
@@ -24,12 +24,12 @@ import java.util.Map;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class HashMapAdapter<E, A> implements IAdapter<E, A>
+public abstract class IdentityHashMapAdapter<E, A> implements IAdapter<E, A>
 {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private final Map<E, A> map1 = new HashMap();
+	private final Map<E, A> map1 = new IdentityHashMap();
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private final Map<A, E> map2 = new HashMap();
+	private final Map<A, E> map2 = new IdentityHashMap();
 
 	/**
 	 * Adapt this value.
