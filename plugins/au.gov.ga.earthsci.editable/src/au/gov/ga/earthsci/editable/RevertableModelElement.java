@@ -22,21 +22,31 @@ import org.eclipse.sapphire.modeling.ModelProperty;
 import org.eclipse.sapphire.modeling.Resource;
 
 /**
- * A non-abstract version of {@link ModelElement}.
+ * A revertable version of {@link ModelElement}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ConcreteModelElement extends ModelElement
+public class RevertableModelElement extends ModelElement implements IRevertable
 {
-	public ConcreteModelElement(ModelElementType type, IModelParticle parent, ModelProperty parentProperty,
+	public RevertableModelElement(ModelElementType type, IModelParticle parent, ModelProperty parentProperty,
 			Resource resource)
 	{
 		super(type, parent, parentProperty, resource);
 	}
 
-	public ConcreteModelElement(IModelParticle parent, ModelProperty parentProperty,
+	public RevertableModelElement(IModelParticle parent, ModelProperty parentProperty,
 			Resource resource)
 	{
 		super(parentProperty.getType(), parent, parentProperty, resource);
+	}
+
+	@Override
+	public void revert()
+	{
+		Resource resource = resource();
+		if (resource instanceof IRevertable)
+		{
+			((IRevertable) resource).revert();
+		}
 	}
 }

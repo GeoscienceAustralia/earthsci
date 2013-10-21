@@ -32,7 +32,7 @@ import au.gov.ga.earthsci.editable.factories.StringFactory;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@GenerateImpl(packageName = "au.gov.ga.earthsci.editable", className = "ConcreteModelElement")
+@GenerateImpl(packageName = "au.gov.ga.earthsci.editable", className = "RevertableModelElement")
 @ElementType(String.class)
 @Factory(StringFactory.class)
 public interface StringModelElement extends IModelElement

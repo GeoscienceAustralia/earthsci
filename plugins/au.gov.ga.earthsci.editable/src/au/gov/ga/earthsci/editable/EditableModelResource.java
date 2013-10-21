@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelResource<T> extends Resource
+public class EditableModelResource<T> extends Resource implements IRevertable
 {
 	private static final String[] EMPTY_PARAMS = new String[0];
 	private static final Logger logger = LoggerFactory.getLogger(EditableModelResource.class);
@@ -88,5 +88,18 @@ public class EditableModelResource<T> extends Resource
 	public T getObject()
 	{
 		return object;
+	}
+
+	@Override
+	public void revert()
+	{
+		for (ModelProperty property : element().properties())
+		{
+			BindingImpl binding = binding(property);
+			if (binding instanceof IRevertable)
+			{
+				((IRevertable) binding).revert();
+			}
+		}
 	}
 }

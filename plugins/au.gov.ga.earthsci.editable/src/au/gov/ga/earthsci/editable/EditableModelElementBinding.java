@@ -36,7 +36,7 @@ import au.gov.ga.earthsci.editable.annotations.ElementBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelElementBinding extends ElementBindingImpl
+public class EditableModelElementBinding extends ElementBindingImpl implements IRevertable
 {
 	private static final Logger logger = LoggerFactory.getLogger(EditableModelElementBinding.class);
 
@@ -45,6 +45,8 @@ public class EditableModelElementBinding extends ElementBindingImpl
 	private final Resource parentResource;
 	private final IElementBinder<Object> binder;
 	private EditableModelResource<?> resource;
+	private EditableModelResource<?> oldResource;
+	private boolean oldValueSet = false;
 
 	@SuppressWarnings("unchecked")
 	public EditableModelElementBinding(Object parent, ElementProperty property, Resource parentResource)
@@ -67,7 +69,7 @@ public class EditableModelElementBinding extends ElementBindingImpl
 	}
 
 	@Override
-	public Resource read()
+	public EditableModelResource<?> read()
 	{
 		if (resource == null)
 		{
@@ -89,6 +91,7 @@ public class EditableModelElementBinding extends ElementBindingImpl
 	@Override
 	public Resource create(ModelElementType type)
 	{
+		storeOldValue();
 		try
 		{
 			Object object = PropertyValueFactory.create(property, type, parent, binder.getSetterType());
@@ -110,6 +113,7 @@ public class EditableModelElementBinding extends ElementBindingImpl
 	@Override
 	public void remove()
 	{
+		storeOldValue();
 		binder.set(null, parent, property);
 		resource = null;
 	}
@@ -118,5 +122,27 @@ public class EditableModelElementBinding extends ElementBindingImpl
 	public boolean removable()
 	{
 		return true;
+	}
+
+	private void storeOldValue()
+	{
+		if (!oldValueSet)
+		{
+			oldResource = read();
+			oldValueSet = true;
+		}
+	}
+
+	@Override
+	public void revert()
+	{
+		if (oldValueSet)
+		{
+			Object oldValue = oldResource == null ? null : oldResource.getObject();
+			binder.set(oldValue, parent, property);
+			oldResource.revert();
+			oldResource = null;
+			oldValueSet = false;
+		}
 	}
 }

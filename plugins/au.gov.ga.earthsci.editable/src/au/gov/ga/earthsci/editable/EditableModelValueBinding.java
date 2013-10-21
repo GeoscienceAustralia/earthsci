@@ -32,11 +32,13 @@ import au.gov.ga.earthsci.editable.annotations.ValueBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelValueBinding extends ValueBindingImpl
+public class EditableModelValueBinding extends ValueBindingImpl implements IRevertable
 {
 	private final Object object;
 	private final ValueProperty property;
 	private final IValueBinder<Object> binder;
+	private String oldValue;
+	private boolean oldValueSet = false;
 
 	@SuppressWarnings("unchecked")
 	public EditableModelValueBinding(Object object, ValueProperty property) throws IntrospectionException,
@@ -65,6 +67,22 @@ public class EditableModelValueBinding extends ValueBindingImpl
 	@Override
 	public void write(String value)
 	{
+		if (!oldValueSet)
+		{
+			oldValue = read();
+			oldValueSet = true;
+		}
 		binder.set(value, object, property);
+	}
+
+	@Override
+	public void revert()
+	{
+		if (oldValueSet)
+		{
+			write(oldValue);
+			oldValue = null;
+			oldValueSet = false;
+		}
 	}
 }

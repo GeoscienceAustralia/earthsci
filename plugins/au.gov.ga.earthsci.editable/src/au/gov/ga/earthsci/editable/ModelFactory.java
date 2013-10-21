@@ -17,7 +17,6 @@ package au.gov.ga.earthsci.editable;
 
 import org.eclipse.sapphire.modeling.IModelElement;
 import org.eclipse.sapphire.modeling.IModelParticle;
-import org.eclipse.sapphire.modeling.ModelElement;
 import org.eclipse.sapphire.modeling.ModelElementType;
 import org.eclipse.sapphire.modeling.ModelProperty;
 import org.slf4j.Logger;
@@ -41,7 +40,7 @@ public class ModelFactory
 	 *            Editable that defines the model that describes the object
 	 * @return New model
 	 */
-	public static <T> ModelElement createModel(T object, EditableModel<T> editable)
+	public static <T> RevertableModelElement createModel(T object, EditableModel<T> editable)
 	{
 		return createModel(object, editable, null, null);
 	}
@@ -59,13 +58,13 @@ public class ModelFactory
 	 *            Property in the parent model that the new model is for
 	 * @return New model
 	 */
-	public static <T> ModelElement createModel(T object, EditableModel<T> editable, IModelParticle parent,
+	public static <T> RevertableModelElement createModel(T object, EditableModel<T> editable, IModelParticle parent,
 			ModelProperty parentProperty)
 	{
 		Class<? extends IModelElement> modelInterface = editable.getModel();
 		ModelElementType type = getType(modelInterface);
 		EditableModelResource<T> resource = new EditableModelResource<T>(object);
-		ConcreteModelElement model = new ConcreteModelElement(type, parent, parentProperty, resource);
+		RevertableModelElement model = new RevertableModelElement(type, parent, parentProperty, resource);
 		return model;
 	}
 

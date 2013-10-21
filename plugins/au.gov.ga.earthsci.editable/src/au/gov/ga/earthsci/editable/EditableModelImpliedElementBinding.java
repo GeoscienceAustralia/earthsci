@@ -34,10 +34,10 @@ import au.gov.ga.earthsci.editable.annotations.ElementBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelImpliedElementBinding extends ElementBindingImpl
+public class EditableModelImpliedElementBinding extends ElementBindingImpl implements IRevertable
 {
 	private final ImpliedElementProperty property;
-	private final Resource resource;
+	private final EditableModelResource<?> resource;
 
 	@SuppressWarnings("unchecked")
 	public EditableModelImpliedElementBinding(Object parent, ImpliedElementProperty property, Resource parentResource)
@@ -71,5 +71,11 @@ public class EditableModelImpliedElementBinding extends ElementBindingImpl
 	public ModelElementType type(Resource resource)
 	{
 		return property.getType();
+	}
+
+	@Override
+	public void revert()
+	{
+		resource.revert();
 	}
 }

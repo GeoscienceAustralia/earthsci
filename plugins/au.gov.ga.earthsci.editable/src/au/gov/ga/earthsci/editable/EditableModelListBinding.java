@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.editable;
 
 import java.beans.IntrospectionException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.sapphire.modeling.ListBindingImpl;
@@ -40,7 +41,7 @@ import au.gov.ga.earthsci.editable.annotations.ListBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelListBinding extends ListBindingImpl
+public class EditableModelListBinding extends ListBindingImpl implements IRevertable
 {
 	private static final Logger logger = LoggerFactory.getLogger(EditableModelListBinding.class);
 
@@ -48,8 +49,10 @@ public class EditableModelListBinding extends ListBindingImpl
 	private final ListProperty property;
 	private final Resource parentResource;
 	private final List<Object> list;
-	private final IAdapter<Resource, Object> adapter;
-	private final ListAdapter<Resource, Object> listAdapter;
+	private final IAdapter<EditableModelResource<?>, Object> adapter;
+	private final ListAdapter<EditableModelResource<?>, Object> listAdapter;
+	private final List<Object> oldValue = new ArrayList<Object>();
+	private boolean oldValueSet = false;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public EditableModelListBinding(Object parent, ListProperty property, final Resource parentResource)
@@ -73,22 +76,22 @@ public class EditableModelListBinding extends ListBindingImpl
 
 		list = (List) binder.get(parent, property);
 
-		adapter = new IdentityHashMapAdapter<Resource, Object>()
+		adapter = new IdentityHashMapAdapter<EditableModelResource<?>, Object>()
 		{
 			@Override
-			protected Resource createFrom(Object value)
+			protected EditableModelResource<?> createFrom(Object value)
 			{
 				return new EditableModelResource<Object>(value, parentResource);
 			}
 
 			@Override
-			protected Object createTo(Resource value)
+			protected Object createTo(EditableModelResource<?> value)
 			{
-				return ((EditableModelResource<Object>) value).getObject();
+				return value.getObject();
 			}
 		};
 
-		listAdapter = new ListAdapter<Resource, Object>(list, adapter);
+		listAdapter = new ListAdapter<EditableModelResource<?>, Object>(list, adapter);
 	}
 
 	@Override
@@ -106,6 +109,7 @@ public class EditableModelListBinding extends ListBindingImpl
 	@Override
 	public Resource insert(ModelElementType type, int position)
 	{
+		storeOldValue();
 		try
 		{
 			Object value = PropertyValueFactory.create(property, type, parent, null);
@@ -113,7 +117,7 @@ public class EditableModelListBinding extends ListBindingImpl
 			{
 				return null;
 			}
-			Resource resource = new EditableModelResource<Object>(value, parentResource);
+			EditableModelResource<?> resource = new EditableModelResource<Object>(value, parentResource);
 			listAdapter.add(resource);
 			return resource;
 		}
@@ -127,13 +131,42 @@ public class EditableModelListBinding extends ListBindingImpl
 	@Override
 	public void move(Resource resource, int position)
 	{
+		storeOldValue();
 		listAdapter.remove(resource);
-		listAdapter.add(position, resource);
+		listAdapter.add(position, (EditableModelResource<?>) resource);
 	}
 
 	@Override
 	public void remove(Resource resource)
 	{
+		storeOldValue();
 		listAdapter.remove(resource);
+	}
+
+	private void storeOldValue()
+	{
+		if (!oldValueSet)
+		{
+			oldValue.addAll(list);
+			oldValueSet = true;
+		}
+	}
+
+	@Override
+	public void revert()
+	{
+		if (oldValueSet)
+		{
+			list.clear();
+			list.addAll(oldValue);
+			oldValue.clear();
+			oldValueSet = false;
+		}
+
+		for (Object object : list)
+		{
+			EditableModelResource<?> resource = adapter.adaptFrom(object);
+			resource.revert();
+		}
 	}
 }

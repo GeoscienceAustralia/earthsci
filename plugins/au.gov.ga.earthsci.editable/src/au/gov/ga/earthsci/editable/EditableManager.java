@@ -23,7 +23,6 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.sapphire.modeling.IModelElement;
 import org.eclipse.sapphire.ui.PropertyEditorPart;
 import org.eclipse.sapphire.ui.def.DefinitionLoader;
 import org.eclipse.sapphire.ui.renderers.swt.PropertyEditorRendererFactory;
@@ -114,7 +113,7 @@ public class EditableManager
 		}
 	}
 
-	public <E> IModelElement createModel(E element)
+	public <E> RevertableModelElement createModel(E element)
 	{
 		EditableModel<? super E> editable = getEditable(element);
 		if (editable == null)
@@ -131,7 +130,7 @@ public class EditableManager
 		{
 			return null;
 		}
-		IModelElement model = createModel(element);
+		RevertableModelElement model = createModel(element);
 		DefinitionLoader loader =
 				DefinitionLoader.context(editable.getSdefContext()).sdef(editable.getSdefName());
 		return new ModelAndDefinition(model, loader);

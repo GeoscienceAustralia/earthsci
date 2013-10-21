@@ -15,34 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.ui.def.DefinitionLoader;
-
 /**
- * Container class used by the {@link EditableManager}. Stores an
- * {@link IModelElement} and a {@link DefinitionLoader} for loading a Sapphire
- * definition.
+ * A revertable object. Implementations are required to store the original value
+ * when a value changes, and reset it if reverted.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ModelAndDefinition
+public interface IRevertable
 {
-	private final RevertableModelElement model;
-	private final DefinitionLoader loader;
-
-	ModelAndDefinition(RevertableModelElement model, DefinitionLoader loader)
-	{
-		this.model = model;
-		this.loader = loader;
-	}
-
-	public RevertableModelElement getModel()
-	{
-		return model;
-	}
-
-	public DefinitionLoader getLoader()
-	{
-		return loader;
-	}
+	void revert();
 }
