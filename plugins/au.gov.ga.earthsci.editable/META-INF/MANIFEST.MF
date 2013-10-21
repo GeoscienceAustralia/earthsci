@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Editable
+Bundle-SymbolicName: au.gov.ga.earthsci.editable;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: au.gov.ga.earthsci.editable.Activator
+Bundle-Vendor: Geoscience Australia
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.sapphire.modeling,
+ au.gov.ga.earthsci.logging,
+ au.gov.ga.earthsci.common,
+ org.eclipse.sapphire.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: au.gov.ga.earthsci.editable,
+ au.gov.ga.earthsci.editable.annotations,
+ au.gov.ga.earthsci.editable.binders,
+ au.gov.ga.earthsci.editable.factories,
+ au.gov.ga.earthsci.editable.models,
+ au.gov.ga.earthsci.editable.renderers
