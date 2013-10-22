@@ -37,6 +37,7 @@ public class EditableModelResource<T> extends Resource implements IRevertable
 	private static final Logger logger = LoggerFactory.getLogger(EditableModelResource.class);
 
 	private final T object;
+	private boolean dontCreateBinding = false;
 
 	public EditableModelResource(T object)
 	{
@@ -52,6 +53,11 @@ public class EditableModelResource<T> extends Resource implements IRevertable
 	@Override
 	protected BindingImpl createBinding(ModelProperty property)
 	{
+		if (dontCreateBinding)
+		{
+			return null;
+		}
+
 		BindingImpl binding = null;
 		try
 		{
@@ -85,6 +91,24 @@ public class EditableModelResource<T> extends Resource implements IRevertable
 		return binding;
 	}
 
+	protected BindingImpl bindingIfExists(ModelProperty property)
+	{
+		dontCreateBinding = true;
+		try
+		{
+			return binding(property);
+		}
+		catch (Exception e)
+		{
+			//ignore (binding() throws an exception if createBinding returns null)
+			return null;
+		}
+		finally
+		{
+			dontCreateBinding = false;
+		}
+	}
+
 	public T getObject()
 	{
 		return object;
@@ -95,7 +119,7 @@ public class EditableModelResource<T> extends Resource implements IRevertable
 	{
 		for (ModelProperty property : element().properties())
 		{
-			BindingImpl binding = binding(property);
+			BindingImpl binding = bindingIfExists(property);
 			if (binding instanceof IRevertable)
 			{
 				((IRevertable) binding).revert();
