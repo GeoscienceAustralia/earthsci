@@ -27,6 +27,8 @@ import au.gov.ga.earthsci.common.util.IDescribed;
 import au.gov.ga.earthsci.common.util.INamed;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
+import com.jhlabs.image.Colormap;
+
 /**
  * An immutable colour map used for mapping values to colours according to a
  * colour table
@@ -36,7 +38,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  * 
  * @see au.gov.ga.earthsci.worldwind.common.util.ColorMap
  */
-public class ColorMap implements INamed, IDescribed
+public class ColorMap implements INamed, IDescribed, Colormap
 {
 
 	public static enum InterpolationMode implements INamed, IDescribed
@@ -283,6 +285,12 @@ public class ColorMap implements INamed, IDescribed
 	public Color getColor(double value)
 	{
 		return mode.getColor(value, entries, nodataColour);
+	}
+
+	@Override
+	public int getColor(float v)
+	{
+		return getColor((double) v).getRGB();
 	}
 
 	/**
