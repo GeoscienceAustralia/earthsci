@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer;
+package au.gov.ga.earthsci.layer.worldwind;
+
+import gov.nasa.worldwind.Model;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
 
 /**
- * Represents a Folder in the layer tree.
+ * {@link Model} subinterface that supports a layer list in a tree hierarchy.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FolderNode extends AbstractLayerTreeNode
+public interface ITreeModel extends Model
 {
+	/**
+	 * @return The root node of the layer list tree.
+	 */
+	ILayerTreeNode getRootNode();
 }

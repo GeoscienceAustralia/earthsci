@@ -43,7 +43,7 @@ import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.application.parts.info.InfoPart;
 import au.gov.ga.earthsci.application.parts.legend.LegendPart;
 import au.gov.ga.earthsci.common.ui.viewers.IControlProvider;
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
 
 /**
  * {@link IControlProvider} implementation for the layer tree. Must be disposed

@@ -25,7 +25,7 @@ import org.eclipse.swt.dnd.DragSourceListener;
 
 import au.gov.ga.earthsci.catalog.CatalogLayerHelper;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransferData;
 

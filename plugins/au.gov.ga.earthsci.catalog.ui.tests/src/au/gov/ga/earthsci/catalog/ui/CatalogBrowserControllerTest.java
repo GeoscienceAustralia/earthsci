@@ -14,8 +14,8 @@ import org.junit.Test;
 
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.worldwind.ITreeModel;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**
  * Unit tests for the {@link CatalogBrowserController}

@@ -23,7 +23,7 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
 
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
 
 /**
  * Handles properties action.
@@ -49,17 +49,32 @@ public class PropertiesHandler
 			return;
 		}
 
-		ILayerTreeNode layer = layers[0];
-		System.out.println(layer);
-
-
-		/*SapphireLayerImpl element = new SapphireLayerImpl(layer);
-		Reference<DialogDef> definition =
-				DefinitionLoader.context(SapphireLayer.class).sdef("layer").dialog("dialog");
-		SapphireDialog dialog = new SapphireDialog(shell, element, definition);
-		if (dialog.open() == Dialog.OK)
+		/*final ILayerTreeNode layer = layers[0];
+		if (layer instanceof LayerNode)
 		{
-			System.out.println("OK PRESSED!");
+			Layer l = ((LayerNode) layer).getLayer();
+			ModelAndDefinition editor = EditableManager.getInstance().edit(l);
+
+			editor.getModel().attach(new Listener()
+			{
+				@Override
+				public void handle(Event event)
+				{
+					if (event instanceof PropertyContentEvent)
+					{
+						//a layer property changed, redraw the world windows
+						WorldWindowRegistry.INSTANCE.redraw();
+					}
+				}
+			});
+
+			Reference<DialogDef> definition = editor.getLoader().dialog();
+			SapphireDialog dialog = new SapphireDialog(shell, editor.getModel(), definition);
+			if (dialog.open() != Dialog.OK)
+			{
+				editor.getModel().revert();
+				WorldWindowRegistry.INSTANCE.redraw();
+			}
 		}*/
 	}
 

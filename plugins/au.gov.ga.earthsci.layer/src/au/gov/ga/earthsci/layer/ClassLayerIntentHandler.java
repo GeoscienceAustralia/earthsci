@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer;
+package au.gov.ga.earthsci.layer;
 
-import gov.nasa.worldwind.globes.ElevationModel;
 import gov.nasa.worldwind.layers.Layer;
+import au.gov.ga.earthsci.intent.IIntentCallback;
+import au.gov.ga.earthsci.intent.IIntentHandler;
+import au.gov.ga.earthsci.intent.Intent;
 
 /**
- * Represents a {@link Layer} that wraps an elevation model. A layer of this
- * type can be returned by the {@link LayerFactory} when a source representing
- * an elevation model is passed to the factory.
+ * {@link IIntentHandler} that handles class:// layer URIs.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IElevationModelLayer extends Layer
+public class ClassLayerIntentHandler implements IIntentHandler
 {
-	/**
-	 * @return The elevation model wrapped by this object
-	 */
-	ElevationModel getElevationModel();
+	@Override
+	public void handle(Intent intent, IIntentCallback callback)
+	{
+		String className = intent.getURI().getAuthority();
+		try
+		{
+			@SuppressWarnings("unchecked")
+			Class<? extends Layer> c = (Class<? extends Layer>) Class.forName(className);
+			Layer layer = c.newInstance();
+			callback.completed(layer, intent);
+		}
+		catch (Exception e)
+		{
+			callback.error(e, intent);
+		}
+	}
 }

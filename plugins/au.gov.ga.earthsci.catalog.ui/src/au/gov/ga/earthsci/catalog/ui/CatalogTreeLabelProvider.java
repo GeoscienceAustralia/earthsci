@@ -58,8 +58,8 @@ import au.gov.ga.earthsci.common.ui.viewers.IFireableLabelProvider;
 import au.gov.ga.earthsci.common.ui.viewers.LoadingIconHelper;
 import au.gov.ga.earthsci.common.util.ILabeled;
 import au.gov.ga.earthsci.common.util.INamed;
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.worldwind.ITreeModel;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**
  * A {@link IControlProvider} for the catalog browser tree

@@ -38,12 +38,12 @@ import org.w3c.dom.Document;
 import au.gov.ga.earthsci.catalog.CatalogLayerHelper;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.core.intent.AbstractRetrieveIntentHandler;
-import au.gov.ga.earthsci.core.model.layer.FolderNode;
-import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
-import au.gov.ga.earthsci.core.model.layer.LayerNode;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
+import au.gov.ga.earthsci.layer.FolderNode;
+import au.gov.ga.earthsci.layer.IntentLayerLoader;
+import au.gov.ga.earthsci.layer.LayerNode;
 
 /**
  * Intent handler that handles WMS capabilities documents.

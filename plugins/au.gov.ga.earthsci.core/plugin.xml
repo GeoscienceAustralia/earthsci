@@ -2,7 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="au.gov.ga.earthsci.core.retrieve.retrievers" name="Resource Retriever" schema="schema/au.gov.ga.earthsci.core.retrieve.retrievers.exsd"/>
-   <extension-point id="au.gov.ga.earthsci.core.hudLayers" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.core.hudLayers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.urlStreamHandlers" name="URL Stream Handlers" schema="schema/au.gov.ga.earthsci.core.urlStreamHandlers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.core.mimeTypes" name="MIME Types" schema="schema/au.gov.ga.earthsci.core.mimeTypes.exsd"/>
    <extension
@@ -11,40 +10,6 @@
             file-extensions="tif,tiff,grd,ascii,asc,ecw,ers,png,jpg,jpeg,vrt,adf,bt,e00,bil,hdr,lan,gis,pgm,ppm"
             id="au.gov.ga.earthsci.core.content.gdalraster"
             name="GDAL Raster"
-            priority="normal">
-      </content-type>
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            file-extensions="xml"
-            id="au.gov.ga.earthsci.layer.xml"
-            name="XML layer definition"
-            priority="normal">
-         <describer
-               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-            <parameter
-                  name="element"
-                  value="{}Layer">
-            </parameter>
-         </describer>
-      </content-type>
-      <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            file-extensions="xml"
-            id="au.gov.ga.earthsci.elevationmodel.xml"
-            name="XML elevation model definition"
-            priority="normal">
-         <describer
-               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-            <parameter
-                  name="element"
-                  value="{}ElevationModel">
-            </parameter>
-         </describer>
-      </content-type>
-      <content-type
-            file-extensions="kml,kmz"
-            id="au.gov.ga.earthsci.layer.kml"
-            name="KML layer"
             priority="normal">
       </content-type>
    </extension>
@@ -116,16 +81,6 @@
             class="au.gov.ga.earthsci.notification.NotificationManager"
             priority="0">
       </inject>
-      <inject
-            class="au.gov.ga.earthsci.core.worldwind.WorldWindModel"
-            priority="0">
-         <type
-               class="au.gov.ga.earthsci.core.worldwind.WorldWindModel">
-         </type>
-         <type
-               class="au.gov.ga.earthsci.core.worldwind.ITreeModel">
-         </type>
-      </inject>
       <injectable
             class="au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory"
             priority="10">
@@ -134,47 +89,11 @@
    <extension
          point="au.gov.ga.earthsci.intent.filters">
       <filter
-            class="au.gov.ga.earthsci.core.model.layer.ClassLayerIntentHandler"
-            priority="0"
-            returns-result="true">
-         <return-type
-               class="gov.nasa.worldwind.layers.Layer">
-         </return-type>
-         <uri
-               scheme="class">
-         </uri>
-      </filter>
-      <filter
-            class="au.gov.ga.earthsci.core.model.layer.LayerXmlIntentHandler"
-            priority="0"
-            returns-result="true">
-         <return-type
-               class="gov.nasa.worldwind.layers.Layer">
-         </return-type>
-         <content-type
-               id="au.gov.ga.earthsci.layer.xml">
-         </content-type>
-         <content-type
-               id="au.gov.ga.earthsci.elevationmodel.xml">
-         </content-type>
-      </filter>
-      <filter
             class="au.gov.ga.earthsci.core.seed.SeedXmlIntentHandler"
             priority="0"
             returns-result="true">
          <content-type
                id="au.gov.ga.earthsci.seed.xml">
-         </content-type>
-      </filter>
-      <filter
-            class="au.gov.ga.earthsci.core.intent.KmlLayerIntentHandler"
-            priority="0"
-            returns-result="true">
-         <return-type
-               class="gov.nasa.worldwind.layers.Layer">
-         </return-type>
-         <content-type
-               id="au.gov.ga.earthsci.layer.kml">
          </content-type>
       </filter>
    </extension>

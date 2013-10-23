@@ -23,7 +23,7 @@ import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.viewers.TreeViewer;
 
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
 
 /**
  * Handles rename commands for the layer tree.

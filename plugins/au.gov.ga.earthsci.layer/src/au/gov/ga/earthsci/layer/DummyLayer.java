@@ -13,38 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer.ui;
+package au.gov.ga.earthsci.layer;
 
-import org.eclipse.jface.viewers.ICheckStateProvider;
-
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import gov.nasa.worldwind.layers.AbstractLayer;
+import gov.nasa.worldwind.render.DrawContext;
 
 /**
- * {@link ICheckStateProvider} implementation for the layer tree.
+ * Layer that renders nothing, used for the storage of properties while a real
+ * layer is being loaded.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerTreeCheckStateProvider implements ICheckStateProvider
+public class DummyLayer extends AbstractLayer
 {
 	@Override
-	public boolean isGrayed(Object element)
+	protected void doRender(DrawContext dc)
 	{
-		if (element instanceof ILayerTreeNode)
-		{
-			ILayerTreeNode node = (ILayerTreeNode) element;
-			return !node.isAllChildrenEnabled();
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isChecked(Object element)
-	{
-		if (element instanceof ILayerTreeNode)
-		{
-			ILayerTreeNode node = (ILayerTreeNode) element;
-			return node.isAnyChildrenEnabled();
-		}
-		return false;
 	}
 }

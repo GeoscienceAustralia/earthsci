@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.worldwind;
+package au.gov.ga.earthsci.layer;
 
-import gov.nasa.worldwind.Model;
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import gov.nasa.worldwind.layers.Layer;
+
+import org.w3c.dom.Element;
 
 /**
- * {@link Model} subinterface that supports a layer list in a tree hierarchy.
+ * TODO MAKE A NOTE THAT ALL IMPLEMENTATIONS MUST HAVE AN EMPTY CONSTRUCTOR!
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ITreeModel extends Model
+public interface IEditableLayer extends Layer
 {
-	/**
-	 * @return The root node of the layer list tree.
-	 */
-	ILayerTreeNode getRootNode();
+	/*Object editable();
+
+	ModelElementType getModelType();*/
+
+	void save(Element parent);
+
+	void load(Element parent);
 }

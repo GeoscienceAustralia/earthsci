@@ -33,7 +33,7 @@ import au.gov.ga.earthsci.common.persistence.PersistenceException;
 import au.gov.ga.earthsci.common.persistence.Persistent;
 import au.gov.ga.earthsci.common.persistence.Persister;
 import au.gov.ga.earthsci.common.util.XmlUtil;
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
 
 /**
  * Drag and drop data used by {@link LayerTransfer}.

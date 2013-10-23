@@ -79,7 +79,7 @@
       </injectable>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.core.hudLayers">
+         point="au.gov.ga.earthsci.layer.hudLayers">
       <hud
             class="gov.nasa.worldwind.layers.ScalebarLayer"
             enabled="true"

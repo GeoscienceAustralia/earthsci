@@ -13,34 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer;
+package au.gov.ga.earthsci.layer.worldwind;
 
-import gov.nasa.worldwind.layers.Layer;
-import au.gov.ga.earthsci.intent.IIntentCallback;
-import au.gov.ga.earthsci.intent.IIntentHandler;
-import au.gov.ga.earthsci.intent.Intent;
+import gov.nasa.worldwind.Configuration;
+import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.avlist.AVKey;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Singleton;
+
+import org.eclipse.e4.core.di.annotations.Creatable;
+
+import au.gov.ga.earthsci.layer.LayerFactory;
 
 /**
- * {@link IIntentHandler} that handles class:// layer URIs.
+ * Helper class for setting up the WorldWind {@link Configuration} properties.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ClassLayerIntentHandler implements IIntentHandler
+@Creatable
+@Singleton
+public class WorldWindConfiguration
 {
-	@Override
-	public void handle(Intent intent, IIntentCallback callback)
+	@PostConstruct
+	public void setup()
 	{
-		String className = intent.getURI().getAuthority();
-		try
-		{
-			@SuppressWarnings("unchecked")
-			Class<? extends Layer> c = (Class<? extends Layer>) Class.forName(className);
-			Layer layer = c.newInstance();
-			callback.completed(layer, intent);
-		}
-		catch (Exception e)
-		{
-			callback.error(e, intent);
-		}
+		Configuration.setValue(AVKey.LAYER_FACTORY, LayerFactory.class.getName());
+		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
+	}
+
+	@PreDestroy
+	public void packup()
+	{
+		WorldWind.getRetrievalService().shutdown(true);
 	}
 }

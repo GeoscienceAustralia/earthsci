@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer;
+package au.gov.ga.earthsci.layer;
 
 import gov.nasa.worldwind.layers.Layer;
 
@@ -35,7 +35,7 @@ import au.gov.ga.earthsci.common.util.ExtensionPointHelper;
  */
 public class HudLayers
 {
-	public static final String HUD_EXTENSION_POINT_ID = "au.gov.ga.earthsci.core.hudLayers"; //$NON-NLS-1$
+	public static final String HUD_EXTENSION_POINT_ID = "au.gov.ga.earthsci.layer.hudLayers"; //$NON-NLS-1$
 
 	private static HudLayer[] layers;
 	private static final Set<Class<?>> layerClasses = new HashSet<Class<?>>();

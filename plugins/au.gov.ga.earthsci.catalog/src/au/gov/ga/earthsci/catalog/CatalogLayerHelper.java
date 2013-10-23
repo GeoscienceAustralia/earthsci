@@ -17,10 +17,10 @@ package au.gov.ga.earthsci.catalog;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 
-import au.gov.ga.earthsci.core.model.layer.FolderNode;
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
-import au.gov.ga.earthsci.core.model.layer.LayerNode;
+import au.gov.ga.earthsci.layer.FolderNode;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.IntentLayerLoader;
+import au.gov.ga.earthsci.layer.LayerNode;
 
 /**
  * Helper class used for creating layers from catalog tree nodes.

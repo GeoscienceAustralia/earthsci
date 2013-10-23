@@ -25,7 +25,6 @@ import javax.inject.Singleton;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
 
-import au.gov.ga.earthsci.core.model.layer.LayerFactory;
 import au.gov.ga.earthsci.worldwind.common.terrain.ElevationModelFactory;
 import au.gov.ga.earthsci.worldwind.common.terrain.WireframeRectangularTessellator;
 
@@ -41,9 +40,7 @@ public class WorldWindConfiguration
 	@PostConstruct
 	public void setup()
 	{
-		Configuration.setValue(AVKey.LAYER_FACTORY, LayerFactory.class.getName());
 		Configuration.setValue(AVKey.ELEVATION_MODEL_FACTORY, ElevationModelFactory.class.getName());
-		Configuration.setValue(AVKey.MODEL_CLASS_NAME, WorldWindModel.class.getName());
 		Configuration.setValue(AVKey.RETRIEVAL_SERVICE_CLASS_NAME, WorldWindRetrievalService.class.getName());
 		Configuration.setValue(AVKey.TESSELLATOR_CLASS_NAME, WireframeRectangularTessellator.class.getName());
 	}

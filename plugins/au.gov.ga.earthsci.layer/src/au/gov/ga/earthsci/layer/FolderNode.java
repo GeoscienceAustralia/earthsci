@@ -13,21 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.model.layer;
-
-import gov.nasa.worldwind.layers.AbstractLayer;
-import gov.nasa.worldwind.render.DrawContext;
+package au.gov.ga.earthsci.layer;
 
 /**
- * Layer that renders nothing, used for the storage of properties while a real
- * layer is being loaded.
+ * Represents a Folder in the layer tree.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class DummyLayer extends AbstractLayer
+public class FolderNode extends AbstractLayerTreeNode
 {
-	@Override
-	protected void doRender(DrawContext dc)
-	{
-	}
 }

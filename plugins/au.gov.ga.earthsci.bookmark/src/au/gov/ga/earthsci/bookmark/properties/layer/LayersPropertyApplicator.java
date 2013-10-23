@@ -22,8 +22,8 @@ import javax.inject.Inject;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.core.model.layer.LayerNode;
-import au.gov.ga.earthsci.core.worldwind.ITreeModel;
+import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**
  * An {@link IBookmarkPropertyApplicator} used to apply layer state captured in

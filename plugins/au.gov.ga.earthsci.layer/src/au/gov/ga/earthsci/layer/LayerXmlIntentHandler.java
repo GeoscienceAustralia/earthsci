@@ -13,42 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.intent;
+package au.gov.ga.earthsci.layer;
 
+import gov.nasa.worldwind.Factory;
+import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.avlist.AVListImpl;
 
-import java.io.File;
 import java.net.URL;
 
-import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
+import org.w3c.dom.Document;
+
+import au.gov.ga.earthsci.core.intent.AbstractXmlRetrieveIntentHandler;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.worldwind.common.layers.kml.KMLLayer;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
- * Intent handler for KML/KMZ layers.
+ * {@link IXmlLoader} implementation for layer and elevation model documents.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class KmlLayerIntentHandler extends AbstractRetrieveIntentHandler
+public class LayerXmlIntentHandler extends AbstractXmlRetrieveIntentHandler
 {
 	@Override
-	protected void handle(IRetrievalData data, URL url, Intent intent, IIntentCallback callback)
+	protected void handle(Document document, URL url, Intent intent, IIntentCallback callback)
 	{
 		AVList params = new AVListImpl();
 		params.setValue(AVKeyMore.CONTEXT_URL, url);
 		try
 		{
-			KMLLayer layer = new KMLLayer(url, data.getInputStream(), params);
-			String name = url.toString();
-			if ("file".equalsIgnoreCase(url.getProtocol())) //$NON-NLS-1$
-			{
-				name = new File(url.toURI()).getName();
-			}
-			layer.setName(name);
-			callback.completed(layer, intent);
+			Factory factory = (Factory) WorldWind.createConfigurationComponent(AVKey.LAYER_FACTORY);
+			Object result = factory.createFromConfigSource(document.getDocumentElement(), params);
+			callback.completed(result, intent);
 		}
 		catch (Exception e)
 		{

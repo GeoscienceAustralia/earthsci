@@ -29,10 +29,10 @@ import au.gov.ga.earthsci.application.util.UserActionPreference;
 import au.gov.ga.earthsci.catalog.CatalogLayerHelper;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ui.preferences.ICatalogBrowserPreferences;
-import au.gov.ga.earthsci.core.model.layer.FolderNode;
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.model.layer.LayerNode;
-import au.gov.ga.earthsci.core.worldwind.ITreeModel;
+import au.gov.ga.earthsci.layer.FolderNode;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**
  * The default implementation of the {@link ICatalogBrowserController}

@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Layer
+Bundle-SymbolicName: au.gov.ga.earthsci.layer;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: au.gov.ga.earthsci.layer.Activator
+Bundle-Vendor: Geoscience Australia
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ gov.nasa.worldwind,
+ au.gov.ga.earthsci.common,
+ au.gov.ga.earthsci.core,
+ au.gov.ga.earthsci.intent,
+ org.eclipse.e4.core.contexts,
+ au.gov.ga.earthsci.notification,
+ au.gov.ga.earthsci.logging,
+ org.eclipse.e4.core.di,
+ au.gov.ga.earthsci.injectable;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: au.gov.ga.earthsci.layer,
+ au.gov.ga.earthsci.layer.worldwind
+Import-Package: javax.annotation;version="1.0.0",
+ javax.inject

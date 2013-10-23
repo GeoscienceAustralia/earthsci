@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.worldwind;
+package au.gov.ga.earthsci.layer.worldwind;
 
 import gov.nasa.worldwind.BasicModel;
 import gov.nasa.worldwind.WorldWind;
@@ -34,12 +34,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.util.ConfigurationUtil;
-import au.gov.ga.earthsci.core.model.layer.DefaultLayers;
-import au.gov.ga.earthsci.core.model.layer.FolderNode;
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.core.model.layer.IntentLayerLoader;
-import au.gov.ga.earthsci.core.model.layer.LayerNode;
-import au.gov.ga.earthsci.core.model.layer.LayerPersister;
+import au.gov.ga.earthsci.layer.DefaultLayers;
+import au.gov.ga.earthsci.layer.FolderNode;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.IntentLayerLoader;
+import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.LayerPersister;
 
 /**
  * {@link BasicModel} subclass used to override specific functionality, such as

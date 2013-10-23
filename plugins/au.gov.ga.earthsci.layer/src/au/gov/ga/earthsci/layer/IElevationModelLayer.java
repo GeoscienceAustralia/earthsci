@@ -13,38 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer.ui;
+package au.gov.ga.earthsci.layer;
 
-import org.eclipse.jface.viewers.ICheckStateProvider;
-
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import gov.nasa.worldwind.globes.ElevationModel;
+import gov.nasa.worldwind.layers.Layer;
 
 /**
- * {@link ICheckStateProvider} implementation for the layer tree.
+ * Represents a {@link Layer} that wraps an elevation model. A layer of this
+ * type can be returned by the {@link LayerFactory} when a source representing
+ * an elevation model is passed to the factory.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerTreeCheckStateProvider implements ICheckStateProvider
+public interface IElevationModelLayer extends Layer
 {
-	@Override
-	public boolean isGrayed(Object element)
-	{
-		if (element instanceof ILayerTreeNode)
-		{
-			ILayerTreeNode node = (ILayerTreeNode) element;
-			return !node.isAllChildrenEnabled();
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isChecked(Object element)
-	{
-		if (element instanceof ILayerTreeNode)
-		{
-			ILayerTreeNode node = (ILayerTreeNode) element;
-			return node.isAnyChildrenEnabled();
-		}
-		return false;
-	}
+	/**
+	 * @return The elevation model wrapped by this object
+	 */
+	ElevationModel getElevationModel();
 }

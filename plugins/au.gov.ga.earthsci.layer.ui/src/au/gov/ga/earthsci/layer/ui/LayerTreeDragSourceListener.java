@@ -27,7 +27,7 @@ import org.eclipse.ui.part.PluginTransfer;
 import org.eclipse.ui.part.PluginTransferData;
 
 import au.gov.ga.earthsci.application.Activator;
-import au.gov.ga.earthsci.core.model.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransferData;
 import au.gov.ga.earthsci.layer.ui.dnd.LocalLayerTransfer;

@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="au.gov.ga.earthsci.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="au.gov.ga.earthsci.layer" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="au.gov.ga.earthsci.core" id="au.gov.ga.earthsci.core.hudLayers" name="Heads Up Display Layer"/>
+         <meta.schema plugin="au.gov.ga.earthsci.layer" id="au.gov.ga.earthsci.layer.hudLayers" name="Heads Up Display Layer"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
