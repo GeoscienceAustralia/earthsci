@@ -37,9 +37,9 @@ import au.gov.ga.earthsci.common.util.ConfigurationUtil;
 import au.gov.ga.earthsci.layer.DefaultLayers;
 import au.gov.ga.earthsci.layer.FolderNode;
 import au.gov.ga.earthsci.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.layer.LayerNode;
 import au.gov.ga.earthsci.layer.LayerPersister;
+import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
 
 /**
  * {@link BasicModel} subclass used to override specific functionality, such as

@@ -28,8 +28,8 @@ import org.eclipse.swt.dnd.TransferData;
 
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransferData;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransferData.TransferredLayer;

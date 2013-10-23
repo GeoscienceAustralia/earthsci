@@ -59,7 +59,7 @@
    <extension
          point="au.gov.ga.earthsci.intent.filters">
       <filter
-            class="au.gov.ga.earthsci.layer.ClassLayerIntentHandler"
+            class="au.gov.ga.earthsci.layer.intent.ClassLayerIntentHandler"
             priority="0"
             returns-result="true">
          <return-type
@@ -70,7 +70,7 @@
          </uri>
       </filter>
       <filter
-            class="au.gov.ga.earthsci.layer.LayerXmlIntentHandler"
+            class="au.gov.ga.earthsci.layer.intent.LayerXmlIntentHandler"
             priority="0"
             returns-result="true">
          <return-type
@@ -84,7 +84,7 @@
          </content-type>
       </filter>
       <filter
-            class="au.gov.ga.earthsci.layer.KmlLayerIntentHandler"
+            class="au.gov.ga.earthsci.layer.intent.KmlLayerIntentHandler"
             priority="0"
             returns-result="true">
          <return-type

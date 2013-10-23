@@ -22,5 +22,20 @@
          </type>
       </filter>
    </extension>
+   <extension
+         point="au.gov.ga.earthsci.editable.models">
+      <model
+            model="au.gov.ga.earthsci.layer.ui.edit.LayerModelElement"
+            sdef-context="au.gov.ga.earthsci.layer.ui.edit.LayerModelElement"
+            sdef-name="layer"
+            type="gov.nasa.worldwind.layers.Layer">
+      </model>
+      <model
+            model="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerModelElement"
+            sdef-context="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerModelElement"
+            sdef-name="tiledimagelayer"
+            type="gov.nasa.worldwind.layers.TiledImageLayer">
+      </model>
+   </extension>
 
 </plugin>

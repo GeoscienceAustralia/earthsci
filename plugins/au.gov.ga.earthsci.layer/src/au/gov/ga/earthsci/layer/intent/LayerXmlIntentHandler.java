@@ -13,30 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer;
+package au.gov.ga.earthsci.layer.intent;
 
-import gov.nasa.worldwind.layers.Layer;
+import gov.nasa.worldwind.Factory;
+import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.avlist.AVList;
+import gov.nasa.worldwind.avlist.AVListImpl;
+
+import java.net.URL;
+
+import org.w3c.dom.Document;
+
+import au.gov.ga.earthsci.core.intent.AbstractXmlRetrieveIntentHandler;
 import au.gov.ga.earthsci.intent.IIntentCallback;
-import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
+import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
- * {@link IIntentHandler} that handles class:// layer URIs.
+ * {@link IXmlLoader} implementation for layer and elevation model documents.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ClassLayerIntentHandler implements IIntentHandler
+public class LayerXmlIntentHandler extends AbstractXmlRetrieveIntentHandler
 {
 	@Override
-	public void handle(Intent intent, IIntentCallback callback)
+	protected void handle(Document document, URL url, Intent intent, IIntentCallback callback)
 	{
-		String className = intent.getURI().getAuthority();
+		AVList params = new AVListImpl();
+		params.setValue(AVKeyMore.CONTEXT_URL, url);
 		try
 		{
-			@SuppressWarnings("unchecked")
-			Class<? extends Layer> c = (Class<? extends Layer>) Class.forName(className);
-			Layer layer = c.newInstance();
-			callback.completed(layer, intent);
+			Factory factory = (Factory) WorldWind.createConfigurationComponent(AVKey.LAYER_FACTORY);
+			Object result = factory.createFromConfigSource(document.getDocumentElement(), params);
+			callback.completed(result, intent);
 		}
 		catch (Exception e)
 		{

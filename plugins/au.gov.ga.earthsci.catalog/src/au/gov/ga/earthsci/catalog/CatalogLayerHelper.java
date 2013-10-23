@@ -19,8 +19,8 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 
 import au.gov.ga.earthsci.layer.FolderNode;
 import au.gov.ga.earthsci.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
 
 /**
  * Helper class used for creating layers from catalog tree nodes.

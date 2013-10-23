@@ -42,8 +42,8 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.layer.FolderNode;
-import au.gov.ga.earthsci.layer.IntentLayerLoader;
 import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
 
 /**
  * Intent handler that handles WMS capabilities documents.

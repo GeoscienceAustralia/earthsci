@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer;
+package au.gov.ga.earthsci.layer.intent;
 
 import gov.nasa.worldwind.layers.Layer;
 
@@ -31,6 +31,8 @@ import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentManager;
 import au.gov.ga.earthsci.intent.dispatch.DispatchFilter;
 import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
+import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.Messages;
 import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.NotificationManager;
 
