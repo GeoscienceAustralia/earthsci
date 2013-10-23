@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**

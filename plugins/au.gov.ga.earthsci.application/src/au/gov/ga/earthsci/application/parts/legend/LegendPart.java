@@ -36,7 +36,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**

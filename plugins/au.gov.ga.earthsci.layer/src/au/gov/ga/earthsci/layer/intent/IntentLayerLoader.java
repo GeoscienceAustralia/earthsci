@@ -31,8 +31,8 @@ import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentManager;
 import au.gov.ga.earthsci.intent.dispatch.DispatchFilter;
 import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
-import au.gov.ga.earthsci.layer.LayerNode;
 import au.gov.ga.earthsci.layer.Messages;
+import au.gov.ga.earthsci.layer.tree.LayerNode;
 import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.NotificationManager;
 

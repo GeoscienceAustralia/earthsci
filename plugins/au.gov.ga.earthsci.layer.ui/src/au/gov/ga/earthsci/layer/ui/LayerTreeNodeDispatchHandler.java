@@ -35,8 +35,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.intent.dispatch.IDispatchHandler;
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.LayerNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 

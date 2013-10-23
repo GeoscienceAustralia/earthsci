@@ -58,7 +58,7 @@ import au.gov.ga.earthsci.common.ui.viewers.IFireableLabelProvider;
 import au.gov.ga.earthsci.common.ui.viewers.LoadingIconHelper;
 import au.gov.ga.earthsci.common.util.ILabeled;
 import au.gov.ga.earthsci.common.util.INamed;
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**

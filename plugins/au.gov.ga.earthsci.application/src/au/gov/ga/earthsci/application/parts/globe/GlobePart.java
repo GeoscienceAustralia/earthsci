@@ -61,8 +61,8 @@ import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.application.parts.globe.handlers.ToggleHudHandler;
 import au.gov.ga.earthsci.core.worldwind.WorldWindView;
-import au.gov.ga.earthsci.layer.HudLayer;
-import au.gov.ga.earthsci.layer.HudLayers;
+import au.gov.ga.earthsci.layer.hud.HudLayer;
+import au.gov.ga.earthsci.layer.hud.HudLayers;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 import au.gov.ga.earthsci.newt.awt.NewtInputHandlerAWT;
 import au.gov.ga.earthsci.newt.awt.WorldWindowNewtAutoDrawableAWT;

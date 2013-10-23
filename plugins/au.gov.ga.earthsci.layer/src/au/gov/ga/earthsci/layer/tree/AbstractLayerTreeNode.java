@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer;
+package au.gov.ga.earthsci.layer.tree;
 
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
@@ -40,6 +40,7 @@ import au.gov.ga.earthsci.core.model.IModelStatus;
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.worldwind.WorldWindCompoundElevationModel;
+import au.gov.ga.earthsci.layer.IElevationModelLayer;
 
 /**
  * Abstract implementation of the {@link ILayerTreeNode} interface.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Geoscience Australia
+ * Copyright 2012 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer;
-
-import gov.nasa.worldwind.layers.Layer;
-
-import org.w3c.dom.Element;
+package au.gov.ga.earthsci.layer.tree;
 
 /**
- * TODO MAKE A NOTE THAT ALL IMPLEMENTATIONS MUST HAVE AN EMPTY CONSTRUCTOR!
+ * Represents a Folder in the layer tree.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IEditableLayer extends Layer
+public class FolderNode extends AbstractLayerTreeNode
 {
-	/*Object editable();
-
-	ModelElementType getModelType();*/
-
-	void save(Element parent);
-
-	void load(Element parent);
 }

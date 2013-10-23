@@ -29,9 +29,9 @@ import au.gov.ga.earthsci.application.util.UserActionPreference;
 import au.gov.ga.earthsci.catalog.CatalogLayerHelper;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ui.preferences.ICatalogBrowserPreferences;
-import au.gov.ga.earthsci.layer.FolderNode;
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.tree.FolderNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.LayerNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**

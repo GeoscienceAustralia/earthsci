@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.tree.LayerNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**

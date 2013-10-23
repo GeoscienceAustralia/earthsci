@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.layer.ui;
 
 import org.eclipse.jface.viewers.ICheckStateProvider;
 
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 
 /**
  * {@link ICheckStateProvider} implementation for the layer tree.

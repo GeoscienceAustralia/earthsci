@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import au.gov.ga.earthsci.bookmark.AbstractBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.common.math.vector.Vector2;
-import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.tree.LayerNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 

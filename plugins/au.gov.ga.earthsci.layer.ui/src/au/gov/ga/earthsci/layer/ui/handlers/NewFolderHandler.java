@@ -23,8 +23,8 @@ import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.viewers.TreeViewer;
 
-import au.gov.ga.earthsci.layer.FolderNode;
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.FolderNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**

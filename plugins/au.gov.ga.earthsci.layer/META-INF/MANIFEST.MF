@@ -19,7 +19,9 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: au.gov.ga.earthsci.layer,
+ au.gov.ga.earthsci.layer.hud,
  au.gov.ga.earthsci.layer.intent,
+ au.gov.ga.earthsci.layer.tree,
  au.gov.ga.earthsci.layer.worldwind
 Import-Package: javax.annotation;version="1.0.0",
  javax.inject

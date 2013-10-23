@@ -56,10 +56,10 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalServiceListener;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
-import au.gov.ga.earthsci.layer.FolderNode;
 import au.gov.ga.earthsci.layer.IElevationModelLayer;
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.tree.FolderNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.LayerNode;
 
 /**
  * Label provider for the layer tree.

@@ -87,7 +87,7 @@ import au.gov.ga.earthsci.common.databinding.ITreeChangeListener;
 import au.gov.ga.earthsci.common.databinding.ObservableListTreeSupport;
 import au.gov.ga.earthsci.common.databinding.TreeChangeAdapter;
 import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
 import au.gov.ga.earthsci.layer.ui.dnd.LocalLayerTransfer;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;

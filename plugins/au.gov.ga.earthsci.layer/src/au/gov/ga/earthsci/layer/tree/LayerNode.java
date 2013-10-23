@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer;
+package au.gov.ga.earthsci.layer.tree;
 
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
@@ -37,6 +37,9 @@ import au.gov.ga.earthsci.common.persistence.Persistent;
 import au.gov.ga.earthsci.common.util.IEnableable;
 import au.gov.ga.earthsci.common.util.IInformationed;
 import au.gov.ga.earthsci.common.util.Util;
+import au.gov.ga.earthsci.layer.DummyLayer;
+import au.gov.ga.earthsci.layer.IElevationModelLayer;
+import au.gov.ga.earthsci.layer.Messages;
 import au.gov.ga.earthsci.notification.Notification;
 import au.gov.ga.earthsci.notification.NotificationLevel;
 import au.gov.ga.earthsci.notification.NotificationManager;

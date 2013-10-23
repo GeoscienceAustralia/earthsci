@@ -32,8 +32,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Scale;
 
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
-import au.gov.ga.earthsci.layer.LayerNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.LayerNode;
 
 /**
  * Tool control used to change layer opacity.

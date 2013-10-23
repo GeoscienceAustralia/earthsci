@@ -16,7 +16,7 @@
 package au.gov.ga.earthsci.layer.worldwind;
 
 import gov.nasa.worldwind.Model;
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 
 /**
  * {@link Model} subinterface that supports a layer list in a tree hierarchy.

@@ -8,8 +8,8 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.swt.dnd.TransferData;
 import org.junit.Test;
 
-import au.gov.ga.earthsci.layer.FolderNode;
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.FolderNode;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 
 /**
  * Unit tests for the {@link LocalLayerTransfer} class

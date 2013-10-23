@@ -40,6 +40,9 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.common.util.Util;
+import au.gov.ga.earthsci.layer.hud.HudLayers;
+import au.gov.ga.earthsci.layer.tree.FolderNode;
+import au.gov.ga.earthsci.layer.tree.LayerNode;
 
 /**
  * Helper class which reads the "LayerList" element from the World Wind
