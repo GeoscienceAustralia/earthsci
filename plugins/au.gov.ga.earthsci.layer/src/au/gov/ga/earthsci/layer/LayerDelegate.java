@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,129 +13,140 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer.tree;
+package au.gov.ga.earthsci.layer;
 
-import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.event.Message;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.render.DrawContext;
 
 import java.awt.Point;
+import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
-import java.net.URI;
-import java.net.URL;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import au.gov.ga.earthsci.common.persistence.Persistent;
-import au.gov.ga.earthsci.common.util.IEnableable;
-import au.gov.ga.earthsci.common.util.IInformationed;
-import au.gov.ga.earthsci.common.util.Util;
-import au.gov.ga.earthsci.layer.DummyLayer;
-import au.gov.ga.earthsci.layer.IElevationModelLayer;
-import au.gov.ga.earthsci.layer.ILayerDelegate;
-import au.gov.ga.earthsci.layer.LayerDelegate;
-import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
+import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
 
 /**
- * Layer tree node implementation for layers. Implements the {@link Layer}
- * interface, and delegates all layer methods to a {@link LayerDelegate} object.
+ * {@link Layer} implementation that delegates methods to another {@link Layer}
+ * instance.
  * <p/>
- * Also fires a property change in all setter methods to comply with the Java
- * Bean specification.
+ * Also implements {@link IPropertyChangeBean}. All setters will fire a property
+ * change. Any changed properties (ie opacity, name, etc) will be recorded, and
+ * set on any new layers passed to the {@link #setLayer(Layer)} method.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerNode extends AbstractLayerTreeNode implements ILayerDelegate, IEnableable
+public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerDelegate
 {
-	protected LayerDelegate layer = new LayerDelegate();
+	private static final Logger logger = LoggerFactory.getLogger(LayerDelegate.class);
 
-	@Override
-	public void setURI(URI uri)
-	{
-		super.setURI(uri);
-		if (layer.getLayer() instanceof DummyLayer)
-		{
-			layer.setName(uri.toString());
-		}
-	}
+	protected Layer layer = new DummyLayer();
+	private Set<String> propertiesChanged = new HashSet<String>();
+	private boolean copyingProperties = false;
+	private final Object layerSemaphore = new Object();
 
-	/**
-	 * @return The {@link Layer} that this node delegates to.
-	 */
 	@Override
 	public Layer getLayer()
 	{
-		return layer.getLayer();
+		return layer;
 	}
 
-	/**
-	 * Set the {@link Layer} that this node delegates to.
-	 * 
-	 * @param layer
-	 */
 	@Override
 	public void setLayer(Layer layer)
 	{
-		//set the values from the layer on this node
-		setName(layer.getName());
-
-		//get the legend url if it exists (set by the LayerFactory)
-		URL legendURL = (URL) layer.getValue(AVKeyMore.LEGEND_URL);
-		if (legendURL == null)
+		if (layer == null)
 		{
-			AVList constructionParameters = (AVList) layer.getValue(AVKey.CONSTRUCTION_PARAMETERS);
-			if (constructionParameters != null)
+			throw new NullPointerException("Layer is null"); //$NON-NLS-1$
+		}
+
+		Layer oldValue;
+		synchronized (layerSemaphore)
+		{
+			oldValue = getLayer();
+			copyProperties(oldValue, layer);
+			this.layer = layer;
+		}
+		firePropertyChange("layer", oldValue, layer); //$NON-NLS-1$
+	}
+
+	/**
+	 * Copy the changed properties between layers, by calling the getters of the
+	 * from layer and the setters on the to layer.
+	 * 
+	 * @param from
+	 *            Layer to get property values from
+	 * @param to
+	 *            Layer to set property values on
+	 */
+	private void copyProperties(Layer from, Layer to)
+	{
+		if (from == to)
+		{
+			return;
+		}
+
+		synchronized (propertiesChanged)
+		{
+			copyingProperties = true;
+			for (String property : propertiesChanged)
 			{
-				legendURL = (URL) constructionParameters.getValue(AVKeyMore.LEGEND_URL);
+				try
+				{
+					PropertyDescriptor fromPropertyDescriptor = new PropertyDescriptor(property, from.getClass());
+					PropertyDescriptor toPropertyDescriptor = new PropertyDescriptor(property, to.getClass());
+					Method getter = fromPropertyDescriptor.getReadMethod();
+					Method setter = toPropertyDescriptor.getWriteMethod();
+					Object value = getter.invoke(from);
+					setter.invoke(to, value);
+				}
+				catch (IntrospectionException e)
+				{
+					//ignore (invalid property name)
+				}
+				catch (Exception e)
+				{
+					logger.error("Error copying value between layers for property: " + property, e); //$NON-NLS-1$
+				}
 			}
-		}
-		if (legendURL != null)
-		{
-			setLegendURL(legendURL);
-		}
-
-		//set the actual layer (this will copy any changed properties on the old layer to the new layer)
-		this.layer.setLayer(layer);
-
-		//TODO rethink this
-		//we need to update the root's elevation models if this layer is an elevation model layer
-		if (layer instanceof IElevationModelLayer)
-		{
-			childrenChanged(getChildren(), getChildren());
+			copyingProperties = false;
 		}
 	}
 
 	@Override
-	public URL getInformationURL()
+	public void firePropertyChange(PropertyChangeEvent propertyChangeEvent)
 	{
-		//if the layer is IInformationed, use that instead
-		if (layer.getLayer() instanceof IInformationed)
+		super.firePropertyChange(propertyChangeEvent);
+		synchronized (propertiesChanged)
 		{
-			URL url = ((IInformationed) layer.getLayer()).getInformationURL();
-			if (url != null)
+			String propertyName = propertyChangeEvent.getPropertyName();
+			if (!copyingProperties && !"layer".equals(propertyName)) //$NON-NLS-1$
 			{
-				return url;
+				propertiesChanged.add(propertyName);
 			}
 		}
-		return super.getInformationURL();
 	}
 
 	@Override
-	public String getInformationString()
+	public void firePropertyChange(String propertyName, Object oldValue, Object newValue)
 	{
-		//if the layer is IInformationed, use that instead
-		if (layer.getLayer() instanceof IInformationed)
+		super.firePropertyChange(propertyName, oldValue, newValue);
+		synchronized (propertiesChanged)
 		{
-			String information = ((IInformationed) layer.getLayer()).getInformationString();
-			if (!Util.isEmpty(information))
+			if (!copyingProperties && !"layer".equals(propertyName)) //$NON-NLS-1$
 			{
-				return information;
+				propertiesChanged.add(propertyName);
 			}
 		}
-		return super.getInformationString();
 	}
 
 	@Override
@@ -166,7 +177,6 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerDelegate, 
 		return layer.setValue(key, value);
 	}
 
-	@Persistent(attribute = true)
 	@Override
 	public boolean isEnabled()
 	{
@@ -207,7 +217,6 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerDelegate, 
 		return layer.getRestorableState();
 	}
 
-	@Persistent(attribute = true)
 	@Override
 	public double getOpacity()
 	{
