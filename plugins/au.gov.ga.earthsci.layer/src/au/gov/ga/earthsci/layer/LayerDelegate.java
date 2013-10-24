@@ -68,6 +68,10 @@ public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerD
 		{
 			throw new NullPointerException("Layer is null"); //$NON-NLS-1$
 		}
+		if (layer == this)
+		{
+			throw new IllegalArgumentException("Cannot delegate to this"); //$NON-NLS-1$
+		}
 
 		Layer oldValue;
 		synchronized (layerSemaphore)
