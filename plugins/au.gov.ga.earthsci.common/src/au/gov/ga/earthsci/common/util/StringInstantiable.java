@@ -17,6 +17,8 @@ package au.gov.ga.earthsci.common.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * Helper class which contains methods for instantiating objects from strings
@@ -54,6 +56,18 @@ public class StringInstantiable
 			//can the class be constructed from a String?
 			c.getDeclaredConstructor(String.class); //throws exception if not found
 			return true;
+		}
+		catch (Exception e)
+		{
+		}
+		try
+		{
+			//can the class be constructed from a static "fromString" method?
+			Method method = c.getDeclaredMethod("fromString", String.class); //$NON-NLS-1$
+			if (Modifier.isStatic(method.getModifiers()) && c.isAssignableFrom(method.getReturnType()))
+			{
+				return true;
+			}
 		}
 		catch (Exception e)
 		{
@@ -116,6 +130,25 @@ public class StringInstantiable
 		{
 			Constructor<E> stringConstructor = type.getDeclaredConstructor(String.class);
 			return stringConstructor.newInstance(s);
+		}
+		catch (InvocationTargetException e)
+		{
+			if (e.getCause() instanceof RuntimeException)
+			{
+				throw (RuntimeException) e.getCause();
+			}
+			throw new IllegalArgumentException(e.getCause());
+		}
+		catch (Exception e)
+		{
+		}
+		try
+		{
+			Method method = type.getDeclaredMethod("fromString", String.class); //$NON-NLS-1$
+			if (Modifier.isStatic(method.getModifiers()) && type.isAssignableFrom(method.getReturnType()))
+			{
+				return type.cast(method.invoke(null, s));
+			}
 		}
 		catch (InvocationTargetException e)
 		{
