@@ -320,6 +320,46 @@ public class XmlUtil
 	}
 
 	/**
+	 * Remove any whitespace text nodes from the DOM. Calling this before saving
+	 * a formatted document will fix the formatting indentation of elements
+	 * loaded from a different document.
+	 * 
+	 * @param node
+	 *            Node to remove whitespace nodes from
+	 * @param deep
+	 *            Should this method recurse into the node's children?
+	 */
+	public static void removeWhitespace(Node node, boolean deep)
+	{
+		NodeList children = node.getChildNodes();
+		int length = children.getLength();
+		for (int i = 0; i < length; i++)
+		{
+			Node child = children.item(i);
+			if (child.getNodeType() == Node.TEXT_NODE && length > 1)
+			{
+				Node previous = child.getPreviousSibling();
+				Node next = child.getNextSibling();
+				if ((previous == null || previous.getNodeType() == Node.ELEMENT_NODE || previous.getNodeType() == Node.COMMENT_NODE)
+						&& (next == null || next.getNodeType() == Node.ELEMENT_NODE || next.getNodeType() == Node.COMMENT_NODE))
+				{
+					String content = child.getTextContent();
+					if (content.matches("\\s*")) //$NON-NLS-1$
+					{
+						node.removeChild(child);
+						i--;
+						length--;
+					}
+				}
+			}
+			else if (deep && child.getNodeType() == Node.ELEMENT_NODE)
+			{
+				removeWhitespace(child, deep);
+			}
+		}
+	}
+
+	/**
 	 * Create a new {@link Transformer}.
 	 * 
 	 * @throws TransformerConfigurationException
