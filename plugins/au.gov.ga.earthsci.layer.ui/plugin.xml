@@ -15,7 +15,7 @@
             name="Layer"
             priority="0">
          <type
-               class="au.gov.ga.earthsci.core.model.layer.ILayerTreeNode">
+               class="au.gov.ga.earthsci.layer.tree.ILayerTreeNode">
          </type>
          <type
                class="gov.nasa.worldwind.layers.Layer">
