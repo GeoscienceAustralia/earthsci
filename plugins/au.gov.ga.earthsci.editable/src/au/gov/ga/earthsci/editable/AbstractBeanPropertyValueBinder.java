@@ -13,29 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.editable.binders;
+package au.gov.ga.earthsci.editable;
 
-import org.eclipse.sapphire.modeling.IModelElement;
 import org.eclipse.sapphire.modeling.ValueProperty;
 
-import au.gov.ga.earthsci.editable.IValueBinder;
-
 /**
- * {@link IValueBinder} implementation for string objects.
+ * Abstract {@link IValueBinder} implementation. Exists for ease of subclassing.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class StringBinder implements IValueBinder<String>
+public abstract class AbstractBeanPropertyValueBinder extends
+		AbstractBeanPropertyBinder<String, Object, ValueProperty> implements IValueBinder<Object>
 {
-	@Override
-	public String get(String object, ValueProperty property, IModelElement element)
-	{
-		return object;
-	}
-
-	@Override
-	public void set(String value, String object, ValueProperty property, IModelElement element)
-	{
-		throw new UnsupportedOperationException("Strings are immutable, cannot set value"); //$NON-NLS-1$
-	}
 }

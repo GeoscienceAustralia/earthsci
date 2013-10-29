@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.editable;
 
 import java.util.List;
 
+import org.eclipse.sapphire.modeling.IModelElement;
 import org.eclipse.sapphire.modeling.ListProperty;
 
 import au.gov.ga.earthsci.editable.annotations.ListBinder;
@@ -36,13 +37,14 @@ public class BeanPropertyListBinder extends AbstractBeanPropertyBinder<List<?>, 
 {
 	@SuppressWarnings("rawtypes")
 	@Override
-	protected List<?> convertTo(Object object, ListProperty property, BeanProperty beanProperty)
+	protected List<?> convertTo(Object object, ListProperty property, BeanProperty beanProperty, IModelElement element)
 	{
 		return (List) object;
 	}
 
 	@Override
-	protected Conversion convertFrom(List<?> value, ListProperty property, BeanProperty beanProperty)
+	protected Conversion convertFrom(List<?> value, ListProperty property, BeanProperty beanProperty,
+			IModelElement element)
 	{
 		return new Conversion(value);
 	}

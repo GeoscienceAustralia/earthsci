@@ -18,8 +18,10 @@ package au.gov.ga.earthsci.editable;
 import java.beans.IntrospectionException;
 
 import org.eclipse.sapphire.modeling.ElementBindingImpl;
+import org.eclipse.sapphire.modeling.IModelElement;
 import org.eclipse.sapphire.modeling.ImpliedElementProperty;
 import org.eclipse.sapphire.modeling.ModelElementType;
+import org.eclipse.sapphire.modeling.ModelProperty;
 import org.eclipse.sapphire.modeling.Resource;
 
 import au.gov.ga.earthsci.editable.annotations.ElementBinder;
@@ -36,16 +38,20 @@ import au.gov.ga.earthsci.editable.annotations.ElementBinder;
  */
 public class EditableModelImpliedElementBinding extends ElementBindingImpl implements IRevertable
 {
+	private final Object parent;
 	private final ImpliedElementProperty property;
-	private final EditableModelResource<?> resource;
+	private final Resource parentResource;
+	private final IElementBinder<Object> binder;
+	private EditableModelResource<?> resource;
 
 	@SuppressWarnings("unchecked")
 	public EditableModelImpliedElementBinding(Object parent, ImpliedElementProperty property, Resource parentResource)
 			throws InstantiationException, IllegalAccessException, IntrospectionException
 	{
+		this.parent = parent;
 		this.property = property;
+		this.parentResource = parentResource;
 
-		IElementBinder<Object> binder;
 		ElementBinder binderAnnotation = property.getAnnotation(ElementBinder.class);
 		if (binderAnnotation != null && binderAnnotation.value() != null)
 		{
@@ -56,8 +62,14 @@ public class EditableModelImpliedElementBinding extends ElementBindingImpl imple
 		{
 			binder = new BeanPropertyElementBinder();
 		}
+	}
 
-		Object object = binder.get(parent, property);
+	@Override
+	public void init(IModelElement element, ModelProperty property, String[] params)
+	{
+		super.init(element, property, params);
+
+		Object object = binder.get(parent, this.property, element);
 		resource = new EditableModelResource<Object>(object, parentResource);
 	}
 

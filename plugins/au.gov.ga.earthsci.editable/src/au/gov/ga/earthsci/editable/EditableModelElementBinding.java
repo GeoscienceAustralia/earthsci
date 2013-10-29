@@ -73,7 +73,7 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 	{
 		if (resource == null)
 		{
-			Object object = binder.get(parent, property);
+			Object object = binder.get(parent, property, element());
 			if (object != null)
 			{
 				resource = new EditableModelResource<Object>(object, parentResource);
@@ -99,7 +99,7 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 			{
 				return null;
 			}
-			binder.set(object, parent, property);
+			binder.set(object, parent, property, element());
 			resource = new EditableModelResource<Object>(object, parentResource);
 			return resource;
 		}
@@ -114,7 +114,7 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 	public void remove()
 	{
 		storeOldValue();
-		binder.set(null, parent, property);
+		binder.set(null, parent, property, element());
 		resource = null;
 	}
 
@@ -139,7 +139,7 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 		if (oldValueSet)
 		{
 			Object oldValue = oldResource == null ? null : oldResource.getObject();
-			binder.set(oldValue, parent, property);
+			binder.set(oldValue, parent, property, element());
 			oldResource.revert();
 			oldResource = null;
 			oldValueSet = false;

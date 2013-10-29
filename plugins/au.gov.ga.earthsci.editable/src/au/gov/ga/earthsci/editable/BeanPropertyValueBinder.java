@@ -15,7 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
+import org.eclipse.sapphire.modeling.IModelElement;
 import org.eclipse.sapphire.modeling.ValueProperty;
+import org.eclipse.sapphire.services.ValueSerializationMasterService;
 
 import au.gov.ga.earthsci.common.util.StringInstantiable;
 import au.gov.ga.earthsci.editable.annotations.ValueBinder;
@@ -30,17 +32,25 @@ import au.gov.ga.earthsci.editable.annotations.ValueBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class BeanPropertyStringInstantiableValueBinder extends
-		AbstractBeanPropertyBinder<String, Object, ValueProperty> implements IValueBinder<Object>
+public class BeanPropertyValueBinder extends AbstractBeanPropertyValueBinder
 {
 	@Override
-	protected String convertTo(Object value, ValueProperty property, BeanProperty beanProperty)
+	protected String convertTo(Object value, ValueProperty property, BeanProperty beanProperty, IModelElement element)
 	{
-		return StringInstantiable.toString(value);
+		//first try string instantiable:
+		String instantiable = StringInstantiable.toString(value);
+		if (instantiable != null)
+		{
+			return instantiable;
+		}
+
+		//next try a ValueSerializationService:
+		return element.service(property, ValueSerializationMasterService.class).encode(value);
 	}
 
 	@Override
-	protected Conversion convertFrom(String value, ValueProperty property, BeanProperty beanProperty)
+	protected Conversion convertFrom(String value, ValueProperty property, BeanProperty beanProperty,
+			IModelElement element)
 	{
 		Class<?> type = beanProperty.getSetterType();
 		if (type.isPrimitive() && (value == null || value.length() == 0))
@@ -49,6 +59,11 @@ public class BeanPropertyStringInstantiableValueBinder extends
 			return null;
 		}
 		Object object = StringInstantiable.newInstance(value, type);
+		if (object == null)
+		{
+			//not string instantiable, so try the ValueSerializationService
+			object = element.service(property, ValueSerializationMasterService.class).decode(value);
+		}
 		if (type.isPrimitive() && object == null)
 		{
 			//disable passing a null object as a primitive parameter

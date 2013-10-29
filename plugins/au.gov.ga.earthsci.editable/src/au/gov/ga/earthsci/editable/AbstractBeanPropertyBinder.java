@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.editable;
 
 import java.beans.IntrospectionException;
 
+import org.eclipse.sapphire.modeling.IModelElement;
 import org.eclipse.sapphire.modeling.ListProperty;
 import org.eclipse.sapphire.modeling.ModelProperty;
 import org.eclipse.sapphire.modeling.annotations.ReadOnly;
@@ -47,9 +48,11 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 	 *            Sapphire property being read
 	 * @param beanProperty
 	 *            Bean property that was used to read the value
+	 * @param element
+	 *            Model element
 	 * @return Converted value
 	 */
-	protected abstract T convertTo(Object value, P property, BeanProperty beanProperty);
+	protected abstract T convertTo(Object value, P property, BeanProperty beanProperty, IModelElement element);
 
 	/**
 	 * Convert the given value from Sapphire to an object to be used for setting
@@ -62,10 +65,12 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 	 *            Sapphire property that was set
 	 * @param beanProperty
 	 *            Bean property that will be used to set the returned value
+	 * @param element
+	 *            Model element
 	 * @return Converted value, <code>null</code> if the setter shouldn't be
 	 *         invoked
 	 */
-	protected abstract Conversion convertFrom(T value, P property, BeanProperty beanProperty);
+	protected abstract Conversion convertFrom(T value, P property, BeanProperty beanProperty, IModelElement element);
 
 	protected BeanProperty getBeanProperty()
 	{
@@ -73,7 +78,7 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 	}
 
 	@Override
-	public T get(E object, P property)
+	public T get(E object, P property, IModelElement element)
 	{
 		initBeanPropertyIfRequired(object, property);
 		if (beanProperty == null)
@@ -92,11 +97,11 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 			return null;
 		}
 
-		return convertTo(value, property, beanProperty);
+		return convertTo(value, property, beanProperty, element);
 	}
 
 	@Override
-	public void set(T value, E object, P property)
+	public void set(T value, E object, P property, IModelElement element)
 	{
 		initBeanPropertyIfRequired(object, property);
 		if (beanProperty == null || beanProperty.isReadOnly())
@@ -104,7 +109,7 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 			return;
 		}
 
-		Conversion conversion = convertFrom(value, property, beanProperty);
+		Conversion conversion = convertFrom(value, property, beanProperty, element);
 		if (conversion == null)
 		{
 			return;

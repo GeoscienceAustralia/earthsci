@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
+import org.eclipse.sapphire.modeling.IModelElement;
 import org.eclipse.sapphire.modeling.ModelProperty;
 
 /**
@@ -40,7 +41,7 @@ interface IBinder<T, E, P extends ModelProperty>
 	 *            Property to read
 	 * @return Value for the given property
 	 */
-	T get(E object, P property);
+	T get(E object, P property, IModelElement element);
 
 	/**
 	 * Set the value for the property on the given object.
@@ -52,5 +53,5 @@ interface IBinder<T, E, P extends ModelProperty>
 	 * @param property
 	 *            Property to set
 	 */
-	void set(T value, E object, P property);
+	void set(T value, E object, P property, IModelElement element);
 }

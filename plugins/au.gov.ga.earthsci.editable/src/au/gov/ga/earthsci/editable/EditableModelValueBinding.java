@@ -46,6 +46,7 @@ public class EditableModelValueBinding extends ValueBindingImpl implements IReve
 	{
 		this.object = object;
 		this.property = property;
+
 		ValueBinder binderAnnotation = property.getAnnotation(ValueBinder.class);
 		if (binderAnnotation != null && binderAnnotation.value() != null)
 		{
@@ -54,14 +55,14 @@ public class EditableModelValueBinding extends ValueBindingImpl implements IReve
 		}
 		else
 		{
-			this.binder = new BeanPropertyStringInstantiableValueBinder();
+			this.binder = new BeanPropertyValueBinder();
 		}
 	}
 
 	@Override
 	public String read()
 	{
-		return binder.get(object, property);
+		return binder.get(object, property, element());
 	}
 
 	@Override
@@ -72,7 +73,7 @@ public class EditableModelValueBinding extends ValueBindingImpl implements IReve
 			oldValue = read();
 			oldValueSet = true;
 		}
-		binder.set(value, object, property);
+		binder.set(value, object, property, element());
 	}
 
 	@Override

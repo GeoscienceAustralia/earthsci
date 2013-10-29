@@ -19,9 +19,11 @@ import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.sapphire.modeling.IModelElement;
 import org.eclipse.sapphire.modeling.ListBindingImpl;
 import org.eclipse.sapphire.modeling.ListProperty;
 import org.eclipse.sapphire.modeling.ModelElementType;
+import org.eclipse.sapphire.modeling.ModelProperty;
 import org.eclipse.sapphire.modeling.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,13 +50,14 @@ public class EditableModelListBinding extends ListBindingImpl implements IRevert
 	private final Object parent;
 	private final ListProperty property;
 	private final Resource parentResource;
-	private final List<Object> list;
-	private final IAdapter<EditableModelResource<?>, Object> adapter;
-	private final ListAdapter<EditableModelResource<?>, Object> listAdapter;
+	private final IListBinder<Object> binder;
+	private List<Object> list;
+	private IAdapter<EditableModelResource<?>, Object> adapter;
+	private ListAdapter<EditableModelResource<?>, Object> listAdapter;
 	private final List<Object> oldValue = new ArrayList<Object>();
 	private boolean oldValueSet = false;
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings("unchecked")
 	public EditableModelListBinding(Object parent, ListProperty property, final Resource parentResource)
 			throws InstantiationException, IllegalAccessException, IntrospectionException
 	{
@@ -62,7 +65,6 @@ public class EditableModelListBinding extends ListBindingImpl implements IRevert
 		this.property = property;
 		this.parentResource = parentResource;
 
-		IListBinder<Object> binder;
 		ListBinder binderAnnotation = property.getAnnotation(ListBinder.class);
 		if (binderAnnotation != null && binderAnnotation.value() != null)
 		{
@@ -73,8 +75,15 @@ public class EditableModelListBinding extends ListBindingImpl implements IRevert
 		{
 			binder = new BeanPropertyListBinder();
 		}
+	}
 
-		list = (List) binder.get(parent, property);
+	@SuppressWarnings("unchecked")
+	@Override
+	public void init(IModelElement element, ModelProperty property, String[] params)
+	{
+		super.init(element, property, params);
+
+		list = (List<Object>) binder.get(parent, this.property, element);
 
 		adapter = new IdentityHashMapAdapter<EditableModelResource<?>, Object>()
 		{
