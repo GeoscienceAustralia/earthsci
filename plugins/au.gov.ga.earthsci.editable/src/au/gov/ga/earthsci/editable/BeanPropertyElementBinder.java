@@ -15,13 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import java.beans.IntrospectionException;
-
 import org.eclipse.sapphire.modeling.ElementProperty;
-import org.eclipse.sapphire.modeling.ModelProperty;
-import org.eclipse.sapphire.modeling.annotations.ReadOnly;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.editable.annotations.ElementBinder;
 
@@ -36,51 +30,28 @@ import au.gov.ga.earthsci.editable.annotations.ElementBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class BeanPropertyElementBinder implements IElementBinder<Object>
+public class BeanPropertyElementBinder extends AbstractBeanPropertyBinder<Object, Object, ElementProperty> implements
+		IElementBinder<Object>
 {
-	private static final Logger logger = LoggerFactory.getLogger(BeanPropertyElementBinder.class);
-
-	private final BeanProperty beanProperty;
-
-	public BeanPropertyElementBinder(Object object, ModelProperty property) throws IntrospectionException
+	@Override
+	protected Object convertTo(Object value, ElementProperty property, BeanProperty beanProperty)
 	{
-		beanProperty = new BeanProperty(object, property, property.getAnnotation(ReadOnly.class) != null);
+		return value;
 	}
 
 	@Override
-	public Object get(Object ignored, ElementProperty property)
+	protected Conversion convertFrom(Object value, ElementProperty property, BeanProperty beanProperty)
 	{
-		try
+		return new Conversion(value);
+	}
+
+	@Override
+	public Class<?> getNewType()
+	{
+		if (getBeanProperty() == null)
 		{
-			return beanProperty.get();
-		}
-		catch (Exception e)
-		{
-			logger.error("Error invoking '" + property.getName() + "' property getter", e); //$NON-NLS-1$ //$NON-NLS-2$
 			return null;
 		}
-	}
-
-	@Override
-	public void set(Object value, Object ignored, ElementProperty property)
-	{
-		if (beanProperty.isReadOnly())
-		{
-			return;
-		}
-		try
-		{
-			beanProperty.set(value);
-		}
-		catch (Exception e)
-		{
-			logger.error("Error invoking '" + property.getName() + "' property setter", e); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-	}
-
-	@Override
-	public Class<?> getSetterType()
-	{
-		return beanProperty.getSetterType();
+		return getBeanProperty().getSetterType();
 	}
 }

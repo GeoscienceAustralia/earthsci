@@ -54,7 +54,7 @@ public class EditableModelImpliedElementBinding extends ElementBindingImpl imple
 		}
 		else
 		{
-			binder = new BeanPropertyElementBinder(parent, property);
+			binder = new BeanPropertyElementBinder();
 		}
 
 		Object object = binder.get(parent, property);

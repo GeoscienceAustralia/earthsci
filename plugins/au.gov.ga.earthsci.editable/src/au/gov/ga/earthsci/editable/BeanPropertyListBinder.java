@@ -15,13 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import java.beans.IntrospectionException;
 import java.util.List;
 
 import org.eclipse.sapphire.modeling.ListProperty;
-import org.eclipse.sapphire.modeling.ModelProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.editable.annotations.ListBinder;
 
@@ -35,46 +31,19 @@ import au.gov.ga.earthsci.editable.annotations.ListBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class BeanPropertyListBinder implements IListBinder<Object>
+public class BeanPropertyListBinder extends AbstractBeanPropertyBinder<List<?>, Object, ListProperty> implements
+		IListBinder<Object>
 {
-	private static final Logger logger = LoggerFactory.getLogger(BeanPropertyListBinder.class);
-
-	private final BeanProperty beanProperty;
-
-	public BeanPropertyListBinder(Object object, ModelProperty property) throws IntrospectionException
-	{
-		beanProperty = new BeanProperty(object, property, true);
-	}
-
 	@SuppressWarnings("rawtypes")
 	@Override
-	public List<?> get(Object ignored, ListProperty property)
+	protected List<?> convertTo(Object object, ListProperty property, BeanProperty beanProperty)
 	{
-		try
-		{
-			return (List) beanProperty.get();
-		}
-		catch (Exception e)
-		{
-			logger.error("Error invoking '" + property.getName() + "' property getter", e); //$NON-NLS-1$ //$NON-NLS-2$
-			return null;
-		}
+		return (List) object;
 	}
 
 	@Override
-	public void set(List<?> value, Object ignored, ListProperty property)
+	protected Conversion convertFrom(List<?> value, ListProperty property, BeanProperty beanProperty)
 	{
-		if (beanProperty.isReadOnly())
-		{
-			return;
-		}
-		try
-		{
-			beanProperty.set(value);
-		}
-		catch (Exception e)
-		{
-			logger.error("Error invoking '" + property.getName() + "' property setter", e); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+		return new Conversion(value);
 	}
 }

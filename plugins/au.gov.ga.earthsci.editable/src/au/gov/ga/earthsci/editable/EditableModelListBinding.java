@@ -71,7 +71,7 @@ public class EditableModelListBinding extends ListBindingImpl implements IRevert
 		}
 		else
 		{
-			binder = new BeanPropertyListBinder(parent, property);
+			binder = new BeanPropertyListBinder();
 		}
 
 		list = (List) binder.get(parent, property);

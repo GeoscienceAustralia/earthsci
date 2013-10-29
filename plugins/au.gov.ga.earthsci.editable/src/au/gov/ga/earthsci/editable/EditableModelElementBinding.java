@@ -64,7 +64,7 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 		}
 		else
 		{
-			this.binder = new BeanPropertyElementBinder(parent, property);
+			this.binder = new BeanPropertyElementBinder();
 		}
 	}
 
@@ -94,7 +94,7 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 		storeOldValue();
 		try
 		{
-			Object object = PropertyValueFactory.create(property, type, parent, binder.getSetterType());
+			Object object = PropertyValueFactory.create(property, type, parent, binder.getNewType());
 			if (object == null)
 			{
 				return null;

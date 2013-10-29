@@ -15,13 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import java.beans.IntrospectionException;
-
-import org.eclipse.sapphire.modeling.ModelProperty;
 import org.eclipse.sapphire.modeling.ValueProperty;
-import org.eclipse.sapphire.modeling.annotations.ReadOnly;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.util.StringInstantiable;
 import au.gov.ga.earthsci.editable.annotations.ValueBinder;
@@ -36,59 +30,30 @@ import au.gov.ga.earthsci.editable.annotations.ValueBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class BeanPropertyValueBinder implements IValueBinder<Object>
+public class BeanPropertyStringInstantiableValueBinder extends
+		AbstractBeanPropertyBinder<String, Object, ValueProperty> implements IValueBinder<Object>
 {
-	private static final Logger logger = LoggerFactory.getLogger(BeanPropertyValueBinder.class);
-
-	private final BeanProperty beanProperty;
-
-	public BeanPropertyValueBinder(Object object, ModelProperty property) throws IntrospectionException
-	{
-		beanProperty = new BeanProperty(object, property, property.getAnnotation(ReadOnly.class) != null);
-	}
-
 	@Override
-	public String get(Object ignored, ValueProperty property)
+	protected String convertTo(Object value, ValueProperty property, BeanProperty beanProperty)
 	{
-		Object value;
-		try
-		{
-			value = beanProperty.get();
-		}
-		catch (Exception e)
-		{
-			logger.error("Error invoking '" + property.getName() + "' property getter", e); //$NON-NLS-1$ //$NON-NLS-2$
-			return null;
-		}
 		return StringInstantiable.toString(value);
 	}
 
 	@Override
-	public void set(String value, Object ignored, ValueProperty property)
+	protected Conversion convertFrom(String value, ValueProperty property, BeanProperty beanProperty)
 	{
-		if (beanProperty.isReadOnly())
-		{
-			return;
-		}
 		Class<?> type = beanProperty.getSetterType();
 		if (type.isPrimitive() && (value == null || value.length() == 0))
 		{
 			//disable instantiating a primitive type with an empty string
-			return;
+			return null;
 		}
 		Object object = StringInstantiable.newInstance(value, type);
 		if (type.isPrimitive() && object == null)
 		{
 			//disable passing a null object as a primitive parameter
-			return;
+			return null;
 		}
-		try
-		{
-			beanProperty.set(object);
-		}
-		catch (Exception e)
-		{
-			logger.error("Error invoking '" + property.getName() + "' property setter", e); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+		return new Conversion(object);
 	}
 }

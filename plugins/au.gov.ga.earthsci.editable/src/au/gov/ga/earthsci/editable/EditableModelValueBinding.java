@@ -54,7 +54,7 @@ public class EditableModelValueBinding extends ValueBindingImpl implements IReve
 		}
 		else
 		{
-			this.binder = new BeanPropertyValueBinder(object, property);
+			this.binder = new BeanPropertyStringInstantiableValueBinder();
 		}
 	}
 
