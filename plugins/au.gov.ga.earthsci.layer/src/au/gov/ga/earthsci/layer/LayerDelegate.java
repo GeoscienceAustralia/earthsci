@@ -17,12 +17,14 @@ package au.gov.ga.earthsci.layer;
 
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.event.Message;
+import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.render.DrawContext;
 
 import java.awt.Point;
 import java.beans.IntrospectionException;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -49,6 +51,15 @@ import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
 public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerDelegate
 {
 	private static final Logger logger = LoggerFactory.getLogger(LayerDelegate.class);
+
+	private final PropertyChangeListener propertyChangeListener = new PropertyChangeListener()
+	{
+		@Override
+		public void propertyChange(PropertyChangeEvent evt)
+		{
+			firePropertyChange(evt);
+		}
+	};
 
 	protected Layer layer = new DummyLayer();
 	private Set<String> propertiesChanged = new HashSet<String>();
@@ -78,9 +89,21 @@ public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerD
 		{
 			oldValue = getLayer();
 			copyProperties(oldValue, layer);
+			this.layer.removePropertyChangeListener(propertyChangeListener);
 			this.layer = layer;
+			this.layer.addPropertyChangeListener(propertyChangeListener);
 		}
 		firePropertyChange("layer", oldValue, layer); //$NON-NLS-1$
+	}
+
+	@Override
+	public boolean isLayerSet()
+	{
+		if (layer instanceof ILayerDelegate)
+		{
+			return ((ILayerDelegate) layer).isLayerSet();
+		}
+		return !(layer instanceof DummyLayer);
 	}
 
 	/**
@@ -417,5 +440,17 @@ public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerD
 	public Double getMinEffectiveAltitude(Double radius)
 	{
 		return layer.getMinEffectiveAltitude(radius);
+	}
+
+	/**
+	 * Layer that renders nothing, used for the storage of properties while a
+	 * real layer is being loaded.
+	 */
+	private static class DummyLayer extends AbstractLayer
+	{
+		@Override
+		protected void doRender(DrawContext dc)
+		{
+		}
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,23 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.layer;
 
-import gov.nasa.worldwind.layers.AbstractLayer;
-import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.layers.Layer;
 
 /**
- * Layer that renders nothing, used for the storage of properties while a real
- * layer is being loaded.
+ * Wrapper for legacy layers. Delegates all {@link Layer} methods to the wrapped
+ * {@link Layer} instance, and provides an implementation for any extra methods
+ * defined by the {@link ILayer} interface.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class DummyLayer extends AbstractLayer
+public interface ILayerWrapper extends ILayer, ILayerDelegate
 {
-	@Override
-	protected void doRender(DrawContext dc)
-	{
-	}
+	/**
+	 * Does this wrapper support wrapping the given layer?
+	 * 
+	 * @param layer
+	 *            Layer to be wrapped
+	 * @return True if this wrapper can wrap the given layer
+	 */
+	boolean supports(Layer layer);
 }

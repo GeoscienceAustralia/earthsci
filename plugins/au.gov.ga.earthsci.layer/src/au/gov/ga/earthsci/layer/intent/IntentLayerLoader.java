@@ -48,6 +48,11 @@ public class IntentLayerLoader
 
 	public static void load(LayerNode layerNode, IEclipseContext context)
 	{
+		if (layerNode.isLayerSet())
+		{
+			return;
+		}
+
 		LayerLoadIntent intent = new LayerLoadIntent(context, layerNode);
 		intent.setURI(layerNode.getURI());
 		intent.setContentType(layerNode.getContentType());
@@ -110,8 +115,8 @@ public class IntentLayerLoader
 			String uriString = intent.getURI() != null ? UTF8URLEncoder.decode(intent.getURI().toString()) : "null"; //$NON-NLS-1$
 			String title = Messages.IntentLayerLoader_FailedLoadNotificationTitle;
 			String message =
-					Messages.IntentLayerLoader_FailedLoadNotificationDescription
-							+ uriString + ": " + e.getLocalizedMessage(); //$NON-NLS-1$
+					Messages.IntentLayerLoader_FailedLoadNotificationDescription + uriString
+							+ ": " + e.getLocalizedMessage(); //$NON-NLS-1$
 			NotificationManager.error(title, message, NotificationCategory.FILE_IO, e);
 			logger.error(message, e);
 		}

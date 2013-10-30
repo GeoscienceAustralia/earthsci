@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="au.gov.ga.earthsci.layer.hudLayers" name="Heads Up Display Layer" schema="schema/au.gov.ga.earthsci.layer.hudLayers.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.layers" name="Layers" schema="schema/au.gov.ga.earthsci.layers.exsd"/>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
@@ -94,6 +95,14 @@
                id="au.gov.ga.earthsci.layer.kml">
          </content-type>
       </filter>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.layers">
+      <wrapper
+            class="au.gov.ga.earthsci.layer.wrappers.LayerWrapper"
+            id="LayerWrapper"
+            wraps="gov.nasa.worldwind.layers.Layer">
+      </wrapper>
    </extension>
 
 </plugin>

@@ -17,29 +17,37 @@ package au.gov.ga.earthsci.layer;
 
 import gov.nasa.worldwind.layers.Layer;
 
+import org.w3c.dom.Element;
+
+import au.gov.ga.earthsci.common.util.ILoader;
+import au.gov.ga.earthsci.common.util.INameable;
+import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
+
 /**
- * {@link Layer} that delegates all methods to another {@link Layer} instance,
- * set by the {@link #setLayer(Layer)} method.
+ * EarthSci layer. Contains extensions of World Wind's {@link Layer} interface
+ * that are required for EarthSci.
+ * <p/>
+ * All implementations must have an empty constructor (can be private), which is
+ * called via reflection before loading the layer from a saved state.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerDelegate extends Layer
+public interface ILayer extends Layer, IPropertyChangeBean, ILoader, INameable
 {
 	/**
-	 * @return The layer that this object delegates to
-	 */
-	Layer getLayer();
-
-	/**
-	 * Set the layer to delegate to
+	 * Save any properties/state required to recreate this layer from XML.
 	 * 
-	 * @param layer
+	 * @param parent
+	 *            XML parent element to save into
 	 */
-	void setLayer(Layer layer);
+	void save(Element parent);
 
 	/**
-	 * @return Has the layer been set on this delegate? If false,
-	 *         {@link #getLayer()} will return a dummy layer.
+	 * Load the properties/state for this layer from the given XML element.
+	 * 
+	 * @param parent
+	 *            XML parent to load from (same as element passed to
+	 *            {@link #save} method)
 	 */
-	boolean isLayerSet();
+	void load(Element parent);
 }

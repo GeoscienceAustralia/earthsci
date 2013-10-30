@@ -37,10 +37,9 @@ import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
  */
 public class LayerFactory extends au.gov.ga.earthsci.worldwind.common.layers.LayerFactory
 {
-	private Logger logger = LoggerFactory.getLogger(LayerFactory.class);
+	public static final String LAYER_ELEMENT = "au.gov.ga.earthsci.layer.LayerElement"; //$NON-NLS-1$
 
-	//TODO add extendable mechanism that allows creation of layers from layer documents
-	//(add the ability to define XML->layer translators via an Eclipse extension point)
+	private Logger logger = LoggerFactory.getLogger(LayerFactory.class);
 
 	@Override
 	protected Object doCreateFromElement(Element domElement, AVList params) throws Exception
@@ -63,6 +62,10 @@ public class LayerFactory extends au.gov.ga.earthsci.worldwind.common.layers.Lay
 			Object o = super.doCreateFromElement(domElement, params);
 			if (o != null)
 			{
+				if (o instanceof Layer)
+				{
+					setElementAndUrlOnLayer((Layer) o, domElement, params);
+				}
 				return o;
 			}
 		}
@@ -77,7 +80,9 @@ public class LayerFactory extends au.gov.ga.earthsci.worldwind.common.layers.Lay
 			Object o = BasicFactory.create(AVKey.ELEVATION_MODEL_FACTORY, domElement, params);
 			if (o instanceof ElevationModel)
 			{
-				return new ElevationModelLayer((ElevationModel) o);
+				Layer layer = new ElevationModelLayer((ElevationModel) o);
+				setElementAndUrlOnLayer(layer, domElement, params);
+				return layer;
 			}
 		}
 		catch (Exception e)
@@ -99,6 +104,18 @@ public class LayerFactory extends au.gov.ga.earthsci.worldwind.common.layers.Lay
 	@Override
 	protected Layer createFromLayerDocument(Element domElement, AVList params)
 	{
-		return super.createFromLayerDocument(domElement, params);
+		Layer layer = super.createFromLayerDocument(domElement, params);
+		if (layer != null)
+		{
+			setElementAndUrlOnLayer(layer, domElement, params);
+		}
+		return layer;
+	}
+
+	private void setElementAndUrlOnLayer(Layer layer, Element element, AVList params)
+	{
+		URL context = (URL) params.getValue(AVKeyMore.CONTEXT_URL);
+		layer.setValue(AVKeyMore.CONTEXT_URL, context);
+		layer.setValue(LAYER_ELEMENT, element);
 	}
 }

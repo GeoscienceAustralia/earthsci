@@ -22,6 +22,7 @@ Export-Package: au.gov.ga.earthsci.layer,
  au.gov.ga.earthsci.layer.hud,
  au.gov.ga.earthsci.layer.intent,
  au.gov.ga.earthsci.layer.tree,
- au.gov.ga.earthsci.layer.worldwind
+ au.gov.ga.earthsci.layer.worldwind,
+ au.gov.ga.earthsci.layer.wrappers
 Import-Package: javax.annotation;version="1.0.0",
  javax.inject
