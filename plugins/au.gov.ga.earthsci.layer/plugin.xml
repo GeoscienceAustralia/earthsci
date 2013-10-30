@@ -103,6 +103,11 @@
             id="LayerWrapper"
             wraps="gov.nasa.worldwind.layers.Layer">
       </wrapper>
+      <wrapper
+            class="au.gov.ga.earthsci.layer.wrappers.SkyGradientLayerWrapper"
+            id="SkyGradientLayerWrapper"
+            wraps="gov.nasa.worldwind.layers.SkyGradientLayer">
+      </wrapper>
    </extension>
 
 </plugin>
