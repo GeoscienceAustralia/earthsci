@@ -21,6 +21,8 @@ import org.eclipse.sapphire.modeling.EditFailedException;
 import org.eclipse.sapphire.modeling.IModelElement;
 import org.eclipse.sapphire.modeling.ListProperty;
 import org.eclipse.sapphire.modeling.ModelProperty;
+import org.eclipse.sapphire.modeling.Status;
+import org.eclipse.sapphire.modeling.Status.Severity;
 import org.eclipse.sapphire.modeling.annotations.ReadOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,9 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 
 	private BeanProperty beanProperty;
 	private boolean beanPropertyInited = false;
+
+	private T valueForValidation;
+	private boolean valueForValidationSet;
 
 	/**
 	 * Convert the given object read from the bean property to a type supported
@@ -81,6 +86,11 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 	@Override
 	public T get(E object, P property, IModelElement element)
 	{
+		if (valueForValidationSet)
+		{
+			return valueForValidation;
+		}
+
 		initBeanPropertyIfRequired(object, property);
 		if (beanProperty == null)
 		{
@@ -110,20 +120,42 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 			return;
 		}
 
-		Conversion conversion = convertFrom(value, property, beanProperty, element);
-		if (conversion == null)
-		{
-			return;
-		}
-
+		boolean resetValueForValidation = true;
 		try
 		{
-			beanProperty.set(conversion.result);
+			valueForValidation = value;
+			valueForValidationSet = true;
+			element.refresh(property, true);
+			Status status = element.validation(property);
+			if (status.severity() == Severity.ERROR)
+			{
+				resetValueForValidation = false;
+				return;
+			}
+
+			Conversion conversion = convertFrom(value, property, beanProperty, element);
+			if (conversion == null)
+			{
+				return;
+			}
+
+			try
+			{
+				beanProperty.set(conversion.result);
+			}
+			catch (Exception e)
+			{
+				logger.error("Error invoking '" + property.getName() + "' property setter", e); //$NON-NLS-1$ //$NON-NLS-2$
+				throw new EditFailedException();
+			}
 		}
-		catch (Exception e)
+		finally
 		{
-			logger.error("Error invoking '" + property.getName() + "' property setter", e); //$NON-NLS-1$ //$NON-NLS-2$
-			throw new EditFailedException();
+			if (resetValueForValidation)
+			{
+				valueForValidation = null;
+				valueForValidationSet = false;
+			}
 		}
 	}
 
