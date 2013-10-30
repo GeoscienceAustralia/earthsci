@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.editable;
 
 import java.beans.IntrospectionException;
 
+import org.eclipse.sapphire.modeling.EditFailedException;
 import org.eclipse.sapphire.modeling.IModelElement;
 import org.eclipse.sapphire.modeling.ListProperty;
 import org.eclipse.sapphire.modeling.ModelProperty;
@@ -122,6 +123,7 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 		catch (Exception e)
 		{
 			logger.error("Error invoking '" + property.getName() + "' property setter", e); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new EditFailedException();
 		}
 	}
 
