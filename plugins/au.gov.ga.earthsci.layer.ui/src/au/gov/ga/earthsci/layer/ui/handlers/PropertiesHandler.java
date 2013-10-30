@@ -20,10 +20,22 @@ import javax.inject.Named;
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.sapphire.Event;
+import org.eclipse.sapphire.Listener;
+import org.eclipse.sapphire.modeling.PropertyContentEvent;
+import org.eclipse.sapphire.ui.def.DefinitionLoader.Reference;
+import org.eclipse.sapphire.ui.def.DialogDef;
+import org.eclipse.sapphire.ui.swt.SapphireDialog;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
 
-import au.gov.ga.earthsci.layer.ILayerTreeNode;
+import au.gov.ga.earthsci.editable.EditableManager;
+import au.gov.ga.earthsci.editable.ModelAndDefinition;
+import au.gov.ga.earthsci.layer.ILayer;
+import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.tree.LayerNode;
+import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 
 /**
  * Handles properties action.
@@ -49,10 +61,10 @@ public class PropertiesHandler
 			return;
 		}
 
-		/*final ILayerTreeNode layer = layers[0];
+		final ILayerTreeNode layer = layers[0];
 		if (layer instanceof LayerNode)
 		{
-			Layer l = ((LayerNode) layer).getLayer();
+			ILayer l = ((LayerNode) layer).getLayerImplementation();
 			ModelAndDefinition editor = EditableManager.getInstance().edit(l);
 
 			editor.getModel().attach(new Listener()
@@ -75,7 +87,7 @@ public class PropertiesHandler
 				editor.getModel().revert();
 				WorldWindowRegistry.INSTANCE.redraw();
 			}
-		}*/
+		}
 	}
 
 	@CanExecute

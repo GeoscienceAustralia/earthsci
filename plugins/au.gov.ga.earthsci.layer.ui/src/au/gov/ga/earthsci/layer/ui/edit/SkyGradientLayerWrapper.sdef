@@ -1,0 +1,44 @@
+<definition>
+
+	<import>
+		<package>au.gov.ga.earthsci.editable.renderers</package>
+	</import>
+
+	<composite>
+		<id>composite</id>
+		<documentation>
+			<title>Sky Gradient Layer</title>
+			<content></content>
+		</documentation>
+		<content>
+			<property-editor>Name</property-editor>
+			<property-editor>Enabled</property-editor>
+			<property-editor>Opacity</property-editor>
+			<property-editor>AtmosphereThickness</property-editor>
+			<property-editor>HorizonColor</property-editor>
+			<!-- The following is defining a custom editor renderer for a property 
+				(don't forget to import the package above) -->
+			<property-editor>
+				<property>ZenithColor</property>
+				<hint>
+					<name>factory</name>
+					<value>ColorPropertyEditorRenderer$Factory</value>
+				</hint>
+			</property-editor>
+		</content>
+		<scale-vertically>true</scale-vertically>
+		<width>600</width>
+		<height>500</height>
+	</composite>
+
+	<dialog>
+		<id>dialog</id>
+		<label>edit layer</label>
+		<initial-focus>Title</initial-focus>
+		<content>
+			<include>composite</include>
+		</content>
+		<scale-vertically>true</scale-vertically>
+	</dialog>
+
+</definition>

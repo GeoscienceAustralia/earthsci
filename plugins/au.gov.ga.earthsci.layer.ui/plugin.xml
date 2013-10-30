@@ -27,14 +27,14 @@
       <model
             model="au.gov.ga.earthsci.layer.ui.edit.LayerModelElement"
             sdef-context="au.gov.ga.earthsci.layer.ui.edit.LayerModelElement"
-            sdef-name="layer"
+            sdef-name="Layer"
             type="gov.nasa.worldwind.layers.Layer">
       </model>
       <model
-            model="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerModelElement"
-            sdef-context="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerModelElement"
-            sdef-name="tiledimagelayer"
-            type="gov.nasa.worldwind.layers.TiledImageLayer">
+            model="au.gov.ga.earthsci.layer.ui.edit.SkyGradientLayerWrapperModelElement"
+            sdef-context="au.gov.ga.earthsci.layer.ui.edit.SkyGradientLayerWrapperModelElement"
+            sdef-name="SkyGradientLayerWrapper"
+            type="au.gov.ga.earthsci.layer.wrappers.SkyGradientLayerWrapper">
       </model>
    </extension>
 
