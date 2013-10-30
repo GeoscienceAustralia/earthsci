@@ -105,6 +105,7 @@ public class LayerPersister
 		Element element = document.createElement("Layers"); //$NON-NLS-1$
 		document.appendChild(element);
 		saveLayers(rootNode, element);
+		XmlUtil.removeWhitespace(document, true);
 		XmlUtil.saveDocumentToFormattedStream(document, os);
 	}
 
@@ -130,6 +131,7 @@ public class LayerPersister
 		{
 			saveLayers(n, element);
 		}
+		XmlUtil.removeWhitespace(document, true);
 		XmlUtil.saveDocumentToFormattedStream(document, os);
 	}
 
