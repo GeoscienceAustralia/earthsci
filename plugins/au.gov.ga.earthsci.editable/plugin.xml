@@ -9,6 +9,10 @@
             factory="au.gov.ga.earthsci.editable.renderers.ScaleDoublePropertyEditorRenderer$Factory"
             priority="0">
       </renderer>
+      <renderer
+            factory="au.gov.ga.earthsci.editable.renderers.ColorPropertyEditorRenderer$Factory"
+            priority="0">
+      </renderer>
    </extension>
 
 </plugin>
