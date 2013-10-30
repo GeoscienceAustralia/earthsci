@@ -18,4 +18,5 @@ Export-Package: au.gov.ga.earthsci.editable,
  au.gov.ga.earthsci.editable.binders,
  au.gov.ga.earthsci.editable.factories,
  au.gov.ga.earthsci.editable.models,
- au.gov.ga.earthsci.editable.renderers
+ au.gov.ga.earthsci.editable.renderers,
+ au.gov.ga.earthsci.editable.serialization
