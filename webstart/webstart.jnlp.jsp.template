@@ -47,8 +47,6 @@
 		<all-permissions />
 	</security>
 
-	<component-desc />
-
 	<application-desc main-class="au.gov.ga.earthsci.application.WebStartMain">
 		<argument>-showsplash</argument>
 <%
