@@ -27,6 +27,8 @@ import java.net.URL;
 
 import javax.xml.xpath.XPath;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -37,11 +39,22 @@ import au.gov.ga.earthsci.layer.LayerFactory;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Basic {@link ILayerWrapper} implementation for any {@link Layer} created from
+ * an XML layer definition.
+ * <p/>
+ * The {@link LayerFactory} saves the XML element used to create the layer as
+ * part of the layer's value map ({@link AVList}). This wrapper pulls out the
+ * element, and saves it when persisting the layer. When loading the layer, it
+ * uses the same XML definition to load the layer.
+ * <p/>
+ * Subclasses can edit elements/attributes within the XML element during the
+ * editing process; this is to support editing legacy layers.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class LayerWrapper extends LayerDelegate implements ILayerWrapper
 {
+	private static final Logger logger = LoggerFactory.getLogger(LayerWrapper.class);
 	public final static String URL_ELEMENT = "url"; //$NON-NLS-1$
 	public final static String DEFINITION_ELEMENT = "definition"; //$NON-NLS-1$
 
@@ -105,14 +118,14 @@ public class LayerWrapper extends LayerDelegate implements ILayerWrapper
 		Element urlElement = WWXML.getElement(parent, URL_ELEMENT, xpath);
 		if (urlElement != null)
 		{
+			String urlText = urlElement.getTextContent();
 			try
 			{
-				url = new URL(urlElement.getTextContent());
+				url = new URL(urlText);
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Error converting text to URL: " + urlText); //$NON-NLS-1$
 			}
 		}
 
@@ -128,11 +141,6 @@ public class LayerWrapper extends LayerDelegate implements ILayerWrapper
 	@Override
 	public void save(Element parent)
 	{
-		if (url == null && element == null)
-		{
-			//TODO log error
-		}
-
 		if (url != null)
 		{
 			Element urlElement = parent.getOwnerDocument().createElement(URL_ELEMENT);
@@ -163,20 +171,25 @@ public class LayerWrapper extends LayerDelegate implements ILayerWrapper
 				Object result = factory.createFromConfigSource(element, params);
 				if (!(result instanceof Layer))
 				{
-					//TODO log error
+					if (result == null)
+					{
+						logger.error("Error loading layer from element, layer factory returned null"); //$NON-NLS-1$
+					}
+					else
+					{
+						logger.error("Object loaded is not a Layer: " + result.getClass()); //$NON-NLS-1$
+					}
 					return;
 				}
 
 				Layer layer = (Layer) result;
 				setLayer(layer);
 			}
-			else if (url != null)
-			{
-				//TODO
-			}
 			else
 			{
-				//TODO log error
+				//A null element (ie was not available when the layer was set) means it was a
+				//layer not created from an XML layer definition file. This will be handled
+				//by the IntentLayerLoader by loading directly from the LayerNode's URI.
 			}
 		}
 		finally

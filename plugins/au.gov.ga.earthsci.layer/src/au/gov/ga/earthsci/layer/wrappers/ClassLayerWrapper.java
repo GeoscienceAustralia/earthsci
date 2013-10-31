@@ -23,15 +23,16 @@ import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.layer.ILayerWrapper;
 import au.gov.ga.earthsci.layer.LayerDelegate;
-import au.gov.ga.earthsci.layer.ExtensionManager;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * {@link ILayerWrapper} that wraps a particular subclass/implementation of
+ * {@link Layer}.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public abstract class ClassLayerWrapper<L extends Layer> extends LayerDelegate implements ILayerWrapper
 {
-	private static final Logger logger = LoggerFactory.getLogger(ExtensionManager.class);
+	private static final Logger logger = LoggerFactory.getLogger(ClassLayerWrapper.class);
 	private final static String LAYER_CLASS_ATTRIBUTE = "layerClass"; //$NON-NLS-1$
 
 	protected abstract Class<L> getLayerClass();
