@@ -62,18 +62,15 @@ public class RetrievePart implements IRetrievalServiceListener
 	private final List<IRetrieval> retrievals = new ArrayList<IRetrieval>();
 	private final Set<Object> updatingElements = new HashSet<Object>();
 
-	private static final Color DOWNLOAD_BACKGROUND_COLOR;
-
-	static
-	{
-		Color listBackground = Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
-		DOWNLOAD_BACKGROUND_COLOR =
-				SWTUtil.shouldDarken(listBackground) ? SWTUtil.darker(listBackground) : SWTUtil.lighter(listBackground);
-	}
+	private Color downloadBackgroundColor;
 
 	@Inject
 	public void init(Composite parent, MPart part)
 	{
+		Color listBackground = parent.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
+		downloadBackgroundColor =
+				SWTUtil.shouldDarken(listBackground) ? SWTUtil.darker(listBackground) : SWTUtil.lighter(listBackground);
+
 		retrievalService.addListener(this);
 
 		viewer = new TableViewer(parent, SWT.V_SCROLL);
@@ -112,6 +109,7 @@ public class RetrievePart implements IRetrievalServiceListener
 	public void packup()
 	{
 		retrievalService.removeListener(this);
+		downloadBackgroundColor.dispose();
 	}
 
 	private void createColumns()
@@ -169,7 +167,7 @@ public class RetrievePart implements IRetrievalServiceListener
 
 				Rectangle bounds = ((TableItem) event.item).getBounds(event.index);
 				int width = (int) ((bounds.width - 1) * percentage);
-				gc.setBackground(DOWNLOAD_BACKGROUND_COLOR);
+				gc.setBackground(downloadBackgroundColor);
 				gc.fillRectangle(event.x, event.y, width, event.height);
 
 				Point size = event.gc.textExtent(text);

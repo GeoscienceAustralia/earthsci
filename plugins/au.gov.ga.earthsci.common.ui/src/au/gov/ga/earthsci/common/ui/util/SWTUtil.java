@@ -52,7 +52,7 @@ public class SWTUtil
 	 */
 	public static Color darker(Color color)
 	{
-		return new Color(null, (int) (color.getRed() * RGB_VALUE_MULTIPLIER),
+		return new Color(color.getDevice(), (int) (color.getRed() * RGB_VALUE_MULTIPLIER),
 				(int) (color.getGreen() * RGB_VALUE_MULTIPLIER), (int) (color.getBlue() * RGB_VALUE_MULTIPLIER));
 	}
 
@@ -64,9 +64,9 @@ public class SWTUtil
 	 */
 	public static Color lighter(Color color)
 	{
-		return new Color(null, Math.max(2, Math.min((int) (color.getRed() / RGB_VALUE_MULTIPLIER), 255)), Math.max(2,
-				Math.min((int) (color.getGreen() / RGB_VALUE_MULTIPLIER), 255)), Math.max(2,
-				Math.min((int) (color.getBlue() / RGB_VALUE_MULTIPLIER), 255)));
+		return new Color(color.getDevice(), Math.max(2, Math.min((int) (color.getRed() / RGB_VALUE_MULTIPLIER), 255)),
+				Math.max(2, Math.min((int) (color.getGreen() / RGB_VALUE_MULTIPLIER), 255)), Math.max(2,
+						Math.min((int) (color.getBlue() / RGB_VALUE_MULTIPLIER), 255)));
 	}
 
 	/**

@@ -72,18 +72,9 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 	private final IRetrievalService retrievalService;
 	private final Set<IRetrieval> refreshingRetrievals = new HashSet<IRetrieval>();
 
-	private static final Color DOWNLOAD_BACKGROUND_COLOR;
-	private static final Color DOWNLOAD_FOREGROUND_COLOR;
+	private Color downloadBackgroundColor;
+	private Color downloadForegroundColor;
 	private static final int DOWNLOAD_WIDTH = 50;
-
-	static
-	{
-		Color listBackground = Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
-		boolean darken = SWTUtil.shouldDarken(listBackground);
-		DOWNLOAD_BACKGROUND_COLOR = darken ? SWTUtil.darker(listBackground) : SWTUtil.lighter(listBackground);
-		DOWNLOAD_FOREGROUND_COLOR =
-				darken ? SWTUtil.darker(DOWNLOAD_BACKGROUND_COLOR) : SWTUtil.lighter(DOWNLOAD_BACKGROUND_COLOR);
-	}
 
 	public LayerTreeLabelProvider()
 	{
@@ -101,6 +92,13 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 	void packup()
 	{
 		retrievalService.removeListener(retrievalServiceListener);
+		if (downloadBackgroundColor != null)
+		{
+			downloadBackgroundColor.dispose();
+			downloadForegroundColor.dispose();
+			downloadBackgroundColor = null;
+			downloadForegroundColor = null;
+		}
 	}
 
 	@Override
@@ -129,6 +127,15 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 			}
 			if (retrievals.size() > 0)
 			{
+				if (downloadBackgroundColor == null)
+				{
+					Color listBackground = event.display.getSystemColor(SWT.COLOR_LIST_BACKGROUND);
+					boolean darken = SWTUtil.shouldDarken(listBackground);
+					downloadBackgroundColor = darken ? SWTUtil.darker(listBackground) : SWTUtil.lighter(listBackground);
+					downloadForegroundColor =
+							darken ? SWTUtil.darker(downloadBackgroundColor) : SWTUtil.lighter(downloadBackgroundColor);
+				}
+
 				GC gc = event.gc;
 				Color oldBackground = gc.getBackground();
 				Color oldForeground = gc.getForeground();
@@ -142,8 +149,8 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 
 				int height = event.height / 2;
 				int width = (int) (DOWNLOAD_WIDTH * percentage);
-				gc.setBackground(DOWNLOAD_BACKGROUND_COLOR);
-				gc.setForeground(DOWNLOAD_FOREGROUND_COLOR);
+				gc.setBackground(downloadBackgroundColor);
+				gc.setForeground(downloadForegroundColor);
 				gc.fillRectangle(event.x + event.width, event.y + (event.height - height) / 2, width, height);
 				gc.drawRectangle(event.x + event.width, event.y + (event.height - height) / 2, DOWNLOAD_WIDTH, height);
 
