@@ -81,7 +81,7 @@ public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerD
 		}
 		if (layer == this)
 		{
-			throw new IllegalArgumentException("Cannot delegate to this"); //$NON-NLS-1$
+			throw new IllegalArgumentException("Cannot delegate to itself"); //$NON-NLS-1$
 		}
 
 		Layer oldValue;
