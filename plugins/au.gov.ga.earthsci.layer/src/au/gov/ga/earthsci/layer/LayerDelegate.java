@@ -57,7 +57,8 @@ public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerD
 		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
-			firePropertyChange(evt);
+			firePropertyChange(new PropertyChangeEvent(LayerDelegate.this, evt.getPropertyName(), evt.getOldValue(),
+					evt.getNewValue()));
 		}
 	};
 

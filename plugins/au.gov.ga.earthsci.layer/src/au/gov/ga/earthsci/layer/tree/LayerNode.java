@@ -38,12 +38,12 @@ import au.gov.ga.earthsci.common.util.IEnableable;
 import au.gov.ga.earthsci.common.util.IInformationed;
 import au.gov.ga.earthsci.common.util.ILoader;
 import au.gov.ga.earthsci.common.util.Util;
+import au.gov.ga.earthsci.layer.ExtensionManager;
 import au.gov.ga.earthsci.layer.IElevationModelLayer;
 import au.gov.ga.earthsci.layer.ILayer;
 import au.gov.ga.earthsci.layer.ILayerDelegate;
 import au.gov.ga.earthsci.layer.ILayerWrapper;
 import au.gov.ga.earthsci.layer.LayerDelegate;
-import au.gov.ga.earthsci.layer.ExtensionManager;
 import au.gov.ga.earthsci.layer.LayerPersistentAdapter;
 import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
 import au.gov.ga.earthsci.layer.wrappers.LayerWrapper;
@@ -72,7 +72,8 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerDelegate, 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt)
 			{
-				firePropertyChange(evt);
+				firePropertyChange(new PropertyChangeEvent(LayerNode.this, evt.getPropertyName(), evt.getOldValue(),
+						evt.getNewValue()));
 			}
 		});
 	}
