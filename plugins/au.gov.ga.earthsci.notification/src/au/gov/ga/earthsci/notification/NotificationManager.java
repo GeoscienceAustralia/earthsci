@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.CoreException;
@@ -65,10 +66,11 @@ public class NotificationManager
 
 	private static final Logger logger = LoggerFactory.getLogger(NotificationManager.class);
 
-	static
+	@Inject
+	public void postConstuct(IEclipseContext context)
 	{
-		loadReceiversFromExtensions();
-		registerNotificationCategories();
+		loadReceiversFromExtensions(context);
+		registerNotificationCategories(context);
 	}
 
 	/**
@@ -83,14 +85,14 @@ public class NotificationManager
 	 * @param context
 	 *            The context to use for dependency injection etc.
 	 */
-	public static void loadReceiversFromExtensions()
+	public static void loadReceiversFromExtensions(IEclipseContext context)
 	{
 		logger.info("Registering notification receivers"); //$NON-NLS-1$
 
 		try
 		{
 			ExtensionRegistryUtil.createFromExtension(NOTIFICATION_RECEIVER_EXTENSION_POINT_ID,
-					NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, INotificationReceiver.class,
+					NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, INotificationReceiver.class, context,
 					new Callback<INotificationReceiver>()
 					{
 
@@ -118,14 +120,14 @@ public class NotificationManager
 	 * This method will inject dependencies on retrieved receivers using the
 	 * provided eclipse context, as appropriate.
 	 */
-	public static void registerNotificationCategories()
+	public static void registerNotificationCategories(IEclipseContext context)
 	{
 		logger.info("Registering notification categories"); //$NON-NLS-1$
 
 		try
 		{
 			ExtensionRegistryUtil.createFromExtension(NOTIFICATION_CATEGORY_PROVIDER_EXTENSION_POINT_ID,
-					NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, INotificationCategoryProvider.class,
+					NOTIFICATION_RECEIVER_CLASS_ATTRIBUTE, INotificationCategoryProvider.class, context,
 					new Callback<INotificationCategoryProvider>()
 					{
 

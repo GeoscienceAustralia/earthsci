@@ -3,4 +3,11 @@
 <plugin>
       <extension-point id="au.gov.ga.earthsci.notification.receivers" name="Notification Receivers" schema="schema/au.gov.ga.earthsci.notification.receivers.exsd"/>
    <extension-point id="au.gov.ga.earthsci.notification.categoryProviders" name="Notification Category Providers" schema="schema/au.gov.ga.earthsci.notification.categoryProviders.exsd"/>
+   <extension
+         point="au.gov.ga.earthsci.injectables">
+      <injectable
+            class="au.gov.ga.earthsci.notification.NotificationManager"
+            priority="0">
+      </injectable>
+   </extension>
 </plugin>

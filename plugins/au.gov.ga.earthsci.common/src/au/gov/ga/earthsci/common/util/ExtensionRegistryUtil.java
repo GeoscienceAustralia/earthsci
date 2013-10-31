@@ -15,15 +15,12 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.common.util;
 
-import javax.inject.Inject;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Utilities for working with {@link IExtensionRegistry}s
@@ -32,20 +29,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ExtensionRegistryUtil
 {
-
-	private static final Logger logger = LoggerFactory.getLogger(ExtensionRegistryUtil.class);
-
-	@Inject
-	public static void init(IExtensionRegistry registry, IEclipseContext context)
-	{
-		logger.debug("Initialising extension registry util"); //$NON-NLS-1$
-		ExtensionRegistryUtil.registry = registry;
-		ExtensionRegistryUtil.context = context;
-	}
-
-	private static IExtensionRegistry registry;
-	private static IEclipseContext context;
-
 	/**
 	 * Instantiate classes registered against the given extension point ID using
 	 * the named attribute. Once instantiated, the callback will be invoked with
@@ -61,14 +44,9 @@ public class ExtensionRegistryUtil
 	 *            The callback to execute once the object has been instantiated
 	 */
 	public static <T> void createFromExtension(String extensionPointId, String classAttribute,
-			Class<? extends T> clazz, Callback<T> callback) throws CoreException
+			Class<? extends T> clazz, IEclipseContext context, Callback<T> callback) throws CoreException
 	{
-		if (registry == null)
-		{
-			logger.warn("Extension registry util called before being injected"); //$NON-NLS-1$
-			return;
-		}
-		IConfigurationElement[] config = registry.getConfigurationElementsFor(extensionPointId);
+		IConfigurationElement[] config = RegistryFactory.getRegistry().getConfigurationElementsFor(extensionPointId);
 		for (IConfigurationElement e : config)
 		{
 			final Object o = e.createExecutableExtension(classAttribute);
@@ -84,7 +62,6 @@ public class ExtensionRegistryUtil
 			}
 		}
 	}
-
 
 	public static interface Callback<T>
 	{

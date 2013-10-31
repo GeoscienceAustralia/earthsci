@@ -45,13 +45,13 @@ public class RendererCreatorRegistry
 	 * {@value #EXTENSION_POINT_ID} extension point.
 	 */
 	@Inject
-	public static void loadFromExtensions()
+	public static void loadFromExtensions(IEclipseContext context)
 	{
 		logger.debug("Registering model geometry renderer creators"); //$NON-NLS-1$
 		try
 		{
 			ExtensionRegistryUtil.createFromExtension(EXTENSION_POINT_ID, CLASS_ATTRIBUTE,
-					IModelGeometryRendererCreator.class, new Callback<IModelGeometryRendererCreator>()
+					IModelGeometryRendererCreator.class, context, new Callback<IModelGeometryRendererCreator>()
 					{
 						@Override
 						public void run(IModelGeometryRendererCreator creator, IConfigurationElement element,

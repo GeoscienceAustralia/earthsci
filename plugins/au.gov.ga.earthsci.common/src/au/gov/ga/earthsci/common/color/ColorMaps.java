@@ -170,13 +170,13 @@ public class ColorMaps
 	}
 
 	@Inject
-	public static void loadFromExtensions()
+	public static void loadFromExtensions(IEclipseContext context)
 	{
 		logger.debug("Registering color map readers"); //$NON-NLS-1$
 		try
 		{
 			ExtensionRegistryUtil.createFromExtension(READERS_EXTENSION_POINT_ID,
-					CLASS_ATTRIBUTE, IColorMapReader.class,
+					CLASS_ATTRIBUTE, IColorMapReader.class, context,
 					new Callback<IColorMapReader>()
 					{
 						@Override

@@ -150,19 +150,19 @@ public class BookmarkPropertyFactory
 	 * registry
 	 */
 	@Inject
-	public static void loadFromExtensions()
+	public static void loadFromExtensions(IEclipseContext context)
 	{
-		loadCreatorsFromExtensions();
-		loadExportersFromExtensions();
+		loadCreatorsFromExtensions(context);
+		loadExportersFromExtensions(context);
 	}
 
-	private static void loadCreatorsFromExtensions()
+	private static void loadCreatorsFromExtensions(IEclipseContext context)
 	{
 		logger.debug("Registering bookmark property creators"); //$NON-NLS-1$
 		try
 		{
 			ExtensionRegistryUtil.createFromExtension(CREATORS_EXTENSION_POINT_ID, CLASS_ATTRIBUTE,
-					IBookmarkPropertyCreator.class, new Callback<IBookmarkPropertyCreator>()
+					IBookmarkPropertyCreator.class, context, new Callback<IBookmarkPropertyCreator>()
 					{
 						@Override
 						public void run(IBookmarkPropertyCreator creator, IConfigurationElement element,
@@ -178,13 +178,13 @@ public class BookmarkPropertyFactory
 		}
 	}
 
-	private static void loadExportersFromExtensions()
+	private static void loadExportersFromExtensions(IEclipseContext context)
 	{
 		logger.debug("Registering bookmark property exporters"); //$NON-NLS-1$
 		try
 		{
 			ExtensionRegistryUtil.createFromExtension(EXPORTERS_EXTENSION_POINT_ID, CLASS_ATTRIBUTE,
-					IBookmarkPropertyExporter.class, new Callback<IBookmarkPropertyExporter>()
+					IBookmarkPropertyExporter.class, context, new Callback<IBookmarkPropertyExporter>()
 					{
 						@Override
 						public void run(IBookmarkPropertyExporter exporter, IConfigurationElement element,
