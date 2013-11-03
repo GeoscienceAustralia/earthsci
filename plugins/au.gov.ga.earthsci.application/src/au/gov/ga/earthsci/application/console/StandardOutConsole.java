@@ -49,7 +49,7 @@ public class StandardOutConsole extends IOConsole
 		addColor(regexOutputStream, ".*DEBUG.*", new Color(Display.getCurrent(), 0, 0, 128)); //$NON-NLS-1$
 		addColor(regexOutputStream, ".*TRACE.*", new Color(Display.getCurrent(), 0, 0, 255)); //$NON-NLS-1$
 
-		StandardOutputCollector.getInstance().addStreams(regexOutputStream, err, true);
+		StandardOutputCollector.INSTANCE.addStreams(regexOutputStream, err, true);
 	}
 
 	public void addColor(RegexOutputStream os, String regex, Color color)

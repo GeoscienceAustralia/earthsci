@@ -50,7 +50,7 @@ public class Activator extends AbstractUIPlugin
 		Activator.context = bundleContext;
 
 		//add System.out/System.err collection:
-		StandardOutputCollector.getInstance().install();
+		StandardOutputCollector.INSTANCE.install();
 
 		//bugfix:
 		KeyboardFocusManagerFix.initialize();

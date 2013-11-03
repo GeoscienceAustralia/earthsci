@@ -34,15 +34,11 @@ import au.gov.ga.earthsci.common.util.TailByteArrayOutputStream;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class StandardOutputCollector
+public enum StandardOutputCollector
 {
-	public static final int DEFAULT_LIMIT = 1024 * 1024; //1MB
-	private static final StandardOutputCollector instance = new StandardOutputCollector();
+	INSTANCE;
 
-	public static StandardOutputCollector getInstance()
-	{
-		return instance;
-	}
+	public static final int DEFAULT_LIMIT = 1024 * 1024; //1MB
 
 	private final OutputStreamSet outSet = new OutputStreamSet();
 	private final OutputStreamSet errSet = new OutputStreamSet();
@@ -135,14 +131,15 @@ public class StandardOutputCollector
 				}
 				catch (IOException e)
 				{
-					//don't write anything to the console here, must write outside the synch block
+					//don't write anything to the console here, must write outside
+					//the synch block
 					exception = e;
 				}
 			}
 
-			//there's no chance for System.out to be written to between the above and below, due to
-			//the sychronization on the collector and the fact that the collector's write methods
-			//are also synchronized on itself
+			//there's no chance for System.out to be written to between the above
+			//and below, due to the sychronization on the collector and the fact
+			//that the collector's write methods are also synchronized on itself
 
 			outSet.add(out);
 			errSet.add(err);
@@ -172,6 +169,13 @@ public class StandardOutputCollector
 		}
 	}
 
+	/**
+	 * Collects output from output and error streams into a byte array with a
+	 * configurable limit. Keeps track of which sections of the byte array come
+	 * from the output stream and which come from the error stream. Can rewrite
+	 * the historic output/error data captured to another pair of streams, and
+	 * will write in the same order that it was written to.
+	 */
 	private class OutputCollector extends TailByteArrayOutputStream
 	{
 		private int[] switchIndices = new int[8];
@@ -182,7 +186,15 @@ public class StandardOutputCollector
 			setLimit(DEFAULT_LIMIT);
 		}
 
-		protected synchronized void writeToStreams(OutputStream out, OutputStream err) throws IOException
+		/**
+		 * Write the historic stream data to the given output streams.
+		 * 
+		 * @param out
+		 * @param err
+		 * @throws IOException
+		 */
+		protected synchronized void writeToStreams(OutputStream out, OutputStream err)
+				throws IOException
 		{
 			OutputStream current = out;
 
@@ -220,7 +232,8 @@ public class StandardOutputCollector
 			}
 		}
 
-		private OutputStream swap(OutputStream stream1, OutputStream stream2, OutputStream current)
+		private OutputStream swap(OutputStream stream1, OutputStream stream2,
+				OutputStream current)
 		{
 			return current != stream1 ? stream1 : stream2;
 		}
@@ -230,19 +243,22 @@ public class StandardOutputCollector
 		{
 			if (movement != 0)
 			{
-				//remove any pairs of indices that will both be negative after the movement:
+				//remove any pairs of indices that will both be negative
+				//after the movement:
 				int removeCount = 0;
 				for (int i = 1; i < switchIndicesCount; i += 2)
 				{
 					if (switchIndices[i] - movement >= 0)
 					{
-						//found a second index in the pair that will be positive, so don't remove
+						//found a second index in the pair that will be
+						//positive, so don't remove
 						break;
 					}
 					removeCount += 2;
 				}
 				removeCount = Math.min(removeCount, switchIndicesCount);
-				System.arraycopy(switchIndices, removeCount, switchIndices, 0, switchIndicesCount - removeCount);
+				System.arraycopy(switchIndices, removeCount, switchIndices, 0,
+						switchIndicesCount - removeCount);
 				switchIndicesCount -= removeCount;
 
 				//decrease the remainder of the indices by the movement amount
@@ -255,7 +271,8 @@ public class StandardOutputCollector
 
 		private synchronized void switchToError(boolean error)
 		{
-			//an even number of indices means current mode is out, odd means current mode is error 
+			//an even number of indices means current mode is out,
+			//odd means current mode is error 
 			if ((switchIndicesCount % 2 == 0) == error)
 			{
 				if (switchIndicesCount + 1 > switchIndices.length)
@@ -268,6 +285,10 @@ public class StandardOutputCollector
 			}
 		}
 
+		/**
+		 * {@link FilterOutputStream} that writes to the {@link OutputCollector}
+		 * after switching it to non-error mode.
+		 */
 		public OutputStream out = new FilterOutputStream(this)
 		{
 			@Override
@@ -292,6 +313,10 @@ public class StandardOutputCollector
 			}
 		};
 
+		/**
+		 * {@link FilterOutputStream} that writes to the {@link OutputCollector}
+		 * after switching it to error mode.
+		 */
 		public OutputStream err = new FilterOutputStream(this)
 		{
 			@Override
