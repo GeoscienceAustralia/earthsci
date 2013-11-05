@@ -35,7 +35,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TableItem;
 
@@ -172,7 +171,7 @@ public class RetrievePart implements IRetrievalServiceListener
 
 				Point size = event.gc.textExtent(text);
 				int offset = Math.max(0, (event.height - size.y) / 2);
-				gc.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
+				gc.setForeground(event.display.getSystemColor(SWT.COLOR_LIST_FOREGROUND));
 				gc.drawText(text, event.x + 2, event.y + offset, true);
 
 				gc.setForeground(background);
