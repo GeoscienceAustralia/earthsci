@@ -140,6 +140,7 @@
 			<startlevel bundle="org.eclipse.osgi" level="-1" />
 			<startlevel bundle="org.eclipse.equinox.ds" level="1" />
 			<startlevel bundle="org.eclipse.equinox.common" level="2" />
+			<startlevel bundle="org.eclipse.ui.ide" level="10" />
 		</osgibundles>
 
 		<javaargs property="java.args.string" version="1.6+">
