@@ -10,12 +10,10 @@
       <tags>View</tags>
       <tags>categoryTag:Data</tags>
       <handlers xmi:id="_lCk1s5XJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.addhandler" contributionURI="bundleclass://au.gov.ga.earthsci.catalog.ui/au.gov.ga.earthsci.catalog.ui.handler.AddHandler" command="_I2rL8JZeEeKo0s_wGDk0-Q"/>
-      <handlers xmi:id="_lCk1tJXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.removehandler" contributionURI="bundleclass://au.gov.ga.earthsci.catalog.ui/au.gov.ga.earthsci.catalog.ui.handler.RemoveHandler" command="_HpswkJZgEeKo0s_wGDk0-Q"/>
       <handlers xmi:id="_lCk1tZXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.infohandler" contributionURI="bundleclass://au.gov.ga.earthsci.catalog.ui/au.gov.ga.earthsci.catalog.ui.handler.InformationHandler" command="_I1_kkJZgEeKo0s_wGDk0-Q"/>
       <handlers xmi:id="_lCk1tpXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.deletehandler" contributionURI="bundleclass://au.gov.ga.earthsci.catalog.ui/au.gov.ga.earthsci.catalog.ui.handler.DeleteHandler" command="_J0a7sJZgEeKo0s_wGDk0-Q"/>
       <menus xsi:type="menu:PopupMenu" xmi:id="_lCk1t5XJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.popupmenu" label="Catalog Menu">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_lCk1uJXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.popupmenu.add" label="Add" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add.gif" tooltip="Add to the layer tree" mnemonics="+" command="_I2rL8JZeEeKo0s_wGDk0-Q"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_lCk1uZXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.popupmenu.remove" label="Remove" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/remove.gif" tooltip="Remove from the layer tree" mnemonics="-" command="_HpswkJZgEeKo0s_wGDk0-Q"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_lCk1upXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_lCk1u5XJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.popupmenu.info" label="Information" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/information.gif" tooltip="Show information" mnemonics="i" command="_I1_kkJZgEeKo0s_wGDk0-Q"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_cR7_4JZgEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.catalog.ui.menuseparator.0"/>
@@ -23,7 +21,6 @@
       </menus>
       <toolbar xmi:id="_lCk1vJXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.toolbar.0">
         <children xsi:type="menu:HandledToolItem" xmi:id="_lCk1vZXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar.add" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add.gif" tooltip="Add to the layer tree" command="_I2rL8JZeEeKo0s_wGDk0-Q"/>
-        <children xsi:type="menu:HandledToolItem" xmi:id="_lCk1vpXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar.remove" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/remove.gif" tooltip="Remove from the layer tree" command="_HpswkJZgEeKo0s_wGDk0-Q"/>
         <children xsi:type="menu:ToolBarSeparator" xmi:id="_lCk1v5XJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>
         <children xsi:type="menu:HandledToolItem" xmi:id="_lCk1wJXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar.info" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/information.gif" tooltip="Show information" command="_I1_kkJZgEeKo0s_wGDk0-Q"/>
         <children xsi:type="menu:ToolBarSeparator" xmi:id="_lCk1wZXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>

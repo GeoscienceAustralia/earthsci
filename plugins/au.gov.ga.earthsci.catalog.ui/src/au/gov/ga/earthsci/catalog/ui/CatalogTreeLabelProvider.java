@@ -15,23 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog.ui;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.net.URI;
 import java.net.URL;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.inject.Inject;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
-import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
-import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
@@ -46,20 +36,14 @@ import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 
 import au.gov.ga.earthsci.application.IconLoader;
-import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.catalog.ErrorCatalogTreeNode;
-import au.gov.ga.earthsci.catalog.ICatalogModel;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.LoadingCatalogTreeNode;
-import au.gov.ga.earthsci.common.collection.HashSetHashMap;
-import au.gov.ga.earthsci.common.collection.SetMap;
 import au.gov.ga.earthsci.common.ui.viewers.IControlProvider;
 import au.gov.ga.earthsci.common.ui.viewers.IFireableLabelProvider;
 import au.gov.ga.earthsci.common.ui.viewers.LoadingIconHelper;
 import au.gov.ga.earthsci.common.util.ILabeled;
 import au.gov.ga.earthsci.common.util.INamed;
-import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
-import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**
  * A {@link IControlProvider} for the catalog browser tree
@@ -74,26 +58,14 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 	private final org.eclipse.jface.resource.ImageRegistry decoratedImageCache =
 			new org.eclipse.jface.resource.ImageRegistry();
 
-	@Inject
-	private ICatalogBrowserController controller;
-
 	private IconLoader iconLoader = new IconLoader(this);
 	private LoadingIconHelper nodeLoader = new LoadingIconHelper(this);
-
-	@Inject
-	private ICatalogModel catalogModel;
-
-	@Inject
-	private ITreeModel layerModel;
 
 	private boolean disposed = false;
 
 	@PostConstruct
 	public void postConstruct()
 	{
-		setupListeners();
-		addListeners();
-
 		informationColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
 		FontData[] fontDatas = Display.getDefault().getSystemFont().getFontData();
 		for (FontData fontData : fontDatas)
@@ -107,7 +79,6 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 	@PreDestroy
 	public void preDestroy()
 	{
-		removeListeners();
 		subscriptFont.dispose();
 	}
 
@@ -174,36 +145,13 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 	@Override
 	public Image decorateImage(Image image, Object element)
 	{
-		if (!(element instanceof ICatalogTreeNode) || !((ICatalogTreeNode) element).isLayerNode())
-		{
-			return null;
-		}
-
-		ICatalogTreeNode node = (ICatalogTreeNode) element;
-
-		if (!controller.existsInLayerModel(node.getLayerURI()))
-		{
-			return null;
-		}
-
-		return getDecoratedIcon(image);
+		return null;
 	}
 
 	@Override
 	public String decorateText(String text, Object element)
 	{
-		if (!(element instanceof ICatalogTreeNode) || !((ICatalogTreeNode) element).isLayerNode())
-		{
-			return null;
-		}
-
-		ICatalogTreeNode node = (ICatalogTreeNode) element;
-
-		if (!controller.existsInLayerModel(node.getLayerURI()))
-		{
-			return null;
-		}
-		return text + "*"; //$NON-NLS-1$
+		return null;
 	}
 
 	private Image getImage(Object element, URL imageURL)
@@ -214,29 +162,6 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 		}
 
 		return iconLoader.getImage(element, imageURL);
-	}
-
-	private Image getDecoratedIcon(Image base)
-	{
-		String key = base.hashCode() + ""; //$NON-NLS-1$
-
-		if (base.isDisposed())
-		{
-			decoratedImageCache.remove(key);
-			return null;
-		}
-
-		Image decorated = decoratedImageCache.get(key);
-		if (decorated != null)
-		{
-			return decorated;
-		}
-
-		decorated =
-				new DecorationOverlayIcon(base, ImageRegistry.getInstance().getDescriptor(
-						ImageRegistry.DECORATION_INCLUDED), IDecoration.BOTTOM_RIGHT).createImage();
-		decoratedImageCache.put(key, decorated);
-		return decorated;
 	}
 
 	@Override
@@ -259,161 +184,6 @@ public class CatalogTreeLabelProvider extends LabelProvider implements ILabelDec
 	public void fireLabelProviderChanged(LabelProviderChangedEvent event)
 	{
 		super.fireLabelProviderChanged(event);
-	}
-
-	private PropertyChangeListener catalogModelChildrenListener;
-	private PropertyChangeListener catalogModelURIListener;
-	private PropertyChangeListener layerModelChildrenListener;
-	private PropertyChangeListener layerModelURIListener;
-
-	private void setupListeners()
-	{
-		final SetMap<URI, ICatalogTreeNode> uriElements = new HashSetHashMap<URI, ICatalogTreeNode>();
-
-		catalogModelChildrenListener = new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				List<?> oldChildren = (List<?>) evt.getOldValue();
-				List<?> newChildren = (List<?>) evt.getNewValue();
-				addOrRemoveNodes(oldChildren, false);
-				addOrRemoveNodes(newChildren, true);
-			}
-
-			private void addOrRemoveNodes(List<?> nodes, boolean add)
-			{
-				if (nodes != null)
-				{
-					for (Object n : nodes)
-					{
-						if (n instanceof ICatalogTreeNode)
-						{
-							ICatalogTreeNode node = (ICatalogTreeNode) n;
-							URI uri = node.getLayerURI();
-							if (uri != null)
-							{
-								if (add)
-								{
-									uriElements.putSingle(uri, node);
-								}
-								else
-								{
-									uriElements.removeSingle(uri, node);
-								}
-							}
-						}
-					}
-				}
-			}
-		};
-
-		catalogModelURIListener = new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				Object source = evt.getSource();
-				if (source instanceof ICatalogTreeNode)
-				{
-					ICatalogTreeNode node = (ICatalogTreeNode) source;
-					URI oldURI = (URI) evt.getOldValue();
-					URI newURI = (URI) evt.getNewValue();
-					if (oldURI != null)
-					{
-						uriElements.removeSingle(oldURI, node);
-					}
-					if (newURI != null)
-					{
-						uriElements.putSingle(newURI, node);
-					}
-				}
-			}
-		};
-
-		layerModelChildrenListener = new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				Set<URI> changedURIs = new HashSet<URI>();
-				List<?> oldChildren = (List<?>) evt.getOldValue();
-				List<?> newChildren = (List<?>) evt.getNewValue();
-				addURIsToSet(oldChildren, changedURIs);
-				addURIsToSet(newChildren, changedURIs);
-				updateElementsForURIs(changedURIs, uriElements);
-			}
-
-			private void addURIsToSet(List<?> nodes, Set<URI> list)
-			{
-				if (nodes != null)
-				{
-					for (Object n : nodes)
-					{
-						if (n instanceof ILayerTreeNode)
-						{
-							ILayerTreeNode node = (ILayerTreeNode) n;
-							URI uri = node.getURI();
-							if (uri != null)
-							{
-								list.add(uri);
-							}
-						}
-					}
-				}
-			}
-		};
-
-		layerModelURIListener = new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				URI oldURI = (URI) evt.getOldValue();
-				URI newURI = (URI) evt.getNewValue();
-				Set<URI> uris = new HashSet<URI>();
-				if (oldURI != null)
-				{
-					uris.add(oldURI);
-				}
-				if (newURI != null)
-				{
-					uris.add(newURI);
-				}
-				updateElementsForURIs(uris, uriElements);
-			}
-		};
-	}
-
-	private void updateElementsForURIs(Collection<URI> uris, SetMap<URI, ICatalogTreeNode> uriElements)
-	{
-		Set<ICatalogTreeNode> elements = new HashSet<ICatalogTreeNode>();
-		for (URI uri : uris)
-		{
-			Set<ICatalogTreeNode> nodes = uriElements.get(uri);
-			if (nodes != null)
-			{
-				elements.addAll(nodes);
-			}
-		}
-		Object[] elementsArray = elements.toArray();
-		fireLabelProviderChanged(new LabelProviderChangedEvent(CatalogTreeLabelProvider.this, elementsArray));
-	}
-
-	private void addListeners()
-	{
-		catalogModel.getRoot().addDescendantPropertyChangeListener("children", catalogModelChildrenListener); //$NON-NLS-1$
-		catalogModel.getRoot().addDescendantPropertyChangeListener("layerURI", catalogModelURIListener); //$NON-NLS-1$
-		layerModel.getRootNode().addDescendantPropertyChangeListener("children", layerModelChildrenListener); //$NON-NLS-1$
-		layerModel.getRootNode().addDescendantPropertyChangeListener("uRI", layerModelURIListener); //$NON-NLS-1$
-	}
-
-	private void removeListeners()
-	{
-		catalogModel.getRoot().removePropertyChangeListener("children", catalogModelChildrenListener); //$NON-NLS-1$
-		catalogModel.getRoot().removePropertyChangeListener("layerURI", catalogModelURIListener); //$NON-NLS-1$
-		layerModel.getRootNode().removePropertyChangeListener("children", layerModelChildrenListener); //$NON-NLS-1$
-		layerModel.getRootNode().removePropertyChangeListener("uRI", layerModelURIListener); //$NON-NLS-1$
 	}
 
 	private Color informationColor;

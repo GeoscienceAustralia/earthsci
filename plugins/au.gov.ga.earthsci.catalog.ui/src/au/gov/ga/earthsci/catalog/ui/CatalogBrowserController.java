@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog.ui;
 
-import java.net.URI;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -29,9 +27,7 @@ import au.gov.ga.earthsci.application.util.UserActionPreference;
 import au.gov.ga.earthsci.catalog.CatalogLayerHelper;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ui.preferences.ICatalogBrowserPreferences;
-import au.gov.ga.earthsci.layer.tree.FolderNode;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
-import au.gov.ga.earthsci.layer.tree.LayerNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**
@@ -52,78 +48,6 @@ public class CatalogBrowserController implements ICatalogBrowserController
 
 	@Inject
 	private IEclipseContext context;
-
-	@Override
-	public boolean existsInLayerModel(URI layerURI)
-	{
-		return currentLayerModel.getRootNode().hasNodesForURI(layerURI);
-	}
-
-	@Override
-	public boolean allExistInLayerModel(ICatalogTreeNode... nodes)
-	{
-		if (nodes == null || nodes.length == 0)
-		{
-			return true;
-		}
-		boolean allExistInModel = true;
-		for (ICatalogTreeNode n : nodes)
-		{
-			if (n == null)
-			{
-				continue;
-			}
-			if (n.isLayerNode())
-			{
-				allExistInModel = allExistInModel && existsInLayerModel(n.getLayerURI());
-			}
-			if (n.getChildCount() > 0)
-			{
-				allExistInModel =
-						allExistInModel
-								&& allExistInLayerModel(n.getChildren()
-										.toArray(new ICatalogTreeNode[n.getChildCount()]));
-			}
-			if (!allExistInModel)
-			{
-				return false;
-			}
-		}
-		return allExistInModel;
-	}
-
-	@Override
-	public boolean anyExistInLayerModel(ICatalogTreeNode... nodes)
-	{
-		if (nodes == null || nodes.length == 0)
-		{
-			return false;
-		}
-		boolean anyExistInModel = false;
-		for (ICatalogTreeNode n : nodes)
-		{
-			if (n == null)
-			{
-				continue;
-			}
-			if (n != null && n.isLayerNode())
-			{
-				anyExistInModel = anyExistInModel || existsInLayerModel(n.getLayerURI());
-			}
-			if (n.getChildCount() > 0)
-			{
-				anyExistInModel =
-						anyExistInModel
-								|| anyExistInLayerModel(n.getChildren()
-										.toArray(new ICatalogTreeNode[n.getChildCount()]));
-			}
-			if (anyExistInModel)
-			{
-				return true;
-			}
-		}
-		return anyExistInModel;
-	}
 
 	@Override
 	public boolean areAllLayerNodes(ICatalogTreeNode... nodes)
@@ -211,71 +135,6 @@ public class CatalogBrowserController implements ICatalogBrowserController
 				(message.getReturnCode() == IDialogConstants.YES_ID) ? UserActionPreference.ALWAYS
 						: UserActionPreference.NEVER;
 		preferences.setAddNodeStructureMode(message.getToggleState() ? preference : UserActionPreference.ASK);
-
-		return preference == UserActionPreference.ALWAYS;
-	}
-
-	@Override
-	public void removeFromLayerModel(ICatalogTreeNode... nodes)
-	{
-		Boolean deleteEmptyFolders = null;
-		for (ICatalogTreeNode node : nodes)
-		{
-			if (node.isLayerNode())
-			{
-				for (ILayerTreeNode layer : currentLayerModel.getRootNode().getNodesForURI(node.getLayerURI()))
-				{
-					ILayerTreeNode parent = layer.getParent();
-					layer.removeFromParent();
-
-					// If the removal will create an empty folder, determine whether to remove it
-					if ((parent instanceof FolderNode) && !parent.hasChildren())
-					{
-						if (deleteEmptyFolders == null)
-						{
-							deleteEmptyFolders = isEmptyFolderDeletionRequiredOnRemoval();
-						}
-						if (deleteEmptyFolders)
-						{
-							deleteEmptyFolders(parent);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private void deleteEmptyFolders(ILayerTreeNode node)
-	{
-		if (node.isRoot())
-		{
-			return;
-		}
-		if (node.getParent().getChildCount() > 1 || (node.getParent() instanceof LayerNode))
-		{
-			node.removeFromParent();
-			return;
-		}
-		deleteEmptyFolders(node.getParent());
-	}
-
-	private boolean isEmptyFolderDeletionRequiredOnRemoval()
-	{
-		if (preferences.getDeleteEmptyFoldersMode() != UserActionPreference.ASK)
-		{
-			return preferences.getDeleteEmptyFoldersMode() == UserActionPreference.ALWAYS;
-		}
-
-		MessageDialogWithToggle message =
-				MessageDialogWithToggle.openYesNoQuestion(null,
-						Messages.CatalogBrowserController_DeleteEmptyFoldersDialogTitle,
-						Messages.CatalogBrowserController_DeleteEmptyFoldersMessage,
-						Messages.CatalogBrowserController_DialogDontAsk, false, null, null);
-
-		UserActionPreference preference =
-				(message.getReturnCode() == IDialogConstants.YES_ID) ? UserActionPreference.ALWAYS
-						: UserActionPreference.NEVER;
-		preferences.setDeleteEmptyFoldersMode(message.getToggleState() ? preference : UserActionPreference.ASK);
 
 		return preference == UserActionPreference.ALWAYS;
 	}

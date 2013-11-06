@@ -15,10 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog.ui;
 
-import java.net.URI;
-
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-
 
 /**
  * A controller class that coordinates interactions between the catalog browser
@@ -28,45 +25,6 @@ import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
  */
 public interface ICatalogBrowserController
 {
-
-	/**
-	 * Determine whether the provided layer URI exists in the current layer
-	 * model.
-	 * 
-	 * @param layerURI
-	 *            The layer URI to test for
-	 * 
-	 * @return <code>true</code> if the provided layer URI exists in the current
-	 *         layer model. <code>false</code> otherwise.
-	 */
-	boolean existsInLayerModel(URI layerURI);
-
-	/**
-	 * Determine whether <em>all</em> of the nodes in the provided list (and
-	 * their children) that represent layer nodes represent layers that exist in
-	 * the current layer model.
-	 * 
-	 * @param nodes
-	 *            The list of parent nodes to inspect.
-	 * 
-	 * @return <code>true</code> if all of the layer nodes in the provided trees
-	 *         exist in the the layer model; <code>false</code> otherwise.
-	 */
-	boolean allExistInLayerModel(ICatalogTreeNode... nodes);
-
-	/**
-	 * Determine whether <em>any</em> of the nodes in the provided list (and
-	 * their children) that represent layer nodes represent layers that exist in
-	 * the current layer model.
-	 * 
-	 * @param nodes
-	 *            The list of parent nodes to inspect.
-	 * 
-	 * @return <code>true</code> if any of the layer nodes in the provided trees
-	 *         exist in the the layer model; <code>false</code> otherwise.
-	 */
-	boolean anyExistInLayerModel(ICatalogTreeNode... nodes);
-
 	/**
 	 * Add the provided catalog nodes (and their children, as appropriate) to
 	 * the current layer model
@@ -75,14 +33,6 @@ public interface ICatalogBrowserController
 	 *            The nodes to add to the layer model
 	 */
 	void addToLayerModel(ICatalogTreeNode... nodes);
-
-	/**
-	 * Remove the provided layer nodes from the current layer model
-	 * 
-	 * @param nodes
-	 *            the nodes to remove from the layer model
-	 */
-	void removeFromLayerModel(ICatalogTreeNode... nodes);
 
 	/**
 	 * Determine whether all of the provided nodes are layer nodes (e.g. ones
