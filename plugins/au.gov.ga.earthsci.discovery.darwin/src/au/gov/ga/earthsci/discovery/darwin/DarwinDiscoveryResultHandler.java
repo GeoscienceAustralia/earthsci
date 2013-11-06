@@ -127,7 +127,7 @@ public class DarwinDiscoveryResultHandler implements IDiscoveryResultHandler
 			{
 				if (result != null)
 				{
-					Dispatcher.getInstance().dispatch(result, context);
+					Dispatcher.getInstance().dispatch(result, intent, context);
 				}
 			}
 		};

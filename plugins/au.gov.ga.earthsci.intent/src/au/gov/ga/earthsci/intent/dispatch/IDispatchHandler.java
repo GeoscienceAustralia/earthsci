@@ -17,6 +17,8 @@ package au.gov.ga.earthsci.intent.dispatch;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 
+import au.gov.ga.earthsci.intent.Intent;
+
 /**
  * Handles a dispatched domain object of a particular class.
  * <p/>
@@ -31,6 +33,10 @@ public interface IDispatchHandler
 	 * Handle the given dispatched domain object.
 	 * 
 	 * @param object
+	 *            Dispatched object
+	 * @param intent
+	 *            Intent that loaded the object, can be <code>null</code> if the
+	 *            object is not the result of an intent
 	 */
-	void handle(Object object);
+	void handle(Object object, Intent intent);
 }

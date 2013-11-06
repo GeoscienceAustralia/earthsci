@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
 import au.gov.ga.earthsci.common.collection.ListSortedMap;
+import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.util.ContextInjectionFactoryThreadSafe;
 
 /**
@@ -97,11 +98,14 @@ public class Dispatcher
 	 * 
 	 * @param object
 	 *            Object to dispatch
+	 * @param intent
+	 *            Intent that loaded the dispatched object, <code>null</code> if
+	 *            object is not the result of an intent
 	 * @param context
 	 *            Context to use for injection into the handler
 	 * @return True if a dispatch handler was found to handle the object
 	 */
-	public boolean dispatch(Object object, IEclipseContext context)
+	public boolean dispatch(Object object, Intent intent, IEclipseContext context)
 	{
 		if (object == null)
 		{
@@ -117,7 +121,7 @@ public class Dispatcher
 		IEclipseContext activeLeaf = context.getActiveLeaf();
 		IEclipseContext child = activeLeaf.createChild();
 		IDispatchHandler handler = ContextInjectionFactoryThreadSafe.make(handlerClass, child);
-		handler.handle(object);
+		handler.handle(object, intent);
 		return true;
 	}
 

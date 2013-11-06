@@ -204,7 +204,7 @@ public class BrowserPart
 			{
 				if (result != null)
 				{
-					Dispatcher.getInstance().dispatch(result, context);
+					Dispatcher.getInstance().dispatch(result, intent, context);
 				}
 			}
 		};

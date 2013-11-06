@@ -25,6 +25,7 @@ import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.swt.widgets.Shell;
 
+import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.dispatch.IDispatchHandler;
 
 /**
@@ -47,7 +48,7 @@ public class CatalogTreeNodeDispatchHandler implements IDispatchHandler
 	private Shell shell;
 
 	@Override
-	public void handle(Object object)
+	public void handle(Object object, Intent intent)
 	{
 		if (object instanceof ICatalogTreeNode)
 		{

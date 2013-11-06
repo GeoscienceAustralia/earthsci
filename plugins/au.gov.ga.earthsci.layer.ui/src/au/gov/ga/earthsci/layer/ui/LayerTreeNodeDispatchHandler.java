@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.dispatch.IDispatchHandler;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.tree.LayerNode;
@@ -65,7 +66,7 @@ public class LayerTreeNodeDispatchHandler implements IDispatchHandler
 	private Shell shell;
 
 	@Override
-	public void handle(Object object)
+	public void handle(Object object, Intent intent)
 	{
 		ILayerTreeNode node = null;
 		if (object instanceof ILayerTreeNode)

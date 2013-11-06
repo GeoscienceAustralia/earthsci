@@ -80,7 +80,7 @@ public class OpenHandler
 			@Override
 			public void completed(Object result, Intent intent)
 			{
-				Dispatcher.getInstance().dispatch(result, context);
+				Dispatcher.getInstance().dispatch(result, intent, context);
 			}
 		};
 		IntentManager.getInstance().start(intent, callback, context);

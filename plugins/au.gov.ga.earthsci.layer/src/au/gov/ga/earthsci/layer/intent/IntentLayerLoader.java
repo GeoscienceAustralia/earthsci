@@ -86,7 +86,7 @@ public class IntentLayerLoader
 							if (MessageDialog.openConfirm(shell, Messages.IntentLayerLoader_UnknownLayerTitle,
 									Messages.bind(Messages.IntentLayerLoader_UnknownLayerMessage, filter.getName())))
 							{
-								Dispatcher.getInstance().dispatch(result, layerIntent.context);
+								Dispatcher.getInstance().dispatch(result, layerIntent, layerIntent.context);
 							}
 						}
 					});
