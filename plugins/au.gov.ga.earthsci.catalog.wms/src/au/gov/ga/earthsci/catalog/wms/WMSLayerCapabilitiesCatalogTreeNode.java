@@ -22,9 +22,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.content.IContentType;
-
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 
@@ -110,12 +107,6 @@ public class WMSLayerCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 		{
 			return null;
 		}
-	}
-
-	@Override
-	public IContentType getLayerContentType()
-	{
-		return Platform.getContentTypeManager().getContentType(WMSHelper.WMS_LAYER_CONTENT_TYPE_ID);
 	}
 
 	@Override

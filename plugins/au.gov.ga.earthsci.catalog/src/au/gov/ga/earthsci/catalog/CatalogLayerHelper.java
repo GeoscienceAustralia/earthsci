@@ -83,7 +83,6 @@ public class CatalogLayerHelper
 	{
 		LayerNode layer = new LayerNode();
 		layer.setURI(catalogTreeNode.getLayerURI());
-		layer.setContentType(catalogTreeNode.getLayerContentType());
 		layer.setName(catalogTreeNode.getName());
 		layer.setLabel(catalogTreeNode.getLabel());
 		layer.setEnabled(true);

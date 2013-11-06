@@ -27,9 +27,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.content.IContentType;
-
 import au.gov.ga.earthsci.common.collection.HashSetHashMap;
 import au.gov.ga.earthsci.common.collection.SetMap;
 import au.gov.ga.earthsci.common.persistence.Exportable;
@@ -57,7 +54,6 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
 	private String label;
 	private URI uri;
-	private IContentType contentType;
 	private URL nodeInformationURL;
 	private URL legendURL;
 	private URL iconURL;
@@ -119,29 +115,6 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	public void setURI(URI uri)
 	{
 		firePropertyChange("uRI", getURI(), this.uri = uri); //$NON-NLS-1$
-	}
-
-	@Override
-	public IContentType getContentType()
-	{
-		return contentType;
-	}
-
-	@Override
-	public void setContentType(IContentType contentType)
-	{
-		firePropertyChange("contentType", getContentType(), this.contentType = contentType); //$NON-NLS-1$
-	}
-
-	@Persistent
-	public String getContentTypeId()
-	{
-		return contentType == null ? null : contentType.getId();
-	}
-
-	public void setContentTypeId(String contentTypeId)
-	{
-		contentType = contentTypeId == null ? null : Platform.getContentTypeManager().getContentType(contentTypeId);
 	}
 
 	/**

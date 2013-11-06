@@ -20,8 +20,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import org.eclipse.core.runtime.content.IContentType;
-
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.core.url.SystemIconURLStreamHandlerService;
 
@@ -32,14 +30,12 @@ import au.gov.ga.earthsci.core.url.SystemIconURLStreamHandlerService;
  */
 public class FileCatalogTreeNode extends AbstractCatalogTreeNode
 {
-	private final IContentType contentType;
 	private boolean iconURLLoaded = false;
 	private URL iconURL;
 
-	public FileCatalogTreeNode(URI fileURI, IContentType contentType)
+	public FileCatalogTreeNode(URI fileURI)
 	{
 		super(fileURI);
-		this.contentType = contentType;
 	}
 
 	@Override
@@ -58,12 +54,6 @@ public class FileCatalogTreeNode extends AbstractCatalogTreeNode
 	public URI getLayerURI()
 	{
 		return getURI();
-	}
-
-	@Override
-	public IContentType getLayerContentType()
-	{
-		return contentType;
 	}
 
 	@Override

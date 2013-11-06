@@ -26,7 +26,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
@@ -83,12 +82,6 @@ public class DirectoryCatalogTreeNode extends AbstractCatalogTreeNode implements
 
 	@Override
 	public URI getLayerURI()
-	{
-		return null;
-	}
-
-	@Override
-	public IContentType getLayerContentType()
 	{
 		return null;
 	}
@@ -181,7 +174,7 @@ public class DirectoryCatalogTreeNode extends AbstractCatalogTreeNode implements
 							if (!filters.isEmpty())
 							{
 								//some intent filter knows how to open this, so add it as a child
-								addChild(new FileCatalogTreeNode(file.toURI(), intent.getContentType()));
+								addChild(new FileCatalogTreeNode(file.toURI()));
 							}
 
 							//don't actually run the intent, just want to know if there's any filters

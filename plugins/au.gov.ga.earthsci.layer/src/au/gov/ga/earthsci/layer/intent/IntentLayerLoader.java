@@ -55,7 +55,6 @@ public class IntentLayerLoader
 
 		LayerLoadIntent intent = new LayerLoadIntent(context, layerNode);
 		intent.setURI(layerNode.getURI());
-		intent.setContentType(layerNode.getContentType());
 		intent.setExpectedReturnType(Layer.class);
 		IntentManager.getInstance().start(intent, callback, context);
 	}

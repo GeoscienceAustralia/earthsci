@@ -18,8 +18,6 @@ package au.gov.ga.earthsci.catalog;
 import java.net.URI;
 import java.net.URL;
 
-import org.eclipse.core.runtime.content.IContentType;
-
 import au.gov.ga.earthsci.common.util.IInformationed;
 import au.gov.ga.earthsci.common.util.ILabelable;
 import au.gov.ga.earthsci.common.util.INamed;
@@ -63,12 +61,6 @@ public interface ICatalogTreeNode extends ITreeNode<ICatalogTreeNode>, IProperty
 	 *         {@link #isLayerNode()} returns <code>true</code>
 	 */
 	URI getLayerURI();
-
-	/**
-	 * @return the content type of the layer this node represents if
-	 *         {@link #isLayerNode()} returns <code>true</code>
-	 */
-	IContentType getLayerContentType();
 
 	/**
 	 * This method can be called many times during icon load, and therefore the

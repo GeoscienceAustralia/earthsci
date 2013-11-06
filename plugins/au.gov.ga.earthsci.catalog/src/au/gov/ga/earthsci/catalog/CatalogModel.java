@@ -27,7 +27,6 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
 
@@ -165,12 +164,6 @@ public class CatalogModel implements ICatalogModel
 
 		@Override
 		public URI getLayerURI()
-		{
-			return null;
-		}
-
-		@Override
-		public IContentType getLayerContentType()
 		{
 			return null;
 		}

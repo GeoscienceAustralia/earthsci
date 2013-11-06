@@ -22,8 +22,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import org.eclipse.core.runtime.content.IContentType;
-
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ErrorCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
@@ -81,12 +79,6 @@ public class WMSCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 
 	@Override
 	public URI getLayerURI()
-	{
-		return null;
-	}
-
-	@Override
-	public IContentType getLayerContentType()
 	{
 		return null;
 	}

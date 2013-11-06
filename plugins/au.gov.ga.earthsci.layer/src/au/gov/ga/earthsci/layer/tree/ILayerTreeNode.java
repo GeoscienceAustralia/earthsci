@@ -22,8 +22,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import org.eclipse.core.runtime.content.IContentType;
-
 import au.gov.ga.earthsci.common.util.IEnableable;
 import au.gov.ga.earthsci.common.util.IInformationed;
 import au.gov.ga.earthsci.common.util.ILabelable;
@@ -156,18 +154,5 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	 * @param uri
 	 */
 	void setURI(URI uri);
-
-	/**
-	 * @return The Content Type of this node's data. Used by the Intent system
-	 *         during layer creation.
-	 */
-	IContentType getContentType();
-
-	/**
-	 * Set this node's data's Content Type.
-	 * 
-	 * @param contentType
-	 */
-	void setContentType(IContentType contentType);
 
 }

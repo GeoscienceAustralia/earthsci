@@ -3,8 +3,6 @@ package au.gov.ga.earthsci.catalog;
 import java.net.URI;
 import java.net.URL;
 
-import org.eclipse.core.runtime.content.IContentType;
-
 public class DummyCatalogNode extends AbstractCatalogTreeNode
 {
 	public DummyCatalogNode(URI nodeURI)
@@ -26,12 +24,6 @@ public class DummyCatalogNode extends AbstractCatalogTreeNode
 
 	@Override
 	public URI getLayerURI()
-	{
-		return null;
-	}
-
-	@Override
-	public IContentType getLayerContentType()
 	{
 		return null;
 	}
