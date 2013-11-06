@@ -41,6 +41,12 @@ public abstract class ClassLayerWrapper<L extends Layer> extends LayerDelegate i
 
 	protected abstract void save(L layer, Element element);
 
+	protected L createLayer(Element element, Class<? extends L> layerClass) throws InstantiationException,
+			IllegalAccessException
+	{
+		return layerClass.newInstance();
+	}
+
 	@Override
 	public final void load(Element parent)
 	{
@@ -53,7 +59,7 @@ public abstract class ClassLayerWrapper<L extends Layer> extends LayerDelegate i
 			{
 				layerClass = getLayerClass();
 			}
-			L layer = layerClass.newInstance();
+			L layer = createLayer(parent, layerClass);
 			setLayer(layer);
 			load(layer, parent);
 		}
