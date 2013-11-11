@@ -33,8 +33,8 @@ import org.slf4j.LoggerFactory;
 import au.gov.ga.earthsci.common.buffer.BufferType;
 import au.gov.ga.earthsci.common.buffer.BufferUtil;
 import au.gov.ga.earthsci.common.color.ColorMap;
-import au.gov.ga.earthsci.common.color.ColorType;
 import au.gov.ga.earthsci.common.color.ColorMap.InterpolationMode;
+import au.gov.ga.earthsci.common.color.ColorType;
 import au.gov.ga.earthsci.common.spatial.SpatialReferences;
 import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.model.IModel;
@@ -371,7 +371,7 @@ public class GDALRasterModelFactory
 		return nodata;
 	}
 
-	private static double toElevation(double elevationOffset, double elevationScale, double datasetValue, double nodata)
+	private static double toElevation(double elevationOffset, double elevationScale, double datasetValue, Double nodata)
 	{
 		//		if (isNoData(nodata, datasetValue))
 		//		{
