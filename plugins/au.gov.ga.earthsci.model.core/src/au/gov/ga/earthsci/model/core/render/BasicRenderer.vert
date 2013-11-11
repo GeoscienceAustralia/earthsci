@@ -20,7 +20,7 @@ varying float mask;
 void main(void)
 {	
 	// Mask will be 0 where Z == zNodata; 1 everywhere else.
-	mask = 1 - step(zNodata, gl_Vertex.z) * step(gl_Vertex.z, zNodata); 
+	mask = 1.0 - step(zNodata, gl_Vertex.z) * step(gl_Vertex.z, zNodata); 
 	
 	//project the geodetic coordinates to cartesian space
 	vec3 geodetic = vec3(radians(gl_Vertex.xy), ve * gl_Vertex.z);
