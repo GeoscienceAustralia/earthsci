@@ -37,6 +37,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -460,7 +462,7 @@ public class XmlUtil
 	 */
 	public static String getText(Element context, String path)
 	{
-		return WWXML.getText(context, path);
+		return getText(context, path, null);
 	}
 
 	/**
@@ -500,12 +502,79 @@ public class XmlUtil
 	 */
 	public static String getText(Element context, String path, String def, XPath xpath)
 	{
-		String s = WWXML.getText(context, path, xpath);
-		if (s == null)
+		Node node = getNode(context, path, xpath);
+		if (node == null)
 		{
 			return def;
 		}
-		return s;
+		return node.getTextContent();
+	}
+
+	/**
+	 * Set the element text at the path to the given value.
+	 * 
+	 * @param context
+	 *            The element from which the path is relative to
+	 * @param path
+	 *            The element path to the text value to set
+	 * @param value
+	 *            Text value to set
+	 * @return Element set
+	 */
+	public static Element setTextElement(Element context, String path, String value)
+	{
+		return setTextElement(context, path, value, null);
+	}
+
+	/**
+	 * Set the element text at the path to the given value.
+	 * 
+	 * @param context
+	 *            The element from which the path is relative to
+	 * @param path
+	 *            The element path to the text value to set
+	 * @param value
+	 *            Text value to set
+	 * @param xpath
+	 *            An {@link XPath} instance that can be reused across calls
+	 * @return Element set
+	 */
+	public static Element setTextElement(Element context, String path, String value, XPath xpath)
+	{
+		Element element = WWXML.getElement(context, path, xpath);
+		if (element == null)
+		{
+			element = WWXML.appendElementPath(context, path);
+		}
+		element.setTextContent(value);
+		return element;
+	}
+
+	/**
+	 * Get the XML node at the given path.
+	 * 
+	 * @param context
+	 *            The element from which the path is relative to
+	 * @param path
+	 *            The path of the node to get
+	 * @param xpath
+	 *            An {@link XPath} instance that can be reused across calls
+	 * @return Node at the given path, or <code>null</code> if none exists
+	 */
+	public static Node getNode(Element context, String path, XPath xpath)
+	{
+		if (xpath == null)
+		{
+			xpath = WWXML.makeXPath();
+		}
+		try
+		{
+			return (Node) xpath.evaluate(path, context, XPathConstants.NODE);
+		}
+		catch (XPathExpressionException e)
+		{
+			return null;
+		}
 	}
 
 	public static boolean getBoolean(Element context, String path, boolean def)
