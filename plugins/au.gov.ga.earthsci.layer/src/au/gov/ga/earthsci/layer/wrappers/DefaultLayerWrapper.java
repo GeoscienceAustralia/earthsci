@@ -167,6 +167,11 @@ public class DefaultLayerWrapper extends LayerDelegator implements ILayerWrapper
 	@Override
 	public void save(Element parent)
 	{
+		if (uri != null)
+		{
+			XmlUtil.setTextElement(parent, URI_ELEMENT, uri.toString());
+		}
+
 		if (element != null)
 		{
 			Element legacyElement = parent.getOwnerDocument().createElement(LEGACY_ELEMENT);
@@ -179,16 +184,11 @@ public class DefaultLayerWrapper extends LayerDelegator implements ILayerWrapper
 				XmlUtil.setTextElement(parent, URL_ELEMENT, url.toString());
 			}
 		}
-		else if (className != null && classBundle != null)
+		else if (className != null && classBundle != null && uri == null)
 		{
 			Element element = XmlUtil.createElement(parent, CLASS_ELEMENT, null);
 			element.setAttribute(BUNDLE_ATTRIBUTE, classBundle);
 			element.setAttribute(NAME_ATTRIBUTE, className);
-		}
-
-		if (uri != null)
-		{
-			XmlUtil.setTextElement(parent, URI_ELEMENT, uri.toString());
 		}
 	}
 
