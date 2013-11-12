@@ -22,10 +22,13 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ErrorCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.common.util.UTF8URLEncoder;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 
 /**
  * {@link ICatalogTreeNode} for the root node of a WMS server. Contains the root
@@ -78,9 +81,8 @@ public class WMSCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 	}
 
 	@Override
-	public URI getLayerURI()
+	public void loadLayer(ILayerNode node, IEclipseContext context) throws Exception
 	{
-		return null;
 	}
 
 	@Override

@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer;
+package au.gov.ga.earthsci.layer.wrappers;
 
 import gov.nasa.worldwind.layers.Layer;
+import au.gov.ga.earthsci.layer.IPersistentLayer;
+import au.gov.ga.earthsci.layer.delegator.ILayerDelegator;
 
 /**
  * Wrapper for legacy layers. Delegates all {@link Layer} methods to the wrapped
  * {@link Layer} instance, and provides an implementation for any extra methods
- * defined by the {@link ILayer} interface.
+ * defined by the {@link IPersistentLayer} interface.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerWrapper extends ILayer, ILayerDelegate
+public interface ILayerWrapper extends IPersistentLayer, ILayerDelegator<Layer>
 {
 	/**
 	 * Does this wrapper support wrapping the given layer?

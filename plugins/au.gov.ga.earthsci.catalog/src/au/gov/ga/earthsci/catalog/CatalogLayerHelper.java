@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.catalog;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 
-import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
+import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.layer.tree.FolderNode;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.tree.LayerNode;
@@ -47,7 +47,14 @@ public class CatalogLayerHelper
 		{
 			LayerNode layer = createLayerNode(node);
 			parent.addChild(layer);
-			IntentLayerLoader.load(layer, context);
+			try
+			{
+				node.loadLayer(layer, context);
+			}
+			catch (Exception e)
+			{
+				layer.setStatus(ModelStatus.error(Messages.CatalogLayerHelper_LoadLayerError, e));
+			}
 		}
 		else
 		{
@@ -82,7 +89,7 @@ public class CatalogLayerHelper
 	public static LayerNode createLayerNode(ICatalogTreeNode catalogTreeNode)
 	{
 		LayerNode layer = new LayerNode();
-		layer.setURI(catalogTreeNode.getLayerURI());
+		layer.setCatalogURI(catalogTreeNode.getURI());
 		layer.setName(catalogTreeNode.getName());
 		layer.setLabel(catalogTreeNode.getLabel());
 		layer.setEnabled(true);
@@ -94,9 +101,9 @@ public class CatalogLayerHelper
 	public static FolderNode createFolderNode(ICatalogTreeNode catalogTreeNode)
 	{
 		FolderNode folder = new FolderNode();
+		folder.setCatalogURI(catalogTreeNode.getURI());
 		folder.setName(catalogTreeNode.getName());
 		folder.setLabel(catalogTreeNode.getLabel());
-		folder.setURI(catalogTreeNode.getURI());
 		folder.setExpanded(true);
 		folder.setIconURL(catalogTreeNode.getIconURL());
 		folder.setNodeInformationURL(catalogTreeNode.getInformationURL());

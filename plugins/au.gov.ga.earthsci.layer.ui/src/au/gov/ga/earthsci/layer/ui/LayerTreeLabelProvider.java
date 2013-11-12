@@ -56,8 +56,9 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalServiceListener;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
-import au.gov.ga.earthsci.layer.IElevationModelLayer;
+import au.gov.ga.earthsci.layer.elevation.IElevationModelLayer;
 import au.gov.ga.earthsci.layer.tree.FolderNode;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.tree.LayerNode;
 
@@ -196,14 +197,14 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 			}
 			else if (caller instanceof Layer || caller instanceof ElevationModel)
 			{
-				WeakReference<LayerNode> weak = delegate.weakLayerToNodeMap.get(caller);
+				WeakReference<ILayerNode> weak = delegate.weakLayerToNodeMap.get(caller);
 				if (weak == null)
 				{
 					weak = delegate.weakElevationModelToNodeMap.get(caller);
 				}
 				if (weak != null)
 				{
-					LayerNode node = weak.get();
+					ILayerNode node = weak.get();
 					if (node != null)
 					{
 						elements.add(node);
@@ -276,10 +277,10 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 	private static class LayerTreeLabelProviderDelegate extends LabelProvider implements ILabelDecorator,
 			IStyledLabelProvider, IFireableLabelProvider
 	{
-		private WeakHashMap<Layer, WeakReference<LayerNode>> weakLayerToNodeMap =
-				new WeakHashMap<Layer, WeakReference<LayerNode>>();
-		private WeakHashMap<ElevationModel, WeakReference<LayerNode>> weakElevationModelToNodeMap =
-				new WeakHashMap<ElevationModel, WeakReference<LayerNode>>();
+		private WeakHashMap<Layer, WeakReference<ILayerNode>> weakLayerToNodeMap =
+				new WeakHashMap<Layer, WeakReference<ILayerNode>>();
+		private WeakHashMap<ElevationModel, WeakReference<ILayerNode>> weakElevationModelToNodeMap =
+				new WeakHashMap<ElevationModel, WeakReference<ILayerNode>>();
 
 		private final IconLoader iconLoader = new IconLoader(this);
 
@@ -324,25 +325,26 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 		@Override
 		public String getText(Object element)
 		{
-			if (element instanceof LayerNode)
+			if (element instanceof ILayerNode)
 			{
-				LayerNode layer = (LayerNode) element;
+				ILayerNode layerNode = (ILayerNode) element;
+				Layer layer = layerNode.getGrandLayer();
 
-				if (layer.getLayer() != null)
+				if (layer != null)
 				{
-					WeakReference<LayerNode> layerNodeReference = new WeakReference<LayerNode>(layer);
-					weakLayerToNodeMap.put(layer.getLayer(), layerNodeReference);
-					if (layer.getLayer() instanceof IElevationModelLayer)
+					WeakReference<ILayerNode> layerNodeReference = new WeakReference<ILayerNode>(layerNode);
+					weakLayerToNodeMap.put(layer, layerNodeReference);
+					if (layer instanceof IElevationModelLayer)
 					{
-						ElevationModel elevationModel = ((IElevationModelLayer) layer.getLayer()).getElevationModel();
+						ElevationModel elevationModel = ((IElevationModelLayer) layer).getElevationModel();
 						addElevationModelToMap(elevationModel, layerNodeReference);
 					}
 				}
 
-				String label = layer.getLabelOrName();
-				if (layer.getOpacity() < 1)
+				String label = layerNode.getLabelOrName();
+				if (layerNode.getOpacity() < 1)
 				{
-					label += String.format(" (%d%%)", (int) (layer.getOpacity() * 100)); //$NON-NLS-1$
+					label += String.format(" (%d%%)", (int) (layerNode.getOpacity() * 100)); //$NON-NLS-1$
 				}
 
 				return label;
@@ -355,7 +357,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 			return super.getText(element);
 		}
 
-		private void addElevationModelToMap(ElevationModel elevationModel, WeakReference<LayerNode> layerNodeReference)
+		private void addElevationModelToMap(ElevationModel elevationModel, WeakReference<ILayerNode> layerNodeReference)
 		{
 			weakElevationModelToNodeMap.put(elevationModel, layerNodeReference);
 			if (elevationModel instanceof CompoundElevationModel)

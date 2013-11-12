@@ -114,7 +114,7 @@ public class WMSCapabilitiesIntentHandler extends AbstractRetrieveIntentHandler
 					FolderNode folder = CatalogLayerHelper.createFolderNode(catalogTreeNode);
 					LayerNode layer = CatalogLayerHelper.createLayerNode(singleLayer);
 					folder.addChild(layer);
-					IntentLayerLoader.load(layer, context);
+					IntentLayerLoader.load(singleLayer.generateLayerURI(), layer, context);
 					callback.completed(folder, intent);
 					return;
 				}

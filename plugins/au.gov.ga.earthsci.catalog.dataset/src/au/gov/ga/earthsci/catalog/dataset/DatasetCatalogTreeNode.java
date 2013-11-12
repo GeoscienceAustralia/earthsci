@@ -3,8 +3,11 @@ package au.gov.ga.earthsci.catalog.dataset;
 import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 
 /**
  * An {@link ICatalogTreeNode} that represents a {@code Dataset} element from
@@ -76,9 +79,8 @@ public class DatasetCatalogTreeNode extends AbstractCatalogTreeNode
 	}
 
 	@Override
-	public URI getLayerURI()
+	public void loadLayer(ILayerNode node, IEclipseContext context) throws Exception
 	{
-		return null;
 	}
 
 	@Override

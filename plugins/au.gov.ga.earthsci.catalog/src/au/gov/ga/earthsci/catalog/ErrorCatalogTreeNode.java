@@ -18,7 +18,10 @@ package au.gov.ga.earthsci.catalog;
 import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+
 import au.gov.ga.earthsci.common.util.ExceptionFormatter;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 
 /**
  * {@link ICatalogTreeNode} that represents an error node as a child of a node
@@ -71,9 +74,8 @@ public class ErrorCatalogTreeNode extends AbstractCatalogTreeNode
 	}
 
 	@Override
-	public URI getLayerURI()
+	public void loadLayer(ILayerNode node, IEclipseContext context)
 	{
-		return null;
 	}
 
 	@Override

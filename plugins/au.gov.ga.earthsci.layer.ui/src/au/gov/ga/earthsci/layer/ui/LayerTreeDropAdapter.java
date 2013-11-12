@@ -125,13 +125,12 @@ public class LayerTreeDropAdapter extends ViewerDropAdapter
 					node.setName(file.getName());
 					node.setEnabled(true);
 					node.setIconURL(SystemIconURLStreamHandlerService.createURL(file));
-					node.setURI(file.toURI());
 
 					target.addChild(index, node);
 					getViewer().add(target, node);
 					getViewer().reveal(node);
 
-					IntentLayerLoader.load(node, context);
+					IntentLayerLoader.load(file.toURI(), node, context);
 				}
 			}
 		}

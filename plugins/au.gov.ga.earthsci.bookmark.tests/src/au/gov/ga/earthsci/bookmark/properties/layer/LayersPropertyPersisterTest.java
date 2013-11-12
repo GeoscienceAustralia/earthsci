@@ -20,15 +20,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import gov.nasa.worldwind.util.WWXML;
 
-import java.net.URI;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.common.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.common.util.XmlUtil;
 
 /**
@@ -61,7 +58,7 @@ public class LayersPropertyPersisterTest
 	@Test(expected = IllegalArgumentException.class)
 	public void testExportToXmlNullElement() throws Exception
 	{
-		LayersProperty property = createLayersProperty(new URI[0], new Double[0]);
+		LayersProperty property = createLayersProperty(new String[0], new Double[0]);
 		Element parent = null;
 
 		classUnderTest.exportToXML(property, parent);
@@ -70,7 +67,7 @@ public class LayersPropertyPersisterTest
 	@Test
 	public void testExportToXmlEmptyProperty() throws Exception
 	{
-		LayersProperty property = createLayersProperty(new URI[0], new Double[0]);
+		LayersProperty property = createLayersProperty(new String[0], new Double[0]);
 		Element parent = createPropertyElement();
 
 		classUnderTest.exportToXML(property, parent);
@@ -83,7 +80,7 @@ public class LayersPropertyPersisterTest
 	public void testExportToXmlSingleLayer() throws Exception
 	{
 		LayersProperty property =
-				createLayersProperty(new URI[] { new URI("file://some/layer/somewhere.xml") }, new Double[] { 0.5d });
+				createLayersProperty(new String[] { "id1" }, new Double[] { 0.5d });
 		Element parent = createPropertyElement();
 
 		classUnderTest.exportToXML(property, parent);
@@ -91,8 +88,7 @@ public class LayersPropertyPersisterTest
 		assertEquals(1, XmlUtil.getElements(parent, "layerState", null).length);
 		assertEquals(1, XmlUtil.getElements(parent, "layerState/layer", null).length);
 
-		assertEquals(UTF8URLEncoder.encode("file://some/layer/somewhere.xml"),
-				XmlUtil.getText(parent, "layerState/layer[1]/@uri"));
+		assertEquals("id1", XmlUtil.getText(parent, "layerState/layer[1]/@id"));
 		assertEquals(0.5, XmlUtil.getDouble(parent, "layerState/layer[1]/@opacity", -1), 0.001);
 	}
 
@@ -100,8 +96,7 @@ public class LayersPropertyPersisterTest
 	public void testExportToXmlMultipleLayers() throws Exception
 	{
 		LayersProperty property =
-				createLayersProperty(new URI[] { new URI("file://some/layer/somewhere.xml"),
-						new URI("file://some/layer/somewhereElse.xml") }, new Double[] { 0.5d, 0.8d });
+				createLayersProperty(new String[] { "id1", "id2" }, new Double[] { 0.5d, 0.8d });
 		Element parent = createPropertyElement();
 
 		classUnderTest.exportToXML(property, parent);
@@ -121,7 +116,7 @@ public class LayersPropertyPersisterTest
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateFromXmlNullType() throws Exception
 	{
-		Element parent = createLayersPropertyElement(new URI[0], new Double[0]);
+		Element parent = createLayersPropertyElement(new String[0], new Double[0]);
 
 		classUnderTest.createFromXML(null, parent);
 	}
@@ -129,7 +124,7 @@ public class LayersPropertyPersisterTest
 	@Test
 	public void testCreateFromXmlEmptyProperty() throws Exception
 	{
-		Element parent = createLayersPropertyElement(new URI[0], new Double[0]);
+		Element parent = createLayersPropertyElement(new String[0], new Double[0]);
 
 		IBookmarkProperty result = classUnderTest.createFromXML(LayersProperty.TYPE, parent);
 
@@ -142,8 +137,7 @@ public class LayersPropertyPersisterTest
 	public void testCreateFromXmlNonEmptyProperty() throws Exception
 	{
 		Element parent =
-				createLayersPropertyElement(new URI[] { new URI("file://some/layer/somewhere.xml"),
-						new URI("file://some/layer/somewhereElse.xml") }, new Double[] { 0.5, 0.8 });
+				createLayersPropertyElement(new String[] { "id1", "id2" }, new Double[] { 0.5, 0.8 });
 
 		IBookmarkProperty result = classUnderTest.createFromXML(LayersProperty.TYPE, parent);
 
@@ -153,8 +147,8 @@ public class LayersPropertyPersisterTest
 		LayersProperty layersProperty = (LayersProperty) result;
 		assertEquals(2, layersProperty.getLayerState().size());
 
-		assertEquals(0.5, layersProperty.getLayerState().get(new URI("file://some/layer/somewhere.xml")), 0.001);
-		assertEquals(0.8, layersProperty.getLayerState().get(new URI("file://some/layer/somewhereElse.xml")), 0.001);
+		assertEquals(0.5, layersProperty.getLayerState().get("id1"), 0.001);
+		assertEquals(0.8, layersProperty.getLayerState().get("id2"), 0.001);
 
 	}
 
@@ -164,28 +158,28 @@ public class LayersPropertyPersisterTest
 		return d.createElement("property");
 	}
 
-	private LayersProperty createLayersProperty(URI[] uris, Double[] opacities)
+	private LayersProperty createLayersProperty(String[] ids, Double[] opacities)
 	{
 		LayersProperty p = new LayersProperty();
 
-		for (int i = 0; i < uris.length; i++)
+		for (int i = 0; i < ids.length; i++)
 		{
-			p.addLayer(uris[i], opacities[i]);
+			p.addLayer(ids[i], opacities[i]);
 		}
 
 		return p;
 	}
 
-	private Element createLayersPropertyElement(URI[] uris, Double[] opacities)
+	private Element createLayersPropertyElement(String[] ids, Double[] opacities)
 	{
 		Element property = createPropertyElement();
 
 		Element layerState = WWXML.appendElement(property, "layerState");
 
-		for (int i = 0; i < uris.length; i++)
+		for (int i = 0; i < ids.length; i++)
 		{
 			Element layer = WWXML.appendElement(layerState, "layer");
-			layer.setAttribute("uri", UTF8URLEncoder.encode(uris[i].toString()));
+			layer.setAttribute("id", ids[i]);
 			layer.setAttribute("opacity", Double.toString(opacities[i]));
 		}
 

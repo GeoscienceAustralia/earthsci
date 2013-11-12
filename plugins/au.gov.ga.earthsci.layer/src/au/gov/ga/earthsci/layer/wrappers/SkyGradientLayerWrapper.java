@@ -24,7 +24,6 @@ import javax.xml.xpath.XPath;
 
 import org.w3c.dom.Element;
 
-import au.gov.ga.earthsci.layer.ILayerWrapper;
 import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
 /**
@@ -39,7 +38,7 @@ public class SkyGradientLayerWrapper extends ClassLayerWrapper<SkyGradientLayer>
 	private final static String ZENITH_COLOR_ELEMENT = "ZenithColor"; //$NON-NLS-1$
 
 	@Override
-	protected Class<SkyGradientLayer> getLayerClass()
+	protected Class<SkyGradientLayer> getWrappedLayerClass()
 	{
 		return SkyGradientLayer.class;
 	}

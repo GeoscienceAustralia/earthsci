@@ -18,8 +18,6 @@ package au.gov.ga.earthsci.layer.ui;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.layers.Layer;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.inject.Inject;
@@ -36,6 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.dispatch.IDispatchHandler;
+import au.gov.ga.earthsci.layer.IPersistentLayer;
+import au.gov.ga.earthsci.layer.LegacyLayerHelper;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.tree.LayerNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
@@ -77,8 +77,9 @@ public class LayerTreeNodeDispatchHandler implements IDispatchHandler
 		{
 			Layer layer = (Layer) object;
 			LayerNode layerNode = new LayerNode();
-			layerNode.setLayer(layer);
-			layerNode.getLayer().setEnabled(true);
+			IPersistentLayer persistentLayer = LegacyLayerHelper.wrap(layer);
+			layerNode.setLayer(persistentLayer);
+			layerNode.setEnabled(true);
 			URL url = (URL) layer.getValue(AVKeyMore.CONTEXT_URL);
 			if (url == null)
 			{
@@ -88,7 +89,7 @@ public class LayerTreeNodeDispatchHandler implements IDispatchHandler
 					url = (URL) params.getValue(AVKeyMore.CONTEXT_URL);
 				}
 			}
-			if (url != null)
+			/*if (url != null)
 			{
 				try
 				{
@@ -99,7 +100,7 @@ public class LayerTreeNodeDispatchHandler implements IDispatchHandler
 					logger.error("Error converting layer URL to URI", e); //$NON-NLS-1$
 				}
 			}
-			else
+			else*/
 			{
 				logger.warn("Dispatched Layer object doesn't contain a URL for persistence"); //$NON-NLS-1$
 			}
@@ -157,7 +158,8 @@ public class LayerTreeNodeDispatchHandler implements IDispatchHandler
 		{
 			return node1 == node2;
 		}
-		if (!urisMatch(node1.getURI(), node2.getURI()))
+		//if (!urisMatch(node1.getURI(), node2.getURI()))
+		if (true)
 		{
 			return false;
 		}
@@ -175,12 +177,12 @@ public class LayerTreeNodeDispatchHandler implements IDispatchHandler
 		return true;
 	}
 
-	private boolean urisMatch(URI uri1, URI uri2)
+	private boolean objectsMatch(Object o1, Object o2)
 	{
-		if (uri1 == null || uri2 == null)
+		if (o1 == null || o2 == null)
 		{
-			return uri1 == uri2;
+			return o1 == o2;
 		}
-		return uri1.equals(uri2);
+		return o1.equals(o2);
 	}
 }

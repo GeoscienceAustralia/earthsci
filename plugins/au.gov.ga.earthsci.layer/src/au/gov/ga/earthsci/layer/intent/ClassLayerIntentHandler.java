@@ -19,6 +19,7 @@ import gov.nasa.worldwind.layers.Layer;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentHandler;
 import au.gov.ga.earthsci.intent.Intent;
+import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
  * {@link IIntentHandler} that handles class:// layer URIs.
@@ -36,6 +37,7 @@ public class ClassLayerIntentHandler implements IIntentHandler
 			@SuppressWarnings("unchecked")
 			Class<? extends Layer> c = (Class<? extends Layer>) Class.forName(className);
 			Layer layer = c.newInstance();
+			layer.setValue(AVKeyMore.CONTEXT_URL, intent.getURL());
 			callback.completed(layer, intent);
 		}
 		catch (Exception e)

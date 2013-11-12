@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer;
+package au.gov.ga.earthsci.layer.elevation;
 
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.globes.ElevationModel;
@@ -70,7 +70,7 @@ public class ElevationModelLayer extends AbstractLayer implements IElevationMode
 	@Override
 	public void setName(String name)
 	{
-		elevationModel.setName(name);
+		elevationModel.setValue(AVKey.DISPLAY_NAME, name);
 	}
 
 	private static String getElevationModelName(ElevationModel elevationModel)

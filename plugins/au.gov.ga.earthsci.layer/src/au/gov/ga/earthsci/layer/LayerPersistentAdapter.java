@@ -20,64 +20,84 @@ import gov.nasa.worldwind.render.DrawContext;
 
 import java.net.URI;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import au.gov.ga.earthsci.common.persistence.IPersistentAdapter;
 import au.gov.ga.earthsci.common.util.Util;
+import au.gov.ga.earthsci.core.model.IModelStatus;
+import au.gov.ga.earthsci.core.model.ModelStatus;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
+import au.gov.ga.earthsci.layer.wrappers.ILayerWrapper;
 
 /**
- * {@link IPersistentAdapter} implementation for {@link ILayer} instances. Calls
- * the {@link ILayer#load} and {@link ILayer#save} methods to load/save the XML
- * to the persistent element.
+ * {@link IPersistentAdapter} implementation for {@link IPersistentLayer}
+ * instances. Calls the {@link IPersistentLayer#load} and
+ * {@link IPersistentLayer#save} methods to load/save the XML to the persistent
+ * element.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerPersistentAdapter implements IPersistentAdapter<ILayer>
+public class LayerPersistentAdapter implements IPersistentAdapter<IPersistentLayer>
 {
 	private static final Logger logger = LoggerFactory.getLogger(LayerPersistentAdapter.class);
 	private final static String ID_ATTRIBUTE = "id"; //$NON-NLS-1$
+	private final static String BUNDLE_ATTRIBUTE = "bundle"; //$NON-NLS-1$
 	private final static String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
 	@Override
-	public void toXML(ILayer layer, Element element, URI context)
+	public void toXML(IPersistentLayer layer, Element element, URI context)
 	{
-		String id, className;
+		String id, bundleName, className;
 		if (layer instanceof MissingLayer)
 		{
 			MissingLayer missing = (MissingLayer) layer;
 			id = missing.id;
+			bundleName = missing.bundleName;
 			className = missing.className;
 		}
 		else
 		{
 			id = ExtensionManager.getInstance().getIdForLayerOrWrapper(layer);
+			bundleName = FrameworkUtil.getBundle(layer.getClass()).getSymbolicName();
 			className = layer.getClass().getName();
 		}
 		if (!Util.isEmpty(id))
 		{
 			element.setAttribute(ID_ATTRIBUTE, id);
 		}
-		else if (!Util.isEmpty(className))
+		else if (!Util.isEmpty(bundleName) && !Util.isEmpty(className))
 		{
+			element.setAttribute(BUNDLE_ATTRIBUTE, bundleName);
 			element.setAttribute(CLASS_ATTRIBUTE, className);
 		}
 		layer.save(element);
 	}
 
 	@Override
-	public ILayer fromXML(Element element, URI context)
+	public IPersistentLayer fromXML(Element element, URI context)
 	{
 		String id = element.getAttribute(ID_ATTRIBUTE);
 		String className = element.getAttribute(CLASS_ATTRIBUTE);
+		String bundleName = element.getAttribute(BUNDLE_ATTRIBUTE);
 		try
 		{
-			Class<? extends ILayer> c;
+			Class<? extends IPersistentLayer> c;
 			if (!Util.isEmpty(id))
 			{
+				String replacement = ExtensionManager.getInstance().getReplacementIdFor(id);
+				if (!Util.isEmpty(replacement))
+				{
+					id = replacement;
+				}
 				c = ExtensionManager.getInstance().getLayerOrWrapperForId(id);
 				if (c == null)
 				{
@@ -86,11 +106,13 @@ public class LayerPersistentAdapter implements IPersistentAdapter<ILayer>
 			}
 			else if (!Util.isEmpty(className))
 			{
-				c = ExtensionManager.getInstance().getReplacementFor(className);
+				c = ExtensionManager.getInstance().getReplacementClassFor(className);
 				if (c == null)
 				{
-					@SuppressWarnings({ "rawtypes", "unchecked" })
-					Class<? extends ILayer> cl = (Class) Class.forName(className);
+					Bundle bundle = Platform.getBundle(bundleName);
+					@SuppressWarnings({ "unchecked" })
+					Class<? extends IPersistentLayer> cl =
+							(Class<? extends IPersistentLayer>) bundle.loadClass(className);
 					c = cl;
 				}
 			}
@@ -98,7 +120,7 @@ public class LayerPersistentAdapter implements IPersistentAdapter<ILayer>
 			{
 				throw new IllegalArgumentException("No layer id or class specified"); //$NON-NLS-1$
 			}
-			ILayer layer = c.newInstance();
+			IPersistentLayer layer = c.newInstance();
 			layer.load(element);
 
 			//check if a wrapped layer should actually be wrapped by a different wrapper
@@ -117,25 +139,32 @@ public class LayerPersistentAdapter implements IPersistentAdapter<ILayer>
 		catch (Exception e)
 		{
 			logger.error("Error creating Layer from XML", e); //$NON-NLS-1$
-			return new MissingLayer(id, className, element);
+			return new MissingLayer(id, bundleName, className, element);
 		}
 	}
 
 	/**
-	 * Basic {@link ILayer} implementation used for storage of the layer XML
-	 * when the layer class cannot be found.
+	 * Basic {@link IPersistentLayer} implementation used for storage of the
+	 * layer XML when the layer class cannot be found.
 	 */
-	private static class MissingLayer extends AbstractLayer implements ILayer
+	private static class MissingLayer extends AbstractLayer implements IPersistentLayer
 	{
 		private final String id;
+		private final String bundleName;
 		private final String className;
-		private final NodeList children;
+		private final Element parent;
+		private IModelStatus status;
 
-		public MissingLayer(String id, String className, Element parent)
+		public MissingLayer(String id, String bundleName, String className, Element parent)
 		{
 			this.id = id;
+			this.bundleName = bundleName;
 			this.className = className;
-			this.children = parent.getChildNodes();
+			this.parent = parent;
+
+			String message =
+					!Util.isEmpty(id) ? "Layer not found with id: " + id : "Layer class not found: " + className; //$NON-NLS-1$ //$NON-NLS-2$
+			this.status = ModelStatus.error(message, null);
 		}
 
 		@Override
@@ -146,12 +175,24 @@ public class LayerPersistentAdapter implements IPersistentAdapter<ILayer>
 		@Override
 		public void save(Element parent)
 		{
+			NodeList children = this.parent.getChildNodes();
 			for (int i = 0; i < children.getLength(); i++)
 			{
 				Node child = children.item(i);
 				Node imported = parent.getOwnerDocument().importNode(child, true);
 				parent.appendChild(imported);
 			}
+			NamedNodeMap attributes = this.parent.getAttributes();
+			for (int i = 0; i < attributes.getLength(); i++)
+			{
+				Node attribute = attributes.item(i);
+				parent.setAttribute(attribute.getNodeName(), attribute.getNodeValue());
+			}
+		}
+
+		@Override
+		public void initialize(ILayerNode node, IEclipseContext context)
+		{
 		}
 
 		@Override
@@ -163,6 +204,12 @@ public class LayerPersistentAdapter implements IPersistentAdapter<ILayer>
 		@Override
 		protected void doRender(DrawContext dc)
 		{
+		}
+
+		@Override
+		public String getName()
+		{
+			return status.getMessage();
 		}
 	}
 }

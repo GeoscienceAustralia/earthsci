@@ -30,6 +30,8 @@ import javax.inject.Singleton;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
 
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
+
 /**
  * Default implementation of the {@link ICatalogModel} interface
  * 
@@ -163,9 +165,8 @@ public class CatalogModel implements ICatalogModel
 		}
 
 		@Override
-		public URI getLayerURI()
+		public void loadLayer(ILayerNode node, IEclipseContext context)
 		{
-			return null;
 		}
 
 		@Override

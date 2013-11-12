@@ -17,12 +17,13 @@ package au.gov.ga.earthsci.layer.wrappers;
 
 import gov.nasa.worldwind.layers.Layer;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import au.gov.ga.earthsci.layer.ILayerWrapper;
-import au.gov.ga.earthsci.layer.LayerDelegate;
+import au.gov.ga.earthsci.layer.delegator.LayerDelegator;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 
 /**
  * {@link ILayerWrapper} that wraps a particular subclass/implementation of
@@ -30,17 +31,50 @@ import au.gov.ga.earthsci.layer.LayerDelegate;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class ClassLayerWrapper<L extends Layer> extends LayerDelegate implements ILayerWrapper
+public abstract class ClassLayerWrapper<L extends Layer> extends LayerDelegator implements ILayerWrapper
 {
 	private static final Logger logger = LoggerFactory.getLogger(ClassLayerWrapper.class);
 	private final static String LAYER_CLASS_ATTRIBUTE = "layerClass"; //$NON-NLS-1$
 
-	protected abstract Class<L> getLayerClass();
+	/**
+	 * @return Type of the layer instance that this class wraps
+	 */
+	protected abstract Class<L> getWrappedLayerClass();
 
+	/**
+	 * Load the properties for the given layer from XML. The XML element
+	 * provided is the same element provided to the
+	 * {@link #save(Layer, Element)} method.
+	 * 
+	 * @param layer
+	 *            Layer to set loaded properties on
+	 * @param element
+	 *            XML element to load properties from
+	 */
 	protected abstract void load(L layer, Element element);
 
+	/**
+	 * Save the properties of the given layer to XML.
+	 * 
+	 * @param layer
+	 *            Layer to save (same as {@link #getLayer()})
+	 * @param element
+	 *            XML element to save layer properties to
+	 */
 	protected abstract void save(L layer, Element element);
 
+	/**
+	 * Create a new instance of the layer wrapped by this class. Default
+	 * implementation calls <code>layerClass.newInstance()</code>.
+	 * 
+	 * @param element
+	 *            XML element being loaded from
+	 * @param layerClass
+	 *            Class of the layer required to be instantiated
+	 * @return New instance of the layer wrapped by this class
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
 	protected L createLayer(Element element, Class<? extends L> layerClass) throws InstantiationException,
 			IllegalAccessException
 	{
@@ -55,9 +89,9 @@ public abstract class ClassLayerWrapper<L extends Layer> extends LayerDelegate i
 			@SuppressWarnings("unchecked")
 			Class<? extends L> layerClass =
 					(Class<? extends L>) Class.forName(parent.getAttribute(LAYER_CLASS_ATTRIBUTE));
-			if (!getLayerClass().isAssignableFrom(layerClass))
+			if (!getWrappedLayerClass().isAssignableFrom(layerClass))
 			{
-				layerClass = getLayerClass();
+				layerClass = getWrappedLayerClass();
 			}
 			L layer = createLayer(parent, layerClass);
 			setLayer(layer);
@@ -78,6 +112,11 @@ public abstract class ClassLayerWrapper<L extends Layer> extends LayerDelegate i
 	}
 
 	@Override
+	public void initialize(ILayerNode node, IEclipseContext context)
+	{
+	}
+
+	@Override
 	public boolean isLoading()
 	{
 		return false;
@@ -89,8 +128,8 @@ public abstract class ClassLayerWrapper<L extends Layer> extends LayerDelegate i
 		return getLayerClass().isAssignableFrom(layer.getClass());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public L getLayer()
 	{
 		return (L) super.getLayer();

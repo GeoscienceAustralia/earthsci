@@ -22,8 +22,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 
 /**
  * {@link ICatalogTreeNode} representing layers from a WMS server.
@@ -97,16 +101,14 @@ public class WMSLayerCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 	}
 
 	@Override
-	public URI getLayerURI()
+	public void loadLayer(ILayerNode node, IEclipseContext context) throws Exception
 	{
-		try
-		{
-			return WMSHelper.generateLayerURI(capabilitiesURI, layer, style);
-		}
-		catch (URISyntaxException e)
-		{
-			return null;
-		}
+		IntentLayerLoader.load(generateLayerURI(), node, context);
+	}
+
+	public URI generateLayerURI() throws URISyntaxException
+	{
+		return WMSHelper.generateLayerURI(capabilitiesURI, layer, style);
 	}
 
 	@Override

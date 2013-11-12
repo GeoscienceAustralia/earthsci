@@ -40,6 +40,7 @@ import au.gov.ga.earthsci.intent.AbstractIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentFilter;
 import au.gov.ga.earthsci.intent.IntentManager;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 
 /**
  * Catalog tree node that represents a directory in a local file system.
@@ -81,9 +82,8 @@ public class DirectoryCatalogTreeNode extends AbstractCatalogTreeNode implements
 	}
 
 	@Override
-	public URI getLayerURI()
+	public void loadLayer(ILayerNode node, IEclipseContext context) throws Exception
 	{
-		return null;
 	}
 
 	@Override

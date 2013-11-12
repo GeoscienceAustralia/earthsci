@@ -17,20 +17,15 @@ package au.gov.ga.earthsci.bookmark.properties.layer;
 
 import gov.nasa.worldwind.layers.Layer;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyCreator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyExporter;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.common.util.UTF8URLEncoder;
 import au.gov.ga.earthsci.common.util.Validate;
 import au.gov.ga.earthsci.common.util.XmlUtil;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
@@ -47,14 +42,12 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 {
 	private static final String OPACITY_ATTRIBUTE_NAME = "opacity"; //$NON-NLS-1$
 	private static final String OPACITY_ATTRIBUTE_XPATH = "@" + OPACITY_ATTRIBUTE_NAME; //$NON-NLS-1$
-	private static final String URI_ATTRIBUTE_NAME = "uri"; //$NON-NLS-1$
-	private static final String URI_ATTRIBUTE_XPATH = "@" + URI_ATTRIBUTE_NAME; //$NON-NLS-1$
+	private static final String ID_ATTRIBUTE_NAME = "id"; //$NON-NLS-1$
+	private static final String ID_ATTRIBUTE_XPATH = "@" + ID_ATTRIBUTE_NAME; //$NON-NLS-1$
 	private static final String LAYER_ELEMENT_NAME = "layer"; //$NON-NLS-1$
 	private static final String LAYER_XPATH = "./layerState/layer"; //$NON-NLS-1$
 
 	private static final String INVALID_TYPE_MSG = "LayersPropertyPersister can only be used for layers properties"; //$NON-NLS-1$
-
-	private static Logger logger = LoggerFactory.getLogger(LayersPropertyPersister.class);
 
 	@Inject
 	private ITreeModel currentLayersModel;
@@ -77,7 +70,7 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 				continue;
 			}
 
-			result.addLayer(((ILayerTreeNode) l).getURI(), l.getOpacity());
+			result.addLayer(((ILayerTreeNode) l).getId(), l.getOpacity());
 		}
 
 		return result;
@@ -93,18 +86,13 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 		for (Element state : XmlUtil.getElements(propertyElement, LAYER_XPATH, null))
 		{
 
-			URI uri = null;
-			try
-			{
-				uri = new URI(UTF8URLEncoder.decode(XMLUtil.getText(state, URI_ATTRIBUTE_XPATH, ""))); //$NON-NLS-1$
-			}
-			catch (URISyntaxException e)
-			{
-				logger.error("Layer URI {} is not a valid URI", XMLUtil.getText(state, URI_ATTRIBUTE_XPATH, "")); //$NON-NLS-1$ //$NON-NLS-2$
-			}
+			String id = XMLUtil.getText(state, ID_ATTRIBUTE_XPATH);
 			Double opacity = XMLUtil.getDouble(state, OPACITY_ATTRIBUTE_XPATH, 1.0d);
 
-			result.addLayer(uri, opacity);
+			if (id != null)
+			{
+				result.addLayer(id, opacity);
+			}
 		}
 
 		return result;
@@ -121,10 +109,10 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 		Validate.notNull(parent, "A property element is required"); //$NON-NLS-1$
 
 		Element layerStateElement = XMLUtil.appendElement(parent, "layerState"); //$NON-NLS-1$
-		for (Entry<URI, Double> e : ((LayersProperty) property).getLayerState().entrySet())
+		for (Entry<String, Double> e : ((LayersProperty) property).getLayerState().entrySet())
 		{
 			Element state = XMLUtil.appendElement(layerStateElement, LAYER_ELEMENT_NAME);
-			state.setAttribute(URI_ATTRIBUTE_NAME, UTF8URLEncoder.encode(e.getKey().toString()));
+			state.setAttribute(ID_ATTRIBUTE_NAME, e.getKey());
 			state.setAttribute(OPACITY_ATTRIBUTE_NAME, Double.toString(e.getValue()));
 		}
 	}

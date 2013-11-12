@@ -17,6 +17,8 @@ package au.gov.ga.earthsci.layer.intent;
 
 import gov.nasa.worldwind.layers.Layer;
 
+import java.net.URI;
+
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -31,8 +33,10 @@ import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentManager;
 import au.gov.ga.earthsci.intent.dispatch.DispatchFilter;
 import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
+import au.gov.ga.earthsci.layer.IPersistentLayer;
+import au.gov.ga.earthsci.layer.LegacyLayerHelper;
 import au.gov.ga.earthsci.layer.Messages;
-import au.gov.ga.earthsci.layer.tree.LayerNode;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.notification.NotificationCategory;
 import au.gov.ga.earthsci.notification.NotificationManager;
 
@@ -44,9 +48,21 @@ import au.gov.ga.earthsci.notification.NotificationManager;
  */
 public class IntentLayerLoader
 {
+	public final static String LAYER_URI_KEY = "au.gov.ga.earthsci.layer.intent.uri"; //$NON-NLS-1$
 	private final static Logger logger = LoggerFactory.getLogger(IntentLayerLoader.class);
 
-	public static void load(LayerNode layerNode, IEclipseContext context)
+	/**
+	 * Start an Intent to load a layer from a URI, and set the loaded layer on
+	 * the given layer node.
+	 * 
+	 * @param uri
+	 *            URI to load the layer resource from
+	 * @param layerNode
+	 *            Layer node to set the loaded layer on
+	 * @param context
+	 *            Eclipse context
+	 */
+	public static void load(URI uri, ILayerNode layerNode, IEclipseContext context)
 	{
 		if (layerNode.isLayerSet())
 		{
@@ -54,22 +70,29 @@ public class IntentLayerLoader
 		}
 
 		LayerLoadIntent intent = new LayerLoadIntent(context, layerNode);
-		intent.setURI(layerNode.getURI());
+		intent.setURI(uri);
 		intent.setExpectedReturnType(Layer.class);
+		layerNode.setLoading(true);
 		IntentManager.getInstance().start(intent, callback, context);
 	}
 
+	/**
+	 * Intent callback for the intent.
+	 */
 	protected static IIntentCallback callback = new AbstractIntentCallback()
 	{
 		@Override
 		public void completed(final Object result, Intent intent)
 		{
 			final LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
+			layerIntent.layerNode.setLoading(false);
 			if (result instanceof Layer)
 			{
 				layerIntent.layerNode.setStatus(ModelStatus.ok());
-				layerIntent.layerNode.setLayer((Layer) result);
-				layerIntent.layerNode.setURI(intent.getURI());
+				Layer layer = (Layer) result;
+				layer.setValue(LAYER_URI_KEY, intent.getURI());
+				IPersistentLayer persistentLayer = LegacyLayerHelper.wrap(layer);
+				layerIntent.layerNode.setLayer(persistentLayer);
 			}
 			else if (result != null)
 			{
@@ -106,16 +129,18 @@ public class IntentLayerLoader
 		@Override
 		public void error(Exception e, Intent intent)
 		{
-			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
-			layerIntent.layerNode.setStatus(ModelStatus.error(e.getLocalizedMessage(), e));
-
-			//TODO cannot let this notification require acknowledgement during initial loading (layer unpersistence)
-			//as it causes the parts to be created incorrectly (bad parent window perhaps?)
 			String uriString = intent.getURI() != null ? UTF8URLEncoder.decode(intent.getURI().toString()) : "null"; //$NON-NLS-1$
 			String title = Messages.IntentLayerLoader_FailedLoadNotificationTitle;
 			String message =
 					Messages.IntentLayerLoader_FailedLoadNotificationDescription + uriString
 							+ ": " + e.getLocalizedMessage(); //$NON-NLS-1$
+
+			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
+			layerIntent.layerNode.setStatus(ModelStatus.error(message, e));
+			layerIntent.layerNode.setLoading(false);
+
+			//cannot let this notification require acknowledgement during initial loading (layer unpersistence)
+			//as it causes the parts to be created incorrectly (bad parent window perhaps?)
 			NotificationManager.error(title, message, NotificationCategory.FILE_IO, e);
 			logger.error(message, e);
 		}
@@ -126,22 +151,27 @@ public class IntentLayerLoader
 			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
 			Exception e = new Exception(Messages.IntentLayerLoader_LoadCanceledDescription);
 			layerIntent.layerNode.setStatus(ModelStatus.error(e.getLocalizedMessage(), e));
+			layerIntent.layerNode.setLoading(false);
 		}
 
 		@Override
 		public void aborted(Intent intent)
 		{
 			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
+			layerIntent.layerNode.setLoading(false);
 			layerIntent.layerNode.removeFromParent();
 		}
 	};
 
+	/**
+	 * Intent subclass that stores a layer node and Eclipse context.
+	 */
 	protected static class LayerLoadIntent extends Intent
 	{
 		private final IEclipseContext context;
-		private final LayerNode layerNode;
+		private final ILayerNode layerNode;
 
-		public LayerLoadIntent(IEclipseContext context, LayerNode layerNode)
+		public LayerLoadIntent(IEclipseContext context, ILayerNode layerNode)
 		{
 			this.context = context;
 			this.layerNode = layerNode;

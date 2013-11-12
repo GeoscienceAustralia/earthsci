@@ -56,7 +56,7 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 
 	private CheckboxTableViewer layerTable;
 
-	private Map<URI, Double> layerState;
+	private Map<String, Double> layerState;
 
 	@Override
 	public String getName()
@@ -78,8 +78,8 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 			return;
 		}
 
-		Map<URI, Double> filtered = new HashMap<URI, Double>();
-		for (Entry<URI, Double> entry : layerState.entrySet())
+		Map<String, Double> filtered = new HashMap<String, Double>();
+		for (Entry<String, Double> entry : layerState.entrySet())
 		{
 			if (layerTable.getChecked(entry))
 			{
@@ -208,11 +208,11 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 	{
 		if (property == null)
 		{
-			layerState = new TreeMap<URI, Double>();
+			layerState = new TreeMap<String, Double>();
 		}
 		else
 		{
-			layerState = new TreeMap<URI, Double>(((LayersProperty) property).getLayerState());
+			layerState = new TreeMap<String, Double>(((LayersProperty) property).getLayerState());
 		}
 		layerTable.setInput(layerState.entrySet());
 		layerTable.setAllChecked(true);

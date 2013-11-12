@@ -3,6 +3,10 @@ package au.gov.ga.earthsci.catalog;
 import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
+
 public class DummyCatalogNode extends AbstractCatalogTreeNode
 {
 	public DummyCatalogNode(URI nodeURI)
@@ -23,9 +27,8 @@ public class DummyCatalogNode extends AbstractCatalogTreeNode
 	}
 
 	@Override
-	public URI getLayerURI()
+	public void loadLayer(ILayerNode node, IEclipseContext context) throws Exception
 	{
-		return null;
 	}
 
 	@Override

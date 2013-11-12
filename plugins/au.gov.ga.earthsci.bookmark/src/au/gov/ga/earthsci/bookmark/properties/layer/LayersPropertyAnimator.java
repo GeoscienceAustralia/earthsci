@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import au.gov.ga.earthsci.bookmark.AbstractBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.common.math.vector.Vector2;
-import au.gov.ga.earthsci.layer.tree.LayerNode;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
@@ -34,7 +34,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  * <p/>
  * Animation semantics are as follows:
  * <ol>
- * <li>Layer matching is done solely on layer URI
+ * <li>Layer matching is done solely on layer ID
  * <li>Layers that appear in the current world model but neither the start nor
  * end property are animated between their current opacity value and 0.0 (off)
  * <li>Layers that appear in the start and/or end properties but NOT in the
@@ -102,12 +102,12 @@ public class LayersPropertyAnimator extends AbstractBookmarkPropertyAnimator
 
 		for (Layer l : model.getLayers())
 		{
-			if (!(l instanceof LayerNode))
+			if (!(l instanceof ILayerNode))
 			{
 				continue;
 			}
 
-			LayerNode layerNode = (LayerNode) l;
+			ILayerNode layerNode = (ILayerNode) l;
 
 			animationVectors.put(layerNode, new Vector2(getStartOpacity(layerNode), getEndOpacity(layerNode)));
 		}
@@ -127,7 +127,7 @@ public class LayersPropertyAnimator extends AbstractBookmarkPropertyAnimator
 		}
 	}
 
-	private double getWorldOpacity(LayerNode l)
+	private double getWorldOpacity(ILayerNode l)
 	{
 		if (l.isEnabled())
 		{
@@ -136,27 +136,27 @@ public class LayersPropertyAnimator extends AbstractBookmarkPropertyAnimator
 		return 0.0;
 	}
 
-	private Double getStartOpacity(LayerNode l)
+	private Double getStartOpacity(ILayerNode l)
 	{
 		if (isInStartProperty(l))
 		{
-			return getStartProperty().getLayerState().get(l.getURI());
+			return getStartProperty().getLayerState().get(l.getId());
 		}
 		return getWorldOpacity(l);
 	}
 
-	private Double getEndOpacity(LayerNode l)
+	private Double getEndOpacity(ILayerNode l)
 	{
 		if (isInEndProperty(l))
 		{
-			return getEndProperty().getLayerState().get(l.getURI());
+			return getEndProperty().getLayerState().get(l.getId());
 		}
 		return 0.0;
 	}
 
-	private boolean isInStartProperty(LayerNode l)
+	private boolean isInStartProperty(ILayerNode l)
 	{
-		return getStartProperty().getLayerState().containsKey(l.getURI());
+		return getStartProperty().getLayerState().containsKey(l.getId());
 	}
 
 	private LayersProperty getStartProperty()
@@ -164,9 +164,9 @@ public class LayersPropertyAnimator extends AbstractBookmarkPropertyAnimator
 		return (LayersProperty) getStart();
 	}
 
-	private boolean isInEndProperty(LayerNode l)
+	private boolean isInEndProperty(ILayerNode l)
 	{
-		return getEndProperty().getLayerState().containsKey(l.getURI());
+		return getEndProperty().getLayerState().containsKey(l.getId());
 	}
 
 	private LayersProperty getEndProperty()

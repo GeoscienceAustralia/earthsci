@@ -29,7 +29,9 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.FileTransfer;
 
+import au.gov.ga.earthsci.layer.IPersistentLayer;
 import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.tree.LayerNode;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
@@ -69,7 +71,7 @@ public class PasteHandler
 				viewer.add(target, node);
 				viewer.reveal(node);
 
-				loadAllLayers(node, context);
+				initializeAllLayers(node, context);
 			}
 		}
 
@@ -84,27 +86,27 @@ public class PasteHandler
 					LayerNode node = new LayerNode();
 					node.setName(file.getName());
 					node.setEnabled(true);
-					node.setURI(file.toURI());
 					target.addChild(node);
 					viewer.add(target, node);
 					viewer.reveal(node);
 
-					loadAllLayers(node, context);
+					IntentLayerLoader.load(file.toURI(), node, context);
 				}
 			}
 		}
 	}
 
-	public static void loadAllLayers(ILayerTreeNode node, IEclipseContext context)
+	public static void initializeAllLayers(ILayerTreeNode node, IEclipseContext context)
 	{
-		if (node instanceof LayerNode)
+		if (node instanceof ILayerNode)
 		{
-			final LayerNode layerNode = (LayerNode) node;
-			IntentLayerLoader.load(layerNode, context);
+			final ILayerNode layerNode = (ILayerNode) node;
+			IPersistentLayer layer = layerNode.getLayer();
+			layer.initialize(layerNode, context);
 		}
 		for (ILayerTreeNode child : node.getChildren())
 		{
-			loadAllLayers(child, context);
+			initializeAllLayers(child, context);
 		}
 	}
 

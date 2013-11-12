@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer;
+package au.gov.ga.earthsci.layer.delegator;
 
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.event.Message;
-import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.render.DrawContext;
 
@@ -39,8 +38,8 @@ import au.gov.ga.earthsci.common.util.AbstractPropertyChangeBean;
 import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
 
 /**
- * {@link Layer} implementation that delegates methods to another {@link Layer}
- * instance.
+ * Abstract {@link Layer} implementation that delegates methods to another
+ * {@link Layer} instance.
  * <p/>
  * Also implements {@link IPropertyChangeBean}. All setters will fire a property
  * change. Any changed properties (ie opacity, name, etc) will be recorded, and
@@ -48,37 +47,54 @@ import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerDelegate
+public abstract class AbstractLayerDelegator<L extends Layer> extends AbstractPropertyChangeBean implements
+		ILayerDelegator<L>
 {
-	private static final Logger logger = LoggerFactory.getLogger(LayerDelegate.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractLayerDelegator.class);
 
 	private final PropertyChangeListener propertyChangeListener = new PropertyChangeListener()
 	{
 		@Override
 		public void propertyChange(PropertyChangeEvent evt)
 		{
-			firePropertyChange(new PropertyChangeEvent(LayerDelegate.this, evt.getPropertyName(), evt.getOldValue(),
-					evt.getNewValue()));
+			firePropertyChange(new PropertyChangeEvent(AbstractLayerDelegator.this, evt.getPropertyName(),
+					evt.getOldValue(), evt.getNewValue()));
 		}
 	};
 
-	protected Layer layer = new DummyLayer();
+	private L layer = createDummyLayer();
 	private Set<String> propertiesChanged = new HashSet<String>();
-	private boolean copyingProperties = false;
+	private boolean propertiesChangedTracking = true;
 	private final Object layerSemaphore = new Object();
 
+	/**
+	 * @return A dummy layer that does nothing; used for storage of property
+	 *         values before the real layer is set on this delegator
+	 */
+	protected abstract L createDummyLayer();
+
+	/**
+	 * Is the given layer an instance of a dummy layer that would be created by
+	 * the {@link #createDummyLayer()} method.
+	 * 
+	 * @param layer
+	 *            Layer to test
+	 * @return True if the given layer is a dummy layer
+	 */
+	protected abstract boolean isDummyLayer(L layer);
+
 	@Override
-	public Layer getLayer()
+	public L getLayer()
 	{
 		return layer;
 	}
 
 	@Override
-	public void setLayer(Layer layer)
+	public void setLayer(L layer)
 	{
 		if (layer == null)
 		{
-			throw new NullPointerException("Layer is null"); //$NON-NLS-1$
+			throw new NullPointerException("Layer delegate is null"); //$NON-NLS-1$
 		}
 		if (layer == this)
 		{
@@ -98,13 +114,28 @@ public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerD
 	}
 
 	@Override
+	public L getGrandLayer()
+	{
+		L layer = getLayer();
+		if (layer instanceof ILayerDelegator)
+		{
+			ILayerDelegator<?> delegator = (ILayerDelegator<?>) layer;
+			if (getLayerClass().isAssignableFrom(delegator.getLayerClass()))
+			{
+				return getLayerClass().cast(delegator.getGrandLayer());
+			}
+		}
+		return layer;
+	}
+
+	@Override
 	public boolean isLayerSet()
 	{
-		if (layer instanceof ILayerDelegate)
+		if (layer instanceof ILayerDelegator)
 		{
-			return ((ILayerDelegate) layer).isLayerSet();
+			return ((ILayerDelegator<?>) layer).isLayerSet();
 		}
-		return !(layer instanceof DummyLayer);
+		return !isDummyLayer(layer);
 	}
 
 	/**
@@ -125,7 +156,7 @@ public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerD
 
 		synchronized (propertiesChanged)
 		{
-			copyingProperties = true;
+			setPropertiesChangedTrackingEnabled(false);
 			for (String property : propertiesChanged)
 			{
 				try
@@ -146,7 +177,7 @@ public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerD
 					logger.error("Error copying value between layers for property: " + property, e); //$NON-NLS-1$
 				}
 			}
-			copyingProperties = false;
+			setPropertiesChangedTrackingEnabled(true);
 		}
 	}
 
@@ -154,23 +185,26 @@ public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerD
 	public void firePropertyChange(PropertyChangeEvent propertyChangeEvent)
 	{
 		super.firePropertyChange(propertyChangeEvent);
-		synchronized (propertiesChanged)
-		{
-			String propertyName = propertyChangeEvent.getPropertyName();
-			if (!copyingProperties && !"layer".equals(propertyName)) //$NON-NLS-1$
-			{
-				propertiesChanged.add(propertyName);
-			}
-		}
+		addChangedProperty(propertyChangeEvent.getPropertyName());
 	}
 
 	@Override
 	public void firePropertyChange(String propertyName, Object oldValue, Object newValue)
 	{
 		super.firePropertyChange(propertyName, oldValue, newValue);
+		addChangedProperty(propertyName);
+	}
+
+	public void setPropertiesChangedTrackingEnabled(boolean enabled)
+	{
+		propertiesChangedTracking = enabled;
+	}
+
+	private void addChangedProperty(String propertyName)
+	{
 		synchronized (propertiesChanged)
 		{
-			if (!copyingProperties && !"layer".equals(propertyName)) //$NON-NLS-1$
+			if (propertiesChangedTracking && !"layer".equals(propertyName)) //$NON-NLS-1$
 			{
 				propertiesChanged.add(propertyName);
 			}
@@ -441,17 +475,5 @@ public class LayerDelegate extends AbstractPropertyChangeBean implements ILayerD
 	public Double getMinEffectiveAltitude(Double radius)
 	{
 		return layer.getMinEffectiveAltitude(radius);
-	}
-
-	/**
-	 * Layer that renders nothing, used for the storage of properties while a
-	 * real layer is being loaded.
-	 */
-	private static class DummyLayer extends AbstractLayer
-	{
-		@Override
-		protected void doRender(DrawContext dc)
-		{
-		}
 	}
 }

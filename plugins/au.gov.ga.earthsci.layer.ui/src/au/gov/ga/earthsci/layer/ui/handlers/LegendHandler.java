@@ -52,7 +52,7 @@ public class LegendHandler
 		if (layerNode.getLegendURL() != null)
 		{
 			String tag = layerNode.getLegendURL().toString();
-			tag += "|" + layerNode.getURI(); //$NON-NLS-1$
+			tag += "|" + layerNode.getId(); //$NON-NLS-1$
 			String label = Messages.bind(Messages.LegendHandler_PartLabel, layerNode.getLabelOrName());
 
 			MPart part = LegendPart.showPart(partService, modelService, window, tag, label);

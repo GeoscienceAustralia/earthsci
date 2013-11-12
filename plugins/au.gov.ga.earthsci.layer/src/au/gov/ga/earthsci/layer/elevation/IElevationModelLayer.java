@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Geoscience Australia
+ * Copyright 2012 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer;
+package au.gov.ga.earthsci.layer.elevation;
 
+import au.gov.ga.earthsci.layer.LayerFactory;
+import gov.nasa.worldwind.globes.ElevationModel;
 import gov.nasa.worldwind.layers.Layer;
 
 /**
- * {@link Layer} that delegates all methods to another {@link Layer} instance,
- * set by the {@link #setLayer(Layer)} method.
+ * Represents a {@link Layer} that wraps an elevation model. A layer of this
+ * type can be returned by the {@link LayerFactory} when a source representing
+ * an elevation model is passed to the factory.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface ILayerDelegate extends Layer
+public interface IElevationModelLayer extends Layer
 {
 	/**
-	 * @return The layer that this object delegates to
+	 * @return The elevation model wrapped by this object
 	 */
-	Layer getLayer();
-
-	/**
-	 * Set the layer to delegate to
-	 * 
-	 * @param layer
-	 */
-	void setLayer(Layer layer);
-
-	/**
-	 * @return Has the layer been set on this delegate? If false,
-	 *         {@link #getLayer()} will return a dummy layer.
-	 */
-	boolean isLayerSet();
+	ElevationModel getElevationModel();
 }

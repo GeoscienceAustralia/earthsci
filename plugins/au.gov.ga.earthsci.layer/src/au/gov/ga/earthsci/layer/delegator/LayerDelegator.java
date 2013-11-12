@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
+ * Copyright 2013 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.layer;
+package au.gov.ga.earthsci.layer.delegator;
 
-import gov.nasa.worldwind.globes.ElevationModel;
+import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.layers.Layer;
+import gov.nasa.worldwind.render.DrawContext;
 
 /**
- * Represents a {@link Layer} that wraps an elevation model. A layer of this
- * type can be returned by the {@link LayerFactory} when a source representing
- * an elevation model is passed to the factory.
+ * Basic implementation of the {@link ILayerDelegator} interface.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IElevationModelLayer extends Layer
+public class LayerDelegator extends AbstractLayerDelegator<Layer>
 {
+	@Override
+	public Class<Layer> getLayerClass()
+	{
+		return Layer.class;
+	}
+
+	@Override
+	protected Layer createDummyLayer()
+	{
+		return new DummyLayer();
+	}
+
+	@Override
+	protected boolean isDummyLayer(Layer layer)
+	{
+		return layer instanceof DummyLayer;
+	}
+
 	/**
-	 * @return The elevation model wrapped by this object
+	 * Dummy layer for returning from the
+	 * {@link AbstractLayerDelegator#createDummyLayer()} method.
 	 */
-	ElevationModel getElevationModel();
+	private static class DummyLayer extends AbstractLayer
+	{
+		@Override
+		protected void doRender(DrawContext dc)
+		{
+		}
+	}
 }

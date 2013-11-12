@@ -24,6 +24,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.catalog.messages"; //$NON-NLS-1$
+	public static String CatalogLayerHelper_LoadLayerError;
 	public static String IntentCatalogLoader_CatalogLoadCanceledMessage;
 	public static String IntentCatalogLoader_FailedToLoadCatalogMessage;
 	public static String IntentCatalogLoader_FailedToLoadCatalogTitle;

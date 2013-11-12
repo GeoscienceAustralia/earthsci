@@ -38,11 +38,6 @@ public class LayerNodeDescriber
 		sb.append("</h1>"); //$NON-NLS-1$
 		appendProperty(sb, Messages.LayerNodeDescriber_Name, node.getName());
 		appendProperty(sb, Messages.LayerNodeDescriber_Label, node.getLabel());
-		if (node instanceof LayerNode)
-		{
-			LayerNode layer = (LayerNode) node;
-			appendProperty(sb, "URI", layer.getURI()); //$NON-NLS-1$
-		}
 		if (node.getLegendURL() != null)
 		{
 			String url = node.getLegendURL().toString();

@@ -3,9 +3,9 @@ package au.gov.ga.earthsci.catalog.ui;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Before;
@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
@@ -21,7 +22,6 @@ import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-@SuppressWarnings("unchecked")
 public class CatalogBrowserControllerTest
 {
 
@@ -175,7 +175,6 @@ public class CatalogBrowserControllerTest
 
 		boolean removable;
 		boolean layerNode;
-		URI layerURI;
 		String name;
 
 		@Override
@@ -191,9 +190,8 @@ public class CatalogBrowserControllerTest
 		}
 
 		@Override
-		public URI getLayerURI()
+		public void loadLayer(ILayerNode node, IEclipseContext context)
 		{
-			return layerURI;
 		}
 
 		@Override

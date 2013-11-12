@@ -26,12 +26,22 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import au.gov.ga.earthsci.layer.elevation.ElevationModelLayer;
+import au.gov.ga.earthsci.layer.elevation.IElevationModelLayer;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
 /**
  * Factory for creating {@link Layer}s from XML.
+ * <p/>
+ * Can create elevation models (wraps them in an {@link IElevationModelLayer}).
+ * <p/>
+ * Stores the XML element from which the layer was loaded as part of the layer
+ * with the {@link Layer#setValue(String, Object)} method, using
+ * {@link #LAYER_ELEMENT} as the key.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -45,15 +55,18 @@ public class LayerFactory extends au.gov.ga.earthsci.worldwind.common.layers.Lay
 	protected Object doCreateFromElement(Element domElement, AVList params) throws Exception
 	{
 		//first set the legend url in the params
-		try
+		if (params != null)
 		{
-			URL context = (URL) params.getValue(AVKeyMore.CONTEXT_URL);
-			URL legend = XMLUtil.getURL(domElement, "Legend", context); //$NON-NLS-1$
-			params.setValue(AVKeyMore.LEGEND_URL, legend);
-		}
-		catch (Exception e)
-		{
-			logger.error("Error setting legend url", e); //$NON-NLS-1$
+			try
+			{
+				URL context = (URL) params.getValue(AVKeyMore.CONTEXT_URL);
+				URL legend = XMLUtil.getURL(domElement, "Legend", context); //$NON-NLS-1$
+				params.setValue(AVKeyMore.LEGEND_URL, legend);
+			}
+			catch (Exception e)
+			{
+				logger.error("Error setting legend url", e); //$NON-NLS-1$
+			}
 		}
 
 		Exception exception = null;
@@ -62,10 +75,6 @@ public class LayerFactory extends au.gov.ga.earthsci.worldwind.common.layers.Lay
 			Object o = super.doCreateFromElement(domElement, params);
 			if (o != null)
 			{
-				if (o instanceof Layer)
-				{
-					setElementAndUrlOnLayer((Layer) o, domElement, params);
-				}
 				return o;
 			}
 		}
@@ -114,8 +123,28 @@ public class LayerFactory extends au.gov.ga.earthsci.worldwind.common.layers.Lay
 
 	private void setElementAndUrlOnLayer(Layer layer, Element element, AVList params)
 	{
-		URL context = (URL) params.getValue(AVKeyMore.CONTEXT_URL);
-		layer.setValue(AVKeyMore.CONTEXT_URL, context);
-		layer.setValue(LAYER_ELEMENT, element);
+		Element parent = (Element) layer.getValue(LAYER_ELEMENT);
+		if (parent != null)
+		{
+			//layer element has already been set on this layer, but the passed
+			//element may have some <Property /> children, so import the children:
+			NodeList children = element.getChildNodes();
+			for (int i = 0; i < children.getLength(); i++)
+			{
+				Node child = children.item(i);
+				Node imported = parent.getOwnerDocument().importNode(child, true);
+				parent.appendChild(imported);
+			}
+		}
+		else
+		{
+			layer.setValue(LAYER_ELEMENT, element);
+		}
+
+		if (layer.getValue(AVKeyMore.CONTEXT_URL) == null && params != null)
+		{
+			URL context = (URL) params.getValue(AVKeyMore.CONTEXT_URL);
+			layer.setValue(AVKeyMore.CONTEXT_URL, context);
+		}
 	}
 }

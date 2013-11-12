@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyApplicator;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
-import au.gov.ga.earthsci.layer.tree.LayerNode;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**
@@ -31,7 +31,7 @@ import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
  * <p/>
  * The semantics of the application are as follows:
  * <ol>
- * <li>Layers are matched purely on URI
+ * <li>Layers are matched purely on ID
  * <li>All layers that are in both the current layer model and the bookmark
  * property will be enabled, and the opacity from the property applied
  * <li>Any layer in the current layer model that does not appear in the bookmark
@@ -68,16 +68,16 @@ public class LayersPropertyApplicator implements IBookmarkPropertyApplicator
 
 		for (Layer l : currentModel.getLayers())
 		{
-			if (!(l instanceof LayerNode))
+			if (!(l instanceof ILayerNode))
 			{
 				continue;
 			}
 
-			LayerNode layerNode = (LayerNode) l;
-			if (layersProperty.getLayerState().containsKey(layerNode.getURI()))
+			ILayerNode layerNode = (ILayerNode) l;
+			if (layersProperty.getLayerState().containsKey(layerNode.getId()))
 			{
 				layerNode.setEnabled(true);
-				layerNode.setOpacity(layersProperty.getLayerState().get(layerNode.getURI()));
+				layerNode.setOpacity(layersProperty.getLayerState().get(layerNode.getId()));
 			}
 			else
 			{

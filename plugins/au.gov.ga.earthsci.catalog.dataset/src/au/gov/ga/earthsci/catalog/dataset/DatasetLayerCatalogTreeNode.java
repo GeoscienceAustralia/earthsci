@@ -18,9 +18,13 @@ package au.gov.ga.earthsci.catalog.dataset;
 import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
 import au.gov.ga.earthsci.common.persistence.Exportable;
 import au.gov.ga.earthsci.common.persistence.Persistent;
+import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 
 /**
  * An {@link ICatalogTreeNode} that represents a {@code Layer} element from the
@@ -31,7 +35,6 @@ import au.gov.ga.earthsci.common.persistence.Persistent;
 @Exportable
 public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 {
-
 	@Persistent
 	private URL layerURL;
 
@@ -82,15 +85,8 @@ public class DatasetLayerCatalogTreeNode extends DatasetCatalogTreeNode
 	}
 
 	@Override
-	public URI getLayerURI()
+	public void loadLayer(ILayerNode node, IEclipseContext context) throws Exception
 	{
-		try
-		{
-			return layerURL.toURI();
-		}
-		catch (Exception e)
-		{
-			return null;
-		}
+		IntentLayerLoader.load(layerURL.toURI(), node, context);
 	}
 }

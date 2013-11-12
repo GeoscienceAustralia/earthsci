@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.util.ExtensionPointHelper;
+import au.gov.ga.earthsci.layer.wrappers.ILayerWrapper;
 
 /**
  * Manages the list of layers/wrappers/replacements defined using the
@@ -49,8 +50,10 @@ public class ExtensionManager
 		return instance;
 	}
 
-	private final Map<String, Class<? extends ILayer>> idToLayer = new HashMap<String, Class<? extends ILayer>>();
-	private final Map<Class<? extends ILayer>, String> layerToId = new HashMap<Class<? extends ILayer>, String>();
+	private final Map<String, Class<? extends IPersistentLayer>> idToLayer =
+			new HashMap<String, Class<? extends IPersistentLayer>>();
+	private final Map<Class<? extends IPersistentLayer>, String> layerToId =
+			new HashMap<Class<? extends IPersistentLayer>, String>();
 	private final Map<String, Class<? extends ILayerWrapper>> idToWrapper =
 			new HashMap<String, Class<? extends ILayerWrapper>>();
 	private final Map<Class<? extends ILayerWrapper>, String> wrapperToId =
@@ -59,7 +62,9 @@ public class ExtensionManager
 			new HashMap<Class<? extends Layer>, Class<? extends ILayerWrapper>>();
 	private final Map<Class<? extends ILayerWrapper>, Class<? extends Layer>> wrapperToLayer =
 			new HashMap<Class<? extends ILayerWrapper>, Class<? extends Layer>>();
-	private final Map<String, Class<? extends ILayer>> replacements = new HashMap<String, Class<? extends ILayer>>();
+	private final Map<String, Class<? extends IPersistentLayer>> replacementClasses =
+			new HashMap<String, Class<? extends IPersistentLayer>>();
+	private final Map<String, String> replacementIds = new HashMap<String, String>();
 
 	private ExtensionManager()
 	{
@@ -76,8 +81,9 @@ public class ExtensionManager
 						throw new IllegalArgumentException("Layer id '" + id + "' already exists"); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					@SuppressWarnings("unchecked")
-					Class<? extends ILayer> layer =
-							(Class<? extends ILayer>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
+					Class<? extends IPersistentLayer> layer =
+							(Class<? extends IPersistentLayer>) ExtensionPointHelper.getClassForProperty(element,
+									"class"); //$NON-NLS-1$
 					idToLayer.put(id, layer);
 					layerToId.put(layer, id);
 				}
@@ -99,17 +105,29 @@ public class ExtensionManager
 					layerToWrapper.put(layer, wrapper);
 					wrapperToLayer.put(wrapper, layer);
 				}
-				else if ("replacement".equals(element.getName())) //$NON-NLS-1$
+				else if ("replacementClass".equals(element.getName())) //$NON-NLS-1$
 				{
 					String replacementFor = element.getAttribute("for"); //$NON-NLS-1$
-					if (replacements.containsKey(replacementFor))
+					if (replacementClasses.containsKey(replacementFor))
 					{
-						throw new IllegalArgumentException("Layer replacement already exists for: " + replacementFor); //$NON-NLS-1$
+						throw new IllegalArgumentException(
+								"Layer replacement class already exists for: " + replacementFor); //$NON-NLS-1$
 					}
 					@SuppressWarnings("unchecked")
-					Class<? extends ILayer> layer =
-							(Class<? extends ILayer>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
-					replacements.put(replacementFor, layer);
+					Class<? extends IPersistentLayer> layer =
+							(Class<? extends IPersistentLayer>) ExtensionPointHelper.getClassForProperty(element,
+									"class"); //$NON-NLS-1$
+					replacementClasses.put(replacementFor, layer);
+				}
+				else if ("replacementId".equals(element.getName())) //$NON-NLS-1$
+				{
+					String replacementFor = element.getAttribute("for"); //$NON-NLS-1$
+					if (replacementIds.containsKey(replacementFor))
+					{
+						throw new IllegalArgumentException("Layer replacement id already exists for: " + replacementFor); //$NON-NLS-1$
+					}
+					String replacementId = element.getAttribute("id"); //$NON-NLS-1$
+					replacementIds.put(replacementFor, replacementId);
 				}
 			}
 			catch (Exception e)
@@ -125,7 +143,7 @@ public class ExtensionManager
 	 * @param layerOrWrapper
 	 * @return Id for the given layer or wrapper
 	 */
-	public String getIdForLayerOrWrapper(ILayer layerOrWrapper)
+	public String getIdForLayerOrWrapper(IPersistentLayer layerOrWrapper)
 	{
 		String id = layerToId.get(layerOrWrapper.getClass());
 		if (id == null)
@@ -142,9 +160,9 @@ public class ExtensionManager
 	 * @param id
 	 * @return Layer or wrapper class associated with the given id
 	 */
-	public Class<? extends ILayer> getLayerOrWrapperForId(String id)
+	public Class<? extends IPersistentLayer> getLayerOrWrapperForId(String id)
 	{
-		Class<? extends ILayer> layer = idToLayer.get(id);
+		Class<? extends IPersistentLayer> layer = idToLayer.get(id);
 		if (layer == null)
 		{
 			layer = idToWrapper.get(id);
@@ -160,9 +178,22 @@ public class ExtensionManager
 	 * @param oldClassName
 	 * @return Replacement layer/wrapper class for the given class name
 	 */
-	public Class<? extends ILayer> getReplacementFor(String oldClassName)
+	public Class<? extends IPersistentLayer> getReplacementClassFor(String oldClassName)
 	{
-		return replacements.get(oldClassName);
+		return replacementClasses.get(oldClassName);
+	}
+
+	/**
+	 * Get the layer or wrapper id to use as a replacement for the given
+	 * layer/wrapper id. This is useful if a layer/wrapper is replaced with a
+	 * new implementation.
+	 * 
+	 * @param oldId
+	 * @return Replacement layer/wrapper id for the given id
+	 */
+	public String getReplacementIdFor(String oldId)
+	{
+		return replacementIds.get(oldId);
 	}
 
 	/**

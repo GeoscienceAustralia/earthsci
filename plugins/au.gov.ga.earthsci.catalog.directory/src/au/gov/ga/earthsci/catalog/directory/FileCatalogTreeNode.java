@@ -20,8 +20,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.core.url.SystemIconURLStreamHandlerService;
+import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 
 /**
  * Catalog tree node that represents a file in a local filesystem.
@@ -51,9 +55,9 @@ public class FileCatalogTreeNode extends AbstractCatalogTreeNode
 	}
 
 	@Override
-	public URI getLayerURI()
+	public void loadLayer(ILayerNode node, IEclipseContext context) throws Exception
 	{
-		return getURI();
+		IntentLayerLoader.load(getURI(), node, context);
 	}
 
 	@Override

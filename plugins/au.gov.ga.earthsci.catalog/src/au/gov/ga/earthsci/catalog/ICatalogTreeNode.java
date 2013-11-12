@@ -18,11 +18,17 @@ package au.gov.ga.earthsci.catalog;
 import java.net.URI;
 import java.net.URL;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+
 import au.gov.ga.earthsci.common.util.IInformationed;
 import au.gov.ga.earthsci.common.util.ILabelable;
 import au.gov.ga.earthsci.common.util.INamed;
 import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
+import au.gov.ga.earthsci.intent.Intent;
+import au.gov.ga.earthsci.layer.IPersistentLayer;
+import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 
 /**
  * Represents tree nodes in the Catalog tree. Implementations of this interface
@@ -37,7 +43,8 @@ public interface ICatalogTreeNode extends ITreeNode<ICatalogTreeNode>, IProperty
 {
 	/**
 	 * @return Is this catalog node removeable from the Catalog tree? All user
-	 *         added nodes should also be removeable.
+	 *         added nodes should also be removeable (ie the root level of the
+	 *         catalog).
 	 */
 	boolean isRemoveable();
 
@@ -46,6 +53,14 @@ public interface ICatalogTreeNode extends ITreeNode<ICatalogTreeNode>, IProperty
 	 *         should be able to re-create the node from this URI.
 	 */
 	URI getURI();
+
+	/**
+	 * This method can be called many times during icon load, and therefore the
+	 * result should be cached.
+	 * 
+	 * @return URL pointing to the icon to display for this node
+	 */
+	URL getIconURL();
 
 	/**
 	 * Return whether this node represents a layer that can be applied to the
@@ -57,16 +72,41 @@ public interface ICatalogTreeNode extends ITreeNode<ICatalogTreeNode>, IProperty
 	boolean isLayerNode();
 
 	/**
-	 * @return the URI of the layer this node represents if
-	 *         {@link #isLayerNode()} returns <code>true</code>
-	 */
-	URI getLayerURI();
-
-	/**
-	 * This method can be called many times during icon load, and therefore the
-	 * result should be cached.
+	 * Load the layer associated with this node to the given layer tree node. If
+	 * this catalog node represents a layer node (and therefore
+	 * {@link #isLayerNode()} returns true), this method should load the
+	 * associated layer and set it on the provided layer tree node. It can do
+	 * this asynchronously.
+	 * <p/>
+	 * If the layer associated with this node is loaded from a resource that has
+	 * a URI, the simple implementation of this method is as follows:
 	 * 
-	 * @return URL pointing to the icon to display for this node
+	 * <pre>
+	 * public void loadLayer(ILayerNode node, IEclipseContext context)
+	 * {
+	 * 	IntentLayerLoader.load(node, layerUri, context);
+	 * }
+	 * </pre>
+	 * 
+	 * The {@link IntentLayerLoader} will handle firing an {@link Intent} to
+	 * load the layer from the URI, and once loaded will set it on the
+	 * {@link ILayerNode}.
+	 * <p/>
+	 * Catalogs can choose to create their own layers. The layer must implement
+	 * {@link IPersistentLayer}, and be set on the layer tree node using the
+	 * {@link ILayerNode#setLayer(IPersistentLayer)} method once loaded. The
+	 * catalog can also choose to remove the layer tree node if the user aborts
+	 * the layer loading (eg from an iteractive dialog) by calling
+	 * {@link ILayerNode#removeFromParent()}.
+	 * 
+	 * @param node
+	 *            Layer tree node to add the loaded catalog layer to, using
+	 *            {@link ILayerNode#setLayer(IPersistentLayer)}
+	 * @param context
+	 *            Eclipse context
+	 * @throws Exception
+	 *             If an error occurs during layer load. This will be displayed
+	 *             as an error on the layer node.
 	 */
-	URL getIconURL();
+	void loadLayer(ILayerNode node, IEclipseContext context) throws Exception;
 }

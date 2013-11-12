@@ -35,10 +35,10 @@ import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.common.util.ConfigurationUtil;
 import au.gov.ga.earthsci.layer.DefaultLayers;
-import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
+import au.gov.ga.earthsci.layer.IPersistentLayer;
 import au.gov.ga.earthsci.layer.tree.FolderNode;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
-import au.gov.ga.earthsci.layer.tree.LayerNode;
 import au.gov.ga.earthsci.layer.tree.LayerPersister;
 
 /**
@@ -64,7 +64,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 
 	private WorldWindModel(ConstructionParameters constructionParameters)
 	{
-		super(constructionParameters.createGlobe(), constructionParameters.createLayerList());
+		super(constructionParameters.getGlobe(), constructionParameters.getLayers());
 		this.constructionParameters = constructionParameters;
 	}
 
@@ -115,20 +115,21 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 				child.removeFromParent();
 				rootNode.addChild(child);
 			}
+			initializeAllLayers(rootNode, context);
 		}
-		loadAllLayers(rootNode, context);
 	}
 
-	public static void loadAllLayers(ILayerTreeNode node, IEclipseContext context)
+	public static void initializeAllLayers(ILayerTreeNode node, IEclipseContext context)
 	{
-		if (node instanceof LayerNode)
+		if (node instanceof ILayerNode)
 		{
-			final LayerNode layerNode = (LayerNode) node;
-			IntentLayerLoader.load(layerNode, context);
+			final ILayerNode layerNode = (ILayerNode) node;
+			IPersistentLayer layer = layerNode.getLayer();
+			layer.initialize(layerNode, context);
 		}
 		for (ILayerTreeNode child : node.getChildren())
 		{
-			loadAllLayers(child, context);
+			initializeAllLayers(child, context);
 		}
 	}
 
@@ -146,25 +147,27 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 
 	private static class ConstructionParameters
 	{
-		public FolderNode rootNode;
+		public final FolderNode rootNode;
+		private final Globe globe;
 
 		public ConstructionParameters()
 		{
 			rootNode = new FolderNode();
 			rootNode.setName("root"); //$NON-NLS-1$
 			rootNode.setExpanded(true);
+
+			globe = (Globe) WorldWind.createConfigurationComponent(AVKey.GLOBE_CLASS_NAME);
+			globe.setElevationModel(rootNode.getElevationModels());
 		}
 
-		public Globe createGlobe()
+		public Globe getGlobe()
 		{
-			Globe globe = (Globe) WorldWind.createConfigurationComponent(AVKey.GLOBE_CLASS_NAME);
-			globe.setElevationModel(rootNode.getElevationModels());
 			return globe;
 		}
 
-		public LayerList createLayerList()
+		public LayerList getLayers()
 		{
-			return rootNode.getLayerList();
+			return rootNode.getLayers();
 		}
 	}
 }

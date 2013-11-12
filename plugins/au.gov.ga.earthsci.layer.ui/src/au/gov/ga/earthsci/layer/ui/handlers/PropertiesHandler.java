@@ -32,9 +32,9 @@ import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.editable.EditableManager;
 import au.gov.ga.earthsci.editable.ModelAndDefinition;
-import au.gov.ga.earthsci.layer.ILayer;
+import au.gov.ga.earthsci.layer.IPersistentLayer;
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
-import au.gov.ga.earthsci.layer.tree.LayerNode;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 
 /**
@@ -61,11 +61,12 @@ public class PropertiesHandler
 			return;
 		}
 
-		final ILayerTreeNode layer = layers[0];
-		if (layer instanceof LayerNode)
+		final ILayerTreeNode node = layers[0];
+		if (node instanceof ILayerNode)
 		{
-			ILayer l = ((LayerNode) layer).getLayerImplementation();
-			ModelAndDefinition editor = EditableManager.getInstance().edit(l);
+			ILayerNode layerNode = (ILayerNode) node;
+			IPersistentLayer layer = layerNode.getLayer();
+			ModelAndDefinition editor = EditableManager.getInstance().edit(layer);
 
 			editor.getModel().attach(new Listener()
 			{

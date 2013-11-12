@@ -106,7 +106,7 @@ public class LayerTreeControlProvider implements IControlProvider
 					else
 					{
 						String tag = url.toString();
-						tag += "|" + layerNode.getURI(); //$NON-NLS-1$
+						tag += "|" + layerNode.getId(); //$NON-NLS-1$
 						String label = "Legend" + ": " + layerNode.getLabelOrName(); //$NON-NLS-2$
 						part = LegendPart.showPart(partService, modelService, window, tag, label);
 					}

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.layer.tree;
 
+import gov.nasa.worldwind.globes.ElevationModel;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.terrain.CompoundElevationModel;
@@ -25,10 +26,10 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
-import au.gov.ga.earthsci.common.collection.HashSetHashMap;
-import au.gov.ga.earthsci.common.collection.SetMap;
+import au.gov.ga.earthsci.common.collection.ArrayListHashMap;
+import au.gov.ga.earthsci.common.collection.ListMap;
 import au.gov.ga.earthsci.common.persistence.Exportable;
 import au.gov.ga.earthsci.common.persistence.Persistent;
 import au.gov.ga.earthsci.common.util.IEnableable;
@@ -37,7 +38,6 @@ import au.gov.ga.earthsci.core.model.IModelStatus;
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.worldwind.WorldWindCompoundElevationModel;
-import au.gov.ga.earthsci.layer.IElevationModelLayer;
 
 /**
  * Abstract implementation of the {@link ILayerTreeNode} interface.
@@ -47,13 +47,14 @@ import au.gov.ga.earthsci.layer.IElevationModelLayer;
 @Exportable
 public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeNode> implements ILayerTreeNode
 {
+	private String id;
 	private String name;
 	private LayerList layerList;
 	private WorldWindCompoundElevationModel elevationModels;
-	private SetMap<URI, ILayerTreeNode> uriMap;
+	private ListMap<URI, ILayerTreeNode> catalogUriMap;
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
 	private String label;
-	private URI uri;
+	private URI catalogURI;
 	private URL nodeInformationURL;
 	private URL legendURL;
 	private URL iconURL;
@@ -64,7 +65,26 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	protected AbstractLayerTreeNode()
 	{
 		super(ILayerTreeNode.class);
+		id = UUID.randomUUID().toString();
 		addPropertyChangeListener("enabled", new EnabledChangeListener()); //$NON-NLS-1$
+	}
+
+	@Persistent
+	@Override
+	public String getId()
+	{
+		return id;
+	}
+
+	private void setId(String id)
+	{
+		this.id = id;
+	}
+
+	@Override
+	public void setIdFrom(ILayerNode node)
+	{
+		setId(node.getId());
 	}
 
 	@Persistent(attribute = true)
@@ -104,17 +124,17 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		return getLabel() == null ? getName() : getLabel();
 	}
 
-	@Persistent(name = "uri")
+	@Persistent(name = "catalogURI")
 	@Override
-	public URI getURI()
+	public URI getCatalogURI()
 	{
-		return uri;
+		return catalogURI;
 	}
 
 	@Override
-	public void setURI(URI uri)
+	public void setCatalogURI(URI catalogURI)
 	{
-		firePropertyChange("uRI", getURI(), this.uri = uri); //$NON-NLS-1$
+		firePropertyChange("catalogURI", getCatalogURI(), this.catalogURI = catalogURI); //$NON-NLS-1$
 	}
 
 	/**
@@ -239,7 +259,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	}
 
 	@Override
-	public LayerList getLayerList()
+	public LayerList getLayers()
 	{
 		synchronized (semaphore)
 		{
@@ -277,35 +297,21 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	}
 
 	@Override
-	public boolean hasNodesForURI(URI uri)
+	public ILayerTreeNode getNodeForCatalogURI(URI catalogURI)
 	{
 		synchronized (semaphore)
 		{
-			if (uriMap == null)
+			if (catalogUriMap == null)
 			{
-				uriMap = new HashSetHashMap<URI, ILayerTreeNode>();
-				updateURIMap();
+				catalogUriMap = new ArrayListHashMap<URI, ILayerTreeNode>();
+				updateCatalogURIMap();
 			}
-			return uriMap.containsKey(uri);
-		}
-	}
-
-	@Override
-	public ILayerTreeNode[] getNodesForURI(URI uri)
-	{
-		synchronized (semaphore)
-		{
-			if (uriMap == null)
+			List<ILayerTreeNode> nodes = catalogUriMap.get(catalogURI);
+			if (nodes != null && nodes.size() > 0)
 			{
-				uriMap = new HashSetHashMap<URI, ILayerTreeNode>();
-				updateURIMap();
+				return nodes.get(0);
 			}
-			Set<ILayerTreeNode> nodes = uriMap.get(uri);
-			if (nodes != null)
-			{
-				return nodes.toArray(new ILayerTreeNode[nodes.size()]);
-			}
-			return new ILayerTreeNode[0];
+			return null;
 		}
 	}
 
@@ -337,13 +343,13 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 
 	private void addNodesToElevationModels(ILayerTreeNode node)
 	{
-		if (node instanceof LayerNode)
+		if (node instanceof ILayerNode)
 		{
-			LayerNode layerNode = (LayerNode) node;
-			if (layerNode.getLayer() instanceof IElevationModelLayer)
+			ILayerNode layerNode = (ILayerNode) node;
+			ElevationModel elevationModel = layerNode.getElevationModel();
+			if (elevationModel != null)
 			{
-				IElevationModelLayer elevationModelLayer = (IElevationModelLayer) layerNode.getLayer();
-				elevationModels.addElevationModel(elevationModelLayer.getElevationModel());
+				elevationModels.addElevationModel(elevationModel);
 			}
 		}
 		for (ILayerTreeNode child : node.getChildren())
@@ -352,24 +358,28 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		}
 	}
 
-	private void updateURIMap()
+	private void updateCatalogURIMap()
 	{
 		synchronized (semaphore)
 		{
-			if (uriMap != null)
+			if (catalogUriMap != null)
 			{
-				uriMap.clear();
-				addNodesToURIMap(this);
+				catalogUriMap.clear();
+				addNodesToCatalogURIMap(this);
 			}
 		}
 	}
 
-	private void addNodesToURIMap(ILayerTreeNode node)
+	private void addNodesToCatalogURIMap(ILayerTreeNode node)
 	{
-		uriMap.putSingle(node.getURI(), node);
+		URI catalogUri = node.getCatalogURI();
+		if (catalogUri != null)
+		{
+			catalogUriMap.putSingle(node.getCatalogURI(), node);
+		}
 		for (ILayerTreeNode child : node.getChildren())
 		{
-			addNodesToURIMap(child);
+			addNodesToCatalogURIMap(child);
 		}
 	}
 
@@ -387,7 +397,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		//update the collections if they exist
 		updateLayerList();
 		updateElevationModels();
-		updateURIMap();
+		updateCatalogURIMap();
 
 		//fire property changes
 		fireAnyAllChildrenEnabledChanged();

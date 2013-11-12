@@ -36,6 +36,18 @@
             sdef-name="SkyGradientLayerWrapper"
             type="au.gov.ga.earthsci.layer.wrappers.SkyGradientLayerWrapper">
       </model>
+      <model
+            model="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerModelElement"
+            sdef-context="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerModelElement"
+            sdef-name="TiledImageLayer"
+            type="gov.nasa.worldwind.layers.TiledImageLayer">
+      </model>
+      <model
+            model="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerWrapperModelElement"
+            sdef-context="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerWrapperModelElement"
+            sdef-name="TiledImageLayerWrapper"
+            type="au.gov.ga.earthsci.layer.wrappers.TiledImageLayerWrapper">
+      </model>
    </extension>
 
 </plugin>

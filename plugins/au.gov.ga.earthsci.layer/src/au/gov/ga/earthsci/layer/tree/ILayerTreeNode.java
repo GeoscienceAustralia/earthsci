@@ -39,10 +39,30 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 		IStatused, IInformationed
 {
 	/**
+	 * This layer node's unique id. This should be randomly generated upon
+	 * creation (eg from a UUID), and persisted during layer persistence. This
+	 * can be used to quickly find layers matches by other systems, such as the
+	 * bookmark system which saves layer state.
+	 * 
+	 * @return This node's unique id.
+	 */
+	String getId();
+
+	/**
+	 * Set this node's unique id from the given node's id. This shouldn't be
+	 * called on any of the layers in the layer model; rather it can be used to
+	 * match up a layer node in a separate system to a layer in the layer model.
+	 * 
+	 * @param node
+	 *            Node whose id value will set as this node's id
+	 */
+	void setIdFrom(ILayerNode node);
+
+	/**
 	 * @return A {@link LayerList} that contains all layers in the tree at and
 	 *         below this node.
 	 */
-	LayerList getLayerList();
+	LayerList getLayers();
 
 	/**
 	 * @return A {@link CompoundElevationModel} that contains all elevation
@@ -51,29 +71,20 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	CompoundElevationModel getElevationModels();
 
 	/**
-	 * Return true if this node's URI matches the given URI, or any of this
-	 * node's descendant's URI matches the given URI.
-	 * 
-	 * @param uri
-	 *            URI to match
-	 * @return True if there are any descendants with a matching URI
-	 */
-	boolean hasNodesForURI(URI uri);
-
-	/**
-	 * Return an array of {@link ILayerTreeNode}s that are descendants of this
-	 * node which have URIs that match the given URI. If there are no
-	 * descendants with the given URI, the returned array is empty. The returned
-	 * array could also possibly contain this node if this node's URI matches.
+	 * Return the {@link ILayerTreeNode} that is a descendant of this node which
+	 * has a catalog URI that matches the given URI. If there are no descendants
+	 * with the given catalog URI, null is returned. If there are multiple, the
+	 * first is returned. The returned node could possibly be this node if this
+	 * node's URI matches.
 	 * <p/>
 	 * The results from this method are cached, and updated when the node's
 	 * descendants change.
 	 * 
-	 * @param uri
-	 *            URI to match
-	 * @return Array of nodes that have a matching URI
+	 * @param catalogURI
+	 *            Catalog URI to match
+	 * @return First descendant node that has a matching catalog URI
 	 */
-	ILayerTreeNode[] getNodesForURI(URI uri);
+	ILayerTreeNode getNodeForCatalogURI(URI catalogURI);
 
 	/**
 	 * @return Are any of this node's children enabled?
@@ -142,17 +153,17 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	void setExpanded(boolean expanded);
 
 	/**
-	 * @return URI that uniquely identifies this layer node, and optionally
-	 *         locates a resource for layer creation.
+	 * @return The URI from the catalog tree node associated with this layer
+	 *         node. Returns <code>null</code> if this node was not created from
+	 *         a catalog.
 	 */
-	URI getURI();
+	URI getCatalogURI();
 
 	/**
-	 * Set this node's URI, which uniquely identifies this node. This is also
-	 * used by certain nodes for layer creation.
+	 * Set this node's catalog URI, which associates this node with a catalog
+	 * tree node.
 	 * 
-	 * @param uri
+	 * @param catalogUri
 	 */
-	void setURI(URI uri);
-
+	void setCatalogURI(URI catalogURI);
 }

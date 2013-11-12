@@ -99,14 +99,19 @@
    <extension
          point="au.gov.ga.earthsci.layers">
       <wrapper
-            class="au.gov.ga.earthsci.layer.wrappers.LayerWrapper"
-            id="LayerWrapper"
+            class="au.gov.ga.earthsci.layer.wrappers.DefaultLayerWrapper"
+            id="DefaultLayerWrapper"
             wraps="gov.nasa.worldwind.layers.Layer">
       </wrapper>
       <wrapper
             class="au.gov.ga.earthsci.layer.wrappers.SkyGradientLayerWrapper"
             id="SkyGradientLayerWrapper"
             wraps="gov.nasa.worldwind.layers.SkyGradientLayer">
+      </wrapper>
+      <wrapper
+            class="au.gov.ga.earthsci.layer.wrappers.TiledImageLayerWrapper"
+            id="TiledImageLayerWrapper"
+            wraps="gov.nasa.worldwind.layers.TiledImageLayer">
       </wrapper>
    </extension>
 

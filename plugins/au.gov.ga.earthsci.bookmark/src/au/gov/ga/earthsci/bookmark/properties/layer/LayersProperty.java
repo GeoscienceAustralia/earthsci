@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.properties.layer;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,10 +33,9 @@ public class LayersProperty implements IBookmarkProperty
 	public static final String TYPE = "au.gov.ga.earthsci.bookmark.properties.layers"; //$NON-NLS-1$
 
 	/**
-	 * Map of {@code Layer URI -> opacity}. Inclusion in the map implies
-	 * enabled.
+	 * Map of {@code Layer ID -> opacity}. Inclusion in the map implies enabled.
 	 */
-	private Map<URI, Double> layerState = new ConcurrentHashMap<URI, Double>();
+	private Map<String, Double> layerState = new ConcurrentHashMap<String, Double>();
 
 	@Override
 	public String getType()
@@ -56,7 +54,7 @@ public class LayersProperty implements IBookmarkProperty
 	 * <p/>
 	 * To add additional layer state, use {@link #addLayer}.
 	 */
-	public Map<URI, Double> getLayerState()
+	public Map<String, Double> getLayerState()
 	{
 		return Collections.unmodifiableMap(layerState);
 	}
@@ -64,7 +62,7 @@ public class LayersProperty implements IBookmarkProperty
 	/**
 	 * Set the layer state on this property, replacing any already stored.
 	 */
-	public void setLayerState(Map<URI, Double> newLayerState)
+	public void setLayerState(Map<String, Double> newLayerState)
 	{
 		layerState.clear();
 		layerState.putAll(newLayerState);
@@ -73,14 +71,14 @@ public class LayersProperty implements IBookmarkProperty
 	/**
 	 * Add additional layer state to this property.
 	 * 
-	 * @param uri
-	 *            The URI of the layer
+	 * @param id
+	 *            The id of the layer
 	 * @param opacity
 	 *            The opacity of the layer
 	 */
-	public void addLayer(URI uri, Double opacity)
+	public void addLayer(String id, Double opacity)
 	{
-		layerState.put(uri, opacity);
+		layerState.put(id, opacity);
 	}
 
 }

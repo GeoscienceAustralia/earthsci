@@ -20,7 +20,8 @@
          <choice minOccurs="1" maxOccurs="unbounded">
             <element ref="layer"/>
             <element ref="wrapper"/>
-            <element ref="replacement"/>
+            <element ref="replacementClass"/>
+            <element ref="replacementId"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -64,7 +65,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.layer.ILayer"/>
+                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.layer.IPersistentLayer"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -103,7 +104,7 @@
       </complexType>
    </element>
 
-   <element name="replacement">
+   <element name="replacementClass">
       <complexType>
          <attribute name="for" type="string" use="required">
             <annotation>
@@ -118,8 +119,27 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.layer.ILayer"/>
+                  <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.layer.IPersistentLayer"/>
                </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="replacementId">
+      <complexType>
+         <attribute name="for" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>
