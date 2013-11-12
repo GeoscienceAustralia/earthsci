@@ -15,17 +15,22 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.layer.intent;
 
+import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.layers.Layer;
+import gov.nasa.worldwind.render.DrawContext;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.common.util.UTF8URLEncoder;
+import au.gov.ga.earthsci.common.util.XmlUtil;
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.intent.AbstractIntentCallback;
 import au.gov.ga.earthsci.intent.IIntentCallback;
@@ -64,7 +69,7 @@ public class IntentLayerLoader
 	 */
 	public static void load(URI uri, ILayerNode layerNode, IEclipseContext context)
 	{
-		if (layerNode.isLayerSet())
+		if (layerNode.isGrandLayerSet() && !(layerNode.getLayer() instanceof UriStorageLayer))
 		{
 			return;
 		}
@@ -138,6 +143,10 @@ public class IntentLayerLoader
 			LayerLoadIntent layerIntent = (LayerLoadIntent) intent;
 			layerIntent.layerNode.setStatus(ModelStatus.error(message, e));
 			layerIntent.layerNode.setLoading(false);
+			if (!layerIntent.layerNode.isLayerSet())
+			{
+				layerIntent.layerNode.setLayer(new UriStorageLayer(intent.getURI()));
+			}
 
 			//cannot let this notification require acknowledgement during initial loading (layer unpersistence)
 			//as it causes the parts to be created incorrectly (bad parent window perhaps?)
@@ -152,6 +161,10 @@ public class IntentLayerLoader
 			Exception e = new Exception(Messages.IntentLayerLoader_LoadCanceledDescription);
 			layerIntent.layerNode.setStatus(ModelStatus.error(e.getLocalizedMessage(), e));
 			layerIntent.layerNode.setLoading(false);
+			if (!layerIntent.layerNode.isLayerSet())
+			{
+				layerIntent.layerNode.setLayer(new UriStorageLayer(intent.getURI()));
+			}
 		}
 
 		@Override
@@ -175,6 +188,62 @@ public class IntentLayerLoader
 		{
 			this.context = context;
 			this.layerNode = layerNode;
+		}
+	}
+
+	public static class UriStorageLayer extends AbstractLayer implements IPersistentLayer
+	{
+		private URI uri;
+
+		private UriStorageLayer()
+		{
+		}
+
+		private UriStorageLayer(URI uri)
+		{
+			this.uri = uri;
+		}
+
+		@Override
+		public boolean isLoading()
+		{
+			return false;
+		}
+
+		@Override
+		public void save(Element parent)
+		{
+			if (uri != null)
+			{
+				XmlUtil.setTextElement(parent, "uri", uri.toString()); //$NON-NLS-1$
+			}
+		}
+
+		@Override
+		public void load(Element parent)
+		{
+			String uriText = XmlUtil.getText(parent, "uri"); //$NON-NLS-1$
+			if (uriText != null)
+			{
+				try
+				{
+					uri = new URI(uriText);
+				}
+				catch (URISyntaxException e)
+				{
+				}
+			}
+		}
+
+		@Override
+		public void initialize(ILayerNode node, IEclipseContext context)
+		{
+			IntentLayerLoader.load(uri, node, context);
+		}
+
+		@Override
+		protected void doRender(DrawContext dc)
+		{
 		}
 	}
 }
