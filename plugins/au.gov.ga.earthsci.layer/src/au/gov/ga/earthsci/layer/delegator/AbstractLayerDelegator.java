@@ -131,11 +131,17 @@ public abstract class AbstractLayerDelegator<L extends Layer> extends AbstractPr
 	@Override
 	public boolean isLayerSet()
 	{
-		if (layer instanceof ILayerDelegator)
-		{
-			return ((ILayerDelegator<?>) layer).isLayerSet();
-		}
 		return !isDummyLayer(layer);
+	}
+
+	@Override
+	public boolean isGrandLayerSet()
+	{
+		if (layer instanceof ILayerDelegator<?>)
+		{
+			return ((ILayerDelegator<?>) layer).isGrandLayerSet();
+		}
+		return isLayerSet();
 	}
 
 	/**

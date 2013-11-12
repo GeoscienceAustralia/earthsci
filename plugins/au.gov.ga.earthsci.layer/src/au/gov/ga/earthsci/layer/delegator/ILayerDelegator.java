@@ -57,4 +57,10 @@ public interface ILayerDelegator<L extends Layer> extends Layer
 	 *         {@link #getLayer()} will return a dummy layer.
 	 */
 	boolean isLayerSet();
+
+	/**
+	 * @return If {@link #getLayer()} returns another {@link ILayerDelegator},
+	 *         calls recursively, otherwise returns {@link #isLayerSet()}.
+	 */
+	boolean isGrandLayerSet();
 }

@@ -88,6 +88,12 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	}
 
 	@Override
+	public boolean isGrandLayerSet()
+	{
+		return delegator.isGrandLayerSet();
+	}
+
+	@Override
 	public IPersistentLayer getLayer()
 	{
 		return delegator.getLayer();
