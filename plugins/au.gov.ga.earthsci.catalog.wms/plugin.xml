@@ -4,11 +4,6 @@
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
-            id="au.gov.ga.earthsci.catalog.wms.wmslayer"
-            name="WMS layer"
-            priority="normal">
-      </content-type>
-      <content-type
             base-type="org.eclipse.core.runtime.xml"
             file-extensions="xml"
             id="au.gov.ga.earthsci.catalog.wms.capabilities.xml"
@@ -33,9 +28,6 @@
             class="au.gov.ga.earthsci.catalog.wms.WMSLayerIntentHandler"
             priority="0"
             returns-result="true">
-         <content-type
-               id="au.gov.ga.earthsci.catalog.wms.wmslayer">
-         </content-type>
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
