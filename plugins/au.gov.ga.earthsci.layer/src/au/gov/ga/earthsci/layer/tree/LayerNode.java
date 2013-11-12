@@ -37,6 +37,7 @@ import au.gov.ga.earthsci.common.util.ILoader;
 import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.layer.IPersistentLayer;
 import au.gov.ga.earthsci.layer.LayerPersistentAdapter;
+import au.gov.ga.earthsci.layer.Messages;
 import au.gov.ga.earthsci.layer.delegator.AbstractLayerDelegator;
 import au.gov.ga.earthsci.layer.delegator.ILayerDelegator;
 import au.gov.ga.earthsci.layer.delegator.PersistentLayerDelegator;
@@ -71,7 +72,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 			}
 		});
 		delegator.setPropertiesChangedTrackingEnabled(false);
-		delegator.setName("Loading...");
+		delegator.setName(Messages.LayerNode_Loading);
 		delegator.setPropertiesChangedTrackingEnabled(true);
 	}
 
