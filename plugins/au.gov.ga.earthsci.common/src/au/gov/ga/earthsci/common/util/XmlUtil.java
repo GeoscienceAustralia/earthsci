@@ -541,11 +541,7 @@ public class XmlUtil
 	 */
 	public static Element setTextElement(Element context, String path, String value, XPath xpath)
 	{
-		Element element = WWXML.getElement(context, path, xpath);
-		if (element == null)
-		{
-			element = WWXML.appendElementPath(context, path);
-		}
+		Element element = createElement(context, path, xpath);
 		element.setTextContent(value);
 		return element;
 	}
@@ -575,6 +571,27 @@ public class XmlUtil
 		{
 			return null;
 		}
+	}
+
+	/**
+	 * Create an element at the given path if one doesn't already exist.
+	 * 
+	 * @param context
+	 *            The element from which the path is relative to
+	 * @param path
+	 *            The path of the element
+	 * @param xpath
+	 *            An {@link XPath} instance that can be reused across calls
+	 * @return Element at path
+	 */
+	public static Element createElement(Element context, String path, XPath xpath)
+	{
+		Element element = WWXML.getElement(context, path, xpath);
+		if (element == null)
+		{
+			element = WWXML.appendElementPath(context, path);
+		}
+		return element;
 	}
 
 	public static boolean getBoolean(Element context, String path, boolean def)
