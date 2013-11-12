@@ -18,6 +18,7 @@ package au.gov.ga.earthsci.layer;
 import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.render.DrawContext;
 
+import java.lang.reflect.Constructor;
 import java.net.URI;
 
 import org.eclipse.core.runtime.Platform;
@@ -120,7 +121,9 @@ public class LayerPersistentAdapter implements IPersistentAdapter<IPersistentLay
 			{
 				throw new IllegalArgumentException("No layer id or class specified"); //$NON-NLS-1$
 			}
-			IPersistentLayer layer = c.newInstance();
+			Constructor<? extends IPersistentLayer> constructor = c.getDeclaredConstructor();
+			constructor.setAccessible(true);
+			IPersistentLayer layer = constructor.newInstance();
 			layer.load(element);
 
 			//check if a wrapped layer should actually be wrapped by a different wrapper
