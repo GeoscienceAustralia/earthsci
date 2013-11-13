@@ -35,6 +35,8 @@ import au.gov.ga.earthsci.common.persistence.Persistent;
 import au.gov.ga.earthsci.common.util.IInformationed;
 import au.gov.ga.earthsci.common.util.ILoader;
 import au.gov.ga.earthsci.common.util.Util;
+import au.gov.ga.earthsci.core.model.IModelStatus;
+import au.gov.ga.earthsci.core.model.IStatused;
 import au.gov.ga.earthsci.layer.IPersistentLayer;
 import au.gov.ga.earthsci.layer.LayerPersistentAdapter;
 import au.gov.ga.earthsci.layer.Messages;
@@ -212,6 +214,17 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 			}
 		}
 		return super.getInformationString();
+	}
+
+	@Override
+	public IModelStatus getStatus()
+	{
+		IStatused statused = getDelegateImplementing(IStatused.class);
+		if (statused != null)
+		{
+			return statused.getStatus();
+		}
+		return super.getStatus();
 	}
 
 	@Override
