@@ -56,6 +56,7 @@ import au.gov.ga.earthsci.core.retrieve.IRetrievalService;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalServiceListener;
 import au.gov.ga.earthsci.core.retrieve.RetrievalAdapter;
 import au.gov.ga.earthsci.core.retrieve.RetrievalServiceFactory;
+import au.gov.ga.earthsci.layer.delegator.ILayerDelegator;
 import au.gov.ga.earthsci.layer.elevation.IElevationModelLayer;
 import au.gov.ga.earthsci.layer.tree.FolderNode;
 import au.gov.ga.earthsci.layer.tree.ILayerNode;
@@ -119,13 +120,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 		{
 			LayerNode layerNode = (LayerNode) element;
 			Layer layer = layerNode.getLayer();
-			List<IRetrieval> retrievals = Arrays.asList(retrievalService.getRetrievals(layer));
-			if (retrievals.size() == 0 && layer instanceof IElevationModelLayer)
-			{
-				ElevationModel elevationModel = ((IElevationModelLayer) layer).getElevationModel();
-				retrievals = new ArrayList<IRetrieval>();
-				addRetrievalsForElevationModel(elevationModel, retrievals);
-			}
+			List<IRetrieval> retrievals = getRetrievalsForLayer(layer);
 			if (retrievals.size() > 0)
 			{
 				if (downloadBackgroundColor == null)
@@ -160,6 +155,28 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 			}
 		}
 		super.paint(event, element);
+	}
+
+	private List<IRetrieval> getRetrievalsForLayer(Layer layer)
+	{
+		List<IRetrieval> retrievals = new ArrayList<IRetrieval>();
+		addRetrievalsForLayer(layer, retrievals);
+		return retrievals;
+	}
+
+	private void addRetrievalsForLayer(Layer layer, List<IRetrieval> retrievals)
+	{
+		retrievals.addAll(Arrays.asList(retrievalService.getRetrievals(layer)));
+		if (layer instanceof ILayerDelegator<?>)
+		{
+			ILayerDelegator<?> delegator = (ILayerDelegator<?>) layer;
+			addRetrievalsForLayer(delegator.getLayer(), retrievals);
+		}
+		if (layer instanceof IElevationModelLayer)
+		{
+			ElevationModel elevationModel = ((IElevationModelLayer) layer).getElevationModel();
+			addRetrievalsForElevationModel(elevationModel, retrievals);
+		}
 	}
 
 	private void addRetrievalsForElevationModel(ElevationModel elevationModel, List<IRetrieval> retrievals)
