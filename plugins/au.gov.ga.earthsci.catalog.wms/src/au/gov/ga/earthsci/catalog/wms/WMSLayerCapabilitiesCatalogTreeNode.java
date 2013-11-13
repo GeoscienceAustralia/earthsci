@@ -15,18 +15,18 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog.wms;
 
+import gov.nasa.worldwind.ogc.wms.WMSCapabilities;
 import gov.nasa.worldwind.ogc.wms.WMSLayerCapabilities;
 import gov.nasa.worldwind.ogc.wms.WMSLayerStyle;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 
 import au.gov.ga.earthsci.catalog.AbstractCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
-import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
+import au.gov.ga.earthsci.catalog.wms.layer.WMSLayer;
 import au.gov.ga.earthsci.layer.tree.ILayerNode;
 
 /**
@@ -37,20 +37,23 @@ import au.gov.ga.earthsci.layer.tree.ILayerNode;
 public class WMSLayerCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 {
 	protected final URI capabilitiesURI;
+	protected final WMSCapabilities capabilities;
 	protected final WMSLayerCapabilities layer;
 	protected final WMSLayerStyle style;
 	protected final boolean useStyleTitleInName;
 
-	public WMSLayerCapabilitiesCatalogTreeNode(URI nodeURI, URI capabilitiesURI, WMSLayerCapabilities layer)
+	public WMSLayerCapabilitiesCatalogTreeNode(URI nodeURI, URI capabilitiesURI, WMSCapabilities capabilities,
+			WMSLayerCapabilities layer)
 	{
-		this(nodeURI, capabilitiesURI, layer, null, false);
+		this(nodeURI, capabilitiesURI, capabilities, layer, null, false);
 	}
 
-	protected WMSLayerCapabilitiesCatalogTreeNode(URI nodeURI, URI capabilitiesURI, WMSLayerCapabilities layer,
-			WMSLayerStyle style, boolean useStyleTitleInName)
+	protected WMSLayerCapabilitiesCatalogTreeNode(URI nodeURI, URI capabilitiesURI, WMSCapabilities capabilities,
+			WMSLayerCapabilities layer, WMSLayerStyle style, boolean useStyleTitleInName)
 	{
 		super(nodeURI);
 		this.capabilitiesURI = capabilitiesURI;
+		this.capabilities = capabilities;
 		this.layer = layer;
 		this.style = style;
 		this.useStyleTitleInName = useStyleTitleInName;
@@ -71,7 +74,8 @@ public class WMSLayerCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 			}
 
 			WMSLayerCapabilitiesCatalogTreeNode childNode =
-					new WMSLayerCapabilitiesCatalogTreeNode(childURI, capabilitiesURI, childLayer, style, false);
+					new WMSLayerCapabilitiesCatalogTreeNode(childURI, capabilitiesURI, capabilities, childLayer, style,
+							false);
 			addChild(childNode);
 		}
 
@@ -82,7 +86,8 @@ public class WMSLayerCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 			{
 				URI childURI = WMSHelper.uriSubpath(getURI(), style.getName());
 				WMSLayerCapabilitiesCatalogTreeNode childNode =
-						new WMSLayerCapabilitiesCatalogTreeNode(childURI, capabilitiesURI, layer, style, true);
+						new WMSLayerCapabilitiesCatalogTreeNode(childURI, capabilitiesURI, capabilities, layer, style,
+								true);
 				addChild(childNode);
 			}
 		}
@@ -103,12 +108,10 @@ public class WMSLayerCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 	@Override
 	public void loadLayer(ILayerNode node, IEclipseContext context) throws Exception
 	{
-		IntentLayerLoader.load(generateLayerURI(), node, context);
-	}
-
-	public URI generateLayerURI() throws URISyntaxException
-	{
-		return WMSHelper.generateLayerURI(capabilitiesURI, layer, style);
+		String layerName = layer != null ? layer.getName() : null;
+		String styleName = style != null ? style.getName() : null;
+		WMSLayer layer = new WMSLayer(capabilitiesURI, capabilities, layerName, styleName);
+		node.setLayer(layer);
 	}
 
 	@Override

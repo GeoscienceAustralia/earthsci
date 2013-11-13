@@ -62,7 +62,7 @@ public class WMSCapabilitiesCatalogTreeNode extends AbstractCatalogTreeNode
 			{
 				URI childURI = WMSHelper.uriSubpath(getURI(), layerCapabilities.getName());
 				WMSLayerCapabilitiesCatalogTreeNode childNode =
-						new WMSLayerCapabilitiesCatalogTreeNode(childURI, getURI(), layerCapabilities);
+						new WMSLayerCapabilitiesCatalogTreeNode(childURI, getURI(), capabilities, layerCapabilities);
 				addChild(childNode);
 			}
 		}

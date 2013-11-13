@@ -41,7 +41,6 @@ import au.gov.ga.earthsci.core.intent.AbstractRetrieveIntentHandler;
 import au.gov.ga.earthsci.core.retrieve.IRetrievalData;
 import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
-import au.gov.ga.earthsci.layer.intent.IntentLayerLoader;
 import au.gov.ga.earthsci.layer.tree.FolderNode;
 import au.gov.ga.earthsci.layer.tree.LayerNode;
 
@@ -114,7 +113,7 @@ public class WMSCapabilitiesIntentHandler extends AbstractRetrieveIntentHandler
 					FolderNode folder = CatalogLayerHelper.createFolderNode(catalogTreeNode);
 					LayerNode layer = CatalogLayerHelper.createLayerNode(singleLayer);
 					folder.addChild(layer);
-					IntentLayerLoader.load(singleLayer.generateLayerURI(), layer, context);
+					singleLayer.loadLayer(layer, context);
 					callback.completed(folder, intent);
 					return;
 				}

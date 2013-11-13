@@ -25,17 +25,6 @@
    <extension
          point="au.gov.ga.earthsci.intent.filters">
       <filter
-            class="au.gov.ga.earthsci.catalog.wms.WMSLayerIntentHandler"
-            priority="0"
-            returns-result="true">
-         <return-type
-               class="gov.nasa.worldwind.layers.Layer">
-         </return-type>
-         <uri
-               scheme="wmslayer">
-         </uri>
-      </filter>
-      <filter
             class="au.gov.ga.earthsci.catalog.wms.WMSCapabilitiesIntentHandler"
             priority="0"
             returns-result="true">
@@ -46,6 +35,15 @@
                class="au.gov.ga.earthsci.catalog.wms.WMSCapabilitiesCatalogTreeNode">
          </return-type>
       </filter>
+   </extension>
+   <extension
+         point="au.gov.ga.earthsci.editable.models">
+      <model
+            model="au.gov.ga.earthsci.catalog.wms.layer.WMSLayerModelElement"
+            sdef-context="au.gov.ga.earthsci.catalog.wms.layer.WMSLayerModelElement"
+            sdef-name="WMSLayer"
+            type="au.gov.ga.earthsci.catalog.wms.layer.WMSLayer">
+      </model>
    </extension>
 
 </plugin>

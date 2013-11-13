@@ -14,7 +14,13 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.e4.core.contexts,
  org.eclipse.e4.core.di,
  au.gov.ga.earthsci.layer,
- au.gov.ga.earthsci.logging
+ au.gov.ga.earthsci.logging,
+ com.jogamp.jogl,
+ org.eclipse.sapphire.modeling,
+ au.gov.ga.earthsci.layer.ui,
+ au.gov.ga.earthsci.editable
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.inject
+Export-Package: au.gov.ga.earthsci.catalog.wms,
+ au.gov.ga.earthsci.catalog.wms.layer

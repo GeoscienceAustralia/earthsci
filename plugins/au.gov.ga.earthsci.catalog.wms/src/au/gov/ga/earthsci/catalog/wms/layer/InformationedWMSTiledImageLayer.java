@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.catalog.wms;
+package au.gov.ga.earthsci.catalog.wms.layer;
 
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.ogc.wms.WMSCapabilities;
 import gov.nasa.worldwind.util.Tile;
 import gov.nasa.worldwind.wms.WMSTiledImageLayer;
+import gov.nasa.worldwind.wms.WMSTiledImageLayer.URLBuilder;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import au.gov.ga.earthsci.common.util.IInformationed;
+import au.gov.ga.earthsci.worldwind.common.layers.tiled.image.delegate.DelegatorTiledImageLayer;
 
 /**
  * {@link WMSTiledImageLayer} subclass that implements {@link IInformationed}.
@@ -34,13 +36,13 @@ import au.gov.ga.earthsci.common.util.IInformationed;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class InformationedWMSTiledImageLayer extends WMSTiledImageLayer implements IInformationed
+public class InformationedWMSTiledImageLayer extends DelegatorTiledImageLayer implements IInformationed
 {
 	private final URL informationURL;
 
 	public InformationedWMSTiledImageLayer(WMSCapabilities caps, AVList params, URL informationURL)
 	{
-		super(fixUrlBuilder(wmsGetParamsFromCapsDoc(caps, params), caps));
+		super(fixUrlBuilder(WMSTiledImageLayer.wmsGetParamsFromCapsDoc(caps, params), caps));
 		this.informationURL = informationURL;
 	}
 
