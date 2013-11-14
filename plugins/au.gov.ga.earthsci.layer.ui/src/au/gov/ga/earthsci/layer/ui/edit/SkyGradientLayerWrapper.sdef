@@ -2,7 +2,21 @@
 
 	<import>
 		<package>au.gov.ga.earthsci.editable.renderers</package>
+        <definition>au.gov.ga.earthsci.layer.ui.edit.Layer</definition>
 	</import>
+    <composite>
+        <id>skyGradientLayer.composite</id>
+        <content>
+            <group>
+                <label>Atmosphere</label>
+                <content>
+                    <property-editor>AtmosphereThickness</property-editor>
+                    <property-editor>HorizonColor</property-editor>
+                    <property-editor>ZenithColor</property-editor>
+                </content>
+            </group>
+        </content>
+    </composite>
 
 	<composite>
 		<id>composite</id>
@@ -11,24 +25,10 @@
 			<content></content>
 		</documentation>
 		<content>
-			<property-editor>Name</property-editor>
-			<property-editor>Enabled</property-editor>
-			<property-editor>Opacity</property-editor>
-			<property-editor>AtmosphereThickness</property-editor>
-			<property-editor>HorizonColor</property-editor>
-			<!-- The following is defining a custom editor renderer for a property 
-				(don't forget to import the package above) -->
-			<property-editor>
-				<property>ZenithColor</property>
-				<hint>
-					<name>factory</name>
-					<value>ColorPropertyEditorRenderer$Factory</value>
-				</hint>
-			</property-editor>
+            <include>layer.composite</include>
+            <include>skyGradientLayer.composite</include>
 		</content>
-		<scale-vertically>true</scale-vertically>
-		<width>600</width>
-		<height>500</height>
+		<scale-vertically>false</scale-vertically>
 	</composite>
 
 	<dialog>

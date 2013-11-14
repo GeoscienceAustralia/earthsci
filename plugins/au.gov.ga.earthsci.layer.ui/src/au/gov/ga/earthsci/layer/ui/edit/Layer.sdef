@@ -1,19 +1,29 @@
 <definition>
 
 	<composite>
-		<id>composite</id>
+		<id>layer.composite</id>
 		<documentation>
 			<title>Layer</title>
 			<content></content>
 		</documentation>
 		<content>
-			<property-editor>Name</property-editor>
-			<property-editor>Opacity</property-editor>
+            <group>
+                <content>
+                    <property-editor>Name</property-editor>
+                    <property-editor>Enabled</property-editor>
+                    <property-editor>Opacity</property-editor>
+                </content>
+                <label>Layer</label>
+            </group>
 		</content>
-		<scale-vertically>true</scale-vertically>
-		<width>600</width>
-		<height>500</height>
+		<scale-vertically>false</scale-vertically>
 	</composite>
+    <composite>
+        <id>composite</id>
+        <content>
+            <include>layer.composite</include>
+        </content>
+    </composite>
 
 	<dialog>
 		<id>dialog</id>
