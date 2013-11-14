@@ -1,0 +1,44 @@
+<definition>
+
+	<import>
+		<package>au.gov.ga.earthsci.editable.renderers</package>
+        <definition>au.gov.ga.earthsci.layer.ui.edit.Layer</definition>
+	</import>
+    <composite>
+        <id>tiledImageLayer.composite</id>
+        <content>
+            <group>
+                <label>Tiled Image</label>
+                <content>
+                    <property-editor>DataCacheName</property-editor>
+                </content>
+            </group>
+        </content>
+    </composite>
+
+	<composite>
+		<id>composite</id>
+		<documentation>
+			<title>Tiled Image Layer</title>
+			<content></content>
+		</documentation>
+		<scale-vertically>false</scale-vertically>
+        <content>
+            <include>layer.composite</include>
+            <include>tiledImageLayer.composite</include>
+        </content>
+	</composite>
+
+	<dialog>
+		<id>dialog</id>
+		<label>edit layer</label>
+		<initial-focus>Title</initial-focus>
+		<content>
+			<include>composite</include>
+            <form>
+            </form>
+		</content>
+		<scale-vertically>true</scale-vertically>
+	</dialog>
+
+</definition>
