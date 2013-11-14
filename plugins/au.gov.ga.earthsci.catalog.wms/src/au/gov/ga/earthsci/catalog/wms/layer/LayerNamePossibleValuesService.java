@@ -34,8 +34,8 @@ import org.eclipse.sapphire.services.PossibleValuesService;
 import au.gov.ga.earthsci.editable.EditableModelResource;
 
 /**
- * A Sapphire {@link PossibleValuesService} for the layer names available on a
- * WMS server.
+ * Sapphire {@link PossibleValuesService} for the layer names available on a WMS
+ * server.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
