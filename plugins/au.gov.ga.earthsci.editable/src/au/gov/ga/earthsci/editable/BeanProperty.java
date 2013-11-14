@@ -22,7 +22,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.eclipse.sapphire.modeling.ModelProperty;
+import org.eclipse.sapphire.PropertyDef;
 
 /**
  * Helper class for setting a property's value on an object, using reflection.
@@ -36,15 +36,15 @@ public class BeanProperty
 	private final Method getter;
 	private final Method setter;
 
-	public BeanProperty(Object object, ModelProperty property, boolean readOnly) throws IntrospectionException
+	public BeanProperty(Object object, PropertyDef property, boolean readOnly) throws IntrospectionException
 	{
 		this.object = object;
 
 		//PropertyDescriptor automatically tries "get" prefix if "is" getter is not found
-		String getterProperty = "is" + capitalize(property.getName()); //$NON-NLS-1$
-		String setterProperty = readOnly ? null : "set" + capitalize(property.getName()); //$NON-NLS-1$
+		String getterProperty = "is" + capitalize(property.name()); //$NON-NLS-1$
+		String setterProperty = readOnly ? null : "set" + capitalize(property.name()); //$NON-NLS-1$
 		PropertyDescriptor propertyDescriptor =
-				new PropertyDescriptor(property.getName(), object.getClass(), getterProperty, setterProperty);
+				new PropertyDescriptor(property.name(), object.getClass(), getterProperty, setterProperty);
 		getter = propertyDescriptor.getReadMethod();
 		setter = propertyDescriptor.getWriteMethod();
 	}

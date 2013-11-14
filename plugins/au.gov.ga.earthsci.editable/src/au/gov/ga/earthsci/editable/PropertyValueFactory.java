@@ -18,12 +18,11 @@ package au.gov.ga.earthsci.editable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.sapphire.modeling.ModelElementType;
-import org.eclipse.sapphire.modeling.ModelProperty;
+import org.eclipse.sapphire.Property;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import au.gov.ga.earthsci.editable.annotations.ElementType;
+import au.gov.ga.earthsci.editable.annotations.InstanceElementType;
 import au.gov.ga.earthsci.editable.annotations.Factory;
 
 /**
@@ -42,11 +41,11 @@ public class PropertyValueFactory
 	 * <ol>
 	 * <li>The property is checked for a {@link Factory} annotation. If found,
 	 * the {@link IFactory} defined is used to create the instance.</li>
-	 * <li>The property is checked for an {@link ElementType} annotation. If
+	 * <li>The property is checked for an {@link InstanceElementType} annotation. If
 	 * found, the element type is instantiated and returned.</li>
 	 * <li>The type is checked for a {@link Factory} annotation. If found, the
 	 * {@link IFactory} defined is used to create the instance.</li>
-	 * <li>The type is checked for an {@link ElementType} annotation. If found,
+	 * <li>The type is checked for an {@link InstanceElementType} annotation. If found,
 	 * the element type is instantiated and returned.</li>
 	 * <li>If the <code>fallbackType</code> is non-null, it is instantiated and
 	 * returned.</li>
@@ -61,7 +60,7 @@ public class PropertyValueFactory
 	 *            Parent object that the new instance will be set on
 	 * @param fallbackType
 	 *            Type of object to create if both the property and type don't
-	 *            define a {@link Factory} or an {@link ElementType}
+	 *            define a {@link Factory} or an {@link InstanceElementType}
 	 * @return New instance
 	 * @throws SecurityException
 	 * @throws IllegalArgumentException
@@ -70,18 +69,19 @@ public class PropertyValueFactory
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static Object create(ModelProperty property, ModelElementType type, Object parent, Class<?> fallbackType)
+	public static Object create(Property property, org.eclipse.sapphire.ElementType type, Object parent,
+			Class<?> fallbackType)
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException, InstantiationException,
 			IllegalAccessException, InvocationTargetException
 	{
 		//first see if the property has factory or type annotations
-		Factory factoryAnnotation = property.getAnnotation(Factory.class);
-		ElementType elementTypeAnnotation = property.getAnnotation(ElementType.class);
+		Factory factoryAnnotation = property.definition().getAnnotation(Factory.class);
+		InstanceElementType elementTypeAnnotation = property.definition().getAnnotation(InstanceElementType.class);
 		if (factoryAnnotation == null && elementTypeAnnotation == null)
 		{
 			//if the property has no relevant annotations, see if the type does
 			factoryAnnotation = type.getAnnotation(Factory.class);
-			elementTypeAnnotation = type.getAnnotation(ElementType.class);
+			elementTypeAnnotation = type.getAnnotation(InstanceElementType.class);
 		}
 
 		if (factoryAnnotation != null)

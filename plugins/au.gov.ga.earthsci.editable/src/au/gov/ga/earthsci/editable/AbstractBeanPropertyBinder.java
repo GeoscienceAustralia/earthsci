@@ -17,10 +17,10 @@ package au.gov.ga.earthsci.editable;
 
 import java.beans.IntrospectionException;
 
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.ElementList;
+import org.eclipse.sapphire.Property;
 import org.eclipse.sapphire.modeling.EditFailedException;
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.ListProperty;
-import org.eclipse.sapphire.modeling.ModelProperty;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.modeling.Status.Severity;
 import org.eclipse.sapphire.modeling.annotations.ReadOnly;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> implements IBinder<T, E, P>
+public abstract class AbstractBeanPropertyBinder<T, E, P extends Property> implements IBinder<T, E, P>
 {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractBeanPropertyBinder.class);
 
@@ -58,7 +58,7 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 	 *            Model element
 	 * @return Converted value
 	 */
-	protected abstract T convertTo(Object value, P property, BeanProperty beanProperty, IModelElement element);
+	protected abstract T convertTo(Object value, P property, BeanProperty beanProperty, Element element);
 
 	/**
 	 * Convert the given value from Sapphire to an object to be used for setting
@@ -76,7 +76,7 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 	 * @return Converted value, <code>null</code> if the setter shouldn't be
 	 *         invoked
 	 */
-	protected abstract Conversion convertFrom(T value, P property, BeanProperty beanProperty, IModelElement element);
+	protected abstract Conversion convertFrom(T value, P property, BeanProperty beanProperty, Element element);
 
 	protected BeanProperty getBeanProperty()
 	{
@@ -84,7 +84,7 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 	}
 
 	@Override
-	public T get(E object, P property, IModelElement element)
+	public T get(E object, P property, Element element)
 	{
 		if (valueForValidationSet)
 		{
@@ -104,7 +104,7 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 		}
 		catch (Exception e)
 		{
-			logger.error("Error invoking '" + property.getName() + "' property getter", e); //$NON-NLS-1$ //$NON-NLS-2$
+			logger.error("Error invoking '" + property.name() + "' property getter", e); //$NON-NLS-1$ //$NON-NLS-2$
 			return null;
 		}
 
@@ -112,7 +112,7 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 	}
 
 	@Override
-	public void set(T value, E object, P property, IModelElement element)
+	public void set(T value, E object, P property, Element element)
 	{
 		initBeanPropertyIfRequired(object, property);
 		if (beanProperty == null || beanProperty.isReadOnly())
@@ -125,8 +125,8 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 		{
 			valueForValidation = value;
 			valueForValidationSet = true;
-			element.refresh(property, true);
-			Status status = element.validation(property);
+			element.property(property.definition()).refresh();
+			Status status = element.property(property.definition()).validation();
 			if (status.severity() == Severity.ERROR)
 			{
 				resetValueForValidation = false;
@@ -145,7 +145,7 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 			}
 			catch (Exception e)
 			{
-				logger.error("Error invoking '" + property.getName() + "' property setter", e); //$NON-NLS-1$ //$NON-NLS-2$
+				logger.error("Error invoking '" + property.name() + "' property setter", e); //$NON-NLS-1$ //$NON-NLS-2$
 				throw new EditFailedException();
 			}
 		}
@@ -168,8 +168,8 @@ public abstract class AbstractBeanPropertyBinder<T, E, P extends ModelProperty> 
 			try
 			{
 				beanProperty =
-						new BeanProperty(object, property, property.getAnnotation(ReadOnly.class) != null
-								|| property instanceof ListProperty);
+						new BeanProperty(object, property.definition(), property.definition().getAnnotation(
+								ReadOnly.class) != null || property instanceof ElementList<?>);
 			}
 			catch (IntrospectionException e)
 			{

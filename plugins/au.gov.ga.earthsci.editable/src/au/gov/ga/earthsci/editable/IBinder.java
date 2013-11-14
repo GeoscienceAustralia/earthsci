@@ -15,8 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.ModelProperty;
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.Property;
 
 /**
  * Super-interface for custom bindings.
@@ -30,7 +30,7 @@ import org.eclipse.sapphire.modeling.ModelProperty;
  * @param <P>
  *            Model property type
  */
-interface IBinder<T, E, P extends ModelProperty>
+interface IBinder<T, E, P extends Property>
 {
 	/**
 	 * Get the value for the property from the given object.
@@ -41,7 +41,7 @@ interface IBinder<T, E, P extends ModelProperty>
 	 *            Property to read
 	 * @return Value for the given property
 	 */
-	T get(E object, P property, IModelElement element);
+	T get(E object, P property, Element element);
 
 	/**
 	 * Set the value for the property on the given object.
@@ -53,5 +53,5 @@ interface IBinder<T, E, P extends ModelProperty>
 	 * @param property
 	 *            Property to set
 	 */
-	void set(T value, E object, P property, IModelElement element);
+	void set(T value, E object, P property, Element element);
 }

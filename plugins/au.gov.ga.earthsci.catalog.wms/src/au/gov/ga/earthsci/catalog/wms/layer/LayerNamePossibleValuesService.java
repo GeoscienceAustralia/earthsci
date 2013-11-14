@@ -21,14 +21,14 @@ import gov.nasa.worldwind.ogc.wms.WMSLayerCapabilities;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedSet;
+import java.util.Set;
 
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.FilteredListener;
 import org.eclipse.sapphire.Listener;
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.PropertyContentEvent;
-import org.eclipse.sapphire.modeling.Resource;
-import org.eclipse.sapphire.modeling.util.NLS;
+import org.eclipse.sapphire.PropertyContentEvent;
+import org.eclipse.sapphire.Resource;
 import org.eclipse.sapphire.services.PossibleValuesService;
 
 import au.gov.ga.earthsci.editable.EditableModelResource;
@@ -53,14 +53,14 @@ public class LayerNamePossibleValuesService extends PossibleValuesService
 			}
 		};
 
-		final IModelElement model = context(IModelElement.class);
-		model.attach(listener, WMSLayerModelElement.PROP_STYLE_NAME);
+		final Element model = context(Element.class);
+		model.attach(listener, WMSLayerModelElement.PROP_STYLE_NAME.name());
 	}
 
 	@Override
-	protected void fillPossibleValues(SortedSet<String> values)
+	protected void fillPossibleValues(Set<String> values)
 	{
-		final IModelElement model = context(IModelElement.class);
+		final Element model = context(Element.class);
 
 		Resource resource = model.resource();
 		if (!(resource instanceof EditableModelResource))

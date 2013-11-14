@@ -15,10 +15,11 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import org.eclipse.sapphire.modeling.ElementProperty;
-import org.eclipse.sapphire.modeling.ImpliedElementProperty;
+import org.eclipse.sapphire.ElementHandle;
+import org.eclipse.sapphire.ElementProperty;
+import org.eclipse.sapphire.ImpliedElementProperty;
 
-import au.gov.ga.earthsci.editable.annotations.ElementType;
+import au.gov.ga.earthsci.editable.annotations.InstanceElementType;
 import au.gov.ga.earthsci.editable.annotations.Factory;
 
 /**
@@ -27,13 +28,13 @@ import au.gov.ga.earthsci.editable.annotations.Factory;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IElementBinder<E> extends IBinder<Object, E, ElementProperty>
+public interface IElementBinder<E> extends IBinder<Object, E, ElementHandle<?>>
 {
 	/**
 	 * @return Type that the property setter method accepts, used by the
 	 *         {@link PropertyValueFactory} to instantiate a new instance of a
 	 *         value for this property (if property doesn't have a
-	 *         {@link Factory} or {@link ElementType} annotation). Return
+	 *         {@link Factory} or {@link InstanceElementType} annotation). Return
 	 *         <code>null</code> if unknown.
 	 */
 	Class<?> getNewType();

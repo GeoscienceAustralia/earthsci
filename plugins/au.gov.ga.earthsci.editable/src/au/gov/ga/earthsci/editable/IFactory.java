@@ -15,10 +15,10 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import org.eclipse.sapphire.modeling.ElementProperty;
-import org.eclipse.sapphire.modeling.ListProperty;
-import org.eclipse.sapphire.modeling.ModelElementType;
-import org.eclipse.sapphire.modeling.ModelProperty;
+import org.eclipse.sapphire.ElementProperty;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.ListProperty;
+import org.eclipse.sapphire.Property;
 import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.editable.annotations.Factory;
@@ -47,5 +47,5 @@ public interface IFactory<T>
 	 *            create the new instance (such as a input dialog)
 	 * @return New instance
 	 */
-	T create(ModelElementType type, ModelProperty property, Object parent, Shell shell);
+	T create(ElementType type, Property property, Object parent, Shell shell);
 }

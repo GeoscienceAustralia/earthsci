@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.editable;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.sapphire.modeling.IModelElement;
+import org.eclipse.sapphire.Element;
 
 import au.gov.ga.earthsci.common.util.ExtensionPointHelper;
 
@@ -36,7 +36,7 @@ public class EditableModel<T>
 	private final static String SDEF_NAME_ATTRIBUTE = "sdef-name"; //$NON-NLS-1$
 
 	private final Class<? extends T> type;
-	private final Class<? extends IModelElement> model;
+	private final Class<? extends Element> model;
 	private final Class<?> sdefContext;
 	private final String sdefName;
 
@@ -56,7 +56,7 @@ public class EditableModel<T>
 		return type;
 	}
 
-	public Class<? extends IModelElement> getModel()
+	public Class<? extends Element> getModel()
 	{
 		return model;
 	}

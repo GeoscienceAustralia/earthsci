@@ -17,10 +17,11 @@ package au.gov.ga.earthsci.editable;
 
 import java.beans.IntrospectionException;
 
-import org.eclipse.sapphire.modeling.ElementBindingImpl;
-import org.eclipse.sapphire.modeling.ElementProperty;
-import org.eclipse.sapphire.modeling.ModelElementType;
-import org.eclipse.sapphire.modeling.Resource;
+import org.eclipse.sapphire.ElementHandle;
+import org.eclipse.sapphire.ElementProperty;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.Resource;
+import org.eclipse.sapphire.modeling.ElementPropertyBinding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +37,12 @@ import au.gov.ga.earthsci.editable.annotations.ElementBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelElementBinding extends ElementBindingImpl implements IRevertable
+public class EditableModelElementBinding extends ElementPropertyBinding implements IRevertable
 {
 	private static final Logger logger = LoggerFactory.getLogger(EditableModelElementBinding.class);
 
 	private final Object parent;
-	private final ElementProperty property;
+	private final ElementHandle<?> property;
 	private final Resource parentResource;
 	private final IElementBinder<Object> binder;
 	private EditableModelResource<?> resource;
@@ -49,14 +50,14 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 	private boolean oldValueSet = false;
 
 	@SuppressWarnings("unchecked")
-	public EditableModelElementBinding(Object parent, ElementProperty property, Resource parentResource)
+	public EditableModelElementBinding(Object parent, ElementHandle<?> property, Resource parentResource)
 			throws InstantiationException, IllegalAccessException, IntrospectionException
 	{
 		this.parent = parent;
 		this.property = property;
 		this.parentResource = parentResource;
 
-		ElementBinder binderAnnotation = property.getAnnotation(ElementBinder.class);
+		ElementBinder binderAnnotation = property.definition().getAnnotation(ElementBinder.class);
 		if (binderAnnotation != null && binderAnnotation.value() != null)
 		{
 			Class<? extends IElementBinder<?>> binderClass = binderAnnotation.value();
@@ -73,7 +74,7 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 	{
 		if (resource == null)
 		{
-			Object object = binder.get(parent, property, element());
+			Object object = binder.get(parent, property, property.element());
 			if (object != null)
 			{
 				resource = new EditableModelResource<Object>(object, parentResource);
@@ -83,13 +84,13 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 	}
 
 	@Override
-	public ModelElementType type(Resource resource)
+	public ElementType type(Resource resource)
 	{
-		return property.getType();
+		return property.definition().getType();
 	}
 
 	@Override
-	public Resource create(ModelElementType type)
+	public Resource create(ElementType type)
 	{
 		storeOldValue();
 		try
@@ -99,13 +100,13 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 			{
 				return null;
 			}
-			binder.set(object, parent, property, element());
+			binder.set(object, parent, property, property.element());
 			resource = new EditableModelResource<Object>(object, parentResource);
 			return resource;
 		}
 		catch (Exception e)
 		{
-			logger.error("Error creating value for property: " + property.getName(), e); //$NON-NLS-1$
+			logger.error("Error creating value for property: " + property.definition().name(), e); //$NON-NLS-1$
 			return null;
 		}
 	}
@@ -114,14 +115,8 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 	public void remove()
 	{
 		storeOldValue();
-		binder.set(null, parent, property, element());
+		binder.set(null, parent, property, property.element());
 		resource = null;
-	}
-
-	@Override
-	public boolean removable()
-	{
-		return true;
 	}
 
 	private void storeOldValue()
@@ -139,7 +134,7 @@ public class EditableModelElementBinding extends ElementBindingImpl implements I
 		if (oldValueSet)
 		{
 			Object oldValue = oldResource == null ? null : oldResource.getObject();
-			binder.set(oldValue, parent, property, element());
+			binder.set(oldValue, parent, property, property.element());
 			oldResource.revert();
 			oldResource = null;
 			oldValueSet = false;

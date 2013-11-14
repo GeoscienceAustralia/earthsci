@@ -17,17 +17,17 @@ package au.gov.ga.earthsci.layer.ui.edit;
 
 import java.awt.Color;
 
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.ModelElementType;
-import org.eclipse.sapphire.modeling.ValueProperty;
-import org.eclipse.sapphire.modeling.annotations.GenerateImpl;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.InitialValue;
 import org.eclipse.sapphire.modeling.annotations.NumericRange;
 import org.eclipse.sapphire.modeling.annotations.Service;
+import org.eclipse.sapphire.modeling.annotations.Services;
 import org.eclipse.sapphire.modeling.annotations.Type;
 
 import au.gov.ga.earthsci.editable.annotations.Sync;
-import au.gov.ga.earthsci.editable.serialization.ColorAwtSerializationService;
+import au.gov.ga.earthsci.editable.serialization.ColorAwtToStringConversionService;
+import au.gov.ga.earthsci.editable.serialization.StringToColorAwtConversionService;
 import au.gov.ga.earthsci.layer.wrappers.SkyGradientLayerWrapper;
 
 /**
@@ -36,10 +36,9 @@ import au.gov.ga.earthsci.layer.wrappers.SkyGradientLayerWrapper;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@GenerateImpl(packageName = "au.gov.ga.earthsci.editable", className = "RevertableModelElement")
 public interface SkyGradientLayerWrapperModelElement extends LayerModelElement
 {
-	ModelElementType TYPE = new ModelElementType(SkyGradientLayerWrapperModelElement.class);
+	ElementType TYPE = new ElementType(SkyGradientLayerWrapperModelElement.class);
 
 	@Sync
 	@NumericRange(min = "0", max = "1e6")
@@ -49,11 +48,13 @@ public interface SkyGradientLayerWrapperModelElement extends LayerModelElement
 
 	@Type(base = Color.class)
 	@InitialValue(text = "#c2c2cc")
-	@Service(impl = ColorAwtSerializationService.class)
+	@Services({ @Service(impl = StringToColorAwtConversionService.class),
+			@Service(impl = ColorAwtToStringConversionService.class) })
 	ValueProperty PROP_HORIZON_COLOR = new ValueProperty(TYPE, "HorizonColor"); //$NON-NLS-1$
 
 	@Type(base = Color.class)
 	@InitialValue(text = "#4278d4")
-	@Service(impl = ColorAwtSerializationService.class)
+	@Services({ @Service(impl = StringToColorAwtConversionService.class),
+			@Service(impl = ColorAwtToStringConversionService.class) })
 	ValueProperty PROP_ZENITH_COLOR = new ValueProperty(TYPE, "ZenithColor"); //$NON-NLS-1$
 }

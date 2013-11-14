@@ -15,19 +15,19 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable.renderers;
 
-import static org.eclipse.sapphire.ui.swt.renderer.GridLayoutUtil.*;
+import static org.eclipse.sapphire.ui.forms.swt.GridLayoutUtil.*;
 
-import org.eclipse.sapphire.modeling.ModelProperty;
-import org.eclipse.sapphire.modeling.Value;
-import org.eclipse.sapphire.modeling.ValueProperty;
+import org.eclipse.sapphire.PropertyDef;
+import org.eclipse.sapphire.Value;
+import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.util.MiscUtil;
-import org.eclipse.sapphire.ui.PropertyEditorPart;
-import org.eclipse.sapphire.ui.SapphireRenderingContext;
 import org.eclipse.sapphire.ui.assist.internal.PropertyEditorAssistDecorator;
-import org.eclipse.sapphire.ui.renderers.swt.PropertyEditorRenderer;
-import org.eclipse.sapphire.ui.renderers.swt.PropertyEditorRendererFactory;
-import org.eclipse.sapphire.ui.renderers.swt.ValuePropertyEditorRenderer;
-import org.eclipse.sapphire.ui.swt.renderer.TextOverlayPainter;
+import org.eclipse.sapphire.ui.forms.FormComponentPart;
+import org.eclipse.sapphire.ui.forms.PropertyEditorPart;
+import org.eclipse.sapphire.ui.forms.swt.PropertyEditorPresentation;
+import org.eclipse.sapphire.ui.forms.swt.PropertyEditorPresentationFactory;
+import org.eclipse.sapphire.ui.forms.swt.SwtPresentation;
+import org.eclipse.sapphire.ui.forms.swt.ValuePropertyEditorPresentation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -43,31 +43,34 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import au.gov.ga.earthsci.editable.annotations.Sync;
-import au.gov.ga.earthsci.editable.serialization.ColorAwtSerializationService;
+import au.gov.ga.earthsci.editable.serialization.ColorAwtToStringConversionService;
+import au.gov.ga.earthsci.editable.serialization.StringToColorAwtConversionService;
 
 /**
  * {@link ValuePropertyEditorRenderer} for editing color properties.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ColorPropertyEditorRenderer extends ValuePropertyEditorRenderer
+public class ColorPropertyEditorRenderer extends ValuePropertyEditorPresentation
 {
 	private boolean sync = false;
 	private Text textField;
 	private Canvas canvas;
 	private Color lastColor = null;
-	private final ColorAwtSerializationService awtColorSerializationService = new ColorAwtSerializationService();
+	private final StringToColorAwtConversionService stringToColorConverter = new StringToColorAwtConversionService();
+	private final ColorAwtToStringConversionService colorToStringConverter = new ColorAwtToStringConversionService();
 
-	public ColorPropertyEditorRenderer(SapphireRenderingContext context, PropertyEditorPart part)
+	public ColorPropertyEditorRenderer(final FormComponentPart part, final SwtPresentation parent,
+			final Composite composite)
 	{
-		super(context, part);
+		super(part, parent, composite);
 	}
 
 	@Override
 	protected void createContents(Composite parent)
 	{
-		final PropertyEditorPart part = getPart();
-		final ValueProperty property = (ValueProperty) part.getProperty();
+		final PropertyEditorPart part = part();
+		final ValueProperty property = (ValueProperty) part.property().definition();
 
 		this.sync = property.getAnnotation(Sync.class) != null;
 
@@ -93,16 +96,16 @@ public class ColorPropertyEditorRenderer extends ValuePropertyEditorRenderer
 			}
 		});
 
-		final TextOverlayPainter.Controller textOverlayPainterController = new TextOverlayPainter.Controller()
+		/*final TextOverlayPainter.Controller textOverlayPainterController = new TextOverlayPainter.Controller()
 		{
 			@Override
-			public String getDefaultText()
+			public String overlay()
 			{
-				return getPropertyValue().getDefaultText();
+				return property().getDefaultText();
 			}
 		};
 
-		TextOverlayPainter.install(this.textField, textOverlayPainterController);
+		TextOverlayPainter.install(this.textField, textOverlayPainterController);*/
 
 		this.canvas = new Canvas(composite, SWT.BORDER);
 		this.canvas.setLayoutData(gdhhint(gd(), 20));
@@ -118,7 +121,7 @@ public class ColorPropertyEditorRenderer extends ValuePropertyEditorRenderer
 				{
 					setCanvasBackground(rgb.red, rgb.green, rgb.blue);
 					java.awt.Color awtColor = new java.awt.Color(rgb.red, rgb.green, rgb.blue);
-					String value = awtColorSerializationService.encode(awtColor);
+					String value = colorToStringConverter.convert(awtColor);
 					setPropertyValue(value, !sync);
 				}
 			}
@@ -147,17 +150,17 @@ public class ColorPropertyEditorRenderer extends ValuePropertyEditorRenderer
 	{
 		super.handlePropertyChangedEvent();
 
-		final Value<?> value = getPropertyValue();
+		final Value<?> value = property();
 
 		final String existingValueInTextField = this.textField.getText();
-		final String newValueForTextField = value.getText(false);
+		final String newValueForTextField = value.text(false);
 
 		if (!existingValueInTextField.equals(newValueForTextField))
 		{
 			this.textField.setText(newValueForTextField == null ? MiscUtil.EMPTY_STRING : newValueForTextField);
 		}
 
-		Object object = awtColorSerializationService.decode(newValueForTextField);
+		Object object = stringToColorConverter.convert(newValueForTextField);
 		if (object instanceof java.awt.Color)
 		{
 			java.awt.Color awtColor = (java.awt.Color) object;
@@ -181,20 +184,20 @@ public class ColorPropertyEditorRenderer extends ValuePropertyEditorRenderer
 		this.textField.setFocus();
 	}
 
-	public static class Factory extends PropertyEditorRendererFactory
+	public static class Factory extends PropertyEditorPresentationFactory
 	{
 		@Override
 		public boolean isApplicableTo(final PropertyEditorPart propertyEditorDefinition)
 		{
-			final ModelProperty property = propertyEditorDefinition.getProperty();
-			return property.isOfType(java.awt.Color.class) || property.isOfType(org.eclipse.sapphire.ui.Color.class)
+			final PropertyDef property = propertyEditorDefinition.property().definition();
+			return property.isOfType(java.awt.Color.class) || property.isOfType(org.eclipse.sapphire.Color.class)
 					|| property.isOfType(org.eclipse.swt.graphics.Color.class);
 		}
 
 		@Override
-		public PropertyEditorRenderer create(final SapphireRenderingContext context, final PropertyEditorPart part)
+		public PropertyEditorPresentation create(PropertyEditorPart part, SwtPresentation parent, Composite composite)
 		{
-			return new ColorPropertyEditorRenderer(context, part);
+			return new ColorPropertyEditorRenderer(part, parent, composite);
 		}
 	}
 }

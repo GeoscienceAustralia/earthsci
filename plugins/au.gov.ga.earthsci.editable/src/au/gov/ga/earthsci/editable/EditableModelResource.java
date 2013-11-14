@@ -15,13 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import org.eclipse.sapphire.modeling.BindingImpl;
-import org.eclipse.sapphire.modeling.ElementProperty;
-import org.eclipse.sapphire.modeling.ImpliedElementProperty;
-import org.eclipse.sapphire.modeling.ListProperty;
-import org.eclipse.sapphire.modeling.ModelProperty;
-import org.eclipse.sapphire.modeling.Resource;
-import org.eclipse.sapphire.modeling.ValueProperty;
+import org.eclipse.sapphire.ElementHandle;
+import org.eclipse.sapphire.ElementList;
+import org.eclipse.sapphire.ImpliedElementProperty;
+import org.eclipse.sapphire.Property;
+import org.eclipse.sapphire.PropertyBinding;
+import org.eclipse.sapphire.Resource;
+import org.eclipse.sapphire.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  */
 public class EditableModelResource<T> extends Resource implements IRevertable
 {
-	private static final String[] EMPTY_PARAMS = new String[0];
 	private static final Logger logger = LoggerFactory.getLogger(EditableModelResource.class);
 
 	private final T object;
@@ -51,47 +50,53 @@ public class EditableModelResource<T> extends Resource implements IRevertable
 	}
 
 	@Override
-	protected BindingImpl createBinding(ModelProperty property)
+	protected PropertyBinding createBinding(Property property)
 	{
 		if (dontCreateBinding)
 		{
 			return null;
 		}
 
-		BindingImpl binding = null;
+		PropertyBinding binding = null;
 		try
 		{
-			if (property instanceof ValueProperty)
+			if (property instanceof Value<?>)
 			{
-				binding = new EditableModelValueBinding(object, (ValueProperty) property);
+				Value<?> value = (Value<?>) property;
+				binding = new EditableModelValueBinding(object, value);
 			}
-			else if (property instanceof ImpliedElementProperty)
+			else if (property instanceof ElementHandle<?>)
 			{
-				binding = new EditableModelImpliedElementBinding(object, (ImpliedElementProperty) property, this);
+				ElementHandle<?> elementHandle = (ElementHandle<?>) property;
+				if (property.definition() instanceof ImpliedElementProperty)
+				{
+					binding = new EditableModelImpliedElementBinding(object, elementHandle, this);
+				}
+				else
+				{
+					binding = new EditableModelElementBinding(object, elementHandle, this);
+				}
 			}
-			else if (property instanceof ElementProperty)
+			else if (property instanceof ElementList<?>)
 			{
-				binding = new EditableModelElementBinding(object, (ElementProperty) property, this);
-			}
-			else if (property instanceof ListProperty)
-			{
-				binding = new EditableModelListBinding(object, (ListProperty) property, this);
+				ElementList<?> elementList = (ElementList<?>) property;
+				binding = new EditableModelListBinding(object, elementList, this);
 			}
 		}
 		catch (Exception e)
 		{
-			logger.error("Error binding to value property: " + property.getName(), e); //$NON-NLS-1$
+			logger.error("Error binding to value property: " + property.name(), e); //$NON-NLS-1$
 		}
 
 		if (binding != null)
 		{
-			binding.init(element(), property, EMPTY_PARAMS);
+			binding.init(property);
 		}
 
 		return binding;
 	}
 
-	protected BindingImpl bindingIfExists(ModelProperty property)
+	protected PropertyBinding bindingIfExists(Property property)
 	{
 		dontCreateBinding = true;
 		try
@@ -117,9 +122,9 @@ public class EditableModelResource<T> extends Resource implements IRevertable
 	@Override
 	public void revert()
 	{
-		for (ModelProperty property : element().properties())
+		for (Property property : element().properties())
 		{
-			BindingImpl binding = bindingIfExists(property);
+			PropertyBinding binding = bindingIfExists(property);
 			if (binding instanceof IRevertable)
 			{
 				((IRevertable) binding).revert();

@@ -15,10 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog.wms.layer;
 
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.ModelElementType;
-import org.eclipse.sapphire.modeling.ValueProperty;
-import org.eclipse.sapphire.modeling.annotations.GenerateImpl;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.ReadOnly;
 import org.eclipse.sapphire.modeling.annotations.Service;
@@ -30,10 +28,9 @@ import au.gov.ga.earthsci.layer.ui.edit.LayerModelElement;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@GenerateImpl(packageName = "au.gov.ga.earthsci.editable", className = "RevertableModelElement")
 public interface WMSLayerModelElement extends LayerModelElement
 {
-	ModelElementType TYPE = new ModelElementType(WMSLayerModelElement.class);
+	ElementType TYPE = new ElementType(WMSLayerModelElement.class);
 
 	@ReadOnly
 	@Label(standard = "Capabilities URL")

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.layer.ui.handlers;
 
+import java.util.Set;
+
 import javax.inject.Named;
 
 import org.eclipse.e4.core.di.annotations.CanExecute;
@@ -23,10 +25,11 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.sapphire.Event;
 import org.eclipse.sapphire.Listener;
-import org.eclipse.sapphire.modeling.PropertyContentEvent;
+import org.eclipse.sapphire.Property;
+import org.eclipse.sapphire.PropertyContentEvent;
 import org.eclipse.sapphire.ui.def.DefinitionLoader.Reference;
-import org.eclipse.sapphire.ui.def.DialogDef;
-import org.eclipse.sapphire.ui.swt.SapphireDialog;
+import org.eclipse.sapphire.ui.forms.DialogDef;
+import org.eclipse.sapphire.ui.forms.swt.SapphireDialog;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
 
@@ -68,7 +71,7 @@ public class PropertiesHandler
 			IPersistentLayer layer = layerNode.getLayer();
 			ModelAndDefinition editor = EditableManager.getInstance().edit(layer);
 
-			editor.getModel().attach(new Listener()
+			Listener listener = new Listener()
 			{
 				@Override
 				public void handle(Event event)
@@ -79,13 +82,21 @@ public class PropertiesHandler
 						WorldWindowRegistry.INSTANCE.redraw();
 					}
 				}
-			});
+			};
+			editor.getModel().attach(listener);
+			//XXX in sapphire 0.6.x attaching to the model (as above) was enough to receive property
+			//change events, but 0.7.0 requires attaching to properties individually: (is this a bug?)
+			Set<Property> properties = editor.getModel().properties();
+			for (Property property : properties)
+			{
+				property.attach(listener);
+			}
 
 			Reference<DialogDef> definition = editor.getLoader().dialog();
 			SapphireDialog dialog = new SapphireDialog(shell, editor.getModel(), definition);
 			if (dialog.open() != Dialog.OK)
 			{
-				editor.getModel().revert();
+				editor.revert();
 				WorldWindowRegistry.INSTANCE.redraw();
 			}
 		}

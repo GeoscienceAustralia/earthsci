@@ -17,13 +17,14 @@ package au.gov.ga.earthsci.editable;
 
 import java.util.List;
 
-import org.eclipse.sapphire.modeling.ListProperty;
+import org.eclipse.sapphire.ElementList;
+import org.eclipse.sapphire.ListProperty;
 
 /**
  * Custom binding for {@link ListProperty}s.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IListBinder<E> extends IBinder<List<?>, E, ListProperty>
+public interface IListBinder<E> extends IBinder<List<?>, E, ElementList<?>>
 {
 }

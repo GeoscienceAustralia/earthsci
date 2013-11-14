@@ -15,14 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable.models;
 
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.ModelElementType;
-import org.eclipse.sapphire.modeling.ValueProperty;
-import org.eclipse.sapphire.modeling.annotations.GenerateImpl;
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.ReadOnly;
 
-import au.gov.ga.earthsci.editable.annotations.ElementType;
 import au.gov.ga.earthsci.editable.annotations.Factory;
+import au.gov.ga.earthsci.editable.annotations.InstanceElementType;
 import au.gov.ga.earthsci.editable.annotations.ValueBinder;
 import au.gov.ga.earthsci.editable.binders.StringBinder;
 import au.gov.ga.earthsci.editable.factories.StringFactory;
@@ -32,12 +31,11 @@ import au.gov.ga.earthsci.editable.factories.StringFactory;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@GenerateImpl(packageName = "au.gov.ga.earthsci.editable", className = "RevertableModelElement")
-@ElementType(String.class)
+@InstanceElementType(String.class)
 @Factory(StringFactory.class)
-public interface StringModelElement extends IModelElement
+public interface StringModelElement extends Element
 {
-	ModelElementType TYPE = new ModelElementType(StringModelElement.class);
+	ElementType TYPE = new ElementType(StringModelElement.class);
 
 	@ReadOnly
 	@ValueBinder(StringBinder.class)

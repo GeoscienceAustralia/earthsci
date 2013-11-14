@@ -15,13 +15,14 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import org.eclipse.sapphire.modeling.ValueProperty;
+import org.eclipse.sapphire.Value;
+import org.eclipse.sapphire.ValueProperty;
 
 /**
  * Custom binding for {@link ValueProperty}s.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IValueBinder<E> extends IBinder<String, E, ValueProperty>
+public interface IValueBinder<E> extends IBinder<String, E, Value<?>>
 {
 }

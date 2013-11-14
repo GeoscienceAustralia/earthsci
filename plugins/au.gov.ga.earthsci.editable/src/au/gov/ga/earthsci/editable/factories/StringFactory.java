@@ -17,10 +17,10 @@ package au.gov.ga.earthsci.editable.factories;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.ListProperty;
+import org.eclipse.sapphire.Property;
 import org.eclipse.sapphire.modeling.CapitalizationType;
-import org.eclipse.sapphire.modeling.ListProperty;
-import org.eclipse.sapphire.modeling.ModelElementType;
-import org.eclipse.sapphire.modeling.ModelProperty;
 import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.editable.IFactory;
@@ -34,11 +34,11 @@ import au.gov.ga.earthsci.editable.IFactory;
 public class StringFactory implements IFactory<String>
 {
 	@Override
-	public String create(ModelElementType type, ModelProperty property, Object parent, Shell shell)
+	public String create(ElementType type, Property property, Object parent, Shell shell)
 	{
-		String label = property.getLabel(true, CapitalizationType.NO_CAPS, false);
+		String label = property.definition().getLabel(true, CapitalizationType.NO_CAPS, false);
 		String title = "New";
-		String message = property instanceof ListProperty ?
+		String message = property.definition() instanceof ListProperty ?
 				"Enter a value to add to the list of " + label + ":" : //$NON-NLS-2$
 				"Enter a new " + label + ":"; //$NON-NLS-2$
 		InputDialog dialog = new InputDialog(shell, title, message, null, null);

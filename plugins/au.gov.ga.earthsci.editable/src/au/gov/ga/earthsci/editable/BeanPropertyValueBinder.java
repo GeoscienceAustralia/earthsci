@@ -15,9 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.ValueProperty;
-import org.eclipse.sapphire.services.ValueSerializationMasterService;
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.MasterConversionService;
+import org.eclipse.sapphire.Value;
 
 import au.gov.ga.earthsci.common.util.StringInstantiable;
 import au.gov.ga.earthsci.editable.annotations.ValueBinder;
@@ -35,7 +35,7 @@ import au.gov.ga.earthsci.editable.annotations.ValueBinder;
 public class BeanPropertyValueBinder extends AbstractBeanPropertyValueBinder
 {
 	@Override
-	protected String convertTo(Object value, ValueProperty property, BeanProperty beanProperty, IModelElement element)
+	protected String convertTo(Object value, Value<?> property, BeanProperty beanProperty, Element element)
 	{
 		//first try string instantiable:
 		String instantiable = StringInstantiable.toString(value);
@@ -45,12 +45,13 @@ public class BeanPropertyValueBinder extends AbstractBeanPropertyValueBinder
 		}
 
 		//next try a ValueSerializationService:
-		return element.service(property, ValueSerializationMasterService.class).encode(value);
+		return element.property(property.definition()).service(MasterConversionService.class)
+				.convert(value, String.class);
 	}
 
 	@Override
-	protected Conversion convertFrom(String value, ValueProperty property, BeanProperty beanProperty,
-			IModelElement element)
+	protected au.gov.ga.earthsci.editable.AbstractBeanPropertyBinder.Conversion convertFrom(String value,
+			Value<?> property, BeanProperty beanProperty, Element element)
 	{
 		Class<?> type = beanProperty.getSetterType();
 		if (type.isPrimitive() && (value == null || value.length() == 0))
@@ -62,7 +63,8 @@ public class BeanPropertyValueBinder extends AbstractBeanPropertyValueBinder
 		if (object == null)
 		{
 			//not string instantiable, so try the ValueSerializationService
-			object = element.service(property, ValueSerializationMasterService.class).decode(value);
+			object =
+					element.property(property.definition()).service(MasterConversionService.class).convert(value, type);
 		}
 		if (type.isPrimitive() && object == null)
 		{

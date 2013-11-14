@@ -19,9 +19,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.eclipse.sapphire.modeling.ElementProperty;
-import org.eclipse.sapphire.modeling.ListProperty;
-import org.eclipse.sapphire.modeling.ModelProperty;
+import org.eclipse.sapphire.ElementProperty;
+import org.eclipse.sapphire.ListProperty;
 
 import au.gov.ga.earthsci.editable.IFactory;
 

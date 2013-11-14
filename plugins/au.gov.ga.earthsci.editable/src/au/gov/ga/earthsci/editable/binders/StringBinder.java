@@ -15,8 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable.binders;
 
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.ValueProperty;
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.Value;
 
 import au.gov.ga.earthsci.editable.IValueBinder;
 
@@ -28,13 +28,13 @@ import au.gov.ga.earthsci.editable.IValueBinder;
 public class StringBinder implements IValueBinder<String>
 {
 	@Override
-	public String get(String object, ValueProperty property, IModelElement element)
+	public String get(String object, Value<?> property, Element element)
 	{
 		return object;
 	}
 
 	@Override
-	public void set(String value, String object, ValueProperty property, IModelElement element)
+	public void set(String value, String object, Value<?> property, Element element)
 	{
 		throw new UnsupportedOperationException("Strings are immutable, cannot set value"); //$NON-NLS-1$
 	}

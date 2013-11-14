@@ -15,10 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.IModelParticle;
-import org.eclipse.sapphire.modeling.ModelElementType;
-import org.eclipse.sapphire.modeling.ModelProperty;
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +39,9 @@ public class ModelFactory
 	 *            Editable that defines the model that describes the object
 	 * @return New model
 	 */
-	public static <T> RevertableModelElement createModel(T object, EditableModel<T> editable)
+	public static <T> Element createModel(T object, EditableModel<T> editable)
 	{
-		return createModel(object, editable, null, null);
+		return createModel(object, editable, null);
 	}
 
 	/**
@@ -53,26 +52,23 @@ public class ModelFactory
 	 * @param editable
 	 *            Editable that defines the model that describes the object
 	 * @param parent
-	 *            Parent model element
-	 * @param parentProperty
 	 *            Property in the parent model that the new model is for
 	 * @return New model
 	 */
-	public static <T> RevertableModelElement createModel(T object, EditableModel<T> editable, IModelParticle parent,
-			ModelProperty parentProperty)
+	public static <T> Element createModel(T object, EditableModel<T> editable, Property parent)
 	{
-		Class<? extends IModelElement> modelInterface = editable.getModel();
-		ModelElementType type = getType(modelInterface);
+		Class<? extends Element> modelInterface = editable.getModel();
+		ElementType type = getType(modelInterface);
 		EditableModelResource<T> resource = new EditableModelResource<T>(object);
-		RevertableModelElement model = new RevertableModelElement(type, parent, parentProperty, resource);
+		Element model = type.instantiate(parent, resource);
 		return model;
 	}
 
-	private static ModelElementType getType(Class<?> modelInterface)
+	private static ElementType getType(Class<?> modelInterface)
 	{
 		try
 		{
-			return ModelElementType.read(modelInterface);
+			return ElementType.read(modelInterface);
 		}
 		catch (Exception e)
 		{

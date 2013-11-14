@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.sapphire.ui.renderers.swt.PropertyEditorRendererFactory:"/>
+                  <meta.attribute kind="java" basedOn="org.eclipse.sapphire.ui.forms.swt.PropertyEditorPresentationFactory:"/>
                </appinfo>
             </annotation>
          </attribute>

@@ -17,8 +17,9 @@ package au.gov.ga.earthsci.editable;
 
 import java.beans.IntrospectionException;
 
-import org.eclipse.sapphire.modeling.ValueBindingImpl;
-import org.eclipse.sapphire.modeling.ValueProperty;
+import org.eclipse.sapphire.Value;
+import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.ValuePropertyBinding;
 
 import au.gov.ga.earthsci.editable.annotations.ValueBinder;
 
@@ -32,22 +33,22 @@ import au.gov.ga.earthsci.editable.annotations.ValueBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelValueBinding extends ValueBindingImpl implements IRevertable
+public class EditableModelValueBinding extends ValuePropertyBinding implements IRevertable
 {
 	private final Object object;
-	private final ValueProperty property;
+	private final Value<?> property;
 	private final IValueBinder<Object> binder;
 	private String oldValue;
 	private boolean oldValueSet = false;
 
 	@SuppressWarnings("unchecked")
-	public EditableModelValueBinding(Object object, ValueProperty property) throws IntrospectionException,
+	public EditableModelValueBinding(Object object, Value<?> property) throws IntrospectionException,
 			InstantiationException, IllegalAccessException
 	{
 		this.object = object;
 		this.property = property;
 
-		ValueBinder binderAnnotation = property.getAnnotation(ValueBinder.class);
+		ValueBinder binderAnnotation = property.definition().getAnnotation(ValueBinder.class);
 		if (binderAnnotation != null && binderAnnotation.value() != null)
 		{
 			Class<? extends IValueBinder<?>> binderClass = binderAnnotation.value();
@@ -62,7 +63,7 @@ public class EditableModelValueBinding extends ValueBindingImpl implements IReve
 	@Override
 	public String read()
 	{
-		return binder.get(object, property, element());
+		return binder.get(object, property, property().element());
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class EditableModelValueBinding extends ValueBindingImpl implements IReve
 			oldValue = read();
 			oldValueSet = true;
 		}
-		binder.set(value, object, property, element());
+		binder.set(value, object, property, property().element());
 	}
 
 	@Override

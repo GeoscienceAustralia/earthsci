@@ -15,7 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import org.eclipse.sapphire.modeling.ValueProperty;
+import org.eclipse.sapphire.Value;
 
 /**
  * Abstract {@link IValueBinder} implementation. Exists for ease of subclassing.
@@ -23,6 +23,6 @@ import org.eclipse.sapphire.modeling.ValueProperty;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public abstract class AbstractBeanPropertyValueBinder extends
-		AbstractBeanPropertyBinder<String, Object, ValueProperty> implements IValueBinder<Object>
+		AbstractBeanPropertyBinder<String, Object, Value<?>> implements IValueBinder<Object>
 {
 }

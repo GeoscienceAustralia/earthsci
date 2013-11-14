@@ -19,8 +19,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.eclipse.sapphire.modeling.ElementProperty;
-import org.eclipse.sapphire.modeling.ListProperty;
+import org.eclipse.sapphire.ElementProperty;
+import org.eclipse.sapphire.ListProperty;
 
 /**
  * Type of an {@link ElementProperty}, or the type of the elements within a
@@ -35,7 +35,7 @@ import org.eclipse.sapphire.modeling.ListProperty;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ java.lang.annotation.ElementType.FIELD, java.lang.annotation.ElementType.TYPE })
-public @interface ElementType
+public @interface InstanceElementType
 {
 	Class<?> value();
 }

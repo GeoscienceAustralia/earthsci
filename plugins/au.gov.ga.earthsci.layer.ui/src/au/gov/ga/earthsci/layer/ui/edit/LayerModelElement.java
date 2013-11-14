@@ -17,10 +17,9 @@ package au.gov.ga.earthsci.layer.ui.edit;
 
 import gov.nasa.worldwind.layers.Layer;
 
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.ModelElementType;
-import org.eclipse.sapphire.modeling.ValueProperty;
-import org.eclipse.sapphire.modeling.annotations.GenerateImpl;
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.NumericRange;
 import org.eclipse.sapphire.modeling.annotations.Type;
 
@@ -32,10 +31,9 @@ import au.gov.ga.earthsci.editable.annotations.Sync;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-@GenerateImpl(packageName = "au.gov.ga.earthsci.editable", className = "RevertableModelElement")
-public interface LayerModelElement extends IModelElement
+public interface LayerModelElement extends Element
 {
-	ModelElementType TYPE = new ModelElementType(LayerModelElement.class);
+	ElementType TYPE = new ElementType(LayerModelElement.class);
 
 	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name"); //$NON-NLS-1$
 

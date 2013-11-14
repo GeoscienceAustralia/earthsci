@@ -23,9 +23,10 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.sapphire.ui.PropertyEditorPart;
+import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ui.def.DefinitionLoader;
-import org.eclipse.sapphire.ui.renderers.swt.PropertyEditorRendererFactory;
+import org.eclipse.sapphire.ui.forms.PropertyEditorPart;
+import org.eclipse.sapphire.ui.forms.swt.PropertyEditorPresentationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,15 +73,15 @@ public class EditableManager
 			}
 		}
 
-		ListSortedMap<Integer, PropertyEditorRendererFactory> factories =
-				new ArrayListTreeMap<Integer, PropertyEditorRendererFactory>();
+		ListSortedMap<Integer, PropertyEditorPresentationFactory> factories =
+				new ArrayListTreeMap<Integer, PropertyEditorPresentationFactory>();
 		elements = RegistryFactory.getRegistry().getConfigurationElementsFor(RENDERERS_ID);
 		for (IConfigurationElement element : elements)
 		{
 			try
 			{
-				PropertyEditorRendererFactory factory =
-						(PropertyEditorRendererFactory) element.createExecutableExtension("factory"); //$NON-NLS-1$
+				PropertyEditorPresentationFactory factory =
+						(PropertyEditorPresentationFactory) element.createExecutableExtension("factory"); //$NON-NLS-1$
 				String stringPriority = element.getAttribute("priority"); //$NON-NLS-1$
 				int priority =
 						stringPriority == null || stringPriority.length() == 0 ? 0 : Integer.parseInt(stringPriority);
@@ -97,10 +98,10 @@ public class EditableManager
 			Field FACTORIES_field = PropertyEditorPart.class.getDeclaredField("FACTORIES"); //$NON-NLS-1$
 			FACTORIES_field.setAccessible(true);
 			@SuppressWarnings({ "unchecked", "rawtypes" })
-			List<PropertyEditorRendererFactory> list = (List) FACTORIES_field.get(null);
-			for (Entry<Integer, List<PropertyEditorRendererFactory>> entry : factories.entrySet())
+			List<PropertyEditorPresentationFactory> list = (List) FACTORIES_field.get(null);
+			for (Entry<Integer, List<PropertyEditorPresentationFactory>> entry : factories.entrySet())
 			{
-				for (PropertyEditorRendererFactory factory : entry.getValue())
+				for (PropertyEditorPresentationFactory factory : entry.getValue())
 				{
 					//add factories before all default ones, inserting them at the front so that highest priority is at index 0
 					list.add(0, factory);
@@ -113,7 +114,7 @@ public class EditableManager
 		}
 	}
 
-	public <E> RevertableModelElement createModel(E element)
+	public <E> Element createModel(E element)
 	{
 		EditableModel<? super E> editable = getEditable(element);
 		if (editable == null)
@@ -130,7 +131,7 @@ public class EditableManager
 		{
 			return null;
 		}
-		RevertableModelElement model = createModel(element);
+		Element model = createModel(element);
 		DefinitionLoader loader =
 				DefinitionLoader.context(editable.getSdefContext()).sdef(editable.getSdefName());
 		return new ModelAndDefinition(model, loader);

@@ -19,12 +19,12 @@ import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.ListBindingImpl;
-import org.eclipse.sapphire.modeling.ListProperty;
-import org.eclipse.sapphire.modeling.ModelElementType;
-import org.eclipse.sapphire.modeling.ModelProperty;
-import org.eclipse.sapphire.modeling.Resource;
+import org.eclipse.sapphire.ElementList;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.ListProperty;
+import org.eclipse.sapphire.ListPropertyBinding;
+import org.eclipse.sapphire.Property;
+import org.eclipse.sapphire.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +43,12 @@ import au.gov.ga.earthsci.editable.annotations.ListBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelListBinding extends ListBindingImpl implements IRevertable
+public class EditableModelListBinding extends ListPropertyBinding implements IRevertable
 {
 	private static final Logger logger = LoggerFactory.getLogger(EditableModelListBinding.class);
 
 	private final Object parent;
-	private final ListProperty property;
+	private final ElementList<?> property;
 	private final Resource parentResource;
 	private final IListBinder<Object> binder;
 	private List<Object> list;
@@ -58,14 +58,14 @@ public class EditableModelListBinding extends ListBindingImpl implements IRevert
 	private boolean oldValueSet = false;
 
 	@SuppressWarnings("unchecked")
-	public EditableModelListBinding(Object parent, ListProperty property, final Resource parentResource)
+	public EditableModelListBinding(Object parent, ElementList<?> property, final Resource parentResource)
 			throws InstantiationException, IllegalAccessException, IntrospectionException
 	{
 		this.parent = parent;
 		this.property = property;
 		this.parentResource = parentResource;
 
-		ListBinder binderAnnotation = property.getAnnotation(ListBinder.class);
+		ListBinder binderAnnotation = property.definition().getAnnotation(ListBinder.class);
 		if (binderAnnotation != null && binderAnnotation.value() != null)
 		{
 			Class<? extends IListBinder<?>> binderClass = binderAnnotation.value();
@@ -79,11 +79,11 @@ public class EditableModelListBinding extends ListBindingImpl implements IRevert
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void init(IModelElement element, ModelProperty property, String[] params)
+	public void init(Property property)
 	{
-		super.init(element, property, params);
+		super.init(property);
 
-		list = (List<Object>) binder.get(parent, this.property, element);
+		list = (List<Object>) binder.get(parent, this.property, property.element());
 
 		adapter = new IdentityHashMapAdapter<EditableModelResource<?>, Object>()
 		{
@@ -110,13 +110,13 @@ public class EditableModelListBinding extends ListBindingImpl implements IRevert
 	}
 
 	@Override
-	public ModelElementType type(Resource resource)
+	public ElementType type(Resource resource)
 	{
-		return property.getType();
+		return property.definition().getType();
 	}
 
 	@Override
-	public Resource insert(ModelElementType type, int position)
+	public Resource insert(ElementType type, int position)
 	{
 		storeOldValue();
 		try
@@ -132,7 +132,7 @@ public class EditableModelListBinding extends ListBindingImpl implements IRevert
 		}
 		catch (Exception e)
 		{
-			logger.error("Error creating value for property: " + property.getName(), e); //$NON-NLS-1$
+			logger.error("Error creating value for property: " + property.name(), e); //$NON-NLS-1$
 			return null;
 		}
 	}

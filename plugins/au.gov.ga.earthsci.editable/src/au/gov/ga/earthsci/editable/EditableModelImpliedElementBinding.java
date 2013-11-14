@@ -17,12 +17,12 @@ package au.gov.ga.earthsci.editable;
 
 import java.beans.IntrospectionException;
 
-import org.eclipse.sapphire.modeling.ElementBindingImpl;
-import org.eclipse.sapphire.modeling.IModelElement;
-import org.eclipse.sapphire.modeling.ImpliedElementProperty;
-import org.eclipse.sapphire.modeling.ModelElementType;
-import org.eclipse.sapphire.modeling.ModelProperty;
-import org.eclipse.sapphire.modeling.Resource;
+import org.eclipse.sapphire.ElementHandle;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.ImpliedElementProperty;
+import org.eclipse.sapphire.Property;
+import org.eclipse.sapphire.Resource;
+import org.eclipse.sapphire.modeling.ElementPropertyBinding;
 
 import au.gov.ga.earthsci.editable.annotations.ElementBinder;
 
@@ -36,23 +36,23 @@ import au.gov.ga.earthsci.editable.annotations.ElementBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelImpliedElementBinding extends ElementBindingImpl implements IRevertable
+public class EditableModelImpliedElementBinding extends ElementPropertyBinding implements IRevertable
 {
 	private final Object parent;
-	private final ImpliedElementProperty property;
+	private final ElementHandle<?> property;
 	private final Resource parentResource;
 	private final IElementBinder<Object> binder;
 	private EditableModelResource<?> resource;
 
 	@SuppressWarnings("unchecked")
-	public EditableModelImpliedElementBinding(Object parent, ImpliedElementProperty property, Resource parentResource)
+	public EditableModelImpliedElementBinding(Object parent, ElementHandle<?> property, Resource parentResource)
 			throws InstantiationException, IllegalAccessException, IntrospectionException
 	{
 		this.parent = parent;
 		this.property = property;
 		this.parentResource = parentResource;
 
-		ElementBinder binderAnnotation = property.getAnnotation(ElementBinder.class);
+		ElementBinder binderAnnotation = property.definition().getAnnotation(ElementBinder.class);
 		if (binderAnnotation != null && binderAnnotation.value() != null)
 		{
 			Class<? extends IElementBinder<?>> binderClass = binderAnnotation.value();
@@ -65,11 +65,11 @@ public class EditableModelImpliedElementBinding extends ElementBindingImpl imple
 	}
 
 	@Override
-	public void init(IModelElement element, ModelProperty property, String[] params)
+	public void init(Property property)
 	{
-		super.init(element, property, params);
+		super.init(property);
 
-		Object object = binder.get(parent, this.property, element);
+		Object object = binder.get(parent, this.property, property.element());
 		resource = new EditableModelResource<Object>(object, parentResource);
 	}
 
@@ -80,9 +80,9 @@ public class EditableModelImpliedElementBinding extends ElementBindingImpl imple
 	}
 
 	@Override
-	public ModelElementType type(Resource resource)
+	public ElementType type(Resource resource)
 	{
-		return property.getType();
+		return property.definition().getType();
 	}
 
 	@Override

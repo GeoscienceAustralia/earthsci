@@ -15,21 +15,20 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable.renderers;
 
-import static org.eclipse.sapphire.ui.swt.renderer.GridLayoutUtil.*;
+import static org.eclipse.sapphire.ui.forms.swt.GridLayoutUtil.*;
 
-import org.eclipse.sapphire.modeling.ModelProperty;
-import org.eclipse.sapphire.modeling.Value;
-import org.eclipse.sapphire.modeling.ValueProperty;
+import org.eclipse.sapphire.PropertyDef;
+import org.eclipse.sapphire.Value;
+import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.NumericRange;
 import org.eclipse.sapphire.modeling.util.MiscUtil;
-import org.eclipse.sapphire.ui.PropertyEditorPart;
-import org.eclipse.sapphire.ui.SapphireRenderingContext;
 import org.eclipse.sapphire.ui.assist.internal.PropertyEditorAssistDecorator;
-import org.eclipse.sapphire.ui.renderers.swt.PropertyEditorRenderer;
-import org.eclipse.sapphire.ui.renderers.swt.PropertyEditorRendererFactory;
-import org.eclipse.sapphire.ui.renderers.swt.ScalePropertyEditorRenderer;
-import org.eclipse.sapphire.ui.renderers.swt.ValuePropertyEditorRenderer;
-import org.eclipse.sapphire.ui.swt.renderer.TextOverlayPainter;
+import org.eclipse.sapphire.ui.forms.FormComponentPart;
+import org.eclipse.sapphire.ui.forms.PropertyEditorPart;
+import org.eclipse.sapphire.ui.forms.swt.PropertyEditorPresentation;
+import org.eclipse.sapphire.ui.forms.swt.PropertyEditorPresentationFactory;
+import org.eclipse.sapphire.ui.forms.swt.SwtPresentation;
+import org.eclipse.sapphire.ui.forms.swt.ValuePropertyEditorPresentation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -49,7 +48,7 @@ import au.gov.ga.earthsci.editable.annotations.Sync;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ScaleDoublePropertyEditorRenderer extends ValuePropertyEditorRenderer
+public class ScaleDoublePropertyEditorRenderer extends ValuePropertyEditorPresentation
 {
 	private double minimum;
 	private double maximum;
@@ -59,16 +58,16 @@ public class ScaleDoublePropertyEditorRenderer extends ValuePropertyEditorRender
 	private Scale widget;
 	private Text textField;
 
-	public ScaleDoublePropertyEditorRenderer(final SapphireRenderingContext context, final PropertyEditorPart part)
+	public ScaleDoublePropertyEditorRenderer(FormComponentPart part, SwtPresentation parent, Composite composite)
 	{
-		super(context, part);
+		super(part, parent, composite);
 	}
 
 	@Override
 	protected void createContents(final Composite parent)
 	{
-		final PropertyEditorPart part = getPart();
-		final ValueProperty property = (ValueProperty) part.getProperty();
+		final PropertyEditorPart part = part();
+		final ValueProperty property = (ValueProperty) part.property().definition();
 
 		final NumericRange rangeAnnotation = property.getAnnotation(NumericRange.class);
 		this.sync = property.getAnnotation(Sync.class) != null;
@@ -124,16 +123,16 @@ public class ScaleDoublePropertyEditorRenderer extends ValuePropertyEditorRender
 			}
 		});
 
-		final TextOverlayPainter.Controller textOverlayPainterController = new TextOverlayPainter.Controller()
+		/*final TextOverlayPainter.Controller textOverlayPainterController = new TextOverlayPainter.Controller()
 		{
 			@Override
-			public String getDefaultText()
+			public String overlay()
 			{
-				return getPropertyValue().getDefaultText();
+				return property().getDefaultText();
 			}
 		};
 
-		TextOverlayPainter.install(this.textField, textOverlayPainterController);
+		TextOverlayPainter.install(this.textField, textOverlayPainterController);*/
 
 		this.widget = new Scale(composite, SWT.HORIZONTAL);
 		this.widget.setLayoutData(gdhfill());
@@ -165,17 +164,17 @@ public class ScaleDoublePropertyEditorRenderer extends ValuePropertyEditorRender
 	{
 		super.handlePropertyChangedEvent();
 
-		final Value<?> value = getPropertyValue();
+		final Value<?> value = property();
 
 		final String existingValueInTextField = this.textField.getText();
-		final String newValueForTextField = value.getText(false);
+		final String newValueForTextField = value.text(false);
 
 		if (!existingValueInTextField.equals(newValueForTextField))
 		{
 			this.textField.setText(newValueForTextField == null ? MiscUtil.EMPTY_STRING : newValueForTextField);
 		}
 
-		final Double newValueDouble = (Double) value.getContent(true);
+		final Double newValueDouble = (Double) value.content(true);
 		int newValueForScale =
 				(newValueDouble == null ? this.widget.getMinimum()
 						: (int) Math.round((newValueDouble.doubleValue() - minimum) * scale));
@@ -192,12 +191,12 @@ public class ScaleDoublePropertyEditorRenderer extends ValuePropertyEditorRender
 		this.widget.setFocus();
 	}
 
-	public static class Factory extends PropertyEditorRendererFactory
+	public static class Factory extends PropertyEditorPresentationFactory
 	{
 		@Override
 		public boolean isApplicableTo(final PropertyEditorPart propertyEditorDefinition)
 		{
-			final ModelProperty property = propertyEditorDefinition.getProperty();
+			final PropertyDef property = propertyEditorDefinition.property().definition();
 
 			if (property.isOfType(Double.class))
 			{
@@ -219,9 +218,9 @@ public class ScaleDoublePropertyEditorRenderer extends ValuePropertyEditorRender
 		}
 
 		@Override
-		public PropertyEditorRenderer create(final SapphireRenderingContext context, final PropertyEditorPart part)
+		public PropertyEditorPresentation create(PropertyEditorPart part, SwtPresentation parent, Composite composite)
 		{
-			return new ScaleDoublePropertyEditorRenderer(context, part);
+			return new ScaleDoublePropertyEditorRenderer(part, parent, composite);
 		}
 	}
 }

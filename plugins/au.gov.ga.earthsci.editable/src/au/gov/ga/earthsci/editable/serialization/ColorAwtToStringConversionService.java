@@ -16,26 +16,24 @@
 package au.gov.ga.earthsci.editable.serialization;
 
 import java.awt.Color;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.eclipse.sapphire.services.ValueSerializationService;
+import org.eclipse.sapphire.ConversionException;
+import org.eclipse.sapphire.ConversionService;
 
 /**
- * {@link ValueSerializationService} for {@link java.awt.Color} objects.
- * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * 
  */
-public class ColorAwtSerializationService extends ValueSerializationService
+public class ColorAwtToStringConversionService extends ConversionService<Color, String>
 {
-	@Override
-	public String encode(Object value)
+	public ColorAwtToStringConversionService()
 	{
-		if (!(value instanceof Color))
-		{
-			return null;
-		}
-		Color color = (Color) value;
+		super(Color.class, String.class);
+	}
+
+	@Override
+	public String convert(Color color) throws ConversionException
+	{
 		int a = color.getAlpha();
 		String hex = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()); //$NON-NLS-1$
 		if (a != 255)
@@ -43,31 +41,5 @@ public class ColorAwtSerializationService extends ValueSerializationService
 			hex += String.format("%02x", a); //$NON-NLS-1$
 		}
 		return hex;
-	}
-
-	@Override
-	protected Object decodeFromString(String value)
-	{
-		if (value == null)
-		{
-			return null;
-		}
-
-		Pattern pattern = Pattern.compile("#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})?"); //$NON-NLS-1$
-		Matcher matcher = pattern.matcher(value);
-		if (!matcher.matches())
-		{
-			return null;
-		}
-
-		String rs = matcher.group(1);
-		String gs = matcher.group(2);
-		String bs = matcher.group(3);
-		String as = matcher.group(4);
-		int r = Integer.parseInt(rs, 16);
-		int g = Integer.parseInt(gs, 16);
-		int b = Integer.parseInt(bs, 16);
-		int a = as == null ? 255 : Integer.parseInt(as, 16);
-		return new Color(r, g, b, a);
 	}
 }

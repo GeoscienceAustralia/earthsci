@@ -15,8 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.editable;
 
-import org.eclipse.sapphire.modeling.ElementProperty;
-import org.eclipse.sapphire.modeling.IModelElement;
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.ElementHandle;
 
 import au.gov.ga.earthsci.editable.annotations.ElementBinder;
 
@@ -31,18 +31,18 @@ import au.gov.ga.earthsci.editable.annotations.ElementBinder;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class BeanPropertyElementBinder extends AbstractBeanPropertyBinder<Object, Object, ElementProperty> implements
+public class BeanPropertyElementBinder extends AbstractBeanPropertyBinder<Object, Object, ElementHandle<?>> implements
 		IElementBinder<Object>
 {
 	@Override
-	protected Object convertTo(Object value, ElementProperty property, BeanProperty beanProperty, IModelElement element)
+	protected Object convertTo(Object value, ElementHandle<?> property, BeanProperty beanProperty, Element element)
 	{
 		return value;
 	}
 
 	@Override
-	protected Conversion convertFrom(Object value, ElementProperty property, BeanProperty beanProperty,
-			IModelElement element)
+	protected Conversion convertFrom(Object value, ElementHandle<?> property, BeanProperty beanProperty,
+			Element element)
 	{
 		return new Conversion(value);
 	}
