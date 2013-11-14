@@ -24,16 +24,16 @@ import org.eclipse.sapphire.ValuePropertyBinding;
 import au.gov.ga.earthsci.editable.annotations.ValueBinder;
 
 /**
- * {@link ValueBindingImpl} subclass used by the {@link EditableModelResource}
- * as the binding for {@link ValueProperty}s.
+ * {@link ValueBindingImpl} subclass used by the {@link EditableResource} as the
+ * binding for {@link ValueProperty}s.
  * <p/>
  * Users can provide custom bindings that implement the {@link IValueBinder}
  * interface by adding the {@link ValueBinder} annotation to the
- * {@link ValueProperty} field in the model.
+ * {@link ValueProperty} field in the element.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelValueBinding extends ValuePropertyBinding implements IRevertable
+public class EditableValueBinding extends ValuePropertyBinding implements IRevertable
 {
 	private final Object object;
 	private final Value<?> property;
@@ -42,7 +42,7 @@ public class EditableModelValueBinding extends ValuePropertyBinding implements I
 	private boolean oldValueSet = false;
 
 	@SuppressWarnings("unchecked")
-	public EditableModelValueBinding(Object object, Value<?> property) throws IntrospectionException,
+	public EditableValueBinding(Object object, Value<?> property) throws IntrospectionException,
 			InstantiationException, IllegalAccessException
 	{
 		this.object = object;

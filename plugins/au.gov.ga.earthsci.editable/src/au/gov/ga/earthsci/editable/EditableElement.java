@@ -22,29 +22,28 @@ import org.eclipse.sapphire.Element;
 import au.gov.ga.earthsci.common.util.ExtensionPointHelper;
 
 /**
- * Defines a mapping between a Sapphire model (interface that extends
- * {@link IModelElement}), and a class who's instances can be edited by the
- * model.
+ * Defines a mapping between a Sapphire element (interface that extends
+ * {@link Element}), and a class who's instances can be edited by the element.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModel<T>
+public class EditableElement<T>
 {
 	private final static String TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
-	private final static String MODEL_ATTRIBUTE = "model"; //$NON-NLS-1$
+	private final static String ELEMENT_ATTRIBUTE = "element"; //$NON-NLS-1$
 	private final static String SDEF_CONTEXT_ATTRIBUTE = "sdef-context"; //$NON-NLS-1$
 	private final static String SDEF_NAME_ATTRIBUTE = "sdef-name"; //$NON-NLS-1$
 
 	private final Class<? extends T> type;
-	private final Class<? extends Element> model;
+	private final Class<? extends Element> element;
 	private final Class<?> sdefContext;
 	private final String sdefName;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public EditableModel(IConfigurationElement configurationElement) throws ClassNotFoundException, CoreException
+	public EditableElement(IConfigurationElement configurationElement) throws ClassNotFoundException, CoreException
 	{
 		type = (Class) ExtensionPointHelper.getClassForProperty(configurationElement, TYPE_ATTRIBUTE);
-		model = (Class) ExtensionPointHelper.getClassForProperty(configurationElement, MODEL_ATTRIBUTE);
+		element = (Class) ExtensionPointHelper.getClassForProperty(configurationElement, ELEMENT_ATTRIBUTE);
 		sdefContext =
 				configurationElement.getAttribute(SDEF_CONTEXT_ATTRIBUTE) != null ? ExtensionPointHelper
 						.getClassForProperty(configurationElement, SDEF_CONTEXT_ATTRIBUTE) : null;
@@ -56,9 +55,9 @@ public class EditableModel<T>
 		return type;
 	}
 
-	public Class<? extends Element> getModel()
+	public Class<? extends Element> getElement()
 	{
-		return model;
+		return element;
 	}
 
 	public Class<?> getSdefContext()

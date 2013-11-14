@@ -25,20 +25,20 @@ import org.eclipse.sapphire.ui.def.DefinitionLoader;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ModelAndDefinition implements IRevertable
+public class ElementAndDefinition implements IRevertable
 {
-	private final Element model;
+	private final Element element;
 	private final DefinitionLoader loader;
 
-	ModelAndDefinition(Element model, DefinitionLoader loader)
+	ElementAndDefinition(Element element, DefinitionLoader loader)
 	{
-		this.model = model;
+		this.element = element;
 		this.loader = loader;
 	}
 
-	public Element getModel()
+	public Element getElement()
 	{
-		return model;
+		return element;
 	}
 
 	public DefinitionLoader getLoader()
@@ -49,9 +49,9 @@ public class ModelAndDefinition implements IRevertable
 	@Override
 	public void revert()
 	{
-		if (model.resource() instanceof IRevertable)
+		if (element.resource() instanceof IRevertable)
 		{
-			((IRevertable) model.resource()).revert();
+			((IRevertable) element.resource()).revert();
 		}
 	}
 }

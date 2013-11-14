@@ -23,31 +23,31 @@
       </filter>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.editable.models">
-      <model
-            model="au.gov.ga.earthsci.layer.ui.edit.LayerModelElement"
-            sdef-context="au.gov.ga.earthsci.layer.ui.edit.LayerModelElement"
+         point="au.gov.ga.earthsci.editable.elements">
+      <element
+            element="au.gov.ga.earthsci.layer.ui.edit.LayerElement"
+            sdef-context="au.gov.ga.earthsci.layer.ui.edit.LayerElement"
             sdef-name="Layer"
             type="gov.nasa.worldwind.layers.Layer">
-      </model>
-      <model
-            model="au.gov.ga.earthsci.layer.ui.edit.SkyGradientLayerWrapperModelElement"
-            sdef-context="au.gov.ga.earthsci.layer.ui.edit.SkyGradientLayerWrapperModelElement"
+      </element>
+      <element
+            element="au.gov.ga.earthsci.layer.ui.edit.SkyGradientLayerWrapperElement"
+            sdef-context="au.gov.ga.earthsci.layer.ui.edit.SkyGradientLayerWrapperElement"
             sdef-name="SkyGradientLayerWrapper"
             type="au.gov.ga.earthsci.layer.wrappers.SkyGradientLayerWrapper">
-      </model>
-      <model
-            model="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerModelElement"
-            sdef-context="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerModelElement"
+      </element>
+      <element
+            element="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerElement"
+            sdef-context="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerElement"
             sdef-name="TiledImageLayer"
             type="gov.nasa.worldwind.layers.TiledImageLayer">
-      </model>
-      <model
-            model="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerWrapperModelElement"
-            sdef-context="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerWrapperModelElement"
+      </element>
+      <element
+            element="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerWrapperElement"
+            sdef-context="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerWrapperElement"
             sdef-name="TiledImageLayerWrapper"
             type="au.gov.ga.earthsci.layer.wrappers.TiledImageLayerWrapper">
-      </model>
+      </element>
    </extension>
 
 </plugin>

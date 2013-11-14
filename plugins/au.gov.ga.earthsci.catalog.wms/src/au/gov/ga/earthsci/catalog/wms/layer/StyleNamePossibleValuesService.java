@@ -31,7 +31,7 @@ import org.eclipse.sapphire.PropertyContentEvent;
 import org.eclipse.sapphire.Resource;
 import org.eclipse.sapphire.services.PossibleValuesService;
 
-import au.gov.ga.earthsci.editable.EditableModelResource;
+import au.gov.ga.earthsci.editable.EditableResource;
 
 /**
  * Sapphire {@link PossibleValuesService} for the style names available for a
@@ -54,7 +54,7 @@ public class StyleNamePossibleValuesService extends PossibleValuesService
 		};
 
 		final Element model = context(Element.class);
-		model.attach(listener, WMSLayerModelElement.PROP_LAYER_NAME.name());
+		model.attach(listener, WMSLayerElement.PROP_LAYER_NAME.name());
 	}
 
 	@Override
@@ -63,12 +63,12 @@ public class StyleNamePossibleValuesService extends PossibleValuesService
 		final Element model = context(Element.class);
 
 		Resource resource = model.resource();
-		if (!(resource instanceof EditableModelResource))
+		if (!(resource instanceof EditableResource))
 		{
 			return;
 		}
 
-		EditableModelResource<?> modelResource = (EditableModelResource<?>) resource;
+		EditableResource<?> modelResource = (EditableResource<?>) resource;
 		Object object = modelResource.getObject();
 		if (!(object instanceof WMSLayer))
 		{

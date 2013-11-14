@@ -26,24 +26,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link Resource} subclass used by the {@link EditableModel}. Contains the
+ * {@link Resource} subclass used by the {@link EditableElement}. Contains the
  * object being edited.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelResource<T> extends Resource implements IRevertable
+public class EditableResource<T> extends Resource implements IRevertable
 {
-	private static final Logger logger = LoggerFactory.getLogger(EditableModelResource.class);
+	private static final Logger logger = LoggerFactory.getLogger(EditableResource.class);
 
 	private final T object;
 	private boolean dontCreateBinding = false;
 
-	public EditableModelResource(T object)
+	public EditableResource(T object)
 	{
 		this(object, null);
 	}
 
-	public EditableModelResource(T object, Resource parent)
+	public EditableResource(T object, Resource parent)
 	{
 		super(parent);
 		this.object = object;
@@ -63,24 +63,24 @@ public class EditableModelResource<T> extends Resource implements IRevertable
 			if (property instanceof Value<?>)
 			{
 				Value<?> value = (Value<?>) property;
-				binding = new EditableModelValueBinding(object, value);
+				binding = new EditableValueBinding(object, value);
 			}
 			else if (property instanceof ElementHandle<?>)
 			{
 				ElementHandle<?> elementHandle = (ElementHandle<?>) property;
 				if (property.definition() instanceof ImpliedElementProperty)
 				{
-					binding = new EditableModelImpliedElementBinding(object, elementHandle, this);
+					binding = new EditableImpliedElementBinding(object, elementHandle, this);
 				}
 				else
 				{
-					binding = new EditableModelElementBinding(object, elementHandle, this);
+					binding = new EditableElementBinding(object, elementHandle, this);
 				}
 			}
 			else if (property instanceof ElementList<?>)
 			{
 				ElementList<?> elementList = (ElementList<?>) property;
-				binding = new EditableModelListBinding(object, elementList, this);
+				binding = new EditableListBinding(object, elementList, this);
 			}
 		}
 		catch (Exception e)

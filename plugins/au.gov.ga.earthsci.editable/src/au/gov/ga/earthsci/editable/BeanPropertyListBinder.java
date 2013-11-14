@@ -27,7 +27,7 @@ import au.gov.ga.earthsci.editable.annotations.ListBinder;
  * getting/setting a property's value.
  * <p/>
  * Used as the default {@link IListBinder} by the
- * {@link EditableModelListBinding} (if no {@link ListBinder} is defined by the
+ * {@link EditableListBinding} (if no {@link ListBinder} is defined by the
  * model property).
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)

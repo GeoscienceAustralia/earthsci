@@ -28,29 +28,29 @@ import org.slf4j.LoggerFactory;
 import au.gov.ga.earthsci.editable.annotations.ElementBinder;
 
 /**
- * {@link ElementBindingImpl} subclass used by the {@link EditableModelResource}
+ * {@link ElementBindingImpl} subclass used by the {@link EditableResource}
  * as the binding for {@link ElementProperty}s.
  * <p/>
  * Users can provide custom bindings that implement the {@link IElementBinder}
  * interface by adding the {@link ElementBinder} annotation to the
- * {@link ElementProperty} field in the model.
+ * {@link ElementProperty} field in the element.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelElementBinding extends ElementPropertyBinding implements IRevertable
+public class EditableElementBinding extends ElementPropertyBinding implements IRevertable
 {
-	private static final Logger logger = LoggerFactory.getLogger(EditableModelElementBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(EditableElementBinding.class);
 
 	private final Object parent;
 	private final ElementHandle<?> property;
 	private final Resource parentResource;
 	private final IElementBinder<Object> binder;
-	private EditableModelResource<?> resource;
-	private EditableModelResource<?> oldResource;
+	private EditableResource<?> resource;
+	private EditableResource<?> oldResource;
 	private boolean oldValueSet = false;
 
 	@SuppressWarnings("unchecked")
-	public EditableModelElementBinding(Object parent, ElementHandle<?> property, Resource parentResource)
+	public EditableElementBinding(Object parent, ElementHandle<?> property, Resource parentResource)
 			throws InstantiationException, IllegalAccessException, IntrospectionException
 	{
 		this.parent = parent;
@@ -70,14 +70,14 @@ public class EditableModelElementBinding extends ElementPropertyBinding implemen
 	}
 
 	@Override
-	public EditableModelResource<?> read()
+	public EditableResource<?> read()
 	{
 		if (resource == null)
 		{
 			Object object = binder.get(parent, property, property.element());
 			if (object != null)
 			{
-				resource = new EditableModelResource<Object>(object, parentResource);
+				resource = new EditableResource<Object>(object, parentResource);
 			}
 		}
 		return resource;
@@ -101,7 +101,7 @@ public class EditableModelElementBinding extends ElementPropertyBinding implemen
 				return null;
 			}
 			binder.set(object, parent, property, property.element());
-			resource = new EditableModelResource<Object>(object, parentResource);
+			resource = new EditableResource<Object>(object, parentResource);
 			return resource;
 		}
 		catch (Exception e)

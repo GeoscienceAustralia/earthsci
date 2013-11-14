@@ -34,31 +34,31 @@ import au.gov.ga.earthsci.common.collection.adapter.ListAdapter;
 import au.gov.ga.earthsci.editable.annotations.ListBinder;
 
 /**
- * {@link ListBindingImpl} subclass used by the {@link EditableModelResource} as
- * the binding for {@link ListProperty}s.
+ * {@link ListBindingImpl} subclass used by the {@link EditableResource} as the
+ * binding for {@link ListProperty}s.
  * <p/>
  * Users can provide custom bindings that implement the {@link IListBinder}
  * interface by adding the {@link ListBinder} annotation to the
- * {@link ListProperty} field in the model.
+ * {@link ListProperty} field in the element.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelListBinding extends ListPropertyBinding implements IRevertable
+public class EditableListBinding extends ListPropertyBinding implements IRevertable
 {
-	private static final Logger logger = LoggerFactory.getLogger(EditableModelListBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(EditableListBinding.class);
 
 	private final Object parent;
 	private final ElementList<?> property;
 	private final Resource parentResource;
 	private final IListBinder<Object> binder;
 	private List<Object> list;
-	private IAdapter<EditableModelResource<?>, Object> adapter;
-	private ListAdapter<EditableModelResource<?>, Object> listAdapter;
+	private IAdapter<EditableResource<?>, Object> adapter;
+	private ListAdapter<EditableResource<?>, Object> listAdapter;
 	private final List<Object> oldValue = new ArrayList<Object>();
 	private boolean oldValueSet = false;
 
 	@SuppressWarnings("unchecked")
-	public EditableModelListBinding(Object parent, ElementList<?> property, final Resource parentResource)
+	public EditableListBinding(Object parent, ElementList<?> property, final Resource parentResource)
 			throws InstantiationException, IllegalAccessException, IntrospectionException
 	{
 		this.parent = parent;
@@ -85,22 +85,22 @@ public class EditableModelListBinding extends ListPropertyBinding implements IRe
 
 		list = (List<Object>) binder.get(parent, this.property, property.element());
 
-		adapter = new IdentityHashMapAdapter<EditableModelResource<?>, Object>()
+		adapter = new IdentityHashMapAdapter<EditableResource<?>, Object>()
 		{
 			@Override
-			protected EditableModelResource<?> createFrom(Object value)
+			protected EditableResource<?> createFrom(Object value)
 			{
-				return new EditableModelResource<Object>(value, parentResource);
+				return new EditableResource<Object>(value, parentResource);
 			}
 
 			@Override
-			protected Object createTo(EditableModelResource<?> value)
+			protected Object createTo(EditableResource<?> value)
 			{
 				return value.getObject();
 			}
 		};
 
-		listAdapter = new ListAdapter<EditableModelResource<?>, Object>(list, adapter);
+		listAdapter = new ListAdapter<EditableResource<?>, Object>(list, adapter);
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class EditableModelListBinding extends ListPropertyBinding implements IRe
 			{
 				return null;
 			}
-			EditableModelResource<?> resource = new EditableModelResource<Object>(value, parentResource);
+			EditableResource<?> resource = new EditableResource<Object>(value, parentResource);
 			listAdapter.add(resource);
 			return resource;
 		}
@@ -142,7 +142,7 @@ public class EditableModelListBinding extends ListPropertyBinding implements IRe
 	{
 		storeOldValue();
 		listAdapter.remove(resource);
-		listAdapter.add(position, (EditableModelResource<?>) resource);
+		listAdapter.add(position, (EditableResource<?>) resource);
 	}
 
 	@Override
@@ -174,7 +174,7 @@ public class EditableModelListBinding extends ListPropertyBinding implements IRe
 
 		for (Object object : list)
 		{
-			EditableModelResource<?> resource = adapter.adaptFrom(object);
+			EditableResource<?> resource = adapter.adaptFrom(object);
 			resource.revert();
 		}
 	}

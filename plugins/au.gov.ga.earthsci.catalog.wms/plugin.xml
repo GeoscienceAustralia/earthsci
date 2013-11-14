@@ -37,13 +37,13 @@
       </filter>
    </extension>
    <extension
-         point="au.gov.ga.earthsci.editable.models">
-      <model
-            model="au.gov.ga.earthsci.catalog.wms.layer.WMSLayerModelElement"
-            sdef-context="au.gov.ga.earthsci.catalog.wms.layer.WMSLayerModelElement"
+         point="au.gov.ga.earthsci.editable.elements">
+      <element
+            element="au.gov.ga.earthsci.catalog.wms.layer.WMSLayerElement"
+            sdef-context="au.gov.ga.earthsci.catalog.wms.layer.WMSLayerElement"
             sdef-name="WMSLayer"
             type="au.gov.ga.earthsci.catalog.wms.layer.WMSLayer">
-      </model>
+      </element>
    </extension>
 
 </plugin>

@@ -31,9 +31,9 @@ import au.gov.ga.earthsci.editable.annotations.Sync;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface LayerModelElement extends Element
+public interface LayerElement extends Element
 {
-	ElementType TYPE = new ElementType(LayerModelElement.class);
+	ElementType TYPE = new ElementType(LayerElement.class);
 
 	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name"); //$NON-NLS-1$
 

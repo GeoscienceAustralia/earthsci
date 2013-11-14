@@ -34,14 +34,14 @@ import au.gov.ga.earthsci.common.collection.ArrayListTreeMap;
 import au.gov.ga.earthsci.common.collection.ListSortedMap;
 
 /**
- * Manages the list of {@link EditableModel}s, defined via the
- * <code>au.gov.ga.earthsci.editable.models</code> extension point.
+ * Manages the list of {@link EditableElement}s, defined via the
+ * <code>au.gov.ga.earthsci.editable.elements</code> extension point.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class EditableManager
 {
-	private static final String MODELS_ID = "au.gov.ga.earthsci.editable.models"; //$NON-NLS-1$
+	private static final String ELEMENTS_ID = "au.gov.ga.earthsci.editable.elements"; //$NON-NLS-1$
 	private static final String RENDERERS_ID = "au.gov.ga.earthsci.editable.renderers"; //$NON-NLS-1$
 
 	private static final Logger logger = LoggerFactory.getLogger(EditableManager.class);
@@ -55,21 +55,21 @@ public class EditableManager
 		return instance;
 	}
 
-	private final Map<Class<?>, EditableModel<?>> typeModels = new HashMap<Class<?>, EditableModel<?>>();
+	private final Map<Class<?>, EditableElement<?>> typeElements = new HashMap<Class<?>, EditableElement<?>>();
 
 	private EditableManager()
 	{
-		IConfigurationElement[] elements = RegistryFactory.getRegistry().getConfigurationElementsFor(MODELS_ID);
+		IConfigurationElement[] elements = RegistryFactory.getRegistry().getConfigurationElementsFor(ELEMENTS_ID);
 		for (IConfigurationElement element : elements)
 		{
 			try
 			{
-				EditableModel<?> typeModel = new EditableModel<Object>(element);
-				this.typeModels.put(typeModel.getType(), typeModel);
+				EditableElement<?> typeElement = new EditableElement<Object>(element);
+				this.typeElements.put(typeElement.getType(), typeElement);
 			}
 			catch (Exception e)
 			{
-				logger.error("Error processing model", e); //$NON-NLS-1$
+				logger.error("Error processing editable element", e); //$NON-NLS-1$
 			}
 		}
 
@@ -114,55 +114,55 @@ public class EditableManager
 		}
 	}
 
-	public <E> Element createModel(E element)
+	public <E> Element createElement(E object)
 	{
-		EditableModel<? super E> editable = getEditable(element);
+		EditableElement<? super E> editable = getEditable(object);
 		if (editable == null)
 		{
 			return null;
 		}
-		return ModelFactory.createModel(element, editable);
+		return ElementFactory.createElement(object, editable);
 	}
 
-	public <E> ModelAndDefinition edit(E element)
+	public <E> ElementAndDefinition edit(E object)
 	{
-		EditableModel<? super E> editable = getEditable(element);
+		EditableElement<? super E> editable = getEditable(object);
 		if (editable == null)
 		{
 			return null;
 		}
-		Element model = createModel(element);
+		Element element = createElement(object);
 		DefinitionLoader loader =
 				DefinitionLoader.context(editable.getSdefContext()).sdef(editable.getSdefName());
-		return new ModelAndDefinition(model, loader);
+		return new ElementAndDefinition(element, loader);
 	}
 
-	public <E> EditableModel<? super E> getEditable(E element)
+	public <E> EditableElement<? super E> getEditable(E element)
 	{
-		Map<EditableModel<?>, Integer> distances = new HashMap<EditableModel<?>, Integer>();
+		Map<EditableElement<?>, Integer> distances = new HashMap<EditableElement<?>, Integer>();
 		calculateEditableDistances(element.getClass(), 0, distances);
 		int minDistance = Integer.MAX_VALUE;
-		EditableModel<? super E> editable = null;
-		for (Entry<EditableModel<?>, Integer> entry : distances.entrySet())
+		EditableElement<? super E> editable = null;
+		for (Entry<EditableElement<?>, Integer> entry : distances.entrySet())
 		{
 			if (entry.getValue() < minDistance)
 			{
 				minDistance = entry.getValue();
 				@SuppressWarnings({ "rawtypes", "unchecked" })
-				EditableModel<? super E> e = (EditableModel) entry.getKey();
+				EditableElement<? super E> e = (EditableElement) entry.getKey();
 				editable = e;
 			}
 		}
 		return editable;
 	}
 
-	private void calculateEditableDistances(Class<?> c, int distance, Map<EditableModel<?>, Integer> distances)
+	private void calculateEditableDistances(Class<?> c, int distance, Map<EditableElement<?>, Integer> distances)
 	{
 		if (c == null)
 		{
 			return;
 		}
-		EditableModel<?> editable = typeModels.get(c);
+		EditableElement<?> editable = typeElements.get(c);
 		if (editable != null)
 		{
 			Integer lastDistance = distances.get(editable);

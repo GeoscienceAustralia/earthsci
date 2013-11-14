@@ -34,7 +34,7 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.editable.EditableManager;
-import au.gov.ga.earthsci.editable.ModelAndDefinition;
+import au.gov.ga.earthsci.editable.ElementAndDefinition;
 import au.gov.ga.earthsci.layer.IPersistentLayer;
 import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
@@ -69,7 +69,7 @@ public class PropertiesHandler
 		{
 			ILayerNode layerNode = (ILayerNode) node;
 			IPersistentLayer layer = layerNode.getLayer();
-			ModelAndDefinition editor = EditableManager.getInstance().edit(layer);
+			ElementAndDefinition editor = EditableManager.getInstance().edit(layer);
 
 			Listener listener = new Listener()
 			{
@@ -83,17 +83,17 @@ public class PropertiesHandler
 					}
 				}
 			};
-			editor.getModel().attach(listener);
+			editor.getElement().attach(listener);
 			//XXX in sapphire 0.6.x attaching to the model (as above) was enough to receive property
 			//change events, but 0.7.0 requires attaching to properties individually: (is this a bug?)
-			Set<Property> properties = editor.getModel().properties();
+			Set<Property> properties = editor.getElement().properties();
 			for (Property property : properties)
 			{
 				property.attach(listener);
 			}
 
 			Reference<DialogDef> definition = editor.getLoader().dialog();
-			SapphireDialog dialog = new SapphireDialog(shell, editor.getModel(), definition);
+			SapphireDialog dialog = new SapphireDialog(shell, editor.getElement(), definition);
 			if (dialog.open() != Dialog.OK)
 			{
 				editor.revert();

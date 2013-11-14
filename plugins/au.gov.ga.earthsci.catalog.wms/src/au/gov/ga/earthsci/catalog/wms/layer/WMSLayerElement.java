@@ -21,16 +21,16 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.ReadOnly;
 import org.eclipse.sapphire.modeling.annotations.Service;
 
-import au.gov.ga.earthsci.layer.ui.edit.LayerModelElement;
+import au.gov.ga.earthsci.layer.ui.edit.LayerElement;
 
 /**
  * Sapphire {@link IModelElement} describing {@link WMSLayer} instances.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface WMSLayerModelElement extends LayerModelElement
+public interface WMSLayerElement extends LayerElement
 {
-	ElementType TYPE = new ElementType(WMSLayerModelElement.class);
+	ElementType TYPE = new ElementType(WMSLayerElement.class);
 
 	@ReadOnly
 	@Label(standard = "Capabilities URL")

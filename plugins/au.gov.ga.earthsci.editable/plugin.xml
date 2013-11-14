@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="au.gov.ga.earthsci.editable.models" name="Models" schema="schema/au.gov.ga.earthsci.editable.models.exsd"/>
+   <extension-point id="au.gov.ga.earthsci.editable.elements" name="Editable elements" schema="schema/au.gov.ga.earthsci.editable.elements.exsd"/>
    <extension-point id="au.gov.ga.earthsci.editable.renderers" name="Editor Renderers" schema="schema/au.gov.ga.earthsci.editable.renderers.exsd"/>
    <extension
          point="au.gov.ga.earthsci.editable.renderers">

@@ -18,12 +18,13 @@ package au.gov.ga.earthsci.editable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Property;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import au.gov.ga.earthsci.editable.annotations.InstanceElementType;
 import au.gov.ga.earthsci.editable.annotations.Factory;
+import au.gov.ga.earthsci.editable.annotations.InstanceElementType;
 
 /**
  * Helper class that is used to instantiate a new object used as the value for a
@@ -34,19 +35,19 @@ import au.gov.ga.earthsci.editable.annotations.Factory;
 public class PropertyValueFactory
 {
 	/**
-	 * Create a new instance of <code>T</code> that can be set for the given
-	 * property on the parent object.
+	 * Create a new instance of the instance type of <code>type</code> that can
+	 * be set for the given property on the parent object.
 	 * <p/>
 	 * The logic is as follows:
 	 * <ol>
 	 * <li>The property is checked for a {@link Factory} annotation. If found,
 	 * the {@link IFactory} defined is used to create the instance.</li>
-	 * <li>The property is checked for an {@link InstanceElementType} annotation. If
-	 * found, the element type is instantiated and returned.</li>
+	 * <li>The property is checked for an {@link InstanceElementType}
+	 * annotation. If found, the element type is instantiated and returned.</li>
 	 * <li>The type is checked for a {@link Factory} annotation. If found, the
 	 * {@link IFactory} defined is used to create the instance.</li>
-	 * <li>The type is checked for an {@link InstanceElementType} annotation. If found,
-	 * the element type is instantiated and returned.</li>
+	 * <li>The type is checked for an {@link InstanceElementType} annotation. If
+	 * found, the element type is instantiated and returned.</li>
 	 * <li>If the <code>fallbackType</code> is non-null, it is instantiated and
 	 * returned.</li>
 	 * <li>Otherwise <code>null</code> is returned.</li>
@@ -69,8 +70,7 @@ public class PropertyValueFactory
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static Object create(Property property, org.eclipse.sapphire.ElementType type, Object parent,
-			Class<?> fallbackType)
+	public static Object create(Property property, ElementType type, Object parent, Class<?> fallbackType)
 			throws SecurityException, IllegalArgumentException, NoSuchMethodException, InstantiationException,
 			IllegalAccessException, InvocationTargetException
 	{

@@ -17,7 +17,6 @@ package au.gov.ga.earthsci.editable;
 
 import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementType;
-import org.eclipse.sapphire.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +25,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ModelFactory
+public class ElementFactory
 {
-	private static final Logger logger = LoggerFactory.getLogger(ModelFactory.class);
+	private static final Logger logger = LoggerFactory.getLogger(ElementFactory.class);
 
 	/**
 	 * Create a model that wraps the given object for editing.
@@ -39,28 +38,12 @@ public class ModelFactory
 	 *            Editable that defines the model that describes the object
 	 * @return New model
 	 */
-	public static <T> Element createModel(T object, EditableModel<T> editable)
+	public static <T> Element createElement(T object, EditableElement<T> editable)
 	{
-		return createModel(object, editable, null);
-	}
-
-	/**
-	 * Create a model that wraps the given object for editing.
-	 * 
-	 * @param object
-	 *            Object to edit
-	 * @param editable
-	 *            Editable that defines the model that describes the object
-	 * @param parent
-	 *            Property in the parent model that the new model is for
-	 * @return New model
-	 */
-	public static <T> Element createModel(T object, EditableModel<T> editable, Property parent)
-	{
-		Class<? extends Element> modelInterface = editable.getModel();
+		Class<? extends Element> modelInterface = editable.getElement();
 		ElementType type = getType(modelInterface);
-		EditableModelResource<T> resource = new EditableModelResource<T>(object);
-		Element model = type.instantiate(parent, resource);
+		EditableResource<T> resource = new EditableResource<T>(object);
+		Element model = type.instantiate(null, resource);
 		return model;
 	}
 

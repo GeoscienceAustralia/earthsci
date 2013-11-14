@@ -27,7 +27,7 @@ import au.gov.ga.earthsci.editable.annotations.ValueBinder;
  * getting/setting a property's value.
  * <p/>
  * Used as the default {@link IValueBinder} by the
- * {@link EditableModelValueBinding} (if no {@link ValueBinder} is defined by
+ * {@link EditableValueBinding} (if no {@link ValueBinder} is defined by
  * the model property).
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)

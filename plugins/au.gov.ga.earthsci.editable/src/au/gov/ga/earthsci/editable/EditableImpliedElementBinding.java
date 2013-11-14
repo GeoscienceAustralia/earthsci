@@ -27,25 +27,25 @@ import org.eclipse.sapphire.modeling.ElementPropertyBinding;
 import au.gov.ga.earthsci.editable.annotations.ElementBinder;
 
 /**
- * {@link ElementBindingImpl} subclass used by the {@link EditableModelResource}
- * as the binding for {@link ImpliedElementProperty}s.
+ * {@link ElementBindingImpl} subclass used by the {@link EditableResource} as
+ * the binding for {@link ImpliedElementProperty}s.
  * <p/>
  * Users can provide custom bindings that implement the {@link IElementBinder}
  * interface by adding the {@link ElementBinder} annotation to the
- * {@link ImpliedElementProperty} field in the model.
+ * {@link ImpliedElementProperty} field in the element.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class EditableModelImpliedElementBinding extends ElementPropertyBinding implements IRevertable
+public class EditableImpliedElementBinding extends ElementPropertyBinding implements IRevertable
 {
 	private final Object parent;
 	private final ElementHandle<?> property;
 	private final Resource parentResource;
 	private final IElementBinder<Object> binder;
-	private EditableModelResource<?> resource;
+	private EditableResource<?> resource;
 
 	@SuppressWarnings("unchecked")
-	public EditableModelImpliedElementBinding(Object parent, ElementHandle<?> property, Resource parentResource)
+	public EditableImpliedElementBinding(Object parent, ElementHandle<?> property, Resource parentResource)
 			throws InstantiationException, IllegalAccessException, IntrospectionException
 	{
 		this.parent = parent;
@@ -70,7 +70,7 @@ public class EditableModelImpliedElementBinding extends ElementPropertyBinding i
 		super.init(property);
 
 		Object object = binder.get(parent, this.property, property.element());
-		resource = new EditableModelResource<Object>(object, parentResource);
+		resource = new EditableResource<Object>(object, parentResource);
 	}
 
 	@Override

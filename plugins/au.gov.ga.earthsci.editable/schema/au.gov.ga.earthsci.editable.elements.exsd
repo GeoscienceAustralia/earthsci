@@ -3,7 +3,7 @@
 <schema targetNamespace="au.gov.ga.earthsci.editable" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="au.gov.ga.earthsci.editable" id="au.gov.ga.earthsci.editable.models" name="Editables"/>
+         <meta.schema plugin="au.gov.ga.earthsci.editable" id="au.gov.ga.earthsci.editable.elements" name="Editables"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="model"/>
+            <element ref="element"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="model">
+   <element name="element">
       <complexType>
          <attribute name="type" type="string" use="required">
             <annotation>
@@ -59,13 +59,13 @@
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="model" type="string" use="required">
+         <attribute name="element" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.sapphire.modeling.IModelElement"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.sapphire.Element"/>
                </appinfo>
             </annotation>
          </attribute>

@@ -36,9 +36,9 @@ import au.gov.ga.earthsci.layer.wrappers.SkyGradientLayerWrapper;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface SkyGradientLayerWrapperModelElement extends LayerModelElement
+public interface SkyGradientLayerWrapperElement extends LayerElement
 {
-	ElementType TYPE = new ElementType(SkyGradientLayerWrapperModelElement.class);
+	ElementType TYPE = new ElementType(SkyGradientLayerWrapperElement.class);
 
 	@Sync
 	@NumericRange(min = "0", max = "1e6")

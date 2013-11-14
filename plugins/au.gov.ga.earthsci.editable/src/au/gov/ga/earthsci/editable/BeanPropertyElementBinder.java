@@ -25,8 +25,8 @@ import au.gov.ga.earthsci.editable.annotations.ElementBinder;
  * getting/setting a property's value.
  * <p/>
  * Used as the default {@link IElementBinder} by the
- * {@link EditableModelElementBinding} and
- * {@link EditableModelImpliedElementBinding} (if no {@link ElementBinder} is
+ * {@link EditableElementBinding} and
+ * {@link EditableImpliedElementBinding} (if no {@link ElementBinder} is
  * defined by the model property).
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
