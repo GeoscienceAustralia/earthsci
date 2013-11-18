@@ -34,6 +34,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -154,7 +155,7 @@ public class FileLoader
 		};
 		producer.addPropertyChangeListener(progressListener);
 
-		final boolean[] closeDialog = new boolean[] { false };
+		final AtomicBoolean close = new AtomicBoolean(false);
 		final ProgressMonitorDialog dialog = new ProgressMonitorDialog(parent);
 		Display.getDefault().asyncExec(new Runnable()
 		{
@@ -172,7 +173,7 @@ public class FileLoader
 							monitor.beginTask("Importing " + file.getName(), 100);
 							while (true)
 							{
-								if (closeDialog[0])
+								if (close.get())
 								{
 									break;
 								}
@@ -222,7 +223,7 @@ public class FileLoader
 		{
 			// Remove the progress event listener from the DataStoreProducer. stop the progress timer, and signify to the
 			// ProgressMonitor that we're done.
-			closeDialog[0] = true;
+			close.set(true);
 			producer.removePropertyChangeListener(progressListener);
 		}
 
