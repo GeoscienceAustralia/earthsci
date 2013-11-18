@@ -158,6 +158,10 @@ public class ExtensionPointHelper
 	 */
 	public static URL getResourceURLForName(IConfigurationElement element, String resourceName)
 	{
+		if (resourceName == null)
+		{
+			return null;
+		}
 		IContributor contributor = element.getContributor();
 		if (contributor instanceof RegistryContributor)
 		{
