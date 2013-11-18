@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.common.util;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -130,7 +128,7 @@ public class ExtensionPointHelper
 	}
 
 	/**
-	 * Get a URI pointing to the resource defined in the extension point
+	 * Get a URL pointing to the resource defined in the extension point
 	 * configuration element under the given property name.
 	 * 
 	 * @param element
@@ -140,14 +138,14 @@ public class ExtensionPointHelper
 	 * @return URI pointing at the resource, or null if the resource could not
 	 *         be found
 	 */
-	public static URI getResourceURIForProperty(IConfigurationElement element, String propertyName)
+	public static URL getResourceURLForProperty(IConfigurationElement element, String propertyName)
 	{
 		String resourceName = element.getAttribute(propertyName);
-		return getResourceURIForName(element, resourceName);
+		return getResourceURLForName(element, resourceName);
 	}
 
 	/**
-	 * Get a URI pointing to the named resource defined in the given extension
+	 * Get a URL pointing to the named resource defined in the given extension
 	 * point configuration element.
 	 * 
 	 * @param element
@@ -158,7 +156,7 @@ public class ExtensionPointHelper
 	 * @return URI pointing at the resource, or null if the resource could not
 	 *         be found
 	 */
-	public static URI getResourceURIForName(IConfigurationElement element, String resourceName)
+	public static URL getResourceURLForName(IConfigurationElement element, String resourceName)
 	{
 		IContributor contributor = element.getContributor();
 		if (contributor instanceof RegistryContributor)
@@ -166,18 +164,7 @@ public class ExtensionPointHelper
 			String stringId = ((RegistryContributor) contributor).getId();
 			long id = Long.parseLong(stringId);
 			Bundle bundle = Activator.getContext().getBundle(id);
-			URL url = bundle.getResource(resourceName);
-			if (url != null)
-			{
-				try
-				{
-					return url.toURI();
-				}
-				catch (URISyntaxException e)
-				{
-					//ignore
-				}
-			}
+			return bundle.getResource(resourceName);
 		}
 		return null;
 	}

@@ -17,7 +17,7 @@ package au.gov.ga.earthsci.layer.hud;
 
 import gov.nasa.worldwind.layers.Layer;
 
-import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -67,11 +67,11 @@ public class HudLayers
 				@SuppressWarnings("unchecked")
 				Class<? extends Layer> layerClass =
 						(Class<? extends Layer>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
-				URI iconURI = ExtensionPointHelper.getResourceURIForProperty(element, "icon"); //$NON-NLS-1$
-				String iconURIString = iconURI == null ? null : iconURI.toString();
+				URL iconURL = ExtensionPointHelper.getResourceURLForProperty(element, "icon"); //$NON-NLS-1$
+				String iconURLString = iconURL == null ? null : iconURL.toString();
 				String label = element.getAttribute("label"); //$NON-NLS-1$
 				boolean enabled = Boolean.parseBoolean(element.getAttribute("enabled")); //$NON-NLS-1$
-				layers.add(new HudLayer(id, layerClass, iconURIString, label, enabled));
+				layers.add(new HudLayer(id, layerClass, iconURLString, label, enabled));
 			}
 			catch (Exception e)
 			{
