@@ -7,7 +7,7 @@
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
-            file-extensions="tif,tiff,grd,ascii,asc,ecw,ers,png,jpg,jpeg,vrt,adf,bt,e00,bil,hdr,lan,gis,pgm,ppm"
+            file-extensions="tif,tiff,grd,ascii,asc,ecw,ers,png,jpg,jpeg,vrt,adf,bt,e00,bil,hdr,lan,gis,pgm,ppm,dds,sid,jp2,ntf,ntif,bmp,dt0,dt1,dt2,dem"
             id="au.gov.ga.earthsci.core.content.gdalraster"
             name="GDAL Raster"
             priority="normal">

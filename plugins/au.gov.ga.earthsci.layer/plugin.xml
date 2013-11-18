@@ -95,6 +95,17 @@
                id="au.gov.ga.earthsci.layer.kml">
          </content-type>
       </filter>
+      <filter
+            class="au.gov.ga.earthsci.layer.intent.FileLayerIntentHandler"
+            priority="0"
+            returns-result="true">
+         <return-type
+               class="gov.nasa.worldwind.layers.Layer">
+         </return-type>
+         <content-type
+               id="au.gov.ga.earthsci.core.content.gdalraster">
+         </content-type>
+      </filter>
    </extension>
    <extension
          point="au.gov.ga.earthsci.layers">
