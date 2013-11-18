@@ -51,18 +51,23 @@
    </element>
 
    <element name="layer">
+      <annotation>
+         <documentation>
+            Defines an id-to-layer mapping. The id is used instead of the layer class when persisting the layers.
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+                  Unique id to use when persisting layers of this type.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Type of the layer.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.layer.IPersistentLayer"/>
@@ -73,18 +78,23 @@
    </element>
 
    <element name="wrapper">
+      <annotation>
+         <documentation>
+            Defines a wrapper that wraps a legacy layer class that implements the gov.nasa.worldwind.layers.Layer interface but doesn&apos;t provide its own persistence mechanims (by implementing the IPersistentLayer interface).
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  
+                  Unique id to use when persisting layers of this type.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Wrapper class implementation.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.layer.ILayerWrapper"/>
@@ -94,7 +104,7 @@
          <attribute name="wraps" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Layer class that the wrapper wraps.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":gov.nasa.worldwind.layers.Layer"/>
@@ -105,18 +115,23 @@
    </element>
 
    <element name="replacementClass">
+      <annotation>
+         <documentation>
+            Defines a mapping between an old layer class and a replacement class. If a layer moves packages or gets refactored with a different name, this can be used to define the new class name so that users with the old class in their persisted state will not see class not found errors.
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="for" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Class name that is being replaced.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Replacement class.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":au.gov.ga.earthsci.layer.IPersistentLayer"/>
@@ -127,18 +142,23 @@
    </element>
 
    <element name="replacementId">
+      <annotation>
+         <documentation>
+            Defines a mapping between an old layer id and a replacement id. If a layer moves packages or gets refactored with a different name, this can be used to define the new id so that users with the old id in their persisted state will not see errors.
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="for" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Old id being replaced.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Replacement id.
                </documentation>
             </annotation>
          </attribute>
