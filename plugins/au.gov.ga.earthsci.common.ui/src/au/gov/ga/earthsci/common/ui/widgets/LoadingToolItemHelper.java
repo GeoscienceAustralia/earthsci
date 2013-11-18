@@ -57,12 +57,18 @@ public class LoadingToolItemHelper implements ILoadingIconFrameListener
 				if (loading)
 				{
 					LoadingIconAnimator.get().addListener(this);
-					backupImage = item.getImage();
+					if (!item.isDisposed())
+					{
+						backupImage = item.getImage();
+					}
 				}
 				else
 				{
 					LoadingIconAnimator.get().removeListener(this);
-					item.setImage(backupImage);
+					if (!item.isDisposed())
+					{
+						item.setImage(backupImage);
+					}
 				}
 			}
 			this.loading = loading;
@@ -76,6 +82,11 @@ public class LoadingToolItemHelper implements ILoadingIconFrameListener
 		{
 			if (loading)
 			{
+				if (item.isDisposed())
+				{
+					setLoading(false);
+					return;
+				}
 				item.getDisplay().asyncExec(new Runnable()
 				{
 					@Override
