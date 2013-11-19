@@ -25,8 +25,11 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -34,6 +37,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * Dialog shown to the user if multiple intent filters match an intent, allowing
@@ -47,6 +51,9 @@ public class IntentSelectionDialog extends Dialog
 
 	private final List<IntentFilter> filters;
 	private int selectedIndex = -1;
+	private TableViewer viewer;
+	private Text text;
+	private int textHeight;
 
 	protected IntentSelectionDialog(Shell parent, Intent intent, List<IntentFilter> filters)
 	{
@@ -58,7 +65,7 @@ public class IntentSelectionDialog extends Dialog
 	@Override
 	protected Point getInitialSize()
 	{
-		return getShell().computeSize(SWT.DEFAULT, filters.size() * ROW_HEIGHT + 100, true);
+		return getShell().computeSize(SWT.DEFAULT, filters.size() * ROW_HEIGHT + textHeight + 100, true);
 	}
 
 	@Override
@@ -68,9 +75,25 @@ public class IntentSelectionDialog extends Dialog
 
 		getShell().setText("Select action");
 
-		final TableViewer viewer = new TableViewer(composite, SWT.BORDER);
+		viewer = new TableViewer(composite, SWT.BORDER);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		viewer.getTable().setLayoutData(gridData);
+
+		text = new Text(composite, SWT.READ_ONLY | SWT.MULTI | SWT.WRAP);
+		gridData = new GridData(SWT.FILL, SWT.NONE, true, false);
+		GC gc = new GC(text);
+		try
+		{
+			gc.setFont(text.getFont());
+			FontMetrics fm = gc.getFontMetrics();
+			textHeight = 4 * fm.getHeight();
+			gridData.heightHint = textHeight;
+		}
+		finally
+		{
+			gc.dispose();
+		}
+		text.setLayoutData(gridData);
 
 		viewer.setContentProvider(new ArrayContentProvider());
 		viewer.setLabelProvider(new IntentSelectionDialogTableLabelProvider());
@@ -88,11 +111,23 @@ public class IntentSelectionDialog extends Dialog
 			@Override
 			public void selectionChanged(SelectionChangedEvent event)
 			{
-				selectedIndex = viewer.getTable().getSelectionIndex();
+				updateSelection();
 			}
 		});
+		viewer.getTable().select(0);
+		updateSelection();
 
 		return composite;
+	}
+
+	private void updateSelection()
+	{
+		selectedIndex = viewer.getTable().getSelectionIndex();
+		IntentFilter filter = (IntentFilter) ((StructuredSelection) viewer.getSelection()).getFirstElement();
+		if (filter != null)
+		{
+			text.setText(filter.getDescription());
+		}
 	}
 
 	public int getSelectedIndex()
