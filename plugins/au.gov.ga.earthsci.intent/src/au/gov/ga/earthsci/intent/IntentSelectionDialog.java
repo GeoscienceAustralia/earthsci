@@ -47,7 +47,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class IntentSelectionDialog extends Dialog
 {
-	private final static int ROW_HEIGHT = 32;
+	private final static int ROW_HEIGHT = 40;
 
 	private final List<IntentFilter> filters;
 	private int selectedIndex = -1;
