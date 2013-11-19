@@ -71,6 +71,34 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 			{
 				firePropertyChange(new PropertyChangeEvent(LayerNode.this, evt.getPropertyName(), evt.getOldValue(),
 						evt.getNewValue()));
+
+				//new layer, update required information:
+				if (evt.getPropertyName().equals("layer")) //$NON-NLS-1$
+				{
+					//get the legend url if it exists (set by the LayerFactory)
+					URL legendURL = (URL) getValue(AVKeyMore.LEGEND_URL);
+					if (legendURL == null)
+					{
+						AVList constructionParameters = (AVList) getValue(AVKey.CONSTRUCTION_PARAMETERS);
+						if (constructionParameters != null)
+						{
+							legendURL = (URL) constructionParameters.getValue(AVKeyMore.LEGEND_URL);
+						}
+					}
+					if (legendURL != null)
+					{
+						setLegendURL(legendURL);
+					}
+
+					if (getElevationModel() != null)
+					{
+						ILayerTreeNode root = getRoot();
+						if (root instanceof AbstractLayerTreeNode)
+						{
+							((AbstractLayerTreeNode) root).updateElevationModels();
+						}
+					}
+				}
 			}
 		});
 		delegator.setPropertiesChangedTrackingEnabled(false);
@@ -105,31 +133,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	@Override
 	public void setLayer(IPersistentLayer layer)
 	{
-		//get the legend url if it exists (set by the LayerFactory)
-		URL legendURL = (URL) layer.getValue(AVKeyMore.LEGEND_URL);
-		if (legendURL == null)
-		{
-			AVList constructionParameters = (AVList) layer.getValue(AVKey.CONSTRUCTION_PARAMETERS);
-			if (constructionParameters != null)
-			{
-				legendURL = (URL) constructionParameters.getValue(AVKeyMore.LEGEND_URL);
-			}
-		}
-		if (legendURL != null)
-		{
-			setLegendURL(legendURL);
-		}
-
 		delegator.setLayer(layer);
-
-		if (getDelegateImplementing(IElevationModelLayer.class) != null)
-		{
-			ILayerTreeNode root = getRoot();
-			if (root instanceof AbstractLayerTreeNode)
-			{
-				((AbstractLayerTreeNode) root).updateElevationModels();
-			}
-		}
 	}
 
 	@Persistent(name = "definition")
@@ -286,9 +290,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	@Override
 	public void setEnabled(boolean enabled)
 	{
-		boolean oldValue = isEnabled();
 		delegator.setEnabled(enabled);
-		firePropertyChange("enabled", oldValue, enabled); //$NON-NLS-1$
 	}
 
 	@Override
@@ -300,9 +302,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	@Override
 	public void setName(String name)
 	{
-		String oldValue = getName();
 		delegator.setName(name);
-		firePropertyChange("name", oldValue, name); //$NON-NLS-1$
 	}
 
 	@Override
@@ -339,9 +339,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	@Override
 	public void setOpacity(double opacity)
 	{
-		double oldValue = getOpacity();
 		delegator.setOpacity(opacity);
-		firePropertyChange("opacity", oldValue, opacity); //$NON-NLS-1$
 	}
 
 	@Override
@@ -383,9 +381,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	@Override
 	public void setPickEnabled(boolean isPickable)
 	{
-		boolean oldValue = isPickEnabled();
 		delegator.setPickEnabled(isPickable);
-		firePropertyChange("pickEnabled", oldValue, isPickable); //$NON-NLS-1$
 	}
 
 	@Override
@@ -433,9 +429,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	@Override
 	public void setNetworkRetrievalEnabled(boolean networkRetrievalEnabled)
 	{
-		boolean oldValue = isNetworkRetrievalEnabled();
 		delegator.setNetworkRetrievalEnabled(networkRetrievalEnabled);
-		firePropertyChange("networkRetrievalEnabled", oldValue, networkRetrievalEnabled); //$NON-NLS-1$
 	}
 
 	@Override
@@ -447,9 +441,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	@Override
 	public void setExpiryTime(long expiryTime)
 	{
-		long oldValue = getExpiryTime();
 		delegator.setExpiryTime(expiryTime);
-		firePropertyChange("expiryTime", oldValue, expiryTime); //$NON-NLS-1$
 	}
 
 	@Override
@@ -473,9 +465,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	@Override
 	public void setMinActiveAltitude(double minActiveAltitude)
 	{
-		double oldValue = getMinActiveAltitude();
 		delegator.setMinActiveAltitude(minActiveAltitude);
-		firePropertyChange("minActiveAltitude", oldValue, minActiveAltitude); //$NON-NLS-1$
 	}
 
 	@Override
@@ -487,9 +477,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	@Override
 	public void setMaxActiveAltitude(double maxActiveAltitude)
 	{
-		double oldValue = getMaxActiveAltitude();
 		delegator.setMaxActiveAltitude(maxActiveAltitude);
-		firePropertyChange("maxActiveAltitude", oldValue, maxActiveAltitude); //$NON-NLS-1$
 	}
 
 	@Override
