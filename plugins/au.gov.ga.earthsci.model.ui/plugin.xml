@@ -6,7 +6,9 @@
       <filter
             class="au.gov.ga.earthsci.model.ui.raster.GDALRasterModelParametersIntentHandler"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            label="3D model parameters"
+            description="Collect parameters required to create a 3D model from a supported raster dataset">
          <return-type
                class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters">
          </return-type>

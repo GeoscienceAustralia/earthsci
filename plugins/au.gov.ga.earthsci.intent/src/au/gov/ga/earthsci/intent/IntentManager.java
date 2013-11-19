@@ -30,11 +30,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -185,6 +188,7 @@ public class IntentManager implements IIntentManager
 							filter = selectFilter(filters, intent, context);
 							if (filter == null)
 							{
+								callback.aborted(intent);
 								return;
 							}
 							handlerClass = filter.getHandler();
@@ -258,14 +262,41 @@ public class IntentManager implements IIntentManager
 		}
 	}
 
-	protected IntentFilter selectFilter(List<IntentFilter> filters, Intent intent, IEclipseContext context)
+	protected IntentFilter selectFilter(final List<IntentFilter> filters, final Intent intent, IEclipseContext context)
 	{
 		if (filters == null || filters.isEmpty())
 		{
 			return null;
 		}
-		//TODO show dialog
-		return filters.get(0);
+		if (filters.size() == 1)
+		{
+			return filters.get(0);
+		}
+
+		//show a dialog allowing the user to select which intent filter to use
+		final IntentSelectionDialog.Factory dialogFactory = new IntentSelectionDialog.Factory();
+		ContextInjectionFactoryThreadSafe.inject(dialogFactory, context);
+		final AtomicInteger index = new AtomicInteger(0);
+		Display.getDefault().syncExec(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				final IntentSelectionDialog dialog = dialogFactory.create(intent, filters);
+				if (dialog.open() == Dialog.CANCEL)
+				{
+					index.set(-1);
+					return;
+				}
+				index.set(dialog.getSelectedIndex());
+			}
+		});
+
+		if (index.get() < 0)
+		{
+			return null;
+		}
+		return filters.get(index.get());
 	}
 
 	/**
@@ -307,6 +338,7 @@ public class IntentManager implements IIntentManager
 				}
 			}
 		}
+		removeFiltersWithSuperclassHandlers(matches);
 
 		//if no matches or only 1, return list
 		if (matches.isEmpty() || matches.size() == 1)
@@ -355,6 +387,46 @@ public class IntentManager implements IIntentManager
 		});
 
 		return matches;
+	}
+
+	private void removeFiltersWithSuperclassHandlers(List<IntentFilter> filters)
+	{
+		Iterator<IntentFilter> iterator = filters.iterator();
+		while (iterator.hasNext())
+		{
+			IntentFilter filter = iterator.next();
+			if (hasFilterWithSubclassHandler(filters, filter))
+			{
+				iterator.remove();
+			}
+		}
+	}
+
+	private boolean hasFilterWithSubclassHandler(List<IntentFilter> filters, IntentFilter filter)
+	{
+		Class<? extends IIntentHandler> handler = filter.getHandler();
+		if (handler != null)
+		{
+			for (IntentFilter f : filters)
+			{
+				if (f == filter)
+				{
+					//skip itself
+					continue;
+				}
+				Class<? extends IIntentHandler> otherHandler = f.getHandler();
+				if (otherHandler == null)
+				{
+					continue;
+				}
+				if (handler.isAssignableFrom(otherHandler))
+				{
+					//found a handler that is a subclass of the filter's handler in question
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override

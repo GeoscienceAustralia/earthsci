@@ -88,6 +88,36 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="label" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Label for this intent filter. If this filter creates a result, this should be a label that represents the result. Shown to the user if multiple filters are available to handle an intent.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Description of this intent filter. If this filter creates a result, this should be a description of the result. Shown to the user if multiple filters are available to handle an intent.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon32" type="string">
+            <annotation>
+               <documentation>
+                  32x32 icon representing the result from this intent filter. Shown to the user if multiple filters are available to handle an intent.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

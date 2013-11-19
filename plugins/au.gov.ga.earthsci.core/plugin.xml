@@ -91,7 +91,9 @@
       <filter
             class="au.gov.ga.earthsci.core.seed.SeedXmlIntentHandler"
             priority="0"
-            returns-result="true">
+            returns-result="false"
+            label="Seed file"
+            description="Seeds the application with defaults from a seed XML file">
          <content-type
                id="au.gov.ga.earthsci.seed.xml">
          </content-type>

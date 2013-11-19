@@ -27,7 +27,9 @@
       <filter
             class="au.gov.ga.earthsci.catalog.wms.WMSCapabilitiesIntentHandler"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            label="WMS catalog"
+            description="Catalog listing all the layers available on a WMS server">
          <content-type
                id="au.gov.ga.earthsci.catalog.wms.capabilities.xml">
          </content-type>

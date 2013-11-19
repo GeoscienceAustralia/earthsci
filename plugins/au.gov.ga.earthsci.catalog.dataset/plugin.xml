@@ -23,7 +23,9 @@
       <filter
             class="au.gov.ga.earthsci.catalog.dataset.DatasetIntentHandler"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            label="Dataset catalog"
+            description="Catalog containing the layers defined in a dataset XML file">
          <content-type
                id="au.gov.ga.earthsci.catalog.dataset.xml">
          </content-type>

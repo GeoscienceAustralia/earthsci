@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.intent;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -67,12 +68,15 @@ public class IntentFilter
 	private final Set<URIFilter> uriFilters = new HashSet<URIFilter>();
 	private Class<? extends IIntentHandler> handler;
 	private static final Logger logger = LoggerFactory.getLogger(IntentFilter.class);
+	private String label;
+	private String description;
+	private URL icon;
 
 	public IntentFilter()
 	{
 	}
 
-	public IntentFilter(IConfigurationElement element) throws ClassNotFoundException
+	protected IntentFilter(IConfigurationElement element) throws ClassNotFoundException
 	{
 		addToSetFromElements(element, "action", "name", actions); //$NON-NLS-1$ //$NON-NLS-2$
 		addToSetFromElements(element, "category", "name", categories); //$NON-NLS-1$ //$NON-NLS-2$
@@ -94,6 +98,10 @@ public class IntentFilter
 
 		boolean returnsResult = ExtensionPointHelper.getBooleanForProperty(element, "returns-result", false); //$NON-NLS-1$
 		setReturnsResult(returnsResult);
+
+		label = element.getAttribute("label"); //$NON-NLS-1$
+		description = element.getAttribute("description"); //$NON-NLS-1$
+		icon = ExtensionPointHelper.getResourceURLForProperty(element, "icon"); //$NON-NLS-1$
 	}
 
 	protected static void addToSetFromElements(IConfigurationElement element, String childrenName,
@@ -383,6 +391,63 @@ public class IntentFilter
 	public void setHandler(Class<? extends IIntentHandler> handler)
 	{
 		this.handler = handler;
+	}
+
+	/**
+	 * @return The label to show to the user if multiple filters match an
+	 *         intent.
+	 */
+	public String getLabel()
+	{
+		return label;
+	}
+
+	/**
+	 * Set the label to show to the user if multiple filters match an intent.
+	 * 
+	 * @param label
+	 */
+	public void setLabel(String label)
+	{
+		this.label = label;
+	}
+
+	/**
+	 * @return The description to show to the user if multiple filters match an
+	 *         intent.
+	 */
+	public String getDescription()
+	{
+		return description;
+	}
+
+	/**
+	 * Set the description to show to the user if multiple filters match an
+	 * intent.
+	 * 
+	 * @param description
+	 */
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	/**
+	 * @return The icon to show to the user if multiple filters match an intent.
+	 */
+	public URL getIcon()
+	{
+		return icon;
+	}
+
+	/**
+	 * Set the icon to show to the user if multiple filters match an intent.
+	 * 
+	 * @param icon
+	 */
+	public void setIcon(URL icon)
+	{
+		this.icon = icon;
 	}
 
 	/**

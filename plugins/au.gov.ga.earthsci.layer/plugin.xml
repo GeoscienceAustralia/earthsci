@@ -62,7 +62,9 @@
       <filter
             class="au.gov.ga.earthsci.layer.intent.ClassLayerIntentHandler"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            label="Class layer"
+            description="Layer created from a Java class">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
@@ -73,7 +75,9 @@
       <filter
             class="au.gov.ga.earthsci.layer.intent.LayerXmlIntentHandler"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            label="XML layer"
+            description="Layer created from an XML layer definition">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
@@ -87,7 +91,9 @@
       <filter
             class="au.gov.ga.earthsci.layer.intent.KmlLayerIntentHandler"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            label="KML layer"
+            description="Layer created from a KML document using NASA World Wind's KML support">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
@@ -98,7 +104,9 @@
       <filter
             class="au.gov.ga.earthsci.layer.intent.FileLayerIntentHandler"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            label="Tiled imagery/elevation layer"
+            description="Create a layer from a supported imagery/elevation dataset, using a generated local tileset">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>

@@ -12,7 +12,9 @@
           <filter
             class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelIntentHandler"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            label="3D model from raster"
+            description="Generate a 3D model layer, using a supported raster dataset">
          <content-type
                id="au.gov.ga.earthsci.core.content.gdalraster">
          </content-type>
@@ -26,7 +28,9 @@
           <filter
                 class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelIntentHandler"
                 priority="0"
-                returns-result="true">
+                returns-result="true"
+                label="3D model from raster"
+            	description="Generate a 3D model layer, using a supported raster dataset">
              <uri
                    scheme="gdalrastermodel">
              </uri>

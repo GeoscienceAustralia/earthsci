@@ -6,7 +6,9 @@
       <filter
             class="au.gov.ga.earthsci.catalog.directory.DirectoryCatalogIntentHandler"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            label="Directory catalog"
+            description="Catalog listing the layers within a file-system directory">
          <return-type
                class="au.gov.ga.earthsci.catalog.directory.DirectoryCatalogTreeNode">
          </return-type>
