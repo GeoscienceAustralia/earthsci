@@ -101,7 +101,7 @@ public class IntentFilter
 
 		label = element.getAttribute("label"); //$NON-NLS-1$
 		description = element.getAttribute("description"); //$NON-NLS-1$
-		icon = ExtensionPointHelper.getResourceURLForProperty(element, "icon"); //$NON-NLS-1$
+		icon = ExtensionPointHelper.getResourceURLForProperty(element, "icon32"); //$NON-NLS-1$
 	}
 
 	protected static void addToSetFromElements(IConfigurationElement element, String childrenName,
