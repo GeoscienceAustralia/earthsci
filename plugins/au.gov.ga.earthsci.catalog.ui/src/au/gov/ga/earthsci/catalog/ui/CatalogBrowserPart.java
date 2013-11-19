@@ -23,14 +23,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 
 import au.gov.ga.earthsci.application.Activator;
@@ -119,32 +117,43 @@ public class CatalogBrowserPart
 			}
 		});
 
-		viewer.getTree().addMouseListener(new MouseAdapter()
+		viewer.getTree().addSelectionListener(new SelectionAdapter()
 		{
 			@Override
-			public void mouseDoubleClick(MouseEvent e)
+			public void widgetDefaultSelected(SelectionEvent e)
 			{
-				ViewerCell cell = viewer.getCell(new Point(e.x, e.y));
-				if (cell == null)
+				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+				ICatalogTreeNode firstElement = (ICatalogTreeNode) selection.getFirstElement();
+				if (firstElement != null)
 				{
-					return;
-				}
-
-				ICatalogTreeNode catalog = (ICatalogTreeNode) cell.getElement();
-				if (catalog instanceof ErrorCatalogTreeNode)
-				{
-					ErrorCatalogTreeNode errorNode = (ErrorCatalogTreeNode) catalog;
-					IStatus status = new Status(IStatus.ERROR,
-							Activator.getBundleName(),
-							errorNode.getMessage(),
-							errorNode.getError());
-					StackTraceDialog.openError(viewer.getTree().getShell(),
-							Messages.CatalogBrowserPart_ErrorDialogTitle, null, status);
+					selectNode(firstElement);
 				}
 			}
 		});
 
 		menuService.registerContextMenu(viewer.getTree(), "au.gov.ga.earthsci.application.catalogbrowser.popupmenu"); //$NON-NLS-1$
+	}
+
+	private void selectNode(ICatalogTreeNode node)
+	{
+		if (node instanceof ErrorCatalogTreeNode)
+		{
+			ErrorCatalogTreeNode errorNode = (ErrorCatalogTreeNode) node;
+			IStatus status = new Status(IStatus.ERROR,
+					Activator.getBundleName(),
+					errorNode.getMessage(),
+					errorNode.getError());
+			StackTraceDialog.openError(viewer.getTree().getShell(),
+					Messages.CatalogBrowserPart_ErrorDialogTitle, null, status);
+		}
+		else if (node.isLayerNode())
+		{
+			controller.addToLayerModel(node);
+		}
+		else
+		{
+			viewer.expandToLevel(node, 1);
+		}
 	}
 
 	public TreeViewer getTreeViewer()
