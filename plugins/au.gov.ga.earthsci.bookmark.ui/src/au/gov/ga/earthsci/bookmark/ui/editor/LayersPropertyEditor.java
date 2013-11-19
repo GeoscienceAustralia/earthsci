@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.ui.editor;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -155,14 +154,14 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 			@Override
 			protected Object getValue(Object element)
 			{
-				return Double.toString(((Entry<URI, Double>) element).getValue());
+				return Double.toString(((Entry<String, Double>) element).getValue());
 			}
 
 			@SuppressWarnings("unchecked")
 			@Override
 			protected void setValue(Object element, Object value)
 			{
-				((Entry<URI, Double>) element).setValue(Util.clamp(Double.parseDouble((String) value), 0, 1));
+				((Entry<String, Double>) element).setValue(Util.clamp(Double.parseDouble((String) value), 0, 1));
 				layerTable.refresh(element, true);
 			}
 
@@ -174,10 +173,10 @@ public class LayersPropertyEditor extends AbstractBookmarkPropertyEditor
 			public void update(ViewerCell cell)
 			{
 				@SuppressWarnings("unchecked")
-				Entry<URI, Double> entry = (Entry<URI, Double>) cell.getElement();
+				Entry<String, Double> entry = (Entry<String, Double>) cell.getElement();
 				if (cell.getColumnIndex() == 0)
 				{
-					cell.setText(entry.getKey().toString());
+					cell.setText(entry.getKey());
 				}
 				else
 				{
