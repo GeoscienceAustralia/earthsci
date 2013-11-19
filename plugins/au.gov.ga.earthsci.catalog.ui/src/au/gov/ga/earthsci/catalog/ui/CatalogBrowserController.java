@@ -100,17 +100,20 @@ public class CatalogBrowserController implements ICatalogBrowserController
 			return currentLayerModel.getRootNode();
 		}
 
-		ILayerTreeNode folder = currentLayerModel.getRootNode().getNodeForCatalogURI(node.getURI());
-		if (folder != null)
+		if (!node.isLayerNode())
 		{
-			return folder;
+			ILayerTreeNode folder = currentLayerModel.getRootNode().getNodeForCatalogURI(node.getURI());
+			if (folder != null)
+			{
+				return folder;
+			}
 		}
 
 		ILayerTreeNode parent = createNodePath(node.getParent());
 
 		if (!node.isLayerNode())
 		{
-			folder = CatalogLayerHelper.createFolderNode(node);
+			ILayerTreeNode folder = CatalogLayerHelper.createFolderNode(node);
 			parent.addChild(folder);
 			return folder;
 		}
