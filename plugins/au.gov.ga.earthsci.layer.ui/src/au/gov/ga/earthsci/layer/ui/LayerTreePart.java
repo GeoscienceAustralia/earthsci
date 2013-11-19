@@ -439,7 +439,7 @@ public class LayerTreePart
 		}
 	}
 
-	public void flyToLayer(ILayerTreeNode layer)
+	public static void flyToLayer(ILayerTreeNode layer)
 	{
 		//first check if the tree node is pointing to a KML feature; if so, goto the feature 
 		/*if (layer instanceof TreeNodeLayerNode)
