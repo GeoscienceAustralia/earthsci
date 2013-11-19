@@ -10,11 +10,12 @@
    <extension
          point="au.gov.ga.earthsci.intent.filters">
           <filter
-            class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelIntentHandler"
-            priority="0"
-            returns-result="true"
-            label="3D model from raster"
-            description="Generate a 3D model layer, using a supported raster dataset">
+                class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelIntentHandler"
+                description="Generate a 3D model layer, using a supported raster dataset"
+                icon32="icons/3draster_intent.png"
+                label="3D model from raster"
+                priority="0"
+                returns-result="true">
          <content-type
                id="au.gov.ga.earthsci.core.content.gdalraster">
          </content-type>
@@ -27,10 +28,11 @@
       </filter>
           <filter
                 class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelIntentHandler"
-                priority="0"
-                returns-result="true"
+                description="Generate a 3D model layer, using a supported raster dataset"
+                icon32="icons/3draster_intent.png"
                 label="3D model from raster"
-            	description="Generate a 3D model layer, using a supported raster dataset">
+                priority="0"
+                returns-result="true">
              <uri
                    scheme="gdalrastermodel">
              </uri>

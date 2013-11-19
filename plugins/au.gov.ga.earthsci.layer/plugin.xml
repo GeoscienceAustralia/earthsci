@@ -61,10 +61,11 @@
          point="au.gov.ga.earthsci.intent.filters">
       <filter
             class="au.gov.ga.earthsci.layer.intent.ClassLayerIntentHandler"
-            priority="0"
-            returns-result="true"
+            description="Layer created from a Java class"
+            icon32="icons/classlayer_intent.png"
             label="Class layer"
-            description="Layer created from a Java class">
+            priority="0"
+            returns-result="true">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
@@ -74,10 +75,11 @@
       </filter>
       <filter
             class="au.gov.ga.earthsci.layer.intent.LayerXmlIntentHandler"
-            priority="0"
-            returns-result="true"
+            description="Layer created from an XML layer definition"
+            icon32="icons/xmllayer_intent.png"
             label="XML layer"
-            description="Layer created from an XML layer definition">
+            priority="0"
+            returns-result="true">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
@@ -90,10 +92,11 @@
       </filter>
       <filter
             class="au.gov.ga.earthsci.layer.intent.KmlLayerIntentHandler"
-            priority="0"
-            returns-result="true"
+            description="Layer created from a KML document using NASA World Wind&apos;s KML support"
+            icon32="icons/kmllayer_intent.png"
             label="KML layer"
-            description="Layer created from a KML document using NASA World Wind's KML support">
+            priority="0"
+            returns-result="true">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
@@ -103,10 +106,11 @@
       </filter>
       <filter
             class="au.gov.ga.earthsci.layer.intent.FileLayerIntentHandler"
-            priority="0"
-            returns-result="true"
+            description="Create a layer from a supported imagery/elevation dataset, using a generated local tileset"
+            icon32="icons/tiledimagelayer_intent.png"
             label="Tiled imagery/elevation layer"
-            description="Create a layer from a supported imagery/elevation dataset, using a generated local tileset">
+            priority="0"
+            returns-result="true">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
