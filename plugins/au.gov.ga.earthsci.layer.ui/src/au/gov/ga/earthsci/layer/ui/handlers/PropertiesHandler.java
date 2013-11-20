@@ -105,12 +105,12 @@ public class PropertiesHandler
 	@CanExecute
 	public boolean canExecute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
-		return layer != null;
+		return layer != null && layer instanceof ILayerNode;
 	}
 
 	@CanExecute
 	public boolean canExecute(@Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode[] layers)
 	{
-		return layers != null && layers.length == 1;
+		return layers != null && layers.length == 1 && layers[0] instanceof ILayerNode;
 	}
 }
