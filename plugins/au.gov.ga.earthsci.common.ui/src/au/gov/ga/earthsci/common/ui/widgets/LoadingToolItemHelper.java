@@ -94,7 +94,7 @@ public class LoadingToolItemHelper implements ILoadingIconFrameListener
 					{
 						synchronized (semaphore)
 						{
-							if (loading)
+							if (loading && !item.isDisposed())
 							{
 								item.setImage(image);
 							}
