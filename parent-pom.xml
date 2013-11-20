@@ -8,8 +8,8 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho-version>0.19.0-SNAPSHOT</tycho-version>
-		<tycho-extras-version>0.19.0-SNAPSHOT</tycho-extras-version>
+		<tycho-version>0.19.0</tycho-version>
+		<tycho-extras-version>0.19.0</tycho-extras-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<sonar.language>java</sonar.language>
