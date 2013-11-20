@@ -25,7 +25,8 @@
             priority="0"
             returns-result="true"
             label="Dataset catalog"
-            description="Catalog containing the layers defined in a dataset XML file">
+            description="Catalog containing the layers defined in a dataset XML file"
+            prompt="true">
          <content-type
                id="au.gov.ga.earthsci.catalog.dataset.xml">
          </content-type>

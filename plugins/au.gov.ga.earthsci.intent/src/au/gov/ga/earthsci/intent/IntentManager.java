@@ -339,6 +339,7 @@ public class IntentManager implements IIntentManager
 			}
 		}
 		removeFiltersWithSuperclassHandlers(matches);
+		removeNonPromptFiltersIfPromptFilterExists(matches);
 
 		//if no matches or only 1, return list
 		if (matches.isEmpty() || matches.size() == 1)
@@ -398,6 +399,28 @@ public class IntentManager implements IIntentManager
 			if (hasFilterWithSubclassHandler(filters, filter))
 			{
 				iterator.remove();
+			}
+		}
+	}
+
+	private void removeNonPromptFiltersIfPromptFilterExists(List<IntentFilter> filters)
+	{
+		boolean anyPromptFilters = false, anyNonPromptFilters = false;
+		for (IntentFilter filter : filters)
+		{
+			anyPromptFilters |= filter.isPrompt();
+			anyNonPromptFilters |= !filter.isPrompt();
+		}
+		if (anyPromptFilters && anyNonPromptFilters)
+		{
+			Iterator<IntentFilter> iterator = filters.iterator();
+			while (iterator.hasNext())
+			{
+				IntentFilter filter = iterator.next();
+				if (!filter.isPrompt())
+				{
+					iterator.remove();
+				}
 			}
 		}
 	}

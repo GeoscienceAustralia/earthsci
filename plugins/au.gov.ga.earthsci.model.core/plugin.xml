@@ -15,7 +15,8 @@
                 icon32="icons/3draster_intent.png"
                 label="3D model from raster"
                 priority="0"
-                returns-result="true">
+                returns-result="true"
+                prompt="true">
          <content-type
                id="au.gov.ga.earthsci.core.content.gdalraster">
          </content-type>
@@ -32,7 +33,8 @@
                 icon32="icons/3draster_intent.png"
                 label="3D model from raster"
                 priority="0"
-                returns-result="true">
+                returns-result="true"
+                prompt="true">
              <uri
                    scheme="gdalrastermodel">
              </uri>

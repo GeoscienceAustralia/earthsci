@@ -8,7 +8,8 @@
             priority="0"
             returns-result="true"
             label="Directory catalog"
-            description="Catalog listing the layers within a file-system directory">
+            description="Catalog listing the layers within a file-system directory"
+            prompt="true">
          <return-type
                class="au.gov.ga.earthsci.catalog.directory.DirectoryCatalogTreeNode">
          </return-type>

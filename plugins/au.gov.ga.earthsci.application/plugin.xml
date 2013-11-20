@@ -160,7 +160,8 @@
             priority="0"
             returns-result="false"
             label="HTML document"
-            description="Opens a HTML document in the internal browser">
+            description="Opens a HTML document in the internal browser"
+            prompt="false">
          <content-type
                id="org.eclipse.core.runtime.html">
          </content-type>
@@ -170,7 +171,8 @@
             priority="-10000"
             returns-result="false"
             label="HTTP resource"
-            description="Opens a HTTP resource in the internal browser">
+            description="Opens a HTTP resource in the internal browser"
+            prompt="false">
          <uri
                scheme="http">
          </uri>

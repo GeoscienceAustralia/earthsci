@@ -71,6 +71,7 @@ public class IntentFilter
 	private String label;
 	private String description;
 	private URL icon;
+	private boolean prompt = true;
 
 	public IntentFilter()
 	{
@@ -102,6 +103,7 @@ public class IntentFilter
 		label = element.getAttribute("label"); //$NON-NLS-1$
 		description = element.getAttribute("description"); //$NON-NLS-1$
 		icon = ExtensionPointHelper.getResourceURLForProperty(element, "icon32"); //$NON-NLS-1$
+		prompt = ExtensionPointHelper.getBooleanForProperty(element, "prompt", prompt); //$NON-NLS-1$
 	}
 
 	protected static void addToSetFromElements(IConfigurationElement element, String childrenName,
@@ -448,6 +450,26 @@ public class IntentFilter
 	public void setIcon(URL icon)
 	{
 		this.icon = icon;
+	}
+
+	/**
+	 * @return Should this filter be shown in the list of filters prompt when
+	 *         multiple filters match an Intent?
+	 */
+	public boolean isPrompt()
+	{
+		return prompt;
+	}
+
+	/**
+	 * Set whether this filter be shown in the list of filters prompt when
+	 * multiple filters match an Intent.
+	 * 
+	 * @param prompt
+	 */
+	public void setPrompt(boolean prompt)
+	{
+		this.prompt = prompt;
 	}
 
 	/**

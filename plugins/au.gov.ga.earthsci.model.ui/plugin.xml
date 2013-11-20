@@ -8,7 +8,8 @@
             priority="0"
             returns-result="true"
             label="3D model parameters"
-            description="Collect parameters required to create a 3D model from a supported raster dataset">
+            description="Collect parameters required to create a 3D model from a supported raster dataset"
+            prompt="true">
          <return-type
                class="au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters">
          </return-type>

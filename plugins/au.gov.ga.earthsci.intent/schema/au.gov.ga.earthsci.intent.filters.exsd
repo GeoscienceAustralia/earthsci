@@ -118,6 +118,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="prompt" type="boolean" use="required">
+            <annotation>
+               <documentation>
+                  Should this filter be included in the Intent filter prompt if multiple filters match an intent? For lower priority &quot;catch-all&quot; filters, this attribute&apos;s value should be false.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

@@ -65,7 +65,8 @@
             icon32="icons/classlayer_intent.png"
             label="Class layer"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            prompt="true">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
@@ -79,7 +80,8 @@
             icon32="icons/xmllayer_intent.png"
             label="XML layer"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            prompt="true">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
@@ -96,7 +98,8 @@
             icon32="icons/kmllayer_intent.png"
             label="KML layer"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            prompt="true">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>
@@ -110,7 +113,8 @@
             icon32="icons/tiledimagelayer_intent.png"
             label="Tiled imagery/elevation layer"
             priority="0"
-            returns-result="true">
+            returns-result="true"
+            prompt="true">
          <return-type
                class="gov.nasa.worldwind.layers.Layer">
          </return-type>

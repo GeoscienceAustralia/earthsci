@@ -29,7 +29,8 @@
             priority="0"
             returns-result="true"
             label="WMS catalog"
-            description="Catalog listing all the layers available on a WMS server">
+            description="Catalog listing all the layers available on a WMS server"
+            prompt="true">
          <content-type
                id="au.gov.ga.earthsci.catalog.wms.capabilities.xml">
          </content-type>
