@@ -145,7 +145,7 @@
 
 		<javaargs property="java.args.string" version="1.6+">
 			<fileset refid="signed.fileset.id" />
-			<javaarg argument="-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none" />
+			<javaarg argument="-XX:MaxPermSize=128m -Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none" />
 			<javaarg os="Mac OS X" argument="-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts" />
 			<javaarg arch="x86" initialheapsize="1024m" maxheapsize="1024m" />
 			<javaarg arch="ppc" initialheapsize="1024m" maxheapsize="1024m" />
