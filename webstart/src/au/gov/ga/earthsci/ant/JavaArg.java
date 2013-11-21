@@ -25,6 +25,8 @@ public class JavaArg
 	private String argument;
 	private String os;
 	private String arch;
+	private String initialheapsize;
+	private String maxheapsize;
 
 	public String getArgument()
 	{
@@ -54,5 +56,25 @@ public class JavaArg
 	public void setArch(String arch)
 	{
 		this.arch = arch;
+	}
+
+	public String getInitialheapsize()
+	{
+		return initialheapsize;
+	}
+
+	public void setInitialheapsize(String initialheapsize)
+	{
+		this.initialheapsize = initialheapsize;
+	}
+
+	public String getMaxheapsize()
+	{
+		return maxheapsize;
+	}
+
+	public void setMaxheapsize(String maxheapsize)
+	{
+		this.maxheapsize = maxheapsize;
 	}
 }

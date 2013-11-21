@@ -147,10 +147,10 @@
 			<fileset refid="signed.fileset.id" />
 			<javaarg argument="-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none" />
 			<javaarg os="Mac OS X" argument="-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts" />
-			<javaarg arch="x86" argument="-Xmx1024m" />
-			<javaarg arch="ppc" argument="-Xmx1024m" />
-			<javaarg arch="x86_64" argument="-Xmx2048m" />
-			<javaarg arch="amd64" argument="-Xmx2048m" />
+			<javaarg arch="x86" initialheapsize="1024m" maxheapsize="1024m" />
+			<javaarg arch="ppc" initialheapsize="1024m" maxheapsize="1024m" />
+			<javaarg arch="x86_64" initialheapsize="2048m" maxheapsize="2048m" />
+			<javaarg arch="amd64" initialheapsize="2048m" maxheapsize="2048m" />
 		</javaargs>
 
 		<copy file="${jnlp.template}" tofile="${jnlp.file}" overwrite="true">

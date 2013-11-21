@@ -115,6 +115,7 @@ public class JavaArgs extends Task
 			Matcher archMatcher = archPattern.matcher(topLevelOsArch);
 			String os = osMatcher.find() ? osMatcher.group(1) : null;
 			String arch = archMatcher.find() ? archMatcher.group(1) : null;
+			String initialHeapSize = null, maxHeapSize = null;
 
 			sb.append("\t<resources");
 			sb.append(topLevelOsArch);
@@ -132,15 +133,35 @@ public class JavaArgs extends Task
 				boolean archMatches = arg.getArch() == null || (arch != null && arch.equals(arg.getArch()));
 				if (osMatches && archMatches)
 				{
-					sb.append(arg.getArgument() + " ");
-					addedArgument = true;
+					if (!Util.isEmpty(arg.getArgument()))
+					{
+						sb.append(arg.getArgument() + " ");
+						addedArgument = true;
+					}
+					if (!Util.isEmpty(arg.getInitialheapsize()))
+					{
+						initialHeapSize = arg.getInitialheapsize();
+					}
+					if (!Util.isEmpty(arg.getMaxheapsize()))
+					{
+						maxHeapSize = arg.getMaxheapsize();
+					}
 				}
 			}
 			if (addedArgument)
 			{
 				sb.deleteCharAt(sb.length() - 1);
 			}
-			sb.append("\" />\n");
+			sb.append("\"");
+			if (initialHeapSize != null)
+			{
+				sb.append(" initial-heap-size=\"" + initialHeapSize + "\"");
+			}
+			if (maxHeapSize != null)
+			{
+				sb.append(" max-heap-size=\"" + maxHeapSize + "\"");
+			}
+			sb.append(" />\n");
 			sb.append("\t</resources>\n");
 		}
 
