@@ -101,7 +101,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		{
 			logger.error("Error loading layer file", e); //$NON-NLS-1$
 		}
-		if (loadedNode == null)
+		if (!anyActualLayers(loadedNode))
 		{
 			FolderNode folder = DefaultLayers.getLayers();
 			folder.setExpanded(true);
@@ -117,6 +117,25 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 			}
 			initializeAllLayers(rootNode, context);
 		}
+	}
+
+	protected boolean anyActualLayers(ILayerTreeNode node)
+	{
+		if (node != null)
+		{
+			if (node instanceof ILayerNode && ((ILayerNode) node).isLayerSet())
+			{
+				return true;
+			}
+			for (ILayerTreeNode child : node.getChildren())
+			{
+				if (anyActualLayers(child))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public static void initializeAllLayers(ILayerTreeNode node, IEclipseContext context)
