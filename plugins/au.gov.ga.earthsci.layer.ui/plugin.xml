@@ -37,12 +37,6 @@
             type="au.gov.ga.earthsci.layer.wrappers.SkyGradientLayerWrapper">
       </element>
       <element
-            element="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerElement"
-            sdef-context="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerElement"
-            sdef-name="TiledImageLayer"
-            type="gov.nasa.worldwind.layers.TiledImageLayer">
-      </element>
-      <element
             element="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerWrapperElement"
             sdef-context="au.gov.ga.earthsci.layer.ui.edit.TiledImageLayerWrapperElement"
             sdef-name="TiledImageLayerWrapper"
