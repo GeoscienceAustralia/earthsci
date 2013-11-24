@@ -54,6 +54,7 @@ public class PostApplicationStartupAddon
 					PartDescriptorFilter.run(application, service);
 					PartInstantiator.createParts(application, service, partService);
 					IntentManager.getInstance().beginExecution();
+					QuickAccessHider.hide(application, service);
 
 					unsubscribe();
 				}
