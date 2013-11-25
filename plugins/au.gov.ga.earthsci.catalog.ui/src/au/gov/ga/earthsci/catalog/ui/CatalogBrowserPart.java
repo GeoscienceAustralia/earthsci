@@ -178,10 +178,7 @@ public class CatalogBrowserPart
 		{
 			controller.addToLayerModel(node);
 		}
-		else
-		{
-			viewer.expandToLevel(node, 1);
-		}
+		viewer.expandToLevel(node, 1);
 	}
 
 	public TreeViewer getTreeViewer()
