@@ -3,12 +3,14 @@ package au.gov.ga.earthsci.catalog.ui;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.IBeanListProperty;
 import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.masterdetail.IObservableFactory;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
@@ -36,6 +38,8 @@ import au.gov.ga.earthsci.application.tree.LazyObservableListTreeContentProvider
 import au.gov.ga.earthsci.catalog.ErrorCatalogTreeNode;
 import au.gov.ga.earthsci.catalog.ICatalogModel;
 import au.gov.ga.earthsci.catalog.ICatalogTreeNode;
+import au.gov.ga.earthsci.common.databinding.ObservableListTreeSupport;
+import au.gov.ga.earthsci.common.databinding.TreeChangeAdapter;
 import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
 import au.gov.ga.earthsci.common.ui.viewers.ControlTreeViewer;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
@@ -66,11 +70,19 @@ public class CatalogBrowserPart
 	private ESelectionService selectionService;
 
 	private boolean settingSelection = false;
+	private ObservableListTreeSupport<ICatalogTreeNode> observableListTreeSupport;
 
 	@PostConstruct
 	public void init(final Composite parent, final MPart part, final EMenuService menuService)
 	{
 		initViewer(parent, part, menuService);
+	}
+
+	@PreDestroy
+	private void packup()
+	{
+		observableListTreeSupport.dispose();
+		labelProvider.dispose();
 	}
 
 	private void initViewer(final Composite parent, final MPart part, final EMenuService menuService)
@@ -81,12 +93,28 @@ public class CatalogBrowserPart
 
 		IBeanListProperty<ICatalogTreeNode, ICatalogTreeNode> childrenProperty =
 				BeanProperties.list(ICatalogTreeNode.class, "children", ICatalogTreeNode.class); //$NON-NLS-1$
+		IObservableFactory<ICatalogTreeNode, IObservableList<ICatalogTreeNode>> listFactory =
+				childrenProperty.listFactory();
 		LazyObservableListTreeContentProvider<ICatalogTreeNode, IObservableList<ICatalogTreeNode>> contentProvider =
 				new LazyObservableListTreeContentProvider<ICatalogTreeNode, IObservableList<ICatalogTreeNode>>(
-						childrenProperty.listFactory(), null);
+						listFactory, null);
 		viewer.setContentProvider(contentProvider);
 
+		observableListTreeSupport = new ObservableListTreeSupport<ICatalogTreeNode>(listFactory);
+		observableListTreeSupport.addListener(new TreeChangeAdapter<ICatalogTreeNode>()
+		{
+			@Override
+			public void elementAdded(ICatalogTreeNode element)
+			{
+				if (element.isRoot() || element.getParent().isRoot())
+				{
+					viewer.expandToLevel(element, 1);
+				}
+			}
+		});
+
 		viewer.setInput(model.getRoot());
+		observableListTreeSupport.setInput(model.getRoot());
 
 		viewer.addDropSupport(DND.DROP_DEFAULT | DND.DROP_COPY | DND.DROP_MOVE,
 				new Transfer[] { FileTransfer.getInstance() },
