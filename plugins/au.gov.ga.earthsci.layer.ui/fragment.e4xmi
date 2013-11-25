@@ -48,7 +48,7 @@
       </toolbar>
     </elements>
   </fragments>
-  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_B_hq4JdDEeKAe5mIUYJvmg" featurename="children" parentElementId="au.gov.ga.earthsci.application.partstack.0.0.0" positionInList="first">
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_B_hq4JdDEeKAe5mIUYJvmg" featurename="children" parentElementId="au.gov.ga.earthsci.application.partstack.0.1.0.1" positionInList="first">
     <elements xsi:type="advanced:Placeholder" xmi:id="_EYtIwJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.part" toBeRendered="false"/>
   </fragments>
 </fragment:ModelFragments>

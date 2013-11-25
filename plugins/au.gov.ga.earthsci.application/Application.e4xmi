@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_007tUPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application" bindingContexts="_007tUfsMEeG36NOaHUgVKA">
   <children xsi:type="basic:TrimmedWindow" xmi:id="_007tZ_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.window" label="%product.name" width="1024" height="768">
+    <tags>shellMaximized</tags>
     <children xsi:type="advanced:PerspectiveStack" xmi:id="_007tb_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.perspectivestack">
       <children xsi:type="advanced:Perspective" xmi:id="_007tcPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.perspective.standard">
         <children xsi:type="basic:PartSashContainer" xmi:id="_007tcfsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partsashcontainer.0" horizontal="true">
-          <children xsi:type="basic:PartSashContainer" xmi:id="_7im04F-WEeKICM2QMruAHQ" elementId="au.gov.ga.earthsci.application.partsashcontainer.0.0" containerData="30">
+          <children xsi:type="basic:PartSashContainer" xmi:id="_7im04F-WEeKICM2QMruAHQ" elementId="au.gov.ga.earthsci.application.partsashcontainer.0.0" containerData="20">
             <children xsi:type="basic:PartStack" xmi:id="_007tcvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0.0.0" containerData=""/>
-            <children xsi:type="basic:PartStack" xmi:id="_dXBQcBppEeO2986x5dT07A" elementId="au.gov.ga.earthsci.application.partstack.0.0.1"/>
           </children>
-          <children xsi:type="basic:PartSashContainer" xmi:id="_y24REA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partsashcontainer.0.1" containerData="70">
-            <children xsi:type="basic:PartStack" xmi:id="_QfsYYPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0.1.0" containerData="70">
-              <children xsi:type="advanced:Placeholder" xmi:id="_ckC_wGNsEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.globe.part" toBeRendered="false"/>
-              <children xsi:type="advanced:Placeholder" xmi:id="_Vo-MwNP2EeKXbtYtbNp0TQ" elementId="au.gov.ga.earthsci.application.browser.part" toBeRendered="false" visible="false"/>
+          <children xsi:type="basic:PartSashContainer" xmi:id="_y24REA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partsashcontainer.0.1" containerData="80">
+            <children xsi:type="basic:PartSashContainer" xmi:id="_DTSaoFV2EeOvmalpAhzBRw" elementId="au.gov.ga.earthsci.application.partsashcontainer.0.1.0" containerData="80" horizontal="true">
+              <children xsi:type="basic:PartStack" xmi:id="_QfsYYPu2EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.partstack.0.1.0.0" containerData="75">
+                <children xsi:type="advanced:Placeholder" xmi:id="_ckC_wGNsEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.globe.part" toBeRendered="false"/>
+                <children xsi:type="advanced:Placeholder" xmi:id="_Vo-MwNP2EeKXbtYtbNp0TQ" elementId="au.gov.ga.earthsci.application.browser.part" toBeRendered="false" visible="false"/>
+              </children>
+              <children xsi:type="basic:PartStack" xmi:id="_JGRs8FV2EeOvmalpAhzBRw" elementId="au.gov.ga.earthsci.application.partstack.0.1.0.1" containerData="25"/>
             </children>
-            <children xsi:type="basic:PartStack" xmi:id="_0HDfgA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partstack.0.1.1" containerData="30">
+            <children xsi:type="basic:PartStack" xmi:id="_0HDfgA0nEeK8pN67ikK9mw" elementId="au.gov.ga.earthsci.application.partstack.0.1.1" containerData="20">
               <children xsi:type="advanced:Placeholder" xmi:id="_VGKi4EfWEeKlQKEC4ZU57g" elementId="au.gov.ga.earthsci.application.retrieve.part" toBeRendered="false"/>
               <children xsi:type="advanced:Placeholder" xmi:id="_ZW508C0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.progress.part" toBeRendered="false"/>
               <children xsi:type="advanced:Placeholder" xmi:id="_ZprnAC0fEeKtv_pTd9n6fQ" elementId="au.gov.ga.earthsci.application.information.part" toBeRendered="false"/>

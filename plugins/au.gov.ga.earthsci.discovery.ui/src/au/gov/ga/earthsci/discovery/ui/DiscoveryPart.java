@@ -201,7 +201,7 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 		pageLinks.setVisible(false);
 		((GridData) pageLinks.getLayoutData()).exclude = true;
 
-		resultsSashForm.setWeights(new int[] { 3, 7 });
+		resultsSashForm.setWeights(new int[] { 2, 8 });
 
 		new TableViewerSelectionHelper<IDiscovery>(discoveriesViewer, IDiscovery.class)
 		{
