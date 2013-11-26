@@ -10,7 +10,7 @@
  
 Version 0.1
  
-Visit https://github.com/ga-m3dv/ga-earthsci-rcp/wiki for more information.
+Visit https://github.com/GeoscienceAustralia/earthsci/wiki for more information.
  
 Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
       </text>
@@ -36,6 +36,7 @@ Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
