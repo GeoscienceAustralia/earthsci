@@ -27,6 +27,20 @@ import java.util.Properties;
  */
 public class GitInformation
 {
+	public static final String GIT_COMMIT_ID_PROPERTY_KEY = "git.commit.id"; //$NON-NLS-1$
+	public static final String GIT_COMMIT_ID_ABBREV_PROPERTY_KEY = "git.commit.id.abbrev"; //$NON-NLS-1$
+	public static final String GIT_COMMIT_MESSAGE_PROPERTY_KEY = "git.commit.message.full"; //$NON-NLS-1$
+	public static final String GIT_COMMIT_MESSAGE_SHORT_PROPERTY_KEY = "git.commit.message.short"; //$NON-NLS-1$
+	public static final String GIT_COMMIT_USER_EMAIL_PROPERTY_KEY = "git.commit.user.email"; //$NON-NLS-1$
+	public static final String GIT_COMMIT_USER_NAME_PROPERTY_KEY = "git.commit.user.name"; //$NON-NLS-1$
+	public static final String GIT_BUILD_USER_NAME_PROPERTY_KEY = "git.build.user.name"; //$NON-NLS-1$
+	public static final String GIT_DESCRIBE_PROPERTY_KEY = "git.commit.id.describe"; //$NON-NLS-1$
+	public static final String GIT_BUILD_USER_EMAIL_PROPERTY_KEY = "git.build.user.email"; //$NON-NLS-1$
+	public static final String GIT_BRANCH_PROPERTY_KEY = "git.branch"; //$NON-NLS-1$
+	public static final String GIT_COMMIT_TIME_PROPERTY_KEY = "git.commit.time"; //$NON-NLS-1$
+	public static final String GIT_BUILD_TIME_PROPERTY_KEY = "git.build.time"; //$NON-NLS-1$
+	public static final String GIT_REMOTE_ORIGIN_URL_PROPERTY_KEY = "git.remote.origin.url"; //$NON-NLS-1$
+
 	private static final String PROPERTIES_FILE = "/gitinfo.properties"; //$NON-NLS-1$
 	private static Properties properties = new Properties();
 	private static boolean set = false;
@@ -69,66 +83,66 @@ public class GitInformation
 
 	public static String getCommitId()
 	{
-		return properties.getProperty("git.commit.id"); //$NON-NLS-1$
+		return properties.getProperty(GIT_COMMIT_ID_PROPERTY_KEY);
 	}
 
 	public static String getCommitIdAbbreviated()
 	{
-		return properties.getProperty("git.commit.id.abbrev"); //$NON-NLS-1$
+		return properties.getProperty(GIT_COMMIT_ID_ABBREV_PROPERTY_KEY);
 	}
 
 	public static String getCommitMessage()
 	{
-		return properties.getProperty("git.commit.message.full"); //$NON-NLS-1$
+		return properties.getProperty(GIT_COMMIT_MESSAGE_PROPERTY_KEY);
 	}
 
 	public static String getCommitMessageShort()
 	{
-		return properties.getProperty("git.commit.message.short"); //$NON-NLS-1$
+		return properties.getProperty(GIT_COMMIT_MESSAGE_SHORT_PROPERTY_KEY);
 	}
 
 	public static String getCommitUserEmail()
 	{
-		return properties.getProperty("git.commit.user.email"); //$NON-NLS-1$
+		return properties.getProperty(GIT_COMMIT_USER_EMAIL_PROPERTY_KEY);
 	}
 
 	public static String getCommitUserName()
 	{
-		return properties.getProperty("git.commit.user.name"); //$NON-NLS-1$
+		return properties.getProperty(GIT_COMMIT_USER_NAME_PROPERTY_KEY);
 	}
 
 	public static String getBuildUserName()
 	{
-		return properties.getProperty("git.build.user.name"); //$NON-NLS-1$
+		return properties.getProperty(GIT_BUILD_USER_NAME_PROPERTY_KEY);
 	}
 
 	public static String getGitDescribe()
 	{
-		return properties.getProperty("git.commit.id.describe"); //$NON-NLS-1$
+		return properties.getProperty(GIT_DESCRIBE_PROPERTY_KEY);
 	}
 
 	public static String getBuildUserEmail()
 	{
-		return properties.getProperty("git.build.user.email"); //$NON-NLS-1$
+		return properties.getProperty(GIT_BUILD_USER_EMAIL_PROPERTY_KEY);
 	}
 
 	public static String getBranch()
 	{
-		return properties.getProperty("git.branch"); //$NON-NLS-1$
+		return properties.getProperty(GIT_BRANCH_PROPERTY_KEY);
 	}
 
 	public static String getCommitTime()
 	{
-		return properties.getProperty("git.commit.time"); //$NON-NLS-1$
+		return properties.getProperty(GIT_COMMIT_TIME_PROPERTY_KEY);
 	}
 
 	public static String getBuildTime()
 	{
-		return properties.getProperty("git.build.time"); //$NON-NLS-1$
+		return properties.getProperty(GIT_BUILD_TIME_PROPERTY_KEY);
 	}
 
 	public static String getRemoteOriginUrl()
 	{
-		return properties.getProperty("git.remote.origin.url"); //$NON-NLS-1$
+		return properties.getProperty(GIT_REMOTE_ORIGIN_URL_PROPERTY_KEY);
 	}
 }
