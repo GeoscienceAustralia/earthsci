@@ -7,9 +7,9 @@
       <image path="/au.gov.ga.earthsci.application/branding/earthsci-about-150x250px.png"/>
       <text>
          EarthSci - The Earth Science visualisation platform.
- 
-Version 0.1
- 
+
+Version: {0}
+
 Visit https://github.com/GeoscienceAustralia/earthsci/wiki for more information.
  
 Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0

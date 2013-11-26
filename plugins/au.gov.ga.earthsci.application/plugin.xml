@@ -47,7 +47,7 @@
          </property>
          <property
                name="aboutText"
-               value="EarthSci - The Earth Science visualisation platform.&#x0A; &#x0A;Version 0.1&#x0A; &#x0A;Visit https://github.com/ga-m3dv/ga-earthsci-rcp/wiki for more information.&#x0A; &#x0A;Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0">
+               value="EarthSci - The Earth Science visualisation platform.&#x0D;&#x0A;&#x0D;&#x0A;Version: {0}&#x0D;&#x0A;&#x0D;&#x0A;Visit https://github.com/GeoscienceAustralia/earthsci/wiki for more information.&#x0D;&#x0A; &#x0D;&#x0A;Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0">
          </property>
          <property
                name="windowImages"
