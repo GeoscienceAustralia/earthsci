@@ -41,5 +41,9 @@ public class PropertyInitializer
 				System.setProperty(name, value);
 			}
 		}
+		else
+		{
+			System.setProperty(GitInformation.GIT_DESCRIBE_PROPERTY_KEY, "<Git version information unavailable>"); //$NON-NLS-1$
+		}
 	}
 }
