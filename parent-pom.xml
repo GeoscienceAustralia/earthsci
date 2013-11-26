@@ -22,13 +22,6 @@
 		</sonar.skippedModules>
 	</properties>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>tycho-snapshots</id>
-			<url>https://oss.sonatype.org/content/groups/public/</url>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<repositories>
 		<repository>
 			<id>kepler</id>
@@ -49,6 +42,7 @@
 
 	<build>
 		<plugins>
+			<!-- Use Tycho to build Eclipse plugins/features -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
@@ -56,6 +50,7 @@
 				<extensions>true</extensions>
 			</plugin>
 
+			<!-- Configure platforms to build packages for -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
@@ -99,6 +94,8 @@
 				</configuration>
 			</plugin>
 
+			<!-- Use the Tycho buildtimestamp plugin to add a timestamp to each plugin 
+				MANIFEST according to latest git commit -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-packaging-plugin</artifactId>
@@ -114,6 +111,60 @@
 					<timestampProvider>jgit</timestampProvider>
 					<jgit.ignore> pom.xml </jgit.ignore>
 					<jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
+				</configuration>
+			</plugin>
+
+			<!-- Use groovy to set the ${parentdir} directory, which is the directory 
+				containing this parent-pom.xml file; property is used below -->
+			<plugin>
+				<groupId>org.codehaus.groovy.maven</groupId>
+				<artifactId>gmaven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<source><![CDATA[
+								import java.io.File;
+								project.properties.parentdir = project.basedir.path;
+								while (!(new File(project.properties.parentdir, 'parent-pom.xml').exists()))
+								{
+									project.properties.parentdir = new File(project.properties.parentdir).parent;
+								}
+							]]></source>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Generate information about the current git commit that is being built -->
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>2.1.7</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<dateFormat>dd.MM.yyyy '@' HH:mm:ss z</dateFormat>
+					<dotGitDirectory>${parentdir}/.git</dotGitDirectory>
+					<generateGitPropertiesFile>true</generateGitPropertiesFile>
+					<generateGitPropertiesFilename>${parentdir}/plugins/au.gov.ga.earthsci.gitinfo/target/gitinfo.properties</generateGitPropertiesFilename>
+					<failOnNoGitDirectory>false</failOnNoGitDirectory>
+					<gitDescribe>
+						<skip>false</skip>
+						<always>true</always>
+						<abbrev>7</abbrev>
+						<dirty>-dirty</dirty>
+						<forceLongFormat>true</forceLongFormat>
+					</gitDescribe>
 				</configuration>
 			</plugin>
 		</plugins>

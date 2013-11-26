@@ -64,6 +64,7 @@
 		<module>au.gov.ga.earthsci.notification.popup</module>
 		<module>au.gov.ga.earthsci.theme.ga</module>
 		<module>au.gov.ga.earthsci.seeder</module>
+		<module>au.gov.ga.earthsci.gitinfo</module>
 		<module>org.eclipse.ui.workbench.compatibility</module>
 	</modules>
 
