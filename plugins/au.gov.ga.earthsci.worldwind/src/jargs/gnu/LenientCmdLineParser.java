@@ -407,6 +407,7 @@ public class LenientCmdLineParser {
                 
                 Option opt = (Option)this.options.get(curArg);
                 if ( opt == null ) {
+                	position++;
                 	continue;
                 }
                 Object value = null;
