@@ -8,3 +8,4 @@ Fragment-Host: org.gdal;bundle-version="1.7.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-BundleShape: dir
 Eclipse-PlatformFilter: (& (osgi.os=linux) (osgi.arch=x86))
+Bundle-Vendor: GDAL

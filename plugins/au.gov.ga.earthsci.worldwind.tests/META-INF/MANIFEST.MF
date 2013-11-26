@@ -7,3 +7,4 @@ Fragment-Host: au.gov.ga.earthsci.worldwind;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.8.0",
  au.gov.ga.earthsci.testbase;bundle-version="1.0.0"
+Bundle-Vendor: Geoscience Australia

@@ -22,3 +22,4 @@ Bundle-ClassPath: .,
  lib/logback-core-0.9.28.jar,
  lib/slf4j-api-1.6.1.jar,
  lib/logback-classic-0.9.28.jar
+Bundle-Vendor: Geoscience Australia

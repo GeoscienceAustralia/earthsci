@@ -15,3 +15,4 @@ Export-Package: org.hamcrest,
  org.hamcrest.object,
  org.hamcrest.text,
  org.hamcrest.xml
+Bundle-Vendor: Hamcrest
