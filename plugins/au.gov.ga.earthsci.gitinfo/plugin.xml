@@ -9,5 +9,12 @@
             name="Git">
       </page>
    </extension>
+   <extension
+         point="au.gov.ga.earthsci.injectables">
+      <injectable
+            class="au.gov.ga.earthsci.gitinfo.PropertyInitializer"
+            priority="0">
+      </injectable>
+   </extension>
 
 </plugin>

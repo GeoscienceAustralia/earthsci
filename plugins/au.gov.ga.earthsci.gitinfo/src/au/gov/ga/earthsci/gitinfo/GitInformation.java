@@ -62,6 +62,11 @@ public class GitInformation
 		return set;
 	}
 
+	public static Properties getProperties()
+	{
+		return properties;
+	}
+
 	public static String getCommitId()
 	{
 		return properties.getProperty("git.commit.id"); //$NON-NLS-1$
