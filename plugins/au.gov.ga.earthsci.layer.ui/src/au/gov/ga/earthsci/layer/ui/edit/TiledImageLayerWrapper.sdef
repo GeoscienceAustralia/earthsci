@@ -25,7 +25,7 @@
 		<scale-vertically>false</scale-vertically>
         <content>
             <include>layer.composite</include>
-            <include>tiledImageLayer.composite</include>
+            <!-- <include>tiledImageLayer.composite</include> -->
         </content>
 	</composite>
 
