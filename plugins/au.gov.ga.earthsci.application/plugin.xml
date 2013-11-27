@@ -212,5 +212,11 @@
             element="InitialView">
       </seeder>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="au.gov.ga.earthsci.application.MouseWheelFixStartup">
+      </startup>
+   </extension>
 
 </plugin>
