@@ -186,7 +186,6 @@ public class ColorPropertyEditorRenderer extends ValuePropertyEditorPresentation
 
 	public static class Factory extends PropertyEditorPresentationFactory
 	{
-		@Override
 		public boolean isApplicableTo(final PropertyEditorPart propertyEditorDefinition)
 		{
 			final PropertyDef property = propertyEditorDefinition.property().definition();
@@ -197,7 +196,11 @@ public class ColorPropertyEditorRenderer extends ValuePropertyEditorPresentation
 		@Override
 		public PropertyEditorPresentation create(PropertyEditorPart part, SwtPresentation parent, Composite composite)
 		{
-			return new ColorPropertyEditorRenderer(part, parent, composite);
+			if (isApplicableTo(part))
+			{
+				return new ColorPropertyEditorRenderer(part, parent, composite);
+			}
+			return null;
 		}
 	}
 }

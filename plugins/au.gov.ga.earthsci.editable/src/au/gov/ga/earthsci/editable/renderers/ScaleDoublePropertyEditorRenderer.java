@@ -193,7 +193,6 @@ public class ScaleDoublePropertyEditorRenderer extends ValuePropertyEditorPresen
 
 	public static class Factory extends PropertyEditorPresentationFactory
 	{
-		@Override
 		public boolean isApplicableTo(final PropertyEditorPart propertyEditorDefinition)
 		{
 			final PropertyDef property = propertyEditorDefinition.property().definition();
@@ -220,7 +219,11 @@ public class ScaleDoublePropertyEditorRenderer extends ValuePropertyEditorPresen
 		@Override
 		public PropertyEditorPresentation create(PropertyEditorPart part, SwtPresentation parent, Composite composite)
 		{
-			return new ScaleDoublePropertyEditorRenderer(part, parent, composite);
+			if (isApplicableTo(part))
+			{
+				return new ScaleDoublePropertyEditorRenderer(part, parent, composite);
+			}
+			return null;
 		}
 	}
 }

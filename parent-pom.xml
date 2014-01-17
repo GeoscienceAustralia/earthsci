@@ -36,7 +36,7 @@
 		<repository>
 			<id>sapphire</id>
 			<layout>p2</layout>
-			<url>https://raw.github.com/ga-m3dv/earthsci-sapphire-0.7.0-updatesite/master</url>
+			<url>http://download.eclipse.org/sapphire/0.7/repository</url>
 		</repository>
 	</repositories>
 
