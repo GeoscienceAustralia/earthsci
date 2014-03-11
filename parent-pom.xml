@@ -8,6 +8,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
+		<maven-deploy-version>2.8.1</maven-deploy-version>
 		<tycho-version>0.19.0</tycho-version>
 		<tycho-extras-version>0.19.0</tycho-extras-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,6 +43,13 @@
 
 	<build>
 		<plugins>
+			<!-- Explicitly include the maven-deploy-plugin for version selection -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven-deploy-version}</version>
+			</plugin>
+
 			<!-- Use Tycho to build Eclipse plugins/features -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
