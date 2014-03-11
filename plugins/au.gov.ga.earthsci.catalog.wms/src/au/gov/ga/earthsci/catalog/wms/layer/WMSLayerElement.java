@@ -18,6 +18,7 @@ package au.gov.ga.earthsci.catalog.wms.layer;
 import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Label;
+import org.eclipse.sapphire.modeling.annotations.PossibleValues;
 import org.eclipse.sapphire.modeling.annotations.ReadOnly;
 import org.eclipse.sapphire.modeling.annotations.Service;
 
@@ -41,4 +42,7 @@ public interface WMSLayerElement extends LayerElement
 
 	@Service(impl = StyleNamePossibleValuesService.class)
 	ValueProperty PROP_STYLE_NAME = new ValueProperty(TYPE, "StyleName"); //$NON-NLS-1$
+
+	@PossibleValues(values = { ".dds", ".png" })
+	ValueProperty PROP_FORMAT_SUFFIX = new ValueProperty(TYPE, "FormatSuffix"); //$NON-NLS-1$
 }

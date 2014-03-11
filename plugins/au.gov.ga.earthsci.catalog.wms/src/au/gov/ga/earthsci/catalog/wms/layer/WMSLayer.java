@@ -19,6 +19,7 @@ import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.avlist.AVListImpl;
 import gov.nasa.worldwind.layers.Layer;
+import gov.nasa.worldwind.layers.TiledImageLayer;
 import gov.nasa.worldwind.ogc.wms.WMSCapabilities;
 
 import java.net.MalformedURLException;
@@ -45,6 +46,7 @@ import au.gov.ga.earthsci.layer.IPersistentLayer;
 import au.gov.ga.earthsci.layer.delegator.LayerDelegator;
 import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
+import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
@@ -57,11 +59,13 @@ public class WMSLayer extends LayerDelegator implements IPersistentLayer, IInfor
 	private final static String URI_ELEMENT = "uri"; //$NON-NLS-1$
 	private final static String LAYER_ELEMENT = "layer"; //$NON-NLS-1$
 	private final static String STYLE_ELEMENT = "style"; //$NON-NLS-1$
+	private final static String FORMAT_SUFFIX_ELEMENT = "formatSuffix"; //$NON-NLS-1$
 
 	private URI capabilitiesURI;
 	private WMSCapabilities capabilities;
 	private String layerName;
 	private String styleName;
+	private String formatSuffix;
 
 	private boolean loading = false;
 	private IModelStatus status = ModelStatus.ok();
@@ -92,6 +96,10 @@ public class WMSLayer extends LayerDelegator implements IPersistentLayer, IInfor
 		if (legendURL != null)
 		{
 			params.setValue(AVKeyMore.LEGEND_URL, legendURL);
+		}
+		if (!Util.isBlank(formatSuffix))
+		{
+			params.setValue(AVKey.FORMAT_SUFFIX, formatSuffix);
 		}
 
 		Layer layer = new InformationedWMSTiledImageLayer(capabilities, params, informationURL);
@@ -174,6 +182,29 @@ public class WMSLayer extends LayerDelegator implements IPersistentLayer, IInfor
 		recreateLayer();
 	}
 
+	public String getFormatSuffix()
+	{
+		if (!Util.isBlank(formatSuffix))
+		{
+			return formatSuffix;
+		}
+
+		Layer layer = getLayer();
+		if (!(layer instanceof TiledImageLayer))
+		{
+			return null;
+		}
+
+		TiledImageLayer tiledImageLayer = (TiledImageLayer) layer;
+		return tiledImageLayer.getLevels().getFirstLevel().getFormatSuffix();
+	}
+
+	public void setFormatSuffix(String formatSuffix)
+	{
+		firePropertyChange("formatSuffix", getFormatSuffix(), this.formatSuffix = formatSuffix); //$NON-NLS-1$
+		recreateLayer();
+	}
+
 	@Override
 	public boolean isLoading()
 	{
@@ -203,6 +234,7 @@ public class WMSLayer extends LayerDelegator implements IPersistentLayer, IInfor
 		XmlUtil.setTextElement(parent, URI_ELEMENT, capabilitiesURI.toString());
 		XmlUtil.setTextElement(parent, LAYER_ELEMENT, layerName);
 		XmlUtil.setTextElement(parent, STYLE_ELEMENT, styleName);
+		XmlUtil.setTextElement(parent, FORMAT_SUFFIX_ELEMENT, formatSuffix);
 	}
 
 	@Override
@@ -221,6 +253,7 @@ public class WMSLayer extends LayerDelegator implements IPersistentLayer, IInfor
 		}
 		layerName = XmlUtil.getText(parent, LAYER_ELEMENT);
 		styleName = XmlUtil.getText(parent, STYLE_ELEMENT);
+		formatSuffix = XmlUtil.getText(parent, FORMAT_SUFFIX_ELEMENT);
 
 		loadCapabilities();
 	}

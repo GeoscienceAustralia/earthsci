@@ -2,21 +2,31 @@
 
 	<import>
 		<package>au.gov.ga.earthsci.editable.renderers</package>
-        <definition>au.gov.ga.earthsci.layer.ui.edit.Layer</definition>
+		<definition>au.gov.ga.earthsci.layer.ui.edit.Layer</definition>
 	</import>
-    <composite>
-        <id>wmsLayer.composite</id>
-        <content>
-            <group>
-                <label>WMS</label>
-                <content>
-                    <property-editor>CapabilitiesURI</property-editor>
-                    <property-editor>LayerName</property-editor>
-                    <property-editor>StyleName</property-editor>
-                </content>
-            </group>
-        </content>
-    </composite>
+	<composite>
+		<id>wmsLayer.composite</id>
+		<content>
+			<group>
+				<label>WMS</label>
+				<content>
+					<property-editor>CapabilitiesURI</property-editor>
+					<property-editor>
+						<property>LayerName</property>
+						<style>Sapphire.PropertyEditor.PopUpListField.Strict</style>
+					</property-editor>
+					<property-editor>
+						<property>StyleName</property>
+						<style>Sapphire.PropertyEditor.PopUpListField.Strict</style>
+					</property-editor>
+					<property-editor>
+						<property>FormatSuffix</property>
+						<style>Sapphire.PropertyEditor.PopUpListField.Strict</style>
+					</property-editor>
+				</content>
+			</group>
+		</content>
+	</composite>
 
 	<composite>
 		<id>composite</id>
@@ -25,10 +35,10 @@
 			<content></content>
 		</documentation>
 		<scale-vertically>false</scale-vertically>
-        <content>
-            <include>layer.composite</include>
-            <include>wmsLayer.composite</include>
-        </content>
+		<content>
+			<include>layer.composite</include>
+			<include>wmsLayer.composite</include>
+		</content>
 	</composite>
 
 	<dialog>
@@ -37,8 +47,8 @@
 		<initial-focus>Title</initial-focus>
 		<content>
 			<include>composite</include>
-            <form>
-            </form>
+			<form>
+			</form>
 		</content>
 		<scale-vertically>true</scale-vertically>
 	</dialog>
