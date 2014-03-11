@@ -48,7 +48,7 @@ public class GLTestUtil
 		}
 		catch (Throwable e)
 		{
-			e.printStackTrace();
+			System.err.println("No OpenGL available"); //$NON-NLS-1$
 			return false;
 		}
 	}
