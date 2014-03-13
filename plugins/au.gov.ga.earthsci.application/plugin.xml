@@ -47,7 +47,7 @@
          </property>
          <property
                name="aboutText"
-               value="EarthSci - The Earth Science visualisation platform.&#x0D;&#x0A;&#x0D;&#x0A;Version: {0}&#x0D;&#x0A;&#x0D;&#x0A;Visit https://github.com/GeoscienceAustralia/earthsci/wiki for more information.&#x0D;&#x0A; &#x0D;&#x0A;Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0">
+               value="EarthSci - The Earth Science visualisation platform.&#x0A;&#x0A;Version: {0}&#x0A;&#x0A;Visit https://github.com/GeoscienceAustralia/earthsci/wiki for more information.&#x0A; &#x0A;Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0">
          </property>
          <property
                name="windowImages"
@@ -56,6 +56,22 @@
          <property
                name="aboutImage"
                value="branding/earthsci-about-150x250px.png">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="0,215,400,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="000000">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="5,195,390,20">
          </property>
       </product>
    </extension>
