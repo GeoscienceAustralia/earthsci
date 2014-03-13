@@ -20,7 +20,7 @@ Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
    </configIni>
 
    <launcherArgs>
-      <programArgs>--launcher.XXMaxPermSize 128m -showsplash au.gov.ga.earthsci.application</programArgs>
+      <programArgs>--launcher.XXMaxPermSize 128m</programArgs>
       <vmArgs>-Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none -Xms512m -Xmx1024m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
@@ -28,15 +28,19 @@ Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
    <windowImages i16="/au.gov.ga.earthsci.application/branding/earthsci-icon-16px.png" i32="/au.gov.ga.earthsci.application/branding/earthsci-icon-32px.png" i48="/au.gov.ga.earthsci.application/branding/earthsci-icon-48px.png" i64="/au.gov.ga.earthsci.application/branding/earthsci-icon-64px.png" i128="/au.gov.ga.earthsci.application/branding/earthsci-icon-128px.png"/>
 
    <splash
-      location="au.gov.ga.earthsci.application" />
+      location="au.gov.ga.earthsci.application"
+      startupProgressRect="0,215,400,15"
+      startupMessageRect="5,195,390,20"
+      startupForegroundColor="000000" />
    <launcher name="earthsci">
+      <linux icon="icon/icon.xpm"/>
+      <macosx icon="icon/icon.icns"/>
       <solaris/>
       <win useIco="true">
-         <ico path="earthsci-icon.ico"/>
+         <ico path="icon/icon.ico"/>
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
