@@ -177,4 +177,10 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<distributionManagement>
+		<snapshotRepository>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
