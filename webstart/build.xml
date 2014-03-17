@@ -11,7 +11,7 @@
 	<property name="lib.dir" value="${basedir}/lib" />
 	<property name="build.dir" value="${target.dir}/build" />
 	<property name="package.dir" value="${target.dir}/package" />
-	<property name="ant.task.jar" value="${package.dir}/jnlp.resources.jar" />
+	<property name="ant.task.jar" value="${package.dir}/au.gov.ga.earthsci.webstart.jar" />
 
 	<property name="product.dir" value="${target.dir}/product" />
 	<property name="plugins.dir" value="${product.dir}/plugins" />

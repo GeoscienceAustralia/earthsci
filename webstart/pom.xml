@@ -28,6 +28,7 @@
 						<configuration>
 							<target if="${webstart}">
 								<ant antfile="${basedir}/build.xml" target="run" dir="${basedir}" />
+								<attachartifact file="${basedir}/target/package/au.gov.ga.earthsci.webstart.jar" classifier="ant" type="jar"/>
 							</target>
 						</configuration>
 						<goals>
