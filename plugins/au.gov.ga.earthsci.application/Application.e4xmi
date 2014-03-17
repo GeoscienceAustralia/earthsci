@@ -137,6 +137,7 @@
   <commands xmi:id="_NMA3YC7KEeKZx7qTf2KT5w" elementId="au.gov.ga.earthsci.application.command.information" commandName="informationCommand"/>
   <commands xmi:id="_TIcZkC7KEeKZx7qTf2KT5w" elementId="au.gov.ga.earthsci.application.command.legend" commandName="legendCommand"/>
   <commands xmi:id="_CDcDUDKiEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.command.add" commandName="addCommand" description="Add an item"/>
+  <commands xmi:id="_f5xe0KspEeONQrgh0nmR-w" elementId="au.gov.ga.earthsci.application.command.addCatalog" commandName="addCatalogCommand" description="Add a catalog"/>
   <commands xmi:id="_MOx8UDKqEeKVc-uaxJMq1A" elementId="au.gov.ga.earthsci.application.command.remove" commandName="removeCommand" description="Remove an item"/>
   <commands xmi:id="_dPfHYOgcEeKDKYCx5tWecQ" elementId="au.gov.ga.earthsci.application.command.clear" commandName="clearCommand" description="Clear all items"/>
   <commands xmi:id="_6LV8YEfvEeKRt8yHXSHYtA" elementId="au.gov.ga.earthsci.application.command.apply" commandName="applyCommand" description="Apply and item state"/>

@@ -25,7 +25,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.databinding;bundle-version="1.7.0",
  au.gov.ga.earthsci.common.ui,
  au.gov.ga.earthsci.layer.ui;bundle-version="1.0.0",
- au.gov.ga.earthsci.layer
+ au.gov.ga.earthsci.layer,
+ au.gov.ga.earthsci.intent
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: au.gov.ga.earthsci.catalog.ui,
