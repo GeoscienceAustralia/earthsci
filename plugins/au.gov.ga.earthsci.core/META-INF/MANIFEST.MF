@@ -42,7 +42,8 @@ Require-Bundle: gov.nasa.worldwind,
  org.gdal;bundle-version="1.7.2",
  au.gov.ga.earthsci.common.ui,
  org.eclipse.ui;bundle-version="3.105.0",
- au.gov.ga.earthsci.seeder
+ au.gov.ga.earthsci.seeder,
+ com.jogamp.jogl
 Import-Package: javax.annotation;version="1.0.0",
  org.eclipse.osgi.util,
  org.slf4j
