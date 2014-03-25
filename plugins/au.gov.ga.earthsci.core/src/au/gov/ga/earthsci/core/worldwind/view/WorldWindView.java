@@ -20,18 +20,14 @@ import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Frustum;
-import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Quaternion;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.view.ViewPropertyLimits;
 import gov.nasa.worldwind.view.orbit.BasicOrbitViewLimits;
 import gov.nasa.worldwind.view.orbit.OrbitViewLimits;
-
-import java.util.Random;
 
 import javax.media.opengl.GL;
 
@@ -116,55 +112,56 @@ public class WorldWindView extends AbstractView
 	@Override
 	public Position getEyePosition()
 	{
-		return globe.computePositionFromPoint(getEyePoint());
+		return state.getEye(globe);
 	}
 
 	@Override
 	public Vec4 getEyePoint()
 	{
-		return state.getEye();
+		return state.getEyePoint(globe);
 	}
 
 	@Override
 	public Vec4 getUpVector()
 	{
-		return state.getUp();
+		return state.getUp(globe);
 	}
 
 	@Override
 	public Vec4 getForwardVector()
 	{
-		return state.getForward();
+		return state.getForward(globe);
 	}
 
 	@Override
 	public Vec4 getCenterPoint()
 	{
-		return state.getCenter();
+		return state.getCenterPoint(globe);
 	}
 
 	@Override
 	public Position getCenterPosition()
 	{
-		return globe.computePositionFromPoint(getCenterPoint());
+		return state.getCenter();
 	}
 
 	@Override
 	public void setCenterPosition(Position center)
 	{
-		state.setCenter(globe.computePointFromPosition(center));
+		state.setCenter(center);
+		focusOnViewportCenterIfPossible();
 	}
 
 	@Override
 	public Vec4 getCurrentEyePoint()
 	{
-		return state.getEye();
+		return state.getEyePoint(globe);
 	}
 
 	@Override
 	public Position getCurrentEyePosition()
 	{
-		return globe.computePositionFromPoint(getCurrentEyePoint());
+		return state.getEye(globe);
 	}
 
 	@Override
@@ -177,43 +174,21 @@ public class WorldWindView extends AbstractView
 	@Override
 	public void setEyePosition(Position eyePosition)
 	{
-		state.setEye(globe.computePointFromPosition(eyePosition));
+		state.setEye(eyePosition, globe);
+		focusOnViewportCenterIfPossible();
 	}
 
 	@Override
 	public Angle getHeading()
 	{
-		//TODO find a more sensible way of performing this calculation
-		//TODO cache the value
-		Vec4 center = state.getCenter();
-		Vec4 up = state.getUp();
-		Position centerPosition = globe.computePositionFromPoint(center);
-		Position centerUpPosition = globe.computePositionFromPoint(center.add3(up));
-		return LatLon.greatCircleAzimuth(centerPosition, centerUpPosition);
+		return state.getHeading();
 	}
 
 	@Override
 	public void setHeading(Angle heading)
 	{
-		Angle current = getHeading();
-		Angle delta = heading.subtract(current).normalizedLongitude();
-		rotateAroundCenter(delta);
-	}
-
-	public void rotateAroundCenter(Angle delta)
-	{
-		Vec4 center = state.getCenter();
-		if (center.getLengthSquared3() == 0)
-		{
-			Quaternion q = Quaternion.fromRotationXYZ(Angle.ZERO, Angle.ZERO, delta);
-			state.setRotation(state.getRotation().multiply(q));
-		}
-		else
-		{
-			//use the center vector as the axis of rotation
-			Quaternion q = Quaternion.fromAxisAngle(delta.multiply(-1), center.normalize3());
-			state.setRotation(q.multiply(state.getRotation()));
-		}
+		state.setHeading(heading);
+		focusOnViewportCenterIfPossible();
 	}
 
 	@Override
@@ -226,6 +201,7 @@ public class WorldWindView extends AbstractView
 	public void setPitch(Angle pitch)
 	{
 		state.setPitch(pitch);
+		focusOnViewportCenterIfPossible();
 	}
 
 	@Override
@@ -238,18 +214,20 @@ public class WorldWindView extends AbstractView
 	public void setRoll(Angle roll)
 	{
 		state.setRoll(roll);
+		focusOnViewportCenterIfPossible();
 	}
 
 	@Override
 	public double getZoom()
 	{
-		return state.getDistance();
+		return state.getZoom();
 	}
 
 	@Override
 	public void setZoom(double zoom)
 	{
-		state.setDistance(zoom);
+		state.setZoom(zoom);
+		focusOnViewportCenterIfPossible();
 	}
 
 	@Override
@@ -270,18 +248,88 @@ public class WorldWindView extends AbstractView
 		this.viewLimits = limits;
 	}
 
+	public void focusOnViewportCenterIfPossible()
+	{
+		if (canFocusOnViewportCenter())
+		{
+			focusOnViewportCenter();
+		}
+	}
+
 	@Override
 	public boolean canFocusOnViewportCenter()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return this.dc != null && this.globe != null
+				&& this.dc.getViewportCenterPosition() != null;
 	}
 
 	@Override
 	public void focusOnViewportCenter()
 	{
-		// TODO Auto-generated method stub
+		if (this.isAnimating())
+		{
+			return;
+		}
+		if (this.dc == null)
+		{
+			String message = Logging.getMessage("nullValue.DrawContextIsNull");
+			Logging.logger().severe(message);
+			throw new IllegalStateException(message);
+		}
+		if (this.globe == null)
+		{
+			String message = Logging.getMessage("nullValue.DrawingContextGlobeIsNull");
+			Logging.logger().severe(message);
+			throw new IllegalStateException(message);
+		}
 
+		Position viewportCenterPos = this.dc.getViewportCenterPosition();
+		if (viewportCenterPos == null)
+		{
+			String message = Logging.getMessage("nullValue.DrawingContextViewportCenterIsNull");
+			Logging.logger().severe(message);
+			throw new IllegalStateException(message);
+		}
+
+		// We want the actual "geometric point" here, which must be adjusted for vertical exaggeration.
+		Vec4 viewportCenterPoint = this.globe.computePointFromPosition(
+				viewportCenterPos.getLatitude(), viewportCenterPos.getLongitude(),
+				this.globe.getElevation(viewportCenterPos.getLatitude(), viewportCenterPos.getLongitude())
+						* dc.getVerticalExaggeration());
+
+		if (viewportCenterPoint != null)
+		{
+			Vec4 eyePoint = getEyePoint();
+			Vec4 forward = getForwardVector();
+			double distance = eyePoint.distanceTo3(viewportCenterPoint);
+			Vec4 newCenterPoint = Vec4.fromLine3(eyePoint, distance, forward);
+			state.setCenter(globe.computePositionFromPoint(newCenterPoint));
+			state.setZoom(distance);
+
+			/*Matrix modelview = state.getTransform(globe);
+			if (modelview != null)
+			{
+				Matrix modelviewInv = modelview.getInverse();
+				if (modelviewInv != null)
+				{
+					// The change in focus must happen seamlessly; we can't move the eye or the forward vector
+					// (only the center position and zoom should change). Therefore we pick a point along the
+					// forward vector, and *near* the viewportCenterPoint, but not necessarily at the
+					// viewportCenterPoint itself.
+					Vec4 eyePoint = Vec4.UNIT_W.transformBy4(modelviewInv);
+					Vec4 forward = Vec4.UNIT_NEGATIVE_Z.transformBy4(modelviewInv);
+					double distance = eyePoint.distanceTo3(viewportCenterPoint);
+					Vec4 newCenterPoint = Vec4.fromLine3(eyePoint, distance, forward);
+
+					OrbitViewInputSupport.OrbitViewState modelCoords = OrbitViewInputSupport.computeOrbitViewState(
+							this.globe, modelview, newCenterPoint);
+					if (validateModelCoordinates(modelCoords))
+					{
+						setModelCoordinates(modelCoords);
+					}
+				}
+			}*/
+		}
 	}
 
 	@Override
@@ -296,21 +344,21 @@ public class WorldWindView extends AbstractView
 	{
 		if (dc == null)
 		{
-			String message = Logging.getMessage("nullValue.DrawContextIsNull");
+			String message = Logging.getMessage("nullValue.DrawContextIsNull"); //$NON-NLS-1$
 			Logging.logger().severe(message);
 			throw new IllegalArgumentException(message);
 		}
 
 		if (dc.getGL() == null)
 		{
-			String message = Logging.getMessage("nullValue.DrawingContextGLIsNull");
+			String message = Logging.getMessage("nullValue.DrawingContextGLIsNull"); //$NON-NLS-1$
 			Logging.logger().severe(message);
 			throw new IllegalArgumentException(message);
 		}
 
 		if (dc.getGlobe() == null)
 		{
-			String message = Logging.getMessage("nullValue.DrawingContextGlobeIsNull");
+			String message = Logging.getMessage("nullValue.DrawingContextGlobeIsNull"); //$NON-NLS-1$
 			Logging.logger().severe(message);
 			throw new IllegalArgumentException(message);
 		}
@@ -323,19 +371,11 @@ public class WorldWindView extends AbstractView
 		{
 			loadConfigurationValues();
 			configurationValuesLoaded = true;
-
-
-
-			Position eyePosition = getEyePosition();
-			eyePosition = new Position(LatLon.fromDegrees(40, 0), eyePosition.elevation);
-			setOrientation(eyePosition, new Position(eyePosition.add(LatLon.fromDegrees(20, 0)), 0));
 		}
 
 		//========== modelview matrix state ==========//
 		// Compute the current modelview matrix.
-		//this.modelview = gluLookAt(eyePoint, lookAtPoint, Vec4.UNIT_Y);
-		this.modelview = state.getTransform();
-		//this.modelview = ViewUtil.computeTransformMatrix(this.globe, this.eyePosition, this.heading, this.pitch, this.roll);
+		this.modelview = state.getTransform(globe);
 
 		if (this.modelview == null)
 		{
@@ -376,30 +416,7 @@ public class WorldWindView extends AbstractView
 		loadGLViewState(dc, this.modelview, this.projection);
 
 		afterDoApply();
-
-
-
-		//TEMP
-		Position oldEyePosition = getEyePosition();
-		oldEyePosition = Position.fromDegrees(40, oldEyePosition.longitude.degrees, oldEyePosition.elevation);
-		Position newEyePosition = oldEyePosition.add(Position.fromDegrees(0, 1.0));
-		//newEyePosition = oldEyePosition.add(Position.fromDegrees(0, 0.0));
-		Position newCenterPosition = new Position(newEyePosition.add(Position.fromDegrees(20, 20)), 0);
-		//setOrientation(newEyePosition, newCenterPosition);
-		//setEyePosition(newEyePosition);
-		//setCenterPosition(Position.fromDegrees(-20, 0, 0));
-		//state.setRoll(newEyePosition.longitude);
-		//updateModelViewStateID();
-
-		//state.setHeading(state.getHeading().addDegrees(1));
-		//state.setPitch(state.getPitch().addDegrees(1));
-		//System.out.println("heading = " + state.getHeading() + ", pitch = " + state.getPitch());
-
-		//state.setDistance(state.getDistance() - 10000);
 	}
-
-	@Deprecated
-	Random random = new Random();
 
 	protected void afterDoApply()
 	{

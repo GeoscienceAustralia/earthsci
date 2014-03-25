@@ -97,9 +97,8 @@ public class WorldWindViewInputHandler extends BasicViewInputHandler
 		}
 
 		view.setHeading(view.getHeading().addDegrees(headingInput * 0.1));
-		//view.rotateAroundCenter(Angle.fromDegrees(headingInput * 0.1));
 		view.setPitch(view.getPitch().addDegrees(-pitchInput * 0.1));
-		//view.setRoll(view.getRoll().addDegrees(-pitchInput * 0.1));
+		//view.setRoll(view.getRoll().addDegrees(-headingInput * 0.1));
 
 		view.firePropertyChange(AVKey.VIEW, null, view);
 	}
@@ -111,10 +110,10 @@ public class WorldWindViewInputHandler extends BasicViewInputHandler
 		WorldWindView view = getView();
 		ViewState state = view.getState();
 
-		double currentDistance = state.getDistance();
+		double currentDistance = state.getZoom();
 		double logCurrentDistance = currentDistance != 0 ? Math.log(currentDistance) : 0;
 		double newDistance = Math.exp(logCurrentDistance + translateChange * 0.1);
-		state.setDistance(newDistance);
+		state.setZoom(newDistance);
 
 		view.firePropertyChange(AVKey.VIEW, null, view);
 	}
@@ -225,9 +224,7 @@ public class WorldWindViewInputHandler extends BasicViewInputHandler
 		Position delta = Position.fromDegrees(latChange, lonChange, 0.0);
 
 		Position centerPosition = view.getCenterPosition();
-		Position eyePosition = view.getEyePosition();
 		view.setCenterPosition(centerPosition.add(delta));
-		view.setEyePosition(eyePosition.add(delta));
 
 		view.firePropertyChange(AVKey.VIEW, null, view);
 	}
@@ -252,9 +249,7 @@ public class WorldWindViewInputHandler extends BasicViewInputHandler
 		Position delta = new Position(latitudeChange, longitudeChange, 0.0);
 
 		Position centerPosition = view.getCenterPosition();
-		Position eyePosition = view.getEyePosition();
 		view.setCenterPosition(centerPosition.add(delta));
-		view.setEyePosition(eyePosition.add(delta));
 
 		view.firePropertyChange(AVKey.VIEW, null, view);
 	}
