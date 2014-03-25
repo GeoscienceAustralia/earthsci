@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.worldwind;
+package au.gov.ga.earthsci.core.worldwind.view;
 
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
@@ -24,11 +24,9 @@ import gov.nasa.worldwind.geom.Vec4;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  * 
  */
-public class WorldWindViewState
+public class ViewState
 {
 	//constants
-	protected final static Vec4 INITIAL_FORWARD = Vec4.UNIT_Z;
-	protected final static Vec4 NEGATIVE_INITIAL_FORWARD = INITIAL_FORWARD.multiply3(-1);
 	protected final static double EPSILON = 1.0e-9;
 
 	//state
@@ -43,7 +41,8 @@ public class WorldWindViewState
 	protected Vec4 lastSide;
 	protected Matrix lastRotationMatrix;
 	protected Angle lastRoll;
-	protected Angle lastWorldRoll;
+	protected Angle lastHeading;
+	protected Angle lastPitch;
 
 	protected void clearCachedValues()
 	{
@@ -53,7 +52,8 @@ public class WorldWindViewState
 		lastSide = null;
 		lastRotationMatrix = null;
 		lastRoll = null;
-		lastWorldRoll = null;
+		lastHeading = null;
+		lastPitch = null;
 	}
 
 	public Vec4 getCenter()
@@ -74,7 +74,7 @@ public class WorldWindViewState
 
 	public void setRotation(Quaternion rotation)
 	{
-		this.rotation = rotation;
+		this.rotation = rotation.normalize();
 		clearCachedValues();
 	}
 
@@ -93,7 +93,9 @@ public class WorldWindViewState
 	{
 		if (lastForward == null)
 		{
-			lastForward = INITIAL_FORWARD.transformBy3(rotation);
+			lastForward = lastSide != null && lastUp != null ?
+					lastSide.cross3(lastUp) :
+					Vec4.UNIT_Z.transformBy3(rotation);
 		}
 		return lastForward;
 	}
@@ -102,7 +104,9 @@ public class WorldWindViewState
 	{
 		if (lastUp == null)
 		{
-			lastUp = Vec4.UNIT_Y.transformBy3(rotation);
+			lastUp = lastForward != null && lastSide != null ?
+					lastForward.cross3(lastSide) :
+					Vec4.UNIT_Y.transformBy3(rotation);
 		}
 		return lastUp;
 	}
@@ -111,9 +115,28 @@ public class WorldWindViewState
 	{
 		if (lastSide == null)
 		{
-			lastSide = Vec4.UNIT_X.transformBy3(rotation);
+			lastSide = lastUp != null && lastForward != null ?
+					lastUp.cross3(lastForward) :
+					Vec4.UNIT_X.transformBy3(rotation);
 		}
 		return lastSide;
+	}
+
+	public Matrix getTransform()
+	{
+		//gluLookAt defines s as (f x u), but getSide returns (u x f), so negate it during matrix creation
+		Vec4 s = getSide();
+		Vec4 u = getUp();
+		Vec4 f = getForward();
+		Vec4 eye = getEye();
+		Matrix mAxes = new Matrix(
+				-s.x, -s.y, -s.z, 0.0,
+				u.x, u.y, u.z, 0.0,
+				-f.x, -f.y, -f.z, 0.0,
+				0.0, 0.0, 0.0, 1.0);
+		Matrix mEye = Matrix.fromTranslation(-eye.x, -eye.y, -eye.z);
+		Matrix result = mAxes.multiply(mEye);
+		return result;
 	}
 
 	public Matrix getRotationMatrix()
@@ -137,15 +160,19 @@ public class WorldWindViewState
 
 	public void setEye(Vec4 eye)
 	{
+		//get the world roll (quasi heading) prior to the eye position change
 		Angle worldRoll = getWorldRoll();
+
+		//change the rotation and distance to move the eye to the new position
 		Vec4 newForwardUnnormalized = center.subtract3(eye);
 		Vec4 newForward = newForwardUnnormalized.normalize3();
-		double dot = INITIAL_FORWARD.dot3(newForward);
+		double dot = Vec4.UNIT_Z.dot3(newForward);
 		Quaternion newRotation = dot >= 1.0 ? Quaternion.IDENTITY :
 				dot <= -1.0 ? Quaternion.fromAxisAngle(Angle.POS180, Vec4.UNIT_Y) :
-						Quaternion.fromAxisAngle(Angle.fromRadians(Math.acos(dot)), INITIAL_FORWARD.cross3(newForward));
+						Quaternion.fromAxisAngle(Angle.fromRadians(Math.acos(dot)), Vec4.UNIT_Z.cross3(newForward));
 		setRotation(newRotation);
 		setDistance(newForwardUnnormalized.getLength3());
+
 		setWorldRoll(worldRoll);
 	}
 
@@ -168,7 +195,7 @@ public class WorldWindViewState
 
 	public Angle getWorldRoll()
 	{
-		if (lastWorldRoll == null)
+		if (lastHeading == null)
 		{
 			//get forward and side vectors
 			Vec4 forward = getForward();
@@ -183,10 +210,10 @@ public class WorldWindViewState
 			Vec4 relativeSide = relativeUp.cross3(forward);
 			//return the angle between the actual side vector and the X-Z plane side vector
 			double dot = side.dot3(relativeSide);
-			lastWorldRoll = dot >= 1.0 ? Angle.ZERO : dot <= -1.0 ? Angle.POS180 :
+			lastHeading = dot >= 1.0 ? Angle.ZERO : dot <= -1.0 ? Angle.POS180 :
 					Angle.fromRadians(Math.signum(side.dot3(relativeUp)) * Math.acos(dot));
 		}
-		return lastWorldRoll;
+		return lastHeading;
 	}
 
 	public void setWorldRoll(Angle angle)
@@ -196,6 +223,41 @@ public class WorldWindViewState
 		setRoll(getRoll().add(delta));
 	}
 
+	public Angle getPitch()
+	{
+		if (lastPitch == null)
+		{
+			if (center.getLengthSquared3() == 0)
+			{
+				//pitch doesn't make sense when centered at the origin:
+				lastPitch = Angle.ZERO;
+			}
+			else
+			{
+				Vec4 forward = getForward();
+				Vec4 centerNormalized = center.normalize3().multiply3(-1);
+				double dot = forward.dot3(centerNormalized);
+				lastPitch = dot >= 1.0 ? Angle.ZERO : dot <= -1.0 ? Angle.POS180 : Angle.fromRadians(Math.acos(dot));
+			}
+		}
+		return lastPitch;
+	}
+
+	public void setPitch(Angle pitch)
+	{
+		if (center.getLengthSquared3() == 0)
+		{
+			//can't pitch around zero
+			//TODO should we change eye position instead?
+			return;
+		}
+
+		Angle current = getPitch();
+		Angle delta = pitch.subtract(current);
+		Quaternion q = Quaternion.fromRotationXYZ(delta, Angle.ZERO, Angle.ZERO);
+		setRotation(rotation.multiply(q));
+	}
+
 	public void setCenterConstantEye(Vec4 center)
 	{
 		Vec4 eye = getEye();
@@ -203,19 +265,37 @@ public class WorldWindViewState
 		setEye(eye);
 	}
 
-	public Matrix getTransform()
+	/*public static void main(String[] args)
 	{
-		Vec4 u = getUp();
-		Vec4 f = getForward();
-		Vec4 s = getSide();
-		Vec4 eye = getEye();
-		Matrix mAxes = new Matrix(
-				-s.x, -s.y, -s.z, 0.0,
-				u.x, u.y, u.z, 0.0,
-				-f.x, -f.y, -f.z, 0.0,
-				0.0, 0.0, 0.0, 1.0);
-		Matrix mEye = Matrix.fromTranslation(-eye.x, -eye.y, -eye.z);
-		Matrix result = mAxes.multiply(mEye);
-		return result;
+		WorldWindViewState state = new WorldWindViewState();
+		System.out.println("Center = " + v4ts(state.getCenter()));
+		System.out.println("Eye = " + v4ts(state.getEye()));
+		System.out.println("Forward = " + v4ts(state.getForward()));
+		System.out.println("Roll = " + state.getRoll());
+		state.setEye(new Vec4(-0.5, -0.7, -0.9));
+		System.out.println("New eye = " + v4ts(state.getEye()) + ", roll = " + state.getRoll());
+		state.setEye(new Vec4(0.5, 0.7, 0.9));
+		System.out.println("New eye = " + v4ts(state.getEye()) + ", roll = " + state.getRoll());
+		state.setEye(new Vec4(0.7, 0.9, 0.5));
+		System.out.println("New eye = " + v4ts(state.getEye()) + ", roll = " + state.getRoll());
+		state.setEye(new Vec4(1.0, 0.0, 0.0));
+		System.out.println("New eye = " + v4ts(state.getEye()) + ", roll = " + state.getRoll());
+		state.setEye(new Vec4(0.0, 0.0, 1.0));
+		System.out.println("New eye = " + v4ts(state.getEye()) + ", roll = " + state.getRoll());
+		state.setEye(new Vec4(0.0, 0.0, -1.0));
+		System.out.println("New eye = " + v4ts(state.getEye()) + ", roll = " + state.getRoll());
+
+		System.out.println();
+		state.setEye(new Vec4(0.5, 0.7, 0.9));
+		System.out.println("New eye = " + v4ts(state.getEye()) + ", roll = " + state.getRoll());
+		state.setRoll(Angle.fromDegrees(-45));
+		System.out.println("New eye = " + v4ts(state.getEye()) + ", roll = " + state.getRoll());
 	}
+
+	public static String v4ts(Vec4 v)
+	{
+		DecimalFormat df = new DecimalFormat("0.0########");
+		df.setRoundingMode(RoundingMode.HALF_EVEN);
+		return "(" + df.format(v.x) + ", " + df.format(v.y) + ", " + df.format(v.z) + ", " + df.format(v.w) + ")";
+	}*/
 }

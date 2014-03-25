@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.core.worldwind;
+package au.gov.ga.earthsci.core.worldwind.view;
 
 import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.WWObjectImpl;
@@ -21,7 +21,6 @@ import gov.nasa.worldwind.animation.Animator;
 import gov.nasa.worldwind.awt.ViewInputHandler;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Frustum;
-import gov.nasa.worldwind.geom.Intersection;
 import gov.nasa.worldwind.geom.Line;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Position;
@@ -31,8 +30,8 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.util.OGLStackHandler;
 import gov.nasa.worldwind.util.RestorableSupport;
-import gov.nasa.worldwind.view.ViewPropertyLimits;
 import gov.nasa.worldwind.view.ViewUtil;
+import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import javax.media.opengl.GL2;
 
@@ -40,7 +39,7 @@ import javax.media.opengl.GL2;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  * 
  */
-public abstract class AbstractView extends WWObjectImpl implements View
+public abstract class AbstractView extends WWObjectImpl implements View, OrbitView
 {
 	/** The field of view in degrees. */
 	protected Angle fieldOfView = Angle.fromDegrees(45);
@@ -58,7 +57,6 @@ public abstract class AbstractView extends WWObjectImpl implements View
 	protected java.awt.Rectangle viewport = new java.awt.Rectangle();
 	protected Frustum frustum = new Frustum();
 	protected Frustum lastFrustumInModelCoords = null;
-	protected ViewPropertyLimits viewLimits;
 
 	protected DrawContext dc;
 	protected boolean detectCollisions = true;
@@ -66,10 +64,6 @@ public abstract class AbstractView extends WWObjectImpl implements View
 	protected ViewInputHandler viewInputHandler;
 	protected Globe globe;
 	protected double horizonDistance;
-	protected Position lastEyePosition = null;
-	protected Vec4 lastEyePoint = null;
-	protected Vec4 lastUpVector = null;
-	protected Vec4 lastForwardVector = null;
 
 	/**
 	 * Identifier for the modelview matrix state. This number is incremented
@@ -118,16 +112,19 @@ public abstract class AbstractView extends WWObjectImpl implements View
 		this.viewInputHandler = viewInputHandler;
 	}
 
+	@Override
 	public boolean isDetectCollisions()
 	{
 		return this.detectCollisions;
 	}
 
+	@Override
 	public void setDetectCollisions(boolean detectCollisions)
 	{
 		this.detectCollisions = detectCollisions;
 	}
 
+	@Override
 	public boolean hadCollisions()
 	{
 		boolean result = this.hadCollisions;
@@ -305,65 +302,6 @@ public abstract class AbstractView extends WWObjectImpl implements View
 	}
 
 	@Override
-	public Vec4 getEyePoint()
-	{
-		if (this.lastEyePoint == null)
-		{
-			this.lastEyePoint = Vec4.UNIT_W.transformBy4(this.modelviewInv);
-		}
-		return this.lastEyePoint;
-	}
-
-	@Override
-	public Vec4 getCenterPoint()
-	{
-		Vec4 eyePoint = this.getEyePoint();
-		Intersection[] intersection = this.globe.intersect(new Line(eyePoint, this.getForwardVector()), 0);
-		if (intersection == null)
-		{
-			return null;
-		}
-		else
-		{
-			return (intersection[0].getIntersectionPoint());
-		}
-	}
-
-	public Position getCenterPosition()
-	{
-		Vec4 eyePoint = this.getEyePoint();
-		Intersection[] intersection = this.globe.intersect(new Line(eyePoint, this.getForwardVector()), 0);
-		Position pos = this.globe.computePositionFromPoint(intersection[0].getIntersectionPoint());
-		return (pos);
-	}
-
-	@Override
-	public Position getEyePosition()
-	{
-		return this.lastEyePosition;
-	}
-
-	@Override
-	public Vec4 getUpVector()
-	{
-		if (this.lastUpVector == null)
-		{
-			this.lastUpVector = Vec4.UNIT_Y.transformBy4(this.modelviewInv);
-		}
-		return this.lastUpVector;
-	}
-
-	@Override
-	public Vec4 getForwardVector()
-	{
-		if (this.lastForwardVector == null)
-		{
-			this.lastForwardVector = Vec4.UNIT_NEGATIVE_Z.transformBy4(this.modelviewInv);
-		}
-		return this.lastForwardVector;
-	}
-
-	@Override
 	public void stopAnimations()
 	{
 		viewInputHandler.stopAnimators();
@@ -441,12 +379,6 @@ public abstract class AbstractView extends WWObjectImpl implements View
 		}
 
 		return 0;
-	}
-
-	@Override
-	public ViewPropertyLimits getViewPropertyLimits()
-	{
-		return this.viewLimits;
 	}
 
 	protected double computeNearClipDistance()

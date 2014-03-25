@@ -60,7 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.application.parts.globe.handlers.ToggleHudHandler;
-import au.gov.ga.earthsci.core.worldwind.WorldWindView;
+import au.gov.ga.earthsci.core.worldwind.view.WorldWindView;
 import au.gov.ga.earthsci.layer.hud.HudLayer;
 import au.gov.ga.earthsci.layer.hud.HudLayers;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
