@@ -87,7 +87,7 @@ public class ViewState
 
 	public void setHeading(Angle heading)
 	{
-		this.heading = heading;
+		this.heading = heading.normalizedLongitude();
 		clearCachedValues();
 	}
 
@@ -98,7 +98,7 @@ public class ViewState
 
 	public void setPitch(Angle pitch)
 	{
-		this.pitch = pitch;
+		this.pitch = pitch.normalizedLongitude();
 		clearCachedValues();
 	}
 
@@ -109,7 +109,7 @@ public class ViewState
 
 	public void setRoll(Angle roll)
 	{
-		this.roll = roll;
+		this.roll = roll.normalizedLongitude();
 		clearCachedValues();
 	}
 
