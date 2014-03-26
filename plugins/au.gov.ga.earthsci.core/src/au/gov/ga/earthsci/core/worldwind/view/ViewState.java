@@ -22,14 +22,12 @@ import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Basic implementation of {@link IViewState}.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ViewState
+public class ViewState implements IViewState
 {
-	//constants
-	protected final static double EPSILON = 1.0e-9;
-
 	//state
 	protected Position center = Position.ZERO;
 	protected Angle heading = Angle.ZERO;
@@ -71,66 +69,89 @@ public class ViewState
 		}
 	}
 
+	@Override
 	public Position getCenter()
 	{
 		return center;
 	}
 
+	@Override
 	public void setCenter(Position center)
 	{
 		this.center = center;
 		clearCachedValues();
 	}
 
+	@Override
 	public Angle getHeading()
 	{
 		return heading;
 	}
 
+	@Override
 	public void setHeading(Angle heading)
 	{
 		this.heading = heading.normalizedLongitude();
 		clearCachedValues();
 	}
 
+	@Override
 	public Angle getPitch()
 	{
 		return pitch;
 	}
 
+	@Override
 	public void setPitch(Angle pitch)
 	{
 		this.pitch = pitch.normalizedLongitude();
 		clearCachedValues();
 	}
 
+	@Override
 	public Angle getRoll()
 	{
 		return roll;
 	}
 
+	@Override
 	public void setRoll(Angle roll)
 	{
 		this.roll = roll.normalizedLongitude();
 		clearCachedValues();
 	}
 
+	@Override
 	public double getZoom()
 	{
 		return zoom;
 	}
 
+	@Override
 	public void setZoom(double zoom)
 	{
 		this.zoom = zoom;
 		clearCachedValues();
 	}
 
+	@Override
 	public Matrix getRotation(Globe globe)
 	{
 		clearCachedValuesIfGlobeChanged(globe);
 
 		if (lastRotation == null)
+		{
+			lastRotation = getRotationInverse(globe).getInverse();
+		}
+		return lastRotation;
+	}
+
+	@Override
+	public Matrix getRotationInverse(Globe globe)
+	{
+		clearCachedValuesIfGlobeChanged(globe);
+
+		if (lastRotationInverse == null)
 		{
 			//compute heading/pitch/roll transform
 			Matrix transform = Matrix.fromRotationZ(roll).multiply(
@@ -148,64 +169,57 @@ public class ViewState
 					0.0, 0.0, 0.0, 1.0);
 
 			//multiply the two rotations to get the center->eye rotation matrix
-			lastRotation = transform.multiply(rotation);
-		}
-		return lastRotation;
-	}
-
-	public Matrix getRotationInverse(Globe globe)
-	{
-		clearCachedValuesIfGlobeChanged(globe);
-
-		if (lastRotationInverse == null)
-		{
-			lastRotationInverse = getRotation(globe).getInverse();
+			lastRotationInverse = transform.multiply(rotation);
 		}
 		return lastRotationInverse;
 	}
 
+	@Override
 	public Vec4 getForward(Globe globe)
 	{
 		clearCachedValuesIfGlobeChanged(globe);
 
 		if (lastForward == null)
 		{
-			Matrix rotationInverse = getRotationInverse(globe);
+			Matrix rotation = getRotation(globe);
 			lastForward = lastSide != null && lastUp != null ?
 					lastSide.cross3(lastUp) :
-					Vec4.UNIT_Z.transformBy3(rotationInverse);
+					Vec4.UNIT_Z.transformBy3(rotation);
 		}
 		return lastForward;
 	}
 
+	@Override
 	public Vec4 getUp(Globe globe)
 	{
 		clearCachedValuesIfGlobeChanged(globe);
 
 		if (lastUp == null)
 		{
-			Matrix rotationInverse = getRotationInverse(globe);
+			Matrix rotation = getRotation(globe);
 			lastUp = lastForward != null && lastSide != null ?
 					lastForward.cross3(lastSide) :
-					Vec4.UNIT_Y.transformBy3(rotationInverse);
+					Vec4.UNIT_Y.transformBy3(rotation);
 		}
 		return lastUp;
 	}
 
+	@Override
 	public Vec4 getSide(Globe globe)
 	{
 		clearCachedValuesIfGlobeChanged(globe);
 
 		if (lastSide == null)
 		{
-			Matrix rotationInverse = getRotationInverse(globe);
+			Matrix rotation = getRotation(globe);
 			lastSide = lastUp != null && lastForward != null ?
 					lastUp.cross3(lastForward) :
-					Vec4.UNIT_X.transformBy3(rotationInverse);
+					Vec4.UNIT_X.transformBy3(rotation);
 		}
 		return lastSide;
 	}
 
+	@Override
 	public Matrix getTransform(Globe globe)
 	{
 		clearCachedValuesIfGlobeChanged(globe);
@@ -228,6 +242,7 @@ public class ViewState
 		return lastTransform;
 	}
 
+	@Override
 	public Vec4 getCenterPoint(Globe globe)
 	{
 		clearCachedValuesIfGlobeChanged(globe);
@@ -239,6 +254,7 @@ public class ViewState
 		return lastCenterPoint;
 	}
 
+	@Override
 	public Vec4 getEyePoint(Globe globe)
 	{
 		clearCachedValuesIfGlobeChanged(globe);
@@ -252,6 +268,7 @@ public class ViewState
 		return lastEyePoint;
 	}
 
+	@Override
 	public Position getEye(Globe globe)
 	{
 		clearCachedValuesIfGlobeChanged(globe);
@@ -263,6 +280,7 @@ public class ViewState
 		return lastEye;
 	}
 
+	@Override
 	public void setEye(Position eye, Globe globe)
 	{
 		//TODO implement this so that it doesn't modify the center point, if possible, or required?
