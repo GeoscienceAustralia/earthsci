@@ -270,6 +270,10 @@ public class WorldWindView extends AbstractView
 		{
 			return;
 		}
+		if (Math.abs(getPitch().degrees) >= 90)
+		{
+			return;
+		}
 		if (this.dc == null)
 		{
 			String message = Logging.getMessage("nullValue.DrawContextIsNull");
@@ -305,30 +309,6 @@ public class WorldWindView extends AbstractView
 			Vec4 newCenterPoint = Vec4.fromLine3(eyePoint, distance, forward);
 			state.setCenter(globe.computePositionFromPoint(newCenterPoint));
 			state.setZoom(distance);
-
-			/*Matrix modelview = state.getTransform(globe);
-			if (modelview != null)
-			{
-				Matrix modelviewInv = modelview.getInverse();
-				if (modelviewInv != null)
-				{
-					// The change in focus must happen seamlessly; we can't move the eye or the forward vector
-					// (only the center position and zoom should change). Therefore we pick a point along the
-					// forward vector, and *near* the viewportCenterPoint, but not necessarily at the
-					// viewportCenterPoint itself.
-					Vec4 eyePoint = Vec4.UNIT_W.transformBy4(modelviewInv);
-					Vec4 forward = Vec4.UNIT_NEGATIVE_Z.transformBy4(modelviewInv);
-					double distance = eyePoint.distanceTo3(viewportCenterPoint);
-					Vec4 newCenterPoint = Vec4.fromLine3(eyePoint, distance, forward);
-
-					OrbitViewInputSupport.OrbitViewState modelCoords = OrbitViewInputSupport.computeOrbitViewState(
-							this.globe, modelview, newCenterPoint);
-					if (validateModelCoordinates(modelCoords))
-					{
-						setModelCoordinates(modelCoords);
-					}
-				}
-			}*/
 		}
 	}
 
@@ -337,6 +317,12 @@ public class WorldWindView extends AbstractView
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	protected double computeFarClipDistance()
+	{
+		return Math.max(globe.getDiameter(), super.computeFarClipDistance());
 	}
 
 	@Override
@@ -426,40 +412,4 @@ public class WorldWindView extends AbstractView
 		// Clear cached computations.
 		this.lastFrustumInModelCoords = null;
 	}
-
-	/*protected static final double EPSILON = 1.0e-6;
-
-	public static Matrix gluLookAt(Vec4 eye, Vec4 center, Vec4 up)
-	{
-		if (eye.distanceTo3(center) <= EPSILON)
-		{
-			String msg = Logging.getMessage("Geom.EyeAndCenterInvalid", eye, center);
-			Logging.logger().severe(msg);
-			throw new IllegalArgumentException(msg);
-		}
-
-		Vec4 forward = center.subtract3(eye);
-		Vec4 f = forward.normalize3();
-
-		Vec4 s = f.cross3(up);
-		s = s.normalize3();
-
-		if (s.getLength3() <= EPSILON)
-		{
-			String msg = Logging.getMessage("Geom.UpAndLineOfSightInvalid", up, forward);
-			Logging.logger().severe(msg);
-			throw new IllegalArgumentException(msg);
-		}
-
-		Vec4 u = s.cross3(f);
-		u = u.normalize3();
-
-		Matrix mAxes = new Matrix(
-				s.x, s.y, s.z, 0.0,
-				u.x, u.y, u.z, 0.0,
-				-f.x, -f.y, -f.z, 0.0,
-				0.0, 0.0, 0.0, 1.0);
-		Matrix mEye = Matrix.fromTranslation(-eye.x, -eye.y, -eye.z);
-		return mAxes.multiply(mEye);
-	}*/
 }
