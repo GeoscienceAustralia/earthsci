@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.core.worldwind.view;
 
 import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.awt.ViewInputHandler;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Frustum;
 import gov.nasa.worldwind.geom.Matrix;
@@ -47,15 +48,25 @@ public class TargetOrbitView extends AbstractView implements OrbitView
 	protected final static Angle DEFAULT_MIN_PITCH = Angle.fromDegrees(0);
 	protected final static Angle DEFAULT_MAX_PITCH = Angle.fromDegrees(120);
 	protected boolean configurationValuesLoaded = false;
-	protected boolean outOfFocus = true;
+	protected boolean outOfFocus = false;
 
 	public TargetOrbitView()
 	{
-		this.viewInputHandler = new OrbitViewInputHandler();
+		this.viewInputHandler = createViewInputHandler();
+		this.viewLimits = createOrbitViewLimits();
+	}
 
-		this.viewLimits = new BasicOrbitViewLimits();
-		this.viewLimits.setPitchLimits(DEFAULT_MIN_PITCH, DEFAULT_MAX_PITCH);
-		this.viewLimits.setEyeElevationLimits(DEFAULT_MIN_ELEVATION, DEFAULT_MAX_ELEVATION);
+	protected ViewInputHandler createViewInputHandler()
+	{
+		return new OrbitViewInputHandler();
+	}
+
+	protected OrbitViewLimits createOrbitViewLimits()
+	{
+		OrbitViewLimits viewLimits = new BasicOrbitViewLimits();
+		viewLimits.setPitchLimits(DEFAULT_MIN_PITCH, DEFAULT_MAX_PITCH);
+		viewLimits.setEyeElevationLimits(DEFAULT_MIN_ELEVATION, DEFAULT_MAX_ELEVATION);
+		return viewLimits;
 	}
 
 	protected void loadConfigurationValues()
