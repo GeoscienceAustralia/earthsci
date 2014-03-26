@@ -47,6 +47,7 @@ public class TargetOrbitView extends AbstractView implements OrbitView
 	protected final static Angle DEFAULT_MIN_PITCH = Angle.ZERO;
 	protected final static Angle DEFAULT_MAX_PITCH = Angle.fromDegrees(180);
 	protected boolean configurationValuesLoaded = false;
+	protected boolean outOfFocus = true;
 
 	public TargetOrbitView()
 	{
@@ -149,7 +150,7 @@ public class TargetOrbitView extends AbstractView implements OrbitView
 	public void setCenterPosition(Position center)
 	{
 		state.setCenter(center);
-		focusOnViewportCenter();
+		markOutOfFocus();
 	}
 
 	@Override
@@ -175,7 +176,20 @@ public class TargetOrbitView extends AbstractView implements OrbitView
 	public void setEyePosition(Position eyePosition)
 	{
 		state.setEye(eyePosition, globe);
-		focusOnViewportCenter();
+		markOutOfFocus();
+	}
+
+	@Override
+	public double getZoom()
+	{
+		return state.getZoom();
+	}
+
+	@Override
+	public void setZoom(double zoom)
+	{
+		state.setZoom(zoom);
+		markOutOfFocus();
 	}
 
 	@Override
@@ -218,19 +232,6 @@ public class TargetOrbitView extends AbstractView implements OrbitView
 	}
 
 	@Override
-	public double getZoom()
-	{
-		return state.getZoom();
-	}
-
-	@Override
-	public void setZoom(double zoom)
-	{
-		state.setZoom(zoom);
-		focusOnViewportCenter();
-	}
-
-	@Override
 	public ViewPropertyLimits getViewPropertyLimits()
 	{
 		return viewLimits;
@@ -246,6 +247,11 @@ public class TargetOrbitView extends AbstractView implements OrbitView
 	public void setOrbitViewLimits(OrbitViewLimits limits)
 	{
 		this.viewLimits = limits;
+	}
+
+	protected void markOutOfFocus()
+	{
+		outOfFocus = true;
 	}
 
 	@Override
@@ -281,6 +287,11 @@ public class TargetOrbitView extends AbstractView implements OrbitView
 		{
 			return;
 		}
+		if (!outOfFocus)
+		{
+			return;
+		}
+		outOfFocus = false;
 
 		//calculate the center point in cartesian space
 		Position viewportCenter = this.dc.getViewportCenterPosition();
