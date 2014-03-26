@@ -44,8 +44,8 @@ public class TargetOrbitView extends AbstractView implements OrbitView
 
 	protected final static double DEFAULT_MIN_ELEVATION = 0;
 	protected final static double DEFAULT_MAX_ELEVATION = 4000000;
-	protected final static Angle DEFAULT_MIN_PITCH = Angle.ZERO;
-	protected final static Angle DEFAULT_MAX_PITCH = Angle.fromDegrees(180);
+	protected final static Angle DEFAULT_MIN_PITCH = Angle.fromDegrees(0);
+	protected final static Angle DEFAULT_MAX_PITCH = Angle.fromDegrees(120);
 	protected boolean configurationValuesLoaded = false;
 	protected boolean outOfFocus = true;
 
