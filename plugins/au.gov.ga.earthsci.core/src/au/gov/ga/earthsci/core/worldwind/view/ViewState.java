@@ -44,6 +44,7 @@ public class ViewState
 	protected Vec4 lastSide;
 	protected Matrix lastTransform;
 	protected Matrix lastRotation;
+	protected Matrix lastRotationInverse;
 	protected Vec4 lastCenterPoint;
 	protected Vec4 lastEyePoint;
 	protected Position lastEye;
@@ -55,6 +56,7 @@ public class ViewState
 		lastSide = null;
 		lastTransform = null;
 		lastRotation = null;
+		lastRotationInverse = null;
 		lastCenterPoint = null;
 		lastEyePoint = null;
 		lastEye = null;
@@ -130,20 +132,36 @@ public class ViewState
 
 		if (lastRotation == null)
 		{
-			Matrix transform = Matrix.IDENTITY;
-			transform = transform.multiply(Matrix.fromAxisAngle(roll, 0, 0, 1));
-			transform = transform.multiply(Matrix.fromAxisAngle(pitch, -1, 0, 0));
-			transform = transform.multiply(Matrix.fromAxisAngle(heading, 0, 0, -1));
+			//compute heading/pitch/roll transform
+			Matrix transform = Matrix.fromRotationZ(roll).multiply(
+					Matrix.fromRotationXYZ(pitch.multiply(-1), Angle.ZERO, heading.multiply(-1)));
 
-			Vec4 eyePoint = globe.computePointFromPosition(center);
-			Vec4 normal = globe.computeSurfaceNormalAtLocation(center.getLatitude(), center.getLongitude());
-			Vec4 lookAtPoint = eyePoint.add3(normal);
-			Vec4 north = globe.computeNorthPointingTangentAtLocation(center.getLatitude(), center.getLongitude());
-			Matrix lookat = Matrix.fromViewLookAt(eyePoint, lookAtPoint, north);
+			//compute rotation for current position on globe
+			Vec4 up = globe.computeNorthPointingTangentAtLocation(center.getLatitude(), center.getLongitude());
+			Vec4 f = globe.computeSurfaceNormalAtLocation(center.getLatitude(), center.getLongitude());
+			Vec4 s = f.cross3(up);
+			Vec4 u = s.cross3(f);
+			Matrix rotation = new Matrix(
+					s.x, s.y, s.z, 0.0,
+					u.x, u.y, u.z, 0.0,
+					-f.x, -f.y, -f.z, 0.0,
+					0.0, 0.0, 0.0, 1.0);
 
-			lastRotation = transform.multiply(lookat).getInverse();
+			//multiply the two rotations to get the center->eye rotation matrix
+			lastRotation = transform.multiply(rotation);
 		}
 		return lastRotation;
+	}
+
+	public Matrix getRotationInverse(Globe globe)
+	{
+		clearCachedValuesIfGlobeChanged(globe);
+
+		if (lastRotationInverse == null)
+		{
+			lastRotationInverse = getRotation(globe).getInverse();
+		}
+		return lastRotationInverse;
 	}
 
 	public Vec4 getForward(Globe globe)
@@ -152,10 +170,10 @@ public class ViewState
 
 		if (lastForward == null)
 		{
-			Matrix rotation = getRotation(globe);
+			Matrix rotationInverse = getRotationInverse(globe);
 			lastForward = lastSide != null && lastUp != null ?
 					lastSide.cross3(lastUp) :
-					Vec4.UNIT_Z.transformBy4(rotation);
+					Vec4.UNIT_Z.transformBy3(rotationInverse);
 		}
 		return lastForward;
 	}
@@ -166,10 +184,10 @@ public class ViewState
 
 		if (lastUp == null)
 		{
-			Matrix rotation = getRotation(globe);
+			Matrix rotationInverse = getRotationInverse(globe);
 			lastUp = lastForward != null && lastSide != null ?
 					lastForward.cross3(lastSide) :
-					Vec4.UNIT_Y.transformBy4(rotation);
+					Vec4.UNIT_Y.transformBy3(rotationInverse);
 		}
 		return lastUp;
 	}
@@ -180,10 +198,10 @@ public class ViewState
 
 		if (lastSide == null)
 		{
-			Matrix rotation = getRotation(globe);
+			Matrix rotationInverse = getRotationInverse(globe);
 			lastSide = lastUp != null && lastForward != null ?
 					lastUp.cross3(lastForward) :
-					Vec4.UNIT_X.transformBy4(rotation);
+					Vec4.UNIT_X.transformBy3(rotationInverse);
 		}
 		return lastSide;
 	}
@@ -256,27 +274,5 @@ public class ViewState
 		setHeading(Angle.ZERO);
 		setZoom(centerPoint.distanceTo3(eyePoint));
 		setCenter(new Position(eye, 0));
-	}
-
-	//TODO remove temporary functions:
-
-	@Deprecated
-	public static String v4ts(Vec4 v)
-	{
-		java.text.DecimalFormat df = new java.text.DecimalFormat("0.0########");
-		df.setRoundingMode(java.math.RoundingMode.HALF_EVEN);
-		return "(" + df.format(v.x) + ", " + df.format(v.y) + ", " + df.format(v.z) + ", " + df.format(v.w) + ")";
-	}
-
-	@Deprecated
-	public static String mts(Matrix m)
-	{
-		java.text.DecimalFormat df = new java.text.DecimalFormat("0.0########");
-		df.setRoundingMode(java.math.RoundingMode.HALF_EVEN);
-		return "Rounded: \n("
-				+ df.format(m.m11) + ", " + df.format(m.m12) + ", " + df.format(m.m13) + ", " + df.format(m.m14) + "\n"
-				+ df.format(m.m21) + ", " + df.format(m.m22) + ", " + df.format(m.m23) + ", " + df.format(m.m24) + "\n"
-				+ df.format(m.m31) + ", " + df.format(m.m32) + ", " + df.format(m.m33) + ", " + df.format(m.m34) + "\n"
-				+ df.format(m.m41) + ", " + df.format(m.m42) + ", " + df.format(m.m43) + ", " + df.format(m.m44) + ")";
 	}
 }
