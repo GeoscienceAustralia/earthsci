@@ -30,16 +30,35 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.util.OGLStackHandler;
 import gov.nasa.worldwind.util.RestorableSupport;
+import gov.nasa.worldwind.view.BasicView;
 import gov.nasa.worldwind.view.ViewUtil;
-import gov.nasa.worldwind.view.orbit.OrbitView;
+import gov.nasa.worldwind.view.firstperson.BasicFlyView;
+import gov.nasa.worldwind.view.orbit.BasicOrbitView;
 
 import javax.media.opengl.GL2;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Abstract implementation of the {@link View} interface.
+ * <p/>
+ * Largely copied from the {@link BasicView} class, but with the
+ * heading/pitch/roll storage removed. Concrete subclasses can choose how to
+ * store view state, as there are many different ways that this state can be
+ * stored. Some examples:
+ * <ul>
+ * <li>center/heading/pitch/roll/zoom (like the {@link BasicOrbitView})</li>
+ * <li>eye/heading/pitch/roll (like the {@link BasicFlyView})</li>
+ * <li>center/rotation/distance (representing the rotation as a quaternion would
+ * result in more rotation freedom)</li>
+ * <li>center/eye/roll</li>
+ * <li>eye/rotation</li>
+ * </ul>
+ * You may also choose to represent your center/eye points as {@link Position}s
+ * (geographic) or {@link Vec4}s (cartesian), depending on your movement type.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class AbstractView extends WWObjectImpl implements View, OrbitView
+@SuppressWarnings("nls")
+public abstract class AbstractView extends WWObjectImpl implements View
 {
 	/** The field of view in degrees. */
 	protected Angle fieldOfView = Angle.fromDegrees(45);
@@ -112,19 +131,16 @@ public abstract class AbstractView extends WWObjectImpl implements View, OrbitVi
 		this.viewInputHandler = viewInputHandler;
 	}
 
-	@Override
 	public boolean isDetectCollisions()
 	{
 		return this.detectCollisions;
 	}
 
-	@Override
 	public void setDetectCollisions(boolean detectCollisions)
 	{
 		this.detectCollisions = detectCollisions;
 	}
 
-	@Override
 	public boolean hadCollisions()
 	{
 		boolean result = this.hadCollisions;

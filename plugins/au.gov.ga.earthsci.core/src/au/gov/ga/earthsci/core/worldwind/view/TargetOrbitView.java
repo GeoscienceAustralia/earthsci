@@ -16,7 +16,6 @@
 package au.gov.ga.earthsci.core.worldwind.view;
 
 import gov.nasa.worldwind.Configuration;
-import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Frustum;
@@ -27,16 +26,17 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.view.ViewPropertyLimits;
 import gov.nasa.worldwind.view.orbit.BasicOrbitViewLimits;
+import gov.nasa.worldwind.view.orbit.OrbitView;
 import gov.nasa.worldwind.view.orbit.OrbitViewLimits;
 
 import javax.media.opengl.GL;
 
 /**
- * {@link View} used by the application.
+ * Better {@link OrbitView} implementation.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class WorldWindView extends AbstractView
+public class TargetOrbitView extends AbstractView implements OrbitView
 {
 	protected final ViewState state = new ViewState();
 
@@ -48,9 +48,9 @@ public class WorldWindView extends AbstractView
 	protected final static Angle DEFAULT_MAX_PITCH = Angle.fromDegrees(180);
 	protected boolean configurationValuesLoaded = false;
 
-	public WorldWindView()
+	public TargetOrbitView()
 	{
-		this.viewInputHandler = new WorldWindViewInputHandler();
+		this.viewInputHandler = new OrbitViewInputHandler();
 
 		this.viewLimits = new BasicOrbitViewLimits();
 		this.viewLimits.setPitchLimits(DEFAULT_MIN_PITCH, DEFAULT_MAX_PITCH);
@@ -149,7 +149,7 @@ public class WorldWindView extends AbstractView
 	public void setCenterPosition(Position center)
 	{
 		state.setCenter(center);
-		focusOnViewportCenterIfPossible();
+		focusOnViewportCenter();
 	}
 
 	@Override
@@ -175,7 +175,7 @@ public class WorldWindView extends AbstractView
 	public void setEyePosition(Position eyePosition)
 	{
 		state.setEye(eyePosition, globe);
-		focusOnViewportCenterIfPossible();
+		focusOnViewportCenter();
 	}
 
 	@Override
@@ -188,7 +188,7 @@ public class WorldWindView extends AbstractView
 	public void setHeading(Angle heading)
 	{
 		state.setHeading(heading);
-		focusOnViewportCenterIfPossible();
+		focusOnViewportCenter();
 	}
 
 	@Override
@@ -201,7 +201,7 @@ public class WorldWindView extends AbstractView
 	public void setPitch(Angle pitch)
 	{
 		state.setPitch(pitch);
-		focusOnViewportCenterIfPossible();
+		focusOnViewportCenter();
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public class WorldWindView extends AbstractView
 	public void setRoll(Angle roll)
 	{
 		state.setRoll(roll);
-		focusOnViewportCenterIfPossible();
+		focusOnViewportCenter();
 	}
 
 	@Override
@@ -227,7 +227,7 @@ public class WorldWindView extends AbstractView
 	public void setZoom(double zoom)
 	{
 		state.setZoom(zoom);
-		focusOnViewportCenterIfPossible();
+		focusOnViewportCenter();
 	}
 
 	@Override
@@ -248,75 +248,59 @@ public class WorldWindView extends AbstractView
 		this.viewLimits = limits;
 	}
 
-	public void focusOnViewportCenterIfPossible()
-	{
-		if (canFocusOnViewportCenter())
-		{
-			focusOnViewportCenter();
-		}
-	}
-
 	@Override
 	public boolean canFocusOnViewportCenter()
 	{
-		return this.dc != null && this.globe != null
-				&& this.dc.getViewportCenterPosition() != null;
+		if (this.dc == null || this.globe == null)
+		{
+			//cannot focus on viewport center until the view has been applied at least once
+			return false;
+		}
+		if (this.isAnimating())
+		{
+			//don't change the viewport center (rotation point) while the user is in the middle of changing the view
+			return false;
+		}
+		if (Math.abs(this.getPitch().degrees) >= 90)
+		{
+			//don't try and focus on the viewport center if the user is pitched below the surface
+			return false;
+		}
+		if (this.dc.getViewportCenterPosition() == null)
+		{
+			//cannot focus on a null point!
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public void focusOnViewportCenter()
 	{
-		if (this.isAnimating())
+		if (!canFocusOnViewportCenter())
 		{
 			return;
 		}
-		if (Math.abs(getPitch().degrees) >= 90)
-		{
-			return;
-		}
-		if (this.dc == null)
-		{
-			String message = Logging.getMessage("nullValue.DrawContextIsNull");
-			Logging.logger().severe(message);
-			throw new IllegalStateException(message);
-		}
-		if (this.globe == null)
-		{
-			String message = Logging.getMessage("nullValue.DrawingContextGlobeIsNull");
-			Logging.logger().severe(message);
-			throw new IllegalStateException(message);
-		}
 
-		Position viewportCenterPos = this.dc.getViewportCenterPosition();
-		if (viewportCenterPos == null)
-		{
-			String message = Logging.getMessage("nullValue.DrawingContextViewportCenterIsNull");
-			Logging.logger().severe(message);
-			throw new IllegalStateException(message);
-		}
+		//calculate the center point in cartesian space
+		Position viewportCenter = this.dc.getViewportCenterPosition();
+		double elevation = this.globe.getElevation(viewportCenter.latitude, viewportCenter.longitude);
+		Position viewportExaggerated = new Position(viewportCenter, elevation * dc.getVerticalExaggeration());
+		Vec4 viewportCenterPoint = this.globe.computePointFromPosition(viewportExaggerated);
 
-		// We want the actual "geometric point" here, which must be adjusted for vertical exaggeration.
-		Vec4 viewportCenterPoint = this.globe.computePointFromPosition(
-				viewportCenterPos.getLatitude(), viewportCenterPos.getLongitude(),
-				this.globe.getElevation(viewportCenterPos.getLatitude(), viewportCenterPos.getLongitude())
-						* dc.getVerticalExaggeration());
-
-		if (viewportCenterPoint != null)
-		{
-			Vec4 eyePoint = getEyePoint();
-			Vec4 forward = getForwardVector();
-			double distance = eyePoint.distanceTo3(viewportCenterPoint);
-			Vec4 newCenterPoint = Vec4.fromLine3(eyePoint, distance, forward);
-			state.setCenter(globe.computePositionFromPoint(newCenterPoint));
-			state.setZoom(distance);
-		}
+		//find a point along the forward vector so the view doesn't appear to change, only the distance from the center point
+		Vec4 eyePoint = getEyePoint();
+		Vec4 forward = getForwardVector();
+		double distance = eyePoint.distanceTo3(viewportCenterPoint);
+		Vec4 newCenterPoint = Vec4.fromLine3(eyePoint, distance, forward);
+		state.setCenter(globe.computePositionFromPoint(newCenterPoint));
+		state.setZoom(distance);
 	}
 
 	@Override
 	public void stopMovementOnCenter()
 	{
-		// TODO Auto-generated method stub
-
+		firePropertyChange(CENTER_STOPPED, null, null);
 	}
 
 	@Override
