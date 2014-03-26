@@ -97,7 +97,7 @@ public class WorldWindViewInputHandler extends BasicViewInputHandler
 		}
 
 		view.setHeading(view.getHeading().addDegrees(headingInput * 0.1));
-		view.setPitch(view.getPitch().addDegrees(-pitchInput * 0.1));
+		view.setPitch(view.getPitch().addDegrees(pitchInput * 0.1));
 		//view.setRoll(view.getRoll().addDegrees(-headingInput * 0.1));
 
 		view.firePropertyChange(AVKey.VIEW, null, view);

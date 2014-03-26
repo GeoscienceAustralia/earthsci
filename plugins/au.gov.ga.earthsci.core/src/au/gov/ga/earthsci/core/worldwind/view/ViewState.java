@@ -134,7 +134,7 @@ public class ViewState
 		{
 			//compute heading/pitch/roll transform
 			Matrix transform = Matrix.fromRotationZ(roll).multiply(
-					Matrix.fromRotationXYZ(pitch.multiply(-1), Angle.ZERO, heading.multiply(-1)));
+					Matrix.fromRotationXYZ(pitch, Angle.ZERO, heading.multiply(-1)));
 
 			//compute rotation for current position on globe
 			Vec4 up = globe.computeNorthPointingTangentAtLocation(center.getLatitude(), center.getLongitude());
