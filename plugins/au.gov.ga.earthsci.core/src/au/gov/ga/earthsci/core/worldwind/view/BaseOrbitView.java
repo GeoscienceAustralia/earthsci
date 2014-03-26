@@ -49,12 +49,17 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 
 	protected boolean configurationValuesLoaded = false;
 	protected boolean outOfFocus = false;
+	protected final BaseOrbitViewCollisionSupport collisionSupport = new BaseOrbitViewCollisionSupport();
+	protected boolean resolvingCollisions;
 
 	public BaseOrbitView()
 	{
 		this.state = createViewState();
 		this.viewInputHandler = createViewInputHandler();
 		this.viewLimits = createOrbitViewLimits();
+
+		this.collisionSupport.setCollisionThreshold(COLLISION_THRESHOLD);
+		this.collisionSupport.setNumIterations(COLLISION_NUM_ITERATIONS);
 	}
 
 	protected IViewState createViewState()
@@ -167,6 +172,7 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	public void setCenterPosition(Position center)
 	{
 		state.setCenter(center);
+		resolveCollisionsWithPitch();
 		markOutOfFocus();
 	}
 
@@ -193,6 +199,7 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	public void setEyePosition(Position eyePosition)
 	{
 		state.setEye(eyePosition, globe);
+		resolveCollisionsWithPitch();
 		markOutOfFocus();
 	}
 
@@ -206,6 +213,7 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	public void setZoom(double zoom)
 	{
 		state.setZoom(zoom);
+		resolveCollisionsWithPitch();
 		markOutOfFocus();
 	}
 
@@ -219,6 +227,7 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	public void setHeading(Angle heading)
 	{
 		state.setHeading(heading);
+		resolveCollisionsWithPitch();
 		focusOnViewportCenter();
 	}
 
@@ -232,6 +241,7 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	public void setPitch(Angle pitch)
 	{
 		state.setPitch(pitch);
+		resolveCollisionsWithPitch();
 		focusOnViewportCenter();
 	}
 
@@ -246,6 +256,37 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	{
 		state.setRoll(roll);
 		focusOnViewportCenter();
+	}
+
+	protected void resolveCollisionsWithPitch()
+	{
+		if (this.dc == null)
+		{
+			return;
+		}
+
+		if (!isDetectCollisions() || resolvingCollisions)
+		{
+			return;
+		}
+
+		resolvingCollisions = true;
+		// Compute the near distance corresponding to the current set of values.
+		// If there is no collision, 'newPitch' will be null. Otherwise it will contain a value
+		// that will resolve the collision.
+		double nearDistance = this.computeNearDistance(this.getCurrentEyePosition());
+		Angle newPitch = this.collisionSupport.computePitchToResolveCollision(this, nearDistance, this.dc);
+		if (newPitch != null)
+		{
+			setPitch(newPitch);
+			flagHadCollisions();
+		}
+		resolvingCollisions = false;
+	}
+
+	protected void flagHadCollisions()
+	{
+		this.hadCollisions = true;
 	}
 
 	@Override
