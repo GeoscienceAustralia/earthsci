@@ -37,28 +37,34 @@ import javax.media.opengl.GL;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class TargetOrbitView extends AbstractView implements OrbitView
+public class BaseOrbitView extends AbstractView implements OrbitView
 {
-	protected final ViewState state = new ViewState();
-
-	protected OrbitViewLimits viewLimits;
-
 	protected final static double DEFAULT_MIN_ELEVATION = 0;
 	protected final static double DEFAULT_MAX_ELEVATION = 4000000;
 	protected final static Angle DEFAULT_MIN_PITCH = Angle.fromDegrees(0);
 	protected final static Angle DEFAULT_MAX_PITCH = Angle.fromDegrees(120);
+
+	protected final IViewState state;
+	protected OrbitViewLimits viewLimits;
+
 	protected boolean configurationValuesLoaded = false;
 	protected boolean outOfFocus = false;
 
-	public TargetOrbitView()
+	public BaseOrbitView()
 	{
+		this.state = createViewState();
 		this.viewInputHandler = createViewInputHandler();
 		this.viewLimits = createOrbitViewLimits();
 	}
 
+	protected IViewState createViewState()
+	{
+		return new ViewState();
+	}
+
 	protected ViewInputHandler createViewInputHandler()
 	{
-		return new OrbitViewInputHandler();
+		return new BaseOrbitViewInputHandler();
 	}
 
 	protected OrbitViewLimits createOrbitViewLimits()
@@ -116,7 +122,7 @@ public class TargetOrbitView extends AbstractView implements OrbitView
 		}
 	}
 
-	public ViewState getState()
+	public IViewState getState()
 	{
 		return state;
 	}

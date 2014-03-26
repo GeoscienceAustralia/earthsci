@@ -48,6 +48,7 @@ import gov.nasa.worldwind.view.orbit.BasicOrbitView;
 import gov.nasa.worldwind.view.orbit.BasicOrbitViewLimits;
 import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
+import gov.nasa.worldwind.view.orbit.OrbitViewInputHandler;
 import gov.nasa.worldwind.view.orbit.OrbitViewLimits;
 import gov.nasa.worldwind.view.orbit.OrbitViewPropertyAccessor;
 
@@ -58,14 +59,14 @@ import java.util.Date;
 
 /**
  * {@link ViewInputHandler} implementation based on the
- * {@link gov.nasa.worldwind.view.orbit.OrbitViewInputHandler}, but only using
- * methods from the {@link OrbitView} interface instead of assuming the view
- * implementation is {@link BasicOrbitView}. This allows use with alternative
- * {@link OrbitView} implementations.
+ * {@link OrbitViewInputHandler}, but only using methods from the
+ * {@link OrbitView} interface instead of assuming the view implementation is
+ * {@link BasicOrbitView}. This allows use with alternative {@link OrbitView}
+ * implementations.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class OrbitViewInputHandler extends BasicViewInputHandler
+public class BaseOrbitViewInputHandler extends BasicViewInputHandler
 {
 	protected AnimationController gotoAnimControl = new AnimationController();
 	protected AnimationController uiAnimControl = new AnimationController();
@@ -96,7 +97,7 @@ public class OrbitViewInputHandler extends BasicViewInputHandler
 	/**
 	 * Create a new input handler.
 	 */
-	public OrbitViewInputHandler()
+	public BaseOrbitViewInputHandler()
 	{
 		this.initializeInputHandlers();
 	}
