@@ -44,10 +44,12 @@ public class AxisRenderable implements Renderable
 
 	protected double fadeInTime = 0.2;
 	protected double fadeOutTime = 0.2;
-	protected double onTime = 0.2;
+	protected double onTime = 0.1;
+	protected double size = 0.02;
+	protected double opacity = 0.7;
 
 	protected double triggerTime = 0;
-	protected double opacity = 0;
+	protected double fade = 0;
 
 	/**
 	 * @return Fade in time
@@ -104,12 +106,49 @@ public class AxisRenderable implements Renderable
 	}
 
 	/**
+	 * @return Marker size
+	 */
+	public double getSize()
+	{
+		return size;
+	}
+
+	/**
+	 * Set the size of the axis marker. This is defined as a percentage of the
+	 * distance between the view center and the eye point.
+	 * 
+	 * @param size
+	 */
+	public void setSize(double size)
+	{
+		this.size = size;
+	}
+
+	/**
+	 * @return Marker opacity
+	 */
+	public double getOpacity()
+	{
+		return opacity;
+	}
+
+	/**
+	 * Set the opacity of the axis marker.
+	 * 
+	 * @param opacity
+	 */
+	public void setOpacity(double opacity)
+	{
+		this.opacity = opacity;
+	}
+
+	/**
 	 * Trigger the axis marker visibility. It will stay visible for
 	 * <code>fadeInTime + onTime + fadeOutTime</code>
 	 */
 	public void trigger()
 	{
-		triggerTime = System.nanoTime() * NANO - opacity * fadeInTime;
+		triggerTime = System.nanoTime() * NANO - fade * fadeInTime;
 	}
 
 	@Override
@@ -119,27 +158,27 @@ public class AxisRenderable implements Renderable
 		double time = currentTime - triggerTime;
 		if (time <= 0 || time >= fadeInTime + onTime + fadeOutTime)
 		{
-			opacity = 0;
+			fade = 0;
 		}
 		else if (time < fadeInTime)
 		{
-			opacity = time / fadeInTime;
+			fade = time / fadeInTime;
 		}
 		else if (time < fadeInTime + onTime)
 		{
-			opacity = 1;
+			fade = 1;
 		}
 		else
 		{
-			opacity = 1 - (time - fadeInTime - onTime) / fadeOutTime;
+			fade = 1 - (time - fadeInTime - onTime) / fadeOutTime;
 		}
 
-		if (opacity <= 0)
+		if (fade <= 0)
 		{
 			return;
 		}
 
-		renderAxis(dc, opacity);
+		renderAxis(dc, fade * opacity);
 
 		//make sure it renders again for fading:
 		dc.getView().firePropertyChange(AVKey.VIEW, null, dc.getView());
@@ -169,7 +208,7 @@ public class AxisRenderable implements Renderable
 			oglsh.pushAttrib(gl, GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT | GL2.GL_LINE_BIT);
 
 			double distance = eyePoint.distanceTo3(centerPoint);
-			double length = distance / 20;
+			double length = distance * size;
 
 			Rectangle viewport = view.getViewport();
 			Matrix projection = Matrix.fromPerspective(view.getFieldOfView(), viewport.width, viewport.height,
