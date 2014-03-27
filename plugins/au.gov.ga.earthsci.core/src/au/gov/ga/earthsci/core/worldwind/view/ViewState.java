@@ -285,12 +285,10 @@ public class ViewState implements IViewState
 	{
 		//TODO implement this so that it doesn't modify the center point, if possible, or required?
 
-		Vec4 centerPoint = getCenterPoint(globe);
-		Vec4 eyePoint = globe.computePointFromPosition(eye);
 		setRoll(Angle.ZERO);
 		setPitch(Angle.ZERO);
 		setHeading(Angle.ZERO);
-		setZoom(centerPoint.distanceTo3(eyePoint));
+		setZoom(eye.elevation);
 		setCenter(new Position(eye, 0));
 	}
 }
