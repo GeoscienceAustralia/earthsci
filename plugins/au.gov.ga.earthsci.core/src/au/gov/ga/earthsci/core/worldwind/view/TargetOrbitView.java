@@ -32,7 +32,7 @@ import gov.nasa.worldwind.view.orbit.OrbitView;
  */
 public class TargetOrbitView extends BaseOrbitView
 {
-	protected boolean targetMode = true;
+	protected boolean targetMode = false;
 	protected boolean drawAxisMarker = true;
 	protected final AxisRenderable axisMarker = new AxisRenderable();
 	protected final RenderableScreenCreditDelegate axisScreenCredit = new RenderableScreenCreditDelegate(axisMarker);
