@@ -379,6 +379,12 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	}
 
 	@Override
+	protected double computeNearClipDistance()
+	{
+		return Math.min(getZoom(), super.computeNearClipDistance());
+	}
+
+	@Override
 	protected void doApply(DrawContext dc)
 	{
 		if (dc == null)
