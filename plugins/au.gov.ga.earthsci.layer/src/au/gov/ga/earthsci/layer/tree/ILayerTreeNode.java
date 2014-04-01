@@ -29,6 +29,7 @@ import au.gov.ga.earthsci.common.util.INameable;
 import au.gov.ga.earthsci.common.util.IPropertyChangeBean;
 import au.gov.ga.earthsci.core.model.IStatused;
 import au.gov.ga.earthsci.core.tree.ITreeNode;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 
 /**
  * Represents a tree node value in the layer tree.
@@ -36,7 +37,7 @@ import au.gov.ga.earthsci.core.tree.ITreeNode;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChangeBean, ILabelable, INameable,
-		IStatused, IInformationed
+		IStatused, IInformationed, Bounded
 {
 	/**
 	 * This layer node's unique id. This should be randomly generated upon

@@ -27,6 +27,7 @@ import gov.nasa.worldwind.util.VecBuffer;
 import java.net.URL;
 import java.util.logging.Level;
 
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.borehole.BoreholeLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.borehole.BoreholeProvider;
 import au.gov.ga.earthsci.worldwind.common.layers.data.AbstractDataProvider;
@@ -40,13 +41,14 @@ import au.gov.ga.earthsci.worldwind.common.util.URLUtil;
  */
 public class ShapefileBoreholeProvider extends AbstractDataProvider<BoreholeLayer> implements BoreholeProvider
 {
-	private Sector sector;
+	private Bounds bounds;
 
 	@Override
 	protected boolean doLoadData(URL url, BoreholeLayer layer)
 	{
 		try
 		{
+			bounds = null;
 			Shapefile shapefile = ShapefileUtils.openZippedShapefile(URLUtil.urlToFile(url));
 			while (shapefile.hasNext())
 			{
@@ -62,13 +64,15 @@ public class ShapefileBoreholeProvider extends AbstractDataProvider<BoreholeLaye
 					{
 						for (int i = 0; i < size; i++)
 						{
-							layer.addBoreholeSample(buffer.getPosition(i), values);
+							Position position = buffer.getPosition(i);
+							layer.addBoreholeSample(position, values);
+							bounds = Bounds.union(bounds, position);
 						}
 					}
 					else
 					{
 						//if the shapefile is not a point shapefile, then calculate the centroid of the feature and use that instead
-						
+
 						Sector sector = null;
 						double elevation = 0;
 						for (int i = 0; i < size; i++)
@@ -88,13 +92,14 @@ public class ShapefileBoreholeProvider extends AbstractDataProvider<BoreholeLaye
 						}
 						if (sector != null)
 						{
-							layer.addBoreholeSample(new Position(sector.getCentroid(), elevation / size), values);
+							Position position = new Position(sector.getCentroid(), elevation / size);
+							layer.addBoreholeSample(position, values);
+							bounds = Bounds.union(bounds, position);
 						}
 					}
 				}
 			}
 
-			sector = Sector.fromDegrees(shapefile.getBoundingRectangle());
 			layer.loadComplete();
 		}
 		catch (Exception e)
@@ -107,8 +112,14 @@ public class ShapefileBoreholeProvider extends AbstractDataProvider<BoreholeLaye
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		return sector;
+		return bounds;
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return true;
 	}
 }

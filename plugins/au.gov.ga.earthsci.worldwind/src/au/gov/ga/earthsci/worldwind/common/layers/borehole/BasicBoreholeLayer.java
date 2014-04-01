@@ -20,7 +20,6 @@ import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.event.SelectEvent;
 import gov.nasa.worldwind.event.SelectListener;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.pick.PickedObject;
 import gov.nasa.worldwind.render.AnnotationRenderer;
@@ -46,6 +45,7 @@ import java.util.Map;
 import javax.media.opengl.GL2;
 
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.point.types.MarkerPointLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.Attribute;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.BasicStyleProvider;
@@ -151,9 +151,15 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		return boreholeProvider.getSector();
+		return boreholeProvider.getBounds();
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return boreholeProvider.isFollowTerrain();
 	}
 
 	@Override

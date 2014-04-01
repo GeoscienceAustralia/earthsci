@@ -19,7 +19,6 @@ import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
@@ -93,6 +92,7 @@ import au.gov.ga.earthsci.layer.ui.dnd.LocalLayerTransfer;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.util.FlyToSectorAnimator;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
@@ -465,8 +465,8 @@ public class LayerTreePart
 			return;
 		}
 
-		Sector sector = Bounded.Reader.getSector(layer);
-		if (sector == null || !(view instanceof OrbitView))
+		Bounds bounds = Bounded.Reader.getBounds(layer);
+		if (bounds == null || !(view instanceof OrbitView))
 		{
 			return;
 		}
@@ -474,16 +474,16 @@ public class LayerTreePart
 		OrbitView orbitView = (OrbitView) view;
 		Position center = orbitView.getCenterPosition();
 		Position newCenter;
-		if (sector.contains(center) && sector.getDeltaLatDegrees() > 90 && sector.getDeltaLonDegrees() > 90)
+		if (bounds.contains(center) && bounds.deltaLatitude.degrees > 90 && bounds.deltaLongitude.degrees > 90)
 		{
 			newCenter = center;
 		}
 		else
 		{
-			newCenter = new Position(sector.getCentroid(), 0);
+			newCenter = bounds.center;
 		}
 
-		LatLon endVisibleDelta = new LatLon(sector.getDeltaLat(), sector.getDeltaLon());
+		LatLon endVisibleDelta = new LatLon(bounds.deltaLatitude, bounds.deltaLongitude);
 		long lengthMillis = Util.getScaledLengthMillis(1, center, newCenter);
 
 		FlyToOrbitViewAnimator animator =

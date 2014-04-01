@@ -18,7 +18,6 @@ package au.gov.ga.earthsci.worldwind.common.layers.point.providers;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.avlist.AVListImpl;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Sector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +29,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointProvider;
 import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
@@ -43,7 +43,7 @@ public class XMLPointProvider implements PointProvider
 {
 	private List<Position> points = new ArrayList<Position>();
 	private List<AVList> attributes = new ArrayList<AVList>();
-	private Sector sector = null;
+	private Bounds bounds = null;
 	private boolean added = false;
 
 	public XMLPointProvider(Element element)
@@ -58,9 +58,7 @@ public class XMLPointProvider implements PointProvider
 				if (position != null)
 				{
 					points.add(position);
-					sector =
-							sector != null ? sector.union(position.latitude, position.longitude) : new Sector(
-									position.latitude, position.latitude, position.longitude, position.longitude);
+					bounds = Bounds.union(bounds, position);
 
 					AVList attributes = new AVListImpl();
 					this.attributes.add(attributes);
@@ -82,16 +80,24 @@ public class XMLPointProvider implements PointProvider
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		return sector;
+		return bounds;
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return true;
 	}
 
 	@Override
 	public void requestData(PointLayer layer)
 	{
 		if (added)
+		{
 			return;
+		}
 
 		added = true;
 		for (int i = 0; i < points.size(); i++)

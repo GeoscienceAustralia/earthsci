@@ -44,6 +44,8 @@ import au.gov.ga.earthsci.layer.delegator.AbstractLayerDelegator;
 import au.gov.ga.earthsci.layer.delegator.ILayerDelegator;
 import au.gov.ga.earthsci.layer.delegator.PersistentLayerDelegator;
 import au.gov.ga.earthsci.layer.elevation.IElevationModelLayer;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 /**
@@ -229,6 +231,28 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 			return statused.getStatus();
 		}
 		return super.getStatus();
+	}
+
+	@Override
+	public Bounds getBounds()
+	{
+		Bounded bounded = getDelegateImplementing(Bounded.class);
+		if (bounded != null)
+		{
+			return bounded.getBounds();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		Bounded bounded = getDelegateImplementing(Bounded.class);
+		if (bounded != null)
+		{
+			return bounded.isFollowTerrain();
+		}
+		return false;
 	}
 
 	@Override

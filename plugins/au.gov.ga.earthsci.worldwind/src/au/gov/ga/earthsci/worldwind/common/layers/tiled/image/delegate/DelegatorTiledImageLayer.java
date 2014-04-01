@@ -44,6 +44,7 @@ import gov.nasa.worldwind.util.TileKey;
 import gov.nasa.worldwind.util.WWIO;
 import gov.nasa.worldwind.util.WWXML;
 import gov.nasa.worldwind.wms.WMSTiledImageLayer;
+import gov.nasa.worldwindx.examples.elevations.GetElevationsPostProcessor;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -61,6 +62,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.IDelegatorLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.IDelegatorTile;
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.ITileRequesterDelegate;
@@ -71,7 +73,9 @@ import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
+
 import javax.media.opengl.GLProfile;
+
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 /**
@@ -226,11 +230,17 @@ public class DelegatorTiledImageLayer extends URLTransformerBasicTiledImageLayer
 		super.render(dc);
 		delegateKit.postRender(dc);
 	}
-
+	
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		return getLevels().getSector();
+		return Bounds.fromSector(getLevels().getSector());
+	}
+	
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return true;
 	}
 
 	@Override
@@ -253,7 +263,7 @@ public class DelegatorTiledImageLayer extends URLTransformerBasicTiledImageLayer
 	{
 		//Only request textures for tiles that intersect the layer's sector.
 		//This makes perfect sense, and am unsure why the TiledImageLayer doesn't do this. 
-		if (!tile.getSector().intersects(getSector()))
+		if (!tile.getSector().intersects(getLevels().getSector()))
 		{
 			markResourceAbsent(tile);
 			return;

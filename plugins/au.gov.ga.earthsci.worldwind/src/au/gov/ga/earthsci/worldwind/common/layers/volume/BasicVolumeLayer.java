@@ -28,7 +28,6 @@ import gov.nasa.worldwind.geom.Line;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Plane;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.layers.AbstractLayer;
@@ -51,6 +50,7 @@ import javax.media.opengl.GL2;
 import org.gdal.osr.CoordinateTransformation;
 
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.Wireframeable;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShape;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShapeRenderListener;
@@ -225,9 +225,15 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		return dataProvider.getSector();
+		return dataProvider.getBounds();
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return false;
 	}
 
 	@Override
@@ -1122,7 +1128,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		else
 		{
 			double deltaLongitude = position.longitude.degrees - dragStartPosition;
-			double deltaPercentage = deltaLongitude / dataProvider.getSector().getDeltaLonDegrees();
+			double deltaPercentage = deltaLongitude / getBounds().deltaLongitude.degrees;
 			int sliceMovement = (int) (deltaPercentage * (dataProvider.getXSize() - 1));
 			if (shape == minLonCurtain)
 			{
@@ -1172,7 +1178,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		else
 		{
 			double deltaLatitude = position.latitude.degrees - dragStartPosition;
-			double deltaPercentage = deltaLatitude / dataProvider.getSector().getDeltaLatDegrees();
+			double deltaPercentage = deltaLatitude / getBounds().deltaLatitude.degrees;
 			int sliceMovement = (int) (deltaPercentage * (dataProvider.getYSize() - 1));
 			if (shape == minLatCurtain)
 			{

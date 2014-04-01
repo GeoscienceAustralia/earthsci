@@ -42,6 +42,6 @@ public class ZoomToHandler
 	@CanExecute
 	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode layer)
 	{
-		return layer != null && Bounded.Reader.getSector(layer) != null;
+		return layer != null && Bounded.Reader.getBounds(layer) != null;
 	}
 }

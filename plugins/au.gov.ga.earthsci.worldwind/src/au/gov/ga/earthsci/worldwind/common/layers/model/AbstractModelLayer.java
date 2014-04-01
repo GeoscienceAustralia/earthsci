@@ -16,7 +16,6 @@
 package au.gov.ga.earthsci.worldwind.common.layers.model;
 
 import gov.nasa.worldwind.geom.Extent;
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.render.WWTexture;
@@ -25,6 +24,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShape;
 
 /**
@@ -39,8 +39,7 @@ public abstract class AbstractModelLayer extends AbstractLayer implements ModelL
 	protected WWTexture pointTexture;
 	protected WWTexture blankTexture;
 
-	protected boolean sectorDirty = true;
-	protected Sector sector;
+	protected Bounds bounds;
 	protected Double minimumDistance;
 
 	protected Color color;
@@ -96,21 +95,29 @@ public abstract class AbstractModelLayer extends AbstractLayer implements ModelL
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
 		synchronized (shapes)
 		{
-			if (sectorDirty)
+			if (bounds == null)
 			{
-				sector = null;
 				for (FastShape shape : shapes)
 				{
-					sector = Sector.union(sector, shape.getSector());
+					bounds = Bounds.union(bounds, shape.getBounds());
 				}
-				sectorDirty = false;
 			}
 		}
-		return sector;
+		return bounds;
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		for (FastShape shape : shapes)
+		{
+			return shape.isFollowTerrain();
+		}
+		return false;
 	}
 
 	public Double getMinimumDistance()
@@ -183,7 +190,7 @@ public abstract class AbstractModelLayer extends AbstractLayer implements ModelL
 		{
 			shapes.add(shape);
 		}
-		sectorDirty = true;
+		bounds = null;
 		treeNode.addChild(shape);
 		hierarchicalListenerList.notifyListeners(this, treeNode);
 	}
@@ -195,7 +202,7 @@ public abstract class AbstractModelLayer extends AbstractLayer implements ModelL
 		{
 			shapes.remove(shape);
 		}
-		sectorDirty = true;
+		bounds = null;
 		treeNode.removeChild(shape);
 		hierarchicalListenerList.notifyListeners(this, treeNode);
 	}

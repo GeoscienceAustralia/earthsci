@@ -35,6 +35,7 @@ import org.w3c.dom.NodeList;
 
 import au.gov.ga.earthsci.discovery.AbstractDiscoveryResult;
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
@@ -109,7 +110,7 @@ public class CSWDiscoveryResult extends AbstractDiscoveryResult<CSWDiscovery>
 	private final String description;
 	private final List<URL> references = new ArrayList<URL>();
 	private final List<String> referenceSchemes = new ArrayList<String>();
-	private final Sector bounds;
+	private final Bounds bounds;
 
 	public CSWDiscoveryResult(CSWDiscovery discovery, int index, Element cswRecordElement)
 			throws XPathExpressionException
@@ -173,13 +174,19 @@ public class CSWDiscoveryResult extends AbstractDiscoveryResult<CSWDiscovery>
 				bounds = Sector.fromDegrees(minLat, maxLat, minLon, maxLon);
 			}
 		}
-		this.bounds = bounds;
+		this.bounds = Bounds.fromSector(bounds);
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
 		return bounds;
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return true;
 	}
 
 	public List<URL> getReferences()

@@ -20,7 +20,7 @@ import gov.nasa.worldwind.formats.shapefile.DBaseRecord;
 import gov.nasa.worldwind.formats.shapefile.Shapefile;
 import gov.nasa.worldwind.formats.shapefile.ShapefileRecord;
 import gov.nasa.worldwind.formats.shapefile.ShapefileUtils;
-import gov.nasa.worldwind.geom.Sector;
+import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.util.VecBuffer;
 
@@ -29,12 +29,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.data.AbstractDataProvider;
 import au.gov.ga.earthsci.worldwind.common.layers.geometry.BasicShapeImpl;
 import au.gov.ga.earthsci.worldwind.common.layers.geometry.GeometryLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.geometry.Shape;
-import au.gov.ga.earthsci.worldwind.common.layers.geometry.ShapeProvider;
 import au.gov.ga.earthsci.worldwind.common.layers.geometry.Shape.Type;
+import au.gov.ga.earthsci.worldwind.common.layers.geometry.ShapeProvider;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 import au.gov.ga.earthsci.worldwind.common.util.URLUtil;
 
@@ -63,13 +64,14 @@ public class ShapefileShapeProvider extends AbstractDataProvider<GeometryLayer> 
 		shapeTypeMap.put(Shapefile.SHAPE_POLYGON_Z, Type.POLYGON);
 	}
 
-	private Sector sector;
+	private Bounds bounds;
 
 	@Override
 	protected boolean doLoadData(URL url, GeometryLayer layer)
 	{
 		try
 		{
+			bounds = null;
 			Shapefile shapefile = ShapefileUtils.openZippedShapefile(URLUtil.urlToFile(url));
 			while (shapefile.hasNext())
 			{
@@ -85,14 +87,15 @@ public class ShapefileShapeProvider extends AbstractDataProvider<GeometryLayer> 
 					int size = buffer.getSize();
 					for (int i = 0; i < size; i++)
 					{
-						loadedShape.addPoint(buffer.getPosition(i), values);
+						Position position = buffer.getPosition(i);
+						loadedShape.addPoint(position, values);
+						bounds = Bounds.union(bounds, position);
 					}
 				}
 
 				layer.addShape(loadedShape);
 			}
 
-			sector = Sector.fromDegrees(shapefile.getBoundingRectangle());
 			layer.loadComplete();
 		}
 		catch (Exception e)
@@ -118,9 +121,15 @@ public class ShapefileShapeProvider extends AbstractDataProvider<GeometryLayer> 
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		return sector;
+		return bounds;
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return true;
 	}
 
 	private static Type getShapeTypeFromRecord(ShapefileRecord record)

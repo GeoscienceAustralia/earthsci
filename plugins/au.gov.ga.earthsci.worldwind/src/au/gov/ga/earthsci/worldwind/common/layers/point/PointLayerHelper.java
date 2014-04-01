@@ -17,12 +17,13 @@ package au.gov.ga.earthsci.worldwind.common.layers.point;
 
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
-import gov.nasa.worldwind.geom.Sector;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.Attribute;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.BasicStyleProvider;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.Style;
@@ -37,7 +38,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Validate;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class PointLayerHelper
+public class PointLayerHelper implements Bounded
 {
 	protected final StyleProvider styleProvider = new BasicStyleProvider();
 	protected final PointProvider pointProvider;
@@ -83,9 +84,16 @@ public class PointLayerHelper
 		return dataCacheName;
 	}
 
-	public Sector getSector()
+	@Override
+	public Bounds getBounds()
 	{
-		return pointProvider.getSector();
+		return pointProvider.getBounds();
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return pointProvider.isFollowTerrain();
 	}
 
 	/**

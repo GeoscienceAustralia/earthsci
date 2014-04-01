@@ -15,10 +15,10 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.terrain;
 
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.globes.ElevationModel;
 import gov.nasa.worldwind.terrain.CompoundElevationModel;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 
 /**
  * Extension to {@link CompoundElevationModel} that implements the
@@ -29,20 +29,22 @@ import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 public class BoundedCompoundElevationModel extends CompoundElevationModel implements Bounded
 {
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		Sector sector = null;
+		Bounds bounds = null;
 		for (ElevationModel model : getElevationModels())
 		{
 			if (model instanceof Bounded)
 			{
-				Bounded b = (Bounded) model;
-				if (sector == null)
-					sector = b.getSector();
-				else
-					sector = sector.union(b.getSector());
+				bounds = Bounds.union(bounds, ((Bounded) model).getBounds());
 			}
 		}
-		return sector;
+		return bounds;
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return true;
 	}
 }

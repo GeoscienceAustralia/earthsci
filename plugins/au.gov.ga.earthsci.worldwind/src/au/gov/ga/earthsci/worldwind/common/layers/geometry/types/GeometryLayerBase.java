@@ -18,8 +18,6 @@ package au.gov.ga.earthsci.worldwind.common.layers.geometry.types;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.avlist.AVListImpl;
-import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.render.DrawContext;
 
@@ -27,14 +25,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.geometry.GeometryLayer;
-import au.gov.ga.earthsci.worldwind.common.layers.geometry.Shape;
 import au.gov.ga.earthsci.worldwind.common.layers.geometry.ShapeProvider;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.Attribute;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.BasicStyleProvider;
@@ -79,7 +76,7 @@ public abstract class GeometryLayerBase extends AbstractLayer implements Geometr
 		styleProvider = new BasicStyleProvider();
 		styleProvider.setStyles((List<Style>) params.getValue(AVKeyMore.DATA_LAYER_STYLES));
 		styleProvider.setAttributes((List<Attribute>) params.getValue(AVKeyMore.DATA_LAYER_ATTRIBUTES));
-		
+
 		Validate.notBlank(dataCacheName, "Shape data cache name not set");
 
 		Validate.notNull(shapeProvider, "Shape data provider is null");
@@ -186,15 +183,15 @@ public abstract class GeometryLayerBase extends AbstractLayer implements Geometr
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		// TODO: Cache the calculated sector
-		List<Position> points = new ArrayList<Position>();
-		for (Shape shape : getShapes())
-		{
-			points.addAll(shape.getPoints());
-		}
-		return Sector.boundingSector(points);
+		return shapeProvider.getBounds();
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return shapeProvider.isFollowTerrain();
 	}
 
 	@Override
@@ -234,19 +231,19 @@ public abstract class GeometryLayerBase extends AbstractLayer implements Geometr
 	{
 		return styleProvider;
 	}
-	
+
 	@Override
 	public boolean isLoading()
 	{
 		return shapeProvider.isLoading();
 	}
-	
+
 	@Override
 	public void addLoadingListener(LoadingListener listener)
 	{
 		shapeProvider.addLoadingListener(listener);
 	}
-	
+
 	@Override
 	public void removeLoadingListener(LoadingListener listener)
 	{

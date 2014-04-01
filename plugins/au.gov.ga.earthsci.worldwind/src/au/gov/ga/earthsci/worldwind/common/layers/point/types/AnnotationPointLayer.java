@@ -20,7 +20,6 @@ import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.event.SelectEvent;
 import gov.nasa.worldwind.event.SelectListener;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.layers.AnnotationLayer;
 import gov.nasa.worldwind.pick.PickedObject;
 import gov.nasa.worldwind.render.DrawContext;
@@ -30,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayerHelper;
 import au.gov.ga.earthsci.worldwind.common.layers.point.annotation.EnhancedAnnotation;
@@ -65,9 +65,15 @@ public class AnnotationPointLayer extends AnnotationLayer implements PointLayer,
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		return helper.getSector();
+		return helper.getBounds();
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return helper.isFollowTerrain();
 	}
 
 	@Override
@@ -79,7 +85,7 @@ public class AnnotationPointLayer extends AnnotationLayer implements PointLayer,
 		EnhancedAnnotationAttributes attributes = new EnhancedAnnotationAttributes();
 		properties.style.setPropertiesFromAttributes(helper.getContext(), attributeValues, attributes, annotation);
 		annotation.setAttributes(attributes);
-		
+
 		this.addAnnotation(annotation);
 	}
 
@@ -104,7 +110,9 @@ public class AnnotationPointLayer extends AnnotationLayer implements PointLayer,
 	public void selected(SelectEvent e)
 	{
 		if (e == null)
+		{
 			return;
+		}
 
 		PickedObject topPickedObject = e.getTopPickedObject();
 		if (topPickedObject != null && topPickedObject.getObject() instanceof GlobeAnnotation)

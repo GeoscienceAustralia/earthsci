@@ -19,13 +19,14 @@ import gov.nasa.worldwind.formats.shapefile.DBaseRecord;
 import gov.nasa.worldwind.formats.shapefile.Shapefile;
 import gov.nasa.worldwind.formats.shapefile.ShapefileRecord;
 import gov.nasa.worldwind.formats.shapefile.ShapefileUtils;
-import gov.nasa.worldwind.geom.Sector;
+import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.util.VecBuffer;
 
 import java.net.URL;
 import java.util.logging.Level;
 
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.data.AbstractDataProvider;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointProvider;
@@ -39,13 +40,14 @@ import au.gov.ga.earthsci.worldwind.common.util.URLUtil;
  */
 public class ShapefilePointProvider extends AbstractDataProvider<PointLayer> implements PointProvider
 {
-	private Sector sector;
+	private Bounds bounds;
 
 	@Override
 	protected boolean doLoadData(URL url, PointLayer layer)
 	{
 		try
 		{
+			bounds = null;
 			Shapefile shapefile = ShapefileUtils.openZippedShapefile(URLUtil.urlToFile(url));
 			while (shapefile.hasNext())
 			{
@@ -58,12 +60,13 @@ public class ShapefilePointProvider extends AbstractDataProvider<PointLayer> imp
 					int size = buffer.getSize();
 					for (int i = 0; i < size; i++)
 					{
-						layer.addPoint(buffer.getPosition(i), values);
+						Position position = buffer.getPosition(i);
+						layer.addPoint(position, values);
+						bounds = Bounds.union(bounds, position);
 					}
 				}
 			}
 
-			sector = Sector.fromDegrees(shapefile.getBoundingRectangle());
 			layer.loadComplete();
 		}
 		catch (Exception e)
@@ -76,8 +79,14 @@ public class ShapefilePointProvider extends AbstractDataProvider<PointLayer> imp
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		return sector;
+		return bounds;
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return true;
 	}
 }

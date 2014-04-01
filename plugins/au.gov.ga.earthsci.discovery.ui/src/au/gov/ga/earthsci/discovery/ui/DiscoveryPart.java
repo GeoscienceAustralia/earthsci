@@ -21,7 +21,6 @@ import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
@@ -87,6 +86,7 @@ import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
 import au.gov.ga.earthsci.discovery.ui.handler.ServicesHandler;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.retrieve.SectorPolyline;
 import au.gov.ga.earthsci.worldwind.common.util.FlyToSectorAnimator;
 
@@ -441,14 +441,14 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 				mouseOverLayer = new RenderableLayer();
 			}
 
-			Sector sector = null;
+			Bounds bounds = null;
 			mouseOverLayer.removeAllRenderables();
 			if (result != null)
 			{
-				sector = result.getSector();
-				if (sector != null)
+				bounds = result.getBounds();
+				if (bounds != null)
 				{
-					mouseOverLayer.addRenderable(new SectorPolyline(result.getSector()));
+					mouseOverLayer.addRenderable(new SectorPolyline(bounds.toSector()));
 				}
 			}
 
@@ -456,7 +456,7 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 			if (wwd != null)
 			{
 				SceneController sceneController = wwd.getSceneController();
-				if (sector != null && sceneController instanceof GlobeSceneController)
+				if (bounds != null && sceneController instanceof GlobeSceneController)
 				{
 					GlobeSceneController gsc = (GlobeSceneController) sceneController;
 					if (mouseOverSceneController != gsc)
@@ -479,22 +479,22 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 				if (zoom)
 				{
 					View view = WorldWindowRegistry.INSTANCE.getActiveView();
-					if (view instanceof OrbitView && sector != null)
+					if (view instanceof OrbitView && bounds != null)
 					{
 						OrbitView orbitView = (OrbitView) view;
 						Position center = orbitView.getCenterPosition();
 						Position newCenter;
-						if (sector.contains(center) && sector.getDeltaLatDegrees() > 90
-								&& sector.getDeltaLonDegrees() > 90)
+						if (bounds.contains(center) && bounds.deltaLatitude.degrees > 90
+								&& bounds.deltaLongitude.degrees > 90)
 						{
 							newCenter = center;
 						}
 						else
 						{
-							newCenter = new Position(sector.getCentroid(), 0);
+							newCenter = bounds.center;
 						}
 
-						LatLon endVisibleDelta = new LatLon(sector.getDeltaLat(), sector.getDeltaLon());
+						LatLon endVisibleDelta = new LatLon(bounds.deltaLatitude, bounds.deltaLongitude);
 						FlyToOrbitViewAnimator animator =
 								FlyToSectorAnimator.createScaledFlyToSectorAnimator(orbitView, center, newCenter,
 										orbitView.getHeading(), orbitView.getPitch(), orbitView.getZoom(),

@@ -16,7 +16,6 @@
 package au.gov.ga.earthsci.worldwind.common.layers.volume;
 
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Sector;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,6 +30,8 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 
 /**
  * {@link VolumeDataProvider} which reads its data from a custom object array
@@ -72,9 +73,10 @@ public class ArrayWithPositionsVolumeDataProvider extends AbstractVolumeDataProv
 				double maxLatitude = ois.readDouble();
 				double minLongitude = ois.readDouble();
 				double maxLongitude = ois.readDouble();
-				sector = Sector.fromDegrees(minLatitude, maxLatitude, minLongitude, maxLongitude);
 				top = ois.readDouble();
 				depth = ois.readDouble();
+				bounds = new Bounds(Position.fromDegrees(minLatitude, minLongitude, top - depth),
+						Position.fromDegrees(maxLatitude, maxLongitude, top));
 				noDataValue = ois.readFloat();
 				minValue = Float.MAX_VALUE;
 				maxValue = -Float.MAX_VALUE;
@@ -141,10 +143,10 @@ public class ArrayWithPositionsVolumeDataProvider extends AbstractVolumeDataProv
 				oos.writeInt(provider.xSize);
 				oos.writeInt(provider.ySize);
 				oos.writeInt(provider.zSize);
-				oos.writeDouble(provider.sector.getMinLatitude().degrees);
-				oos.writeDouble(provider.sector.getMaxLatitude().degrees);
-				oos.writeDouble(provider.sector.getMinLongitude().degrees);
-				oos.writeDouble(provider.sector.getMaxLongitude().degrees);
+				oos.writeDouble(provider.bounds.minimum.latitude.degrees);
+				oos.writeDouble(provider.bounds.maximum.latitude.degrees);
+				oos.writeDouble(provider.bounds.minimum.longitude.degrees);
+				oos.writeDouble(provider.bounds.maximum.longitude.degrees);
 				oos.writeDouble(provider.top);
 				oos.writeDouble(provider.depth);
 				oos.writeFloat(provider.noDataValue);

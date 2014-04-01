@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.model.gocad;
 
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.util.WWIO;
 
 import java.io.File;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.data.AbstractDataProvider;
 import au.gov.ga.earthsci.worldwind.common.layers.model.ModelLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.model.ModelProvider;
@@ -39,7 +39,8 @@ import au.gov.ga.earthsci.worldwind.common.util.URLUtil;
  */
 public class GocadModelProvider extends AbstractDataProvider<ModelLayer> implements ModelProvider
 {
-	private Sector sector = null;
+	private Bounds bounds = null;
+	private boolean followTerrain = false;
 	private final GocadReaderParameters parameters;
 
 	public GocadModelProvider(GocadReaderParameters parameters)
@@ -48,9 +49,15 @@ public class GocadModelProvider extends AbstractDataProvider<ModelLayer> impleme
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		return sector;
+		return bounds;
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return followTerrain;
 	}
 
 	@Override
@@ -100,14 +107,8 @@ public class GocadModelProvider extends AbstractDataProvider<ModelLayer> impleme
 			for (FastShape shape : shapes)
 			{
 				layer.addShape(shape);
-				if(sector == null)
-				{
-					sector = shape.getSector();
-				}
-				else
-				{
-					sector = sector.union(shape.getSector());
-				}
+				followTerrain = shape.isFollowTerrain();
+				bounds = Bounds.union(bounds, shape.getBounds());
 			}
 			return true;
 		}

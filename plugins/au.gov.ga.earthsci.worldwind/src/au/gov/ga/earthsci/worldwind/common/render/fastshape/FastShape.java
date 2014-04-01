@@ -20,7 +20,6 @@ import gov.nasa.worldwind.cache.Cacheable;
 import gov.nasa.worldwind.geom.Extent;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.geom.Sphere;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
@@ -51,6 +50,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GL2GL3;
 
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.Wireframeable;
 
 import com.jogamp.opengl.util.texture.Texture;
@@ -96,7 +96,7 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 
 	protected Sphere boundingSphere;
 	protected Sphere modBoundingSphere;
-	protected Sector sector;
+	protected Bounds bounds;
 
 	protected boolean colorBufferEnabled = true;
 	protected Color color = Color.white;
@@ -1011,12 +1011,10 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 			this.positions = positions;
 			verticesDirty = true;
 
-			sector = null;
+			bounds = null;
 			for (Position position : positions)
 			{
-				sector =
-						sector != null ? sector.union(position.latitude, position.longitude) : new Sector(
-								position.latitude, position.latitude, position.longitude, position.longitude);
+				bounds = Bounds.union(bounds, position);
 			}
 		}
 		finally
@@ -1035,6 +1033,7 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 		indexVBO.setBuffer(indices);
 	}
 
+	@Override
 	public boolean isFollowTerrain()
 	{
 		return followTerrain;
@@ -1319,12 +1318,12 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
 		positionsLock.readLock().lock();
 		try
 		{
-			return sector;
+			return bounds;
 		}
 		finally
 		{

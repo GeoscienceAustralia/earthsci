@@ -46,6 +46,7 @@ import javax.xml.xpath.XPath;
 import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 
 import com.jogamp.opengl.util.awt.TextRenderer;
@@ -61,7 +62,7 @@ public abstract class TiledCurtainLayer extends AbstractLayer implements Bounded
 	//TODO where should this live
 	protected CurtainTileRenderer renderer = new CurtainTileRenderer();
 
-	protected Sector boundingSector;
+	protected Bounds bounds;
 	protected Path path;
 	protected double curtainTop = 0;
 	protected double curtainBottom = -10000;
@@ -148,6 +149,7 @@ public abstract class TiledCurtainLayer extends AbstractLayer implements Bounded
 	public void setPath(Path path)
 	{
 		this.path = path;
+		bounds = null;
 	}
 
 	public double getCurtainTop()
@@ -158,6 +160,7 @@ public abstract class TiledCurtainLayer extends AbstractLayer implements Bounded
 	public void setCurtainTop(double curtainTop)
 	{
 		this.curtainTop = curtainTop;
+		bounds = null;
 	}
 
 	public double getCurtainBottom()
@@ -168,8 +171,10 @@ public abstract class TiledCurtainLayer extends AbstractLayer implements Bounded
 	public void setCurtainBottom(double curtainBottom)
 	{
 		this.curtainBottom = curtainBottom;
+		bounds = null;
 	}
 
+	@Override
 	public boolean isFollowTerrain()
 	{
 		return followTerrain;
@@ -437,13 +442,14 @@ public abstract class TiledCurtainLayer extends AbstractLayer implements Bounded
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		if (boundingSector == null)
+		if (bounds == null)
 		{
-			boundingSector = path == null ? null : path.getBoundingSector();
+			Sector sector = path == null ? null : path.getBoundingSector();
+			bounds = sector == null ? null : Bounds.fromSector(sector, curtainBottom, curtainTop);
 		}
-		return boundingSector;
+		return bounds;
 	}
 
 	// ============== Tile Assembly ======================= //
@@ -592,12 +598,14 @@ public abstract class TiledCurtainLayer extends AbstractLayer implements Bounded
 
 	protected boolean isTileVisible(DrawContext dc, CurtainTextureTile tile)
 	{
-		//		Segment segment = tile.getSegment();
-		//		Extent extent = path.getSegmentExtent(dc, segment, curtainTop, curtainBottom, subsegments, followTerrain);
+		Segment segment = tile.getSegment();
+		Extent extent = path.getSegmentExtent(dc, segment, curtainTop, curtainBottom, subsegments, followTerrain);
 
-		// TODO: Fix this - see CWW-129
-		Sector pathBoundingSector = getSector();
-		Extent extent = Sector.computeBoundingBox(dc.getGlobe(), dc.getVerticalExaggeration(), pathBoundingSector);
+		// TODO: Fix this - see https://github.com/ga-m3dv/ga-worldwind-suite/issues/73
+		//this is the workaround mentioned in the issue text (instead of the above):
+		//Sector pathBoundingSector = getBounds().toSector();
+		//Extent extent = Sector.computeBoundingBox(dc.getGlobe(), dc.getVerticalExaggeration(), pathBoundingSector);
+
 		return extent.intersects(dc.getView().getFrustumInModelCoordinates());
 	}
 

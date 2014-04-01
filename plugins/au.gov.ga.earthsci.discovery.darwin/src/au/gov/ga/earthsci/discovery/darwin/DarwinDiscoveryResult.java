@@ -30,6 +30,7 @@ import au.gov.ga.earthsci.common.collection.ArrayListHashMap;
 import au.gov.ga.earthsci.common.collection.ListMap;
 import au.gov.ga.earthsci.discovery.AbstractDiscoveryResult;
 import au.gov.ga.earthsci.discovery.IDiscoveryResult;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 
 /**
  * {@link IDiscoveryResult} implementation for DARWIN.
@@ -40,7 +41,7 @@ public class DarwinDiscoveryResult extends AbstractDiscoveryResult<DarwinDiscove
 {
 	private final String title;
 	private final String description;
-	private final Sector bounds;
+	private final Bounds bounds;
 	private final URL metadataUrl;
 	private final List<DarwinDiscoveryResultURL> urls = new ArrayList<DarwinDiscoveryResultURL>();
 	private final ListMap<String, DarwinDiscoveryResultURL> urlMap =
@@ -66,7 +67,7 @@ public class DarwinDiscoveryResult extends AbstractDiscoveryResult<DarwinDiscove
 				bounds = Sector.fromDegrees(minLat, maxLat, minLon, maxLon);
 			}
 		}
-		this.bounds = bounds;
+		this.bounds = Bounds.fromSector(bounds);
 
 		URL metadataUrl = null;
 		try
@@ -115,9 +116,15 @@ public class DarwinDiscoveryResult extends AbstractDiscoveryResult<DarwinDiscove
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
 		return bounds;
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return true;
 	}
 
 	public String getTitle()

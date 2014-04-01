@@ -20,7 +20,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.util.gdal.GDALUtils;
 
 import java.io.File;
@@ -39,6 +38,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.model.ModelLayer;
 import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShape;
 import au.gov.ga.earthsci.worldwind.test.util.TestUtils;
@@ -203,12 +203,12 @@ public class GDALRasterModelProviderTest
 		assertEquals(testRaster.width * testRaster.height * 4, colourBuffer.length);
 
 		// Sector will be sampled from 'bottom-left' corners of cells
-		Sector sector = shape.getSector();
-		assertNotNull(sector);
-		assertEquals(testRaster.minLon, sector.getMinLongitude().degrees, 0.0001);
-		assertEquals(testRaster.maxLon - testRaster.xCellSize, sector.getMaxLongitude().degrees, 0.0001);
-		assertEquals(testRaster.minLat - testRaster.yCellSize, sector.getMinLatitude().degrees, 0.0001);
-		assertEquals(testRaster.maxLat, sector.getMaxLatitude().degrees, 0.0001);
+		Bounds bounds = shape.getBounds();
+		assertNotNull(bounds);
+		assertEquals(testRaster.minLon, bounds.minimum.longitude.degrees, 0.0001);
+		assertEquals(testRaster.maxLon - testRaster.xCellSize, bounds.maximum.longitude.degrees, 0.0001);
+		assertEquals(testRaster.minLat - testRaster.yCellSize, bounds.minimum.latitude.degrees, 0.0001);
+		assertEquals(testRaster.maxLat, bounds.maximum.latitude.degrees, 0.0001);
 	}
 
 	@Test

@@ -38,6 +38,7 @@ import au.gov.ga.earthsci.core.model.IModelStatus;
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.worldwind.WorldWindCompoundElevationModel;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 
 /**
  * Abstract implementation of the {@link ILayerTreeNode} interface.
@@ -167,6 +168,31 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	public String getInformationString()
 	{
 		return LayerNodeDescriber.describe(this);
+	}
+
+	@Override
+	public Bounds getBounds()
+	{
+		Bounds bounds = null;
+		for (ILayerTreeNode child : getChildren())
+		{
+			bounds = Bounds.union(bounds, child.getBounds());
+		}
+		return bounds;
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		//if any layers don't follow the terrain, then return false
+		for (ILayerTreeNode child : getChildren())
+		{
+			if (!child.isFollowTerrain())
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Persistent

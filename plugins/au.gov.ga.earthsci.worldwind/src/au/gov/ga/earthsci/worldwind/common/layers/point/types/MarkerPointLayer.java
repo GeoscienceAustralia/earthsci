@@ -19,7 +19,6 @@ import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.event.SelectEvent;
 import gov.nasa.worldwind.event.SelectListener;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.layers.MarkerLayer;
 import gov.nasa.worldwind.pick.PickedObject;
 import gov.nasa.worldwind.render.DrawContext;
@@ -39,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayerHelper;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.StyleAndText;
@@ -76,7 +76,7 @@ public class MarkerPointLayer extends MarkerLayer implements PointLayer, SelectL
 		this.tooltipAnnotation.getAttributes().setVisible(false);
 		this.tooltipAnnotation.setPickEnabled(false);
 		this.tooltipAnnotation.setAlwaysOnTop(true);
-		
+
 		WorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
 
@@ -92,9 +92,15 @@ public class MarkerPointLayer extends MarkerLayer implements PointLayer, SelectL
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		return helper.getSector();
+		return helper.getBounds();
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return helper.isFollowTerrain();
 	}
 
 	@Override
@@ -127,31 +133,57 @@ public class MarkerPointLayer extends MarkerLayer implements PointLayer, SelectL
 		if (shapetype != null)
 		{
 			if (BasicMarkerShape.SPHERE.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.SPHERE);
+			}
 			else if (BasicMarkerShape.CUBE.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.CUBE);
+			}
 			else if (BasicMarkerShape.CONE.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.CONE);
+			}
 			else if (BasicMarkerShape.CYLINDER.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.CYLINDER);
+			}
 			else if (BasicMarkerShape.HEADING_ARROW.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.HEADING_ARROW);
+			}
 			else if (BasicMarkerShape.HEADING_LINE.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.HEADING_LINE);
+			}
 			else if (BasicMarkerShape.ORIENTED_SPHERE.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.ORIENTED_SPHERE);
+			}
 			else if (BasicMarkerShape.ORIENTED_CUBE.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.ORIENTED_CUBE);
+			}
 			else if (BasicMarkerShape.ORIENTED_CONE.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.ORIENTED_CONE);
+			}
 			else if (BasicMarkerShape.ORIENTED_CYLINDER.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.ORIENTED_CYLINDER);
+			}
 			else if (BasicMarkerShape.ORIENTED_SPHERE_LINE.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.ORIENTED_SPHERE_LINE);
+			}
 			else if (BasicMarkerShape.ORIENTED_CONE_LINE.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.ORIENTED_CONE_LINE);
+			}
 			else if (BasicMarkerShape.ORIENTED_CYLINDER_LINE.equalsIgnoreCase(shapetype))
+			{
 				attributes.setShapeType(BasicMarkerShape.ORIENTED_CYLINDER_LINE);
+			}
 		}
 	}
 
@@ -177,7 +209,9 @@ public class MarkerPointLayer extends MarkerLayer implements PointLayer, SelectL
 	public void selected(SelectEvent e)
 	{
 		if (e == null)
+		{
 			return;
+		}
 
 		PickedObject topPickedObject = e.getTopPickedObject();
 		if (topPickedObject != null && topPickedObject.getObject() instanceof UrlMarker)

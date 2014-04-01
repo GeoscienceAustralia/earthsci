@@ -16,9 +16,9 @@
 package au.gov.ga.earthsci.worldwind.common.terrain;
 
 import gov.nasa.worldwind.avlist.AVList;
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.terrain.BasicElevationModel;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
+import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 
 /**
  * Extension to {@link BasicElevationModel} that implements the {@link Bounded}
@@ -34,8 +34,14 @@ public class BoundedBasicElevationModel extends BasicElevationModel implements B
 	}
 
 	@Override
-	public Sector getSector()
+	public Bounds getBounds()
 	{
-		return getLevels().getSector();
+		return Bounds.fromSector(getLevels().getSector());
+	}
+
+	@Override
+	public boolean isFollowTerrain()
+	{
+		return true;
 	}
 }
