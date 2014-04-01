@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.worldwind.common.util;
+package au.gov.ga.earthsci.core.worldwind.view;
 
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import java.awt.Rectangle;
+
+import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
  * Helper class to create an {@link OrbitView} animator that flies to a given

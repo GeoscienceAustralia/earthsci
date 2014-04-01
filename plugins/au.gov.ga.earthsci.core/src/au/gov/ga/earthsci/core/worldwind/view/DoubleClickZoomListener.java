@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.worldwind.common.util;
+package au.gov.ga.earthsci.core.worldwind.view;
 
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.WorldWindow;
@@ -21,7 +21,6 @@ import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.pick.PickedObject;
 import gov.nasa.worldwind.pick.PickedObjectList;
-import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import java.awt.event.MouseAdapter;
@@ -49,10 +48,14 @@ public class DoubleClickZoomListener extends MouseAdapter
 	public void mouseClicked(MouseEvent e)
 	{
 		if (e.getButton() != MouseEvent.BUTTON1 && e.getButton() != MouseEvent.BUTTON3)
+		{
 			return;
+		}
 
 		if (!(wwd.getView() instanceof OrbitView))
+		{
 			return;
+		}
 		OrbitView view = (OrbitView) wwd.getView();
 
 		if (e.getClickCount() % 2 == 1)
@@ -62,11 +65,15 @@ public class DoubleClickZoomListener extends MouseAdapter
 
 			PickedObjectList pickedObjects = wwd.getObjectsAtCurrentPosition();
 			if (pickedObjects == null)
+			{
 				return;
+			}
 
 			PickedObject top = pickedObjects.getTopPickedObject();
 			if (top == null || !top.isTerrain())
+			{
 				return;
+			}
 
 			latlon = top.getPosition();
 		}

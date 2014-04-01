@@ -20,7 +20,6 @@ import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.globes.Globe;
-import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -37,6 +36,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import au.gov.ga.earthsci.core.worldwind.view.FlyToOrbitViewAnimator;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**

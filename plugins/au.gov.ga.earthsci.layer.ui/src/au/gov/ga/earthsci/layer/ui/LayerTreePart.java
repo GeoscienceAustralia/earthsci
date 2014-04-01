@@ -19,7 +19,6 @@ import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import java.beans.PropertyChangeEvent;
@@ -86,6 +85,8 @@ import au.gov.ga.earthsci.common.databinding.ITreeChangeListener;
 import au.gov.ga.earthsci.common.databinding.ObservableListTreeSupport;
 import au.gov.ga.earthsci.common.databinding.TreeChangeAdapter;
 import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
+import au.gov.ga.earthsci.core.worldwind.view.FlyToOrbitViewAnimator;
+import au.gov.ga.earthsci.core.worldwind.view.FlyToSectorAnimator;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
 import au.gov.ga.earthsci.layer.ui.dnd.LocalLayerTransfer;
@@ -93,7 +94,6 @@ import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
-import au.gov.ga.earthsci.worldwind.common.util.FlyToSectorAnimator;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**

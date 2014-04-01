@@ -46,7 +46,6 @@ import gov.nasa.worldwind.view.ViewPropertyAccessor;
 import gov.nasa.worldwind.view.ViewUtil;
 import gov.nasa.worldwind.view.orbit.BasicOrbitView;
 import gov.nasa.worldwind.view.orbit.BasicOrbitViewLimits;
-import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 import gov.nasa.worldwind.view.orbit.OrbitViewInputHandler;
 import gov.nasa.worldwind.view.orbit.OrbitViewLimits;

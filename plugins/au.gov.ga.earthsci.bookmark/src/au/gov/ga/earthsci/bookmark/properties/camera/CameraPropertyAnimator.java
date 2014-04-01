@@ -20,10 +20,10 @@ import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.animation.Animator;
 import gov.nasa.worldwind.view.orbit.AccessibleOrbitViewInputSupport;
 import gov.nasa.worldwind.view.orbit.AccessibleOrbitViewInputSupport.AccessibleOrbitViewState;
-import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 import au.gov.ga.earthsci.bookmark.AbstractBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
+import au.gov.ga.earthsci.core.worldwind.view.FlyToOrbitViewAnimator;
 
 /**
  * An {@link IBookmarkPropertyAnimator} used to animate the camera between two
