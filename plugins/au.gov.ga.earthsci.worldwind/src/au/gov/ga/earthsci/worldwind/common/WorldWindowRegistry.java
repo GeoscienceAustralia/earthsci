@@ -33,7 +33,7 @@ import java.util.Collection;
 public interface WorldWindowRegistry
 {
 	public final WorldWindowRegistry INSTANCE = new WorldWindowRegistryImpl();
-	
+
 	/**
 	 * Register a new world window. Should be called when a new world window is
 	 * created.
@@ -76,6 +76,14 @@ public interface WorldWindowRegistry
 	 *            World window that was activated
 	 */
 	void setActive(WorldWindow active);
+
+	/**
+	 * Get the first world window that was registered. This should be used
+	 * whenever creating new world windows to share the OpenGL context with.
+	 * 
+	 * @return The first world window that was registered
+	 */
+	WorldWindow getFirstRegistered();
 
 	/**
 	 * @return The view of the last active world window.

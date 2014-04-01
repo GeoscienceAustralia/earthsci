@@ -44,6 +44,7 @@ class WorldWindowRegistryImpl implements WorldWindowRegistry, RenderingListener,
 	private final Set<WorldWindow> set = new HashSet<WorldWindow>();
 	private final Stack<WorldWindow> stack = new Stack<WorldWindow>();
 	private WorldWindow rendering;
+	private WorldWindow first;
 	private final EventListenerList listeners = new EventListenerList();
 
 	@Override
@@ -63,6 +64,10 @@ class WorldWindowRegistryImpl implements WorldWindowRegistry, RenderingListener,
 				stack.remove(worldWindow);
 			}
 			stack.add(worldWindow);
+			if (first == null)
+			{
+				first = worldWindow;
+			}
 		}
 	}
 
@@ -94,7 +99,9 @@ class WorldWindowRegistryImpl implements WorldWindowRegistry, RenderingListener,
 		synchronized (stack)
 		{
 			if (stack.isEmpty())
+			{
 				return null;
+			}
 			return stack.peek();
 		}
 	}
@@ -106,12 +113,20 @@ class WorldWindowRegistryImpl implements WorldWindowRegistry, RenderingListener,
 	}
 
 	@Override
+	public WorldWindow getFirstRegistered()
+	{
+		return first;
+	}
+
+	@Override
 	public View getActiveView()
 	{
 		synchronized (stack)
 		{
 			if (stack.isEmpty())
+			{
 				return null;
+			}
 			return stack.peek().getView();
 		}
 	}

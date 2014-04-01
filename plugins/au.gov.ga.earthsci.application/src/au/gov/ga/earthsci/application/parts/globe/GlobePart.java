@@ -139,7 +139,8 @@ public class GlobePart
 		Configuration.setValue(AVKey.INPUT_HANDLER_CLASS_NAME, NewtInputHandlerAWT.class.getName());
 		Configuration.setValue(AVKey.WORLD_WINDOW_CLASS_NAME, WorldWindowNewtAutoDrawableAWT.class.getName());
 		Configuration.setValue(AVKey.SCENE_CONTROLLER_CLASS_NAME, GlobeSceneController.class.getName());
-		final WorldWindowNewtCanvasAWT wwd = new WorldWindowNewtCanvasAWT();
+		final WorldWindowNewtCanvasAWT wwd =
+				new WorldWindowNewtCanvasAWT(WorldWindowRegistry.INSTANCE.getFirstRegistered());
 		sceneController = (GlobeSceneController) wwd.getSceneController();
 
 		Runnable task = new Runnable()
@@ -170,7 +171,8 @@ public class GlobePart
 		Configuration.setValue(AVKey.INPUT_HANDLER_CLASS_NAME, NewtInputHandlerSWT.class.getName());
 		Configuration.setValue(AVKey.WORLD_WINDOW_CLASS_NAME, WorldWindowNewtAutoDrawableSWT.class.getName());
 		Configuration.setValue(AVKey.SCENE_CONTROLLER_CLASS_NAME, GlobeSceneController.class.getName());
-		final WorldWindowNewtCanvasSWT wwd = new WorldWindowNewtCanvasSWT(parent, SWT.NONE, null);
+		final WorldWindowNewtCanvasSWT wwd =
+				new WorldWindowNewtCanvasSWT(parent, SWT.NONE, WorldWindowRegistry.INSTANCE.getFirstRegistered());
 		sceneController = (GlobeSceneController) wwd.getSceneController();
 
 		// XXX These are hacks to try and make the GL Canvas behave under MacOSX. They do not work properly.
