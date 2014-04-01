@@ -1,5 +1,5 @@
 .MTrimmedWindow.topLevel {
-	margin-top: 7px;
+	margin-top: 5px;
 	margin-bottom: 2px;
 	margin-left: 2px;
 	margin-right: 2px;
@@ -7,15 +7,15 @@
 
 .MPartStack {
 	font-size: 9;
-	font-family: 'Microsoft Sans Serif';
+	font-family: 'Segoe UI';
 	swt-simple: true;
 	swt-tab-renderer:
 		url('bundleclass://au.gov.ga.earthsci.theme.ga/net.jeeeyul.eclipse.themes.rendering.ChromeTabRendering');
 
 	padding: 1px 6px 8px 6px; /* top left bottom right */
-	swt-tab-outline: #b8becc;
-	swt-outer-keyline-color: #b8becc;
-	swt-unselected-tabs-color: #ededed #dbdbdb #ffffff 99% 100%;
+	swt-tab-outline: #97a5b3;
+	swt-outer-keyline-color: #97a5b3;
+	swt-unselected-tabs-color: #d2dfec #c3d2e0 #ffffff 99% 100%;
 	swt-shadow-visible: true;
 	
 	swt-selected-tab-fill: #ffffff;
@@ -24,32 +24,32 @@
 	chrome-selected-tab-color: #000000;
 	chrome-unselected-tab-color: #000000;
 	
-	swt-shadow-color: #a8a8a8;
+	swt-shadow-color: #90a0b3;
 	
 	chrome-shiney-shadow: true;
 	swt-mru-visible: true;
 	
-	swt-corner-radius: 14px;
+	swt-corner-radius: 6px;
 }
 
 .MPartStack.active {
 	swt-inner-keyline-color: #FFFFFF;
-	swt-tab-outline: #7888ab;
-	swt-outer-keyline-color: #7888ab;
-	swt-unselected-tabs-color: #dfe6f7 #d1d9eb #ffffff 99% 100%;
+	swt-tab-outline: #5d6c7b;
+	swt-outer-keyline-color: #5d6c7b;
+	swt-unselected-tabs-color: #6b8fb3 #5b83aa #ffffff 99% 100%;
 	
 	swt-selected-tab-fill: #ffffff;
 	chrome-selected-tab-fill-highlight: #ffffff;
 	
-	chrome-selected-tab-color: #000000;
-	chrome-unselected-tab-color: #000000;
-	chrome-shiney-shadow: true;
+	chrome-selected-tab-color: #306498;
+	chrome-unselected-tab-color: #ffffff;
+	chrome-shiney-shadow: false;
 }
 
 .MPartStack.empty {
-	swt-unselected-tabs-color: #dedede #dedede #dedede 99% 100%;
-	swt-tab-outline: #b8becc;
-	swt-outer-keyline-color: #b8becc;
+	swt-unselected-tabs-color: #758390 #758390 #758390 99% 100%;
+	swt-tab-outline: #758390;
+	swt-outer-keyline-color: #758390;
 }
 
 .MTrimmedWindow {
@@ -57,15 +57,15 @@
 	margin-bottom: 2px;
 	margin-left: 0px;
 	margin-right: 0px;
-	background-color: #ededed;
+	background-color: #eff4fa;
 }
 
 .MTrimBar {
-	background-color: #ededed;
+	background-color: #eff4fa;
 }
 
 .MTrimBar#org-eclipse-ui-main-toolbar {
-	background-color: #ededed #dbdbdb;
+	background-color: #ccd9e7 #b2c2d1;
 }
 
 CTabFolder.MArea .MPartStack,CTabFolder.MArea .MPartStack.active {
@@ -88,17 +88,44 @@ CTabFolder Canvas {
 }
 
 #org-eclipse-ui-trim-status{
-	chrome-border-top-visible: false;
-	chrome-padding-top: 0;
+	chrome-border-top-visible: true;
+	chrome-border-top-color: #96b2ce;
+	chrome-padding-top: 1;
+	background-color: #d3dee9;
 }
 
 .MToolControl.TrimStack {
+	frame-image: url(chrome://frame?background-color=#eff4fa);
 	frame-cuts: 5px 1px 5px 16px;
+	
+	handle-image: url(chrome://drag-handle?height=22&background-color=#eff4fa&embossed=false);
+}
+
+.MTrimBar .Draggable {
+	handle-image: url(chrome://drag-handle?height=22&background-color=#eff4fa&embossed=false);
+}
+
+.MTrimBar#org-eclipse-ui-main-toolbar .Draggable {
+	handle-image: url(chrome://drag-handle?height=22&background-color=#ccd9e7&embossed=false);
+}
+
+.MTrimBar#org-eclipse-ui-main-toolbar .TrimStack {
+	frame-image: url(chrome://frame?background-color=#ccd9e7);
+	handle-image: url(chrome://drag-handle?height=22&background-color=#ccd9e7&embossed=false);
+}
+
+.MTrimBar#org-eclipse-ui-trim-status .Draggable {
+	handle-image: url(chrome://drag-handle?height=22&background-color=#d3dee9&embossed=false);
+}
+
+.MTrimBar#org-eclipse-ui-trim-status .TrimStack {
+	frame-image: url(chrome://frame?background-color=#d3dee9);
+	handle-image: url(chrome://drag-handle?height=22&background-color=#d3dee9&embossed=false);
 }
 
 #org-eclipse-ui-main-toolbar #PerspectiveSwitcher {
-	eclipse-perspective-keyline-color: #aaafbd;
-	background-color: #f5f6fa #ededed 100%;
+	eclipse-perspective-keyline-color: #8f9eac;
+	background-color: #f5f6fa #eff4fa 100%;
 	handle-image: none;
 	chrome-show-perspective-name: false;
 }
