@@ -44,7 +44,7 @@
          point="au.gov.ga.earthsci.injectables">
       <injectable
             class="au.gov.ga.earthsci.layer.worldwind.WorldWindConfiguration"
-            priority="0">
+            priority="10000">
       </injectable>
       <inject
             class="au.gov.ga.earthsci.layer.worldwind.WorldWindModel"

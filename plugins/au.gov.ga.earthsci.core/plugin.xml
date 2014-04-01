@@ -71,7 +71,7 @@
       </inject>
       <injectable
             class="au.gov.ga.earthsci.core.worldwind.WorldWindConfiguration"
-            priority="0">
+            priority="10000">
       </injectable>
       <injectable
             class="au.gov.ga.earthsci.core.worldwind.WorldWindRetrievalServicePreferences"
