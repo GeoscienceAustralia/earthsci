@@ -52,6 +52,7 @@ import javax.media.opengl.GL2GL3;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounded;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.Wireframeable;
+import au.gov.ga.earthsci.worldwind.common.render.ExtendedDrawContext;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -292,6 +293,8 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 
 		GL2 gl = dc.getGL().getGL2();
 		OGLStackHandler stack = new OGLStackHandler();
+
+		ExtendedDrawContext.applyWireframePolygonMode(dc);
 
 		try
 		{
