@@ -125,7 +125,22 @@ public class ExtendedDrawContext extends DrawContextDelegate implements Vertical
 	 */
 	public static void applyWireframePolygonMode(DrawContext dc)
 	{
-		dc.getGL().getGL2().glPolygonMode(GL2.GL_FRONT_AND_BACK, isWireframe(dc) ? GL2.GL_LINE : GL2.GL_FILL);
+		dc.getGL().getGL2().glPolygonMode(GL2.GL_FRONT_AND_BACK,
+				isWireframe(dc) && !dc.isPickingMode() ? GL2.GL_LINE : GL2.GL_FILL);
+	}
+
+	@Override
+	public void enablePickingMode()
+	{
+		super.enablePickingMode();
+		applyWireframePolygonMode(this);
+	}
+
+	@Override
+	public void disablePickingMode()
+	{
+		super.disablePickingMode();
+		applyWireframePolygonMode(this);
 	}
 
 	@Override
