@@ -358,12 +358,12 @@ public class Util
 
 	public static long getScaledLengthMillis(double scale, LatLon beginLatLon, LatLon endLatLon)
 	{
-		return getScaledLengthMillis(beginLatLon, endLatLon, (long) (4000 / scale), (long) (20000 / scale));
+		return getScaledLengthMillis(beginLatLon, endLatLon, (long) (3000 / scale), (long) (10000 / scale));
 	}
 
 	public static long getScaledLengthMillis(double scale, double beginZoom, double endZoom)
 	{
-		return getScaledLengthMillis(beginZoom, endZoom, (long) (4000 / scale), (long) (20000 / scale));
+		return getScaledLengthMillis(beginZoom, endZoom, (long) (3000 / scale), (long) (10000 / scale));
 	}
 
 	public static long getScaledLengthMillis(LatLon beginLatLon, LatLon endLatLon, long minLengthMillis,
