@@ -1,4 +1,4 @@
-package au.gov.ga.earthsci.theme.ga;
+package au.gov.ga.earthsci.theme;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

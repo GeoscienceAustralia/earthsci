@@ -10,12 +10,12 @@
 	font-family: 'Segoe UI';
 	swt-simple: true;
 	swt-tab-renderer:
-		url('bundleclass://au.gov.ga.earthsci.theme.ga/net.jeeeyul.eclipse.themes.rendering.ChromeTabRendering');
+		url('bundleclass://au.gov.ga.earthsci.theme/net.jeeeyul.eclipse.themes.rendering.ChromeTabRendering');
 
 	padding: 1px 6px 8px 6px; /* top left bottom right */
-	swt-tab-outline: #97a5b3;
-	swt-outer-keyline-color: #97a5b3;
-	swt-unselected-tabs-color: #d2dfec #c3d2e0 #ffffff 99% 100%;
+	swt-tab-outline: #b3aea9;
+	swt-outer-keyline-color: #b3aea9;
+	swt-unselected-tabs-color: #ece7e3 #e0dbd6 #ffffff 99% 100%;
 	swt-shadow-visible: true;
 	
 	swt-selected-tab-fill: #ffffff;
@@ -24,7 +24,7 @@
 	chrome-selected-tab-color: #000000;
 	chrome-unselected-tab-color: #000000;
 	
-	swt-shadow-color: #90a0b3;
+	swt-shadow-color: #b3ada7;
 	
 	chrome-shiney-shadow: true;
 	swt-mru-visible: true;
@@ -34,22 +34,22 @@
 
 .MPartStack.active {
 	swt-inner-keyline-color: #FFFFFF;
-	swt-tab-outline: #5d6c7b;
-	swt-outer-keyline-color: #5d6c7b;
-	swt-unselected-tabs-color: #6b8fb3 #5b83aa #ffffff 99% 100%;
+	swt-tab-outline: #7b7671;
+	swt-outer-keyline-color: #7b7671;
+	swt-unselected-tabs-color: #b3a69a #aa9c8e #ffffff 99% 100%;
 	
 	swt-selected-tab-fill: #ffffff;
 	chrome-selected-tab-fill-highlight: #ffffff;
 	
-	chrome-selected-tab-color: #306498;
+	chrome-selected-tab-color: #988674;
 	chrome-unselected-tab-color: #ffffff;
 	chrome-shiney-shadow: false;
 }
 
 .MPartStack.empty {
-	swt-unselected-tabs-color: #758390 #758390 #758390 99% 100%;
-	swt-tab-outline: #758390;
-	swt-outer-keyline-color: #758390;
+	swt-unselected-tabs-color: #908b86 #908b86 #908b86 99% 100%;
+	swt-tab-outline: #908b87;
+	swt-outer-keyline-color: #908b87;
 }
 
 .MTrimmedWindow {
@@ -57,15 +57,15 @@
 	margin-bottom: 2px;
 	margin-left: 0px;
 	margin-right: 0px;
-	background-color: #eff4fa;
+	background-color: #faf8f6;
 }
 
 .MTrimBar {
-	background-color: #eff4fa;
+	background-color: #faf8f6;
 }
 
 .MTrimBar#org-eclipse-ui-main-toolbar {
-	background-color: #ccd9e7 #b2c2d1;
+	background-color: #e7e2dd #d1cbc6;
 }
 
 CTabFolder.MArea .MPartStack,CTabFolder.MArea .MPartStack.active {
@@ -89,43 +89,43 @@ CTabFolder Canvas {
 
 #org-eclipse-ui-trim-status{
 	chrome-border-top-visible: true;
-	chrome-border-top-color: #96b2ce;
+	chrome-border-top-color: #cec4bb;
 	chrome-padding-top: 1;
-	background-color: #d3dee9;
+	background-color: #e9e5e1;
 }
 
 .MToolControl.TrimStack {
-	frame-image: url(chrome://frame?background-color=#eff4fa);
+	frame-image: url(chrome://frame?background-color=#faf8f6);
 	frame-cuts: 5px 1px 5px 16px;
 	
-	handle-image: url(chrome://drag-handle?height=22&background-color=#eff4fa&embossed=false);
+	handle-image: url(chrome://drag-handle?height=22&background-color=#faf8f6&embossed=false);
 }
 
 .MTrimBar .Draggable {
-	handle-image: url(chrome://drag-handle?height=22&background-color=#eff4fa&embossed=false);
+	handle-image: url(chrome://drag-handle?height=22&background-color=#faf8f6&embossed=false);
 }
 
 .MTrimBar#org-eclipse-ui-main-toolbar .Draggable {
-	handle-image: url(chrome://drag-handle?height=22&background-color=#ccd9e7&embossed=false);
+	handle-image: url(chrome://drag-handle?height=22&background-color=#e7e2dd&embossed=false);
 }
 
 .MTrimBar#org-eclipse-ui-main-toolbar .TrimStack {
-	frame-image: url(chrome://frame?background-color=#ccd9e7);
-	handle-image: url(chrome://drag-handle?height=22&background-color=#ccd9e7&embossed=false);
+	frame-image: url(chrome://frame?background-color=#e7e2dd);
+	handle-image: url(chrome://drag-handle?height=22&background-color=#e7e2dd&embossed=false);
 }
 
 .MTrimBar#org-eclipse-ui-trim-status .Draggable {
-	handle-image: url(chrome://drag-handle?height=22&background-color=#d3dee9&embossed=false);
+	handle-image: url(chrome://drag-handle?height=22&background-color=#e9e5e1&embossed=false);
 }
 
 .MTrimBar#org-eclipse-ui-trim-status .TrimStack {
-	frame-image: url(chrome://frame?background-color=#d3dee9);
-	handle-image: url(chrome://drag-handle?height=22&background-color=#d3dee9&embossed=false);
+	frame-image: url(chrome://frame?background-color=#e9e5e1);
+	handle-image: url(chrome://drag-handle?height=22&background-color=#e9e5e1&embossed=false);
 }
 
 #org-eclipse-ui-main-toolbar #PerspectiveSwitcher {
-	eclipse-perspective-keyline-color: #8f9eac;
-	background-color: #f5f6fa #eff4fa 100%;
+	eclipse-perspective-keyline-color: #aca7a2;
+	background-color: #fcfbfa #faf8f6 100%;
 	handle-image: none;
 	chrome-show-perspective-name: false;
 }

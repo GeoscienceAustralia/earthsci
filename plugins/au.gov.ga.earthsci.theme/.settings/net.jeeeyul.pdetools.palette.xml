@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ASCII"?>
+<p:Palette xmlns:p="http://jeeeyul.net/pde-tools" fieldName="ICONS" folder="/au.gov.ga.earthsci.theme/icons">
+  <imageFiles fieldName="CLOSE_ACTIVE" file="/au.gov.ga.earthsci.theme/icons/close-active.png"/>
+  <imageFiles fieldName="CLOSE_NORMAL" file="/au.gov.ga.earthsci.theme/icons/close-normal.png"/>
+</p:Palette>

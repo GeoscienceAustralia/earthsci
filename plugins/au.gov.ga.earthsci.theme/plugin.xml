@@ -3,15 +3,15 @@
    <extension
          point="org.eclipse.e4.ui.css.swt.theme">
       <theme
-            basestylesheeturi="css/ga.css"
-            id="au.gov.ga.earthsci.theme.ga"
-            label="GA Theme">
+            basestylesheeturi="css/theme.css"
+            id="au.gov.ga.earthsci.theme"
+            label="Theme CSS">
       </theme>
    </extension>
    <extension
          point="au.gov.ga.earthsci.application.defaultTheme">
       <defaultTheme
-            id="au.gov.ga.earthsci.theme.ga">
+            id="au.gov.ga.earthsci.theme">
       </defaultTheme>
    </extension>
 </plugin>

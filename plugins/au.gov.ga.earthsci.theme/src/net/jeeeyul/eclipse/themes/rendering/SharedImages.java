@@ -65,11 +65,11 @@ public class SharedImages{
 	
 	private static Image loadImage(String key) {
 		try {
-			Bundle bundle = Platform.getBundle("au.gov.ga.earthsci.theme.ga");
+			Bundle bundle = Platform.getBundle("au.gov.ga.earthsci.theme");
 			URL resource = null;
 			
 			if(bundle != null){
-				resource = Platform.getBundle("au.gov.ga.earthsci.theme.ga").getResource(key);
+				resource = Platform.getBundle("au.gov.ga.earthsci.theme").getResource(key);
 			}else{
 				resource = new File(key).toURI().toURL();	
 			}
@@ -84,11 +84,11 @@ public class SharedImages{
 	
 	private static ImageDescriptor loadImageDescriptor(String key) {
 		try {
-			Bundle bundle = Platform.getBundle("au.gov.ga.earthsci.theme.ga");
+			Bundle bundle = Platform.getBundle("au.gov.ga.earthsci.theme");
 			URL resource = null;
 			
 			if(bundle != null){
-				resource = Platform.getBundle("au.gov.ga.earthsci.theme.ga").getResource(key);
+				resource = Platform.getBundle("au.gov.ga.earthsci.theme").getResource(key);
 			}else{
 				resource = new File(key).toURI().toURL();	
 			}
