@@ -475,8 +475,8 @@ public class LayerTreePart
 
 		if (view instanceof TargetOrbitView)
 		{
-			boolean targetMode = !Bounded.Reader.isFollowTerrain(layer) &&
-					(bounds.minimum.elevation != 0 || bounds.maximum.elevation != 0);
+			boolean targetMode = !(Bounded.Reader.isFollowTerrain(layer) &&
+					bounds.minimum.elevation == 0 && bounds.maximum.elevation == 0);
 			TargetModeSwitcher.setTargetMode((TargetOrbitView) view, targetMode);
 		}
 
