@@ -38,7 +38,7 @@ public class TargetOrbitView extends BaseOrbitView
 	protected boolean nonTargetModeDetectCollisions = true;
 	protected boolean targetModeDetectCollisions = false;
 	protected Angle nonTargetMaxPitch = DEFAULT_MAX_PITCH;
-	protected Angle targetMaxPitch = Angle.POS180;
+	protected Angle targetMaxPitch = Angle.fromDegrees(170);
 
 	protected boolean drawAxisMarker = true;
 	protected final AxisRenderable axisMarker = new AxisRenderable();
