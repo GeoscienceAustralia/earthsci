@@ -81,12 +81,14 @@ import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.application.Activator;
 import au.gov.ga.earthsci.application.ImageRegistry;
+import au.gov.ga.earthsci.application.parts.globe.handlers.TargetModeSwitcher;
 import au.gov.ga.earthsci.common.databinding.ITreeChangeListener;
 import au.gov.ga.earthsci.common.databinding.ObservableListTreeSupport;
 import au.gov.ga.earthsci.common.databinding.TreeChangeAdapter;
 import au.gov.ga.earthsci.common.ui.dialogs.StackTraceDialog;
 import au.gov.ga.earthsci.core.worldwind.view.FlyToOrbitViewAnimator;
 import au.gov.ga.earthsci.core.worldwind.view.FlyToSectorAnimator;
+import au.gov.ga.earthsci.core.worldwind.view.TargetOrbitView;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
 import au.gov.ga.earthsci.layer.ui.dnd.LocalLayerTransfer;
@@ -469,6 +471,13 @@ public class LayerTreePart
 		if (bounds == null || !(view instanceof OrbitView))
 		{
 			return;
+		}
+
+		if (view instanceof TargetOrbitView)
+		{
+			boolean targetMode = !Bounded.Reader.isFollowTerrain(layer) &&
+					(bounds.minimum.elevation != 0 || bounds.maximum.elevation != 0);
+			TargetModeSwitcher.setTargetMode((TargetOrbitView) view, targetMode);
 		}
 
 		OrbitView orbitView = (OrbitView) view;

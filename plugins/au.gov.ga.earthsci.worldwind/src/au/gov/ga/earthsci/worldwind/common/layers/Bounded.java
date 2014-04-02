@@ -66,5 +66,22 @@ public interface Bounded
 
 			return null;
 		}
+
+		/**
+		 * Does the source follow the terrain? If the object is an instance of
+		 * Bounded, returns {@link Bounded#isFollowTerrain()}. Otherwise returns
+		 * <code>true</code>.
+		 * 
+		 * @param source
+		 * @return True if source follows the terrain
+		 */
+		public static boolean isFollowTerrain(Object source)
+		{
+			if (source instanceof Bounded)
+			{
+				return ((Bounded) source).isFollowTerrain();
+			}
+			return true;
+		}
 	}
 }

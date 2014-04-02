@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.core.worldwind.view;
 
 import gov.nasa.worldwind.awt.ViewInputHandler;
+import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.view.orbit.OrbitView;
@@ -33,6 +34,12 @@ import gov.nasa.worldwind.view.orbit.OrbitView;
 public class TargetOrbitView extends BaseOrbitView
 {
 	protected boolean targetMode = false;
+
+	protected boolean nonTargetModeDetectCollisions = true;
+	protected boolean targetModeDetectCollisions = false;
+	protected Angle nonTargetMaxPitch = DEFAULT_MAX_PITCH;
+	protected Angle targetMaxPitch = Angle.POS180;
+
 	protected boolean drawAxisMarker = true;
 	protected final AxisRenderable axisMarker = new AxisRenderable();
 	protected final RenderableScreenCreditDelegate axisScreenCredit = new RenderableScreenCreditDelegate(axisMarker);
@@ -54,12 +61,37 @@ public class TargetOrbitView extends BaseOrbitView
 	/**
 	 * Enable/disable target mode. When enabled, the user can modify the center
 	 * point, instead of fixing it to the earth's surface.
+	 * <p/>
+	 * If target mode is enabled, the minimum pitch limit will be set to -180
+	 * degrees, and collision detection will be disabled.
 	 * 
 	 * @param targetMode
 	 */
 	public void setTargetMode(boolean targetMode)
 	{
+		if (this.targetMode == targetMode)
+		{
+			return;
+		}
+
 		this.targetMode = targetMode;
+
+		Angle[] pitchLimits = this.viewLimits.getPitchLimits();
+		if (targetMode)
+		{
+			this.nonTargetMaxPitch = pitchLimits[1];
+			pitchLimits[1] = this.targetMaxPitch;
+			this.nonTargetModeDetectCollisions = isDetectCollisions();
+			setDetectCollisions(this.targetModeDetectCollisions);
+		}
+		else
+		{
+			this.targetMaxPitch = pitchLimits[1];
+			pitchLimits[1] = this.nonTargetMaxPitch;
+			this.targetModeDetectCollisions = isDetectCollisions();
+			setDetectCollisions(this.nonTargetModeDetectCollisions);
+		}
+		this.viewLimits.setPitchLimits(pitchLimits[0], pitchLimits[1]);
 	}
 
 	/**

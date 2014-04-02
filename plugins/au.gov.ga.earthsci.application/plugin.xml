@@ -93,6 +93,10 @@
             class="au.gov.ga.earthsci.application.ArgumentHandler"
             priority="0">
       </injectable>
+      <inject
+            class="au.gov.ga.earthsci.application.parts.globe.handlers.TargetModeSwitcher"
+            priority="0">
+      </inject>
    </extension>
    <extension
          point="au.gov.ga.earthsci.layer.hudLayers">

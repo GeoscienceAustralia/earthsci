@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Geoscience Australia
+ * Copyright 2014 Geoscience Australia
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,39 +15,55 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.globe.handlers;
 
-import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.View;
+
+import javax.inject.Inject;
 
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.ui.di.UIEventTopic;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolItem;
 
 import au.gov.ga.earthsci.application.parts.globe.GlobePart;
-import au.gov.ga.earthsci.worldwind.common.render.ExtendedDrawContext;
+import au.gov.ga.earthsci.core.worldwind.view.TargetOrbitView;
 
 /**
- * Handles the wireframe command for the globe.
+ * Handler that toggles the {@link TargetOrbitView}'s target mode.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class WireframeHandler
+public class TargetModeHandler
 {
+	private GlobePart globe;
+	private MToolItem toolItem;
+
 	@Execute
 	public void execute(MToolItem toolItem, GlobePart globe)
 	{
-		DrawContext dc = globe.getWorldWindow().getSceneController().getDrawContext();
-		if (dc instanceof ExtendedDrawContext)
+		View view = globe.getWorldWindow().getView();
+		if (view instanceof TargetOrbitView)
 		{
-			ExtendedDrawContext edc = (ExtendedDrawContext) dc;
-			edc.setWireframe(!edc.isWireframe());
-			toolItem.setSelected(edc.isWireframe());
-			globe.getWorldWindow().redraw();
+			TargetModeSwitcher.setTargetMode((TargetOrbitView) view, !toolItem.isSelected());
 		}
 	}
 
 	@CanExecute
-	public boolean canExecute(GlobePart globe)
+	public boolean canExecute(MToolItem toolItem, GlobePart globe)
 	{
-		return globe != null
-				&& globe.getWorldWindow().getSceneController().getDrawContext() instanceof ExtendedDrawContext;
+		this.toolItem = toolItem;
+		this.globe = globe;
+		return globe != null && globe.getWorldWindow().getView() instanceof TargetOrbitView;
+	}
+
+	@Inject
+	@Optional
+	public void targetModeToggledHandler(@UIEventTopic(TargetModeSwitcher.TARGET_MODE_EVENT_TOPIC) View view)
+	{
+		if (globe != null && toolItem != null &&
+				view == globe.getWorldWindow().getView() && view instanceof TargetOrbitView)
+		{
+			toolItem.setSelected(!((TargetOrbitView) view).isTargetMode());
+		}
 	}
 }

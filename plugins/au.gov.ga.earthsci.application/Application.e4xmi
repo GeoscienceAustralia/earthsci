@@ -85,10 +85,12 @@
     <handlers xmi:id="_bQfGIGXdEeKxr8W5TdCnMQ" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.handlers.ToggleHudHandler" command="_cdOmEGXdEeKxr8W5TdCnMQ"/>
     <handlers xmi:id="_KwDXUGqLEeKz-NWw78ViTQ" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.handlers.FullscreenHandler" command="_HJh8kGqLEeKz-NWw78ViTQ"/>
     <handlers xmi:id="_4Z0DAGqOEeKz-NWw78ViTQ" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.handlers.WireframeHandler" command="_y_g9gGqOEeKz-NWw78ViTQ"/>
+    <handlers xmi:id="_OdH2YLn-EeO2x7LzvKR3Qg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.handlers.TargetModeHandler" command="_KrW08Ln-EeO2x7LzvKR3Qg"/>
     <handlers xmi:id="_l0gbIGqWEeKz-NWw78ViTQ" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.handlers.GotoCoordinateHandler" command="_jwoe4GqWEeKz-NWw78ViTQ"/>
     <toolbar xmi:id="_yleGAGNgEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.part.globe.toolbar">
       <children xsi:type="menu:HandledToolItem" xmi:id="_OJweEGqLEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.globe.toolitems.fullscreen" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/monitor.gif" tooltip="Fullscreen" type="Check" command="_HJh8kGqLEeKz-NWw78ViTQ"/>
       <children xsi:type="menu:HandledToolItem" xmi:id="_65aR8GqOEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.globe.toolitems.wireframe" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/wireframe.png" tooltip="Wireframe" type="Check" command="_y_g9gGqOEeKz-NWw78ViTQ"/>
+      <children xsi:type="menu:HandledToolItem" xmi:id="_25qMELn9EeO2x7LzvKR3Qg" elementId="au.gov.ga.earthsci.application.globe.toolitems.targetmode" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/glasses.gif" tooltip="Stick rotation point to globe surface" selected="true" type="Check" command="_KrW08Ln-EeO2x7LzvKR3Qg"/>
       <children xsi:type="menu:HandledToolItem" xmi:id="_tHECwGqWEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.globe.toolitems.gotocoordinates" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/crosshair45.gif" tooltip="Go to coordinates..." command="_jwoe4GqWEeKz-NWw78ViTQ"/>
       <children xsi:type="menu:ToolBarSeparator" xmi:id="_db7VsGqNEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>
       <children xsi:type="menu:ToolControl" xmi:id="_0F4I0GNgEeKySd5LioOg8g" elementId="au.gov.ga.earthsci.application.globe.exaggerationcontrol" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.parts.globe.GlobeExaggerationToolControl"/>
@@ -150,6 +152,7 @@
   <commands xmi:id="_Oay10GXMEeKPwbW-b0EtRg" elementId="au.gov.ga.earthsci.application.command.stop" commandName="stopCommand"/>
   <commands xmi:id="_HJh8kGqLEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.command.fullscreen" commandName="fullscreenCommand"/>
   <commands xmi:id="_y_g9gGqOEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.command.wireframe" commandName="wireframeCommand"/>
+  <commands xmi:id="_KrW08Ln-EeO2x7LzvKR3Qg" elementId="au.gov.ga.earthsci.application.command.targetMode" commandName="targetModeCommand"/>
   <commands xmi:id="_jwoe4GqWEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.command.gotoCoordinates" commandName="gotoCoordinatesCommand"/>
   <commands xmi:id="_TRXhAGqfEeKRPswd9-SBDQ" elementId="au.gov.ga.earthsci.application.command.addGroup" commandName="addGroupCommand" description="Add a new group"/>
   <commands xmi:id="_AIaykGtBEeKDSIOW1jGh1g" elementId="au.gov.ga.earthsci.application.command.copytogroup" commandName="copyToGroupCommand" description="Copy a selection to a list with a given ID">
