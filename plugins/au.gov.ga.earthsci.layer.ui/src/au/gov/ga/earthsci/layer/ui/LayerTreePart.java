@@ -16,7 +16,9 @@
 package au.gov.ga.earthsci.layer.ui;
 
 import gov.nasa.worldwind.View;
+import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.view.orbit.OrbitView;
@@ -473,9 +475,10 @@ public class LayerTreePart
 			return;
 		}
 
+		boolean targetMode = false;
 		if (view instanceof TargetOrbitView)
 		{
-			boolean targetMode = !(Bounded.Reader.isFollowTerrain(layer) &&
+			targetMode = !(Bounded.Reader.isFollowTerrain(layer) &&
 					bounds.minimum.elevation == 0 && bounds.maximum.elevation == 0);
 			TargetModeSwitcher.setTargetMode((TargetOrbitView) view, targetMode);
 		}
@@ -483,9 +486,11 @@ public class LayerTreePart
 		OrbitView orbitView = (OrbitView) view;
 		Position center = orbitView.getCenterPosition();
 		Position newCenter;
-		if (bounds.contains(center) && bounds.deltaLatitude.degrees > 90 && bounds.deltaLongitude.degrees > 90)
+		if (bounds.toSector().contains(center) &&
+				bounds.deltaLatitude.degrees > 90 && bounds.deltaLongitude.degrees > 90)
 		{
-			newCenter = center;
+			//handles large datasets, like the blue marble imagery, and landsat
+			newCenter = targetMode ? center : new Position(center, 0);
 		}
 		else
 		{
@@ -495,9 +500,20 @@ public class LayerTreePart
 		LatLon endVisibleDelta = new LatLon(bounds.deltaLatitude, bounds.deltaLongitude);
 		long lengthMillis = Util.getScaledLengthMillis(1, center, newCenter);
 
-		FlyToOrbitViewAnimator animator =
-				FlyToSectorAnimator.createFlyToSectorAnimator(orbitView, center, newCenter, orbitView.getHeading(),
-						orbitView.getPitch(), orbitView.getZoom(), endVisibleDelta, lengthMillis);
+		Angle newHeading = orbitView.getHeading();
+		Angle newPitch = orbitView.getPitch();
+		if (!targetMode && newPitch.degrees > 45)
+		{
+			newPitch = Angle.fromDegrees(45);
+		}
+
+		double newZoom = FlyToSectorAnimator.calculateEndZoom(orbitView, endVisibleDelta);
+		FlyToOrbitViewAnimator animator = FlyToOrbitViewAnimator.createFlyToOrbitViewAnimator(orbitView,
+				center, newCenter,
+				orbitView.getHeading(), newHeading,
+				orbitView.getPitch(), newPitch,
+				orbitView.getZoom(), newZoom,
+				lengthMillis, WorldWind.ABSOLUTE);
 		orbitView.stopAnimations();
 		orbitView.stopMovement();
 		orbitView.addAnimator(animator);
