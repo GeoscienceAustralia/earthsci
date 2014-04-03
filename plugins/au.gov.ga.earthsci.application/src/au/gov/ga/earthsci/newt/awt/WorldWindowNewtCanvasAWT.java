@@ -27,6 +27,10 @@ import gov.nasa.worldwind.util.Logging;
 import gov.nasa.worldwind.util.PerformanceStatistic;
 
 import java.awt.GraphicsDevice;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
@@ -88,6 +92,7 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	/** The drawable to which {@link WorldWindow} methods are delegated. */
 	protected final WorldWindowNewtDrawableAWT wwd; // WorldWindow interface delegates to wwd
 	protected final GLWindow window;
+	private boolean superContructorComplete = false;
 
 	public WorldWindowNewtCanvasAWT()
 	{
@@ -101,6 +106,7 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	public WorldWindowNewtCanvasAWT(GLWindow window)
 	{
 		super(window);
+		superContructorComplete = true;
 		this.window = window;
 
 		try
@@ -156,6 +162,7 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	public WorldWindowNewtCanvasAWT(WorldWindow shareWith, GLWindow window)
 	{
 		super(window);
+		superContructorComplete = true;
 		this.window = window;
 		if (shareWith != null)
 		{
@@ -499,5 +506,47 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	public GLWindow getWindow()
 	{
 		return window;
+	}
+
+	/* -------------------------------------------------------------------------------
+	 * The below methods are overridden to prevent the superclass adding the AWT->NEWT
+	 * event adapter implementation, as this causes an endless loop of events being
+	 * generated in combination with our NEWT->AWT event adapter.
+	 * ------------------------------------------------------------------------------- */
+
+	@Override
+	public synchronized void addMouseListener(MouseListener l)
+	{
+		if (superContructorComplete)
+		{
+			super.addMouseListener(l);
+		}
+	}
+
+	@Override
+	public synchronized void addMouseMotionListener(MouseMotionListener l)
+	{
+		if (superContructorComplete)
+		{
+			super.addMouseMotionListener(l);
+		}
+	}
+
+	@Override
+	public synchronized void addMouseWheelListener(MouseWheelListener l)
+	{
+		if (superContructorComplete)
+		{
+			super.addMouseWheelListener(l);
+		}
+	}
+
+	@Override
+	public synchronized void addKeyListener(KeyListener l)
+	{
+		if (superContructorComplete)
+		{
+			super.addKeyListener(l);
+		}
 	}
 }
