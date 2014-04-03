@@ -25,6 +25,7 @@ import javax.swing.SwingUtilities;
 import jogamp.newt.awt.event.AWTNewtEventFactory;
 
 import com.jogamp.common.util.IntIntHashMap;
+import com.jogamp.newt.event.InputEvent;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.NEWTEvent;
@@ -266,6 +267,12 @@ public class NewtEventConverterAWT
 		int id = eventTypeAWT2NEWT.get(event.getEventType());
 		if (id != KEY_NOT_FOUND_VALUE)
 		{
+			if ((event.getModifiers() & InputEvent.AUTOREPEAT_MASK) != 0)
+			{
+				//don't forward autorepeat events
+				return null;
+			}
+
 			//can never be java.awt.event.KeyEvent.VK_UNDEFINED or java.awt.event.KeyEvent.KEY_LOCATION_UNKNOWN,
 			//because id will never be java.awt.event.KeyEvent.KEY_TYPED (doesn't exist in map)
 			int code = AWTNewtEventFactory.newtKeyCode2AWTKeyCode(event.getKeyCode());
