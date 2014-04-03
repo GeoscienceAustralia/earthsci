@@ -44,6 +44,7 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 
 import com.jogamp.newt.awt.NewtCanvasAWT;
+import com.jogamp.newt.event.awt.AWTAdapter;
 import com.jogamp.newt.opengl.GLWindow;
 
 /**
@@ -92,7 +93,6 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	/** The drawable to which {@link WorldWindow} methods are delegated. */
 	protected final WorldWindowNewtDrawableAWT wwd; // WorldWindow interface delegates to wwd
 	protected final GLWindow window;
-	private boolean superContructorComplete = false;
 
 	public WorldWindowNewtCanvasAWT()
 	{
@@ -106,7 +106,6 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	public WorldWindowNewtCanvasAWT(GLWindow window)
 	{
 		super(window);
-		superContructorComplete = true;
 		this.window = window;
 
 		try
@@ -162,7 +161,6 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	public WorldWindowNewtCanvasAWT(WorldWindow shareWith, GLWindow window)
 	{
 		super(window);
-		superContructorComplete = true;
 		this.window = window;
 		if (shareWith != null)
 		{
@@ -517,36 +515,40 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 	@Override
 	public synchronized void addMouseListener(MouseListener l)
 	{
-		if (superContructorComplete)
+		if (l instanceof AWTAdapter)
 		{
-			super.addMouseListener(l);
+			return;
 		}
+		super.addMouseListener(l);
 	}
 
 	@Override
 	public synchronized void addMouseMotionListener(MouseMotionListener l)
 	{
-		if (superContructorComplete)
+		if (l instanceof AWTAdapter)
 		{
-			super.addMouseMotionListener(l);
+			return;
 		}
+		super.addMouseMotionListener(l);
 	}
 
 	@Override
 	public synchronized void addMouseWheelListener(MouseWheelListener l)
 	{
-		if (superContructorComplete)
+		if (l instanceof AWTAdapter)
 		{
-			super.addMouseWheelListener(l);
+			return;
 		}
+		super.addMouseWheelListener(l);
 	}
 
 	@Override
 	public synchronized void addKeyListener(KeyListener l)
 	{
-		if (superContructorComplete)
+		if (l instanceof AWTAdapter)
 		{
-			super.addKeyListener(l);
+			return;
 		}
+		super.addKeyListener(l);
 	}
 }
