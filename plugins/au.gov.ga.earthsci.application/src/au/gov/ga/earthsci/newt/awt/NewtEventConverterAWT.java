@@ -266,11 +266,10 @@ public class NewtEventConverterAWT
 		int id = eventTypeAWT2NEWT.get(event.getEventType());
 		if (id != KEY_NOT_FOUND_VALUE)
 		{
-			int code =
-					id == java.awt.event.KeyEvent.KEY_TYPED ? java.awt.event.KeyEvent.VK_UNDEFINED : event.getKeyCode();
-			int location =
-					id == java.awt.event.KeyEvent.KEY_TYPED ? java.awt.event.KeyEvent.KEY_LOCATION_UNKNOWN
-							: java.awt.event.KeyEvent.KEY_LOCATION_STANDARD;
+			//can never be java.awt.event.KeyEvent.VK_UNDEFINED or java.awt.event.KeyEvent.KEY_LOCATION_UNKNOWN,
+			//because id will never be java.awt.event.KeyEvent.KEY_TYPED (doesn't exist in map)
+			int code = AWTNewtEventFactory.newtKeyCode2AWTKeyCode(event.getKeyCode());
+			int location = java.awt.event.KeyEvent.KEY_LOCATION_STANDARD;
 			try
 			{
 				return new KeyEventFromNewt(event, awtSource, id, event.getWhen(),
