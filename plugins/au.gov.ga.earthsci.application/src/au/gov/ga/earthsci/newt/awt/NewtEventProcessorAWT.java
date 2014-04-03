@@ -60,14 +60,11 @@ public class NewtEventProcessorAWT extends NEWTEventFiFo implements com.jogamp.n
 				forwardEvents();
 			}
 		};
-		if (SwingUtilities.isEventDispatchThread())
-		{
-			task.run();
-		}
-		else
-		{
-			SwingUtilities.invokeLater(task);
-		}
+
+		//always invoke later, even if this is the EDT, because sometimes the EDT will
+		//wait on other threads that can raise more events, causing a deadlock on this
+		//synchonized method
+		SwingUtilities.invokeLater(task);
 	}
 
 	/**
