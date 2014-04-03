@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JOGL Natives for MacOSX
 Bundle-SymbolicName: com.jogamp.jogl.macosx
-Bundle-Version: 2.0.2
+Bundle-Version: 2.1.5
 Bundle-Vendor: JOGAMP
 Bundle-NativeCode: libjogl_desktop.jnilib;
  libjogl_mobile.jnilib;
