@@ -62,6 +62,6 @@ public class NewtExampleAWT extends ApplicationTemplate
 
 	public static void main(String[] args)
 	{
-		ApplicationTemplate.start("World Wind NEWT", AppFrame.class);
+		ApplicationTemplate.start("World Wind NEWT", AppFrame.class); //$NON-NLS-1$
 	}
 }

@@ -77,7 +77,7 @@ public class WorldWindowNewtCanvasAWT extends NewtCanvasAWT implements WorldWind
 
 		// Determine whether we should request a stereo canvas
 		String stereo = System.getProperty(AVKey.STEREO_MODE);
-		if ("device".equals(stereo))
+		if ("device".equals(stereo)) //$NON-NLS-1$
 		{
 			caps.setStereo(true);
 		}
