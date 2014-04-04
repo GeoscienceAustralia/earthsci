@@ -22,8 +22,6 @@ import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.WorldMapLayer;
 import gov.nasa.worldwindx.examples.ClickAndGoSelectListener;
 
-import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +29,7 @@ import java.util.Map;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
-import javax.swing.SwingUtilities;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.commands.MCommand;
@@ -48,14 +44,7 @@ import org.eclipse.e4.ui.model.application.ui.menu.MToolBar;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolBarSeparator;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,9 +53,6 @@ import au.gov.ga.earthsci.core.worldwind.view.TargetOrbitView;
 import au.gov.ga.earthsci.layer.hud.HudLayer;
 import au.gov.ga.earthsci.layer.hud.HudLayers;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
-import au.gov.ga.earthsci.newt.awt.NewtInputHandlerAWT;
-import au.gov.ga.earthsci.newt.awt.WorldWindowNewtAutoDrawableAWT;
-import au.gov.ga.earthsci.newt.awt.WorldWindowNewtCanvasAWT;
 import au.gov.ga.earthsci.newt.swt.NewtInputHandlerSWT;
 import au.gov.ga.earthsci.newt.swt.WorldWindowNewtAutoDrawableSWT;
 import au.gov.ga.earthsci.newt.swt.WorldWindowNewtCanvasSWT;
@@ -107,15 +93,11 @@ public class GlobePart
 	{
 		context.set(GlobePart.class, this);
 
-		if (Platform.getOS().contains(Platform.OS_MACOSX))
-		{
-			worldWindow = doInitMacOSX(parent);
-		}
-		else
-		{
-			worldWindow = doInitOther(parent);
-		}
-
+		Configuration.setValue(AVKey.INPUT_HANDLER_CLASS_NAME, NewtInputHandlerSWT.class.getName());
+		Configuration.setValue(AVKey.WORLD_WINDOW_CLASS_NAME, WorldWindowNewtAutoDrawableSWT.class.getName());
+		Configuration.setValue(AVKey.SCENE_CONTROLLER_CLASS_NAME, GlobeSceneController.class.getName());
+		worldWindow = new WorldWindowNewtCanvasSWT(parent, SWT.NONE, WorldWindowRegistry.INSTANCE.getFirstRegistered());
+		sceneController = (GlobeSceneController) worldWindow.getSceneController();
 		worldWindow.setModel(model);
 		worldWindow.setView(new TargetOrbitView());
 		worldWindow.addSelectListener(new ClickAndGoSelectListener(worldWindow, WorldMapLayer.class));
@@ -124,126 +106,6 @@ public class GlobePart
 		WorldWindowRegistry.INSTANCE.register(worldWindow);
 
 		createHudLayers();
-	}
-
-
-	/**
-	 * Perform part initialisation for Windows, Linux etc.
-	 */
-	private WorldWindow doInitOther(final Composite parent)
-	{
-		final Composite composite = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
-		final Frame frame = SWT_AWT.new_Frame(composite);
-		frame.setLayout(new BorderLayout());
-
-		Configuration.setValue(AVKey.INPUT_HANDLER_CLASS_NAME, NewtInputHandlerAWT.class.getName());
-		Configuration.setValue(AVKey.WORLD_WINDOW_CLASS_NAME, WorldWindowNewtAutoDrawableAWT.class.getName());
-		Configuration.setValue(AVKey.SCENE_CONTROLLER_CLASS_NAME, GlobeSceneController.class.getName());
-		final WorldWindowNewtCanvasAWT wwd =
-				new WorldWindowNewtCanvasAWT(WorldWindowRegistry.INSTANCE.getFirstRegistered());
-		sceneController = (GlobeSceneController) wwd.getSceneController();
-
-		Runnable task = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				frame.add(wwd, BorderLayout.CENTER);
-			}
-		};
-		if (SwingUtilities.isEventDispatchThread())
-		{
-			task.run();
-		}
-		else
-		{
-			SwingUtilities.invokeLater(task);
-		}
-
-		return wwd;
-	}
-
-	/**
-	 * Perform part iniatialisation for Mac OSX
-	 */
-	private WorldWindow doInitMacOSX(final Composite parent)
-	{
-		Configuration.setValue(AVKey.INPUT_HANDLER_CLASS_NAME, NewtInputHandlerSWT.class.getName());
-		Configuration.setValue(AVKey.WORLD_WINDOW_CLASS_NAME, WorldWindowNewtAutoDrawableSWT.class.getName());
-		Configuration.setValue(AVKey.SCENE_CONTROLLER_CLASS_NAME, GlobeSceneController.class.getName());
-		final WorldWindowNewtCanvasSWT wwd =
-				new WorldWindowNewtCanvasSWT(parent, SWT.NONE, WorldWindowRegistry.INSTANCE.getFirstRegistered());
-		sceneController = (GlobeSceneController) wwd.getSceneController();
-
-		// XXX These are hacks to try and make the GL Canvas behave under MacOSX. They do not work properly.
-		// If the bugs are fixed upstream, remove these hacks.
-
-		// Keep the GL canvas in sync with the position of its parent
-		parent.addControlListener(new ControlAdapter()
-		{
-			@Override
-			public void controlResized(ControlEvent e)
-			{
-				updateGLCanvasLocation(parent, wwd);
-			}
-
-			@Override
-			public void controlMoved(ControlEvent e)
-			{
-				updateGLCanvasLocation(parent, wwd);
-			}
-		});
-
-		// For minimisation, update canvas location again
-		Listener listener = new Listener()
-		{
-			@Override
-			public void handleEvent(Event event)
-			{
-				updateGLCanvasLocation(parent, wwd);
-			}
-		};
-		parent.getParent().getParent().addListener(SWT.Resize, listener);
-		parent.getParent().addListener(SWT.Resize, listener);
-
-		// Hook into the first paint call to update the location at a point where all
-		// Required parents have been initialised correctly
-		wwd.addPaintListener(new PaintListener()
-		{
-
-			@Override
-			public void paintControl(PaintEvent e)
-			{
-				updateGLCanvasLocation(parent, wwd);
-				wwd.removePaintListener(this);
-			}
-		});
-
-		parent.getParent().addPaintListener(new PaintListener()
-		{
-
-			@Override
-			public void paintControl(PaintEvent e)
-			{
-				updateGLCanvasLocation(parent, wwd);
-				parent.getParent().removePaintListener(this);
-			}
-		});
-
-		updateGLCanvasLocation(parent, wwd);
-
-		return wwd;
-	}
-
-	private void updateGLCanvasLocation(final Composite parent, final WorldWindowNewtCanvasSWT wwd)
-	{
-		int x =
-				parent.toDisplay(parent.getLocation()).x - wwd.getWindow().getLocationOnScreen(null).getX()
-						- parent.getLocation().x;
-		int y =
-				parent.toDisplay(parent.getLocation()).y - wwd.getWindow().getLocationOnScreen(null).getY()
-						- parent.getLocation().y;
-		wwd.getWindow().setPosition(x, y);
 	}
 
 	@PreDestroy
