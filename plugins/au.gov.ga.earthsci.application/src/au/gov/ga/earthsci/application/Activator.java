@@ -20,7 +20,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import au.gov.ga.earthsci.application.console.StandardOutputCollector;
-import au.gov.ga.earthsci.common.ui.util.KeyboardFocusManagerFix;
 
 /**
  * Application bundle activator.
@@ -51,9 +50,6 @@ public class Activator extends AbstractUIPlugin
 
 		//add System.out/System.err collection:
 		StandardOutputCollector.INSTANCE.install();
-
-		//bugfix:
-		KeyboardFocusManagerFix.initialize();
 
 		//create the preference initializers
 		DefaultScope.INSTANCE.getNode(getBundleName());

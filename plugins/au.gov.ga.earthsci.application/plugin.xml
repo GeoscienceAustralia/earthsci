@@ -237,6 +237,9 @@
       <startup
             class="au.gov.ga.earthsci.application.MouseWheelFixStartup">
       </startup>
+      <startup
+            class="au.gov.ga.earthsci.application.KeyboardFocusManagerFixStartup">
+      </startup>
    </extension>
 
 </plugin>
