@@ -51,7 +51,6 @@ import gov.nasa.worldwind.view.orbit.OrbitViewInputHandler;
 import gov.nasa.worldwind.view.orbit.OrbitViewLimits;
 import gov.nasa.worldwind.view.orbit.OrbitViewPropertyAccessor;
 
-import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Date;
@@ -357,12 +356,9 @@ public class BaseOrbitViewInputHandler extends BasicViewInputHandler
 		{
 			// Switch the direction of heading change depending on whether the cursor is above or below
 			// the center of the screen.
-			if (getWorldWindow() instanceof Component)
+			if (getMousePoint().y < getView().getViewport().height / 2)
 			{
-				if (getMousePoint().y < ((Component) getWorldWindow()).getHeight() / 2)
-				{
-					headingInput = -headingInput;
-				}
+				headingInput = -headingInput;
 			}
 		}
 		else
