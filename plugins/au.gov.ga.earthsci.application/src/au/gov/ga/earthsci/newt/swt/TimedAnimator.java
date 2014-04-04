@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.newt.swt;
 
 import javax.media.opengl.GLAutoDrawable;
+import javax.swing.SwingUtilities;
 
 import com.jogamp.opengl.util.Animator;
 
@@ -27,7 +28,7 @@ import com.jogamp.opengl.util.Animator;
  */
 public class TimedAnimator extends Animator
 {
-	protected int period = 1000; //ms
+	protected int period = 100; //ms
 	protected PeriodTimer timer;
 
 	public TimedAnimator()
@@ -61,17 +62,14 @@ public class TimedAnimator extends Animator
 	}
 
 	@Override
-	public synchronized boolean start()
+	public synchronized boolean isStarted()
 	{
-		pauseAfterPeriod();
-		return super.start();
-	}
-
-	@Override
-	public synchronized boolean resume()
-	{
-		pauseAfterPeriod();
-		return super.resume();
+		boolean started = super.isStarted();
+		if (started)
+		{
+			pauseAfterPeriod();
+		}
+		return started;
 	}
 
 	protected void pauseAfterPeriod()
@@ -124,7 +122,14 @@ public class TimedAnimator extends Animator
 						sleepTime /= msToNs;
 						if (sleepTime <= 0)
 						{
-							pause();
+							SwingUtilities.invokeLater(new Runnable()
+							{
+								@Override
+								public void run()
+								{
+									pause();
+								}
+							});
 							wait();
 						}
 					}
