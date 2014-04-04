@@ -206,10 +206,19 @@ public class NewtEventConverterAWT
 			case java.awt.event.ComponentEvent.COMPONENT_RESIZED:
 				return new ComponentEventFromNewt(event, awtSource, id);
 			default:
-				return new WindowEventFromNewt(event, SwingUtilities.getWindowAncestor(awtSource), id);
+				return new WindowEventFromNewt(event, getWindowAncestor(awtSource), id);
 			}
 		}
 		return null;
+	}
+
+	private static Window getWindowAncestor(Component c)
+	{
+		if (c instanceof Window)
+		{
+			return (Window) c;
+		}
+		return SwingUtilities.getWindowAncestor(c);
 	}
 
 	/**

@@ -18,7 +18,7 @@ package au.gov.ga.earthsci.newt.swt;
 import gov.nasa.worldwind.awt.AWTInputHandler;
 
 import java.awt.Component;
-import java.awt.Container;
+import java.awt.Frame;
 
 import au.gov.ga.earthsci.newt.awt.NewtEventConverterAWT;
 import au.gov.ga.earthsci.newt.awt.NewtEventConverterAWT.AWTEventFromNewt;
@@ -48,7 +48,7 @@ public class NewtEventProcessorSWT implements com.jogamp.newt.event.MouseListene
 	public NewtEventProcessorSWT(AWTInputHandler inputHandler)
 	{
 		this.inputHandler = inputHandler;
-		this.dummyComponent = new Container();
+		this.dummyComponent = new Frame();
 	}
 
 	/**
