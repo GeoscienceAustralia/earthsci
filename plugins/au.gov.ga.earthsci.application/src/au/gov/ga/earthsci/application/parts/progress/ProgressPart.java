@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.jobs.ProgressProvider;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
-import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -53,9 +52,6 @@ public class ProgressPart
 		JOB_STATE_LABEL.put(Job.SLEEPING, Messages.ProgressPart_SleepingStatusLabel);
 		JOB_STATE_LABEL.put(Job.RUNNING, Messages.ProgressPart_RunningStatusLabel);
 	}
-
-	@Inject
-	private EModelService modelService;
 
 	@Inject
 	private IJobManager jobManager;
@@ -224,32 +220,38 @@ public class ProgressPart
 
 	private void asyncRefresh()
 	{
-		Display.getDefault().asyncExec(new Runnable()
+		if (!viewer.getTable().isDisposed())
 		{
-			@Override
-			public void run()
+			Display.getDefault().asyncExec(new Runnable()
 			{
-				if (!viewer.getTable().isDisposed())
+				@Override
+				public void run()
 				{
-					viewer.refresh();
+					if (!viewer.getTable().isDisposed())
+					{
+						viewer.refresh();
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	private void asyncUpdate(final JobInfo job)
 	{
-		Display.getDefault().asyncExec(new Runnable()
+		if (!viewer.getTable().isDisposed())
 		{
-			@Override
-			public void run()
+			Display.getDefault().asyncExec(new Runnable()
 			{
-				if (!viewer.getTable().isDisposed())
+				@Override
+				public void run()
 				{
-					viewer.update(job, null);
+					if (!viewer.getTable().isDisposed())
+					{
+						viewer.update(job, null);
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	private static class JobInfo extends NullProgressMonitor
