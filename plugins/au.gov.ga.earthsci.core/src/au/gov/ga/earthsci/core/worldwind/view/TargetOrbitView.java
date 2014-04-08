@@ -17,9 +17,17 @@ package au.gov.ga.earthsci.core.worldwind.view;
 
 import gov.nasa.worldwind.awt.ViewInputHandler;
 import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.view.orbit.OrbitView;
+
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.nio.FloatBuffer;
+
+import javax.media.opengl.GL2;
 
 /**
  * {@link OrbitView} extension that allows the user to optionally modify the
@@ -50,6 +58,9 @@ public class TargetOrbitView extends BaseOrbitView
 			TargetOrbitView.this.render(dc);
 		}
 	};
+
+	protected final FloatBuffer depthPixel = FloatBuffer.allocate(1);
+	protected Position mousePosition;
 
 	@Override
 	protected ViewInputHandler createViewInputHandler()
@@ -127,6 +138,14 @@ public class TargetOrbitView extends BaseOrbitView
 		return axisMarker;
 	}
 
+	/**
+	 * @return Approximate mouse position in geographic coordinates
+	 */
+	public Position getMousePosition()
+	{
+		return mousePosition;
+	}
+
 	@Override
 	public void focusOnViewportCenter()
 	{
@@ -171,6 +190,29 @@ public class TargetOrbitView extends BaseOrbitView
 		if (isDrawAxisMarker())
 		{
 			axisMarker.render(dc);
+		}
+
+		if (viewInputHandler instanceof TargetOrbitViewInputHandler)
+		{
+			//calculate mouse position in geographic coordinates
+			GL2 gl = dc.getGL().getGL2();
+
+			Point mousePoint = ((TargetOrbitViewInputHandler) viewInputHandler).getMousePoint();
+			Rectangle viewport = getViewport();
+			int winX = mousePoint.x;
+			int winY = viewport.height - mousePoint.y - 1;
+			gl.glReadPixels(winX, winY, 1, 1, GL2.GL_DEPTH_COMPONENT, GL2.GL_FLOAT, depthPixel.rewind());
+			float winZ = depthPixel.get(0);
+
+			//see gluUnproject:
+			Matrix mvpi = projection.multiply(modelview).getInverse();
+			Vec4 screen = new Vec4(
+					2.0 * (winX - viewport.x) / viewport.width - 1.0,
+					2.0 * (winY - viewport.y) / viewport.height - 1.0,
+					2.0 * winZ - 1.0, 1.0);
+			Vec4 model = screen.transformBy4(mvpi);
+			model = model.divide3(model.w);
+			mousePosition = globe.computePositionFromPoint(model);
 		}
 	}
 }

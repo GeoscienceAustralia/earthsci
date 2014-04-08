@@ -23,6 +23,8 @@ import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
+import java.awt.Point;
+
 /**
  * Extension of the standard orbit view input handler that adds support for the
  * {@link TargetOrbitView}, which allows manually changing the center point.
@@ -104,5 +106,11 @@ public class TargetOrbitViewInputHandler extends BaseOrbitViewInputHandler
 		}
 
 		super.onHorizontalTranslateRel(forwardChange, sideChange, actionAttribs);
+	}
+
+	@Override
+	public Point getMousePoint()
+	{
+		return super.getMousePoint();
 	}
 }
