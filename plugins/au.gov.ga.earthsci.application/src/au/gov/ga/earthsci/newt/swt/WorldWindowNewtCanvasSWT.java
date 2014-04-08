@@ -220,7 +220,7 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 	@Override
 	public void redraw()
 	{
-		if (awaitingRedraw.compareAndSet(false, true) && !isDisposed())
+		if (!isDisposed() && awaitingRedraw.compareAndSet(false, true))
 		{
 			getDisplay().asyncExec(new Runnable()
 			{
