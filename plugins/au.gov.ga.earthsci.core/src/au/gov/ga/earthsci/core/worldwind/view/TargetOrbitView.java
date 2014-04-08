@@ -139,11 +139,14 @@ public class TargetOrbitView extends BaseOrbitView
 
 		super.doApply(dc);
 
-		Vec4 afterApply = Vec4.UNIT_W.transformBy4(this.modelview);
-		if (beforeApply.distanceToSquared3(afterApply) > 10)
+		if (isDrawAxisMarker())
 		{
-			//view has changed, so show the axis marker
-			axisMarker.trigger();
+			Vec4 afterApply = Vec4.UNIT_W.transformBy4(this.modelview);
+			if (beforeApply.distanceToSquared3(afterApply) > 10)
+			{
+				//view has changed, so show the axis marker
+				axisMarker.trigger();
+			}
 		}
 		//the screen credits are stored in a map, so adding this each frame is not a problem
 		dc.addScreenCredit(axisScreenCredit);
