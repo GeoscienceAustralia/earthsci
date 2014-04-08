@@ -33,6 +33,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLCapabilitiesChooser;
@@ -40,8 +41,6 @@ import javax.media.opengl.GLContext;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 
 import com.jogamp.newt.opengl.GLWindow;
@@ -93,7 +92,7 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 	/** The drawable to which {@link WorldWindow} methods are delegated. */
 	protected final WorldWindowNewtDrawableSWT wwd; // WorldWindow interface delegates to wwd
 	protected final GLWindow window;
-	protected final TimedAnimator animator;
+	private AtomicBoolean awaitingRedraw = new AtomicBoolean(false);
 	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
 	/**
@@ -117,16 +116,6 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 		{
 			this.window.setSharedContext(shareWith.getContext());
 		}
-		this.animator = new TimedAnimator(window);
-		this.animator.start();
-		addDisposeListener(new DisposeListener()
-		{
-			@Override
-			public void widgetDisposed(DisposeEvent e)
-			{
-				animator.stop();
-			}
-		});
 
 		try
 		{
@@ -231,7 +220,18 @@ public class WorldWindowNewtCanvasSWT extends NewtCanvasSWT implements WorldWind
 	@Override
 	public void redraw()
 	{
-		animator.resume();
+		if (awaitingRedraw.compareAndSet(false, true) && !isDisposed())
+		{
+			getDisplay().asyncExec(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					awaitingRedraw.set(false);
+					window.windowRepaint(0, 0, window.getWidth(), window.getHeight());
+				}
+			});
+		}
 	}
 
 	@Override
