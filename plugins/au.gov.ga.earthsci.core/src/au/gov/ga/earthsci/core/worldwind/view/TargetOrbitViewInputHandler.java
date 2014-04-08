@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.worldwind.view;
 
+import gov.nasa.worldwind.awt.AbstractViewInputHandler;
+import gov.nasa.worldwind.awt.ViewInputAttributes;
 import gov.nasa.worldwind.awt.ViewInputAttributes.ActionAttributes;
 import gov.nasa.worldwind.awt.ViewInputAttributes.DeviceAttributes;
 import gov.nasa.worldwind.geom.Angle;
@@ -33,6 +35,16 @@ import java.awt.Point;
  */
 public class TargetOrbitViewInputHandler extends BaseOrbitViewInputHandler
 {
+	public TargetOrbitViewInputHandler()
+	{
+		super();
+
+		ViewInputAttributes.ActionAttributes actionAttrs;
+		actionAttrs = this.getAttributes().getActionMap(ViewInputAttributes.DEVICE_MOUSE).getActionAttributes(
+				ViewInputAttributes.VIEW_MOVE_TO);
+		actionAttrs.setMouseActionListener(new TargetMoveToMouseActionListener());
+	}
+
 	protected boolean isTargetMode()
 	{
 		OrbitView view = getView();
@@ -112,5 +124,42 @@ public class TargetOrbitViewInputHandler extends BaseOrbitViewInputHandler
 	public Point getMousePoint()
 	{
 		return super.getMousePoint();
+	}
+
+	public class TargetMoveToMouseActionListener extends MoveToMouseActionListener
+	{
+		@Override
+		public boolean inputActionPerformed(AbstractViewInputHandler inputHandler,
+				java.awt.event.MouseEvent mouseEvent, ViewInputAttributes.ActionAttributes viewAction)
+		{
+			boolean handleThisEvent = false;
+			java.util.List<?> buttonList = viewAction.getMouseActions();
+			for (Object b : buttonList)
+			{
+				ViewInputAttributes.ActionAttributes.MouseAction buttonAction =
+						(ViewInputAttributes.ActionAttributes.MouseAction) b;
+				if ((mouseEvent.getButton() == buttonAction.mouseButton))
+				{
+					handleThisEvent = true;
+				}
+			}
+			if (!handleThisEvent)
+			{
+				return false;
+			}
+
+			if (isTargetMode())
+			{
+				Position mousePosition = ((TargetOrbitView) getView()).getMousePosition();
+				if (mousePosition != null)
+				{
+					onMoveTo(mousePosition, getAttributes().getDeviceAttributes(ViewInputAttributes.DEVICE_MOUSE),
+							viewAction);
+					return true;
+				}
+			}
+
+			return super.inputActionPerformed(inputHandler, mouseEvent, viewAction);
+		}
 	}
 }
