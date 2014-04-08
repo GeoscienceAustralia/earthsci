@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.gov.ga.earthsci.application.parts.globe.handlers.ToggleHudHandler;
+import au.gov.ga.earthsci.core.worldwind.view.DoubleClickZoomListener;
 import au.gov.ga.earthsci.core.worldwind.view.TargetOrbitView;
 import au.gov.ga.earthsci.layer.hud.HudLayer;
 import au.gov.ga.earthsci.layer.hud.HudLayers;
@@ -102,6 +103,7 @@ public class GlobePart
 		worldWindow.setView(new TargetOrbitView());
 		worldWindow.addSelectListener(new ClickAndGoSelectListener(worldWindow, WorldMapLayer.class));
 		context.set(WorldWindow.class, worldWindow);
+		worldWindow.getInputHandler().addMouseListener(new DoubleClickZoomListener(worldWindow, 5000d));
 
 		WorldWindowRegistry.INSTANCE.register(worldWindow);
 
