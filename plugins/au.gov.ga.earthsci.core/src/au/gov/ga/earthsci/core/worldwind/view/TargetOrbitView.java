@@ -42,7 +42,14 @@ public class TargetOrbitView extends BaseOrbitView
 
 	protected boolean drawAxisMarker = true;
 	protected final AxisRenderable axisMarker = new AxisRenderable();
-	protected final RenderableScreenCreditDelegate axisScreenCredit = new RenderableScreenCreditDelegate(axisMarker);
+	protected final EmptyScreenCredit viewScreenCredit = new EmptyScreenCredit()
+	{
+		@Override
+		public void render(DrawContext dc)
+		{
+			TargetOrbitView.this.render(dc);
+		}
+	};
 
 	@Override
 	protected ViewInputHandler createViewInputHandler()
@@ -139,6 +146,9 @@ public class TargetOrbitView extends BaseOrbitView
 
 		super.doApply(dc);
 
+		//the screen credits are stored in a map, so adding this each frame is not a problem
+		dc.addScreenCredit(viewScreenCredit);
+
 		if (isDrawAxisMarker())
 		{
 			Vec4 afterApply = Vec4.UNIT_W.transformBy4(this.modelview);
@@ -148,7 +158,19 @@ public class TargetOrbitView extends BaseOrbitView
 				axisMarker.trigger();
 			}
 		}
-		//the screen credits are stored in a map, so adding this each frame is not a problem
-		dc.addScreenCredit(axisScreenCredit);
+	}
+
+	/**
+	 * Render method is called during the rendering of the scene controller's
+	 * screen credits, but the {@link #viewScreenCredit}.
+	 * 
+	 * @param dc
+	 */
+	protected void render(DrawContext dc)
+	{
+		if (isDrawAxisMarker())
+		{
+			axisMarker.render(dc);
+		}
 	}
 }

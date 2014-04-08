@@ -16,31 +16,26 @@
 package au.gov.ga.earthsci.core.worldwind.view;
 
 import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.render.Renderable;
 import gov.nasa.worldwind.render.ScreenCredit;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 
 /**
- * Fake {@link ScreenCredit} implementation that delegates its
- * {@link #render(DrawContext)} method to a {@link Renderable}.
+ * Empty {@link ScreenCredit} implementation that does nothing, useful for
+ * subclassing.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class RenderableScreenCreditDelegate implements ScreenCredit
+public class EmptyScreenCredit implements ScreenCredit
 {
-	protected final Renderable renderable;
-
-	public RenderableScreenCreditDelegate(Renderable renderable)
+	public EmptyScreenCredit()
 	{
-		this.renderable = renderable;
 	}
 
 	@Override
 	public void render(DrawContext dc)
 	{
-		renderable.render(dc);
 	}
 
 	@Override
