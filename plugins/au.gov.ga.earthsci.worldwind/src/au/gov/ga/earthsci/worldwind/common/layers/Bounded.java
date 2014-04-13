@@ -20,7 +20,7 @@ import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.geom.Sector;
 
 /**
- * Represents an object that can be bounded by a sector.
+ * Represents an object that is bounded.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
