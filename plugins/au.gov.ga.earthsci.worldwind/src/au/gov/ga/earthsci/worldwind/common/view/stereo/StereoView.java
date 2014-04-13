@@ -15,15 +15,16 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.view.stereo;
 
-import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.geom.Matrix;
+import au.gov.ga.earthsci.worldwind.common.view.drawable.DrawableView;
+import au.gov.ga.earthsci.worldwind.common.view.transform.TransformView;
 
 /**
  * Interface which stereoscopic capable View subclasses must implement.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface StereoView extends View
+public interface StereoView extends DrawableView, TransformView
 {
 	/**
 	 * Represents an eye.
@@ -75,15 +76,4 @@ public interface StereoView extends View
 	 * @return Eye separation used in the last call to doApply()
 	 */
 	double getCurrentEyeSeparation();
-
-	/**
-	 * Calculate a projection matrix for the current state of this view.
-	 * 
-	 * @param nearDistance
-	 *            Near frustum value
-	 * @param farDistance
-	 *            Far frustum value
-	 * @return Projection matrix
-	 */
-	Matrix calculateProjectionMatrix(double nearDistance, double farDistance);
 }

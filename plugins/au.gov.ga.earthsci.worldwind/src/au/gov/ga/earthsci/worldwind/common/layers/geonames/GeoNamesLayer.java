@@ -59,6 +59,7 @@ public class GeoNamesLayer extends AbstractLayer
 {
 	private final static String GEONAMES_CHILDREN = "http://ws.geonames.org/children";
 	private final static int GEONAMES_GLOBE_ID = 6295630;
+	private final static String GEONAMES_USERNAME = "gam3dv";
 
 	private GeoName topGeoName;
 	private VisibilityCalculatorImpl visibilityCalculator = new VisibilityCalculatorImpl();
@@ -248,7 +249,7 @@ public class GeoNamesLayer extends AbstractLayer
 		URL url = null;
 		try
 		{
-			url = new URL(GEONAMES_CHILDREN + "?geonameId=" + geoname.geonameId);
+			url = new URL(GEONAMES_CHILDREN + "?username=" + GEONAMES_USERNAME + "&geonameId=" + geoname.geonameId);
 		}
 		catch (Exception e)
 		{

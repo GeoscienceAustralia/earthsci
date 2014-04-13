@@ -16,6 +16,8 @@
 package au.gov.ga.earthsci.worldwind.common.view.stereo;
 
 import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.render.DrawContext;
+import au.gov.ga.earthsci.worldwind.common.render.DrawableSceneController;
 import au.gov.ga.earthsci.worldwind.common.view.state.ViewStateBasicFlyView;
 
 /**
@@ -70,9 +72,9 @@ public class StereoFlyView extends ViewStateBasicFlyView implements StereoView
 	}
 
 	@Override
-	public Matrix calculateProjectionMatrix(double nearDistance, double farDistance)
+	public Matrix computeProjection(double nearDistance, double farDistance)
 	{
-		return helper.calculateProjectionMatrix(this, nearDistance, farDistance);
+		return helper.computeProjection(this, nearDistance, farDistance);
 	}
 
 	@Override
@@ -88,10 +90,10 @@ public class StereoFlyView extends ViewStateBasicFlyView implements StereoView
 		Matrix matrix = super.computeModelView();
 		return helper.transformModelView(matrix);
 	}
-
+	
 	@Override
-	public Matrix computeProjection()
+	public void draw(DrawContext dc, DrawableSceneController sc)
 	{
-		return helper.computeProjection(this);
+		helper.draw(dc, sc);
 	}
 }

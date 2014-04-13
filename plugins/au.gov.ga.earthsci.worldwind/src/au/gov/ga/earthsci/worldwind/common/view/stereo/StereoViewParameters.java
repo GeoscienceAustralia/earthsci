@@ -23,6 +23,18 @@ package au.gov.ga.earthsci.worldwind.common.view.stereo;
 public interface StereoViewParameters
 {
 	/**
+	 * @return Is stereo enabled?
+	 */
+	boolean isStereoEnabled();
+
+	/**
+	 * Toggle stereo on/off.
+	 * 
+	 * @param stereoEnabled
+	 */
+	void setStereoEnabled(boolean stereoEnabled);
+
+	/**
 	 * @return Asymmetric frustum focal length for this view.
 	 */
 	double getFocalLength();
@@ -75,4 +87,26 @@ public interface StereoViewParameters
 	 * @param dynamicStereo
 	 */
 	void setDynamicStereo(boolean dynamicStereo);
+
+	/**
+	 * @return Mode to use for stereo rendering.
+	 */
+	StereoMode getStereoMode();
+
+	/**
+	 * Set the mode to use for stereo rendering.
+	 * 
+	 * @param stereoMode
+	 */
+	void setStereoMode(StereoMode stereoMode);
+
+	/**
+	 * @return Should the eyes be swapped?
+	 */
+	boolean isSwapEyes();
+
+	/**
+	 * Turn stereo eye swapping on/off.
+	 */
+	void setSwapEyes(boolean swapEyes);
 }

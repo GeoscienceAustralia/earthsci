@@ -34,6 +34,7 @@ import java.nio.DoubleBuffer;
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLProfile;
+import javax.swing.SwingUtilities;
 
 import au.gov.ga.earthsci.worldwind.common.util.Validate;
 
@@ -52,6 +53,10 @@ public class ScreenOverlayLayer extends AbstractLayer
 	private ScreenOverlayAttributes attributes;
 
 	private ScreenOverlay overlay = new ScreenOverlay();
+
+	private BufferedImage image = null;
+
+	private boolean imageLoading = false;
 
 	/**
 	 * Create a new {@link ScreenOverlayLayer} with the given source data and
@@ -249,54 +254,74 @@ public class ScreenOverlayLayer extends AbstractLayer
 		}
 	}
 
-	private Texture getTexture(DrawContext dc, Rectangle overlay)
+	private Texture getTexture(DrawContext dc, final Rectangle overlay)
 	{
-		try
+		Texture texture = dc.getGpuResourceCache().getTexture(attributes.getSourceId());
+		if (!textureNeedsReloading(texture, overlay))
 		{
-			Texture texture = dc.getGpuResourceCache().getTexture(attributes.getSourceId());
-			if (!textureNeedsReloading(texture, overlay))
-			{
-				return texture;
-			}
-
-			BufferedImage image;
-			if (attributes.isSourceHtml())
-			{
-				if (attributes.getSourceUrl() != null)
-				{
-					image = HtmlToImage.createImageFromHtml(attributes.getSourceUrl(), overlay.width, overlay.height);
-				}
-				else
-				{
-					image = HtmlToImage.createImageFromHtml(attributes.getSourceHtml(), overlay.width, overlay.height);
-				}
-			}
-			else
-			{
-				image = ImageIO.read(attributes.getSourceUrl());
-			}
-
-			texture = AWTTextureIO.newTexture(GLProfile.get(GLProfile.GL2), image, false);
-			dc.getTextureCache().put(attributes.getSourceId(), texture);
-
-			GL2 gl = dc.getGL().getGL2();
-			gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
-			gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
-			gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
-			gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP_TO_EDGE);
-			gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP_TO_EDGE);
-			int[] maxAnisotropy = new int[1];
-			gl.glGetIntegerv(GL2.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy, 0);
-			gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy[0]);
-
 			return texture;
 		}
-		catch (Exception e)
+
+		if (image == null)
 		{
-			String msg = Logging.getMessage("layers.IOExceptionDuringInitialization");
-			Logging.logger().severe(msg);
-			throw new WWRuntimeException(msg, e);
+			if (!imageLoading)
+			{
+				imageLoading = true;
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						try
+						{
+							if (attributes.isSourceHtml())
+							{
+								if (attributes.getSourceUrl() != null)
+								{
+									image =
+											HtmlToImage.createImageFromHtml(attributes.getSourceUrl(), overlay.width,
+													overlay.height);
+								}
+								else
+								{
+									image =
+											HtmlToImage.createImageFromHtml(attributes.getSourceHtml(), overlay.width,
+													overlay.height);
+								}
+							}
+							else
+							{
+								image = ImageIO.read(attributes.getSourceUrl());
+							}
+							imageLoading = false;
+						}
+						catch (Exception e)
+						{
+							String msg = Logging.getMessage("layers.IOExceptionDuringInitialization");
+							Logging.logger().severe(msg);
+							throw new WWRuntimeException(msg, e);
+						}
+					}
+				});
+			}
+			return null;
 		}
+
+		texture = AWTTextureIO.newTexture(GLProfile.get(GLProfile.GL2), image, false);
+		dc.getTextureCache().put(attributes.getSourceId(), texture);
+
+		GL2 gl = dc.getGL().getGL2();
+		gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
+		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
+		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
+		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP_TO_EDGE);
+		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP_TO_EDGE);
+		int[] maxAnisotropy = new int[1];
+		gl.glGetIntegerv(GL2.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy, 0);
+		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy[0]);
+
+		return texture;
+
 	}
 
 	private boolean textureNeedsReloading(Texture texture, Rectangle overlay)

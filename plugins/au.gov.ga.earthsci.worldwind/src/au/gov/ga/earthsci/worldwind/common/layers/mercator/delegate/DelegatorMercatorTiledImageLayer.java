@@ -105,29 +105,19 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 
 		Object o = params.getValue(AVKeyMore.DELEGATE_KIT);
 		if (o != null && o instanceof MercatorImageDelegateKit)
-		{
 			delegateKit = (MercatorImageDelegateKit) o;
-		}
 		else
-		{
 			delegateKit = new MercatorImageDelegateKit();
-		}
 
 		o = params.getValue(AVKeyMore.CONTEXT_URL);
 		if (o != null && o instanceof URL)
-		{
 			context = (URL) o;
-		}
 		else
-		{
 			context = null;
-		}
 
 		Boolean b = (Boolean) params.getValue(AVKeyMore.EXTRACT_ZIP_ENTRY);
 		if (b != null)
-		{
 			this.setExtractZipEntry(b);
-		}
 
 		//Share the filelock with other layers with the same cache name. This allows
 		//multiple layers to save and load from the same cache location.
@@ -231,14 +221,10 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 	public void render(DrawContext dc)
 	{
 		if (!isEnabled())
-		{
 			return;
-		}
 
 		if (dc != null)
-		{
 			currentGlobe = dc.getGlobe();
-		}
 
 		delegateKit.preRender(dc);
 		super.render(dc);
@@ -290,9 +276,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 		Vec4 centroid = tile.getCentroidPoint(currentGlobe);
 		Vec4 referencePoint = this.getReferencePoint(dc);
 		if (referencePoint != null)
-		{
 			tile.setPriority(centroid.distanceTo3(referencePoint));
-		}
 
 		//pass request to delegate
 		Runnable task = delegateKit.createRequestTask((DelegatorMercatorTextureTile) tile, this);
@@ -337,9 +321,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 		}
 
 		if (textureData == null)
-		{
 			return false;
-		}
 
 		tile.setTextureData(textureData);
 		if (tile.getLevelNumber() != 0 || !isRetainLevelZeroTiles())
@@ -363,9 +345,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 		{
 			//if the file is a DDS file, just read it directly (skip all delegate readers/transformers)
 			if (url.toString().toLowerCase().endsWith("dds"))
-			{
 				return TextureIO.newTextureData(GLProfile.get(GLProfile.GL2), url, isUseMipMaps(), null);
-			}
 
 			BufferedImage image = readImage(tile, url);
 
@@ -386,8 +366,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 				}
 
 				//return the dds image as TextureData
-				return TextureIO.newTextureData(GLProfile.get(GLProfile.GL2),
-						WWIO.getInputStreamFromByteBuffer(buffer), isUseMipMaps(), null);
+				return TextureIO.newTextureData(GLProfile.get(GLProfile.GL2), WWIO.getInputStreamFromByteBuffer(buffer), isUseMipMaps(), null);
 			}
 
 			//return the image as TextureData
@@ -441,9 +420,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 		//manually do the TRANSPARENCY_COLORS transform, for compatibility with AbstractRetrievalPostProcessor
 		int[] colors = (int[]) this.getValue(AVKey.TRANSPARENCY_COLORS);
 		if (colors != null)
-		{
 			image = ImageUtil.mapTransparencyColors(image, colors);
-		}
 
 		return image;
 	}
@@ -579,9 +556,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 			for (int i = levelNumber; i < this.getLevels().getLastLevel().getLevelNumber(); i++)
 			{
 				if (this.getLevels().isLevelEmpty(i))
-				{
 					continue;
-				}
 
 				targetLevel = this.getLevels().getLevel(i);
 				break;
@@ -632,9 +607,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 	{
 		Retriever retriever = createRetriever(tile, postProcessor);
 		if (retriever != null)
-		{
 			WorldWind.getRetrievalService().runRetriever(retriever, tile.getPriority());
-		}
 	}
 
 	protected Retriever createRetriever(final TextureTile tile, RetrievalPostProcessor postProcessor)
@@ -650,9 +623,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 		}
 
 		if (!WorldWind.getRetrievalService().isAvailable())
-		{
 			return null;
-		}
 
 		java.net.URL url;
 		try
@@ -662,9 +633,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 			url = delegateKit.getRemoteTileURL((DelegatorMercatorTextureTile) tile, null);
 			//MODIFIED
 			if (url == null)
-			{
 				return null;
-			}
 
 			if (WorldWind.getNetworkStatus().isHostUnavailable(url))
 			{
@@ -684,9 +653,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 		if ("http".equalsIgnoreCase(url.getProtocol()) || "https".equalsIgnoreCase(url.getProtocol()))
 		{
 			if (postProcessor == null)
-			{
 				postProcessor = new DownloadPostProcessor(tile, this);
-			}
 			//MODIFIED
 			//retriever = new HTTPRetriever(url, postProcessor);
 			retriever = delegateKit.createRetriever(url, postProcessor);
@@ -701,19 +668,13 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 		// Apply any overridden timeouts.
 		Integer cto = AVListImpl.getIntegerValue(this, AVKey.URL_CONNECT_TIMEOUT);
 		if (cto != null && cto > 0)
-		{
 			retriever.setConnectTimeout(cto);
-		}
 		Integer cro = AVListImpl.getIntegerValue(this, AVKey.URL_READ_TIMEOUT);
 		if (cro != null && cro > 0)
-		{
 			retriever.setReadTimeout(cro);
-		}
 		Integer srl = AVListImpl.getIntegerValue(this, AVKey.RETRIEVAL_QUEUE_STALE_REQUEST_LIMIT);
 		if (srl != null && srl > 0)
-		{
 			retriever.setStaleRequestLimit(srl);
-		}
 
 		//MODIFIED
 		if (isExtractZipEntry())
@@ -743,9 +704,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 		// need to check that it's there and return. If the file exists but is expired, do not remove it -  this
 		// removes the file inside the synchronized block below.
 		if (!this.needsConfigurationFile(fileStore, fileName, params, false))
-		{
 			return;
-		}
 
 		synchronized (this.fileLock)
 		{
@@ -753,9 +712,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 			// which has expired. This additional check is necessary because the file could have been created by
 			// another thread while we were waiting for the lock.
 			if (!this.needsConfigurationFile(fileStore, fileName, params, true))
-			{
 				return;
-			}
 
 			this.doWriteConfigurationParams(fileStore, fileName, params);
 		}

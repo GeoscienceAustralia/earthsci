@@ -15,50 +15,16 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.stereo;
 
-import gov.nasa.worldwind.geom.Matrix;
-import gov.nasa.worldwind.layers.SkyGradientLayer;
-import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.util.OGLStackHandler;
-
-import javax.media.opengl.GL2;
-
-import au.gov.ga.earthsci.worldwind.common.view.stereo.StereoView;
+import au.gov.ga.earthsci.worldwind.common.layers.transform.TransformSkyGradientLayer;
 
 /**
- * An extension of the {@link SkyGradientLayer} that, if rendering in stereo,
- * correctly calculates the projection matrix so that the sky gradient is
- * correctly offset for each eye.
+ * Legacy class that exists to ensure that layer definitions pointing to this
+ * class by name still work.
+ * 
+ * @deprecated Use {@link TransformSkyGradientLayer}
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class StereoSkyGradientLayer extends SkyGradientLayer
+@Deprecated
+public class StereoSkyGradientLayer extends TransformSkyGradientLayer
 {
-	@Override
-	protected void applyDrawProjection(DrawContext dc, OGLStackHandler ogsh)
-	{
-		boolean loaded = false;
-		if (dc.getView() instanceof StereoView && ((StereoView) dc.getView()).isStereo())
-		{
-			StereoView stereo = (StereoView) dc.getView();
-			//near is the distance from the origin
-			double near = 100;
-			double far = stereo.getHorizonDistance() + 10e3;
-			Matrix projection = stereo.calculateProjectionMatrix(near, far);
-
-			if (projection != null)
-			{
-				double[] matrixArray = new double[16];
-				GL2 gl = dc.getGL().getGL2();
-				ogsh.pushProjection(gl);
-
-				projection.toArray(matrixArray, 0, false);
-				gl.glLoadMatrixd(matrixArray, 0);
-
-				loaded = true;
-			}
-		}
-
-		if (!loaded)
-		{
-			super.applyDrawProjection(dc, ogsh);
-		}
-	}
 }

@@ -50,6 +50,7 @@ public class PointLayerHelper implements Bounded
 	public PointLayerHelper(AVList params)
 	{
 		//retrieve the globals from the params
+		Validate.notNull(params, "Parameters are required");
 
 		context = (URL) params.getValue(AVKeyMore.CONTEXT_URL);
 		url = params.getStringValue(AVKey.URL);

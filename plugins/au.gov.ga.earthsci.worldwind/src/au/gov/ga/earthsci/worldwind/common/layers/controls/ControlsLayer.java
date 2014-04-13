@@ -34,6 +34,9 @@ public class ControlsLayer extends ViewControlsLayer
 		setShowFovControls(false);
 
 		WorldWindow wwd = WorldWindowRegistry.INSTANCE.getActive();
-		wwd.addSelectListener(new ViewControlsSelectListener(wwd, this));
+		if(wwd != null)
+		{
+			wwd.addSelectListener(new ViewControlsSelectListener(wwd, this));
+		}
 	}
 }

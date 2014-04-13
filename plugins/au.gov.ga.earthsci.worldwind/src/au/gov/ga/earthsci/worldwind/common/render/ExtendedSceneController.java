@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.worldwind.common.render;
 
 import gov.nasa.worldwind.BasicSceneController;
 import gov.nasa.worldwind.SceneController;
+import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.terrain.SectorGeometryList;
 import gov.nasa.worldwind.terrain.Tessellator;
@@ -29,6 +30,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationListener;
 import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationService;
+import au.gov.ga.earthsci.worldwind.common.util.SectorClipPlanes;
+import au.gov.ga.earthsci.worldwind.common.view.drawable.DrawableView;
 
 /**
  * {@link SceneController} that uses a separate {@link Tessellator} to generate
@@ -40,10 +43,11 @@ import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationServ
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class ExtendedSceneController extends BasicSceneController implements VerticalExaggerationListener
+public class ExtendedSceneController extends BasicSceneController implements DrawableSceneController, VerticalExaggerationListener
 {
 	private FlatRectangularTessellator flatTessellator = new FlatRectangularTessellator();
-
+	protected final SectorClipPlanes sectorClipping = new SectorClipPlanes();
+	
 	protected final Queue<PaintTask> prePaintTasks = new LinkedList<PaintTask>();
 	protected final Lock prePaintTasksLock = new ReentrantLock(true);
 
@@ -52,14 +56,24 @@ public abstract class ExtendedSceneController extends BasicSceneController imple
 
 	public ExtendedSceneController()
 	{
-		dc = wrapDrawContext(dc);
+		dc.dispose();
 		VerticalExaggerationService.INSTANCE.addListener(this);
 		setVerticalExaggeration(VerticalExaggerationService.INSTANCE.get());
 	}
-
+	
 	protected ExtendedDrawContext wrapDrawContext(DrawContext dc)
 	{
 		return new ExtendedDrawContext(dc);
+	}
+
+	public void clipSector(Sector sector)
+	{
+		sectorClipping.clipSector(sector);
+	}
+
+	public void clearClipping()
+	{
+		sectorClipping.clear();
 	}
 
 	@Override
@@ -82,23 +96,47 @@ public abstract class ExtendedSceneController extends BasicSceneController imple
 	}
 
 	@Override
-	protected void pickTerrain(DrawContext dc)
+	public void doRepaint(DrawContext dc)
 	{
+		doPrePaintTasks(dc);
+		this.initializeFrame(dc);
 		try
 		{
-			super.pickTerrain(dc);
+			this.applyView(dc);
+			this.createPickFrustum(dc);
+			this.createTerrain(dc);
+			this.preRender(dc);
+			this.clearFrame(dc);
+			this.pick(dc);
+			this.clearFrame(dc);
+			if (view instanceof DrawableView)
+			{
+				((DrawableView) view).draw(dc, this);
+			}
+			else
+			{
+				this.draw(dc);
+			}
 		}
-		catch (ConcurrentModificationException e)
+		finally
 		{
-			//ignore CME, seems to be a bug in the SectorGeometryList
+			this.finalizeFrame(dc);
 		}
+		doPostPaintTasks(dc);
 	}
 
 	@Override
-	protected void pickLayers(DrawContext dc)
+	public void draw(DrawContext dc)
 	{
-		super.pickLayers(dc);
-		afterPickLayers(dc);
+		try
+		{
+			sectorClipping.enableClipping(dc);
+			super.draw(dc);
+		}
+		finally
+		{
+			sectorClipping.disableClipping(dc);
+		}
 	}
 
 	@Override
@@ -117,6 +155,43 @@ public abstract class ExtendedSceneController extends BasicSceneController imple
 		//our overridable function here
 		afterDrawLayers(dc);
 		super.drawOrderedSurfaceRenderables(dc);
+
+		//If we disable sector clipping here, the ordered renderables are not clipped.
+		//This means the HUD layers are not clipped, but this has the side-effect that
+		//wireframe elevation isn't clipped, and nor is the graticule.
+		sectorClipping.disableClipping(dc);
+	}
+
+	@Override
+	public void clearFrame(DrawContext dc)
+	{
+		super.clearFrame(dc);
+	}
+
+	@Override
+	public void applyView(DrawContext dc)
+	{
+		super.applyView(dc);
+	}
+
+	@Override
+	protected void pickTerrain(DrawContext dc)
+	{
+		try
+		{
+			super.pickTerrain(dc);
+		}
+		catch (ConcurrentModificationException e)
+		{
+			//ignore CME, seems to be a bug in the SectorGeometryList
+		}
+	}
+
+	@Override
+	protected void pickLayers(DrawContext dc)
+	{
+		super.pickLayers(dc);
+		afterPickLayers(dc);
 	}
 
 	/**
@@ -165,14 +240,6 @@ public abstract class ExtendedSceneController extends BasicSceneController imple
 		super.setVerticalExaggeration(verticalExaggeration);
 		//keep the vertical exaggeration service in sync with this 
 		VerticalExaggerationService.INSTANCE.set(verticalExaggeration);
-	}
-
-	@Override
-	public void doRepaint(DrawContext dc)
-	{
-		doPrePaintTasks(dc);
-		super.doRepaint(dc);
-		doPostPaintTasks(dc);
 	}
 
 	/**

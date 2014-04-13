@@ -47,8 +47,26 @@ public interface TransformView extends View
 	Matrix computeModelView();
 
 	/**
+	 * Return the MODELVIEW transform/matrix that was calculated before being
+	 * transformed in some way. Usually this is the value calculated by
+	 * {@link ViewUtil#computeTransformMatrix}, but some views can apply
+	 * additional transformations (such as head tracking rotation in a HMD).
+	 * This method returns the matrix before these additional transformations
+	 * are applied.
+	 * 
+	 * @return Model view matrix that was calculated before being tranformed
+	 */
+	Matrix getPretransformedModelViewMatrix();
+
+	/**
 	 * Calculates a PROJECTION transform for this view. Default implementation
 	 * uses {@link Matrix#fromPerspective}.
+	 * 
+	 * @param nearDistance
+	 *            Near frustum value
+	 * @param farDistance
+	 *            Far frustum value
+	 * @return Projection matrix
 	 */
-	Matrix computeProjection();
+	Matrix computeProjection(double nearDistance, double farDistance);
 }

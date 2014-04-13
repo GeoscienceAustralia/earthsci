@@ -22,10 +22,25 @@ package au.gov.ga.earthsci.worldwind.common.view.stereo;
  */
 public class BasicStereoViewParameters implements StereoViewParameters
 {
+	private boolean stereoEnabled = false;
 	private double focalLength = 100;
 	private double eyeSeparation = 1;
 	private double eyeSeparationMultiplier = 1;
 	private boolean dynamicStereo = true;
+	private StereoMode stereoMode = StereoMode.RC_ANAGLYPH;
+	private boolean swapEyes = false;
+
+	@Override
+	public boolean isStereoEnabled()
+	{
+		return stereoEnabled;
+	}
+
+	@Override
+	public void setStereoEnabled(boolean stereoEnabled)
+	{
+		this.stereoEnabled = stereoEnabled;
+	}
 
 	@Override
 	public double getFocalLength()
@@ -73,5 +88,29 @@ public class BasicStereoViewParameters implements StereoViewParameters
 	public void setDynamicStereo(boolean dynamicStereo)
 	{
 		this.dynamicStereo = dynamicStereo;
+	}
+
+	@Override
+	public StereoMode getStereoMode()
+	{
+		return stereoMode;
+	}
+
+	@Override
+	public void setStereoMode(StereoMode stereoMode)
+	{
+		this.stereoMode = stereoMode;
+	}
+
+	@Override
+	public boolean isSwapEyes()
+	{
+		return swapEyes;
+	}
+
+	@Override
+	public void setSwapEyes(boolean swapEyes)
+	{
+		this.swapEyes = swapEyes;
 	}
 }

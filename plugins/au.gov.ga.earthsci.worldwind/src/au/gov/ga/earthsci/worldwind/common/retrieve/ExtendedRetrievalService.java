@@ -11,7 +11,6 @@ import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.retrieve.RetrievalFuture;
 import gov.nasa.worldwind.retrieve.RetrievalService;
 import gov.nasa.worldwind.retrieve.Retriever;
-import gov.nasa.worldwind.retrieve.RetrievalService.SSLExceptionListener;
 import gov.nasa.worldwind.util.Logging;
 
 import java.net.SocketTimeoutException;

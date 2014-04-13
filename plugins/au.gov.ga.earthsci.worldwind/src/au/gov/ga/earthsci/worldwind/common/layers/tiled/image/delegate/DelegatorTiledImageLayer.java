@@ -44,7 +44,6 @@ import gov.nasa.worldwind.util.TileKey;
 import gov.nasa.worldwind.util.WWIO;
 import gov.nasa.worldwind.util.WWXML;
 import gov.nasa.worldwind.wms.WMSTiledImageLayer;
-import gov.nasa.worldwindx.examples.elevations.GetElevationsPostProcessor;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -56,6 +55,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.media.opengl.GLProfile;
 import javax.xml.xpath.XPath;
 
 import org.w3c.dom.Document;
@@ -73,9 +73,6 @@ import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
-
-import javax.media.opengl.GLProfile;
-
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 /**
@@ -230,7 +227,7 @@ public class DelegatorTiledImageLayer extends URLTransformerBasicTiledImageLayer
 		super.render(dc);
 		delegateKit.postRender(dc);
 	}
-	
+
 	@Override
 	public Bounds getBounds()
 	{

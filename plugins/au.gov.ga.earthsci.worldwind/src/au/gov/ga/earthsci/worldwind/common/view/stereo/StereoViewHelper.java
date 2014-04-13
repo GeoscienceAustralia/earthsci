@@ -19,10 +19,15 @@ import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
+import gov.nasa.worldwind.render.DrawContext;
 
 import java.awt.Rectangle;
 
+import javax.media.opengl.GL2;
+
+import au.gov.ga.earthsci.worldwind.common.render.DrawableSceneController;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
+import au.gov.ga.earthsci.worldwind.common.view.drawable.DrawableView;
 import au.gov.ga.earthsci.worldwind.common.view.stereo.StereoView.Eye;
 import au.gov.ga.earthsci.worldwind.common.view.transform.TransformView;
 
@@ -113,9 +118,9 @@ public class StereoViewHelper
 	}
 
 	/**
-	 * @see StereoView#calculateProjectionMatrix(double, double)
+	 * @see TransformView#computeProjection(double, double)
 	 */
-	public Matrix calculateProjectionMatrix(View view, double nearDistance, double farDistance)
+	public Matrix computeProjection(View view, double nearDistance, double farDistance)
 	{
 		if (stereo)
 		{
@@ -176,11 +181,71 @@ public class StereoViewHelper
 	}
 
 	/**
-	 * @see TransformView#computeProjection()
+	 * @see DrawableView#draw(DrawContext, DrawableSceneController)
 	 */
-	public Matrix computeProjection(View view)
+	public void draw(DrawContext dc, DrawableSceneController sc)
 	{
-		return calculateProjectionMatrix(view, view.getNearClipDistance(), view.getFarClipDistance());
+		if (!getParameters().isStereoEnabled())
+		{
+			sc.draw(dc);
+			return;
+		}
+
+		GL2 gl = dc.getGL().getGL2();
+
+		StereoMode mode = getParameters().getStereoMode();
+		boolean swap = getParameters().isSwapEyes();
+
+		setup(true, swap ? Eye.RIGHT : Eye.LEFT);
+		setupBuffer(gl, mode, Eye.LEFT);
+		sc.applyView(dc);
+		sc.draw(dc);
+
+		gl.glClear(GL2.GL_DEPTH_BUFFER_BIT);
+
+		setup(true, swap ? Eye.LEFT : Eye.RIGHT);
+		setupBuffer(gl, mode, Eye.RIGHT);
+		sc.applyView(dc);
+		sc.draw(dc);
+
+		setup(false, Eye.LEFT);
+		restoreBuffer(gl, mode);
+		sc.applyView(dc);
+	}
+
+	private static void setupBuffer(GL2 gl, StereoMode mode, Eye eye)
+	{
+		boolean left = eye == Eye.LEFT;
+		switch (mode)
+		{
+		case RC_ANAGLYPH:
+			gl.glColorMask(left, !left, !left, true);
+			break;
+		case GM_ANAGLYPH:
+			gl.glColorMask(!left, left, !left, true);
+			break;
+		case BY_ANAGLYPH:
+			gl.glColorMask(!left, !left, left, true);
+			break;
+		case STEREO_BUFFER:
+			gl.glDrawBuffer(left ? GL2.GL_BACK_LEFT : GL2.GL_BACK_RIGHT);
+			break;
+		}
+	}
+
+	private static void restoreBuffer(GL2 gl, StereoMode mode)
+	{
+		switch (mode)
+		{
+		case BY_ANAGLYPH:
+		case GM_ANAGLYPH:
+		case RC_ANAGLYPH:
+			gl.glColorMask(true, true, true, true);
+			break;
+		case STEREO_BUFFER:
+			gl.glDrawBuffer(GL2.GL_BACK);
+			break;
+		}
 	}
 
 	/**

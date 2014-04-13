@@ -69,7 +69,7 @@ public class FreeView extends BasicView implements TransformView
 	{
 		minimumFarDistance = globe.getDiameter() * 1.5d;
 	}
-	
+
 	@Override
 	public java.awt.Rectangle computeViewport(DrawContext dc)
 	{
@@ -90,13 +90,18 @@ public class FreeView extends BasicView implements TransformView
 	}
 
 	@Override
-	public Matrix computeProjection()
+	public Matrix getPretransformedModelViewMatrix()
+	{
+		return getModelviewMatrix();
+	}
+
+	@Override
+	public Matrix computeProjection(double nearDistance, double farDistance)
 	{
 		double viewportWidth = this.viewport.getWidth() <= 0.0 ? 1.0 : this.viewport.getWidth();
 		double viewportHeight = this.viewport.getHeight() <= 0.0 ? 1.0 : this.viewport.getHeight();
 
-		return Matrix.fromPerspective(this.fieldOfView, viewportWidth, viewportHeight, this.nearClipDistance,
-				this.farClipDistance);
+		return Matrix.fromPerspective(this.fieldOfView, viewportWidth, viewportHeight, nearDistance, farDistance);
 	}
 
 	@Override
@@ -153,7 +158,7 @@ public class FreeView extends BasicView implements TransformView
 		this.farClipDistance = this.computeFarClipDistance();
 
 		// Compute the current projection matrix.
-		this.projection = computeProjection();
+		this.projection = computeProjection(this.nearClipDistance, this.farClipDistance);
 		// Compute the current frustum.
 		this.frustum = Frustum.fromProjectionMatrix(this.projection);
 

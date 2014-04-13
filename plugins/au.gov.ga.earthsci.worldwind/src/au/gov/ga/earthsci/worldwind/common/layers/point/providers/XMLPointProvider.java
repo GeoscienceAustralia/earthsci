@@ -48,6 +48,11 @@ public class XMLPointProvider implements PointProvider
 
 	public XMLPointProvider(Element element)
 	{
+		if (element == null)
+		{
+			return;
+		}
+		
 		XPath xpath = XMLUtil.makeXPath();
 		Element[] pointElements = XMLUtil.getElements(element, "Points/Point", xpath);
 		if (pointElements != null)

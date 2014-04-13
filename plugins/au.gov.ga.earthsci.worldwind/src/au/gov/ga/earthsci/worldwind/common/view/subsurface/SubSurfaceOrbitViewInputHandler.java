@@ -25,6 +25,7 @@ import gov.nasa.worldwind.view.BasicView;
 import gov.nasa.worldwind.view.orbit.BasicOrbitView;
 import gov.nasa.worldwind.view.orbit.OrbitViewInputHandler;
 import gov.nasa.worldwind.view.orbit.OrbitViewLimits;
+import au.gov.ga.earthsci.worldwind.common.input.ProviderOrbitViewInputHandler;
 
 /**
  * {@link OrbitViewInputHandler} subclass that supports the
@@ -32,7 +33,7 @@ import gov.nasa.worldwind.view.orbit.OrbitViewLimits;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class SubSurfaceOrbitViewInputHandler extends OrbitViewInputHandler
+public class SubSurfaceOrbitViewInputHandler extends ProviderOrbitViewInputHandler
 {
 	@Override
 	protected void changeZoom(BasicOrbitView view, AnimationController animControl, double change,
