@@ -51,6 +51,18 @@ http://www.apache.org/licenses/
          id="org.eclipse.sapphire.osgi"
          version="0.0.0"/>
 
+   <includes
+         id="com.sixense.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="net.java.jinput.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="com.oculusvr.jrift.feature"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.equinox.launcher"/>

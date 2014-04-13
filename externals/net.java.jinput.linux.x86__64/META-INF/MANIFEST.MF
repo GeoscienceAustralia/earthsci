@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JInput Natives for Linux x86_64
+Bundle-SymbolicName: net.java.jinput.linux.x86_64
+Bundle-Version: 2.0.6.b2175
+Bundle-Vendor: Sun Microsystems
+Bundle-NativeCode: libjinput-linux64.so;
+ osname="linux"; processor="x86_64"
+Fragment-Host: net.java.jinput;bundle-version="2.0.6"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-BundleShape: dir
+Eclipse-PlatformFilter: (& (osgi.os=linux) (osgi.arch=x86_64))

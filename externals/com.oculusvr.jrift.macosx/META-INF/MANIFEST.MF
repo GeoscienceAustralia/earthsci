@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JRift Natives for MacOSX
+Bundle-SymbolicName: com.oculusvr.jrift.macosx
+Bundle-Version: 1.0.0.qualifier
+Bundle-NativeCode: libJRiftLibrary.jnilib;
+ osname="macosx"
+Fragment-Host: com.oculusvr.jrift;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-PlatformFilter: (osgi.os=macosx)
+Eclipse-BundleShape: dir
+Bundle-Vendor: Oculus VR

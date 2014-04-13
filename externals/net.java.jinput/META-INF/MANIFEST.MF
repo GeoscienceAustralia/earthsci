@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JInput
+Bundle-SymbolicName: net.java.jinput
+Bundle-Version: 2.0.6.b2175
+Bundle-Vendor: Sun Microsystems
+Bundle-ClassPath: jinput.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: net.java.games.input,
+ net.java.games.util,
+ net.java.games.util.plugins

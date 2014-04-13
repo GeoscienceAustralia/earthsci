@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Sixense Java
+Bundle-SymbolicName: com.sixense;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: SixenseJava.jar,
+ .
+Bundle-Vendor: Sixense
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: com.sixense,
+ com.sixense.utils,
+ com.sixense.utils.enums
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.osgi
+Bundle-Activator: com.sixense.SixenseActivator
