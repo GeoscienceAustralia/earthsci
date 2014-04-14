@@ -50,6 +50,30 @@
 		<module>org.jscience</module>
 		
 		<module>org.apache.commons.lang</module>
+		
+		<module>com.oculusvr.jrift.win32.x86</module>
+		<module>com.oculusvr.jrift.win32.x86__64</module>
+		<module>com.oculusvr.jrift.linux.x86</module>
+		<module>com.oculusvr.jrift.linux.x86__64</module>
+		<module>com.oculusvr.jrift.macosx</module>
+		<module>com.oculusvr.jrift</module>
+		<module>com.oculusvr.jrift.feature</module>
+		
+		<module>com.sixense.win32.x86</module>
+		<module>com.sixense.win32.x86__64</module>
+		<module>com.sixense.linux.x86</module>
+		<module>com.sixense.linux.x86__64</module>
+		<module>com.sixense.macosx</module>
+		<module>com.sixense</module>
+		<module>com.sixense.feature</module>
+		
+		<module>net.java.jinput.win32.x86</module>
+		<module>net.java.jinput.win32.x86__64</module>
+		<module>net.java.jinput.linux.x86</module>
+		<module>net.java.jinput.linux.x86__64</module>
+		<module>net.java.jinput.macosx</module>
+		<module>net.java.jinput</module>
+		<module>net.java.jinput.feature</module>
 	</modules>
 
 </project>
