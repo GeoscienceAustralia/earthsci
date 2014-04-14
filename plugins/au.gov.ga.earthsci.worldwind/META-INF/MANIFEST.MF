@@ -13,9 +13,9 @@ Require-Bundle: gov.nasa.worldwind,
  com.jogamp.jogl;bundle-version="2.0.0",
  org.gdal;bundle-version="1.7.2",
  com.jhlabs.filters;bundle-version="1.0.0",
- com.oculusvr.jrift;bundle-version="1.0.0",
+ com.oculusvr.jrift;bundle-version="0.0.1",
  net.java.jinput;bundle-version="2.0.6",
- com.sixense;bundle-version="1.0.0"
+ com.sixense;bundle-version="0.0.1"
 Export-Package: au.gov.ga.earthsci.worldwind,
  au.gov.ga.earthsci.worldwind.common,
  au.gov.ga.earthsci.worldwind.common.downloader,
