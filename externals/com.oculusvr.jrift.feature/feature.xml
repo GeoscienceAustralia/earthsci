@@ -2,7 +2,7 @@
 <feature
       id="com.oculusvr.jrift.feature"
       label="JRift Feature"
-      version="1.0.0.qualifier"
+      version="0.0.1"
       provider-name="Oculus VR"
       os="linux,macosx,win32"
       arch="x86,x86_64">

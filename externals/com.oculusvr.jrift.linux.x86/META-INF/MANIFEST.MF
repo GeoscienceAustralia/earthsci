@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JRift Natives for Linux x86
 Bundle-SymbolicName: com.oculusvr.jrift.linux.x86
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.0.1
 Bundle-NativeCode: libJRiftLibrary.so;
  osname="linux"; processor="x86"
-Fragment-Host: com.oculusvr.jrift;bundle-version="1.0.0"
+Fragment-Host: com.oculusvr.jrift;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-BundleShape: dir
 Eclipse-PlatformFilter: (& (osgi.os=linux) (osgi.arch=x86))

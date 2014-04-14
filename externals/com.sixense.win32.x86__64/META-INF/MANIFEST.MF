@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Sixense Natives for Windows x86_64
 Bundle-SymbolicName: com.sixense.win32.x86_64
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.0.1
 Bundle-NativeCode: sixense_utils_x64.dll;
  sixense_x64.dll;
  SixenseJava.dll;
  osname="win32"; processor="x86_64"
-Fragment-Host: com.sixense;bundle-version="1.0.0"
+Fragment-Host: com.sixense;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Sixense
 Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=x86_64))

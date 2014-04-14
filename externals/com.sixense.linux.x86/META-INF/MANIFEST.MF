@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Sixense Natives for Linux x86
 Bundle-SymbolicName: com.sixense.linux.x86
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.0.1
 Bundle-NativeCode: libsixense_utils.so;
  libsixense.so;
  libSixenseJava.so;
  osname="linux"; processor="x86"
-Fragment-Host: com.sixense;bundle-version="1.0.0"
+Fragment-Host: com.sixense;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-PlatformFilter: (& (osgi.os=linux) (osgi.arch=x86))
 Eclipse-BundleShape: dir

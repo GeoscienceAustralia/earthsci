@@ -2,7 +2,7 @@
 <feature
       id="com.sixense.feature"
       label="Sixense Feature"
-      version="1.0.0.qualifier"
+      version="0.0.1"
       provider-name="Sixense"
       os="linux,macosx,win32"
       arch="x86,x86_64">

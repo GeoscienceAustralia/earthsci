@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Sixense Natives for MacOSX
 Bundle-SymbolicName: com.sixense.macosx
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.0.1
 Bundle-NativeCode: libsixense_utils_x64.dylib;
  libsixense_x64.dylib;
  libSixenseJava.jnilib;
  osname="macosx"
-Fragment-Host: com.sixense;bundle-version="1.0.0"
+Fragment-Host: com.sixense;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-PlatformFilter: (osgi.os=macosx)
 Eclipse-BundleShape: dir
