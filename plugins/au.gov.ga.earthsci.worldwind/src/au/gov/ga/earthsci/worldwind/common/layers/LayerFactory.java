@@ -15,15 +15,15 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers;
 
-import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.avlist.AVListImpl;
 import gov.nasa.worldwind.layers.BasicLayerFactory;
 import gov.nasa.worldwind.layers.Layer;
+import gov.nasa.worldwind.layers.SkyGradientLayer;
+import gov.nasa.worldwind.layers.StarsLayer;
 import gov.nasa.worldwind.layers.mercator.BasicMercatorTiledImageLayer;
 import gov.nasa.worldwind.ogc.OGCConstants;
-import gov.nasa.worldwind.util.WWUtil;
 import gov.nasa.worldwind.util.WWXML;
 
 import org.w3c.dom.Element;
@@ -42,6 +42,8 @@ import au.gov.ga.earthsci.worldwind.common.layers.screenoverlay.ScreenOverlayLay
 import au.gov.ga.earthsci.worldwind.common.layers.shapefile.surfaceshape.ShapefileLayerFactory;
 import au.gov.ga.earthsci.worldwind.common.layers.sphere.SphereLayerFactory;
 import au.gov.ga.earthsci.worldwind.common.layers.tiled.image.delegate.DelegatorTiledImageLayer;
+import au.gov.ga.earthsci.worldwind.common.layers.transform.TransformSkyGradientLayer;
+import au.gov.ga.earthsci.worldwind.common.layers.transform.TransformStarsLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.volume.VolumeLayerFactory;
 import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
@@ -118,11 +120,23 @@ public class LayerFactory extends BasicLayerFactory
 			//fix any layer definitions that are pointing to the legacy ga-worldwind-suite common classes:
 			className = className.replace("au.gov.ga.worldwind.common.", "au.gov.ga.earthsci.worldwind.common.");
 
-			Layer layer = (Layer) WorldWind.createComponent(className);
-			String actuate = WWXML.getText(domElement, "@actuate");
-			layer.setEnabled(WWUtil.isEmpty(actuate) || actuate.equals("onLoad"));
-			WWXML.invokePropertySetters(layer, domElement);
-			return layer;
+			try
+			{
+				Class<?> c = Class.forName(className);
+				if (c.equals(StarsLayer.class))
+				{
+					className = TransformStarsLayer.class.getName();
+				}
+				else if (c.equals(SkyGradientLayer.class))
+				{
+					className = TransformSkyGradientLayer.class.getName();
+				}
+			}
+			catch (ClassNotFoundException e)
+			{
+			}
+
+			domElement.setAttribute("className", className);
 		}
 
 		return super.createFromLayerDocument(domElement, params);

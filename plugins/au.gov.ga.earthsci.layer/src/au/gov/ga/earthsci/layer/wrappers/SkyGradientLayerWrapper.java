@@ -24,6 +24,7 @@ import javax.xml.xpath.XPath;
 
 import org.w3c.dom.Element;
 
+import au.gov.ga.earthsci.worldwind.common.layers.transform.TransformSkyGradientLayer;
 import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
 /**
@@ -31,20 +32,20 @@ import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class SkyGradientLayerWrapper extends ClassLayerWrapper<SkyGradientLayer>
+public class SkyGradientLayerWrapper extends ClassLayerWrapper<TransformSkyGradientLayer>
 {
 	private final static String ATMOSPHERE_THICKNESS_ELEMENT = "AtmosphereThickness"; //$NON-NLS-1$
 	private final static String HORIZON_COLOR_ELEMENT = "HorizonColor"; //$NON-NLS-1$
 	private final static String ZENITH_COLOR_ELEMENT = "ZenithColor"; //$NON-NLS-1$
 
 	@Override
-	protected Class<SkyGradientLayer> getWrappedLayerClass()
+	protected Class<TransformSkyGradientLayer> getWrappedLayerClass()
 	{
-		return SkyGradientLayer.class;
+		return TransformSkyGradientLayer.class;
 	}
 
 	@Override
-	protected void load(SkyGradientLayer layer, Element element)
+	protected void load(TransformSkyGradientLayer layer, Element element)
 	{
 		XPath xpath = WWXML.makeXPath();
 
@@ -68,7 +69,7 @@ public class SkyGradientLayerWrapper extends ClassLayerWrapper<SkyGradientLayer>
 	}
 
 	@Override
-	protected void save(SkyGradientLayer layer, Element element)
+	protected void save(TransformSkyGradientLayer layer, Element element)
 	{
 		WWXML.appendDouble(element, ATMOSPHERE_THICKNESS_ELEMENT, layer.getAtmosphereThickness());
 		XMLUtil.appendColor(element, HORIZON_COLOR_ELEMENT, layer.getHorizonColor());
