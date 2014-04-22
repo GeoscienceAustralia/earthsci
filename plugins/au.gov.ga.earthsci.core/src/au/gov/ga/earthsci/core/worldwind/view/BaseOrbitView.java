@@ -47,7 +47,6 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	protected final IViewState state;
 	protected OrbitViewLimits viewLimits;
 
-	protected boolean configurationValuesLoaded = false;
 	protected boolean outOfFocus = false;
 	protected final BaseOrbitViewCollisionSupport collisionSupport = new BaseOrbitViewCollisionSupport();
 	protected boolean resolvingCollisions;
@@ -60,6 +59,8 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 
 		this.collisionSupport.setCollisionThreshold(COLLISION_THRESHOLD);
 		this.collisionSupport.setNumIterations(COLLISION_NUM_ITERATIONS);
+
+		loadConfigurationValues();
 	}
 
 	protected IViewState createViewState()
@@ -82,30 +83,22 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 
 	protected void loadConfigurationValues()
 	{
+		Position center = getCenterPosition();
 		Double initLat = Configuration.getDoubleValue(AVKey.INITIAL_LATITUDE);
 		Double initLon = Configuration.getDoubleValue(AVKey.INITIAL_LONGITUDE);
-		double initElev = 50000.0;
-
+		double initElev = center.getElevation();
 		// Set center latitude and longitude. Do not change center elevation.
-		Double initAltitude = Configuration.getDoubleValue(AVKey.INITIAL_ALTITUDE);
-		Position eyePosition = getCurrentEyePosition();
-		if (initAltitude != null)
-		{
-			initElev = initAltitude;
-		}
 		if (initLat != null && initLon != null)
 		{
-			setEyePosition(Position.fromDegrees(initLat, initLon, initElev));
+			setCenterPosition(Position.fromDegrees(initLat, initLon, initElev));
 		}
-
-		// Set only center latitude. Do not change center longitude or center elevation.
 		else if (initLat != null)
 		{
-			setEyePosition(Position.fromDegrees(initLat, eyePosition.getLongitude().degrees, initElev));
+			setCenterPosition(Position.fromDegrees(initLat, center.getLongitude().degrees, initElev));
 		}
 		else if (initLon != null)
 		{
-			setEyePosition(Position.fromDegrees(eyePosition.getLatitude().degrees, initLon, initElev));
+			setCenterPosition(Position.fromDegrees(center.getLatitude().degrees, initLon, initElev));
 		}
 
 		Double initHeading = Configuration.getDoubleValue(AVKey.INITIAL_HEADING);
@@ -118,6 +111,12 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 		if (initPitch != null)
 		{
 			setPitch(Angle.fromDegrees(initPitch));
+		}
+
+		Double initAltitude = Configuration.getDoubleValue(AVKey.INITIAL_ALTITUDE);
+		if (initAltitude != null)
+		{
+			setZoom(initAltitude);
 		}
 
 		Double initFov = Configuration.getDoubleValue(AVKey.FOV);
@@ -411,12 +410,6 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 		// Update DrawContext and Globe references.
 		this.dc = dc;
 		this.globe = this.dc.getGlobe();
-
-		if (!configurationValuesLoaded)
-		{
-			loadConfigurationValues();
-			configurationValuesLoaded = true;
-		}
 
 		//========== modelview matrix state ==========//
 		// Compute the current modelview matrix.
