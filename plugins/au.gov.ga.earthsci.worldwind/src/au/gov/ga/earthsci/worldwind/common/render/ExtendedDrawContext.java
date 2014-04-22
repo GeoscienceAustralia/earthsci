@@ -182,7 +182,10 @@ public class ExtendedDrawContext extends DrawContextDelegate implements Vertical
 	 */
 	public void switchToFlatSurfaceGeometry()
 	{
-		oldSurfaceGeomtry = getSurfaceGeometry();
+		if (oldSurfaceGeomtry == null)
+		{
+			oldSurfaceGeomtry = getSurfaceGeometry();
+		}
 		setSurfaceGeometry(flatSurfaceGeometry);
 	}
 
@@ -191,6 +194,10 @@ public class ExtendedDrawContext extends DrawContextDelegate implements Vertical
 	 */
 	public void switchToStandardSurfaceGeometry()
 	{
-		setSurfaceGeometry(oldSurfaceGeomtry);
+		if (oldSurfaceGeomtry != null)
+		{
+			setSurfaceGeometry(oldSurfaceGeomtry);
+			oldSurfaceGeomtry = null;
+		}
 	}
 }
