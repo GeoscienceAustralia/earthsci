@@ -56,7 +56,7 @@ public class ExtendedSceneController extends BasicSceneController implements Dra
 
 	public ExtendedSceneController()
 	{
-		dc.dispose();
+		dc = wrapDrawContext(dc);
 		VerticalExaggerationService.INSTANCE.addListener(this);
 		setVerticalExaggeration(VerticalExaggerationService.INSTANCE.get());
 	}
