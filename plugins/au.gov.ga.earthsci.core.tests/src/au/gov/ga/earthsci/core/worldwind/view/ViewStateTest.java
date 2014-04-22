@@ -24,6 +24,7 @@ import gov.nasa.worldwind.globes.EllipsoidalGlobe;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.terrain.ZeroElevationModel;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -186,9 +187,32 @@ public class ViewStateTest
 				new Vec4(-classUnderTest.getZoom() * SQRTHALF, -classUnderTest.getZoom() * SQRTHALF, GLOBE_RADIUS, 1.0);
 		assertVec4Equals(expected, classUnderTest.getEyePoint(globe), EPSILON);
 
-		Position expectedPosition = Position.fromDegrees(50, 50, 50);
-		classUnderTest.setEye(expectedPosition, globe);
-		assertPositionEquals(expectedPosition, classUnderTest.getEye(globe), EPSILON);
+		Position expectedEye = Position.fromDegrees(50, 50, 50);
+		classUnderTest.setEye(expectedEye, globe);
+		assertPositionEquals(expectedEye, classUnderTest.getEye(globe), EPSILON);
+
+		Position expectedCenter = Position.fromDegrees(40, 40, 0);
+		classUnderTest.setCenter(expectedCenter);
+		classUnderTest.setEye(expectedEye, globe);
+		assertPositionEquals(expectedCenter, classUnderTest.getCenter(), EPSILON);
+		assertPositionEquals(expectedEye, classUnderTest.getEye(globe), EPSILON);
+
+		expectedCenter = Position.fromDegrees(50, 50, 0);
+		Angle previousHeading = classUnderTest.getHeading();
+		classUnderTest.setCenter(expectedCenter);
+		classUnderTest.setEye(expectedEye, globe);
+		assertPositionEquals(expectedCenter, classUnderTest.getCenter(), EPSILON);
+		assertPositionEquals(expectedEye, classUnderTest.getEye(globe), EPSILON);
+		assertEquals(0, classUnderTest.getPitch().degrees, EPSILON);
+		assertEquals(previousHeading.degrees, classUnderTest.getHeading().degrees, EPSILON);
+
+		expectedCenter = Position.fromDegrees(50, 50, 50);
+		expectedEye = Position.fromDegrees(40, 40, 20);
+		classUnderTest.setCenter(expectedCenter);
+		classUnderTest.setEye(expectedEye, globe);
+		assertPositionEquals(expectedCenter, classUnderTest.getCenter(), EPSILON);
+		assertPositionEquals(expectedEye, classUnderTest.getEye(globe), EPSILON);
+		Assert.assertTrue(classUnderTest.getPitch().degrees > 90);
 	}
 
 	@Test

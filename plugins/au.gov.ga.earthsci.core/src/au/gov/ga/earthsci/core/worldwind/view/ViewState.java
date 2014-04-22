@@ -158,8 +158,8 @@ public class ViewState implements IViewState
 					Matrix.fromRotationXYZ(pitch, Angle.ZERO, heading.multiply(-1)));
 
 			//compute rotation for current position on globe
-			Vec4 up = globe.computeNorthPointingTangentAtLocation(center.getLatitude(), center.getLongitude());
-			Vec4 f = globe.computeSurfaceNormalAtLocation(center.getLatitude(), center.getLongitude());
+			Vec4 up = globe.computeNorthPointingTangentAtLocation(center.latitude, center.longitude);
+			Vec4 f = globe.computeSurfaceNormalAtLocation(center.latitude, center.longitude);
 			Vec4 s = f.cross3(up);
 			Vec4 u = s.cross3(f);
 			Matrix rotation = new Matrix(
@@ -249,7 +249,7 @@ public class ViewState implements IViewState
 
 		if (lastCenterPoint == null)
 		{
-			lastCenterPoint = globe.computePointFromPosition(getCenter());
+			lastCenterPoint = globe.computePointFromPosition(center);
 		}
 		return lastCenterPoint;
 	}
@@ -283,9 +283,49 @@ public class ViewState implements IViewState
 	@Override
 	public void setEye(Position eye, Globe globe)
 	{
-		//TODO implement this so that it doesn't modify the center point, if possible, or required?
+		Vec4 centerPoint = getCenterPoint(globe);
+		Vec4 eyePoint = globe.computePointFromPosition(eye);
 
-		setRoll(Angle.ZERO);
+		Vec4 normal = globe.computeSurfaceNormalAtPoint(centerPoint);
+		Vec4 lookAtPoint = centerPoint.subtract3(normal);
+		Vec4 north = globe.computeNorthPointingTangentAtLocation(center.getLatitude(), center.getLongitude());
+		Matrix centerTransform = Matrix.fromViewLookAt(centerPoint, lookAtPoint, north);
+
+		Matrix centerTransformInv = centerTransform.getInverse();
+		if (centerTransformInv != null)
+		{
+			//if eye lat/lon != center lat/lon, then the surface normal will be a good value for the up direction
+			Vec4 up = normal;
+			//otherwise, estimate the up direction by using the *current* heading with the new center position
+			Vec4 forward = centerPoint.subtract3(eyePoint).normalize3();
+			if (forward.cross3(up).getLength3() < 0.001)
+			{
+				Matrix modelview = Matrix.fromTranslation(0, 0, -1)
+						.multiply(Matrix.fromRotationZ(heading)).multiply(centerTransform);
+				Matrix modelviewInv = modelview.getInverse();
+				if (modelviewInv != null)
+				{
+					up = Vec4.UNIT_Y.transformBy4(modelviewInv);
+				}
+			}
+
+			Matrix modelTransform = Matrix.fromViewLookAt(eyePoint, centerPoint, up);
+			Matrix hpzTransform = modelTransform.multiply(centerTransformInv);
+			Angle heading = hpzTransform.getRotationZ();
+			Angle pitch = hpzTransform.getRotationX();
+			Vec4 translation = hpzTransform.getTranslation();
+
+			if (heading != null && pitch != null && translation != null)
+			{
+				//success!
+				setHeading(heading);
+				setPitch(pitch.multiply(-1));
+				setZoom(translation.getLength3());
+				return;
+			}
+		}
+
+		//center transform wasn't invertable, or couldn't find heading/pitch/zoom from transform, so just reset the view
 		setPitch(Angle.ZERO);
 		setHeading(Angle.ZERO);
 		setZoom(eye.elevation);

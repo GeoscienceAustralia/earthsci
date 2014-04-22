@@ -178,9 +178,8 @@ public interface IViewState
 	/**
 	 * Set the position of the eye.
 	 * <p/>
-	 * Implementations can decide to change the heading/pitch/zoom to keep the
-	 * center constant, or change the center to keep the heading/pitch/zoom
-	 * constant, or change both the heading/pitch/zoom and the center.
+	 * Implementations should change the heading/pitch/zoom to keep the center
+	 * constant.
 	 * 
 	 * @param eye
 	 *            New eye position
