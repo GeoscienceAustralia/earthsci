@@ -195,9 +195,15 @@ public class TargetOrbitView extends BaseOrbitView
 		if (viewInputHandler instanceof TargetOrbitViewInputHandler)
 		{
 			//calculate mouse position in geographic coordinates
-			GL2 gl = dc.getGL().getGL2();
 
 			Point mousePoint = ((TargetOrbitViewInputHandler) viewInputHandler).getMousePoint();
+			if (mousePoint == null)
+			{
+				mousePosition = null;
+				return;
+			}
+
+			GL2 gl = dc.getGL().getGL2();
 			Rectangle viewport = getViewport();
 			int winX = mousePoint.x;
 			int winY = viewport.height - mousePoint.y - 1;
