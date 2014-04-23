@@ -411,9 +411,11 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 		this.dc = dc;
 		this.globe = this.dc.getGlobe();
 
+		beforeComputeMatrices();
+
 		//========== modelview matrix state ==========//
 		// Compute the current modelview matrix.
-		this.modelview = state.getTransform(globe);
+		this.modelview = computeModelView();
 
 		if (this.modelview == null)
 		{
@@ -429,26 +431,17 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 
 		//========== projection matrix state ==========//
 		// Get the current OpenGL viewport state.
-		int[] viewportArray = new int[4];
-		this.dc.getGL().glGetIntegerv(GL.GL_VIEWPORT, viewportArray, 0);
-		this.viewport = new java.awt.Rectangle(viewportArray[0], viewportArray[1], viewportArray[2], viewportArray[3]);
+		this.viewport = computeViewport(dc);
 
 		// Compute the current clip plane distances.
 		this.nearClipDistance = this.computeNearClipDistance();
 		this.farClipDistance = this.computeFarClipDistance();
 
-		// Compute the current viewport dimensions.
-		double viewportWidth = this.viewport.getWidth() <= 0.0 ? 1.0 : this.viewport.getWidth();
-		double viewportHeight = this.viewport.getHeight() <= 0.0 ? 1.0 : this.viewport.getHeight();
-
 		// Compute the current projection matrix.
-		this.projection =
-				Matrix.fromPerspective(this.fieldOfView, viewportWidth, viewportHeight, this.nearClipDistance,
-						this.farClipDistance);
+		this.projection = computeProjection(this.nearClipDistance, this.farClipDistance);
 
 		// Compute the current frustum.
-		this.frustum = Frustum.fromPerspective(this.fieldOfView, (int) viewportWidth, (int) viewportHeight,
-				this.nearClipDistance, this.farClipDistance);
+		this.frustum = computeFrustum(this.nearClipDistance, this.farClipDistance);
 
 		//========== load GL matrix state ==========//
 		loadGLViewState(dc, this.modelview, this.projection);
@@ -463,5 +456,35 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 
 		// Clear cached computations.
 		this.lastFrustumInModelCoords = null;
+	}
+
+	protected void beforeComputeMatrices()
+	{
+	}
+
+	protected java.awt.Rectangle computeViewport(DrawContext dc)
+	{
+		int[] viewportArray = new int[4];
+		this.dc.getGL().glGetIntegerv(GL.GL_VIEWPORT, viewportArray, 0);
+		return new java.awt.Rectangle(viewportArray[0], viewportArray[1], viewportArray[2], viewportArray[3]);
+	}
+
+	protected Matrix computeModelView()
+	{
+		return state.getTransform(globe);
+	}
+
+	protected Matrix computeProjection(double nearDistance, double farDistance)
+	{
+		double viewportWidth = this.viewport.width <= 0.0 ? 1.0 : this.viewport.width;
+		double viewportHeight = this.viewport.height <= 0.0 ? 1.0 : this.viewport.height;
+		return Matrix.fromPerspective(this.fieldOfView, viewportWidth, viewportHeight, nearDistance, farDistance);
+	}
+
+	protected Frustum computeFrustum(double nearDistance, double farDistance)
+	{
+		int viewportWidth = this.viewport.width <= 0.0 ? 1 : (int) this.viewport.width;
+		int viewportHeight = this.viewport.height <= 0.0 ? 1 : (int) this.viewport.height;
+		return Frustum.fromPerspective(this.fieldOfView, viewportWidth, viewportHeight, nearDistance, farDistance);
 	}
 }
