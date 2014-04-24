@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.core.worldwind.view;
 
-import gov.nasa.worldwind.awt.ViewInputHandler;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Position;
@@ -39,7 +38,7 @@ import javax.media.opengl.GL2;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class TargetOrbitView extends BaseOrbitView
+public class TargetOrbitView extends BaseOrbitView implements ITargetView
 {
 	protected boolean targetMode = false;
 
@@ -63,28 +62,12 @@ public class TargetOrbitView extends BaseOrbitView
 	protected Position mousePosition;
 
 	@Override
-	protected ViewInputHandler createViewInputHandler()
-	{
-		return new TargetOrbitViewInputHandler();
-	}
-
-	/**
-	 * @return Is target mode enabled?
-	 */
 	public boolean isTargetMode()
 	{
 		return targetMode;
 	}
 
-	/**
-	 * Enable/disable target mode. When enabled, the user can modify the center
-	 * point, instead of fixing it to the earth's surface.
-	 * <p/>
-	 * If target mode is enabled, the minimum pitch limit will be set to -180
-	 * degrees, and collision detection will be disabled.
-	 * 
-	 * @param targetMode
-	 */
+	@Override
 	public void setTargetMode(boolean targetMode)
 	{
 		if (this.targetMode == targetMode)
@@ -112,35 +95,25 @@ public class TargetOrbitView extends BaseOrbitView
 		this.viewLimits.setPitchLimits(pitchLimits[0], pitchLimits[1]);
 	}
 
-	/**
-	 * @return Should the axis marker be drawn when the view changes?
-	 */
+	@Override
 	public boolean isDrawAxisMarker()
 	{
 		return drawAxisMarker;
 	}
 
-	/**
-	 * Enable/disable the axis marker that is drawn when the view changes.
-	 * 
-	 * @param drawAxisMarker
-	 */
+	@Override
 	public void setDrawAxisMarker(boolean drawAxisMarker)
 	{
 		this.drawAxisMarker = drawAxisMarker;
 	}
 
-	/**
-	 * @return Axis marker that is drawn when the view changes
-	 */
+	@Override
 	public AxisRenderable getAxisMarker()
 	{
 		return axisMarker;
 	}
 
-	/**
-	 * @return Approximate mouse position in geographic coordinates
-	 */
+	@Override
 	public Position getMousePosition()
 	{
 		return mousePosition;
