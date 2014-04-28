@@ -228,6 +228,11 @@ public class PageLinks extends Composite
 	 */
 	protected void setupLinks()
 	{
+		if (isDisposed())
+		{
+			return;
+		}
+
 		disposeChildren();
 
 		int spacing = getSpacing();
