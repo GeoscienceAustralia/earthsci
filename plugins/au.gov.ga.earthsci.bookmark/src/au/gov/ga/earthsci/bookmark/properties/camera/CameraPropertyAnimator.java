@@ -18,9 +18,8 @@ package au.gov.ga.earthsci.bookmark.properties.camera;
 import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.animation.Animator;
-import gov.nasa.worldwind.view.orbit.AccessibleOrbitViewInputSupport;
-import gov.nasa.worldwind.view.orbit.AccessibleOrbitViewInputSupport.AccessibleOrbitViewState;
 import gov.nasa.worldwind.view.orbit.OrbitView;
+import gov.nasa.worldwind.view.orbit.OrbitViewInputSupport;
 import au.gov.ga.earthsci.bookmark.AbstractBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.core.worldwind.view.FlyToOrbitViewAnimator;
@@ -54,13 +53,13 @@ public class CameraPropertyAnimator extends AbstractBookmarkPropertyAnimator imp
 	{
 		if (view instanceof OrbitView)
 		{
-			final AccessibleOrbitViewState startOVS =
-					AccessibleOrbitViewInputSupport.computeOrbitViewState(view.getGlobe(), view.getGlobe()
+			final OrbitViewInputSupport.OrbitViewState startOVS =
+					OrbitViewInputSupport.computeOrbitViewState(view.getGlobe(), view.getGlobe()
 							.computePointFromPosition(start.getEyePosition()), view.getGlobe()
 							.computePointFromPosition(start.getLookatPosition()), start.getUpVector());
 
-			final AccessibleOrbitViewState endOVS =
-					AccessibleOrbitViewInputSupport.computeOrbitViewState(view.getGlobe(), view.getGlobe()
+			final OrbitViewInputSupport.OrbitViewState endOVS =
+					OrbitViewInputSupport.computeOrbitViewState(view.getGlobe(), view.getGlobe()
 							.computePointFromPosition(end.getEyePosition()),
 							view.getGlobe().computePointFromPosition(end.getLookatPosition()), end.getUpVector());
 
