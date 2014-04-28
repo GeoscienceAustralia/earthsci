@@ -1,6 +1,8 @@
 *.class
-bin/
-target/
+*/bin/
+*/*/bin/
+*/target/
+*/*/target/
 *.log
 .DS_Store
 Thumbs.db
