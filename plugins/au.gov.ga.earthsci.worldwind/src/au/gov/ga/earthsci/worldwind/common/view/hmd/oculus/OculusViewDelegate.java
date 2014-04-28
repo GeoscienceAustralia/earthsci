@@ -15,26 +15,28 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.view.hmd.oculus;
 
-import gov.nasa.worldwind.Disposable;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
+import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
 import au.gov.ga.earthsci.worldwind.common.view.hmd.HMDDistortion;
-import au.gov.ga.earthsci.worldwind.common.view.hmd.HMDView;
+import au.gov.ga.earthsci.worldwind.common.view.hmd.HMDViewDelegate;
 import au.gov.ga.earthsci.worldwind.common.view.hmd.IHMDParameters;
 
 /**
- * {@link HMDView} implementation for the Oculus Rift. Uses the JRift library.
+ * {@link HMDViewDelegate} implementation for the Oculus Rift. Uses the JRift
+ * library.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class OculusView extends HMDView implements IOculusListener, Disposable
+public class OculusViewDelegate extends HMDViewDelegate implements IOculusListener
 {
 	private final OculusSingleton oculus = OculusSingleton.getInstance();
 	private final HMDDistortion distortion;
 	private Matrix headRotation = Matrix.IDENTITY;
+	private IDelegateView view;
 
-	public OculusView()
+	public OculusViewDelegate()
 	{
 		if (!oculus.isInitialized())
 		{
@@ -45,7 +47,26 @@ public class OculusView extends HMDView implements IOculusListener, Disposable
 		IHMDParameters parameters = oculus.getParameters();
 		distortion =
 				new HMDDistortion(parameters, parameters.getHorizontalResolution(), parameters.getVerticalResolution());
-		oculus.addListener(this);
+	}
+
+	@Override
+	public void installed(IDelegateView view)
+	{
+		if (distortion != null)
+		{
+			oculus.addListener(this);
+		}
+		this.view = view;
+	}
+
+	@Override
+	public void uninstalled(IDelegateView view)
+	{
+		this.view = null;
+		if (distortion != null)
+		{
+			oculus.removeListener(this);
+		}
 	}
 
 	@Override
@@ -66,12 +87,9 @@ public class OculusView extends HMDView implements IOculusListener, Disposable
 		Matrix z = Matrix.fromRotationZ(roll);
 		Matrix xy = Matrix.fromRotationXYZ(pitch, yaw, Angle.ZERO);
 		headRotation = z.multiply(xy);
-		firePropertyChange(AVKey.VIEW, null, this);
-	}
-
-	@Override
-	public void dispose()
-	{
-		oculus.removeListener(this);
+		if (view != null)
+		{
+			view.firePropertyChange(AVKey.VIEW, null, view);
+		}
 	}
 }

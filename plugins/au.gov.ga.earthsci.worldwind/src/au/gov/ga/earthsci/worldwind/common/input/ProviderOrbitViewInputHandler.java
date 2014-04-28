@@ -20,6 +20,7 @@ import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.ViewInputAttributes.ActionAttributes;
 import gov.nasa.worldwind.awt.ViewInputAttributes.DeviceAttributes;
 import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.view.orbit.OrbitView;
 import au.gov.ga.earthsci.worldwind.common.view.rotate.FreeRotateOrbitViewInputHandler;
 
 /**
@@ -83,7 +84,7 @@ public class ProviderOrbitViewInputHandler extends FreeRotateOrbitViewInputHandl
 	}
 
 	@Override
-	public View getView()
+	public OrbitView getView()
 	{
 		return super.getView();
 	}

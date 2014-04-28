@@ -18,14 +18,14 @@ package au.gov.ga.earthsci.worldwind.common.view.stereo;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.render.DrawContext;
 import au.gov.ga.earthsci.worldwind.common.render.DrawableSceneController;
-import au.gov.ga.earthsci.worldwind.common.view.subsurface.SubSurfaceOrbitView;
+import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
 
 /**
- * Sub-surface orbit view with {@link StereoView} support.
+ * Orbit view with {@link IStereoViewDelegate} support.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class StereoSubSurfaceOrbitView extends SubSurfaceOrbitView implements StereoView
+public class StereoViewDelegate implements IStereoViewDelegate
 {
 	private StereoViewHelper helper = new StereoViewHelper();
 
@@ -72,27 +72,42 @@ public class StereoSubSurfaceOrbitView extends SubSurfaceOrbitView implements St
 	}
 
 	@Override
-	public Matrix computeProjection(double nearDistance, double farDistance)
+	public void installed(IDelegateView view)
 	{
-		return helper.computeProjection(this, nearDistance, farDistance);
 	}
 
 	@Override
-	public void beforeComputeMatrices()
+	public void uninstalled(IDelegateView view)
 	{
-		super.beforeComputeMatrices();
-		helper.beforeComputeMatrices(this);
 	}
 
 	@Override
-	public Matrix computeModelView()
+	public void beforeComputeMatrices(IDelegateView view)
 	{
-		Matrix matrix = super.computeModelView();
+		helper.beforeComputeMatrices(view);
+	}
+
+	@Override
+	public Matrix computeModelView(IDelegateView view)
+	{
+		Matrix matrix = view.computeModelView();
 		return helper.transformModelView(matrix);
 	}
 
 	@Override
-	public void draw(DrawContext dc, DrawableSceneController sc)
+	public Matrix getPretransformedModelView(IDelegateView view)
+	{
+		return view.getPretransformedModelView();
+	}
+
+	@Override
+	public Matrix computeProjection(IDelegateView view, double nearDistance, double farDistance)
+	{
+		return helper.computeProjection(view, nearDistance, farDistance);
+	}
+
+	@Override
+	public void draw(IDelegateView view, DrawContext dc, DrawableSceneController sc)
 	{
 		helper.draw(dc, sc);
 	}

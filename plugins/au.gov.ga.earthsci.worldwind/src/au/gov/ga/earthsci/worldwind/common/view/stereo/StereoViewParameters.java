@@ -16,7 +16,7 @@
 package au.gov.ga.earthsci.worldwind.common.view.stereo;
 
 /**
- * Parameters for {@link StereoView}s.
+ * Parameters for {@link IStereoViewDelegate}s.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */

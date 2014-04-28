@@ -30,7 +30,8 @@ import gov.nasa.worldwind.view.orbit.OrbitView;
 import gov.nasa.worldwind.view.orbit.OrbitViewInputHandler;
 import gov.nasa.worldwind.view.orbit.OrbitViewInputSupport;
 import gov.nasa.worldwind.view.orbit.OrbitViewInputSupport.OrbitViewState;
-import au.gov.ga.earthsci.worldwind.common.view.transform.TransformView;
+import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
+import au.gov.ga.earthsci.worldwind.common.view.target.TargetOrbitViewInputHandler;
 
 /**
  * {@link OrbitViewInputHandler} subclass that adds support for free rotation of
@@ -38,7 +39,7 @@ import au.gov.ga.earthsci.worldwind.common.view.transform.TransformView;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FreeRotateOrbitViewInputHandler extends OrbitViewInputHandler
+public class FreeRotateOrbitViewInputHandler extends TargetOrbitViewInputHandler
 {
 	/**
 	 * Rotate the globe by an amount in a given direction.
@@ -95,9 +96,9 @@ public class FreeRotateOrbitViewInputHandler extends OrbitViewInputHandler
 		view.setCenterPosition(newCenterPosition);
 
 		//compute the new heading
-		if (view instanceof TransformView)
+		if (view instanceof IDelegateView)
 		{
-			modelview = ((TransformView) view).getPretransformedModelViewMatrix();
+			modelview = ((IDelegateView) view).getPretransformedModelView();
 		}
 		Matrix newModelview = modelview.multiply(rotation);
 		Angle newHeading = calculateHeading(view, newModelview);

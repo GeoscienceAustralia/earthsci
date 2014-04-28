@@ -67,7 +67,7 @@ public class FrameBuffer
 	{
 		if (textureCount < 1)
 		{
-			throw new IllegalArgumentException("Must be at least one texture bound to the frame buffer"); //$NON-NLS-1$
+			throw new IllegalArgumentException("Must be at least one texture bound to the frame buffer");
 		}
 		textures = new FrameBufferTexture[textureCount];
 		for (int i = 0; i < textureCount; i++)
@@ -135,7 +135,7 @@ public class FrameBuffer
 	 */
 	public void resize(GL2 gl, Dimension dimensions)
 	{
-		Validate.notNull(dimensions, "Dimensions cannot be null"); //$NON-NLS-1$
+		Validate.notNull(dimensions, "Dimensions cannot be null");
 
 		if (isCreated() && dimensions.equals(currentDimensions))
 		{
@@ -228,7 +228,7 @@ public class FrameBuffer
 		gl.glGenFramebuffers(1, frameBuffers, 0);
 		if (frameBuffers[0] <= 0)
 		{
-			throw new IllegalStateException("Error generating frame buffer"); //$NON-NLS-1$
+			throw new IllegalStateException("Error generating frame buffer");
 		}
 		return frameBuffers[0];
 	}
@@ -241,11 +241,11 @@ public class FrameBuffer
 		int status = gl.glCheckFramebufferStatus(GL2.GL_FRAMEBUFFER);
 		if (status == GL2.GL_FRAMEBUFFER_UNSUPPORTED)
 		{
-			throw new IllegalStateException("Frame buffer unsupported, or parameters incorrect"); //$NON-NLS-1$
+			throw new IllegalStateException("Frame buffer unsupported, or parameters incorrect");
 		}
 		else if (status != GL2.GL_FRAMEBUFFER_COMPLETE)
 		{
-			throw new IllegalStateException("Frame buffer incomplete"); //$NON-NLS-1$
+			throw new IllegalStateException("Frame buffer incomplete");
 		}
 	}
 

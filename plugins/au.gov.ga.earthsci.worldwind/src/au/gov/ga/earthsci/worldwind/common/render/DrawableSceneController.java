@@ -17,11 +17,11 @@ package au.gov.ga.earthsci.worldwind.common.render;
 
 import gov.nasa.worldwind.SceneController;
 import gov.nasa.worldwind.render.DrawContext;
-import au.gov.ga.earthsci.worldwind.common.view.drawable.DrawableView;
+import au.gov.ga.earthsci.worldwind.common.view.delegate.IViewDelegate;
 
 /**
  * {@link SceneController} that provides public access to methods required for
- * {@link DrawableView}s.
+ * {@link IViewDelegate}s.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */

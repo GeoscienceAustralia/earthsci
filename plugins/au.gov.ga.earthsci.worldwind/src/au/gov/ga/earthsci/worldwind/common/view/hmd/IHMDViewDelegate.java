@@ -15,8 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.view.hmd;
 
-import au.gov.ga.earthsci.worldwind.common.view.drawable.DrawableView;
-import au.gov.ga.earthsci.worldwind.common.view.transform.TransformView;
+import au.gov.ga.earthsci.worldwind.common.view.delegate.IViewDelegate;
 
 /**
  * View that renders the globe for a HMD using two distorted views, one for each
@@ -24,7 +23,7 @@ import au.gov.ga.earthsci.worldwind.common.view.transform.TransformView;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface IHMDView extends TransformView, DrawableView
+public interface IHMDViewDelegate extends IViewDelegate
 {
 	HMDDistortion getDistortion();
 }

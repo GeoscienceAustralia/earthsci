@@ -22,7 +22,7 @@ import gov.nasa.worldwind.util.OGLStackHandler;
 
 import javax.media.opengl.GL2;
 
-import au.gov.ga.earthsci.worldwind.common.view.transform.TransformView;
+import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
 
 /**
  * An extension of the {@link ProjectionStarsLayer} that supports the
@@ -36,9 +36,9 @@ public class TransformStarsLayer extends ProjectionStarsLayer
 	protected void applyDrawProjection(DrawContext dc, OGLStackHandler ogsh)
 	{
 		boolean loaded = false;
-		if (dc.getView() instanceof TransformView)
+		if (dc.getView() instanceof IDelegateView)
 		{
-			TransformView transform = (TransformView) dc.getView();
+			IDelegateView transform = (IDelegateView) dc.getView();
 			//near is the distance from the origin
 			double near = transform.getEyePoint().getLength3();
 			double far = this.radius + near;

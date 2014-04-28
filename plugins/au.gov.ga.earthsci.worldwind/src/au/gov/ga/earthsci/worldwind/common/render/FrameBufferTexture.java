@@ -43,7 +43,7 @@ public class FrameBufferTexture
 		gl.glGenTextures(1, textures, 0);
 		if (textures[0] <= 0)
 		{
-			throw new IllegalStateException("Error generating texture for frame buffer"); //$NON-NLS-1$
+			throw new IllegalStateException("Error generating texture for frame buffer");
 		}
 		id = textures[0];
 

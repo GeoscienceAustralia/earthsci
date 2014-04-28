@@ -49,7 +49,7 @@ public class FrameBufferDepthBuffer
 		}
 		if (renderBuffers[0] <= 0)
 		{
-			throw new IllegalStateException("Error generating depth buffer for frame buffer"); //$NON-NLS-1$
+			throw new IllegalStateException("Error generating depth buffer for frame buffer");
 		}
 		id = renderBuffers[0];
 

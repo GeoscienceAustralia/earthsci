@@ -28,15 +28,15 @@ import javax.media.opengl.GL2;
 import au.gov.ga.earthsci.worldwind.common.render.DrawableSceneController;
 import au.gov.ga.earthsci.worldwind.common.render.FrameBuffer;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
-import au.gov.ga.earthsci.worldwind.common.view.state.ViewStateBasicOrbitView;
-import au.gov.ga.earthsci.worldwind.common.view.stereo.StereoView.Eye;
+import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
+import au.gov.ga.earthsci.worldwind.common.view.stereo.IStereoViewDelegate.Eye;
 
 /**
- * Abstract OrbitView implementation of {@link IHMDView}.
+ * Abstract OrbitView implementation of {@link IHMDViewDelegate}.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public abstract class HMDView extends ViewStateBasicOrbitView implements IHMDView
+public abstract class HMDViewDelegate implements IHMDViewDelegate
 {
 	private Matrix pretransformedModelView = Matrix.IDENTITY;
 
@@ -53,7 +53,7 @@ public abstract class HMDView extends ViewStateBasicOrbitView implements IHMDVie
 	}
 
 	@Override
-	protected void doApply(DrawContext dc)
+	public void beforeComputeMatrices(IDelegateView view)
 	{
 		if (shouldRenderForHMD())
 		{
@@ -64,37 +64,35 @@ public abstract class HMDView extends ViewStateBasicOrbitView implements IHMDVie
 			float verticalFOV = distortion.getVerticalFOV();
 			float aspect = distortion.getAspect();
 			double horizontalFOV = 2d * Math.atan(Math.tan(verticalFOV / 2d) * aspect);
-			setFieldOfView(Angle.fromRadians(horizontalFOV));
+			view.setFieldOfView(Angle.fromRadians(horizontalFOV));
 		}
-		super.doApply(dc);
 	}
 
 	@Override
-	public Matrix computeModelView()
+	public Matrix computeModelView(IDelegateView view)
 	{
-		Matrix modelView = super.computeModelView();
+		Matrix modelView = view.computeModelView();
 		if (shouldRenderForHMD())
 		{
-			double multiplier = dynamicEyeSeparationMultiplier();
-			modelView =
-					Matrix.fromTranslation(
-							(eye == Eye.LEFT ? -1 : 1) * -getDistortion().getInterpupillaryDistance() * 0.5
-									* multiplier, 0, 0).multiply(modelView);
+			double multiplier = dynamicEyeSeparationMultiplier(view);
+			modelView = Matrix.fromTranslation(
+					(eye == Eye.LEFT ? -1 : 1) * -getDistortion().getInterpupillaryDistance() * 0.5
+							* multiplier, 0, 0).multiply(modelView);
 		}
 		pretransformedModelView = modelView;
 		return transformModelView(pretransformedModelView);
 	}
 
-	private double dynamicEyeSeparationMultiplier()
+	private double dynamicEyeSeparationMultiplier(IDelegateView view)
 	{
-		Vec4 eyePoint = getCurrentEyePoint();
+		Vec4 eyePoint = view.getCurrentEyePoint();
 		double distanceFromOrigin = eyePoint.getLength3();
 
-		Globe globe = getGlobe();
+		Globe globe = view.getGlobe();
 		double radius = globe.getRadiusAt(globe.computePositionFromPoint(eyePoint));
 		double amount = Util.percentDouble(distanceFromOrigin, radius, radius * 5d);
 
-		Vec4 centerPoint = getCenterPoint();
+		Vec4 centerPoint = view.getCenterPoint();
 		double distanceToCenter;
 		if (centerPoint != null)
 		{
@@ -102,7 +100,7 @@ public abstract class HMDView extends ViewStateBasicOrbitView implements IHMDVie
 		}
 		else
 		{
-			distanceToCenter = getHorizonDistance();
+			distanceToCenter = view.getHorizonDistance();
 		}
 
 		//limit the distance to center relative to the eye distance from the ellipsoid surface
@@ -116,7 +114,7 @@ public abstract class HMDView extends ViewStateBasicOrbitView implements IHMDVie
 		//double separationExaggeration = Util.mixDouble(amount, separationExaggeration, separationExaggeration * 4);
 
 		//move focal length closer as view is pitched
-		amount = Util.percentDouble(getPitch().degrees, 0d, 90d);
+		amount = Util.percentDouble(view.getPitch().degrees, 0d, 90d);
 		focalLength = Util.mixDouble(amount, focalLength, focalLength / 3d);
 
 		//calculate eye separation linearly relative to focal length
@@ -135,17 +133,17 @@ public abstract class HMDView extends ViewStateBasicOrbitView implements IHMDVie
 	protected abstract Matrix transformModelView(Matrix modelView);
 
 	@Override
-	public Matrix getPretransformedModelViewMatrix()
+	public Matrix getPretransformedModelView(IDelegateView view)
 	{
 		return pretransformedModelView;
 	}
 
 	@Override
-	public Matrix computeProjection(double nearDistance, double farDistance)
+	public Matrix computeProjection(IDelegateView view, double nearDistance, double farDistance)
 	{
 		if (!shouldRenderForHMD())
 		{
-			return super.computeProjection(nearDistance, farDistance);
+			return view.computeProjection(nearDistance, farDistance);
 		}
 
 		HMDDistortion distortion = getDistortion();
@@ -166,16 +164,20 @@ public abstract class HMDView extends ViewStateBasicOrbitView implements IHMDVie
 		double zRange = nearDistance - farDistance;
 
 		//from man pages of gluPerspective:
-		//return new Matrix(oneOnTanHalfFov / aspectRatio, 0, 0, 0, 0, oneOnTanHalfFov, 0, 0, 0, 0,
-		//		(farDistance + nearDistance) / zRange, (2 * farDistance * nearDistance) / zRange, 0, 0, -1, 0);
+		//return new Matrix(oneOnTanHalfFov / aspectRatio, 0, 0, 0,
+		//		0, oneOnTanHalfFov, 0, 0,
+		//		0, 0, (farDistance + nearDistance) / zRange, (2 * farDistance * nearDistance) / zRange,
+		//		0, 0, -1, 0);
 
 		//from Oculus Rift SDK documentation:
-		return new Matrix(oneOnTanHalfFov / aspectRatio, 0, 0, 0, 0, oneOnTanHalfFov, 0, 0, 0, 0, farDistance / zRange,
-				farDistance * nearDistance / zRange, 0, 0, -1, 0);
+		return new Matrix(oneOnTanHalfFov / aspectRatio, 0, 0, 0,
+				0, oneOnTanHalfFov, 0, 0,
+				0, 0, farDistance / zRange, farDistance * nearDistance / zRange,
+				0, 0, -1, 0);
 	}
 
 	@Override
-	public void draw(DrawContext dc, DrawableSceneController sc)
+	public void draw(IDelegateView view, DrawContext dc, DrawableSceneController sc)
 	{
 		HMDDistortion distortion = getDistortion();
 		if (distortion == null)

@@ -27,12 +27,10 @@ import javax.media.opengl.GL2;
 
 import au.gov.ga.earthsci.worldwind.common.render.DrawableSceneController;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
-import au.gov.ga.earthsci.worldwind.common.view.drawable.DrawableView;
-import au.gov.ga.earthsci.worldwind.common.view.stereo.StereoView.Eye;
-import au.gov.ga.earthsci.worldwind.common.view.transform.TransformView;
+import au.gov.ga.earthsci.worldwind.common.view.stereo.IStereoViewDelegate.Eye;
 
 /**
- * Helper with common functionality for all {@link StereoView} implementations.
+ * Helper with common functionality for all {@link IStereoViewDelegate} implementations.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -47,7 +45,7 @@ public class StereoViewHelper
 	private double lastEyeSeparation = 0;
 
 	/**
-	 * @see StereoView#setup(boolean, Eye)
+	 * @see IStereoViewDelegate#setup(boolean, Eye)
 	 */
 	public void setup(boolean stereo, Eye eye)
 	{
@@ -62,7 +60,7 @@ public class StereoViewHelper
 	}
 
 	/**
-	 * @see StereoView#getEye()
+	 * @see IStereoViewDelegate#getEye()
 	 */
 	public Eye getEye()
 	{
@@ -70,7 +68,7 @@ public class StereoViewHelper
 	}
 
 	/**
-	 * @see StereoView#isStereo()
+	 * @see IStereoViewDelegate#isStereo()
 	 */
 	public boolean isStereo()
 	{
@@ -78,7 +76,7 @@ public class StereoViewHelper
 	}
 
 	/**
-	 * @see StereoView#getParameters()
+	 * @see IStereoViewDelegate#getParameters()
 	 */
 	public StereoViewParameters getParameters()
 	{
@@ -86,7 +84,7 @@ public class StereoViewHelper
 	}
 
 	/**
-	 * @see StereoView#setParameters(StereoViewParameters)
+	 * @see IStereoViewDelegate#setParameters(StereoViewParameters)
 	 */
 	public void setParameters(StereoViewParameters parameters)
 	{
@@ -94,7 +92,7 @@ public class StereoViewHelper
 	}
 
 	/**
-	 * @see StereoView#getCurrentFocalLength()
+	 * @see IStereoViewDelegate#getCurrentFocalLength()
 	 */
 	public double getCurrentFocalLength()
 	{
@@ -106,7 +104,7 @@ public class StereoViewHelper
 	}
 
 	/**
-	 * @see StereoView#getCurrentEyeSeparation()
+	 * @see IStereoViewDelegate#getCurrentEyeSeparation()
 	 */
 	public double getCurrentEyeSeparation()
 	{
@@ -174,8 +172,9 @@ public class StereoViewHelper
 	{
 		if (matrix != null && stereo)
 		{
-			Matrix translation = Matrix.fromTranslation((eye == Eye.RIGHT ? 0.5 : -0.5) * lastEyeSeparation, 0, 0);
-			matrix = translation.multiply(matrix);
+			matrix =
+					Matrix.fromTranslation((eye == Eye.RIGHT ? 1 : -1) * lastEyeSeparation * 0.5, 0, 0)
+							.multiply(matrix);
 		}
 		return matrix;
 	}

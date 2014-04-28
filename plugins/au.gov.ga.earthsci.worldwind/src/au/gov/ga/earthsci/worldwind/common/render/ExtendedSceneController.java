@@ -31,7 +31,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationListener;
 import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationService;
 import au.gov.ga.earthsci.worldwind.common.util.SectorClipPlanes;
-import au.gov.ga.earthsci.worldwind.common.view.drawable.DrawableView;
+import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
 
 /**
  * {@link SceneController} that uses a separate {@link Tessellator} to generate
@@ -109,9 +109,9 @@ public class ExtendedSceneController extends BasicSceneController implements Dra
 			this.clearFrame(dc);
 			this.pick(dc);
 			this.clearFrame(dc);
-			if (view instanceof DrawableView)
+			if (view instanceof IDelegateView)
 			{
-				((DrawableView) view).draw(dc, this);
+				((IDelegateView) view).draw(dc, this);
 			}
 			else
 			{
