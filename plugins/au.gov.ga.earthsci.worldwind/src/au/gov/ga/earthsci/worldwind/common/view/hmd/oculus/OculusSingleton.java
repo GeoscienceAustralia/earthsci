@@ -105,18 +105,4 @@ public class OculusSingleton
 	{
 		listeners.remove(listener);
 	}
-
-	public static void main(String[] args) throws InterruptedException
-	{
-		getInstance().addListener(new IOculusListener()
-		{
-			@Override
-			public void trackingUpdated(Angle yaw, Angle pitch, Angle roll)
-			{
-				System.out.println(yaw);
-			}
-		});
-
-		Thread.sleep(10000);
-	}
 }
