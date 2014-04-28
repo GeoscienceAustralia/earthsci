@@ -56,6 +56,7 @@ import au.gov.ga.earthsci.newt.swt.NewtInputHandlerSWT;
 import au.gov.ga.earthsci.newt.swt.WorldWindowNewtAutoDrawableSWT;
 import au.gov.ga.earthsci.newt.swt.WorldWindowNewtCanvasSWT;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.input.ProviderOrbitViewInputHandler;
 import au.gov.ga.earthsci.worldwind.common.util.DoubleClickZoomListener;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.DelegateOrbitView;
 
@@ -97,6 +98,7 @@ public class GlobePart
 		Configuration.setValue(AVKey.INPUT_HANDLER_CLASS_NAME, NewtInputHandlerSWT.class.getName());
 		Configuration.setValue(AVKey.WORLD_WINDOW_CLASS_NAME, WorldWindowNewtAutoDrawableSWT.class.getName());
 		Configuration.setValue(AVKey.SCENE_CONTROLLER_CLASS_NAME, GlobeSceneController.class.getName());
+		Configuration.setValue(AVKey.VIEW_INPUT_HANDLER_CLASS_NAME, ProviderOrbitViewInputHandler.class.getName());
 		worldWindow = new WorldWindowNewtCanvasSWT(parent, SWT.NONE, WorldWindowRegistry.INSTANCE.getFirstRegistered());
 		sceneController = (GlobeSceneController) worldWindow.getSceneController();
 		worldWindow.setModel(model);
