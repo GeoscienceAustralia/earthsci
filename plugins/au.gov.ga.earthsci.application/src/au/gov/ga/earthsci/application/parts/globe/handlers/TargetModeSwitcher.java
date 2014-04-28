@@ -20,7 +20,8 @@ import javax.inject.Singleton;
 
 import org.eclipse.e4.core.services.events.IEventBroker;
 
-import au.gov.ga.earthsci.core.worldwind.view.TargetOrbitView;
+import au.gov.ga.earthsci.worldwind.common.view.target.ITargetView;
+import au.gov.ga.earthsci.worldwind.common.view.target.TargetOrbitView;
 
 /**
  * Toggles a {@link TargetOrbitView}'s target mode on/off, and sends an event
@@ -36,7 +37,7 @@ public class TargetModeSwitcher
 	@Inject
 	private static IEventBroker eventBroker;
 
-	public static void setTargetMode(TargetOrbitView view, boolean targetMode)
+	public static void setTargetMode(ITargetView view, boolean targetMode)
 	{
 		view.setTargetMode(targetMode);
 		eventBroker.send(TARGET_MODE_EVENT_TOPIC, view);

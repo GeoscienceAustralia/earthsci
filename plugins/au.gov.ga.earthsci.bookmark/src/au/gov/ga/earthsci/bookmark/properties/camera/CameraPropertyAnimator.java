@@ -22,7 +22,7 @@ import gov.nasa.worldwind.view.orbit.OrbitView;
 import gov.nasa.worldwind.view.orbit.OrbitViewInputSupport;
 import au.gov.ga.earthsci.bookmark.AbstractBookmarkPropertyAnimator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyAnimator;
-import au.gov.ga.earthsci.core.worldwind.view.FlyToOrbitViewAnimator;
+import au.gov.ga.earthsci.worldwind.common.view.orbit.FlyToOrbitViewAnimator;
 
 /**
  * An {@link IBookmarkPropertyAnimator} used to animate the camera between two

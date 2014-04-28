@@ -26,10 +26,10 @@ import org.eclipse.e4.ui.di.UIEventTopic;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolItem;
 
 import au.gov.ga.earthsci.application.parts.globe.GlobePart;
-import au.gov.ga.earthsci.core.worldwind.view.TargetOrbitView;
+import au.gov.ga.earthsci.worldwind.common.view.target.ITargetView;
 
 /**
- * Handler that toggles the {@link TargetOrbitView}'s target mode.
+ * Handler that toggles the {@link ITargetView}'s target mode.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -42,9 +42,9 @@ public class TargetModeHandler
 	public void execute(MToolItem toolItem, GlobePart globe)
 	{
 		View view = globe.getWorldWindow().getView();
-		if (view instanceof TargetOrbitView)
+		if (view instanceof ITargetView)
 		{
-			TargetModeSwitcher.setTargetMode((TargetOrbitView) view, !toolItem.isSelected());
+			TargetModeSwitcher.setTargetMode((ITargetView) view, !toolItem.isSelected());
 		}
 	}
 
@@ -53,7 +53,7 @@ public class TargetModeHandler
 	{
 		this.toolItem = toolItem;
 		this.globe = globe;
-		return globe != null && globe.getWorldWindow().getView() instanceof TargetOrbitView;
+		return globe != null && globe.getWorldWindow().getView() instanceof ITargetView;
 	}
 
 	@Inject
@@ -61,9 +61,9 @@ public class TargetModeHandler
 	public void targetModeToggledHandler(@UIEventTopic(TargetModeSwitcher.TARGET_MODE_EVENT_TOPIC) View view)
 	{
 		if (globe != null && toolItem != null &&
-				view == globe.getWorldWindow().getView() && view instanceof TargetOrbitView)
+				view == globe.getWorldWindow().getView() && view instanceof ITargetView)
 		{
-			toolItem.setSelected(!((TargetOrbitView) view).isTargetMode());
+			toolItem.setSelected(!((ITargetView) view).isTargetMode());
 		}
 	}
 }

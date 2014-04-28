@@ -75,8 +75,6 @@ import au.gov.ga.earthsci.common.ui.information.IInformationProvider;
 import au.gov.ga.earthsci.common.ui.information.InformationProviderHoverInformationControlManager;
 import au.gov.ga.earthsci.common.ui.widgets.PageLinks;
 import au.gov.ga.earthsci.common.ui.widgets.PageListener;
-import au.gov.ga.earthsci.core.worldwind.view.FlyToOrbitViewAnimator;
-import au.gov.ga.earthsci.core.worldwind.view.FlyToSectorAnimator;
 import au.gov.ga.earthsci.discovery.DiscoveryParameters;
 import au.gov.ga.earthsci.discovery.DiscoveryServiceManager;
 import au.gov.ga.earthsci.discovery.IDiscovery;
@@ -89,6 +87,8 @@ import au.gov.ga.earthsci.discovery.ui.handler.ServicesHandler;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.retrieve.SectorPolyline;
+import au.gov.ga.earthsci.worldwind.common.view.orbit.FlyToOrbitViewAnimator;
+import au.gov.ga.earthsci.worldwind.common.view.orbit.FlyToSectorAnimator;
 
 /**
  * The Discovery UI part.

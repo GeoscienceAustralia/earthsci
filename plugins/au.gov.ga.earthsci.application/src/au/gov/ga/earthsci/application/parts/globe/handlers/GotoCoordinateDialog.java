@@ -36,8 +36,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import au.gov.ga.earthsci.core.worldwind.view.FlyToOrbitViewAnimator;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
+import au.gov.ga.earthsci.worldwind.common.view.orbit.FlyToOrbitViewAnimator;
 
 /**
  * Dialog which allows a user to input coordinates they wish to fly to.
