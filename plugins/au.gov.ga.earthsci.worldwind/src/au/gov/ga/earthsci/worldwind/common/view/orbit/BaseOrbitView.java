@@ -54,6 +54,7 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 
 	protected Position appliedEyePosition;
 	protected Vec4 appliedEyePoint;
+	protected Position unsetEyePosition;
 
 	public BaseOrbitView()
 	{
@@ -158,18 +159,30 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	@Override
 	public Vec4 getUpVector()
 	{
+		if (globe == null)
+		{
+			return Vec4.ZERO;
+		}
 		return state.getUp(globe);
 	}
 
 	@Override
 	public Vec4 getForwardVector()
 	{
+		if (globe == null)
+		{
+			return Vec4.ZERO;
+		}
 		return state.getForward(globe);
 	}
 
 	@Override
 	public Vec4 getCenterPoint()
 	{
+		if (globe == null)
+		{
+			return Vec4.ZERO;
+		}
 		return state.getCenterPoint(globe);
 	}
 
@@ -190,12 +203,24 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	@Override
 	public Vec4 getCurrentEyePoint()
 	{
+		if (globe == null)
+		{
+			return Vec4.ZERO;
+		}
 		return state.getEyePoint(globe);
 	}
 
 	@Override
 	public Position getCurrentEyePosition()
 	{
+		if (globe == null)
+		{
+			if (unsetEyePosition != null)
+			{
+				return unsetEyePosition;
+			}
+			return Position.ZERO;
+		}
 		return state.getEye(globe);
 	}
 
@@ -209,6 +234,12 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	@Override
 	public void setEyePosition(Position eyePosition)
 	{
+		if (globe == null)
+		{
+			unsetEyePosition = eyePosition;
+			return;
+		}
+		unsetEyePosition = null;
 		state.setEye(eyePosition, globe);
 		resolveCollisionsWithPitch();
 		markOutOfFocus();
@@ -423,6 +454,11 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 		this.dc = dc;
 		this.globe = this.dc.getGlobe();
 
+		if (unsetEyePosition != null)
+		{
+			setEyePosition(unsetEyePosition);
+		}
+
 		beforeComputeMatrices();
 
 		//========== modelview matrix state ==========//
@@ -485,6 +521,10 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 
 	protected Matrix computeModelView()
 	{
+		if (globe == null)
+		{
+			return Matrix.IDENTITY;
+		}
 		return state.getTransform(globe);
 	}
 
