@@ -52,6 +52,9 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	protected final BaseOrbitViewCollisionSupport collisionSupport = new BaseOrbitViewCollisionSupport();
 	protected boolean resolvingCollisions;
 
+	protected Position appliedEyePosition;
+	protected Vec4 appliedEyePoint;
+
 	public BaseOrbitView()
 	{
 		this.state = createViewState();
@@ -135,13 +138,21 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	@Override
 	public Position getEyePosition()
 	{
-		return state.getEye(globe);
+		if (appliedEyePosition != null)
+		{
+			return appliedEyePosition;
+		}
+		return getCurrentEyePosition();
 	}
 
 	@Override
 	public Vec4 getEyePoint()
 	{
-		return state.getEyePoint(globe);
+		if (appliedEyePoint != null)
+		{
+			return appliedEyePoint;
+		}
+		return getCurrentEyePoint();
 	}
 
 	@Override
@@ -358,7 +369,7 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 		Vec4 viewportCenterPoint = this.globe.computePointFromPosition(viewportExaggerated);
 
 		//find a point along the forward vector so the view doesn't appear to change, only the distance from the center point
-		Vec4 eyePoint = getEyePoint();
+		Vec4 eyePoint = getCurrentEyePoint();
 		Vec4 forward = getForwardVector();
 		double distance = eyePoint.distanceTo3(viewportCenterPoint);
 		Vec4 newCenterPoint = Vec4.fromLine3(eyePoint, distance, forward);
@@ -454,6 +465,8 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 	{
 		// Establish frame-specific values.
 		this.horizonDistance = this.computeHorizonDistance();
+		this.appliedEyePosition = getCurrentEyePosition();
+		this.appliedEyePoint = getCurrentEyePoint();
 
 		// Clear cached computations.
 		this.lastFrustumInModelCoords = null;
