@@ -19,15 +19,20 @@ import gov.nasa.worldwind.BasicSceneController;
 import gov.nasa.worldwind.SceneController;
 import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.SurfaceObjectTileBuilder;
 import gov.nasa.worldwind.terrain.SectorGeometryList;
 import gov.nasa.worldwind.terrain.Tessellator;
 
+import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import au.gov.ga.earthsci.worldwind.common.effects.Effect;
 import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationListener;
 import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationService;
 import au.gov.ga.earthsci.worldwind.common.util.SectorClipPlanes;
@@ -43,16 +48,19 @@ import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class ExtendedSceneController extends BasicSceneController implements DrawableSceneController, VerticalExaggerationListener
+public class ExtendedSceneController extends BasicSceneController implements DrawableSceneController,
+		VerticalExaggerationListener
 {
 	private FlatRectangularTessellator flatTessellator = new FlatRectangularTessellator();
 	protected final SectorClipPlanes sectorClipping = new SectorClipPlanes();
-	
+
 	protected final Queue<PaintTask> prePaintTasks = new LinkedList<PaintTask>();
 	protected final Lock prePaintTasksLock = new ReentrantLock(true);
 
 	protected final Queue<PaintTask> postPaintTasks = new LinkedList<PaintTask>();
 	protected final Lock postPaintTasksLock = new ReentrantLock(true);
+
+	protected final List<Effect> effects = new ArrayList<Effect>();
 
 	public ExtendedSceneController()
 	{
@@ -60,10 +68,16 @@ public class ExtendedSceneController extends BasicSceneController implements Dra
 		VerticalExaggerationService.INSTANCE.addListener(this);
 		setVerticalExaggeration(VerticalExaggerationService.INSTANCE.get());
 	}
-	
+
 	protected ExtendedDrawContext wrapDrawContext(DrawContext dc)
 	{
 		return new ExtendedDrawContext(dc);
+	}
+
+	@Override
+	protected SurfaceObjectTileBuilder createSurfaceObjectTileBuilder()
+	{
+		return new OffscreenSurfaceObjectRenderer();
 	}
 
 	public void clipSector(Sector sector)
@@ -125,18 +139,99 @@ public class ExtendedSceneController extends BasicSceneController implements Dra
 		doPostPaintTasks(dc);
 	}
 
+	/**
+	 * @return Draw dimensions used when drawing with this scene controller
+	 */
+	protected Dimension getDrawDimensions()
+	{
+		return new Dimension(dc.getDrawableWidth(), dc.getDrawableHeight());
+	}
+
+	/**
+	 * @return {@link Effect}s used when drawing with this scene controller
+	 */
+	public List<? extends Effect> getEffects()
+	{
+		return effects;
+	}
+
 	@Override
 	public void draw(DrawContext dc)
+	{
+		//The draw call is the lowest level rendering call for the SceneController,
+		//so we still have depth information at this level, which is needed for DoF.
+		Dimension dimensions = getDrawDimensions();
+
+		//retrieve the list of effects, put them in a new list
+		List<Effect> effects = new ArrayList<Effect>(getEffects());
+
+		//remove any disabled effects
+		for (int i = effects.size() - 1; i >= 0; i--)
+		{
+			Effect effect = effects.get(i);
+			if (!effect.isEnabled())
+			{
+				effect.releaseResources(dc);
+				effects.remove(i);
+			}
+		}
+
+		//if there's no enabled effects, draw normally
+		if (effects.isEmpty())
+		{
+			clippedDraw(dc);
+			return;
+		}
+
+		Effect firstEffect = effects.get(0);
+		Effect lastEffect = effects.get(effects.size() - 1);
+
+		try
+		{
+			firstEffect.bindFrameBuffer(dc, dimensions);
+			this.clearFrame(dc);
+			//draw the actual scene onto the first effect's frame buffer:
+			clippedDraw(dc);
+		}
+		finally
+		{
+			firstEffect.unbindFrameBuffer(dc, dimensions);
+		}
+
+		for (int i = 1; i < effects.size(); i++)
+		{
+			try
+			{
+				effects.get(i).bindFrameBuffer(dc, dimensions);
+				this.clearFrame(dc);
+				//draw the previous effect's frame buffer onto the current frame buffer:
+				effects.get(i - 1).drawFrameBufferWithEffect(dc, dimensions);
+			}
+			finally
+			{
+				effects.get(i).unbindFrameBuffer(dc, dimensions);
+			}
+		}
+
+		lastEffect.drawFrameBufferWithEffect(dc, dimensions); //draw the final effect's frame buffer onto the final buffer
+	}
+
+	protected void clippedDraw(DrawContext dc)
 	{
 		try
 		{
 			sectorClipping.enableClipping(dc);
-			super.draw(dc);
+			doDraw(dc);
 		}
 		finally
 		{
 			sectorClipping.disableClipping(dc);
 		}
+	}
+
+	protected void doDraw(DrawContext dc)
+	{
+		super.draw(dc);
 	}
 
 	@Override
