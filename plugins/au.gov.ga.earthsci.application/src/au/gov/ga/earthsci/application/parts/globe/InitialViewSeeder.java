@@ -108,9 +108,11 @@ public class InitialViewSeeder implements ISeeder
 		Collection<WorldWindow> worldWindows = WorldWindowRegistry.INSTANCE.getAll();
 		for (WorldWindow ww : worldWindows)
 		{
-			ww.getView().setEyePosition(new Position(LatLon.fromDegrees(latitude, longitude), altitude));
-			ww.getView().setPitch(Angle.fromDegrees(pitch));
+			Position eye = new Position(LatLon.fromDegrees(latitude, longitude), altitude);
+			Position center = new Position(LatLon.fromDegrees(latitude, longitude), 0);
+			ww.getView().setOrientation(eye, center);
 			ww.getView().setHeading(Angle.fromDegrees(heading));
+			ww.getView().setPitch(Angle.fromDegrees(pitch));
 		}
 	}
 }
