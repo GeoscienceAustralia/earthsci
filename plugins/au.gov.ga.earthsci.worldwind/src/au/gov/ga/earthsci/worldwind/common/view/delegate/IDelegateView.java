@@ -86,8 +86,10 @@ public interface IDelegateView extends View
 	Matrix computeProjection(double nearDistance, double farDistance);
 
 	/**
-	 * Draw this view. Default implementation calls
-	 * {@link DrawableSceneController#draw(DrawContext)}.
+	 * Draw this view.
+	 * <p/>
+	 * Implementation should call
+	 * {@link DrawableSceneController#draw(DrawContext)} at least once.
 	 * 
 	 * @param dc
 	 *            Current draw context
