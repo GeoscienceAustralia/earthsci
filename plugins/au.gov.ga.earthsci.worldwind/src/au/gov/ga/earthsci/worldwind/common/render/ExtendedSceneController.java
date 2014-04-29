@@ -150,9 +150,20 @@ public class ExtendedSceneController extends BasicSceneController implements Dra
 	/**
 	 * @return {@link Effect}s used when drawing with this scene controller
 	 */
-	public List<? extends Effect> getEffects()
+	public List<Effect> getEffects()
 	{
 		return effects;
+	}
+
+	/**
+	 * Same as {@link #getEffects()}, with a generic return type, for subclasses
+	 * to override.
+	 * 
+	 * @return Same as {@link #getEffects()}
+	 */
+	protected List<? extends Effect> getDrawEffects()
+	{
+		return getEffects();
 	}
 
 	@Override
@@ -163,7 +174,7 @@ public class ExtendedSceneController extends BasicSceneController implements Dra
 		Dimension dimensions = getDrawDimensions();
 
 		//retrieve the list of effects, put them in a new list
-		List<Effect> effects = new ArrayList<Effect>(getEffects());
+		List<Effect> effects = new ArrayList<Effect>(getDrawEffects());
 
 		//remove any disabled effects
 		for (int i = effects.size() - 1; i >= 0; i--)
