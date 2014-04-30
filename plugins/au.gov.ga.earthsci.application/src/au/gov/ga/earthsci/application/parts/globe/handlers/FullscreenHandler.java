@@ -60,7 +60,7 @@ public class FullscreenHandler
 
 		if (wwd != null)
 		{
-			fullscreenShell = new Shell(parent.getDisplay(), SWT.CLOSE | SWT.MAX);
+			fullscreenShell = new Shell(parent.getDisplay(), SWT.NONE);
 			fullscreenShell.setLayout(new FillLayout());
 			final WorldWindowNewtCanvasSWT wwdFinal = wwd;
 			wwd.setParent(fullscreenShell);
