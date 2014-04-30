@@ -57,6 +57,7 @@ import au.gov.ga.earthsci.newt.swt.WorldWindowNewtAutoDrawableSWT;
 import au.gov.ga.earthsci.newt.swt.WorldWindowNewtCanvasSWT;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.input.ProviderOrbitViewInputHandler;
+import au.gov.ga.earthsci.worldwind.common.layers.fogmask.FogMaskLayer;
 import au.gov.ga.earthsci.worldwind.common.util.DoubleClickZoomListener;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.DelegateOrbitView;
 
@@ -110,6 +111,8 @@ public class GlobePart
 		WorldWindowRegistry.INSTANCE.register(worldWindow);
 
 		createHudLayers();
+
+		sceneController.getPreLayers().add(new FogMaskLayer());
 	}
 
 	@PreDestroy
