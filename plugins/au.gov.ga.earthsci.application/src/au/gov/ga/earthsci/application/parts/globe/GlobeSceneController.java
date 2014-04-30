@@ -55,35 +55,47 @@ public class GlobeSceneController extends ExtendedSceneController
 	protected void beforePickLayers(DrawContext dc)
 	{
 		super.beforePickLayers(dc);
-
-		for (Layer layer : preLayers)
-		{
-			try
-			{
-				if (layer != null && layer.isPickEnabled())
-				{
-					dc.setCurrentLayer(layer);
-					layer.pick(dc, dc.getPickPoint());
-				}
-			}
-			catch (Exception e)
-			{
-				String message = Logging.getMessage("SceneController.ExceptionWhilePickingInLayer", //$NON-NLS-1$
-						(layer != null ? layer.getClass().getName() : Logging.getMessage("term.unknown"))); //$NON-NLS-1$
-				Logging.logger().log(Level.SEVERE, message, e);
-				// Don't abort; continue on to the next layer.
-			}
-		}
-
-		dc.setCurrentLayer(null);
+		pickLayerList(dc, preLayers);
 	}
 
 	@Override
 	protected void afterPickLayers(DrawContext dc)
 	{
 		super.afterPickLayers(dc);
+		pickLayerList(dc, postLayers);
+	}
 
-		for (Layer layer : postLayers)
+	@Override
+	protected void beforePreRenderLayers(DrawContext dc)
+	{
+		super.beforePreRenderLayers(dc);
+		preRenderLayerList(dc, preLayers);
+	}
+
+	@Override
+	protected void afterPreRenderLayers(DrawContext dc)
+	{
+		super.afterPreRenderLayers(dc);
+		preRenderLayerList(dc, postLayers);
+	}
+
+	@Override
+	protected void beforeDrawLayers(DrawContext dc)
+	{
+		super.beforeDrawLayers(dc);
+		drawLayerList(dc, preLayers);
+	}
+
+	@Override
+	protected void afterDrawLayers(DrawContext dc)
+	{
+		super.afterDrawLayers(dc);
+		drawLayerList(dc, postLayers);
+	}
+
+	protected void pickLayerList(DrawContext dc, LayerList layers)
+	{
+		for (Layer layer : layers)
 		{
 			try
 			{
@@ -105,12 +117,9 @@ public class GlobeSceneController extends ExtendedSceneController
 		dc.setCurrentLayer(null);
 	}
 
-	@Override
-	protected void beforePreRenderLayers(DrawContext dc)
+	protected void preRenderLayerList(DrawContext dc, LayerList layers)
 	{
-		super.beforePreRenderLayers(dc);
-
-		for (Layer layer : preLayers)
+		for (Layer layer : layers)
 		{
 			try
 			{
@@ -133,68 +142,9 @@ public class GlobeSceneController extends ExtendedSceneController
 		dc.setCurrentLayer(null);
 	}
 
-	@Override
-	protected void afterPreRenderLayers(DrawContext dc)
+	protected void drawLayerList(DrawContext dc, LayerList layers)
 	{
-		super.afterPreRenderLayers(dc);
-
-		for (Layer layer : postLayers)
-		{
-			try
-			{
-				if (layer != null)
-				{
-					dc.setCurrentLayer(layer);
-					layer.preRender(dc);
-				}
-			}
-			catch (Exception e)
-			{
-				String message =
-						Logging.getMessage("SceneController.ExceptionWhilePreRenderingLayer", (layer != null ? layer //$NON-NLS-1$
-								.getClass().getName() : Logging.getMessage("term.unknown"))); //$NON-NLS-1$
-				Logging.logger().log(Level.SEVERE, message, e);
-				// Don't abort; continue on to the next layer.
-			}
-		}
-
-		dc.setCurrentLayer(null);
-	}
-
-	@Override
-	protected void beforeDrawLayers(DrawContext dc)
-	{
-		super.beforeDrawLayers(dc);
-
-		for (Layer layer : preLayers)
-		{
-			try
-			{
-				if (layer != null)
-				{
-					dc.setCurrentLayer(layer);
-					layer.render(dc);
-				}
-			}
-			catch (Exception e)
-			{
-				String message =
-						Logging.getMessage("SceneController.ExceptionWhileRenderingLayer", (layer != null ? layer //$NON-NLS-1$
-								.getClass().getName() : Logging.getMessage("term.unknown"))); //$NON-NLS-1$
-				Logging.logger().log(Level.SEVERE, message, e);
-				// Don't abort; continue on to the next layer.
-			}
-		}
-
-		dc.setCurrentLayer(null);
-	}
-
-	@Override
-	protected void afterDrawLayers(DrawContext dc)
-	{
-		super.afterDrawLayers(dc);
-
-		for (Layer layer : postLayers)
+		for (Layer layer : layers)
 		{
 			try
 			{
