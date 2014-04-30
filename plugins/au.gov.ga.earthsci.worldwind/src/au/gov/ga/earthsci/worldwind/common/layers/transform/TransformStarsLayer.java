@@ -62,4 +62,22 @@ public class TransformStarsLayer extends ProjectionStarsLayer
 			super.applyDrawProjection(dc, ogsh);
 		}
 	}
+
+	@Override
+	public void doRender(DrawContext dc)
+	{
+		//disable fog for stars
+		GL2 gl = dc.getGL().getGL2();
+		OGLStackHandler ogsh = new OGLStackHandler();
+		try
+		{
+			ogsh.pushAttrib(gl, GL2.GL_FOG_BIT);
+			gl.glDisable(GL2.GL_FOG);
+			super.doRender(dc);
+		}
+		finally
+		{
+			ogsh.pop(gl);
+		}
+	}
 }
