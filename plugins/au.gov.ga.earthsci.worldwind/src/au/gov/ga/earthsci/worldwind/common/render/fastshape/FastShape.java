@@ -113,7 +113,7 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 	protected boolean elevationChanged = false;
 	protected boolean calculateNormals = false;
 	protected boolean reverseNormals = false;
-	protected boolean fogEnabled = false;
+	protected boolean disableFog = false;
 	protected boolean wireframe = false;
 	protected boolean lighted = false;
 	protected boolean sortTransparentPrimitives = true;
@@ -232,7 +232,7 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 		Sphere boundingSphere = this.boundingSphere;
 		Color color = getColor();
 		boolean colorBufferEnabled = isColorBufferEnabled();
-		boolean fogEnabled = isFogEnabled();
+		boolean disableFog = isDisableFog();
 		boolean forceSortedPrimitives = isForceSortedPrimitives();
 		boolean lighted = isLighted();
 		Double lineWidth = getLineWidth();
@@ -324,7 +324,7 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 			}
 
 			int attributesToPush = GL2.GL_CURRENT_BIT | GL2.GL_POINT_BIT;
-			if (!fogEnabled)
+			if (disableFog)
 			{
 				attributesToPush |= GL2.GL_FOG_BIT;
 			}
@@ -377,7 +377,7 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 				float qa = pointQuadraticAttenuation != null ? pointQuadraticAttenuation.floatValue() : 0f;
 				gl.glPointParameterfv(GL2.GL_POINT_DISTANCE_ATTENUATION, new float[] { ca, la, qa }, 0);
 			}
-			if (!fogEnabled)
+			if (disableFog)
 			{
 				gl.glDisable(GL2.GL_FOG);
 			}
@@ -1097,14 +1097,14 @@ public class FastShape implements OrderedRenderable, Cacheable, Bounded, Wirefra
 		return isCalculateNormals() && (getMode() == GL2.GL_TRIANGLES || getMode() == GL2.GL_TRIANGLE_STRIP);
 	}
 
-	public boolean isFogEnabled()
+	public boolean isDisableFog()
 	{
-		return fogEnabled;
+		return disableFog;
 	}
 
-	public void setFogEnabled(boolean fogEnabled)
+	public void setDisableFog(boolean disableFog)
 	{
-		this.fogEnabled = fogEnabled;
+		this.disableFog = disableFog;
 	}
 
 	@Override
