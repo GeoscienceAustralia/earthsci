@@ -242,7 +242,23 @@ public class ExtendedSceneController extends BasicSceneController implements Dra
 
 	protected void doDraw(DrawContext dc)
 	{
+		beforeDrawLayers(dc);
 		super.draw(dc);
+	}
+
+	@Override
+	protected void preRender(DrawContext dc)
+	{
+		try
+		{
+			dc.setPreRenderMode(true);
+			beforePreRenderLayers(dc);
+			super.preRender(dc);
+		}
+		finally
+		{
+			dc.setPreRenderMode(false);
+		}
 	}
 
 	@Override
@@ -296,8 +312,19 @@ public class ExtendedSceneController extends BasicSceneController implements Dra
 	@Override
 	protected void pickLayers(DrawContext dc)
 	{
+		beforePickLayers(dc);
 		super.pickLayers(dc);
 		afterPickLayers(dc);
+	}
+
+	/**
+	 * Called immediately before the layer list is prerendered. Subclasses can
+	 * override to add custom functionality.
+	 * 
+	 * @param dc
+	 */
+	protected void beforePreRenderLayers(DrawContext dc)
+	{
 	}
 
 	/**
@@ -311,12 +338,32 @@ public class ExtendedSceneController extends BasicSceneController implements Dra
 	}
 
 	/**
+	 * Called immediately before the layer list is drawn. Subclasses can
+	 * override to add custom functionality.
+	 * 
+	 * @param dc
+	 */
+	protected void beforeDrawLayers(DrawContext dc)
+	{
+	}
+
+	/**
 	 * Called immediately after the layer list is drawn. Subclasses can override
 	 * to add custom functionality.
 	 * 
 	 * @param dc
 	 */
 	protected void afterDrawLayers(DrawContext dc)
+	{
+	}
+
+	/**
+	 * Called immediately before the layer list is picked. Subclasses can
+	 * override to add custom functionality.
+	 * 
+	 * @param dc
+	 */
+	protected void beforePickLayers(DrawContext dc)
 	{
 	}
 
