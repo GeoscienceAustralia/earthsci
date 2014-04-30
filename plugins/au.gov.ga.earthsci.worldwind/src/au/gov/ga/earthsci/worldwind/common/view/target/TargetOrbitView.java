@@ -31,9 +31,7 @@ import javax.media.opengl.GL2;
 import au.gov.ga.earthsci.worldwind.common.view.orbit.BaseOrbitView;
 
 /**
- * {@link OrbitView} extension that allows the user to optionally modify the
- * center of rotation point, instead of keeping the center point fixed to the
- * earth's surface, which is the default.
+ * {@link OrbitView} implementation of {@link ITargetView}.
  * <p/>
  * Also draws an optional axis marker whenever the view changes to indicate the
  * current center of rotation.
@@ -43,7 +41,7 @@ import au.gov.ga.earthsci.worldwind.common.view.orbit.BaseOrbitView;
 public class TargetOrbitView extends BaseOrbitView implements ITargetView
 {
 	protected boolean targetMode = false;
-	protected boolean prioritiseFarClipping = true;
+	protected boolean prioritizeFarClipping = true;
 
 	protected static final double MINIMUM_NEAR_DISTANCE = 20;
 	protected static final double MAXIMUM_FAR_NEAR_RATIO = 10000;
@@ -113,6 +111,18 @@ public class TargetOrbitView extends BaseOrbitView implements ITargetView
 	public void setDrawAxisMarker(boolean drawAxisMarker)
 	{
 		this.drawAxisMarker = drawAxisMarker;
+	}
+
+	@Override
+	public boolean isPrioritizeFarClipping()
+	{
+		return prioritizeFarClipping;
+	}
+
+	@Override
+	public void setPrioritizeFarClipping(boolean prioritizeFarClipping)
+	{
+		this.prioritizeFarClipping = prioritizeFarClipping;
 	}
 
 	@Override
@@ -206,7 +216,7 @@ public class TargetOrbitView extends BaseOrbitView implements ITargetView
 	protected double computeNearClipDistance()
 	{
 		double near = Math.max(super.computeNearClipDistance(), MINIMUM_NEAR_DISTANCE);
-		if (prioritiseFarClipping)
+		if (prioritizeFarClipping)
 		{
 			double far = computeFarClipDistance();
 			return Math.max(near, far / MAXIMUM_FAR_NEAR_RATIO);
@@ -219,7 +229,7 @@ public class TargetOrbitView extends BaseOrbitView implements ITargetView
 	{
 		double elevation = getCurrentEyePosition().elevation;
 		double far = elevation + globe.getDiameter();
-		if (!prioritiseFarClipping)
+		if (!prioritizeFarClipping)
 		{
 			double near = computeNearClipDistance();
 			return Math.min(far, near * MAXIMUM_NEAR_FAR_RATIO);
