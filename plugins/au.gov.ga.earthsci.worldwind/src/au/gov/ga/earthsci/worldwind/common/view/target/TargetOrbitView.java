@@ -43,6 +43,11 @@ import au.gov.ga.earthsci.worldwind.common.view.orbit.BaseOrbitView;
 public class TargetOrbitView extends BaseOrbitView implements ITargetView
 {
 	protected boolean targetMode = false;
+	protected boolean prioritiseFarClipping = true;
+
+	protected static final double MINIMUM_NEAR_DISTANCE = 20;
+	protected static final double MAXIMUM_FAR_NEAR_RATIO = 10000;
+	protected static final double MAXIMUM_NEAR_FAR_RATIO = 100000;
 
 	protected boolean nonTargetModeDetectCollisions = true;
 	protected boolean targetModeDetectCollisions = false;
@@ -195,5 +200,30 @@ public class TargetOrbitView extends BaseOrbitView implements ITargetView
 			model = model.divide3(model.w);
 			mousePosition = globe.computePositionFromPoint(model);
 		}
+	}
+
+	@Override
+	protected double computeNearClipDistance()
+	{
+		double near = Math.max(super.computeNearClipDistance(), MINIMUM_NEAR_DISTANCE);
+		if (prioritiseFarClipping)
+		{
+			double far = computeFarClipDistance();
+			return Math.max(near, far / MAXIMUM_FAR_NEAR_RATIO);
+		}
+		return near;
+	}
+
+	@Override
+	protected double computeFarClipDistance()
+	{
+		double elevation = getCurrentEyePosition().elevation;
+		double far = elevation + globe.getDiameter();
+		if (!prioritiseFarClipping)
+		{
+			double near = computeNearClipDistance();
+			return Math.min(far, near * MAXIMUM_NEAR_FAR_RATIO);
+		}
+		return far;
 	}
 }
