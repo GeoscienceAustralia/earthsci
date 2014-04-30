@@ -33,6 +33,8 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.media.opengl.GL2;
 
@@ -214,6 +216,23 @@ public class WireframeRectangularTessellator extends RectangularTessellatorAcces
 			{
 				fixSkirts(dc, (RowColRectTile) tile, tileMap);
 			}
+		}
+
+		//sort tiles from closest to eye to furthest away
+		try
+		{
+			SortedMap<Double, SectorGeometry> sortedGeometry = new TreeMap<Double, SectorGeometry>();
+			for (SectorGeometry tile : currentTiles)
+			{
+				double distanceToEyeSquared =
+						tile.getExtent().getCenter().distanceToSquared3(dc.getView().getEyePoint());
+				sortedGeometry.put(distanceToEyeSquared, tile);
+			}
+			currentTiles.clear();
+			currentTiles.addAll(sortedGeometry.values());
+		}
+		catch (Exception e)
+		{
 		}
 
 		return currentTiles;
