@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.view.delegate;
 
+import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.render.DrawContext;
 import au.gov.ga.earthsci.worldwind.common.render.DrawableSceneController;
@@ -95,13 +96,15 @@ public interface IViewDelegate
 	 * 
 	 * @param view
 	 *            View calling this delegate
+	 * @param horizontalFieldOfView
+	 *            Horizontal field-of-view
 	 * @param nearDistance
 	 *            Near frustum value
 	 * @param farDistance
 	 *            Far frustum value
 	 * @return Projection matrix
 	 */
-	Matrix computeProjection(IDelegateView view, double nearDistance, double farDistance);
+	Matrix computeProjection(IDelegateView view, Angle horizontalFieldOfView, double nearDistance, double farDistance);
 
 	/**
 	 * Draw this view.

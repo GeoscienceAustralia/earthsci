@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.worldwind.common.view.delegate;
 
 import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.view.orbit.OrbitView;
@@ -140,15 +141,21 @@ public class DelegateOrbitView extends TargetOrbitView implements IDelegateView
 	@Override
 	public Matrix computeProjection(double nearDistance, double farDistance)
 	{
+		return computeProjection(getFieldOfView(), nearDistance, farDistance);
+	}
+
+	@Override
+	public Matrix computeProjection(Angle horizontalFieldOfView, double nearDistance, double farDistance)
+	{
 		if (currentDelegate == null || callingComputeProjection)
 		{
-			return super.computeProjection(nearDistance, farDistance);
+			return super.computeProjection(horizontalFieldOfView, nearDistance, farDistance);
 		}
 
 		try
 		{
 			callingComputeProjection = true;
-			return currentDelegate.computeProjection(this, nearDistance, farDistance);
+			return currentDelegate.computeProjection(this, horizontalFieldOfView, nearDistance, farDistance);
 		}
 		finally
 		{

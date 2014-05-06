@@ -65,6 +65,8 @@ public abstract class HMDViewDelegate implements IHMDViewDelegate
 			float aspect = distortion.getAspect();
 			double horizontalFOV = 2d * Math.atan(Math.tan(verticalFOV / 2d) * aspect);
 			view.setFieldOfView(Angle.fromRadians(horizontalFOV));
+
+			System.out.println(Angle.fromRadians(horizontalFOV));
 		}
 	}
 
@@ -139,11 +141,12 @@ public abstract class HMDViewDelegate implements IHMDViewDelegate
 	}
 
 	@Override
-	public Matrix computeProjection(IDelegateView view, double nearDistance, double farDistance)
+	public Matrix computeProjection(IDelegateView view, Angle horizontalFieldOfView, double nearDistance,
+			double farDistance)
 	{
 		if (!shouldRenderForHMD())
 		{
-			return view.computeProjection(nearDistance, farDistance);
+			return view.computeProjection(horizontalFieldOfView, nearDistance, farDistance);
 		}
 
 		HMDDistortion distortion = getDistortion();

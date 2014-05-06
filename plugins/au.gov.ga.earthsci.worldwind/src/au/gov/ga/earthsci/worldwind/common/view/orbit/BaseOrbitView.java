@@ -474,7 +474,7 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 		this.farClipDistance = this.computeFarClipDistance();
 
 		// Compute the current projection matrix.
-		this.projection = computeProjection(this.nearClipDistance, this.farClipDistance);
+		this.projection = computeProjection(this.fieldOfView, this.nearClipDistance, this.farClipDistance);
 
 		// Compute the current frustum.
 		this.frustum = computeFrustum(this.nearClipDistance, this.farClipDistance);
@@ -516,11 +516,11 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 		return state.getTransform(globe);
 	}
 
-	protected Matrix computeProjection(double nearDistance, double farDistance)
+	protected Matrix computeProjection(Angle horizontalFieldOfView, double nearDistance, double farDistance)
 	{
 		double viewportWidth = this.viewport.width <= 0.0 ? 1.0 : this.viewport.width;
 		double viewportHeight = this.viewport.height <= 0.0 ? 1.0 : this.viewport.height;
-		return Matrix.fromPerspective(this.fieldOfView, viewportWidth, viewportHeight, nearDistance, farDistance);
+		return Matrix.fromPerspective(horizontalFieldOfView, viewportWidth, viewportHeight, nearDistance, farDistance);
 	}
 
 	protected Frustum computeFrustum(double nearDistance, double farDistance)

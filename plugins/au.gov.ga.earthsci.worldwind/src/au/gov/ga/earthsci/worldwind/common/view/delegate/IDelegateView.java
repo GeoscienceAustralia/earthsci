@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.worldwind.common.view.delegate;
 
 import gov.nasa.worldwind.View;
+import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.render.DrawContext;
@@ -75,7 +76,8 @@ public interface IDelegateView extends View
 
 	/**
 	 * Calculates a PROJECTION transform for this view. Default implementation
-	 * uses {@link Matrix#fromPerspective}.
+	 * uses {@link Matrix#fromPerspective}. Uses this {@link View}'s current
+	 * field-of-view value.
 	 * 
 	 * @param nearDistance
 	 *            Near frustum value
@@ -84,6 +86,20 @@ public interface IDelegateView extends View
 	 * @return Projection matrix
 	 */
 	Matrix computeProjection(double nearDistance, double farDistance);
+
+	/**
+	 * Calculates a PROJECTION transform for this view. Default implementation
+	 * uses {@link Matrix#fromPerspective}.
+	 * 
+	 * @param horizontalFieldOfView
+	 *            Horizontal field-of-view
+	 * @param nearDistance
+	 *            Near frustum value
+	 * @param farDistance
+	 *            Far frustum value
+	 * @return Projection matrix
+	 */
+	Matrix computeProjection(Angle horizontalFieldOfView, double nearDistance, double farDistance);
 
 	/**
 	 * Draw this view.

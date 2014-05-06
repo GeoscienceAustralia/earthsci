@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.view.stereo;
 
+import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.render.DrawContext;
 import au.gov.ga.earthsci.worldwind.common.render.DrawableSceneController;
@@ -101,9 +102,10 @@ public class StereoViewDelegate implements IStereoViewDelegate
 	}
 
 	@Override
-	public Matrix computeProjection(IDelegateView view, double nearDistance, double farDistance)
+	public Matrix computeProjection(IDelegateView view, Angle horizontalFieldOfView, double nearDistance,
+			double farDistance)
 	{
-		return helper.computeProjection(view, nearDistance, farDistance);
+		return helper.computeProjection(view, horizontalFieldOfView, nearDistance, farDistance);
 	}
 
 	@Override

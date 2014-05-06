@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.worldwind.common.view.stereo;
 
 import gov.nasa.worldwind.View;
+import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
@@ -30,7 +31,8 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
 import au.gov.ga.earthsci.worldwind.common.view.stereo.IStereoViewDelegate.Eye;
 
 /**
- * Helper with common functionality for all {@link IStereoViewDelegate} implementations.
+ * Helper with common functionality for all {@link IStereoViewDelegate}
+ * implementations.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
@@ -118,16 +120,16 @@ public class StereoViewHelper
 	/**
 	 * @see TransformView#computeProjection(double, double)
 	 */
-	public Matrix computeProjection(View view, double nearDistance, double farDistance)
+	public Matrix computeProjection(View view, Angle horizontalFieldOfView, double nearDistance, double farDistance)
 	{
 		if (stereo)
 		{
-			return calculateStereoProjectionMatrix(view, nearDistance, farDistance, eye, lastFocalLength,
-					lastEyeSeparation);
+			return calculateStereoProjectionMatrix(view, horizontalFieldOfView, nearDistance, farDistance, eye,
+					lastFocalLength, lastEyeSeparation);
 		}
 		else
 		{
-			return calculateMonoProjectionMatrix(view, nearDistance, farDistance);
+			return calculateMonoProjectionMatrix(view, horizontalFieldOfView, nearDistance, farDistance);
 		}
 	}
 
@@ -253,6 +255,7 @@ public class StereoViewHelper
 	 * http://paulbourke.net/miscellaneous/stereographics/stereorender/.
 	 * 
 	 * @param view
+	 * @param horizontalFieldOfView
 	 * @param nearDistance
 	 * @param farDistance
 	 * @param eye
@@ -260,14 +263,15 @@ public class StereoViewHelper
 	 * @param eyeSeparation
 	 * @return Stereo projection matrix
 	 */
-	public static Matrix calculateStereoProjectionMatrix(View view, double nearDistance, double farDistance, Eye eye,
+	public static Matrix calculateStereoProjectionMatrix(View view, Angle horizontalFieldOfView, double nearDistance,
+			double farDistance, Eye eye,
 			double focalLength, double eyeSeparation)
 	{
 		Rectangle viewport = view.getViewport();
 		double viewportWidth = viewport.getWidth() <= 0d ? 1d : viewport.getWidth();
 		double viewportHeight = viewport.getHeight() <= 0d ? 1d : viewport.getHeight();
 		double aspectratio = viewportWidth / viewportHeight;
-		double widthdiv2 = nearDistance * view.getFieldOfView().tanHalfAngle();
+		double widthdiv2 = nearDistance * horizontalFieldOfView.tanHalfAngle();
 		double multiplier = eye == Eye.RIGHT ? 0.5 : -0.5;
 		double distance = multiplier * eyeSeparation * nearDistance / focalLength;
 
@@ -289,16 +293,18 @@ public class StereoViewHelper
 	 * Calculate a standard non-stereo projection matrix.
 	 * 
 	 * @param view
+	 * @param horizontalFieldOfView
 	 * @param nearDistance
 	 * @param farDistance
 	 * @return Perspective projection matrix
 	 */
-	public static Matrix calculateMonoProjectionMatrix(View view, double nearDistance, double farDistance)
+	public static Matrix calculateMonoProjectionMatrix(View view, Angle horizontalFieldOfView, double nearDistance,
+			double farDistance)
 	{
 		Rectangle viewport = view.getViewport();
 		double viewportWidth = viewport.getWidth() <= 0d ? 1d : viewport.getWidth();
 		double viewportHeight = viewport.getHeight() <= 0d ? 1d : viewport.getHeight();
-		return Matrix.fromPerspective(view.getFieldOfView(), viewportWidth, viewportHeight, nearDistance, farDistance);
+		return Matrix.fromPerspective(horizontalFieldOfView, viewportWidth, viewportHeight, nearDistance, farDistance);
 	}
 
 	/**
