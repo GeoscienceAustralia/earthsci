@@ -18,6 +18,7 @@ package au.gov.ga.earthsci.worldwind.common.render;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 import au.gov.ga.earthsci.worldwind.common.util.IOUtil;
@@ -58,7 +59,9 @@ public abstract class Shader
 	public final void create(GL2 gl)
 	{
 		if (isCreated())
+		{
 			return;
+		}
 
 		InputStream vertex = getVertexSource();
 		InputStream fragment = getFragmentSource();
@@ -73,6 +76,10 @@ public abstract class Shader
 		{
 			e.printStackTrace();
 		}
+
+		String[] defines = getDefines();
+		vsrc = insertDefines(vsrc, defines);
+		fsrc = insertDefines(fsrc, defines);
 
 		vertexShader = gl.glCreateShader(GL2.GL_VERTEX_SHADER);
 		if (vertexShader <= 0)
@@ -122,6 +129,35 @@ public abstract class Shader
 		gl.glUseProgram(shaderProgram);
 		getUniformLocations(gl);
 		gl.glUseProgram(0);
+	}
+
+	/**
+	 * @return List of strings to #define at the top of the shader source
+	 */
+	protected String[] getDefines()
+	{
+		return null;
+	}
+
+	protected String insertDefines(String src, String[] defines)
+	{
+		if (defines == null || defines.length == 0)
+		{
+			return src;
+		}
+		int defineIndex = 0;
+		int versionIndex = src.indexOf("#version");
+		if (versionIndex >= 0)
+		{
+			defineIndex = src.indexOf('\n', versionIndex) + 1;
+		}
+		for (int i = defines.length - 1; i >= 0; i--)
+		{
+			src =
+					src.substring(0, defineIndex) + "#define " + defines[i] + "\n"
+							+ src.substring(defineIndex, src.length());
+		}
+		return src;
 	}
 
 	/**
