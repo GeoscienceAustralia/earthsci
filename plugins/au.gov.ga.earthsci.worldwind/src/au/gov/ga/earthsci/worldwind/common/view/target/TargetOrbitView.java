@@ -228,7 +228,7 @@ public class TargetOrbitView extends BaseOrbitView implements ITargetView
 	protected double computeFarClipDistance()
 	{
 		double elevation = getCurrentEyePosition().elevation;
-		double far = elevation + globe.getDiameter() * 50;
+		double far = elevation + globe.getDiameter();
 		if (!prioritizeFarClipping)
 		{
 			double near = computeNearClipDistance();
