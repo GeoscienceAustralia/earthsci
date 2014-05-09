@@ -194,7 +194,7 @@ public class SunLayer extends AbstractLayer
 		double y1 = projectedSunPosY - sunHeight;
 		double y2 = projectedSunPosY + sunHeight;
 
-		if (!(0 <= x2 && x1 <= 1 && 0 <= y2 && y1 <= 1))
+		if (!(0 <= x2 && x1 <= 1 && 0 <= y2 && y1 <= 1 && 0 <= result[2] && result[2] <= 1))
 		{
 			//sun not within viewport, so don't render
 			return;
