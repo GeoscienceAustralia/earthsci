@@ -33,6 +33,7 @@ public abstract class Shader
 	protected int shaderProgram = 0;
 	protected int vertexShader = 0;
 	protected int fragmentShader = 0;
+	protected int geometryShader = 0;
 
 	/**
 	 * @return An {@link InputStream} containing the GLSL vertex shader string
@@ -45,11 +46,46 @@ public abstract class Shader
 	protected abstract InputStream getFragmentSource();
 
 	/**
+	 * @return An {@link InputStream} containing the GLSL geometry shader string
+	 */
+	protected InputStream getGeometrySource()
+	{
+		return null;
+	}
+
+	/**
 	 * Locate the uniforms for this shader
 	 * 
 	 * @param gl
 	 */
 	protected abstract void getUniformLocations(GL2 gl);
+
+	/**
+	 * @return Value to pass to glProgramParameteriARB for
+	 *         GL_GEOMETRY_INPUT_TYPE_ARB
+	 */
+	protected int getGeometryInputType()
+	{
+		return GL2.GL_TRIANGLES;
+	}
+
+	/**
+	 * @return Value to pass to glProgramParameteriARB for
+	 *         GL_GEOMETRY_OUTPUT_TYPE_ARB
+	 */
+	protected int getGeometryOutputType()
+	{
+		return GL2.GL_TRIANGLE_STRIP;
+	}
+
+	/**
+	 * @return Value to pass to glProgramParameteriARB for
+	 *         GL_GEOMETRY_VERTICES_OUT_ARB
+	 */
+	protected int getGeometryVerticesOut()
+	{
+		return 3;
+	}
 
 	/**
 	 * Setup this GLSL shader in OpenGL
@@ -65,12 +101,14 @@ public abstract class Shader
 
 		InputStream vertex = getVertexSource();
 		InputStream fragment = getFragmentSource();
+		InputStream geometry = getGeometrySource();
 
-		String vsrc = null, fsrc = null;
+		String vsrc = null, fsrc = null, gsrc = null;
 		try
 		{
 			vsrc = IOUtil.readStreamToStringKeepingNewlines(vertex, null);
 			fsrc = IOUtil.readStreamToStringKeepingNewlines(fragment, null);
+			gsrc = geometry == null ? null : IOUtil.readStreamToStringKeepingNewlines(geometry, null);
 		}
 		catch (IOException e)
 		{
@@ -78,8 +116,9 @@ public abstract class Shader
 		}
 
 		String[] defines = getDefines();
-		vsrc = insertDefines(vsrc, defines);
-		fsrc = insertDefines(fsrc, defines);
+		vsrc = insertDefines(vsrc, defines, "_VERTEX_");
+		fsrc = insertDefines(fsrc, defines, "_FRAGMENT_");
+		gsrc = gsrc == null ? null : insertDefines(gsrc, defines, "_GEOMETRY_");
 
 		vertexShader = gl.glCreateShader(GL2.GL_VERTEX_SHADER);
 		if (vertexShader <= 0)
@@ -93,11 +132,25 @@ public abstract class Shader
 			delete(gl);
 			throw new IllegalStateException("Error creating fragment shader");
 		}
+		if (gsrc != null)
+		{
+			geometryShader = gl.glCreateShader(GL2.GL_GEOMETRY_SHADER_ARB);
+			if (geometryShader <= 0)
+			{
+				delete(gl);
+				throw new IllegalStateException("Error creating geometry shader");
+			}
+		}
 
 		gl.glShaderSource(vertexShader, 1, new String[] { vsrc }, new int[] { vsrc.length() }, 0);
 		gl.glCompileShader(vertexShader);
 		gl.glShaderSource(fragmentShader, 1, new String[] { fsrc }, new int[] { fsrc.length() }, 0);
 		gl.glCompileShader(fragmentShader);
+		if (gsrc != null)
+		{
+			gl.glShaderSource(geometryShader, 1, new String[] { gsrc }, new int[] { gsrc.length() }, 0);
+			gl.glCompileShader(geometryShader);
+		}
 
 		shaderProgram = gl.glCreateProgram();
 		if (shaderProgram <= 0)
@@ -108,6 +161,13 @@ public abstract class Shader
 
 		gl.glAttachShader(shaderProgram, vertexShader);
 		gl.glAttachShader(shaderProgram, fragmentShader);
+		if (gsrc != null)
+		{
+			gl.glAttachShader(shaderProgram, geometryShader);
+			gl.glProgramParameteriARB(shaderProgram, GL2.GL_GEOMETRY_INPUT_TYPE_ARB, getGeometryInputType());
+			gl.glProgramParameteriARB(shaderProgram, GL2.GL_GEOMETRY_OUTPUT_TYPE_ARB, getGeometryOutputType());
+			gl.glProgramParameteriARB(shaderProgram, GL2.GL_GEOMETRY_VERTICES_OUT_ARB, getGeometryVerticesOut());
+		}
 		gl.glLinkProgram(shaderProgram);
 		gl.glValidateProgram(shaderProgram);
 
@@ -139,25 +199,24 @@ public abstract class Shader
 		return null;
 	}
 
-	protected String insertDefines(String src, String[] defines)
+	protected String insertDefines(String src, String[] defines, String extraDefine)
 	{
-		if (defines == null || defines.length == 0)
-		{
-			return src;
-		}
+		StringBuffer sb = new StringBuffer(src);
 		int defineIndex = 0;
 		int versionIndex = src.indexOf("#version");
 		if (versionIndex >= 0)
 		{
 			defineIndex = src.indexOf('\n', versionIndex) + 1;
 		}
-		for (int i = defines.length - 1; i >= 0; i--)
+		if (defines != null)
 		{
-			src =
-					src.substring(0, defineIndex) + "#define " + defines[i] + "\n"
-							+ src.substring(defineIndex, src.length());
+			for (int i = defines.length - 1; i >= 0; i--)
+			{
+				sb.insert(defineIndex, "#define " + defines[i] + "\n");
+			}
 		}
-		return src;
+		sb.insert(defineIndex, "#define " + extraDefine + "\n");
+		return sb.toString();
 	}
 
 	/**
@@ -208,9 +267,14 @@ public abstract class Shader
 		{
 			gl.glDeleteShader(fragmentShader);
 		}
+		if (geometryShader > 0)
+		{
+			gl.glDeleteShader(geometryShader);
+		}
 		shaderProgram = 0;
 		vertexShader = 0;
 		fragmentShader = 0;
+		geometryShader = 0;
 	}
 
 	/**
