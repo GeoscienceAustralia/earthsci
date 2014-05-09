@@ -32,7 +32,6 @@ public class InfiniteStarsShader extends Shader
 	public void use(GL2 gl)
 	{
 		super.use(gl);
-		gl.glEnable(GL2.GL_VERTEX_PROGRAM_POINT_SIZE);
 	}
 
 	@Override

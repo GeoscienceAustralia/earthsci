@@ -110,6 +110,7 @@ public class InfiniteStarsLayer extends AbstractLayer
 
 			gl.glEnable(GL2.GL_POINT_SMOOTH);
 			gl.glEnable(GL2.GL_POINT_SPRITE);
+			gl.glEnable(GL2.GL_VERTEX_PROGRAM_POINT_SIZE);
 
 			gl.glEnable(GL2.GL_BLEND);
 			gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
@@ -127,11 +128,11 @@ public class InfiniteStarsLayer extends AbstractLayer
 			cbo.bind(gl);
 			gl.glColorPointer(cbo.getElementStride(), GL2.GL_FLOAT, 0, 0);
 
-			shader.use(gl);
+			useShader(gl);
 			{
 				gl.glDrawArrays(GL2.GL_POINTS, 0, vbo.getBuffer().length / vbo.getElementStride());
 			}
-			shader.unuse(gl);
+			unuseShader(gl);
 
 			gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
 		}
@@ -141,6 +142,16 @@ public class InfiniteStarsLayer extends AbstractLayer
 		}
 	}
 
+	protected void useShader(GL2 gl)
+	{
+		shader.use(gl);
+	}
+
+	protected void unuseShader(GL2 gl)
+	{
+		shader.unuse(gl);
+	}
+
 	protected void init(DrawContext dc)
 	{
 		GL2 gl = dc.getGL().getGL2();
@@ -148,7 +159,7 @@ public class InfiniteStarsLayer extends AbstractLayer
 
 		try
 		{
-			BufferedImage starImage = ImageIO.read(getClass().getResourceAsStream("star.png")); //$NON-NLS-1$
+			BufferedImage starImage = ImageIO.read(InfiniteStarsLayer.class.getResourceAsStream("star.png")); //$NON-NLS-1$
 			TextureData textureData = AWTTextureIO.newTextureData(gl.getGLProfile(), starImage, true);
 			starTexture = TextureIO.newTexture(textureData);
 		}
@@ -159,7 +170,7 @@ public class InfiniteStarsLayer extends AbstractLayer
 
 		try
 		{
-			ObjectInputStream is = new ObjectInputStream(getClass().getResourceAsStream("stars.dat")); //$NON-NLS-1$
+			ObjectInputStream is = new ObjectInputStream(InfiniteStarsLayer.class.getResourceAsStream("stars.dat")); //$NON-NLS-1$
 			List<Vec4> list = new ArrayList<Vec4>();
 			List<Integer> colors = new ArrayList<Integer>();
 
