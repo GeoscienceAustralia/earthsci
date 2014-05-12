@@ -30,6 +30,8 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 
+import au.gov.ga.earthsci.worldwind.common.util.Util;
+
 /**
  * Layer that renders atmospheric scattering effects.
  * <p/>
@@ -211,9 +213,9 @@ public class AtmosphereLayer extends AbstractLayer
 
 		double fKr4PI = RAYLEIGH_SCATTERING * 4.0 * Math.PI;
 		double fKm4PI = MIE_PHASE_ASYMMETRY * 4.0 * Math.PI;
-		double r = Math.exp(-scatter * (INVWAVELENGTH4[0] * fKr4PI + fKm4PI));
-		double g = Math.exp(-scatter * (INVWAVELENGTH4[1] * fKr4PI + fKm4PI));
-		double b = Math.exp(-scatter * (INVWAVELENGTH4[2] * fKr4PI + fKm4PI));
+		double r = Util.clamp(Math.exp(-scatter * (INVWAVELENGTH4[0] * fKr4PI + fKm4PI)), 0.0, 1.0);
+		double g = Util.clamp(Math.exp(-scatter * (INVWAVELENGTH4[1] * fKr4PI + fKm4PI)), 0.0, 1.0);
+		double b = Util.clamp(Math.exp(-scatter * (INVWAVELENGTH4[2] * fKr4PI + fKm4PI)), 0.0, 1.0);
 		return new Color((float) r, (float) g, (float) b);
 	}
 
