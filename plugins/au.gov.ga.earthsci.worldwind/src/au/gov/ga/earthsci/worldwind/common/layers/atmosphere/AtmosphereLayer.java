@@ -70,6 +70,8 @@ public class AtmosphereLayer extends AbstractLayer
 
 	private final AtmosphereShader skyFromAtmosphereShader = new AtmosphereShader(new String[] { "ATMOS" }); //$NON-NLS-1$
 	private final AtmosphereShader skyFromSpaceShader = new AtmosphereShader(new String[] { "SPACE" }); //$NON-NLS-1$
+	private final GroundShader groundFromAtmosphereShader = new GroundShader(new String[] { "ATMOS" }); //$NON-NLS-1$
+	private final GroundShader groundFromSpaceShader = new GroundShader(new String[] { "SPACE" }); //$NON-NLS-1$
 
 	private BlendSurfaceImage terrainMask;
 	private int sphereList = -1;
@@ -98,11 +100,13 @@ public class AtmosphereLayer extends AbstractLayer
 
 		skyFromAtmosphereShader.create(gl);
 		skyFromSpaceShader.create(gl);
+		groundFromAtmosphereShader.create(gl);
+		groundFromSpaceShader.create(gl);
 
 		BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		image.setRGB(0, 0, 0xff << 24);
 		terrainMask = new BlendSurfaceImage(image, Sector.FULL_SPHERE);
-		terrainMask.setBlendFunc(GL2.GL_ZERO, GL2.GL_ONE_MINUS_SRC_ALPHA);
+		//terrainMask.setBlendFunc(GL2.GL_ZERO, GL2.GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	protected void renderAtmosphere(DrawContext dc)
@@ -123,14 +127,16 @@ public class AtmosphereLayer extends AbstractLayer
 			ogsh.pushAttrib(gl, GL2.GL_TEXTURE_BIT | GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT
 					| GL2.GL_POLYGON_BIT);
 
-			gl.glDepthMask(false);
-
 			//render the atmosphere
+			gl.glDepthMask(false);
 			renderSky(dc, gl, eyeMagnitude, eyePoint, innerRadius, outerRadius);
+			gl.glDepthMask(true);
+
+			renderGround(dc, gl, eyeMagnitude, eyePoint, innerRadius, outerRadius);
 
 			//mask out the middle of the sphere using a terrain-following 1x1 black image
-			terrainMask.preRender(dc);
-			terrainMask.render(dc);
+			//terrainMask.preRender(dc);
+			//terrainMask.render(dc);
 		}
 		finally
 		{
@@ -167,6 +173,20 @@ public class AtmosphereLayer extends AbstractLayer
 		gl.glFrontFace(GL2.GL_CCW);
 		gl.glDisable(GL2.GL_CULL_FACE);
 		skyShader.unuse(gl);
+	}
+
+	protected void renderGround(DrawContext dc, GL2 gl, float eyeMagnitude, Vec4 eyePoint, float innerRadius,
+			float outerRadius)
+	{
+		GroundShader groundShader = eyeMagnitude < outerRadius ? groundFromAtmosphereShader : groundFromSpaceShader;
+		groundShader.use(gl, eyePoint, lightDirection, INVWAVELENGTH4, eyeMagnitude, innerRadius,
+				outerRadius, RAYLEIGH_SCATTERING, MIE_SCATTERING, SUN_BRIGHTNESS,
+				SCALE_DEPTH, EXPOSURE, dc.getView().getModelviewMatrix().getInverse());
+
+		terrainMask.preRender(dc);
+		terrainMask.render(dc);
+
+		groundShader.unuse(gl);
 	}
 
 	/**

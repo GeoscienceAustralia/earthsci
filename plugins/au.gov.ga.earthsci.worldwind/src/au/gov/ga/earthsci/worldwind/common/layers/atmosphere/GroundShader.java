@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.atmosphere;
 
+import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Vec4;
 
 import java.io.InputStream;
@@ -22,49 +23,50 @@ import java.io.InputStream;
 import javax.media.opengl.GL2;
 
 /**
- * Shader for performing atmospheric scattering effects.
+ * Shader that calculates atmospheric scattering effects on the ground.
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 @SuppressWarnings("nls")
-public class AtmosphereShader extends AbstractAtmosphereShader
+public class GroundShader extends AbstractAtmosphereShader
 {
-	private int g = -1;
-	private int g2 = -1;
+	private int oldModelViewInverse = -1;
 
-	public AtmosphereShader(String[] defines)
+	public GroundShader(String[] defines)
 	{
 		super(defines);
 	}
 
 	public void use(GL2 gl, Vec4 cameraPos, Vec4 lightDir, float[] invWavelength4, float cameraHeight,
 			float innerRadius, float outerRadius, float rayleighScattering, float mieScattering, float sunBrightness,
-			float scaleDepth, float miePhaseAsymmetry, float exposure)
+			float scaleDepth, float exposure, Matrix mvInv)
 	{
 		super.use(gl, cameraPos, lightDir, invWavelength4, cameraHeight, innerRadius, outerRadius, rayleighScattering,
 				mieScattering, sunBrightness, scaleDepth, exposure);
-		gl.glUniform1f(this.g, miePhaseAsymmetry);
-		gl.glUniform1f(this.g2, miePhaseAsymmetry * miePhaseAsymmetry);
+		float[] modelViewInvArray = new float[] {
+				(float) mvInv.m11, (float) mvInv.m21, (float) mvInv.m31, (float) mvInv.m41,
+				(float) mvInv.m12, (float) mvInv.m22, (float) mvInv.m32, (float) mvInv.m42,
+				(float) mvInv.m13, (float) mvInv.m23, (float) mvInv.m33, (float) mvInv.m43,
+				(float) mvInv.m14, (float) mvInv.m24, (float) mvInv.m34, (float) mvInv.m44 };
+		gl.glUniformMatrix4fv(oldModelViewInverse, 1, false, modelViewInvArray, 0);
 	}
 
 	@Override
 	protected void getUniformLocations(GL2 gl)
 	{
 		super.getUniformLocations(gl);
-		this.g = gl.glGetUniformLocation(shaderProgram, "g");
-		this.g2 = gl.glGetUniformLocation(shaderProgram, "g2");
-		gl.glUniform1i(gl.glGetUniformLocation(shaderProgram, "texture"), 0);
+		oldModelViewInverse = gl.glGetUniformLocation(shaderProgram, "oldModelViewInverse");
 	}
 
 	@Override
 	protected InputStream getVertexSource()
 	{
-		return this.getClass().getResourceAsStream("AtmosphereVertexShader.glsl");
+		return this.getClass().getResourceAsStream("GroundVertexShader.glsl");
 	}
 
 	@Override
 	protected InputStream getFragmentSource()
 	{
-		return this.getClass().getResourceAsStream("AtmosphereFragmentShader.glsl");
+		return this.getClass().getResourceAsStream("GroundFragmentShader.glsl");
 	}
 }

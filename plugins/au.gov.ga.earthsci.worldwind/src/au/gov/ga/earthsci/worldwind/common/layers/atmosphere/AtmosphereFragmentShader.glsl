@@ -12,7 +12,6 @@ uniform vec3 v3LightPos;
 uniform float g;
 uniform float g2;
 uniform sampler2D texture;
-uniform float textureAspect;
 uniform float fExposure;
 
 varying vec3 v3Direction;
