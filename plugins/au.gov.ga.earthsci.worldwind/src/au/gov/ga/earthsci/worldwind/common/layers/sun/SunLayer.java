@@ -23,6 +23,7 @@ import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.OGLStackHandler;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -31,6 +32,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL2;
 
+import au.gov.ga.earthsci.worldwind.common.layers.atmosphere.AtmosphereLayer;
 import au.gov.ga.earthsci.worldwind.common.render.FrameBufferStack;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
 
@@ -200,6 +202,9 @@ public class SunLayer extends AbstractLayer
 			return;
 		}
 
+		double directionScale = dc.getGlobe().getRadius() * dc.getGlobe().getRadius();
+		Color sunColor = AtmosphereLayer.getSpaceObjectColor(dc, lightDirection.multiply3(directionScale));
+
 		OGLStackHandler ogsh = new OGLStackHandler();
 		try
 		{
@@ -227,6 +232,7 @@ public class SunLayer extends AbstractLayer
 			gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
 			gl.glEnable(GL2.GL_TEXTURE_2D);
+			gl.glColor3d(sunColor.getRed() / 255.0, sunColor.getGreen() / 255.0, sunColor.getBlue() / 255.0);
 			circleTexture.bind(gl);
 			gl.glBegin(GL2.GL_QUADS);
 			{
@@ -240,6 +246,7 @@ public class SunLayer extends AbstractLayer
 				gl.glVertex3d(x1, y2, -1);
 			}
 			gl.glEnd();
+			gl.glColor3d(1.0, 1.0, 1.0);
 
 			//test if sun sphere is behind scene geometry
 			gl.glFramebufferTexture2D(GL2.GL_FRAMEBUFFER, GL2.GL_COLOR_ATTACHMENT0, GL2.GL_TEXTURE_2D,
