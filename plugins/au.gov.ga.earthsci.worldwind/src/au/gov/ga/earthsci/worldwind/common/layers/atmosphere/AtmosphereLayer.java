@@ -23,6 +23,7 @@ import gov.nasa.worldwind.layers.AbstractLayer;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.OGLStackHandler;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import javax.media.opengl.GL2;
@@ -164,5 +165,61 @@ public class AtmosphereLayer extends AbstractLayer
 		gl.glFrontFace(GL2.GL_CCW);
 		gl.glDisable(GL2.GL_CULL_FACE);
 		skyShader.unuse(gl);
+	}
+
+	/**
+	 * Get the color of an object at a point in space, using the atmospheric
+	 * scattering parameters defined by this layer.
+	 * 
+	 * @param dc
+	 *            Current draw context, from which to get the current globe
+	 *            radius and eye point
+	 * @param point
+	 *            Point to determine the color of
+	 * @return Color of the object at the given point
+	 */
+	public static Color getSpaceObjectColor(DrawContext dc, Vec4 point)
+	{
+		double innerRadius = dc.getGlobe().getRadius();
+		double outerRadius = innerRadius * ATMOSPHERE_SCALE;
+		Vec4 eyePoint = dc.getView().getEyePoint();
+
+		double cameraHeight = eyePoint.getLength3();
+		double cameraHeight2 = cameraHeight * cameraHeight;
+
+		double outerRadius2 = outerRadius * outerRadius;
+		Vec4 ray = point.subtract3(eyePoint);
+		double far = ray.getLength3();
+		ray = ray.divide3(far);
+
+		double B = 2.0 * eyePoint.dot3(ray);
+		double C = cameraHeight2 - outerRadius2;
+		double det = Math.max(0.0, B * B - 4.0 * C);
+		double near = 0.5 * (-B - Math.sqrt(det));
+		Vec4 start = eyePoint;
+
+		if (cameraHeight > outerRadius)
+		{
+			start = start.add3(ray.multiply3(near));
+		}
+
+		double scaleOverScaleDepth = (1f / (outerRadius - innerRadius)) / SCALE_DEPTH;
+		double height = start.getLength3();
+		double depth = Math.exp(scaleOverScaleDepth * (innerRadius - cameraHeight));
+		double angle = ray.dot3(start) / height;
+		double scatter = depth * scale(angle, SCALE_DEPTH);
+
+		double fKr4PI = RAYLEIGH_SCATTERING * 4.0 * Math.PI;
+		double fKm4PI = MIE_PHASE_ASYMMETRY * 4.0 * Math.PI;
+		double r = Math.exp(-scatter * (INVWAVELENGTH4[0] * fKr4PI + fKm4PI));
+		double g = Math.exp(-scatter * (INVWAVELENGTH4[1] * fKr4PI + fKm4PI));
+		double b = Math.exp(-scatter * (INVWAVELENGTH4[2] * fKr4PI + fKm4PI));
+		return new Color((float) r, (float) g, (float) b);
+	}
+
+	protected static double scale(double cos, double scaleDepth)
+	{
+		double x = 1.0 - cos;
+		return scaleDepth * Math.exp(-0.00287 + x * (0.459 + x * (3.83 + x * (-6.80 + x * 5.25))));
 	}
 }
