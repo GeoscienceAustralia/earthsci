@@ -43,6 +43,7 @@ public class WorldWindConfiguration
 		Configuration.setValue(AVKey.ELEVATION_MODEL_FACTORY, ElevationModelFactory.class.getName());
 		Configuration.setValue(AVKey.RETRIEVAL_SERVICE_CLASS_NAME, WorldWindRetrievalService.class.getName());
 		Configuration.setValue(AVKey.TESSELLATOR_CLASS_NAME, WireframeRectangularTessellator.class.getName());
+		Configuration.setValue(AVKey.FOV, 70.0);
 	}
 
 	@PreDestroy
