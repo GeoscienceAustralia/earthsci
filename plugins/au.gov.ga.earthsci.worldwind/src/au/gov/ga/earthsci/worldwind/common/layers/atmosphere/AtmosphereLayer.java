@@ -40,27 +40,30 @@ import javax.media.opengl.glu.GLUquadric;
  */
 public class AtmosphereLayer extends AbstractLayer
 {
-	public final static double ATMOSPHERE_SCALE = 1.025;
-	public final static double RAYLEIGH_SCATTERING = 0.0025;
-	public final static double MIE_SCATTERING = 0.0015;
-	public final static double SUN_BRIGHTNESS = 18.0;
-	public final static double MIE_PHASE_ASYMMETRY = -0.990;
-	public final static double WAVELENGTH[] = new double[] {
-			0.731,
-			0.612,
-			0.455
+	//atmosphere constants
+	public final static float ATMOSPHERE_SCALE = 1.025f;
+	public final static float RAYLEIGH_SCATTERING = 0.0025f;
+	public final static float MIE_SCATTERING = 0.0015f;
+	public final static float SUN_BRIGHTNESS = 18.0f;
+	public final static float MIE_PHASE_ASYMMETRY = -0.990f;
+	public final static float WAVELENGTH[] = new float[] {
+			0.731f,
+			0.612f,
+			0.455f
 	};
-	public final static double SCALE_DEPTH = 0.25;
-	public final static double EXPOSURE = 2.0;
+	public final static float SCALE_DEPTH = 0.25f;
+	public final static float EXPOSURE = 2.0f;
+
+	//derived constants
+	public final static float INVWAVELENGTH4[] = new float[] {
+			1f / (float) Math.pow(WAVELENGTH[0], 4),
+			1f / (float) Math.pow(WAVELENGTH[1], 4),
+			1f / (float) Math.pow(WAVELENGTH[2], 4)
+	};
 
 	private boolean inited = false;
 
 	protected Vec4 lightDirection = new Vec4(0, 0, 1000).normalize3();
-	protected final float wavelength4[] = new float[] {
-			(float) Math.pow(WAVELENGTH[0], 4),
-			(float) Math.pow(WAVELENGTH[1], 4),
-			(float) Math.pow(WAVELENGTH[2], 4)
-	};
 
 	private final AtmosphereShader skyFromAtmosphereShader = new AtmosphereShader(new String[] { "ATMOS" }); //$NON-NLS-1$
 	private final AtmosphereShader skyFromSpaceShader = new AtmosphereShader(new String[] { "SPACE" }); //$NON-NLS-1$
@@ -104,11 +107,11 @@ public class AtmosphereLayer extends AbstractLayer
 		GL2 gl = dc.getGL().getGL2();
 
 		//setup variables
-		double innerRadius = dc.getGlobe().getRadius();
-		double outerRadius = innerRadius * ATMOSPHERE_SCALE;
+		float innerRadius = (float) dc.getGlobe().getRadius();
+		float outerRadius = innerRadius * ATMOSPHERE_SCALE;
 		View view = dc.getView();
 		Vec4 eyePoint = view.getEyePoint();
-		double eyeMagnitude = eyePoint.getLength3();
+		float eyeMagnitude = (float) eyePoint.getLength3();
 
 		OGLStackHandler ogsh = new OGLStackHandler();
 
@@ -132,13 +135,13 @@ public class AtmosphereLayer extends AbstractLayer
 		}
 	}
 
-	protected void renderSky(DrawContext dc, GL2 gl, double eyeMagnitude, Vec4 eyePoint, double innerRadius,
-			double outerRadius)
+	protected void renderSky(DrawContext dc, GL2 gl, float eyeMagnitude, Vec4 eyePoint, float innerRadius,
+			float outerRadius)
 	{
 		AtmosphereShader skyShader = eyeMagnitude < outerRadius ? skyFromAtmosphereShader : skyFromSpaceShader;
-		skyShader.use(gl, eyePoint, lightDirection, wavelength4, (float) eyeMagnitude, (float) innerRadius,
-				(float) outerRadius, (float) RAYLEIGH_SCATTERING, (float) MIE_SCATTERING, (float) SUN_BRIGHTNESS,
-				(float) SCALE_DEPTH, (float) MIE_PHASE_ASYMMETRY, (float) EXPOSURE);
+		skyShader.use(gl, eyePoint, lightDirection, INVWAVELENGTH4, eyeMagnitude, innerRadius,
+				outerRadius, RAYLEIGH_SCATTERING, MIE_SCATTERING, SUN_BRIGHTNESS,
+				SCALE_DEPTH, MIE_PHASE_ASYMMETRY, EXPOSURE);
 
 		gl.glFrontFace(GL2.GL_CW);
 		gl.glEnable(GL2.GL_CULL_FACE);

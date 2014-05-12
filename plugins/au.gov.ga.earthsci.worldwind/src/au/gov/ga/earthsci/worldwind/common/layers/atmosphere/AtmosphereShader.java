@@ -63,29 +63,31 @@ public class AtmosphereShader extends Shader
 		return defines;
 	}
 
-	public void use(GL2 gl, Vec4 cameraPos, Vec4 lightDir, float[] wavelength4, float cameraHeight, float innerRadius,
-			float outerRadius, float kr, float km, float eSun, float rayleighScaleDepth, float g, float exposure)
+	public void use(GL2 gl, Vec4 cameraPos, Vec4 lightDir, float[] invWavelength4, float cameraHeight,
+			float innerRadius, float outerRadius, float rayleighScattering, float mieScattering, float sunBrightness,
+			float scaleDepth, float miePhaseAsymmetry, float exposure)
 	{
 		super.use(gl);
 		cameraHeight = Math.max(cameraHeight, innerRadius);
+		float fScale = 1f / (outerRadius - innerRadius);
 		gl.glUniform3f(this.v3CameraPos, (float) cameraPos.x, (float) cameraPos.y, (float) cameraPos.z);
 		gl.glUniform3f(this.v3LightPos, (float) lightDir.x, (float) lightDir.y, (float) lightDir.z);
-		gl.glUniform3f(this.v3InvWavelength, 1f / wavelength4[0], 1f / wavelength4[1], 1f / wavelength4[2]);
+		gl.glUniform3f(this.v3InvWavelength, invWavelength4[0], invWavelength4[1], invWavelength4[2]);
 		gl.glUniform1f(this.fCameraHeight, cameraHeight);
 		gl.glUniform1f(this.fCameraHeight2, cameraHeight * cameraHeight);
 		gl.glUniform1f(this.fInnerRadius, innerRadius);
 		gl.glUniform1f(this.fInnerRadius2, innerRadius * innerRadius);
 		gl.glUniform1f(this.fOuterRadius, outerRadius);
 		gl.glUniform1f(this.fOuterRadius2, outerRadius * outerRadius);
-		gl.glUniform1f(this.fKrESun, kr * eSun);
-		gl.glUniform1f(this.fKmESun, km * eSun);
-		gl.glUniform1f(this.fKr4PI, kr * 4f * (float) Math.PI);
-		gl.glUniform1f(this.fKm4PI, km * 4f * (float) Math.PI);
-		gl.glUniform1f(this.fScale, 1f / (outerRadius - innerRadius));
-		gl.glUniform1f(this.fScaleDepth, rayleighScaleDepth);
-		gl.glUniform1f(this.fScaleOverScaleDepth, (1f / (outerRadius - innerRadius)) / rayleighScaleDepth);
-		gl.glUniform1f(this.g, g);
-		gl.glUniform1f(this.g2, g * g);
+		gl.glUniform1f(this.fKrESun, rayleighScattering * sunBrightness);
+		gl.glUniform1f(this.fKmESun, mieScattering * sunBrightness);
+		gl.glUniform1f(this.fKr4PI, rayleighScattering * 4f * (float) Math.PI);
+		gl.glUniform1f(this.fKm4PI, mieScattering * 4f * (float) Math.PI);
+		gl.glUniform1f(this.fScale, fScale);
+		gl.glUniform1f(this.fScaleDepth, scaleDepth);
+		gl.glUniform1f(this.fScaleOverScaleDepth, fScale / scaleDepth);
+		gl.glUniform1f(this.g, miePhaseAsymmetry);
+		gl.glUniform1f(this.g2, miePhaseAsymmetry * miePhaseAsymmetry);
 		gl.glUniform1f(this.fExposure, exposure);
 	}
 
