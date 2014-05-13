@@ -32,7 +32,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL2;
 
-import au.gov.ga.earthsci.worldwind.common.layers.atmosphere.AtmosphereLayer;
+import au.gov.ga.earthsci.worldwind.common.layers.atmosphere.Atmosphere;
 import au.gov.ga.earthsci.worldwind.common.render.FrameBufferStack;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
 
@@ -203,7 +203,7 @@ public class SunLayer extends AbstractLayer
 		}
 
 		double directionScale = dc.getGlobe().getRadius() * dc.getGlobe().getRadius();
-		Color sunColor = AtmosphereLayer.getSpaceObjectColor(dc, lightDirection.multiply3(directionScale));
+		Color sunColor = Atmosphere.getSpaceObjectColor(dc, lightDirection.multiply3(directionScale));
 
 		OGLStackHandler ogsh = new OGLStackHandler();
 		try

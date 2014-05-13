@@ -27,12 +27,12 @@ import javax.media.opengl.GL2;
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 @SuppressWarnings("nls")
-public class AtmosphereShader extends AbstractAtmosphereShader
+public class SkyShader extends AbstractAtmosphereShader
 {
 	private int g = -1;
 	private int g2 = -1;
 
-	public AtmosphereShader(String[] defines)
+	public SkyShader(String[] defines)
 	{
 		super(defines);
 	}
@@ -59,12 +59,12 @@ public class AtmosphereShader extends AbstractAtmosphereShader
 	@Override
 	protected InputStream getVertexSource()
 	{
-		return this.getClass().getResourceAsStream("AtmosphereVertexShader.glsl");
+		return this.getClass().getResourceAsStream("SkyVertexShader.glsl");
 	}
 
 	@Override
 	protected InputStream getFragmentSource()
 	{
-		return this.getClass().getResourceAsStream("AtmosphereFragmentShader.glsl");
+		return this.getClass().getResourceAsStream("SkyFragmentShader.glsl");
 	}
 }
