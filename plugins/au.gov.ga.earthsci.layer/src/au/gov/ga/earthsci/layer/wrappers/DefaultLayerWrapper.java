@@ -243,22 +243,29 @@ public class DefaultLayerWrapper extends LayerDelegator implements ILayerWrapper
 		AVList params = new AVListImpl();
 		params.setValue(AVKeyMore.CONTEXT_URL, url);
 		Factory factory = (Factory) WorldWind.createConfigurationComponent(AVKey.LAYER_FACTORY);
-		Object result = factory.createFromConfigSource(element, params);
-		if (!(result instanceof Layer))
+		try
 		{
-			if (result == null)
+			Object result = factory.createFromConfigSource(element, params);
+			if (!(result instanceof Layer))
 			{
-				logger.error("Error loading layer from element, layer factory returned null"); //$NON-NLS-1$
+				if (result == null)
+				{
+					logger.error("Error loading layer from element, layer factory returned null"); //$NON-NLS-1$
+				}
+				else
+				{
+					logger.error("Object loaded is not a Layer: " + result.getClass()); //$NON-NLS-1$
+				}
+				return;
 			}
-			else
-			{
-				logger.error("Object loaded is not a Layer: " + result.getClass()); //$NON-NLS-1$
-			}
-			return;
-		}
 
-		Layer layer = (Layer) result;
-		setLayer(layer);
+			Layer layer = (Layer) result;
+			setLayer(layer);
+		}
+		catch (Exception e)
+		{
+			logger.error("Error loading layer from element", e); //$NON-NLS-1$
+		}
 	}
 
 	/**
