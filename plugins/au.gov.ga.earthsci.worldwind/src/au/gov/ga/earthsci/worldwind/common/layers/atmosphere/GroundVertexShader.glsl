@@ -41,7 +41,7 @@ void main(void)
 	vec3 refCenter = (oldModelViewInverse * gl_ModelViewMatrix)[3].xyz;
 
 	// Get the ray from the camera to the vertex and its length (which is the far point of the ray passing through the atmosphere)
-	vec3 v3Pos = gl_Vertex.xyz + refCenter;
+	vec3 v3Pos = normalize(gl_Vertex.xyz + refCenter) * fInnerRadius;
 	vec3 v3Ray = v3Pos - v3CameraPos;
 	float fFar = length(v3Ray);
 	v3Ray /= fFar;
