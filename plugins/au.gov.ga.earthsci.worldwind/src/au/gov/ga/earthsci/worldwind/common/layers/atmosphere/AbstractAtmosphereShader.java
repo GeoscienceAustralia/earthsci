@@ -64,7 +64,11 @@ public abstract class AbstractAtmosphereShader extends Shader
 			float scaleDepth, float exposure)
 	{
 		super.use(gl);
-		cameraHeight = Math.max(cameraHeight, innerRadius);
+		if (cameraHeight < innerRadius)
+		{
+			cameraHeight = innerRadius;
+			cameraPos = cameraPos.normalize3().multiply3(innerRadius);
+		}
 		float fScale = 1f / (outerRadius - innerRadius);
 		gl.glUniform3f(this.v3CameraPos, (float) cameraPos.x, (float) cameraPos.y, (float) cameraPos.z);
 		gl.glUniform3f(this.v3LightPos, (float) lightDir.x, (float) lightDir.y, (float) lightDir.z);
