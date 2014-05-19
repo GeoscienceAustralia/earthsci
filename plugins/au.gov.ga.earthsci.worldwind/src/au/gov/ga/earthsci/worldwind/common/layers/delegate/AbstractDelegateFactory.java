@@ -25,6 +25,7 @@ import java.util.Map;
 import org.w3c.dom.Element;
 
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.reader.MaskImageReaderDelegate;
+import au.gov.ga.earthsci.worldwind.common.layers.delegate.render.BlendingRenderDelegate;
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.render.DepthMaskRenderDelegate;
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.render.ElevationOffsetRenderDelegate;
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.render.IgnoreElevationRenderDelegate;
@@ -67,6 +68,7 @@ public abstract class AbstractDelegateFactory implements IDelegateFactory
 		registerDelegate(ElevationOffsetRenderDelegate.class);
 		registerDelegate(IgnoreElevationRenderDelegate.class);
 		registerDelegate(DepthMaskRenderDelegate.class);
+		registerDelegate(BlendingRenderDelegate.class);
 	}
 
 	@Override
