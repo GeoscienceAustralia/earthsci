@@ -96,6 +96,7 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 	protected final URL context;
 	protected final MercatorImageDelegateKit delegateKit;
 	protected boolean extractZipEntry = false;
+	protected boolean prerendered;
 
 	protected Globe currentGlobe;
 
@@ -220,15 +221,40 @@ public class DelegatorMercatorTiledImageLayer extends URLTransformerBasicTiledIm
 	@Override
 	public void render(DrawContext dc)
 	{
-		if (!isEnabled())
-			return;
-
 		if (dc != null)
+		{
 			currentGlobe = dc.getGlobe();
-
-		delegateKit.preRender(dc);
+		}
 		super.render(dc);
-		delegateKit.postRender(dc);
+	}
+	
+	@Override
+	protected void setBlendingFunction(DrawContext dc)
+	{
+		super.setBlendingFunction(dc);
+		//call the delegate's preRender function here, after the blending function
+		//is set up, so that any delegates can modify the blending if they wish
+		delegateKit.preRender(dc);
+		prerendered = true;
+	}
+	
+	@Override
+	protected void draw(DrawContext dc)
+	{
+		prerendered = false;
+		super.draw(dc);
+		if(prerendered)
+		{
+			delegateKit.postRender(dc);
+		}
+	}
+	
+	@Override
+	public boolean isUseTransparentTextures()
+	{
+		//ensure that setBlendingFunction is called, so that the delegate's preRender
+		//function is called
+		return true;
 	}
 
 	@Override
