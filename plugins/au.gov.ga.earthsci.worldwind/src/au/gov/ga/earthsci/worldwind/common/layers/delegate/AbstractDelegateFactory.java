@@ -30,6 +30,7 @@ import au.gov.ga.earthsci.worldwind.common.layers.delegate.render.BlendingRender
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.render.DepthMaskRenderDelegate;
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.render.ElevationOffsetRenderDelegate;
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.render.IgnoreElevationRenderDelegate;
+import au.gov.ga.earthsci.worldwind.common.layers.delegate.render.ShaderRenderDelegate;
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.retriever.HttpRetrieverFactoryDelegate;
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.retriever.PassThroughZipRetrieverFactoryDelegate;
 import au.gov.ga.earthsci.worldwind.common.layers.delegate.transformer.ColorLimitTransformerDelegate;
@@ -71,6 +72,7 @@ public abstract class AbstractDelegateFactory implements IDelegateFactory
 		registerDelegate(DepthMaskRenderDelegate.class);
 		registerDelegate(BlendingRenderDelegate.class);
 		registerDelegate(AltitudeFadeRenderDelegate.class);
+		registerDelegate(ShaderRenderDelegate.class);
 	}
 
 	@Override
