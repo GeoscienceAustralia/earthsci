@@ -76,7 +76,7 @@ public class AltitudeFadeRenderDelegate implements IRenderDelegate
 		Vec4 eyePoint = dc.getView().getEyePoint();
 		double eyeMagnitude = eyePoint.getLength3() - dc.getGlobe().getRadius();
 		double opacity = (eyeMagnitude - altitudeEnd) / (altitudeStart - altitudeEnd);
-		opacity = Util.clamp(opacity, 0.0, 1.0);
+		opacity = Util.clamp(opacity, 0.0, oldOpacity);
 		layer.setOpacity(opacity);
 	}
 
