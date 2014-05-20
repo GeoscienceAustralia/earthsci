@@ -92,7 +92,8 @@ void main(void)
 	gl_FrontColor.rgb = v3FrontColor * (v3InvWavelength * fKrESun + fKmESun);
 
 	// Calculate the attenuation factor for the ground
-	gl_FrontSecondaryColor.rgb = v3Attenuate;
+	float mieMultiplier = min(1.0, (fCameraHeight - fInnerRadius) / (fOuterRadius - fInnerRadius));
+	gl_FrontSecondaryColor.rgb = v3Attenuate * mieMultiplier;
 
 	gl_Position = ftransform();
 }
