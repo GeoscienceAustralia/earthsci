@@ -17,14 +17,16 @@ package au.gov.ga.earthsci.layer;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * @author u09145
- * 
- */
 public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.layer.messages"; //$NON-NLS-1$
 	public static String DefaultLayers_DefaultLabel;
+	public static String DrawOrder_AboveLabel;
+	public static String DrawOrder_BelowLabel;
+	public static String DrawOrder_PostLabel;
+	public static String DrawOrder_PreLabel;
+	public static String DrawOrder_SurfaceLabel;
+	public static String DrawOrder_UnknownLabel;
 	public static String IntentLayerLoader_FailedLoadNotificationDescription;
 	public static String IntentLayerLoader_FailedLoadNotificationTitle;
 	public static String IntentLayerLoader_LoadCanceledDescription;

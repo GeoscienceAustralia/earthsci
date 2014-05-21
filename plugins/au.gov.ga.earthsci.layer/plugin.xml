@@ -140,6 +140,14 @@
             id="TiledImageLayerWrapper"
             wraps="gov.nasa.worldwind.layers.TiledImageLayer">
       </wrapper>
+      <drawOrder
+            class="gov.nasa.worldwind.layers.Layer"
+            value="0">
+      </drawOrder>
+      <drawOrder
+            class="au.gov.ga.earthsci.worldwind.common.layers.model.ModelLayer"
+            value="-10">
+      </drawOrder>
    </extension>
 
 </plugin>

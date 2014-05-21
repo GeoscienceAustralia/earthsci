@@ -45,4 +45,17 @@ public interface ILayerNode extends ILayerTreeNode, ILayerDelegator<IPersistentL
 	 *            Is this node loading?
 	 */
 	void setLoading(boolean loading);
+
+	/**
+	 * @return The draw order for this layer
+	 */
+	int getDrawOrder();
+
+	/**
+	 * Set the draw order for this layer. Layers with the same draw order are
+	 * drawn in the order they appear in the layer list.
+	 * 
+	 * @param drawOrder
+	 */
+	void setDrawOrder(int drawOrder);
 }

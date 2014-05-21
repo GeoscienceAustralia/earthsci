@@ -65,6 +65,7 @@ public class ExtensionManager
 	private final Map<String, Class<? extends IPersistentLayer>> replacementClasses =
 			new HashMap<String, Class<? extends IPersistentLayer>>();
 	private final Map<String, String> replacementIds = new HashMap<String, String>();
+	private final Map<Class<? extends Layer>, Integer> drawOrders = new HashMap<Class<? extends Layer>, Integer>();
 
 	private ExtensionManager()
 	{
@@ -128,6 +129,15 @@ public class ExtensionManager
 					}
 					String replacementId = element.getAttribute("id"); //$NON-NLS-1$
 					replacementIds.put(replacementFor, replacementId);
+				}
+				else if ("drawOrder".equals(element.getName())) //$NON-NLS-1$
+				{
+					@SuppressWarnings("unchecked")
+					Class<? extends Layer> layer =
+							(Class<? extends Layer>) ExtensionPointHelper.getClassForProperty(element, "class"); //$NON-NLS-1$
+					String valueString = element.getAttribute("value"); //$NON-NLS-1$
+					int value = Integer.parseInt(valueString);
+					drawOrders.put(layer, value);
 				}
 			}
 			catch (Exception e)
@@ -197,6 +207,24 @@ public class ExtensionManager
 	}
 
 	/**
+	 * Get the default draw order value for the given layer class.
+	 * 
+	 * @param layerClass
+	 * @return Default draw order value for the given layer class
+	 */
+	public Integer getDrawOrderFor(Class<? extends Layer> layerClass)
+	{
+		Map<Class<?>, Integer> distances = new HashMap<Class<?>, Integer>();
+		calculateClassDistances(layerClass, 0, distances, drawOrders);
+		Class<?> closestClass = getClosestClass(distances);
+		if (closestClass != null)
+		{
+			return drawOrders.get(closestClass);
+		}
+		return null;
+	}
+
+	/**
 	 * Wrap the given legacy World Wind {@link Layer} in the appropriate
 	 * associated {@link ILayerWrapper} implementation.
 	 * 
@@ -223,7 +251,7 @@ public class ExtensionManager
 	{
 		Class<?> layerClass = layer.getClass();
 		Map<Class<?>, Integer> distances = new HashMap<Class<?>, Integer>();
-		calculateClassDistances(layerClass, 0, distances);
+		calculateClassDistances(layerClass, 0, distances, layerToWrapper);
 		while (!distances.isEmpty())
 		{
 			Class<?> closestClass = getClosestClass(distances);
@@ -238,7 +266,7 @@ public class ExtensionManager
 		return null;
 	}
 
-	private Class<?> getClosestClass(Map<Class<?>, Integer> distances)
+	private static Class<?> getClosestClass(Map<Class<?>, Integer> distances)
 	{
 		int minDistance = Integer.MAX_VALUE;
 		Class<?> closestClass = null;
@@ -253,13 +281,14 @@ public class ExtensionManager
 		return closestClass;
 	}
 
-	private void calculateClassDistances(Class<?> c, int distance, Map<Class<?>, Integer> distances)
+	private static void calculateClassDistances(Class<?> c, int distance, Map<Class<?>, Integer> distances,
+			Map<Class<? extends Layer>, ?> inMap)
 	{
 		if (c == null)
 		{
 			return;
 		}
-		if (layerToWrapper.containsKey(c))
+		if (inMap.containsKey(c))
 		{
 			Integer lastDistance = distances.get(c);
 			if (lastDistance == null || distance < lastDistance)
@@ -267,10 +296,10 @@ public class ExtensionManager
 				distances.put(c, distance);
 			}
 		}
-		calculateClassDistances(c.getSuperclass(), distance + 1, distances);
+		calculateClassDistances(c.getSuperclass(), distance + 1, distances, inMap);
 		for (Class<?> i : c.getInterfaces())
 		{
-			calculateClassDistances(i, distance + 1, distances);
+			calculateClassDistances(i, distance + 1, distances, inMap);
 		}
 	}
 }

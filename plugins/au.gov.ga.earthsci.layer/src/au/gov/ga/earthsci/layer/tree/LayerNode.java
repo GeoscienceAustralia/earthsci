@@ -37,6 +37,7 @@ import au.gov.ga.earthsci.common.util.ILoader;
 import au.gov.ga.earthsci.common.util.Util;
 import au.gov.ga.earthsci.core.model.IModelStatus;
 import au.gov.ga.earthsci.core.model.IStatused;
+import au.gov.ga.earthsci.layer.DrawOrder;
 import au.gov.ga.earthsci.layer.IPersistentLayer;
 import au.gov.ga.earthsci.layer.LayerPersistentAdapter;
 import au.gov.ga.earthsci.layer.Messages;
@@ -62,6 +63,8 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 {
 	protected PersistentLayerDelegator delegator = new PersistentLayerDelegator();
 	private boolean loading = false;
+	private Integer drawOrder = null;
+	private Integer drawOrderCached = null;
 
 	public LayerNode()
 	{
@@ -136,6 +139,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	public void setLayer(IPersistentLayer layer)
 	{
 		delegator.setLayer(layer);
+		drawOrderCached = null;
 	}
 
 	@Persistent(name = "definition")
@@ -280,6 +284,45 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	public void setLoading(boolean loading)
 	{
 		firePropertyChange("loading", isLoading(), this.loading = loading); //$NON-NLS-1$
+	}
+
+	@Override
+	public int getDrawOrder()
+	{
+		if (drawOrder != null)
+		{
+			return drawOrder;
+		}
+		if (drawOrderCached != null)
+		{
+			return drawOrderCached;
+		}
+		Class<? extends Layer> layerClass = Layer.class;
+		Layer l = getGrandLayer();
+		if (l != null)
+		{
+			layerClass = l.getClass();
+		}
+		drawOrderCached = DrawOrder.getDefaultDrawOrder(layerClass);
+		return drawOrderCached;
+	}
+
+	@Override
+	public void setDrawOrder(int drawOrder)
+	{
+		firePropertyChange("drawOrder", getDrawOrder(), this.drawOrder = drawOrder); //$NON-NLS-1$
+	}
+
+	@Persistent(name = "drawOrder", attribute = true)
+	private Integer getPersistentDrawOrder()
+	{
+		return drawOrder;
+	}
+
+	@SuppressWarnings("unused")
+	private void setPersistentDrawOrder(Integer drawOrder)
+	{
+		this.drawOrder = drawOrder;
 	}
 
 	//////////////////////

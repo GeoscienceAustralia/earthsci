@@ -22,6 +22,7 @@
             <element ref="wrapper"/>
             <element ref="replacementClass"/>
             <element ref="replacementId"/>
+            <element ref="drawOrder"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -161,6 +162,47 @@
                   Replacement id.
                </documentation>
             </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="drawOrder">
+      <annotation>
+         <documentation>
+            Defines a layer-to-drawOrder mapping. This is the default draw order value used when new instances of this layer are created.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Type of the layer.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":gov.nasa.worldwind.layers.Layer"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="value" use="required">
+            <annotation>
+               <documentation>
+                  Draw order value for this layer.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="-20">
+                  </enumeration>
+                  <enumeration value="-10">
+                  </enumeration>
+                  <enumeration value="0">
+                  </enumeration>
+                  <enumeration value="10">
+                  </enumeration>
+                  <enumeration value="20">
+                  </enumeration>
+               </restriction>
+            </simpleType>
          </attribute>
       </complexType>
    </element>

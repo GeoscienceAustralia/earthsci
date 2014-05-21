@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.ui,
  au.gov.ga.earthsci.logging,
  org.eclipse.e4.core.di,
  au.gov.ga.earthsci.injectable;bundle-version="1.0.0",
- org.eclipse.e4.ui.services
+ org.eclipse.e4.ui.services,
+ com.jogamp.jogl;bundle-version="2.1.5"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: au.gov.ga.earthsci.layer,

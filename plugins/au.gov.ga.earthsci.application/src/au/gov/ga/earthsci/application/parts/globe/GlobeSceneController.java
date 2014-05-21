@@ -22,7 +22,7 @@ import gov.nasa.worldwind.util.Logging;
 
 import java.util.logging.Level;
 
-import au.gov.ga.earthsci.worldwind.common.render.ExtendedSceneController;
+import au.gov.ga.earthsci.layer.LayerSceneController;
 
 /**
  * SceneController to use for each WorldWindow for the globe part. Provides a
@@ -30,7 +30,7 @@ import au.gov.ga.earthsci.worldwind.common.render.ExtendedSceneController;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class GlobeSceneController extends ExtendedSceneController
+public class GlobeSceneController extends LayerSceneController
 {
 	private final LayerList preLayers = new LayerList();
 	private final LayerList postLayers = new LayerList();
