@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 import javax.media.opengl.GL2;
 
 import au.gov.ga.earthsci.worldwind.common.render.Shader;
+import au.gov.ga.earthsci.worldwind.common.sun.SunPositionService;
 
 /**
  * Shader used by the {@link ShaderRenderDelegate}.
@@ -216,7 +217,7 @@ public class ShaderRenderDelegateShader extends Shader
 				@Override
 				public void set(DrawContext dc, GL2 gl, int uniformLocation)
 				{
-					Vec4 lightDirection = Vec4.UNIT_Z;
+					Vec4 lightDirection = SunPositionService.INSTANCE.getDirection(dc.getView());
 					gl.glUniform3f(uniformLocation, (float) lightDirection.x, (float) lightDirection.y,
 							(float) lightDirection.z);
 				}

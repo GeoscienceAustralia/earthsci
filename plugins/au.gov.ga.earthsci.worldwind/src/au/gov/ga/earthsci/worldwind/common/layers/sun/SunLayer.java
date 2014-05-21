@@ -34,6 +34,7 @@ import javax.media.opengl.GL2;
 
 import au.gov.ga.earthsci.worldwind.common.layers.atmosphere.Atmosphere;
 import au.gov.ga.earthsci.worldwind.common.render.FrameBufferStack;
+import au.gov.ga.earthsci.worldwind.common.sun.SunPositionService;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
 
 import com.jogamp.opengl.util.texture.Texture;
@@ -53,7 +54,6 @@ import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 public class SunLayer extends AbstractLayer
 {
 	protected final float sunSize = 20;
-	protected Vec4 lightDirection = new Vec4(0, 0, 1000).normalize3();
 
 	protected boolean inited = false;
 	protected Dimension size;
@@ -167,6 +167,7 @@ public class SunLayer extends AbstractLayer
 				0.0, 0.0, 0.0, 1.0);
 
 		//compute modelview matrix by combining view rotation and light direction rotation
+		Vec4 lightDirection = SunPositionService.INSTANCE.getDirection(dc.getView());
 		Angle lightAngle = Vec4.UNIT_Z.angleBetween3(lightDirection);
 		Vec4 lightAxis = Vec4.UNIT_Z.cross3(lightDirection);
 		Matrix lightRotation = Matrix.fromAxisAngle(lightAngle, lightAxis);

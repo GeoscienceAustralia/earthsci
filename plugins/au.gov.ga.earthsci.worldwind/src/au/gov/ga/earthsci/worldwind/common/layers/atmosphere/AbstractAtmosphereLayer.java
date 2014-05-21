@@ -23,6 +23,8 @@ import gov.nasa.worldwind.util.OGLStackHandler;
 
 import javax.media.opengl.GL2;
 
+import au.gov.ga.earthsci.worldwind.common.sun.SunPositionService;
+
 /**
  * Layer that renders atmospheric scattering effects.
  * <p/>
@@ -35,7 +37,6 @@ import javax.media.opengl.GL2;
 public abstract class AbstractAtmosphereLayer extends AbstractLayer
 {
 	private boolean inited = false;
-	protected Vec4 lightDirection = new Vec4(0, 0, 1000).normalize3();
 
 	@Override
 	protected void doRender(DrawContext dc)
@@ -60,6 +61,7 @@ public abstract class AbstractAtmosphereLayer extends AbstractLayer
 		View view = dc.getView();
 		Vec4 eyePoint = view.getEyePoint();
 		float eyeMagnitude = (float) eyePoint.getLength3();
+		Vec4 lightDirection = SunPositionService.INSTANCE.getDirection(dc.getView());
 
 		OGLStackHandler ogsh = new OGLStackHandler();
 		try
