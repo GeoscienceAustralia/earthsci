@@ -18,11 +18,13 @@ package au.gov.ga.earthsci.worldwind.common.layers.atmosphere;
 import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.render.SurfaceImage;
 
 import java.awt.image.BufferedImage;
 
+import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
+
+import au.gov.ga.earthsci.worldwind.common.render.FrameBuffer;
 
 /**
  * Atmosphere layer that colors the ground.
@@ -34,7 +36,9 @@ public class AtmosphereGroundLayer extends AbstractAtmosphereLayer
 	private final GroundShader groundFromAtmosphereShader = new GroundShader(new String[] { "ATMOS" }); //$NON-NLS-1$
 	private final GroundShader groundFromSpaceShader = new GroundShader(new String[] { "SPACE" }); //$NON-NLS-1$
 
-	private SurfaceImage terrain;
+	private BlendSurfaceImage terrain;
+
+	private final FrameBuffer frameBuffer = new FrameBuffer();
 
 	@Override
 	protected void init(DrawContext dc)
@@ -46,7 +50,8 @@ public class AtmosphereGroundLayer extends AbstractAtmosphereLayer
 
 		BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		image.setRGB(0, 0, 0xff << 24);
-		terrain = new SurfaceImage(image, Sector.FULL_SPHERE);
+		terrain = new BlendSurfaceImage(image, Sector.FULL_SPHERE);
+		terrain.setBlendFunc(GL2.GL_ONE, GL2.GL_ZERO);
 	}
 
 	@Override
@@ -55,15 +60,22 @@ public class AtmosphereGroundLayer extends AbstractAtmosphereLayer
 	{
 		GL2 gl = dc.getGL().getGL2();
 
+		frameBuffer.resize(gl, dc.getView().getViewport().getSize());
+		frameBuffer.bind(gl);
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 		GroundShader groundShader = eyeMagnitude < outerRadius ? groundFromAtmosphereShader : groundFromSpaceShader;
 		groundShader.use(gl, eyePoint, lightDirection, Atmosphere.INVWAVELENGTH4, eyeMagnitude, innerRadius,
 				outerRadius, Atmosphere.RAYLEIGH_SCATTERING, Atmosphere.MIE_SCATTERING,
-				Atmosphere.SUN_BRIGHTNESS, Atmosphere.SCALE_DEPTH, Atmosphere.EXPOSURE,
+				Atmosphere.SUN_BRIGHTNESS, Atmosphere.SCALE_DEPTH, Atmosphere.EXPOSURE * 0.5f,
 				dc.getView().getModelviewMatrix().getInverse());
 		{
 			terrain.preRender(dc);
 			terrain.render(dc);
 		}
 		groundShader.unuse(gl);
+		frameBuffer.unbind(gl);
+
+		gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
+		FrameBuffer.renderTexturedQuad(gl, frameBuffer.getTexture().getId());
 	}
 }
