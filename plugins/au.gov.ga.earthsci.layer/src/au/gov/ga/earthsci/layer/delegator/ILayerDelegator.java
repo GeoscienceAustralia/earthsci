@@ -50,7 +50,7 @@ public interface ILayerDelegator<L extends Layer> extends Layer
 	 * @return If {@link #getLayer()} returns another {@link ILayerDelegator},
 	 *         calls recursively, otherwise returns the layer
 	 */
-	L getGrandLayer();
+	Layer getGrandLayer();
 
 	/**
 	 * @return Has the layer been set on this delegate? If false,

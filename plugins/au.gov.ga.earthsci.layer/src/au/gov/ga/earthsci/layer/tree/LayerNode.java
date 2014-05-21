@@ -157,7 +157,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	}
 
 	@Override
-	public IPersistentLayer getGrandLayer()
+	public Layer getGrandLayer()
 	{
 		return delegator.getGrandLayer();
 	}

@@ -114,16 +114,13 @@ public abstract class AbstractLayerDelegator<L extends Layer> extends AbstractPr
 	}
 
 	@Override
-	public L getGrandLayer()
+	public Layer getGrandLayer()
 	{
-		L layer = getLayer();
+		Layer layer = getLayer();
 		if (layer instanceof ILayerDelegator)
 		{
 			ILayerDelegator<?> delegator = (ILayerDelegator<?>) layer;
-			if (getLayerClass().isAssignableFrom(delegator.getLayerClass()))
-			{
-				return getLayerClass().cast(delegator.getGrandLayer());
-			}
+			return delegator.getGrandLayer();
 		}
 		return layer;
 	}
