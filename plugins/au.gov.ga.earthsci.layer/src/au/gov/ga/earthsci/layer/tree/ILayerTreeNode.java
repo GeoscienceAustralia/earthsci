@@ -66,10 +66,24 @@ public interface ILayerTreeNode extends ITreeNode<ILayerTreeNode>, IPropertyChan
 	LayerList getLayers();
 
 	/**
+	 * If {@link #getLayers()} has been called previously, update the list
+	 * returned by {@link #getLayers()} at this node. Called recursively up
+	 * parents to root.
+	 */
+	void updateLayers();
+
+	/**
 	 * @return A {@link CompoundElevationModel} that contains all elevation
 	 *         models in the tree at and below this node.
 	 */
 	CompoundElevationModel getElevationModels();
+
+	/**
+	 * If {@link #getElevationModels()} has been called previously, update the
+	 * compound model returned by {@link #getElevationModels()} at this node.
+	 * Called recursively up parents to root.
+	 */
+	void updateElevationModels();
 
 	/**
 	 * Return the {@link ILayerTreeNode} that is a descendant of this node which

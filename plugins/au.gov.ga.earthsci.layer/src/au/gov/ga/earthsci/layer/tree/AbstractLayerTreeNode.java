@@ -292,33 +292,38 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 			if (layerList == null)
 			{
 				layerList = new LayerList();
-				updateLayerList();
+				updateLayers();
 			}
 			return layerList;
 		}
 	}
 
-	private void updateLayerList()
+	@Override
+	public void updateLayers()
 	{
 		synchronized (semaphore)
 		{
 			if (layerList != null)
 			{
 				layerList.removeAll();
-				addNodesToLayerList(this);
+				addLayerNodesToList(this, layerList);
 			}
+		}
+		if (!isRoot())
+		{
+			getParent().updateLayers();
 		}
 	}
 
-	private void addNodesToLayerList(ILayerTreeNode node)
+	private static void addLayerNodesToList(ILayerTreeNode node, List<Layer> list)
 	{
 		if (node instanceof Layer)
 		{
-			layerList.add((Layer) node);
+			list.add((Layer) node);
 		}
 		for (ILayerTreeNode child : node.getChildren())
 		{
-			addNodesToLayerList(child);
+			addLayerNodesToList(child, list);
 		}
 	}
 
@@ -355,19 +360,25 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 		}
 	}
 
-	protected void updateElevationModels()
+	@Override
+	public void updateElevationModels()
 	{
 		synchronized (semaphore)
 		{
 			if (elevationModels != null)
 			{
 				elevationModels.removeAll();
-				addNodesToElevationModels(this);
+				addElevationModelNodesToCompoundElevationModel(this, elevationModels);
 			}
+		}
+		if (!isRoot())
+		{
+			getParent().updateElevationModels();
 		}
 	}
 
-	private void addNodesToElevationModels(ILayerTreeNode node)
+	private static void addElevationModelNodesToCompoundElevationModel(ILayerTreeNode node,
+			CompoundElevationModel compound)
 	{
 		if (node instanceof ILayerNode)
 		{
@@ -375,12 +386,12 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 			ElevationModel elevationModel = layerNode.getElevationModel();
 			if (elevationModel != null)
 			{
-				elevationModels.addElevationModel(elevationModel);
+				compound.addElevationModel(elevationModel);
 			}
 		}
 		for (ILayerTreeNode child : node.getChildren())
 		{
-			addNodesToElevationModels(child);
+			addElevationModelNodesToCompoundElevationModel(child, compound);
 		}
 	}
 
@@ -421,7 +432,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	{
 		//TODO should we implement a (more efficient?) modification of these collections according to changed children?
 		//update the collections if they exist
-		updateLayerList();
+		updateLayers();
 		updateElevationModels();
 		updateCatalogURIMap();
 
