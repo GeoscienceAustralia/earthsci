@@ -26,5 +26,5 @@ public interface TiledImageLayerWrapperElement extends LayerElement
 {
 	ElementType TYPE = new ElementType(TiledImageLayerWrapperElement.class);
 
-	ValueProperty PROP_DATA_CACHE_NAME = new ValueProperty(TYPE, "DataCacheName");
+	ValueProperty PROP_DATA_CACHE_NAME = new ValueProperty(TYPE, "DataCacheName"); //$NON-NLS-1$
 }

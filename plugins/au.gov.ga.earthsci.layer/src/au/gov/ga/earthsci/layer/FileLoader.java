@@ -119,7 +119,7 @@ public class FileLoader
 			}
 		});
 		thread.setDaemon(true);
-		thread.setName("File loader");
+		thread.setName("File loader"); //$NON-NLS-1$
 		thread.start();
 	}
 
@@ -236,7 +236,7 @@ public class FileLoader
 		File importLocation = DataImportUtil.getDefaultImportLocation(fileStore);
 		if (importLocation == null)
 		{
-			String message = Logging.getMessage("generic.NoDefaultImportLocation");
+			String message = Logging.getMessage("generic.NoDefaultImportLocation"); //$NON-NLS-1$
 			Logging.logger().severe(message);
 			return null;
 		}
