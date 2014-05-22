@@ -21,7 +21,6 @@ import gov.nasa.worldwind.render.DrawContext;
 
 import java.awt.image.BufferedImage;
 
-import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 import au.gov.ga.earthsci.worldwind.common.render.FrameBuffer;
@@ -66,7 +65,7 @@ public class AtmosphereGroundLayer extends AbstractAtmosphereLayer
 		GroundShader groundShader = eyeMagnitude < outerRadius ? groundFromAtmosphereShader : groundFromSpaceShader;
 		groundShader.use(gl, eyePoint, lightDirection, Atmosphere.INVWAVELENGTH4, eyeMagnitude, innerRadius,
 				outerRadius, Atmosphere.RAYLEIGH_SCATTERING, Atmosphere.MIE_SCATTERING,
-				Atmosphere.SUN_BRIGHTNESS, Atmosphere.SCALE_DEPTH, Atmosphere.EXPOSURE * 0.5f,
+				Atmosphere.SUN_BRIGHTNESS, Atmosphere.SCALE_DEPTH, Atmosphere.EXPOSURE,
 				dc.getView().getModelviewMatrix().getInverse());
 		{
 			terrain.preRender(dc);
@@ -75,7 +74,10 @@ public class AtmosphereGroundLayer extends AbstractAtmosphereLayer
 		groundShader.unuse(gl);
 		frameBuffer.unbind(gl);
 
-		gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
+		gl.glDepthMask(false);
+		gl.glEnable(GL2.GL_BLEND);
+		gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE);
 		FrameBuffer.renderTexturedQuad(gl, frameBuffer.getTexture().getId());
+		gl.glDepthMask(true);
 	}
 }

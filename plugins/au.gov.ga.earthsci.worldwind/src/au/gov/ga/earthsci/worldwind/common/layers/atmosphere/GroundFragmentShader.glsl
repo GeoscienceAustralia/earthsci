@@ -12,6 +12,6 @@ uniform float fExposure;
 
 void main (void)
 {
-	gl_FragColor = gl_Color + 0.25 * gl_SecondaryColor;
+	gl_FragColor = (gl_Color + 0.25 * gl_SecondaryColor) * 0.5;
 	gl_FragColor.rgb = 1.0 - exp(-fExposure * gl_FragColor.rgb);
 }
