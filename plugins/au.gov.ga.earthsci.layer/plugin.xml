@@ -148,6 +148,30 @@
             class="au.gov.ga.earthsci.worldwind.common.layers.model.ModelLayer"
             value="-10">
       </drawOrder>
+      <drawOrder
+            class="au.gov.ga.earthsci.worldwind.common.layers.fogmask.FogMaskLayer"
+            value="-20">
+      </drawOrder>
+      <drawOrder
+            class="au.gov.ga.earthsci.worldwind.common.layers.stars.InfiniteStarsLayer"
+            value="-20">
+      </drawOrder>
+      <drawOrder
+            class="gov.nasa.worldwind.layers.StarsLayer"
+            value="-20">
+      </drawOrder>
+      <drawOrder
+            class="au.gov.ga.earthsci.worldwind.common.layers.atmosphere.AtmosphereSkyLayer"
+            value="-20">
+      </drawOrder>
+      <drawOrder
+            class="au.gov.ga.earthsci.worldwind.common.layers.atmosphere.AtmosphereGroundLayer"
+            value="20">
+      </drawOrder>
+      <drawOrder
+            class="au.gov.ga.earthsci.worldwind.common.layers.sun.SunLayer"
+            value="20">
+      </drawOrder>
    </extension>
 
 </plugin>
