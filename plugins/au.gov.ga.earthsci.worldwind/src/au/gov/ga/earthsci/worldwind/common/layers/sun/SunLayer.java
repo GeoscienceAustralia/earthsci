@@ -356,6 +356,7 @@ public class SunLayer extends AbstractLayer
 			gl.glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
 
 			//render the final composited sun texture to the screen
+			gl.glDepthMask(false);
 			gl.glEnable(GL2.GL_TEXTURE_2D);
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, stageTextures[0]);
 			gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE_MINUS_SRC_COLOR);
@@ -376,6 +377,7 @@ public class SunLayer extends AbstractLayer
 			gl.glDisable(GL2.GL_BLEND);
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 			gl.glDisable(GL2.GL_TEXTURE_2D);
+			gl.glDepthMask(true);
 		}
 		finally
 		{
