@@ -59,8 +59,8 @@ import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.input.ProviderOrbitViewInputHandler;
 import au.gov.ga.earthsci.worldwind.common.layers.fogmask.FogMaskLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.fps.FPSLayer;
-import au.gov.ga.earthsci.worldwind.common.util.DoubleClickZoomListener;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.DelegateOrbitView;
+import au.gov.ga.earthsci.worldwind.common.view.orbit.DoubleClickZoomListener;
 
 /**
  * Part which displays a {@link WorldWindow}.
