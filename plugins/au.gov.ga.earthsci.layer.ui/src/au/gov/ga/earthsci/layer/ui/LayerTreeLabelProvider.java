@@ -259,6 +259,47 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 		super.fireLabelProviderChanged(event);
 	}
 
+	/**
+	 * Get the image for the given element. Image element is expected to be an
+	 * instance of {@link ILayerTreeNode}.
+	 * 
+	 * @param imageElement
+	 *            An {@link ILayerTreeNode} for which to get the image
+	 * @param viewerElement
+	 *            Element passed to the label provider's getImage() method
+	 * @param iconLoader
+	 *            Loader used for icon loading
+	 * @return Image for the given element
+	 */
+	public static Image getImage(Object imageElement, Object viewerElement, IconLoader iconLoader)
+	{
+		if (imageElement instanceof ILayerTreeNode)
+		{
+			ILayerTreeNode node = (ILayerTreeNode) imageElement;
+
+			if (!node.getStatus().isOk())
+			{
+				return ImageRegistry.getInstance().get(ImageRegistry.ICON_ERROR);
+			}
+
+
+			URL imageURL = node.getIconURL();
+			if (imageURL != null)
+			{
+				return iconLoader.getImage(viewerElement, imageURL);
+			}
+			else
+			{
+				if (imageElement instanceof LayerNode)
+				{
+					return ImageRegistry.getInstance().get(ImageRegistry.ICON_FILE);
+				}
+				return ImageRegistry.getInstance().get(ImageRegistry.ICON_FOLDER);
+			}
+		}
+		return null;
+	}
+
 	private IRetrievalServiceListener retrievalServiceListener = new IRetrievalServiceListener()
 	{
 		@Override
@@ -390,31 +431,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 		@Override
 		public Image getImage(Object element)
 		{
-			if (element instanceof ILayerTreeNode)
-			{
-				ILayerTreeNode node = (ILayerTreeNode) element;
-
-				if (!node.getStatus().isOk())
-				{
-					return ImageRegistry.getInstance().get(ImageRegistry.ICON_ERROR);
-				}
-
-
-				URL imageURL = node.getIconURL();
-				if (imageURL != null)
-				{
-					return iconLoader.getImage(element, imageURL);
-				}
-				else
-				{
-					if (element instanceof LayerNode)
-					{
-						return ImageRegistry.getInstance().get(ImageRegistry.ICON_FILE);
-					}
-					return ImageRegistry.getInstance().get(ImageRegistry.ICON_FOLDER);
-				}
-			}
-			return super.getImage(element);
+			return LayerTreeLabelProvider.getImage(element, element, iconLoader);
 		}
 
 		@Override

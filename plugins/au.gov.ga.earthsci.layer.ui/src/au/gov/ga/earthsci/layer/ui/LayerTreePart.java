@@ -54,6 +54,7 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -68,6 +69,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -127,17 +130,39 @@ public class LayerTreePart
 	@Named(IServiceConstants.ACTIVE_SHELL)
 	private Shell shell;
 
-	private CheckboxTreeViewer viewer;
+	private CTabFolder tabFolder;
+	private CTabItem structureTabItem;
+	private CTabItem orderTabItem;
+	private CheckboxTreeViewer structureViewer;
+	private TreeViewer orderViewer;
 	private LayerTreeLabelProvider labelProvider;
 	private Clipboard clipboard;
 	private ObservableListTreeSupport<ILayerTreeNode> observableListTreeSupport;
+	private final DrawOrderModel drawOrderModel = new DrawOrderModel();
 
 	@PostConstruct
 	public void init(Composite parent, EMenuService menuService)
 	{
-		viewer = new CheckboxTreeViewer(parent, SWT.MULTI);
-		viewer.getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
-		context.set(TreeViewer.class, viewer);
+		tabFolder = new CTabFolder(parent, SWT.BOTTOM);
+
+		structureTabItem = new CTabItem(tabFolder, SWT.NONE);
+		structureTabItem.setText("Structure");
+		createStructureViewer(tabFolder, menuService, structureTabItem);
+
+		orderTabItem = new CTabItem(tabFolder, SWT.NONE);
+		orderTabItem.setText("Draw order");
+		createOrderViewer(tabFolder, menuService, orderTabItem);
+
+		tabFolder.pack();
+		tabFolder.setSelection(structureTabItem);
+	}
+
+	protected void createStructureViewer(Composite parent, EMenuService menuService, CTabItem tabItem)
+	{
+		structureViewer = new CheckboxTreeViewer(parent, SWT.MULTI);
+		tabItem.setControl(structureViewer.getControl());
+		structureViewer.getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
+		context.set(TreeViewer.class, structureViewer);
 
 		clipboard = new Clipboard(parent.getDisplay());
 		context.set(Clipboard.class, clipboard);
@@ -199,12 +224,12 @@ public class LayerTreePart
 		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(rawFactory, null);
 
 		//set the viewer's providers
-		viewer.setContentProvider(contentProvider);
-		viewer.setLabelProvider(labelProvider);
-		viewer.setCheckStateProvider(new LayerTreeCheckStateProvider());
+		structureViewer.setContentProvider(contentProvider);
+		structureViewer.setLabelProvider(labelProvider);
+		structureViewer.setCheckStateProvider(new LayerTreeCheckStateProvider());
 
 		//set the viewer and listener inputs
-		viewer.setInput(model.getRootNode());
+		structureViewer.setInput(model.getRootNode());
 		observableListTreeSupport.setInput(model.getRootNode());
 
 		//Listen for any additions to the tree, and expand added node's parent, so that
@@ -234,7 +259,7 @@ public class LayerTreePart
 		syncExpandedNodes();
 
 		//enable/disable any nodes that are checked/unchecked
-		viewer.addCheckStateListener(new ICheckStateListener()
+		structureViewer.addCheckStateListener(new ICheckStateListener()
 		{
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event)
@@ -249,12 +274,12 @@ public class LayerTreePart
 		});
 
 		//setup the selection tracking
-		viewer.addSelectionChangedListener(new ISelectionChangedListener()
+		structureViewer.addSelectionChangedListener(new ISelectionChangedListener()
 		{
 			@Override
 			public void selectionChanged(SelectionChangedEvent event)
 			{
-				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+				IStructuredSelection selection = (IStructuredSelection) structureViewer.getSelection();
 				List<?> list = selection.toList();
 				ILayerTreeNode[] array = list.toArray(new ILayerTreeNode[list.size()]);
 				settingSelection = true;
@@ -262,12 +287,12 @@ public class LayerTreePart
 				settingSelection = false;
 			}
 		});
-		viewer.getTree().addSelectionListener(new SelectionAdapter()
+		structureViewer.getTree().addSelectionListener(new SelectionAdapter()
 		{
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e)
 			{
-				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+				IStructuredSelection selection = (IStructuredSelection) structureViewer.getSelection();
 				ILayerTreeNode firstElement = (ILayerTreeNode) selection.getFirstElement();
 				if (firstElement != null)
 				{
@@ -277,7 +302,7 @@ public class LayerTreePart
 		});
 
 		//setup tree expansion/collapse listening
-		viewer.addTreeListener(new ITreeViewerListener()
+		structureViewer.addTreeListener(new ITreeViewerListener()
 		{
 			@Override
 			public void treeExpanded(TreeExpansionEvent event)
@@ -295,23 +320,23 @@ public class LayerTreePart
 		});
 
 		//make tree cells unselectable by selecting outside
-		viewer.getTree().addMouseListener(new MouseAdapter()
+		structureViewer.getTree().addMouseListener(new MouseAdapter()
 		{
 			@Override
 			public void mouseDown(MouseEvent e)
 			{
-				ViewerCell cell = viewer.getCell(new Point(e.x, e.y));
+				ViewerCell cell = structureViewer.getCell(new Point(e.x, e.y));
 				if (cell == null)
 				{
-					viewer.setSelection(StructuredSelection.EMPTY);
+					structureViewer.setSelection(StructuredSelection.EMPTY);
 				}
 			}
 		});
 
 		//setup cell editing
-		viewer.setCellEditors(new CellEditor[] { new TextCellEditor(viewer.getTree(), SWT.BORDER) });
-		viewer.setColumnProperties(new String[] { "layer" }); //$NON-NLS-1$
-		viewer.setCellModifier(new ICellModifier()
+		structureViewer.setCellEditors(new CellEditor[] { new TextCellEditor(structureViewer.getTree(), SWT.BORDER) });
+		structureViewer.setColumnProperties(new String[] { "layer" }); //$NON-NLS-1$
+		structureViewer.setCellModifier(new ICellModifier()
 		{
 			@Override
 			public void modify(Object element, String property, Object value)
@@ -340,27 +365,63 @@ public class LayerTreePart
 			}
 		});
 
-		ColumnViewerEditorActivationStrategy activationStrategy = new ColumnViewerEditorActivationStrategy(viewer)
-		{
-			@Override
-			protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event)
-			{
-				return event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
-			}
-		};
-		TreeViewerEditor.create(viewer, activationStrategy, ColumnViewerEditor.KEYBOARD_ACTIVATION);
+		ColumnViewerEditorActivationStrategy activationStrategy =
+				new ColumnViewerEditorActivationStrategy(structureViewer)
+				{
+					@Override
+					protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event)
+					{
+						return event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
+					}
+				};
+		TreeViewerEditor.create(structureViewer, activationStrategy, ColumnViewerEditor.KEYBOARD_ACTIVATION);
 
 		//add drag and drop support
 		int ops = DND.DROP_COPY | DND.DROP_MOVE;
-		viewer.addDragSupport(ops, new Transfer[] { LocalLayerTransfer.getInstance(), LayerTransfer.getInstance() },
-				new LayerTreeDragSourceListener(
-						viewer));
-		viewer.addDropSupport(ops, new Transfer[] { LocalLayerTransfer.getInstance(), LayerTransfer.getInstance(),
-				FileTransfer.getInstance() },
-				new LayerTreeDropAdapter(viewer, model, context));
+		structureViewer.addDragSupport(ops,
+				new Transfer[] { LocalLayerTransfer.getInstance(), LayerTransfer.getInstance() },
+				new LayerTreeDragSourceListener(structureViewer));
+		structureViewer.addDropSupport(ops,
+				new Transfer[] { LocalLayerTransfer.getInstance(), LayerTransfer.getInstance(),
+						FileTransfer.getInstance() },
+				new LayerTreeDropAdapter(structureViewer, model, context));
 
 		//add context menu
-		menuService.registerContextMenu(viewer.getTree(), "au.gov.ga.earthsci.application.layertree.popupmenu"); //$NON-NLS-1$
+		menuService
+				.registerContextMenu(structureViewer.getTree(), "au.gov.ga.earthsci.application.layertree.popupmenu"); //$NON-NLS-1$
+	}
+
+	protected void createOrderViewer(Composite parent, EMenuService menuService, CTabItem tabItem)
+	{
+		orderViewer = new TreeViewer(parent, SWT.MULTI);
+		tabItem.setControl(orderViewer.getControl());
+		orderViewer.getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
+		orderViewer.setAutoExpandLevel(2);
+
+		drawOrderModel.setInput(model.getRootNode());
+
+		//create a bean list property associated with ILayerTreeNode's children property
+		IBeanListProperty<DrawOrderModel.IDrawOrderModelElement, DrawOrderModel.IDrawOrderModelElement> childrenProperty =
+				BeanProperties.list(DrawOrderModel.IDrawOrderModelElement.class,
+						"children", DrawOrderModel.IDrawOrderModelElement.class); //$NON-NLS-1$
+		//setup a factory for creating observables observing ILayerTreeNodes
+		IObservableFactory<DrawOrderModel.IDrawOrderModelElement, IObservableList<DrawOrderModel.IDrawOrderModelElement>> observableFactory =
+				childrenProperty.listFactory();
+
+		//create a content provider that listens for changes to any children in the tree
+		@SuppressWarnings("rawtypes")
+		IObservableFactory rawFactory = observableFactory;
+		@SuppressWarnings("unchecked")
+		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(rawFactory, null);
+
+		DrawOrderLabelProvider labelProvider = new DrawOrderLabelProvider();
+
+		//set the viewer's providers
+		orderViewer.setContentProvider(contentProvider);
+		orderViewer.setLabelProvider(new DelegatingStyledCellLabelProvider(labelProvider));
+
+		//set the viewer and listener inputs
+		orderViewer.setInput(drawOrderModel.getRoot());
 	}
 
 	@PreDestroy
@@ -370,19 +431,27 @@ public class LayerTreePart
 		context.remove(TreeViewer.class);
 		context.remove(Clipboard.class);
 		labelProvider.packup();
+		drawOrderModel.dispose();
 	}
 
 	@Focus
 	private void setFocus()
 	{
-		viewer.getTree().setFocus();
+		if (tabFolder.getSelection() == orderTabItem)
+		{
+			orderViewer.getTree().setFocus();
+		}
+		else
+		{
+			structureViewer.getTree().setFocus();
+		}
 	}
 
 	private void updateElementLabel(final Object element)
 	{
-		if (!viewer.getControl().isDisposed())
+		if (!structureViewer.getControl().isDisposed())
 		{
-			viewer.getControl().getDisplay().asyncExec(new Runnable()
+			structureViewer.getControl().getDisplay().asyncExec(new Runnable()
 			{
 				@Override
 				public void run()
@@ -397,14 +466,14 @@ public class LayerTreePart
 	private void syncExpandedNodes()
 	{
 		//ensure the expanded elements are kept in sync with the model
-		viewer.getControl().getDisplay().asyncExec(new Runnable()
+		structureViewer.getControl().getDisplay().asyncExec(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				if (!viewer.getControl().isDisposed())
+				if (!structureViewer.getControl().isDisposed())
 				{
-					viewer.setExpandedElements(getExpandedNodes());
+					structureViewer.setExpandedElements(getExpandedNodes());
 				}
 			}
 		});
@@ -522,9 +591,9 @@ public class LayerTreePart
 
 	protected void activateAndSelectElement(final ILayerTreeNode element)
 	{
-		if (!viewer.getControl().isDisposed())
+		if (!structureViewer.getControl().isDisposed())
 		{
-			viewer.getControl().getDisplay().asyncExec(new Runnable()
+			structureViewer.getControl().getDisplay().asyncExec(new Runnable()
 			{
 				@Override
 				public void run()
@@ -533,7 +602,8 @@ public class LayerTreePart
 					if (part != null)
 					{
 						partService.activate(part);
-						viewer.setSelection(new StructuredSelection(element), true);
+						structureViewer.setSelection(new StructuredSelection(element), true);
+						tabFolder.setSelection(structureTabItem);
 					}
 				}
 			});
@@ -543,16 +613,17 @@ public class LayerTreePart
 	@Inject
 	private void select(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ILayerTreeNode[] nodes)
 	{
-		if (nodes == null || viewer == null || settingSelection)
+		if (nodes == null || structureViewer == null || settingSelection)
 		{
 			return;
 		}
 		StructuredSelection selection = new StructuredSelection(nodes);
-		viewer.setSelection(selection, true);
+		structureViewer.setSelection(selection, true);
 		for (ILayerTreeNode node : nodes)
 		{
-			viewer.expandToLevel(node, 1);
+			structureViewer.expandToLevel(node, 1);
 		}
+		tabFolder.setSelection(structureTabItem);
 	}
 
 	@Inject
