@@ -17,6 +17,12 @@ package au.gov.ga.earthsci.layer;
 
 import gov.nasa.worldwind.layers.Layer;
 
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import au.gov.ga.earthsci.layer.tree.ILayerNode;
+
 /**
  * Layer draw order constants.
  * 
@@ -59,5 +65,60 @@ public enum DrawOrder
 			return value;
 		}
 		return Surface.value;
+	}
+
+	/**
+	 * Sort the unsorted list of layers according to their {@link DrawOrder}
+	 * value. Layers have a draw order value associated with them if they
+	 * implement {@link ILayerNode}. Any non-{@link ILayerNode} layers are
+	 * inserted at the end of the list.
+	 * 
+	 * @param unsorted
+	 *            List of layers to sort
+	 * @param sorted
+	 *            List in which the sorted layers get added to
+	 * @see ILayerNode#getDrawOrder()
+	 */
+	public static void sortLayers(List<Layer> unsorted, List<Layer> sorted)
+	{
+		//return empty if no layers
+		if (unsorted == null)
+		{
+			return;
+		}
+
+		//find a sorted set of all draw order values
+		SortedSet<Integer> drawOrders = new TreeSet<Integer>();
+		for (Layer layer : unsorted)
+		{
+			if (layer instanceof ILayerNode)
+			{
+				drawOrders.add(((ILayerNode) layer).getDrawOrder());
+			}
+		}
+
+		//for each draw order, add the the layers with that draw order to the sorted list
+		for (Integer drawOrder : drawOrders)
+		{
+			for (Layer layer : unsorted)
+			{
+				if (layer instanceof ILayerNode)
+				{
+					if (drawOrder == ((ILayerNode) layer).getDrawOrder())
+					{
+						sorted.add(layer);
+					}
+				}
+			}
+		}
+
+		//add any layers without draw orders to the end to be rendered last
+		for (Layer layer : unsorted)
+		{
+			if (!(layer instanceof ILayerNode))
+			{
+				sorted.add(layer);
+			}
+		}
 	}
 }

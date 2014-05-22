@@ -24,6 +24,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +39,7 @@ import au.gov.ga.earthsci.core.model.IModelStatus;
 import au.gov.ga.earthsci.core.model.ModelStatus;
 import au.gov.ga.earthsci.core.tree.AbstractTreeNode;
 import au.gov.ga.earthsci.core.worldwind.WorldWindCompoundElevationModel;
+import au.gov.ga.earthsci.layer.DrawOrder;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 
 /**
@@ -51,6 +53,8 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	private String id;
 	private String name;
 	private LayerList layerList;
+	private List<Layer> unsortedLayers;
+	private List<Layer> sortedLayers;
 	private WorldWindCompoundElevationModel elevationModels;
 	private ListMap<URI, ILayerTreeNode> catalogUriMap;
 	private boolean lastAnyChildrenEnabled, lastAllChildrenEnabled;
@@ -292,6 +296,8 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 			if (layerList == null)
 			{
 				layerList = new LayerList();
+				unsortedLayers = new ArrayList<Layer>();
+				sortedLayers = new ArrayList<Layer>();
 				updateLayers();
 			}
 			return layerList;
@@ -306,7 +312,11 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 			if (layerList != null)
 			{
 				layerList.removeAll();
-				addLayerNodesToList(this, layerList);
+				unsortedLayers.clear();
+				sortedLayers.clear();
+				addLayerNodesToList(this, unsortedLayers);
+				DrawOrder.sortLayers(unsortedLayers, sortedLayers);
+				layerList.addAll(sortedLayers);
 			}
 		}
 		if (!isRoot())

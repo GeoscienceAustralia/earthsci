@@ -80,6 +80,9 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 				//new layer, update required information:
 				if (evt.getPropertyName().equals("layer")) //$NON-NLS-1$
 				{
+					//clear the cached draw order, as new layer may have a different default
+					drawOrderCached = null;
+
 					//get the legend url if it exists (set by the LayerFactory)
 					URL legendURL = (URL) getValue(AVKeyMore.LEGEND_URL);
 					if (legendURL == null)
@@ -95,13 +98,11 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 						setLegendURL(legendURL);
 					}
 
+					//update layer list (draw order may have changed), and elevation models if required
+					updateLayers();
 					if (getElevationModel() != null)
 					{
-						ILayerTreeNode root = getRoot();
-						if (root instanceof AbstractLayerTreeNode)
-						{
-							((AbstractLayerTreeNode) root).updateElevationModels();
-						}
+						updateElevationModels();
 					}
 				}
 			}
@@ -311,6 +312,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	public void setDrawOrder(int drawOrder)
 	{
 		firePropertyChange("drawOrder", getDrawOrder(), this.drawOrder = drawOrder); //$NON-NLS-1$
+		updateLayers(); //need to update the layer list, as it is sorted by draw order
 	}
 
 	@Persistent(name = "drawOrder", attribute = true)
@@ -322,7 +324,7 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	@SuppressWarnings("unused")
 	private void setPersistentDrawOrder(Integer drawOrder)
 	{
-		this.drawOrder = drawOrder;
+		setDrawOrder(drawOrder);
 	}
 
 	//////////////////////
