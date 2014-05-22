@@ -317,6 +317,7 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 				addLayerNodesToList(this, unsortedLayers);
 				DrawOrder.sortLayers(unsortedLayers, sortedLayers);
 				layerList.addAll(sortedLayers);
+				firePropertyChange("layers", null, layerList); //$NON-NLS-1$
 			}
 		}
 		if (!isRoot())
