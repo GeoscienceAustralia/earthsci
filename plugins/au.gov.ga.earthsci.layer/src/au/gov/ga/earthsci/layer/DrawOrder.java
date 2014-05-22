@@ -45,13 +45,16 @@ public enum DrawOrder
 		this.label = label;
 	}
 
-	public static String getLabel(int value)
+	public static String getLabel(Integer value)
 	{
-		for (DrawOrder order : DrawOrder.values())
+		if (value != null)
 		{
-			if (order.value == value)
+			for (DrawOrder order : DrawOrder.values())
 			{
-				return order.label;
+				if (order.value == value)
+				{
+					return order.label;
+				}
 			}
 		}
 		return Messages.DrawOrder_UnknownLabel;
