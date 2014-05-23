@@ -27,7 +27,6 @@ import au.gov.ga.earthsci.application.IconLoader;
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.common.ui.util.TextStyler;
 import au.gov.ga.earthsci.common.ui.viewers.IFireableLabelProvider;
-import au.gov.ga.earthsci.common.util.ILabeled;
 import au.gov.ga.earthsci.layer.DrawOrder;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 
@@ -59,11 +58,7 @@ public class DrawOrderLabelProvider extends ColumnLabelProvider implements IFire
 		{
 			DrawOrderModel.LayerDrawOrderModelElement layerElement =
 					(DrawOrderModel.LayerDrawOrderModelElement) element;
-			if (layerElement.layer instanceof ILabeled)
-			{
-				return ((ILabeled) layerElement.layer).getLabelOrName();
-			}
-			return layerElement.layer.getName();
+			return layerElement.node.getLabelOrName();
 		}
 		return super.getText(element);
 	}
@@ -76,15 +71,11 @@ public class DrawOrderLabelProvider extends ColumnLabelProvider implements IFire
 		{
 			DrawOrderModel.LayerDrawOrderModelElement layerElement =
 					(DrawOrderModel.LayerDrawOrderModelElement) element;
-			if (layerElement.layer instanceof ILayerTreeNode)
+			String structure = buildStructureString(layerElement.node.getParent());
+			if (structure != null)
 			{
-				ILayerTreeNode node = (ILayerTreeNode) layerElement.layer;
-				String structure = buildStructureString(node.getParent());
-				if (structure != null)
-				{
-					string.append(" "); //$NON-NLS-1$
-					string.append("(" + structure + ")", structureStyler); //$NON-NLS-1$//$NON-NLS-2$
-				}
+				string.append(" "); //$NON-NLS-1$
+				string.append("(" + structure + ")", structureStyler); //$NON-NLS-1$//$NON-NLS-2$
 			}
 		}
 		return string;
@@ -116,7 +107,7 @@ public class DrawOrderLabelProvider extends ColumnLabelProvider implements IFire
 		{
 			DrawOrderModel.LayerDrawOrderModelElement layerElement =
 					(DrawOrderModel.LayerDrawOrderModelElement) element;
-			return LayerTreeLabelProvider.getImage(layerElement.layer, element, iconLoader);
+			return LayerTreeLabelProvider.getImage(layerElement.node, element, iconLoader);
 		}
 		return super.getImage(element);
 	}

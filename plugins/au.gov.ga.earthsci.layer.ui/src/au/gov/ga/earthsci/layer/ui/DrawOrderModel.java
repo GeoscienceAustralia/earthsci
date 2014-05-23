@@ -34,8 +34,10 @@ import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 
 /**
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Model that represents the draw order of the layers. Automatically updates
+ * when the layers change, using {@link PropertyChangeListener}s.
  * 
+ * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class DrawOrderModel
 {
@@ -110,13 +112,16 @@ public class DrawOrderModel
 		LayerList layers = input.getLayers();
 		for (Layer layer : layers)
 		{
-			Integer value = null;
-			if (layer instanceof ILayerNode)
+			if (layer instanceof ILayerTreeNode)
 			{
-				value = ((ILayerNode) layer).getDrawOrder();
+				Integer value = null;
+				if (layer instanceof ILayerNode)
+				{
+					value = ((ILayerNode) layer).getDrawOrder();
+				}
+				DrawOrderDrawOrderModelElement parent = getDrawOrderElement(value);
+				parent.getChildren().add(new LayerDrawOrderModelElement(parent, (ILayerTreeNode) layer));
 			}
-			DrawOrderDrawOrderModelElement parent = getDrawOrderElement(value);
-			parent.getChildren().add(new LayerDrawOrderModelElement(parent, layer));
 		}
 
 		//add all used draw orders to the root
@@ -130,10 +135,10 @@ public class DrawOrderModel
 		}
 
 		//fire property changes
-		root.firePropertyChange("children", null, root.getChildren()); //$NON-NLS-1$
+		root.fireChildrenPropertyChange();
 		for (IDrawOrderModelElement child : root.getChildren())
 		{
-			child.firePropertyChange("children", null, child.getChildren()); //$NON-NLS-1$
+			child.fireChildrenPropertyChange();
 		}
 	}
 
@@ -152,14 +157,33 @@ public class DrawOrderModel
 		return element;
 	}
 
+	/**
+	 * Node in the draw order model tree hierarchy.
+	 */
 	public interface IDrawOrderModelElement extends IPropertyChangeBean
 	{
+		/**
+		 * @return Parent of this node, <code>null</code> if root
+		 */
 		IDrawOrderModelElement getParent();
 
+		/**
+		 * @return List of this node's children
+		 */
 		List<IDrawOrderModelElement> getChildren();
+
+		/**
+		 * Call {@link #firePropertyChange(String, Object, Object)} with the
+		 * "children" property
+		 */
+		void fireChildrenPropertyChange();
 	}
 
-	public class AbstractDrawOrderModelElement extends AbstractPropertyChangeBean implements IDrawOrderModelElement
+	/**
+	 * Abstract implementation of {@link IDrawOrderModelElement}.
+	 */
+	public abstract class AbstractDrawOrderModelElement extends AbstractPropertyChangeBean implements
+			IDrawOrderModelElement
 	{
 		public final IDrawOrderModelElement parent;
 		public final List<IDrawOrderModelElement> children = new ArrayList<IDrawOrderModelElement>();
@@ -180,8 +204,17 @@ public class DrawOrderModel
 		{
 			return children;
 		}
+
+		@Override
+		public void fireChildrenPropertyChange()
+		{
+			firePropertyChange("children", null, getChildren()); //$NON-NLS-1$
+		}
 	}
 
+	/**
+	 * {@link IDrawOrderModelElement} for the root node.
+	 */
 	public class RootDrawOrderModelElement extends AbstractDrawOrderModelElement
 	{
 		public RootDrawOrderModelElement()
@@ -190,6 +223,9 @@ public class DrawOrderModel
 		}
 	}
 
+	/**
+	 * {@link IDrawOrderModelElement} for the draw order nodes.
+	 */
 	public class DrawOrderDrawOrderModelElement extends AbstractDrawOrderModelElement implements
 			Comparable<DrawOrderDrawOrderModelElement>
 	{
@@ -212,14 +248,23 @@ public class DrawOrderModel
 		}
 	}
 
+	/**
+	 * {@link IDrawOrderModelElement} for the layer leaf nodes.
+	 */
 	public class LayerDrawOrderModelElement extends AbstractDrawOrderModelElement
 	{
-		public final Layer layer;
+		public final ILayerTreeNode node;
 
-		public LayerDrawOrderModelElement(DrawOrderDrawOrderModelElement parent, Layer layer)
+		public LayerDrawOrderModelElement(DrawOrderDrawOrderModelElement parent, ILayerTreeNode node)
 		{
 			super(parent);
-			this.layer = layer;
+			this.node = node;
+		}
+
+		@Override
+		public DrawOrderDrawOrderModelElement getParent()
+		{
+			return (DrawOrderDrawOrderModelElement) super.getParent();
 		}
 	}
 }
