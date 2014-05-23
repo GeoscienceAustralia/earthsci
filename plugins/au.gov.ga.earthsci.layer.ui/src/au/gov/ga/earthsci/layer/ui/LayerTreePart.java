@@ -422,6 +422,13 @@ public class LayerTreePart
 
 		//set the viewer and listener inputs
 		orderViewer.setInput(drawOrderModel.getRoot());
+
+		//add drag and drop support
+		int ops = DND.DROP_MOVE;
+		orderViewer.addDragSupport(ops, new Transfer[] { LocalLayerTransfer.getInstance() },
+				new DrawOrderDragSourceListener(orderViewer));
+		orderViewer.addDropSupport(ops, new Transfer[] { LocalLayerTransfer.getInstance() },
+				new DrawOrderDropAdapter(orderViewer));
 	}
 
 	@PreDestroy
