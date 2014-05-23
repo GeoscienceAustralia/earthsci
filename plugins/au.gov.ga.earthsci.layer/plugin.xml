@@ -166,7 +166,7 @@
       </drawOrder>
       <drawOrder
             class="au.gov.ga.earthsci.worldwind.common.layers.atmosphere.AtmosphereGroundLayer"
-            value="20">
+            value="10">
       </drawOrder>
       <drawOrder
             class="au.gov.ga.earthsci.worldwind.common.layers.sun.SunLayer"
