@@ -7,11 +7,137 @@
             id="au.gov.ga.earthsci.theme"
             label="Theme CSS">
       </theme>
+      <stylesheet
+            uri="css/theme.css">
+         <themeid
+               refid="au.gov.ga.earthsci.theme">
+         </themeid>
+         <osgiresourcelocator
+               uri="platform:/plugin/au.gov.ga.earthsci.theme/css/">
+         </osgiresourcelocator>
+      </stylesheet>
    </extension>
    <extension
          point="au.gov.ga.earthsci.application.defaultTheme">
       <defaultTheme
             id="au.gov.ga.earthsci.theme">
       </defaultTheme>
+   </extension>
+   <extension
+         point="org.eclipse.e4.ui.css.core.propertyHandler">
+      <handler
+            adapter="org.eclipse.e4.ui.css.swt.dom.CompositeElement"
+            handler="net.jeeeyul.eclipse.themes.css.SashWidthHandler">
+         <property-name
+               name="jsash-width">
+         </property-name>
+      </handler>
+      <handler
+            adapter="org.eclipse.e4.ui.css.swt.dom.CTabFolderElement"
+            handler="net.jeeeyul.eclipse.themes.css.JTabCSSPropertyHandler">
+         <property-name
+               name="jtab-border-color">
+         </property-name>
+         <property-name
+               name="jtab-selected-border-color">
+         </property-name>
+         <property-name
+               name="jtab-unselected-border-color">
+         </property-name>
+         <property-name
+               name="jtab-border-radius">
+         </property-name>
+         <property-name
+               name="jtab-spacing">
+         </property-name>
+         <property-name
+               name="jtab-close-button-color">
+         </property-name>
+         <property-name
+               name="jtab-close-button-hot-color">
+         </property-name>
+         <property-name
+               name="jtab-close-button-active-color">
+         </property-name>
+         <property-name
+               name="jtab-close-button-line-width">
+         </property-name>
+         <property-name
+               name="jtab-unselected-tabs-background">
+         </property-name>
+         
+         <property-name
+               name="jtab-hover-tabs-background">
+         </property-name>
+         <property-name
+               name="jtab-hover-border-color">
+         </property-name>
+         <property-name
+               name="jtab-hover-color">
+         </property-name>
+         <property-name
+               name="jtab-margin">
+         </property-name>
+         <property-name
+               name="jtab-padding">
+         </property-name>
+         
+          <property-name
+               name="jtab-shadow-color">
+         </property-name>
+         
+          <property-name
+               name="jtab-shadow-radius">
+         </property-name>
+         
+          <property-name
+               name="jtab-shadow-position">
+         </property-name>
+         
+         <property-name
+               name="jtab-selected-text-shadow-color">
+         </property-name>
+         <property-name
+               name="jtab-unselected-text-shadow-color">
+         </property-name>
+         <property-name
+               name="jtab-hover-text-shadow-color">
+         </property-name>
+         
+         <property-name
+               name="jtab-selected-text-shadow-position">
+         </property-name>
+         <property-name
+               name="jtab-unselected-text-shadow-position">
+         </property-name>
+         <property-name
+               name="jtab-hover-text-shadow-position">
+         </property-name>
+         <property-name
+               name="jtab-item-padding">
+         </property-name>
+         <property-name
+               name="jtab-item-horizontal-spacing">
+         </property-name>
+         <property-name
+               name="jtab-chevron-color">
+         </property-name>
+         <property-name
+               name="jtab-header-background">
+         </property-name>
+         <property-name
+               name="jtab-selected-tab-background">
+         </property-name>
+      </handler>
+      <handler
+            adapter="org.eclipse.e4.ui.css.swt.dom.CompositeElement"
+            handler="net.jeeeyul.eclipse.themes.css.JStyledTextPropertyHandler">
+         <property-name
+               name="jeditor-line-color">
+         </property-name>
+         <property-name
+               name="jeditor-line-style">
+         </property-name>
+      </handler>
    </extension>
 </plugin>

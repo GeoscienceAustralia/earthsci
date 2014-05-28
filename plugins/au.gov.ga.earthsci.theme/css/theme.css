@@ -1,137 +1,232 @@
-.MTrimmedWindow.topLevel {
-	margin-top: 5px;
-	margin-bottom: 2px;
-	margin-left: 2px;
-	margin-right: 2px;
+.jeeeyul-custom-theme{
+	/* This class must be exists on first. */
 }
 
-.MPartStack {
-	font-size: 9;
-	font-family: 'Segoe UI';
-	swt-simple: true;
-	swt-tab-renderer:
-		url('bundleclass://au.gov.ga.earthsci.theme/net.jeeeyul.eclipse.themes.rendering.ChromeTabRendering');
-
-	padding: 1px 6px 8px 6px; /* top left bottom right */
-	swt-tab-outline: #b3aea9;
-	swt-outer-keyline-color: #b3aea9;
-	swt-unselected-tabs-color: #ece7e3 #e0dbd6 #ffffff 99% 100%;
-	swt-shadow-visible: true;
-	
-	swt-selected-tab-fill: #ffffff;
-	chrome-selected-tab-fill-highlight: #ffffff;
-	
-	chrome-selected-tab-color: #000000;
-	chrome-unselected-tab-color: #000000;
-	
-	swt-shadow-color: #b3ada7;
-	
-	chrome-shiney-shadow: true;
-	swt-mru-visible: true;
-	
-	swt-corner-radius: 6px;
-}
-
-.MPartStack.active {
-	swt-inner-keyline-color: #FFFFFF;
-	swt-tab-outline: #7b7671;
-	swt-outer-keyline-color: #7b7671;
-	swt-unselected-tabs-color: #b3a69a #aa9c8e #ffffff 99% 100%;
-	
-	swt-selected-tab-fill: #ffffff;
-	chrome-selected-tab-fill-highlight: #ffffff;
-	
-	chrome-selected-tab-color: #988674;
-	chrome-unselected-tab-color: #ffffff;
-	chrome-shiney-shadow: false;
-}
-
-.MPartStack.empty {
-	swt-unselected-tabs-color: #908b86 #908b86 #908b86 99% 100%;
-	swt-tab-outline: #908b87;
-	swt-outer-keyline-color: #908b87;
-}
-
+/**************************************************
+ * Window
+ **************************************************/
 .MTrimmedWindow {
-  	margin-top: 2px;
-	margin-bottom: 2px;
-	margin-left: 0px;
+	margin-top: 4px;
 	margin-right: 0px;
-	background-color: #faf8f6;
+	margin-bottom: 0px;
+	margin-left: 3px;
+	background-color: #eeeeee;
 }
 
-.MTrimBar {
-	background-color: #faf8f6;
+.MPartSashContainer {
+	jsash-width : 2px;
 }
 
-.MTrimBar#org-eclipse-ui-main-toolbar {
-	background-color: #e7e2dd #d1cbc6;
-}
-
-CTabFolder.MArea .MPartStack,CTabFolder.MArea .MPartStack.active {
-	swt-shadow-visible: false;
-}
-
-CTabFolder Canvas {
-	background-color: #F8F8F8;
-}
-
-#org-eclipse-ui-editorss {
-	swt-tab-renderer: url('bundleclass://org.eclipse.e4.ui.workbench.renderers.swt/org.eclipse.e4.ui.workbench.renderers.swt.CTabRendering');
-	swt-unselected-tabs-color: #F0F0F0 #F0F0F0 #F0F0F0 100% 100%;
-	swt-outer-keyline-color: #B4B4B4;
-	swt-inner-keyline-color: #F0F0F0;
-	swt-tab-outline: #F0F0F0;
-	color: #F0F0F0;
-	swt-tab-height: 8px;
-	padding: 0px 5px 7px;
-}
-
-#org-eclipse-ui-trim-status{
-	chrome-border-top-visible: true;
-	chrome-border-top-color: #cec4bb;
-	chrome-padding-top: 1;
-	background-color: #e9e5e1;
-}
-
-.MToolControl.TrimStack {
-	frame-image: url(chrome://frame?background-color=#faf8f6);
-	frame-cuts: 5px 1px 5px 16px;
-	
-	handle-image: url(chrome://drag-handle?height=22&background-color=#faf8f6&embossed=false);
+/**************************************************
+ * Trim Stack
+ **************************************************/
+.TrimStack {
+	frame-image: url(jeeeyul://frame?background-color=#eeeeee);
+	frame-cuts: 4px 2px 5px 16px;
+	handle-image:
+		url(jeeeyul://drag-handle?height=22&background-color=#eeeeee&embossed=false);
 }
 
 .MTrimBar .Draggable {
-	handle-image: url(chrome://drag-handle?height=22&background-color=#faf8f6&embossed=false);
+	handle-image:
+		url(jeeeyul://drag-handle?height=22&background-color=#eeeeee&embossed=false);
 }
 
-.MTrimBar#org-eclipse-ui-main-toolbar .Draggable {
-	handle-image: url(chrome://drag-handle?height=22&background-color=#e7e2dd&embossed=false);
+/**************************************************
+ * Main Toolbar
+ **************************************************/
+#org-eclipse-ui-main-toolbar {
+	background-color:#dedede #fdfdfd 100%;
 }
 
-.MTrimBar#org-eclipse-ui-main-toolbar .TrimStack {
-	frame-image: url(chrome://frame?background-color=#e7e2dd);
-	handle-image: url(chrome://drag-handle?height=22&background-color=#e7e2dd&embossed=false);
-}
-
-.MTrimBar#org-eclipse-ui-trim-status .Draggable {
-	handle-image: url(chrome://drag-handle?height=22&background-color=#e9e5e1&embossed=false);
-}
-
-.MTrimBar#org-eclipse-ui-trim-status .TrimStack {
-	frame-image: url(chrome://frame?background-color=#e9e5e1);
-	handle-image: url(chrome://drag-handle?height=22&background-color=#e9e5e1&embossed=false);
+#org-eclipse-ui-main-toolbar .Draggable {
+	handle-image:
+		url(jeeeyul://drag-handle?height=22&background-color=#eeeeee&embossed=false);
 }
 
 #org-eclipse-ui-main-toolbar #PerspectiveSwitcher {
-	eclipse-perspective-keyline-color: #aca7a2;
-	background-color: #fcfbfa #faf8f6 100%;
+	background-color: #f5f7fc #eeeeee 100%;
 	handle-image: none;
-	chrome-show-perspective-name: false;
+	eclipse-perspective-keyline-color: #abb0bf;
 }
 
-
-.MPart.Editor StyledText{
-	chrome-line-style: none;
-	chrome-line-color: #f0f0f0;
+#org-eclipse-ui-main-toolbar .TrimStack {
+	frame-image: none;
+	handle-image:
+		url(jeeeyul://drag-handle?height=22&background-color=#eeeeee&embossed=false);
 }
+
+/**************************************************
+ * Status Bar
+ **************************************************/
+#org-eclipse-ui-trim-status{
+	background-color:#eeeeee #dedede 100%;
+}
+
+#org-eclipse-ui-trim-status .Draggable {
+	handle-image:
+		url(jeeeyul://drag-handle?height=22&background-color=#e6e6e6&embossed=false);
+}
+
+#org-eclipse-ui-trim-status .TrimStack {
+	handle-image:
+		url(jeeeyul://drag-handle?height=22&background-color=#e6e6e6&embossed=false);
+	frame-image: url(jeeeyul://frame?background-color=#e6e6e6);
+	frame-cuts: 4px 2px 5px 16px;
+}
+
+/**************************************************
+ * Inactive Part Stack
+ **************************************************/
+.MPartStack {
+	swt-tab-renderer:
+		url('bundleclass://au.gov.ga.earthsci.theme/net.jeeeyul.eclipse.themes.rendering.JeeeyulsTabRenderer');
+	swt-mru-visible: true;
+	
+	/* layout */
+	swt-tab-height: 22px;
+	jtab-border-radius: 6px;
+	jtab-spacing: 2px;
+	jtab-item-padding: 0px 5px;
+	jtab-padding : 2px;
+	
+	jtab-margin : 0px 4px 4px 1px; /* top right bottom left */
+	jtab-shadow-color: #a8a8a8;
+	jtab-shadow-position: 1px 1px;
+	jtab-shadow-radius: 3px;
+	
+	/* tab background */
+	jtab-header-background : #ededed #dfdfdf 100%;
+	jtab-border-color : #b6bccc #b6bccc 100%;
+	background : #ffffff;
+	
+	/* selected tabs */
+	jtab-selected-tab-background: #ffffff #ffffff 100%;
+	jtab-selected-border-color: #b6bccc #b6bccc 100%;
+	jtab-selected-text-shadow-color: none;
+
+	/* unselected tabs */
+	jtab-unselected-tabs-background: none;
+	
+	jtab-unselected-border-color: none;
+	jtab-unselected-text-shadow-color: none;
+	
+	/* hover tabs */
+	jtab-hover-color : #000000;
+	jtab-hover-tabs-background: #f4f4f4 #ebebeb 100%;
+	
+	jtab-hover-border-color: none;
+	jtab-hover-text-shadow-color: none;
+	
+	jtab-close-button-color: #cdcdcd;
+	jtab-close-button-hot-color: #b05656;
+	jtab-close-button-active-color: #dd1b1b;
+	jtab-close-button-line-width: 2px;
+	
+	jtab-chevron-color: #000000;
+}
+
+.MPartStack>CTabItem {
+	/* unselected tab text */
+	color: #000000;
+}
+
+.MPartStack>CTabItem:selected {
+	/* selected tab text */
+	color: #000000;
+}
+
+/**************************************************
+ * Empty Part Stack
+ **************************************************/
+.MPartStack.empty{
+	jtab-header-background : #cacaca #cacaca 100%;
+	jtab-border-color : none;
+	background : #cacaca;
+	
+}
+
+/**************************************************
+ * Active Part Stack
+ **************************************************/
+.MPartStack.active {
+	swt-tab-renderer:
+		url('bundleclass://au.gov.ga.earthsci.theme/net.jeeeyul.eclipse.themes.rendering.JeeeyulsTabRenderer');
+	
+	/* tab background */
+	jtab-header-background : #dddddd #cecece 100%;
+	jtab-border-color : #9d9d9d #9d9d9d 100%;
+	background : #ffffff;
+	
+	/* selected tabs */
+	jtab-selected-tab-background: #ffffff #ffffff 100%;
+	jtab-selected-border-color: #9d9d9d #9d9d9d 100%;
+	jtab-selected-text-shadow-color: none;
+
+	/* unselected tabs */
+	jtab-unselected-tabs-background: none;
+	
+	jtab-unselected-border-color: none;
+	jtab-unselected-text-shadow-position: 0px 1px;
+	jtab-unselected-text-shadow-color: #ffffff;
+	
+	/* hover tabs */
+	jtab-hover-color : #000000;
+	jtab-hover-tabs-background: #f4f4f4 #ebebeb 100%;
+	
+	jtab-hover-border-color: none;
+	jtab-hover-text-shadow-color: none;
+	
+	jtab-close-button-color: #cdcdcd;
+	jtab-close-button-hot-color: #b05656;
+	jtab-close-button-active-color: #dd1b1b;
+	jtab-close-button-line-width: 2px;
+	
+	jtab-chevron-color: #000000;
+}
+
+.MPartStack.active>CTabItem {
+	/* unselected tab text */
+	color: #000000;
+}
+
+.MPartStack.active>CTabItem:selected {
+	/* selected tab text */
+	color: #000000;
+}
+
+/**************************************************
+ * editors
+ **************************************************/
+CTabFolder#org-eclipse-ui-editorss.MArea{
+	swt-tab-renderer:
+		url('bundleclass://au.gov.ga.earthsci.theme/net.jeeeyul.eclipse.themes.rendering.JeeeyulsTabRenderer');
+	swt-tab-height: 10px;
+	jtab-header-background : #dddada #c2c2c2 100%;
+	jtab-border-color : none;
+	jtab-selected-tab-background: #dddada #c2c2c2 100%;
+	jtab-selected-border-color: none;
+	swt-single : true;
+	
+	jtab-margin : 0px 4px 4px 1px; /* top right bottom left */
+	jtab-shadow-color: #a8a8a8;
+	jtab-shadow-position: 1px 1px;
+	jtab-shadow-radius: 3px;
+	jtab-padding : 2px 2px 4px 4px;
+}
+
+/**************************************************
+ * Text Editor
+ **************************************************/
+.MPart.Editor Canvas {
+	background-color: #f0f0f0;
+}
+
+.MPart.Editor StyledText {
+	jeditor-line-style : none;
+	jeditor-line-color : #f0f0f0;
+}
+
+/**************************************************
+ * User Custom CSS
+ **************************************************/
