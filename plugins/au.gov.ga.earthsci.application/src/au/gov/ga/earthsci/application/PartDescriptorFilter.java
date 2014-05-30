@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.application;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.descriptor.basic.MPartDescriptor;
@@ -42,7 +43,7 @@ public class PartDescriptorFilter
 	/**
 	 * The blacklist of {@link MPartDescriptor} element IDs that are to be filtered
 	 */
-	private static final HashSet<String> BLACKLIST = new HashSet<String>()
+	private static final Set<String> BLACKLIST = new HashSet<String>()
 	{
 		{
 			add("org.eclipse.ui.internal.introview");
