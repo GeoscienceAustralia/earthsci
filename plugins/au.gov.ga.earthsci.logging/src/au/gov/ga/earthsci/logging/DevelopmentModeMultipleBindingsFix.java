@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Geoscience Australia
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,11 +15,10 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.logging;
 
-import org.eclipse.osgi.baseadaptor.loader.ClasspathEntry;
-import org.eclipse.osgi.baseadaptor.loader.ClasspathManager;
-import org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader;
-import org.eclipse.osgi.internal.baseadaptor.DevClassLoadingHook;
-import org.eclipse.osgi.internal.baseadaptor.DevClassPathHelper;
+import org.eclipse.core.internal.runtime.DevClassPathHelper;
+import org.eclipse.osgi.internal.loader.EquinoxClassLoader;
+import org.eclipse.osgi.internal.loader.classpath.ClasspathEntry;
+import org.eclipse.osgi.internal.loader.classpath.ClasspathManager;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -34,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * <p/>
  * This class applies a fix to the classloader of the {@link LoggerFactory}
  * class that removes any duplicate jars in the classpath.
- * 
+ *
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class DevelopmentModeMultipleBindingsFix
@@ -44,10 +43,10 @@ public class DevelopmentModeMultipleBindingsFix
 		if (DevClassPathHelper.inDevelopmentMode())
 		{
 			ClassLoader loggerFactoryClassLoader = LoggerFactory.class.getClassLoader();
-			if (loggerFactoryClassLoader instanceof DefaultClassLoader)
+			if (loggerFactoryClassLoader instanceof EquinoxClassLoader)
 			{
-				DefaultClassLoader dcl = (DefaultClassLoader) loggerFactoryClassLoader;
-				ClasspathManager manager = dcl.getClasspathManager();
+				EquinoxClassLoader ecl = (EquinoxClassLoader) loggerFactoryClassLoader;
+				ClasspathManager manager = ecl.getClasspathManager();
 				ClasspathEntry[] entries = manager.getHostClasspathEntries();
 				ClasspathEntry projectDir = null;
 				for (ClasspathEntry entry : entries)
