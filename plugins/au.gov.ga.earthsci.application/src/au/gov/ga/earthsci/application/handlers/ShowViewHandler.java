@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Geoscience Australia
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,9 +25,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.descriptor.basic.MPartDescriptor;
-import org.eclipse.e4.ui.model.application.ui.MElementContainer;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
-import org.eclipse.e4.ui.model.application.ui.basic.MPartStack;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
@@ -36,9 +34,11 @@ import org.eclipse.e4.ui.workbench.swt.internal.copy.ShowViewDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 
+import au.gov.ga.earthsci.application.PartInstantiator;
+
 /**
  * Handler used to show a part (or "View").
- * 
+ *
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class ShowViewHandler
@@ -77,9 +77,9 @@ public class ShowViewHandler
 			return;
 		}
 
-		List<MPart> siblings = modelService.findElements(application, descriptor.getElementId(), MPart.class, null);
-
 		MPart part = null;
+
+		List<MPart> siblings = modelService.findElements(application, descriptor.getElementId(), MPart.class, null);
 		if (!siblings.isEmpty())
 		{
 			if (descriptor.isAllowMultiple())
@@ -107,36 +107,7 @@ public class ShowViewHandler
 		{
 			//if no matching part was found, create a new one
 			part = partService.createPart(descriptor.getElementId());
-
-			//if creating a new part, select a stack next to one of the siblings
-			MPartStack stack = null;
-			int index = -1;
-			for (MPart sibling : siblings)
-			{
-				MElementContainer<?> parent = sibling.getParent();
-				if (parent instanceof MPartStack)
-				{
-					stack = (MPartStack) parent;
-					index = ((MPartStack) parent).getChildren().indexOf(sibling) + 1;
-					if (sibling.isToBeRendered())
-					{
-						//prefer a visible sibling's stack
-						break;
-					}
-				}
-			}
-
-			if (stack != null)
-			{
-				try
-				{
-					stack.getChildren().add(index, part);
-				}
-				catch (IndexOutOfBoundsException e)
-				{
-					stack.getChildren().add(part);
-				}
-			}
+			PartInstantiator.addPartToAppropriateContainer(part, descriptor, application, modelService);
 		}
 
 		//activate the part

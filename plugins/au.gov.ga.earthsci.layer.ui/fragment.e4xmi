@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/descriptor/basic" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_AKs3QJdDEeKAe5mIUYJvmg">
+<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/descriptor/basic" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_AKs3QJdDEeKAe5mIUYJvmg">
   <imports xsi:type="commands:Command" xmi:id="_IehHkJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.command.legend"/>
   <imports xsi:type="commands:Command" xmi:id="_JYVrgJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.command.information"/>
   <imports xsi:type="commands:Command" xmi:id="_KTDAQJdDEeKAe5mIUYJvmg" elementId="org.eclipse.ui.edit.delete"/>
@@ -14,6 +14,9 @@
   </fragments>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_AKs3QZdDEeKAe5mIUYJvmg" featurename="descriptors" parentElementId="au.gov.ga.earthsci.application">
     <elements xsi:type="basic:PartDescriptor" xmi:id="_AKs3QpdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.part" label="%au.gov.ga.earthsci.application.layertree.part.label" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/layer.png" tooltip="%au.gov.ga.earthsci.application.layertree.part.tooltip" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.LayerTreePart">
+      <persistedState key="parent" value="au.gov.ga.earthsci.application.partstack.0.1.0.1"/>
+      <persistedState key="visible" value="true"/>
+      <persistedState key="position" value="first"/>
       <tags>View</tags>
       <tags>categoryTag:Data</tags>
       <handlers xmi:id="_AKs3Q5dDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.CutHandler" command="_LhlP8JdDEeKAe5mIUYJvmg"/>
@@ -47,8 +50,5 @@
         <children xsi:type="menu:HandledToolItem" xmi:id="_AKs3WZdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.toolbar.delete" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/delete.gif" tooltip="Delete" command="_KTDAQJdDEeKAe5mIUYJvmg"/>
       </toolbar>
     </elements>
-  </fragments>
-  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_B_hq4JdDEeKAe5mIUYJvmg" featurename="children" parentElementId="au.gov.ga.earthsci.application.partstack.0.1.0.1" positionInList="first">
-    <elements xsi:type="advanced:Placeholder" xmi:id="_EYtIwJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.part" toBeRendered="false"/>
   </fragments>
 </fragment:ModelFragments>

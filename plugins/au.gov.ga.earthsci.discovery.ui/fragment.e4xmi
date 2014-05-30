@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="ASCII"?>
-<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/descriptor/basic" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_h0J0gLeMEeKHso0qTaNhhg">
+<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/descriptor/basic" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_h0J0gLeMEeKHso0qTaNhhg">
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_oY0bYLeMEeKHso0qTaNhhg" featurename="descriptors" parentElementId="au.gov.ga.earthsci.application">
     <elements xsi:type="basic:PartDescriptor" xmi:id="_qWCWALeMEeKHso0qTaNhhg" elementId="au.gov.ga.earthsci.application.discovery.part" label="%au.gov.ga.earthsci.application.discovery.part.label" iconURI="platform:/plugin/au.gov.ga.earthsci.discovery.ui/icons/search.gif" tooltip="%au.gov.ga.earthsci.application.discovery.part.tooltip" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.discovery.ui/au.gov.ga.earthsci.discovery.ui.DiscoveryPart">
+      <persistedState key="parent" value="au.gov.ga.earthsci.application.partstack.0.0.0"/>
+      <persistedState key="visible" value="true"/>
       <tags>View</tags>
       <tags>categoryTag:Data</tags>
       <handlers xmi:id="_LWS9UMdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.servicesHandler" contributionURI="bundleclass://au.gov.ga.earthsci.discovery.ui/au.gov.ga.earthsci.discovery.ui.handler.ServicesHandler" command="_iZJ08MdkEeKLHJVniFVq1Q"/>
@@ -9,9 +11,6 @@
         <children xsi:type="menu:HandledToolItem" xmi:id="_mH9B8MdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.toolbar.servers" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.discovery.ui/icons/server.gif" tooltip="Services" command="_iZJ08MdkEeKLHJVniFVq1Q"/>
       </toolbar>
     </elements>
-  </fragments>
-  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_3f8LgLeMEeKHso0qTaNhhg" featurename="children" parentElementId="au.gov.ga.earthsci.application.partstack.0.0.0" positionInList="">
-    <elements xsi:type="advanced:Placeholder" xmi:id="_6Rg7QLeMEeKHso0qTaNhhg" elementId="au.gov.ga.earthsci.application.discovery.part" toBeRendered="false"/>
   </fragments>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_Sv5BEMdkEeKLHJVniFVq1Q" featurename="commands" parentElementId="au.gov.ga.earthsci.application">
     <elements xsi:type="commands:Command" xmi:id="_iZJ08MdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.services" commandName="discoveryServicesCommand"/>
