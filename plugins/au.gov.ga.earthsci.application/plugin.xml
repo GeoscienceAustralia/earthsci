@@ -38,10 +38,6 @@
                value="au.gov.ga.earthsci.application.theme.default">
          </property>
          <property
-               name="modelResourceHandler"
-               value="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.bugfix389663.ModelResourceHandler">
-         </property>
-         <property
                name="rendererFactoryUri"
                value="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.compatibility.WorkbenchRendererFactoryFixed">
          </property>
