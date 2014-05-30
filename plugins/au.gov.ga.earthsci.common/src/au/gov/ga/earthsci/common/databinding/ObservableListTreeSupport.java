@@ -162,7 +162,7 @@ public class ObservableListTreeSupport<E>
 		@Override
 		public void handleListChange(ListChangeEvent<E> event)
 		{
-			for (ListDiffEntry<E> entry : event.diff.getDifferencesAsList())
+			for (ListDiffEntry<? extends E> entry : event.diff.getDifferencesAsList())
 			{
 				E element = entry.getElement();
 				if (entry.isAddition())

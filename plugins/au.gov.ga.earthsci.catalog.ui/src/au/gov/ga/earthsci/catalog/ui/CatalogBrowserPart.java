@@ -16,9 +16,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.services.EMenuService;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
-import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -47,7 +47,7 @@ import au.gov.ga.earthsci.layer.ui.dnd.LayerTransfer;
 /**
  * A part that renders a tree-view of the current {@link ICatalogModel} and
  * allows the user to browse and interact with elements in the model.
- * 
+ *
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class CatalogBrowserPart
@@ -95,9 +95,8 @@ public class CatalogBrowserPart
 				BeanProperties.list(ICatalogTreeNode.class, "children", ICatalogTreeNode.class); //$NON-NLS-1$
 		IObservableFactory<ICatalogTreeNode, IObservableList<ICatalogTreeNode>> listFactory =
 				childrenProperty.listFactory();
-		LazyObservableListTreeContentProvider<ICatalogTreeNode, IObservableList<ICatalogTreeNode>> contentProvider =
-				new LazyObservableListTreeContentProvider<ICatalogTreeNode, IObservableList<ICatalogTreeNode>>(
-						listFactory, null);
+		LazyObservableListTreeContentProvider<ICatalogTreeNode> contentProvider =
+				new LazyObservableListTreeContentProvider<ICatalogTreeNode>(listFactory, null);
 		viewer.setContentProvider(contentProvider);
 
 		observableListTreeSupport = new ObservableListTreeSupport<ICatalogTreeNode>(listFactory);

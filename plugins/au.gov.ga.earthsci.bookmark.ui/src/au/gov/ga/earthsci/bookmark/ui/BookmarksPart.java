@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2012 Geoscience Australia
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,10 +44,10 @@ import org.eclipse.e4.ui.model.application.ui.menu.MMenu;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenuElement;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenuFactory;
 import org.eclipse.e4.ui.model.application.ui.menu.MPopupMenu;
+import org.eclipse.e4.ui.services.EMenuService;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.e4.ui.workbench.swt.factories.IRendererFactory;
-import org.eclipse.e4.ui.workbench.swt.modeling.EMenuService;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.databinding.viewers.ObservableMapCellLabelProvider;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -82,6 +82,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 
 import au.gov.ga.earthsci.application.ImageRegistry;
 import au.gov.ga.earthsci.bookmark.model.Bookmarks;
@@ -95,7 +96,7 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
 /**
  * A part used to display current bookmarks, and to allow the user to interact
  * with them.
- * 
+ *
  * @author James Navin (james.navin@ga.gov.au)
  */
 public class BookmarksPart
@@ -145,13 +146,13 @@ public class BookmarksPart
 
 		setupClipboardDnD();
 		setupBookmarkListInput();
-		setupPopupMenus();
+		setupPopupMenus(part);
 	}
 
 
 	/**
 	 * Highlight the given bookmark in the part
-	 * 
+	 *
 	 * @param bookmark
 	 *            The bookmark to highlight. If <code>null</code>, clears any
 	 *            highlighting
@@ -237,7 +238,7 @@ public class BookmarksPart
 		// Trigger a label refresh if a list name changes etc.
 		ObservableListContentProvider contentProvider = new ObservableListContentProvider();
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		IObservableSet<IBookmarkList> knownElements = (IObservableSet) contentProvider.getKnownElements();
+		IObservableSet<IBookmarkList> knownElements = contentProvider.getKnownElements();
 		IObservableMap<IBookmarkList, String> nameMap =
 				BeanProperties.value(IBookmarkList.class, "name", String.class).observeDetail(knownElements); //$NON-NLS-1$
 		nameMap.addMapChangeListener(new IMapChangeListener<IBookmarkList, String>()
@@ -292,7 +293,7 @@ public class BookmarksPart
 		bookmarkListTableViewer.setContentProvider(contentProvider);
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		IObservableSet<IBookmark> knownElements = (IObservableSet) contentProvider.getKnownElements();
+		IObservableSet<IBookmark> knownElements = contentProvider.getKnownElements();
 		IObservableMap<IBookmark, String> nameMap =
 				BeanProperties.value(IBookmark.class, "name", String.class).observeDetail(knownElements); //$NON-NLS-1$
 		@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -313,7 +314,7 @@ public class BookmarksPart
 		ColumnLayoutData cld = new ColumnWeightData(12);
 		layout.setColumnData(column.getColumn(), cld);
 
-		// Allow edit (rename) only via programmatic access (rename command) 
+		// Allow edit (rename) only via programmatic access (rename command)
 		ColumnViewerEditorActivationStrategy activationStrategy =
 				new ColumnViewerEditorActivationStrategy(bookmarkListTableViewer)
 				{
@@ -362,9 +363,17 @@ public class BookmarksPart
 
 	}
 
-	private void setupPopupMenus()
+	private void setupPopupMenus(MPart part)
 	{
-		popupMenu = menuService.registerContextMenu(bookmarkListTableViewer.getTable(), POPUP_MENU_ID);
+		menuService.registerContextMenu(bookmarkListTableViewer.getTable(), POPUP_MENU_ID);
+
+		//XXX since Luna, the above no longer returns a MPopupMenu
+		//TODO find out a better way to get the MPopupMenu created above
+		//XXX this is a dirty hack:
+		Menu menu = bookmarkListTableViewer.getTable().getMenu();
+		popupMenu = (MPopupMenu) menu.getData(AbstractPartRenderer.OWNING_ME);
+		//XXX this doesn't work:
+		//popupMenu = (MPopupMenu) modelService.find(POPUP_MENU_ID, part);
 
 		copyToMenu = (MMenu) modelService.find(COPY_TO_MENU_ID, popupMenu);
 		moveToMenu = (MMenu) modelService.find(MOVE_TO_MENU_ID, popupMenu);
