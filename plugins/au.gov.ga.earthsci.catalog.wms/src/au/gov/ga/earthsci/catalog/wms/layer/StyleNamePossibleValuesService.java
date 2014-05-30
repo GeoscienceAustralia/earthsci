@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2013 Geoscience Australia
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,27 +23,29 @@ import gov.nasa.worldwind.ogc.wms.WMSLayerStyle;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.FilteredListener;
 import org.eclipse.sapphire.Listener;
+import org.eclipse.sapphire.PossibleValuesService;
 import org.eclipse.sapphire.PropertyContentEvent;
 import org.eclipse.sapphire.Resource;
-import org.eclipse.sapphire.services.PossibleValuesService;
+import org.eclipse.sapphire.modeling.Status;
 
 import au.gov.ga.earthsci.editable.EditableResource;
 
 /**
  * Sapphire {@link PossibleValuesService} for the style names available for a
  * layer on a WMS server.
- * 
+ *
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class StyleNamePossibleValuesService extends PossibleValuesService
 {
 	@Override
-	protected void init()
+	protected void initPossibleValuesService()
 	{
+		super.initPossibleValuesService();
+
 		final Listener listener = new FilteredListener<PropertyContentEvent>()
 		{
 			@Override
@@ -55,10 +57,13 @@ public class StyleNamePossibleValuesService extends PossibleValuesService
 
 		final Element model = context(Element.class);
 		model.attach(listener, WMSLayerElement.PROP_LAYER_NAME.name());
+
+		this.invalidValueMessage = "\"${Entity}\" is not a valid style name for the selected layer name.";
+		this.invalidValueSeverity = Status.Severity.ERROR;
 	}
 
 	@Override
-	protected void fillPossibleValues(Set<String> values)
+	protected void compute(Set<String> values)
 	{
 		final Element model = context(Element.class);
 
@@ -138,11 +143,5 @@ public class StyleNamePossibleValuesService extends PossibleValuesService
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public String getInvalidValueMessage(final String invalidValue)
-	{
-		return NLS.bind("\"{0}\" is not a valid style name for the selected layer name.", invalidValue);
 	}
 }
