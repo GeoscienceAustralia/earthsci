@@ -22,6 +22,7 @@
          id="id2"
          point="org.eclipse.e4.workbench.model">
       <fragment
+            apply="notexists"
             uri="fragment.e4xmi">
       </fragment>
    </extension>
