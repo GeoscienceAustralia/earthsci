@@ -9,13 +9,4 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
 	{
 		super(configurer);
 	}
-
-	/*@Override
-	public void preWindowOpen()
-	{
-		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-		configurer.setInitialSize(new Point(600, 400));
-		configurer.setShowCoolBar(true);
-		configurer.setShowStatusLine(false);
-	}*/
 }

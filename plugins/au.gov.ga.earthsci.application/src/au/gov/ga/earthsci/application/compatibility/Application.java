@@ -18,23 +18,6 @@ public class Application implements IApplication
 	@Override
 	public Object start(IApplicationContext context) throws Exception
 	{
-		//this is a dodgy way to override the model factory used by everything to create model
-		//elements (the org.eclipse.e4.ui.model.application.ui.basic.impl.BasicFactoryImpl class)
-		/*EPackage.Registry.INSTANCE.put(BasicPackageImpl.eNS_URI, new EPackage.Descriptor()
-		{
-			@Override
-			public EPackage getEPackage()
-			{
-				return null; //TODO should this be?
-			}
-
-			@Override
-			public EFactory getEFactory()
-			{
-				return new MyCustomFactoryClass();
-			}
-		});*/
-
 		Display display = PlatformUI.createDisplay();
 		try
 		{
