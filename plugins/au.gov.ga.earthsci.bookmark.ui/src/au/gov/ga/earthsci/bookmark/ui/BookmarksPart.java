@@ -236,8 +236,8 @@ public class BookmarksPart
 		});
 
 		// Trigger a label refresh if a list name changes etc.
-		ObservableListContentProvider contentProvider = new ObservableListContentProvider();
-		@SuppressWarnings({ "unchecked", "rawtypes" })
+		ObservableListContentProvider<IBookmarkList> contentProvider =
+				new ObservableListContentProvider<IBookmarkList>(IBookmarkList.class);
 		IObservableSet<IBookmarkList> knownElements = contentProvider.getKnownElements();
 		IObservableMap<IBookmarkList, String> nameMap =
 				BeanProperties.value(IBookmarkList.class, "name", String.class).observeDetail(knownElements); //$NON-NLS-1$
@@ -289,19 +289,17 @@ public class BookmarksPart
 
 		bookmarkListTableViewer.getTable().setLayoutData(gd);
 
-		ObservableListContentProvider contentProvider = new ObservableListContentProvider();
+		ObservableListContentProvider<IBookmark> contentProvider =
+				new ObservableListContentProvider<IBookmark>(IBookmark.class);
 		bookmarkListTableViewer.setContentProvider(contentProvider);
 
-		@SuppressWarnings({ "unchecked", "rawtypes" })
 		IObservableSet<IBookmark> knownElements = contentProvider.getKnownElements();
 		IObservableMap<IBookmark, String> nameMap =
 				BeanProperties.value(IBookmark.class, "name", String.class).observeDetail(knownElements); //$NON-NLS-1$
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		IObservableMap<Object, Object> objectNameMap = (IObservableMap) nameMap;
 
 		TableViewerColumn column = new TableViewerColumn(bookmarkListTableViewer, SWT.LEFT);
 		column.setEditingSupport(new BookmarkNameEditingSupport(bookmarkListTableViewer));
-		column.setLabelProvider(new ObservableMapCellLabelProvider(objectNameMap)
+		column.setLabelProvider(new ObservableMapCellLabelProvider<IBookmark, String>(nameMap)
 		{
 			@Override
 			public void update(ViewerCell cell)

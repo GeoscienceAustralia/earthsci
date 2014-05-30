@@ -218,10 +218,8 @@ public class LayerTreePart
 		});
 
 		//create a content provider that listens for changes to any children in the tree
-		@SuppressWarnings("rawtypes")
-		IObservableFactory rawFactory = observableFactory;
-		@SuppressWarnings("unchecked")
-		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(rawFactory, null);
+		ObservableListTreeContentProvider<ILayerTreeNode> contentProvider =
+				new ObservableListTreeContentProvider<ILayerTreeNode>(observableFactory, null);
 
 		//set the viewer's providers
 		structureViewer.setContentProvider(contentProvider);
@@ -409,10 +407,8 @@ public class LayerTreePart
 				childrenProperty.listFactory();
 
 		//create a content provider that listens for changes to any children in the tree
-		@SuppressWarnings("rawtypes")
-		IObservableFactory rawFactory = observableFactory;
-		@SuppressWarnings("unchecked")
-		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(rawFactory, null);
+		ObservableListTreeContentProvider<DrawOrderModel.IDrawOrderModelElement> contentProvider =
+				new ObservableListTreeContentProvider<DrawOrderModel.IDrawOrderModelElement>(observableFactory, null);
 
 		DrawOrderLabelProvider labelProvider = new DrawOrderLabelProvider();
 
