@@ -21,7 +21,7 @@
 		<module>plugins</module>
 		<module>features/au.gov.ga.earthsci.feature</module>
 		<module>features/au.gov.ga.earthsci.product</module>
-		<module>features/org.eclipse.rcp.minimal</module>
+		<!--<module>features/org.eclipse.rcp.minimal</module>-->
 		<module>webstart</module>
 	</modules>
 

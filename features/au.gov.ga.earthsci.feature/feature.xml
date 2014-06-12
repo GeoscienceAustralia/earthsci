@@ -36,10 +36,6 @@ http://www.apache.org/licenses/
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.rcp.minimal"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.sapphire"
          version="0.0.0"/>
 
@@ -61,6 +57,10 @@ http://www.apache.org/licenses/
 
    <includes
          id="com.oculusvr.jrift.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.rcp"
          version="0.0.0"/>
 
    <requires>
