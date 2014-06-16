@@ -172,6 +172,10 @@
             class="au.gov.ga.earthsci.worldwind.common.layers.sun.SunLayer"
             value="20">
       </drawOrder>
+      <drawOrder
+            class="au.gov.ga.earthsci.worldwind.common.layers.earthquakes.HistoricEarthquakesLayer"
+            value="-10">
+      </drawOrder>
    </extension>
 
 </plugin>
