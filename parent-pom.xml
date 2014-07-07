@@ -32,12 +32,12 @@
 		<repository>
 			<id>e4</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/e4/downloads/drops/I20140611-0900/repository</url>
+			<url>http://download.eclipse.org/e4/downloads/drops/I20140706-2200/repository</url>
 		</repository>
 		<repository>
 			<id>sapphire</id>
 			<layout>p2</layout>
-			<url>http://hudson.eclipse.org/sapphire/job/8.0.x/109/artifact/build/repository/</url>
+			<url>http://download.eclipse.org/sapphire/8/repository</url>
 		</repository>
 	</repositories>
 
