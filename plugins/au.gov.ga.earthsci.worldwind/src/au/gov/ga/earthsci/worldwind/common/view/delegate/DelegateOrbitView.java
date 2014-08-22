@@ -19,6 +19,7 @@ import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 import au.gov.ga.earthsci.worldwind.common.render.DrawableSceneController;
@@ -40,6 +41,9 @@ public class DelegateOrbitView extends TargetOrbitView implements IDelegateView
 	private boolean callingGetPretransformedModelView = false;
 	private boolean callingComputeProjection = false;
 	private boolean callingDraw = false;
+	private Vec4 up = null;
+	private Vec4 forward = null;
+	private Matrix postTransform = Matrix.IDENTITY;
 
 	public DelegateOrbitView()
 	{
@@ -78,6 +82,31 @@ public class DelegateOrbitView extends TargetOrbitView implements IDelegateView
 	{
 		currentDelegate = delegate;
 		super.doApply(dc);
+		postTransform = modelviewInv.multiply(getPretransformedModelView());
+		up = null;
+		forward = null;
+	}
+
+	@Override
+	public Vec4 getUpVector()
+	{
+		if (up == null)
+		{
+			up = super.getUpVector();
+			up = up.transformBy3(postTransform);
+		}
+		return up;
+	}
+
+	@Override
+	public Vec4 getForwardVector()
+	{
+		if (forward == null)
+		{
+			forward = super.getForwardVector();
+			forward = forward.transformBy3(postTransform);
+		}
+		return forward;
 	}
 
 	@Override
