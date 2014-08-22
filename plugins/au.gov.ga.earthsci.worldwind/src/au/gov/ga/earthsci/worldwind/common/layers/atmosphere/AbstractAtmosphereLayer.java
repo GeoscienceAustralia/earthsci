@@ -68,6 +68,7 @@ public abstract class AbstractAtmosphereLayer extends AbstractLayer
 		{
 			ogsh.pushAttrib(gl, GL2.GL_TEXTURE_BIT | GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT
 					| GL2.GL_POLYGON_BIT);
+			gl.glColor4f(1f, 1f, 1f, 1f);
 			renderAtmosphere(dc, lightDirection, eyePoint, eyeMagnitude, innerRadius, outerRadius);
 		}
 		finally
