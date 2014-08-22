@@ -207,7 +207,7 @@ public class AxisRenderable implements Renderable
 		{
 			oglsh.pushProjection(gl);
 			oglsh.pushModelview(gl);
-			oglsh.pushAttrib(gl, GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT | GL2.GL_LINE_BIT);
+			oglsh.pushAttrib(gl, GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT | GL2.GL_LINE_BIT | GL2.GL_CURRENT_BIT);
 
 			double distance = eyePoint.distanceTo3(centerPoint);
 			double length = distance * size;
