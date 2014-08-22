@@ -21,6 +21,7 @@ import gov.nasa.worldwind.awt.ViewInputAttributes.ActionAttributes;
 import gov.nasa.worldwind.awt.ViewInputAttributes.DeviceAttributes;
 import gov.nasa.worldwind.awt.ViewInputHandler;
 import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.view.orbit.OrbitView;
 import gov.nasa.worldwind.view.orbit.OrbitViewInputHandler;
 import au.gov.ga.earthsci.worldwind.common.view.rotate.FreeRotateOrbitViewInputHandler;
 
@@ -54,7 +55,7 @@ public interface IProviderOrbitViewInputHandler extends ViewInputHandler
 	 */
 	void onRotateFree(Angle direction, Angle amount, DeviceAttributes deviceAttributes,
 			ActionAttributes actionAttributes);
-	
+
 	/**
 	 * @see FreeRotateOrbitViewInputHandler#onAltitudeFree
 	 */
@@ -79,5 +80,5 @@ public interface IProviderOrbitViewInputHandler extends ViewInputHandler
 	/**
 	 * @see AbstractViewInputHandler#getView
 	 */
-	View getView();
+	OrbitView getView();
 }
