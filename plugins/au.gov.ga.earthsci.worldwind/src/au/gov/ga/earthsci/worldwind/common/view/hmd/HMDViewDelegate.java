@@ -63,10 +63,8 @@ public abstract class HMDViewDelegate implements IHMDViewDelegate
 			//field of view is calculated from the HMD distortion
 			float verticalFOV = distortion.getVerticalFOV();
 			float aspect = distortion.getAspect();
-			double horizontalFOV = 2d * Math.atan(Math.tan(verticalFOV / 2d) * aspect);
+			double horizontalFOV = verticalFOV / aspect;
 			view.setFieldOfView(Angle.fromRadians(horizontalFOV));
-
-			System.out.println(Angle.fromRadians(horizontalFOV));
 		}
 	}
 
