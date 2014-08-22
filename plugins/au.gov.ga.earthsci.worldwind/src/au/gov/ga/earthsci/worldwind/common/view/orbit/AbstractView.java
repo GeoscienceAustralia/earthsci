@@ -185,6 +185,10 @@ public abstract class AbstractView extends WWObjectImpl implements View
 			throw new IllegalStateException(message);
 		}
 
+		// Update DrawContext and Globe references.
+		this.dc = dc;
+		this.globe = this.dc.getGlobe();
+
 		if (this.viewInputHandler != null)
 		{
 			this.viewInputHandler.apply();

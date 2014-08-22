@@ -438,10 +438,6 @@ public class BaseOrbitView extends AbstractView implements OrbitView
 			throw new IllegalArgumentException(message);
 		}
 
-		// Update DrawContext and Globe references.
-		this.dc = dc;
-		this.globe = this.dc.getGlobe();
-
 		if (unsetEyePosition != null)
 		{
 			setEyePosition(unsetEyePosition);
