@@ -60,9 +60,9 @@ void main(void)
 	// Calculate the ray's starting position, then calculate its scattering offset
 	vec3 v3Start = v3CameraPos;
 	float fHeight = length(v3Start);
-	float fDepth = exp(fScaleOverScaleDepth * (fInnerRadius - fCameraHeight));
+	float fStartDepth = exp(fScaleOverScaleDepth * (fInnerRadius - fCameraHeight));
 	float fStartAngle = dot(v3Ray, v3Start) / fHeight;
-	float fStartOffset = fDepth*scale(fStartAngle);
+	float fStartOffset = fStartDepth*scale(fStartAngle);
 #endif
 
 	// Initialize the scattering loop variables
@@ -79,7 +79,8 @@ void main(void)
 		float fDepth = exp(fScaleOverScaleDepth * (fInnerRadius - fHeight));
 		float fLightAngle = dot(v3LightPos, v3SamplePoint) / fHeight;
 		float fCameraAngle = dot(v3Ray, v3SamplePoint) / fHeight;
-		float fScatter = (fStartOffset + fDepth*(scale(fLightAngle) - scale(fCameraAngle)));
+		float fAngleDelta = scale(fLightAngle) - scale(fCameraAngle);
+		float fScatter = fStartOffset + fDepth * fAngleDelta;
 		vec3 v3Attenuate = exp(-fScatter * (v3InvWavelength * fKr4PI + fKm4PI));
 		v3FrontColor += v3Attenuate * (fDepth * fScaledLength);
 		v3SamplePoint += v3SampleRay;
@@ -88,8 +89,7 @@ void main(void)
 	// Finally, scale the Mie and Rayleigh colors and set up the varying variables for the pixel shader
 	gl_FrontSecondaryColor.rgb = v3FrontColor * fKmESun;
 	gl_FrontColor.rgb = v3FrontColor * (v3InvWavelength * fKrESun);
-	//float colorMix = min(1.0, (fCameraHeight - fInnerRadius) / (fOuterRadius - fInnerRadius));
-	//gl_FrontColor.rgb = mix(min(1.2, v3FrontColor.b), v3FrontColor, colorMix) * (v3InvWavelength * fKrESun);
 	gl_Position = ftransform();
+	gl_ClipVertex = gl_ModelViewMatrix * gl_Vertex;
 	v3Direction = v3CameraPos - v3Pos;
 }

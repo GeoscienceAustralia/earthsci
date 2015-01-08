@@ -35,12 +35,12 @@ public abstract class EffectBase implements Effect
 	 * The frame buffer to draw to for this effect.
 	 */
 	protected final FrameBuffer frameBuffer = new FrameBuffer(1, true);
-
+	
 	/**
 	 * Enabled flag
 	 */
 	protected boolean enabled = true;
-
+	
 	@Override
 	public boolean isEnabled()
 	{

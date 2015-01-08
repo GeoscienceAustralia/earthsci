@@ -183,13 +183,13 @@ public class SunLayer extends AbstractLayer
 		double[] projectionArray = new double[16];
 		modelview.toArray(modelviewArray, 0, false);
 		projection.toArray(projectionArray, 0, false);
-		int[] viewportArray = new int[] { viewport.x, viewport.y, viewport.width, viewport.height };
+		int[] viewportArray = new int[] { 0, 0, viewport.width, viewport.height };
 		double[] result = new double[3];
 		dc.getGLU().gluProject(0.0, 0.0, 1.0, modelviewArray, 0, projectionArray, 0, viewportArray, 0, result, 0);
 
 		//calculate sun screen position in screen coordinates
-		double projectedSunPosX = (viewport.x + result[0]) / viewport.width;
-		double projectedSunPosY = (viewport.y + result[1]) / viewport.height;
+		double projectedSunPosX = result[0] / viewport.width;
+		double projectedSunPosY = result[1] / viewport.height;
 		double sunWidth = 0.5 * sunSize / viewport.width;
 		double sunHeight = 0.5 * sunSize / viewport.height;
 		double x1 = projectedSunPosX - sunWidth;
@@ -220,7 +220,7 @@ public class SunLayer extends AbstractLayer
 			//copy depth buffer to texture
 			gl.glActiveTexture(GL2.GL_TEXTURE0);
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, depthTexture[0]);
-			gl.glCopyTexSubImage2D(GL2.GL_TEXTURE_2D, 0, 0, 0, 0, 0, size.width, size.height);
+			gl.glCopyTexSubImage2D(GL2.GL_TEXTURE_2D, 0, 0, 0, viewport.x, viewport.y, size.width, size.height);
 
 			//render the sun circle texture
 			gl.glViewport(0, 0, stageTextureSize.width, stageTextureSize.height);

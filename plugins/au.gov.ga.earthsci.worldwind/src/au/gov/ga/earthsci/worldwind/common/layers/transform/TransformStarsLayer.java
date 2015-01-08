@@ -38,11 +38,11 @@ public class TransformStarsLayer extends ProjectionStarsLayer
 		boolean loaded = false;
 		if (dc.getView() instanceof IDelegateView)
 		{
-			IDelegateView transform = (IDelegateView) dc.getView();
+			IDelegateView view = (IDelegateView) dc.getView();
 			//near is the distance from the origin
-			double near = transform.getEyePoint().getLength3();
+			double near = view.getEyePoint().getLength3();
 			double far = this.radius + near;
-			Matrix projection = transform.computeProjection(near, far);
+			Matrix projection = view.computeProjection(near, far);
 
 			if (projection != null)
 			{

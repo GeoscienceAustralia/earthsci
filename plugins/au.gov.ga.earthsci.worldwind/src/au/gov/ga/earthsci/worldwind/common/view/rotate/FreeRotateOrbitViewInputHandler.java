@@ -109,6 +109,7 @@ public class FreeRotateOrbitViewInputHandler extends TargetOrbitViewInputHandler
 		{
 			((BasicOrbitView) view).computeAndSetViewCenter();
 		}
+		view.focusOnViewportCenter();
 		view.firePropertyChange(AVKey.VIEW, null, view);
 	}
 

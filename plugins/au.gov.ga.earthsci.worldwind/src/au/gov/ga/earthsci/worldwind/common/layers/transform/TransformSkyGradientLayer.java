@@ -39,8 +39,8 @@ public class TransformSkyGradientLayer extends SkyGradientLayer
 		{
 			IDelegateView transform = (IDelegateView) dc.getView();
 			//near is the distance from the origin
+			double near = 100;
 			double far = transform.getHorizonDistance() + 10e3;
-			double near = far / 10;
 			Matrix projection = transform.computeProjection(near, far);
 
 			if (projection != null)

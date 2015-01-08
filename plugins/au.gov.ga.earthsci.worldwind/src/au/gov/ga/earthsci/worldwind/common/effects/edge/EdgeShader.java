@@ -34,8 +34,8 @@ public class EdgeShader extends Shader
 	public void use(GL2 gl, int textureWidth, int textureHeight)
 	{
 		super.use(gl);
-		gl.glUniform1f(textureWidthUniform, textureWidth);
-		gl.glUniform1f(textureHeightUniform, textureHeight);
+		gl.glUniform1f(textureWidthUniform, (float) textureWidth);
+		gl.glUniform1f(textureHeightUniform, (float) textureHeight);
 	}
 
 	@Override

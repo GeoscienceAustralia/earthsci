@@ -17,7 +17,6 @@ package au.gov.ga.earthsci.worldwind.common.input.hydra;
 
 import com.sixense.ControllerData;
 import com.sixense.Sixense;
-import com.sixense.SixenseActivator;
 import com.sixense.utils.ControllerManager;
 import com.sixense.utils.enums.EnumGameType;
 import com.sixense.utils.enums.EnumSetupStep;
@@ -95,7 +94,44 @@ public class Hydra
 
 	private static boolean loadLibrary()
 	{
-		return SixenseActivator.isLibraryLoaded();
+		try
+		{
+			Error error = null;
+			try
+			{
+				System.loadLibrary("sixense");
+				System.loadLibrary("sixense_utils");
+			}
+			catch (Error e)
+			{
+				error = e;
+			}
+			if (error != null)
+			{
+				//loading 32-bit didn't work, try 64-bit
+				try
+				{
+					System.loadLibrary("sixense_x64");
+					System.loadLibrary("sixense_utils_x64");
+					error = null;
+				}
+				catch (Error e)
+				{
+				}
+			}
+			if (error != null)
+			{
+				throw error;
+			}
+			System.loadLibrary("SixenseJava");
+		}
+		catch (Throwable e)
+		{
+			System.err.println("Razer Hydra disabled: unable to load SixenseJava library");
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	private void startPolling()

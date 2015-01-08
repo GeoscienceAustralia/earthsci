@@ -29,6 +29,9 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -83,6 +86,9 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 
 	private List<GocadPropertyDefinition> properties;
 	private GocadPropertyDefinition paintedProperty;
+
+	private double[] zValues;
+	private NavigableMap<Double, Integer> zSlices;
 
 	@Override
 	protected boolean doLoadData(URL url, VolumeLayer layer)
@@ -140,6 +146,13 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 		{
 			readBinaryDataFile(source);
 		}
+
+		zSlices = new TreeMap<Double, Integer>();
+		for (int z = 0; z < zSize; z++)
+		{
+			double percent = getSliceElevationPercent(z);
+			zSlices.put(percent, z);
+		}
 	}
 
 	/**
@@ -147,6 +160,8 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 	 */
 	private void readAsciiDataFile(Object source) throws IOException
 	{
+		//this method assumes that the z values are the last axis to change in the data
+
 		InputStream dataInputStream = null;
 		try
 		{
@@ -158,6 +173,8 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 			double firstXValue = 0, firstYValue = 0, firstZValue = 0;
 			double[] transformed = new double[3];
 			int positionIndex = 0;
+			zValues = new double[zSize];
+			int zSlice = 0;
 			String line;
 			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInputStream));
 			while ((line = reader.readLine()) != null)
@@ -169,7 +186,8 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 				}
 
 				// Only need to look at positions in the first slice of the volume or in the first position of the top slice
-				if ((positionIndex < xSize * ySize) || (positionIndex == xSize * ySize * (zSize - 1)))
+				boolean newZValue = positionIndex % (xSize * ySize) == 0;
+				if ((positionIndex < xSize * ySize) || (positionIndex == xSize * ySize * (zSize - 1)) || newZValue)
 				{
 					double x = Double.parseDouble(matcher.group(1));
 					double y = Double.parseDouble(matcher.group(2));
@@ -219,6 +237,11 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 						depth = reverseZ ? z - firstZValue : firstZValue - z;
 						top += reverseZ ? depth : 0;
 					}
+
+					if (newZValue)
+					{
+						zValues[zSlice++] = z;
+					}
 				}
 
 				float value = Float.parseFloat(matcher.group(4));
@@ -246,7 +269,6 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 			}
 		}
 	}
-
 
 	private boolean putDataValue(int positionIndex, float value)
 	{
@@ -292,12 +314,14 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 			double firstXValue = 0, firstYValue = 0, firstZValue = 0;
 			double[] transformed = new double[3];
 			float[] coords = new float[3];
+			int zSlice = 0;
 			for (int positionIndex = 0; positionIndex < totalNumberOfPositions(); positionIndex++)
 			{
+				boolean newZValue = positionIndex % (xSize * ySize) == 0;
 
 				// We only care about a specific subset of points (bottom slice and first point on the top slice).
 				// All other points can be ignored
-				if ((positionIndex >= xSize * ySize) && (positionIndex != xSize * ySize * (zSize - 1)))
+				if ((positionIndex >= xSize * ySize) && (positionIndex != xSize * ySize * (zSize - 1)) && !newZValue)
 				{
 					pointsReader.skipToNextGroup();
 					continue;
@@ -348,6 +372,11 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 					reverseZ = coords[2] > firstZValue;
 					depth = reverseZ ? coords[2] - firstZValue : firstZValue - coords[2];
 					top += reverseZ ? depth : 0;
+				}
+
+				if (newZValue)
+				{
+					zValues[zSlice++] = coords[2];
 				}
 			}
 
@@ -416,6 +445,7 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 		top = 0;
 		minValue = Float.MAX_VALUE;
 		maxValue = -Float.MAX_VALUE;
+		zValues = new double[zSize];
 	}
 
 	private void validatePaintedPropertyAvailable() throws IOException
@@ -809,5 +839,54 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 			definition.setNoDataValue(Float.parseFloat(matcher.group(2)));
 			return;
 		}
+	}
+
+	@Override
+	public double getSliceElevationPercent(double slice)
+	{
+		if (zValues != null)
+		{
+			int floor = Math.max(0, Math.min(zSize - 1, (int) Math.floor(slice)));
+			int ceiling = Math.max(0, Math.min(zSize - 1, (int) Math.ceil(slice)));
+			double percent = slice % 1.0;
+			double z1 = zValues[floor];
+			double z2 = zValues[ceiling];
+			double elevation = z1 * (1.0 - percent) + z2 * percent;
+			return (elevation - getTop()) / -getDepth();
+		}
+		return super.getSliceElevationPercent(slice);
+	}
+
+	@Override
+	public double getElevationPercentSlice(double elevationPercent)
+	{
+		if (zSlices != null)
+		{
+			Entry<Double, Integer> floor = zSlices.floorEntry(elevationPercent);
+			Entry<Double, Integer> ceiling = zSlices.ceilingEntry(elevationPercent);
+			if (floor == null)
+			{
+				return ceiling.getValue();
+			}
+			if (ceiling == null)
+			{
+				return floor.getValue();
+			}
+			double percent = (elevationPercent - floor.getKey()) / (ceiling.getKey() - floor.getKey());
+			int slice1 = floor.getValue();
+			int slice2 = ceiling.getValue();
+			return slice1 * (1.0 - percent) + slice2 * percent;
+		}
+		return super.getElevationPercentSlice(elevationPercent);
+	}
+
+	@Override
+	public int getZSubsamples()
+	{
+		if (zValues != null)
+		{
+			return 10; //TODO make customisable via layer definition
+		}
+		return super.getZSubsamples();
 	}
 }

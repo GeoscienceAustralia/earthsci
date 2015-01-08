@@ -117,9 +117,6 @@ public class LayerFactory extends BasicLayerFactory
 		String className = WWXML.getText(domElement, "@className");
 		if (className != null && className.length() > 0)
 		{
-			//fix any layer definitions that are pointing to the legacy ga-worldwind-suite common classes:
-			className = className.replace("au.gov.ga.worldwind.common.", "au.gov.ga.earthsci.worldwind.common.");
-
 			try
 			{
 				Class<?> c = Class.forName(className);

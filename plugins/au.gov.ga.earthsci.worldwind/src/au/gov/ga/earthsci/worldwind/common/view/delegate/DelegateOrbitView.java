@@ -50,8 +50,15 @@ public class DelegateOrbitView extends TargetOrbitView implements IDelegateView
 		String delegateClassName = Configuration.getStringValue(AVKeyMore.DELEGATE_VIEW_DELEGATE_CLASS_NAME);
 		if (!Util.isBlank(delegateClassName))
 		{
-			IViewDelegate delegate = (IViewDelegate) WorldWind.createComponent(delegateClassName);
-			setDelegate(delegate);
+			try
+			{
+				IViewDelegate delegate = (IViewDelegate) WorldWind.createComponent(delegateClassName);
+				setDelegate(delegate);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 

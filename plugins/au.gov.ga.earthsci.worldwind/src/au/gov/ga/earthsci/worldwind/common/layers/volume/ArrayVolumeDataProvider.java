@@ -57,6 +57,7 @@ public class ArrayVolumeDataProvider extends AbstractVolumeDataProvider
 			InputStream is = null;
 			if (url.toString().toLowerCase().endsWith(".zip"))
 			{
+				@SuppressWarnings("resource") //closed by the ObjectInputStream below
 				ZipInputStream zis = new ZipInputStream(url.openStream());
 				zis.getNextEntry();
 				is = zis;
@@ -137,6 +138,7 @@ public class ArrayVolumeDataProvider extends AbstractVolumeDataProvider
 			OutputStream os;
 			if (file.getName().toLowerCase().endsWith(".zip"))
 			{
+				@SuppressWarnings("resource") //closed by the ObjectOutputStream below
 				ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(file));
 				zos.putNextEntry(new ZipEntry("data"));
 				os = zos;

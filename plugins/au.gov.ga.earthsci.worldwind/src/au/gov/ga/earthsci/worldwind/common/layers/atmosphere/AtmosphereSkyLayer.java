@@ -15,12 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.atmosphere;
 
-import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.render.DrawContext;
-
-import java.awt.image.BufferedImage;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
@@ -38,7 +35,6 @@ public class AtmosphereSkyLayer extends AbstractAtmosphereLayer
 
 	private Globe lastGlobe;
 	private int sphereList = -1;
-	private BlendSurfaceImage terrainMask;
 
 	@Override
 	protected void init(DrawContext dc)
@@ -47,11 +43,12 @@ public class AtmosphereSkyLayer extends AbstractAtmosphereLayer
 
 		skyFromAtmosphereShader.create(gl);
 		skyFromSpaceShader.create(gl);
+	}
 
-		BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-		image.setRGB(0, 0, 0xff << 24);
-		terrainMask = new BlendSurfaceImage(image, Sector.FULL_SPHERE);
-		terrainMask.setBlendFunc(GL2.GL_ZERO, GL2.GL_ONE_MINUS_SRC_ALPHA);
+	@Override
+	protected int attribBitsToPush()
+	{
+		return 0;
 	}
 
 	@Override
@@ -95,10 +92,6 @@ public class AtmosphereSkyLayer extends AbstractAtmosphereLayer
 			gl.glDisable(GL2.GL_CULL_FACE);
 		}
 		skyShader.unuse(gl);
-
-		//mask out the middle of the sphere using a terrain-following 1x1 black image
-		terrainMask.preRender(dc);
-		terrainMask.render(dc);
 
 		gl.glDepthMask(true);
 	}

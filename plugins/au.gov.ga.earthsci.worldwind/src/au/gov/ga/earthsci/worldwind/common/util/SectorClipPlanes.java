@@ -131,17 +131,19 @@ public class SectorClipPlanes
 		{
 			double[] planes = new double[16];
 
+			LatLon[] corners = sector.getCorners(); //SW, SE, NE, NW
 			LatLon centroid = sector.getCentroid();
-			LatLon minLon = new LatLon(centroid.latitude, sector.getMinLongitude());
-			LatLon maxLon = new LatLon(centroid.latitude, sector.getMaxLongitude());
-			LatLon minLat = new LatLon(sector.getMinLatitude(), centroid.longitude);
-			LatLon maxLat = new LatLon(sector.getMaxLatitude(), centroid.longitude);
+
+			LatLon west = LatLon.interpolateGreatCircle(0.5, corners[0], corners[3]); //SW, NW
+			LatLon east = LatLon.interpolateGreatCircle(0.5, corners[1], corners[2]); //SE, NE
+			LatLon south = LatLon.interpolateGreatCircle(0.5, corners[0], corners[1]); //SW, SE
+			LatLon north = LatLon.interpolateGreatCircle(0.5, corners[3], corners[2]); //NW, NE
 
 			Vec4 center = globe.computePointFromLocation(centroid).normalize3();
-			Vec4 minX = globe.computePointFromLocation(minLon).normalize3();
-			Vec4 maxX = globe.computePointFromLocation(maxLon).normalize3();
-			Vec4 minY = globe.computePointFromLocation(minLat).normalize3();
-			Vec4 maxY = globe.computePointFromLocation(maxLat).normalize3();
+			Vec4 minX = globe.computePointFromLocation(west).normalize3();
+			Vec4 maxX = globe.computePointFromLocation(east).normalize3();
+			Vec4 minY = globe.computePointFromLocation(south).normalize3();
+			Vec4 maxY = globe.computePointFromLocation(north).normalize3();
 
 			Vec4 up = Vec4.UNIT_Y;
 			Vec4 left = center.cross3(up);

@@ -51,13 +51,15 @@
 		
 		<module>org.apache.commons.lang</module>
 		
-		<module>com.oculusvr.jrift.win32.x86</module>
-		<module>com.oculusvr.jrift.win32.x86__64</module>
-		<module>com.oculusvr.jrift.linux.x86</module>
-		<module>com.oculusvr.jrift.linux.x86__64</module>
-		<module>com.oculusvr.jrift.macosx</module>
-		<module>com.oculusvr.jrift</module>
-		<module>com.oculusvr.jrift.feature</module>
+		<module>com.sun.jna</module>
+		
+		<module>org.saintandreas.jovr.win32.x86</module>
+		<module>org.saintandreas.jovr.win32.x86__64</module>
+		<module>org.saintandreas.jovr.linux.x86</module>
+		<module>org.saintandreas.jovr.linux.x86__64</module>
+		<module>org.saintandreas.jovr.macosx</module>
+		<module>org.saintandreas.jovr</module>
+		<module>org.saintandreas.jovr.feature</module>
 		
 		<module>com.sixense.win32.x86</module>
 		<module>com.sixense.win32.x86__64</module>

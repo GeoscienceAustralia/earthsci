@@ -29,7 +29,7 @@ import java.util.GregorianCalendar;
  */
 public class SunPositionServiceImpl implements SunPositionService
 {
-	private SunPositionType type = SunPositionType.BehindCamera;
+	private SunPositionType type = SunPositionType.RealTime;
 	private LatLon constant = LatLon.ZERO;
 	private final Calendar currentTime = new GregorianCalendar();
 	private LatLon currentTimeLatLon = SunCalculator.subsolarPoint(currentTime);

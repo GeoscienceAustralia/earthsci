@@ -1,0 +1,390 @@
+<?xml version="1.0" ?>
+
+<Timescale>
+	<Levels>
+		<Level value="0" name="Supereon" />
+		<Level value="1" name="Eon" />
+		<Level value="2" name="Era" />
+		<Level value="3" name="Sub-Era" />
+		<Level value="4" name="Period" />
+		<Level value="5" name="Sub-Period" />
+		<Level value="6" name="Epoch" />
+		<Level value="7" name="Sub-Epoch" />
+		<Level value="8" name="Age/Stage" />
+		<Level value="9" name="Substage" />
+	</Levels>
+	<Time level="0" ma="4600" name="Precambrian" color="f06781">
+		<Time level="1" ma="4600" name="Hadean" color="b40175">
+			<Time level="2" ma="4600" name="Hadean" color="b40175" />
+		</Time>
+		<Time level="1" ma="4000" name="Archean" color="ec008d">
+			<Time level="2" ma="4000" name="Eoarchean" color="d80e8c" />
+			<Time level="2" ma="3600" name="Paleoarchean" color="f067a6" />
+			<Time level="2" ma="3200" name="Mesoarchean" color="f287af" />
+			<Time level="2" ma="2800" name="Neoarchean" color="f6adc4" />
+		</Time>
+		<Time level="1" ma="2500" name="Proterozoic" color="f05a78">
+			<Time level="2" ma="2500" name="Paleoproterozoic" color="f06781">
+				<Time level="4" ma="2500" name="Siderian" color="f1718b" />
+				<Time level="4" ma="2300" name="Rhyacian" color="f17b96" />
+				<Time level="4" ma="2050" name="Orosirian" color="f285a1" />
+				<Time level="4" ma="1800" name="Statherian" color="f48fad" />
+			</Time>
+			<Time level="2" ma="1600" name="Mesoproterozoic" color="fcbb7e">
+				<Time level="4" ma="1600" name="Calymmian" color="fdc691" />
+				<Time level="4" ma="1400" name="Ectasian" color="fed09e" />
+				<Time level="4" ma="1200" name="Stenian" color="fedbab" />
+			</Time>
+			<Time level="2" ma="1000" name="Neoproterozoic" color="fcba62">
+				<Time level="4" ma="1000" name="Tonian" color="fec56e" />
+				<Time level="4" ma="850" name="Cryogenian" color="fece7a" />
+				<Time level="4" ma="635" name="Ediacaran" color="ffd886" />
+			</Time>
+		</Time>
+	</Time>
+	<Time level="0" ma="542">
+		<Time level="1" ma="542" name="Phanerozoic" color="90d7ee">
+			<Time level="2" ma="542" name="Paleozoic" color="9dc2a6">
+				<Time level="4" ma="542" name="Cambrian" color="94ac6f">
+					<Time level="6" ma="542" name="Terreneuvian" color="a0b987">
+						<Time level="8" ma="542" name="Fortunian" color="acbd90" />
+						<Time level="8" ma="528" name="Stage 2" color="b6c299" dotted="true" />
+					</Time>
+					<Time level="6" ma="521" name="Series 2" color="abc593" dashed="true">
+						<Time level="8" ma="521" name="Stage 3" color="b7c99e" dashed="true" />
+						<Time level="8" ma="515" name="Stage 4" color="c1cfa8" dashed="true" />
+					</Time>
+					<Time level="6" ma="510" name="Series 3" color="b7d19f">
+						<Time level="8" ma="510" name="Stage 5" color="c3d6ac" />
+						<Time level="8" ma="506.5" name="Drumian" color="c1d7b3" />
+						<Time level="8" ma="503" name="Guzhangian" color="cdddbd" />
+					</Time>
+					<Time level="6" ma="499" name="Furongian" color="c4ddae">
+						<Time level="8" ma="499" name="Paibian" color="cde6c0" />
+						<Time level="8" ma="496" name="Jiangshanian" color="e3eece" />
+						<Time level="8" ma="492" name="Stage 10" color="eef5db">
+							<Time level="9" ma="492" name="10-a" />
+							<Time level="9" ma="489.5" name="10-b" dotted="true" />
+						</Time>
+					</Time>
+				</Time>
+				<Time level="4" ma="488.3" name="Ordovician" color="15977f">
+					<Time level="6" ma="488.3" name="Early" color="1c9f7f">
+						<Time level="8" ma="488.3" name="Tremadocian" color="16aa93" />
+						<Time level="8" ma="478.6" name="Floian" color="1baf9c" />
+					</Time>
+					<Time level="6" ma="471.8" name="Middle" color="41b493">
+						<Time level="8" ma="471.8" name="Dapingian" color="6dc0aa" />
+						<Time level="8" ma="468.1" name="Darriwilian" color="7dc6b4" />
+					</Time>
+					<Time level="6" ma="460.9" name="Late" color="8dc9ab">
+						<Time level="8" ma="460.9" name="Sandbian" color="9ecfab" />
+						<Time level="8" ma="455.8" name="Katian" color="a8d4b6" />
+						<Time level="8" ma="445.6" name="Hirnantian" color="b5dcc1" />
+					</Time>
+				</Time>
+				<Time level="4" ma="443.7" name="Silurian" color="b4dcb5">
+					<Time level="6" ma="443.7" name="Llandovery" color="97d5c9">
+						<Time level="8" ma="443.7" name="Rhuddanian" color="b3dccb" />
+						<Time level="8" ma="439.0" name="Aeronian" color="c1e2d6" dashed="true" />
+						<Time level="8" ma="436.0" name="Telychian" color="cbe8e0" />
+					</Time>
+					<Time level="6" ma="428.2" name="Wenlock" color="b0ded3" dashed="true">
+						<Time level="8" ma="428.2" name="Sheinwoodian" color="cbe6d6" dashed="true" />
+						<Time level="8" ma="426.2" name="Homerian" color="d7ece0" dashed="true" />
+					</Time>
+					<Time level="6" ma="422.9" name="Ludlow" color="bde4dc" dashed="true">
+						<Time level="8" ma="422.9" name="Gorstian" color="d7eeeb" dashed="true" />
+						<Time level="8" ma="421.3" name="Ludfordian" color="e1f1eb" dashed="true" />
+					</Time>
+					<Time level="6" ma="418.7" name="Pridoli" color="e4f3e7" dashed="true"/>
+				</Time>
+				<Time level="4" ma="416" name="Devonian" color="d4a151">
+					<Time level="6" ma="416" name="Early" color="e6b46e">
+						<Time level="8" ma="416.0" name="Lochkovian" color="eac276" />
+						<Time level="8" ma="411.2" name="Pragian" color="eccc84" />
+						<Time level="8" ma="407.0" name="Emsian" color="edd591" />
+					</Time>
+					<Time level="6" ma="397.5" name="Middle" color="f5cf83">
+						<Time level="8" ma="397.5" name="Eifelian" color="f6d992" />
+						<Time level="8" ma="391.8" name="Givetian" color="f6e3a0" />
+					</Time>
+					<Time level="6" ma="385.3" name="Late" color="f5e6b7">
+						<Time level="8" ma="385.3" name="Frasnian" color="f6f0c5" />
+						<Time level="8" ma="374.5" name="Famennian" color="f6f2d7" />
+					</Time>
+				</Time>
+				<Time level="4" ma="359.2" name="Carboniferous" color="70afb0" dashed="true">
+					<Time level="5" ma="359.2" name="Mississippian" color="a0b987">
+						<Time level="6" ma="359.2" name="Early Mississippian" color="88b28b" dashed="true">
+							<Time level="8" ma="359.2" name="Tournaisian" color="a0b987" dashed="true" />
+						</Time>
+						<Time level="6" ma="345.3" name="Middle Mississippian" color="a1ba8b">
+							<Time level="8" ma="345.3" name="Visean" color="b9c086" />
+						</Time>
+						<Time level="6" ma="328.3" name="Late Mississippian" color="b9c089" dashed="true">
+							<Time level="8" ma="328.3" name="Serpukhovian" color="cdc886" dashed="true" />
+						</Time>
+					</Time>
+					<Time level="5" ma="318.1" name="Pennsylvanian" color="99c4c7">
+						<Time level="6" ma="318.1" name="Early Pennsylvanian" color="8cc0c7">
+							<Time level="8" ma="318.1" name="Bashkirian" color="a7cacb" />
+						</Time>
+						<Time level="6" ma="311.7" name="Middle Pennsylvanian" color="a7c8c8" dashed="true">
+							<Time level="8" ma="311.7" name="Moscovian" color="c1d3cd" dashed="true" />
+						</Time>
+						<Time level="6" ma="307.2" name="Late Pennsylvanian" color="bfd0c9">
+							<Time level="8" ma="307.2" name="Kasimovian" color="cad9d7" />
+							<Time level="8" ma="303.4" name="Gzhelian" color="d5ddd7" />
+						</Time>
+					</Time>
+				</Time>
+				<Time level="4" ma="299" name="Permian" color="ef4028">
+					<Time level="6" ma="299" name="Cisuralian" color="e5765d">
+						<Time level="8" ma="299.0" name="Asselian" color="df7f67" />
+						<Time level="8" ma="294.6" name="Sakmarian" color="e08c74" />
+						<Time level="8" ma="284.4" name="Artinskian" color="e39682" />
+						<Time level="8" ma="275.6" name="Kungurian" color="e4a08f" />
+					</Time>
+					<Time level="6" ma="270.6" name="Guadalupian" color="f68e76">
+						<Time level="8" ma="270.6" name="Roadian" color="f49b81" />
+						<Time level="8" ma="268.0" name="Wordian" color="f5a68f" />
+						<Time level="8" ma="265.8" name="Capitanian" color="f7b09b" />
+					</Time>
+					<Time level="6" ma="260.4" name="Lopingian" color="f9b4a2">
+						<Time level="8" ma="260.4" name="Wuchiapingian" color="fbc7b6" />
+						<Time level="8" ma="253.8" name="Changhsingian" color="fad0c4" />
+					</Time>
+				</Time>
+			</Time>
+			<Time level="2" ma="251" name="Mesozoic" color="4bc6e1">
+				<Time level="4" ma="251" name="Triassic" color="934d96">
+					<Time level="6" ma="251" name="Early" color="973c97">
+						<Time level="8" ma="251" name="Induan" color="a967aa">
+							<Time level="9" ma="251" name="u. Griesbachian (Gangetian)" />
+							<Time level="9" ma="250.1" name="Dienerian" dotted="true" />
+						</Time>
+						<Time level="8" ma="249.5" name="Olenekian" color="b271b0" dashed="true">
+							<Time level="9" ma="249.5" name="Smithian" dashed="true" />
+							<Time level="9" ma="247.9" name="Spathian" dotted="true" />
+						</Time>
+					</Time>
+					<Time level="6" ma="245.9" name="Middle" color="ba87b7">
+						<Time level="8" ma="245.9" name="Anisian" color="c492bd" dashed="true">
+							<Time level="9" ma="245.9" name="Aegean" dashed="true" />
+							<Time level="9" ma="245.1" name="Bithynian" dotted="true" />
+							<Time level="9" ma="243.4" name="Pelsonian" dotted="true" />
+							<Time level="9" ma="241.7" name="Illyrian" dotted="true" />
+						</Time>
+						<Time level="8" ma="237" name="Ladinian" color="d0a0c7">
+							<Time level="9" ma="237" name="Fassanian" />
+							<Time level="9" ma="233.3" name="Longobardian" dotted="true" />
+						</Time>
+					</Time>
+					<Time level="6" ma="228.7" name="Late" color="c6a7cc" dashed="true">
+						<Time level="8" ma="228.7" name="Carnian" color="d0b4d3" dashed="true">
+							<Time level="9" ma="228.7" name="Julian" dashed="true" />
+							<Time level="9" ma="222.7" name="Tuvalian" />
+						</Time>
+						<Time level="8" ma="216.5" name="Norian" color="dac0da" dashed="true">
+							<Time level="9" ma="216.5" name="Lacian" dotted="true" />
+							<Time level="9" ma="211.3" name="Alaunian" dotted="true" />
+							<Time level="9" ma="207.6" name="Sevatian" dotted="true" />
+						</Time>
+						<Time level="8" ma="203.6" name="Rhaetian" color="f3e2ef" dashed="true" />
+					</Time>
+				</Time>
+				<Time level="4" ma="199.6" name="Jurassic" color="0eb1df" dashed="true">
+					<Time level="6" ma="199.6" name="Early" color="14b0e4" dashed="true">
+						<Time level="8" ma="199.6" name="Hettangian" color="28b6e6" dashed="true" />
+						<Time level="8" ma="196.5" name="Sinemurian" color="60c1eb">
+							<Time level="9" ma="196.5" name="Early" />
+							<Time level="9" ma="193.3" name="Late" />
+						</Time>
+						<Time level="8" ma="189.6" name="Pliensbachian" color="86caed">
+							<Time level="9" ma="189.6" name="Early - Carixian" />
+							<Time level="9" ma="187.0" name="Late - Domerian" />
+						</Time>
+						<Time level="8" ma="183" name="Toarcian" color="a3d5f1">
+							<Time level="9" ma="183" name="Early" />
+							<Time level="9" ma="181.2" name="Middle" />
+							<Time level="9" ma="180.5" name="Late" />
+						</Time>
+					</Time>
+					<Time level="6" ma="175.6" name="Middle" color="86d1ea">
+						<Time level="8" ma="175.6" name="Aalenian" color="a4dbee">
+							<Time level="9" ma="175.6" name="Early" />
+							<Time level="9" ma="174.7" name="Middle" />
+							<Time level="9" ma="172.5" name="Late" />
+						</Time>
+						<Time level="8" ma="171.6" name="Bajocian" color="b2e0f0">
+							<Time level="9" ma="171.6" name="Early" />
+							<Time level="9" ma="169.6" name="Late" />
+						</Time>
+						<Time level="8" ma="167.7" name="Bathonian" color="bee4f1">
+							<Time level="9" ma="167.7" name="Early" />
+							<Time level="9" ma="166.9" name="Middle" />
+							<Time level="9" ma="165.7" name="Late" />
+						</Time>
+						<Time level="8" ma="164.7" name="Callovian" color="c9eaf3">
+							<Time level="9" ma="164.7" name="Early" />
+							<Time level="9" ma="163.2" name="Middle" />
+							<Time level="9" ma="162.5" name="Late" />
+						</Time>
+					</Time>
+					<Time level="6" ma="161.2" name="Late" color="bde6f9">
+						<Time level="8" ma="161.2" name="Oxfordian" color="c9eaf9">
+							<Time level="9" ma="161.2" name="Early" />
+							<Time level="9" ma="159.6" name="Middle" />
+							<Time level="9" ma="157.4" name="Late" />
+						</Time>
+						<Time level="8" ma="155.6" name="Kimmeridgian" color="d5eefb">
+							<Time level="9" ma="155.6" name="Early" />
+							<Time level="9" ma="153.1" name="Late" />
+						</Time>
+						<Time level="8" ma="150.8" name="Tithonian" color="e1f3fc">
+							<Time level="9" ma="150.8" name="Early" />
+							<Time level="9" ma="147.2" name="Late" />
+						</Time>
+					</Time>
+				</Time>
+				<Time level="4" ma="145.5" name="Cretaceous" color="81c450" dashed="true">
+					<Time level="6" ma="145.5" name="Early" color="a1c96b" dashed="true">
+						<Time level="8" ma="145.5" name="Berriasian" color="a0ca76">
+							<Time level="9" ma="145.5" name="Early" />
+							<Time level="9" ma="142.3" name="Late" />
+						</Time>
+						<Time level="8" ma="140.2" name="Valanginian" color="abcf82">
+							<Time level="9" ma="140.2" name="Early" />
+							<Time level="9" ma="136.8" name="Late" />
+						</Time>
+						<Time level="8" ma="133.9" name="Hauterivian" color="b9d78e">
+							<Time level="9" ma="133.9" name="Early" />
+							<Time level="9" ma="132.1" name="Late" />
+						</Time>
+						<Time level="8" ma="130" name="Barremian" color="c5dc99">
+							<Time level="9" ma="130" name="Early" />
+							<Time level="9" ma="128.3" name="Late" />
+						</Time>
+						<Time level="8" ma="125" name="Aptian" color="cfe1a6">
+							<Time level="9" ma="125" name="Early - Bedoulian" />
+							<Time level="9" ma="121" name="Middle - Gargasian" />
+							<Time level="9" ma="115" name="Late - Clansayesian" />
+						</Time>
+						<Time level="8" ma="112" name="Albian" color="d9e7b0" dashed="true">
+							<Time level="9" ma="112" name="Early" dashed="true" />
+							<Time level="9" ma="108.8" name="Middle" />
+							<Time level="9" ma="106.4" name="Late" />
+						</Time>
+					</Time>
+					<Time level="6" ma="99.6" name="Late" color="bcd15f">
+						<Time level="8" ma="99.6" name="Cenomanian" color="c6d76a">
+							<Time level="9" ma="99.6" name="Early" />
+							<Time level="9" ma="96" name="Middle" />
+							<Time level="9" ma="94.8" name="Late" />
+						</Time>
+						<Time level="8" ma="93.6" name="Turonian" color="d2de76">
+							<Time level="9" ma="93.6" name="Early" />
+							<Time level="9" ma="92.1" name="Middle" />
+							<Time level="9" ma="90.5" name="Late" />
+						</Time>
+						<Time level="8" ma="88.6" name="Coniacian" color="dde383" dashed="true">
+							<Time level="9" ma="88.6" name="Early" dashed="true" />
+							<Time level="9" ma="87" name="Late" />
+						</Time>
+						<Time level="8" ma="85.8" name="Santonian" color="e6e88e" dashed="true">
+							<Time level="9" ma="85.8" name="Early" dashed="true" />
+							<Time level="9" ma="84.9" name="Middle" />
+							<Time level="9" ma="84" name="Late" />
+						</Time>
+						<Time level="8" ma="83.5" name="Campanian" color="eeee9b">
+							<Time level="9" ma="83.5" name="Early" />
+							<Time level="9" ma="80.6" name="Middle" />
+							<Time level="9" ma="76.4" name="Late" />
+						</Time>
+						<Time level="8" ma="70.6" name="Maastrichtian" color="f8f4a7">
+							<Time level="9" ma="70.6" name="Early" />
+							<Time level="9" ma="69.2" name="Late" />
+						</Time>
+					</Time>
+				</Time>
+			</Time>
+			<Time level="2" ma="65.5" name="Cenozoic" color="f6ed09">
+				<Time level="3" ma="65.5" name="Tertiary">
+					<Time level="4" ma="65.5" name="Paleogene" color="f89a56">
+						<Time level="6" ma="65.5" name="Paleocene" color="f8b97b">
+							<Time level="7" ma="65.5" name="Early">
+								<Time level="8" ma="65.5" name="Danian" color="fac27d" />
+							</Time>
+							<Time level="7" ma="61.04" name="Middle">
+								<Time level="8" ma="61.04" name="Selandian" color="fccb80" />
+							</Time>
+							<Time level="7" ma="58.74" name="Late">
+								<Time level="8" ma="58.74" name="Thanetian" color="fccc96" />
+							</Time>
+						</Time>
+						<Time level="6" ma="55.81" name="Eocene" color="fac387">
+							<Time level="7" ma="55.81" name="Early">
+								<Time level="8" ma="55.81" name="Ypresian" color="f7b98e" />
+							</Time>
+							<Time level="7" ma="47.82" name="Middle">
+								<Time level="8" ma="47.82" name="Lutetian" color="fbc59c" />
+								<Time level="8" ma="40.44" name="Bartonian" color="fbcdaa" />
+							</Time>
+							<Time level="7" ma="37.24" name="Late">
+								<Time level="8" ma="37.24" name="Priabonian" color="fcd7b7" dashed="true" />
+							</Time>
+						</Time>
+						<Time level="6" ma="33.88" name="Oligocene" color="fccd96">
+							<Time level="7" ma="33.88" name="Early">
+								<Time level="8" ma="33.88" name="Rupelian" color="fde0b1" />
+							</Time>
+							<Time level="7" ma="28.45" name="Late" dashed="true">
+								<Time level="8" ma="28.45" name="Chattian" color="ffebc2" dashed="true" />
+							</Time>
+						</Time>
+					</Time>
+					<Time level="4" ma="23.03" name="Neogene" color="ffdd00">
+						<Time level="6" ma="23.03" name="Miocene" color="fff100">
+							<Time level="7" ma="23.03" name="Early">
+								<Time level="8" ma="23.03" name="Aquitanian" color="faef44" />
+								<Time level="8" ma="20.43" name="Burdigalian" color="fbf158" />
+							</Time>
+							<Time level="7" ma="15.97" name="Middle">
+								<Time level="8" ma="15.97" name="Langhian" color="faf267" />
+								<Time level="8" ma="13.82" name="Serravallian" color="faf376" />
+							</Time>
+							<Time level="7" ma="11.608" name="Late">
+								<Time level="8" ma="11.608" name="Tortonian" color="fff100" />
+								<Time level="8" ma="7.246" name="Messinian" color="fff78f" />
+							</Time>
+						</Time>
+						<Time level="6" ma="5.333" name="Pliocene" color="fff9ad">
+							<Time level="7" ma="5.333" name="Early">
+								<Time level="8" ma="5.333" name="Zanclean" color="fffac2" />
+							</Time>
+							<Time level="7" ma="3.6" name="Late">
+								<Time level="8" ma="3.6" name="Piacenzian" color="fffbcd" />
+							</Time>
+						</Time>
+					</Time>
+				</Time>
+				<Time level="3" ma="2.588" name="Quaternary">
+					<Time level="4" ma="2.588" name="Quaternary" color="fff799">
+						<Time level="6" ma="2.588" name="Pleistocene" color="fff0be">
+							<Time level="7" ma="2.588" name="Early">
+								<Time level="8" ma="2.588" name="Gelasian" color="fffcd6" />
+								<Time level="8" ma="1.806" name="Calabrian" color="fff9ad" />
+							</Time>
+							<Time level="7" ma="0.781" name="Late &amp; Middle" dashed="true">
+								<Time level="8" ma="0.781" name="Ionian" color="fff1d0" dashed="true" />
+								<Time level="8" ma="0.126" name="Tarantian" color="fef2d9" dashed="true" />
+							</Time>
+						</Time>
+						<Time level="6" ma="0.0118" name="Holocene" color="fef7ed" />
+					</Time>
+				</Time>
+			</Time>
+		</Time>
+	</Time>
+</Timescale>

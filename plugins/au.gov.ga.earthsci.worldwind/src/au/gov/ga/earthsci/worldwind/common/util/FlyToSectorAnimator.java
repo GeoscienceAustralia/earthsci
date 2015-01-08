@@ -19,10 +19,11 @@ import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import java.awt.Rectangle;
+
+import au.gov.ga.earthsci.worldwind.common.view.orbit.FlyToOrbitViewAnimator;
 
 /**
  * Helper class to create an {@link OrbitView} animator that flies to a given

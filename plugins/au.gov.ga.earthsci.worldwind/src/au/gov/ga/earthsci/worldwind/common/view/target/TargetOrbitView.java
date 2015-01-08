@@ -43,7 +43,7 @@ public class TargetOrbitView extends BaseOrbitView implements ITargetView
 	protected boolean targetMode = false;
 	protected boolean prioritizeFarClipping = true;
 
-	protected static final double MINIMUM_NEAR_DISTANCE = 20;
+	protected static final double MINIMUM_NEAR_DISTANCE = 1;
 	protected static final double MAXIMUM_FAR_NEAR_RATIO = 10000;
 	protected static final double MAXIMUM_NEAR_FAR_RATIO = 100000;
 

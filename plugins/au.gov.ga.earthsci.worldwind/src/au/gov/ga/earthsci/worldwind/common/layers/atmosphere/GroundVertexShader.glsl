@@ -96,4 +96,5 @@ void main(void)
 	gl_FrontSecondaryColor.rgb = v3Attenuate * mieMultiplier;
 
 	gl_Position = ftransform();
+	gl_ClipVertex = gl_ModelViewMatrix * gl_Vertex;
 }

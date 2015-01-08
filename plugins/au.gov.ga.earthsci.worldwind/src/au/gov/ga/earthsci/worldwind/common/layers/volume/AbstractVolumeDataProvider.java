@@ -154,6 +154,24 @@ public abstract class AbstractVolumeDataProvider extends AbstractDataProvider<Vo
 	}
 
 	@Override
+	public double getSliceElevationPercent(double slice)
+	{
+		return slice / Math.max(zSize - 1, 1);
+	}
+
+	@Override
+	public double getElevationPercentSlice(double elevationPercent)
+	{
+		return elevationPercent * Math.max(zSize - 1, 1);
+	}
+
+	@Override
+	public int getZSubsamples()
+	{
+		return 1;
+	}
+
+	@Override
 	public float getValue(int x, int y, int z)
 	{
 		if (reverseX)
@@ -236,7 +254,7 @@ public abstract class AbstractVolumeDataProvider extends AbstractDataProvider<Vo
 	}
 
 	@Override
-	public TopBottomFastShape createLongitudeCurtain(int x)
+	public TopBottomFastShape createXCurtain(int x)
 	{
 		List<Position> positions = new ArrayList<Position>();
 		float[] textureCoordinateBuffer = new float[ySize * 4];
@@ -262,7 +280,7 @@ public abstract class AbstractVolumeDataProvider extends AbstractDataProvider<Vo
 	}
 
 	@Override
-	public TopBottomFastShape createLatitudeCurtain(int y)
+	public TopBottomFastShape createYCurtain(int y)
 	{
 		List<Position> positions = new ArrayList<Position>();
 		float[] textureCoordinateBuffer = new float[xSize * 4];

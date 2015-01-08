@@ -43,8 +43,8 @@ import au.gov.ga.earthsci.worldwind.common.util.io.FloatReader.FloatFormat;
 public class GocadVoxetReader implements GocadReader<FastShape>
 {
 	// Constant indices for array access
-	private static final int U=0,V=1,W=2;
-	
+	private static final int U = 0, V = 1, W = 2;
+
 	public final static String HEADER_REGEX = "(?i).*voxet.*";
 
 	private String name;
@@ -186,7 +186,7 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 	public FastShape end(URL context)
 	{
 		validateProperties();
-		
+
 		if (axisN == null)
 		{
 			if (axisD == null || axisMIN == null || axisMAX == null)
@@ -200,9 +200,9 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 			axisN = new Vec4(nx, ny, nz);
 		}
 
-		Vec4 axisUStride = axisU.multiply3((axisMAX.x - axisMIN.x) / (axisN.x - 1));
-		Vec4 axisVStride = axisV.multiply3((axisMAX.y - axisMIN.y) / (axisN.y - 1));
-		Vec4 axisWStride = axisW.multiply3((axisMAX.z - axisMIN.z) / (axisN.z - 1));
+		Vec4 axisUStride = axisU.multiply3((axisMAX.x - axisMIN.x) / (axisN.x > 1 ? axisN.x - 1 : 1));
+		Vec4 axisVStride = axisV.multiply3((axisMAX.y - axisMIN.y) / (axisN.y > 1 ? axisN.y - 1 : 1));
+		Vec4 axisWStride = axisW.multiply3((axisMAX.z - axisMIN.z) / (axisN.z > 1 ? axisN.z - 1 : 1));
 
 		Vec4 origin = calculateAxisOrigin();
 		int[] strides = calculateStrides();
@@ -213,16 +213,16 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 		float[] values = createValuesArray(samples);
 
 		double[] transformed = new double[3];
-		float[] minmax = new float[]{Float.MAX_VALUE, -Float.MAX_VALUE};
+		float[] minmax = new float[] { Float.MAX_VALUE, -Float.MAX_VALUE };
 		try
 		{
 			URL fileUrl = new URL(context, file);
 			InputStream is = new BufferedInputStream(fileUrl.openStream());
 			FloatReader reader = FloatReader.Builder.newFloatReaderForStream(is)
-													.withOffset(offset)
-													.withFormat(FloatFormat.valueOf(etype))
-													.withByteOrder(parameters.getByteOrder())
-													.build();
+					.withOffset(offset)
+					.withFormat(FloatFormat.valueOf(etype))
+					.withByteOrder(parameters.getByteOrder())
+					.build();
 			float[] floatValue = new float[1];
 			if (parameters.isBilinearMinification())
 			{
@@ -279,10 +279,10 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 							if (!Float.isNaN(value))
 							{
 								Vec4 uAdd = axisUStride.multiply3(u);
-								Vec4 point = new Vec4(origin.x + uAdd.x + vAdd.x + wAdd.x, 
-												  	  origin.y + uAdd.y + vAdd.y + wAdd.y, 
-												  	  origin.z + uAdd.z + vAdd.z + wAdd.z);
-								
+								Vec4 point = new Vec4(origin.x + uAdd.x + vAdd.x + wAdd.x,
+										origin.y + uAdd.y + vAdd.y + wAdd.y,
+										origin.z + uAdd.z + vAdd.z + wAdd.z);
+
 								positions.add(createPositionFromPoint(transformed, point));
 							}
 						}
@@ -309,10 +309,10 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 								minmax[1] = Math.max(minmax[1], floatValue[0]);
 
 								Vec4 uAdd = axisUStride.multiply3(u);
-								Vec4 point = new Vec4(origin.x + uAdd.x + vAdd.x + wAdd.x, 
-											      	  origin.y + uAdd.y + vAdd.y + wAdd.y, 
-											      	  origin.z + uAdd.z + vAdd.z + wAdd.z);
-								
+								Vec4 point = new Vec4(origin.x + uAdd.x + vAdd.x + wAdd.x,
+										origin.y + uAdd.y + vAdd.y + wAdd.y,
+										origin.z + uAdd.z + vAdd.z + wAdd.z);
+
 								positions.add(createPositionFromPoint(transformed, point));
 							}
 							valueIndex++;
@@ -346,7 +346,7 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 		return shape;
 	}
 
-	
+
 	private void normaliseValues(float[] values, float[] minmax, int[] count)
 	{
 		//divide all the sums by the number of values summed (basically, average)
@@ -365,7 +365,8 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 	{
 		if (parameters.getCoordinateTransformation() != null)
 		{
-			parameters.getCoordinateTransformation().TransformPoint(transformed, point.x, point.y, zPositive ? point.z : -point.z);
+			parameters.getCoordinateTransformation().TransformPoint(transformed, point.x, point.y,
+					zPositive ? point.z : -point.z);
 			return Position.fromDegrees(transformed[1], transformed[0], transformed[2]);
 		}
 		else
@@ -376,11 +377,11 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 
 	private void validateProperties()
 	{
-		Validate.isTrue(esize == 4, "Unsupported PROP_ESIZE value: " + esize); //TODO support "1"?
+		//Validate.isTrue(esize == 4, "Unsupported PROP_ESIZE value: " + esize); //TODO support "1"?
 		Validate.isTrue("RAW".equals(format), "Unsupported PROP_FORMAT value: " + format); //TODO support "SEGY"?
 		Validate.isTrue("IBM".equals(etype) || "IEEE".equals(etype), "Unsupported PROP_ETYPE value: " + etype);
 	}
-	
+
 	private FloatBuffer createColorBuffer(float[] values, float[] minmax)
 	{
 		FloatBuffer colorBuffer = FloatBuffer.allocate(values.length * 4);
@@ -391,11 +392,12 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 			{
 				if (parameters.getColorMap() != null)
 				{
-					Color color = parameters.getColorMap().calculateColorNotingIsValuesPercentages(value, minmax[0], minmax[1]);
+					Color color = parameters.getColorMap().calculateColorNotingIsValuesPercentages(value,
+							minmax[0], minmax[1]);
 					colorBuffer.put(color.getRed() / 255f)
-							   .put(color.getGreen() / 255f)
-							   .put(color.getBlue() / 255f)
-							   .put(color.getAlpha() / 255f);
+							.put(color.getGreen() / 255f)
+							.put(color.getBlue() / 255f)
+							.put(color.getAlpha() / 255f);
 				}
 				else
 				{
@@ -403,9 +405,9 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 					HSLColor hsl = new HSLColor((1f - percent) * 300f, 100f, 50f);
 					Color color = hsl.getRGB();
 					colorBuffer.put(color.getRed() / 255f)
-							   .put(color.getGreen() / 255f)
-							   .put(color.getBlue() / 255f)
-							   .put(255);
+							.put(color.getGreen() / 255f)
+							.put(color.getBlue() / 255f)
+							.put(255);
 				}
 			}
 		}
@@ -427,7 +429,7 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 		int uSamples = (int) (1 + (axisN[U] - 1) / strides[U]);
 		int vSamples = (int) (1 + (axisN[V] - 1) / strides[V]);
 		int wSamples = (int) (1 + (axisN[W] - 1) / strides[W]);
-		int[] samples = new int[]{uSamples, vSamples, wSamples};
+		int[] samples = new int[] { uSamples, vSamples, wSamples };
 		return samples;
 	}
 
@@ -436,7 +438,7 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 		long nu = Math.round(axisN.x);
 		long nv = Math.round(axisN.y);
 		long nw = Math.round(axisN.z);
-		long[] axisN = new long[]{nu, nv, nw};
+		long[] axisN = new long[] { nu, nv, nw };
 		return axisN;
 	}
 
@@ -453,7 +455,7 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 			strideV = Math.max(1, Math.round((float) axisN.y / samplesPerAxis));
 			strideW = Math.max(1, Math.round((float) axisN.z / samplesPerAxis));
 		}
-		int[] strides = new int[]{strideU, strideV, strideW};
+		int[] strides = new int[] { strideU, strideV, strideW };
 		return strides;
 	}
 
@@ -462,10 +464,10 @@ public class GocadVoxetReader implements GocadReader<FastShape>
 		Vec4 axisUOrigin = axisU.multiply3(axisMIN.x);
 		Vec4 axisVOrigin = axisV.multiply3(axisMIN.y);
 		Vec4 axisWOrigin = axisW.multiply3(axisMIN.z);
-		Vec4 origin = new Vec4(axisO.x + axisUOrigin.x + axisVOrigin.x + axisWOrigin.x, 
-							   axisO.y + axisUOrigin.y + axisVOrigin.y + axisWOrigin.y, 
-							   axisO.z + axisUOrigin.z + axisVOrigin.z + axisWOrigin.z);
+		Vec4 origin = new Vec4(axisO.x + axisUOrigin.x + axisVOrigin.x + axisWOrigin.x,
+				axisO.y + axisUOrigin.y + axisVOrigin.y + axisWOrigin.y,
+				axisO.z + axisUOrigin.z + axisVOrigin.z + axisWOrigin.z);
 		return origin;
 	}
-	
+
 }

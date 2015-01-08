@@ -526,6 +526,6 @@ public class CurtainTextureTile extends CurtainTile
 	@Override
 	public String toString()
 	{
-		return this.getSegment().toString();
+		return super.toString() + " " + this.getSegment().toString();
 	}
 }

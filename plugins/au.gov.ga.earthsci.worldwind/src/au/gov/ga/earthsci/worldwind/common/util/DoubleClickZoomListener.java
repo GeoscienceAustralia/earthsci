@@ -21,11 +21,12 @@ import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.pick.PickedObject;
 import gov.nasa.worldwind.pick.PickedObjectList;
-import gov.nasa.worldwind.view.orbit.FlyToOrbitViewAnimator;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import au.gov.ga.earthsci.worldwind.common.view.orbit.FlyToOrbitViewAnimator;
 
 /**
  * Mouse listener that, when the user double-clicks, zooms in by 3x, centering

@@ -228,6 +228,7 @@ public class HistoricEarthquakesLayer extends AbstractLayer implements Loader
 			boolean isZipFile = url.toExternalForm().toLowerCase().endsWith(".zip");
 			if (isZipFile)
 			{
+				@SuppressWarnings("resource") //closed by the ObjectInputStream below
 				ZipInputStream zis = new ZipInputStream(is);
 				zis.getNextEntry(); //move to first entry
 				is = zis;
@@ -256,7 +257,10 @@ public class HistoricEarthquakesLayer extends AbstractLayer implements Loader
 				//so just read it anyway. This will throw an EOFException at some stage (when there's no data
 				//left), this means we are at the end of the file. Ignore it.
 			}
-			ois.close();
+			finally
+			{
+				ois.close();
+			}
 
 			loadEarthquakes(quakes);
 		}
