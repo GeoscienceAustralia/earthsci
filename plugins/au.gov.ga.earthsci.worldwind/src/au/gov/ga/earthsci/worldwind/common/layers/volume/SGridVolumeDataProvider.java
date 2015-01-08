@@ -844,6 +844,10 @@ public class SGridVolumeDataProvider extends AbstractVolumeDataProvider
 	@Override
 	public double getSliceElevationPercent(double slice)
 	{
+		if (getDepth() == 0)
+		{
+			return 0;
+		}
 		if (zValues != null)
 		{
 			int floor = Math.max(0, Math.min(zSize - 1, (int) Math.floor(slice)));
