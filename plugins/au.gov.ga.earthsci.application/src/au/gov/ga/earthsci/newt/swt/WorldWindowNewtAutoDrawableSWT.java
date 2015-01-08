@@ -17,7 +17,12 @@ package au.gov.ga.earthsci.newt.swt;
 
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.WorldWindowGLAutoDrawable;
+import gov.nasa.worldwind.event.PositionEvent;
+import gov.nasa.worldwind.event.RenderingEvent;
+import gov.nasa.worldwind.event.SelectEvent;
 import gov.nasa.worldwind.render.ScreenCreditController;
+
+import java.util.EventObject;
 
 import javax.media.opengl.GLAutoDrawable;
 
@@ -36,6 +41,7 @@ import com.jogamp.newt.opengl.GLWindow;
  */
 public class WorldWindowNewtAutoDrawableSWT extends WorldWindowGLAutoDrawable implements WorldWindowNewtDrawableSWT
 {
+	protected GLWindow window;
 	protected Control swtControl;
 
 	@Deprecated
@@ -49,6 +55,7 @@ public class WorldWindowNewtAutoDrawableSWT extends WorldWindowGLAutoDrawable im
 	public void initDrawable(GLWindow window, Control swtControl)
 	{
 		super.initDrawable(window);
+		this.window = window;
 		this.swtControl = swtControl;
 	}
 
@@ -76,5 +83,39 @@ public class WorldWindowNewtAutoDrawableSWT extends WorldWindowGLAutoDrawable im
 	protected void initializeCreditsController()
 	{
 		new ScreenCreditController((WorldWindow) swtControl);
+	}
+
+	@Override
+	protected void callRenderingListeners(RenderingEvent event)
+	{
+		//event source should be the world window, not the drawable
+		super.callRenderingListeners(new RenderingEvent(translateEventSource(event), event.getStage()));
+	}
+
+	@Override
+	protected void callPositionListeners(PositionEvent event)
+	{
+		//event source should be the world window, not the drawable
+		super.callPositionListeners(new PositionEvent(translateEventSource(event), event.getScreenPoint(), event
+				.getPreviousPosition(), event.getPosition()));
+	}
+
+	@Override
+	protected void callSelectListeners(SelectEvent event)
+	{
+		//event source should be the world window, not the drawable
+		Object source = translateEventSource(event);
+		SelectEvent newEvent =
+				event.getMouseEvent() != null ? new SelectEvent(source, event.getEventAction(), event.getMouseEvent(),
+						event.getObjects()) : event.getPickRectangle() != null ? new SelectEvent(source,
+						event.getEventAction(), event.getPickRectangle(), event.getObjects()) : new SelectEvent(source,
+						event.getEventAction(), event.getPickPoint(), event.getObjects());
+		super.callSelectListeners(newEvent);
+	}
+
+	protected Object translateEventSource(EventObject event)
+	{
+		//event source should be the world window, not the drawable
+		return event.getSource() == window ? swtControl : event.getSource();
 	}
 }
