@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: jovr Natives for Windows x86_64
+Bundle-SymbolicName: org.saintandreas.jovr.win32.x86_64
+Bundle-Version: 0.4.4.1
+Bundle-Vendor: jherico
+Bundle-NativeCode: OculusVR.dll;
+ osname="win32"; processor="x86_64"
+Fragment-Host: org.saintandreas.jovr;bundle-version="0.4.4"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-BundleShape: dir
+Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=x86_64))

@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: jovr
+Bundle-SymbolicName: org.saintandreas.jovr
+Bundle-Version: 0.4.4.1
+Bundle-Vendor: jherico
+Bundle-ClassPath: jovr-0.4.4.1-SNAPSHOT.jar,
+ .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: com.oculusvr.capi
+Require-Bundle: com.sun.jna;bundle-version="4.1.0",
+ org.eclipse.osgi
+Bundle-Activator: org.saintandreas.jovr.Activator
+Bundle-ActivationPolicy: lazy

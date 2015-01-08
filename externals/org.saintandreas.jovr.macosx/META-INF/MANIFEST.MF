@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: jovr Natives for MacOSX
+Bundle-SymbolicName: org.saintandreas.jovr.macosx
+Bundle-Version: 0.4.4.1
+Bundle-Vendor: jherico
+Bundle-NativeCode: libOculusVR.dylib;
+ osname="macosx"
+Fragment-Host: org.saintandreas.jovr;bundle-version="0.4.4"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-BundleShape: dir
+Eclipse-PlatformFilter: (osgi.os=macosx)
