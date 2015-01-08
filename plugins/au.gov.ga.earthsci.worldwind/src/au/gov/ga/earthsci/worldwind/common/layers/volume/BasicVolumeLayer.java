@@ -992,7 +992,7 @@ public class BasicVolumeLayer extends AbstractLayer implements VolumeLayer, Wire
 		if (event.getMouseEvent() != null)
 		{
 			int onmask = MouseEvent.SHIFT_DOWN_MASK | MouseEvent.CTRL_DOWN_MASK | MouseEvent.ALT_DOWN_MASK;
-			if ((event.getMouseEvent().getModifiersEx() & onmask) == onmask)
+			if ((event.getMouseEvent().getModifiersEx() & onmask) != 0)
 			{
 				return;
 			}
