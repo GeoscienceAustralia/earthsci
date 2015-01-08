@@ -131,6 +131,10 @@ public class LayerFactory extends BasicLayerFactory
 			}
 			catch (ClassNotFoundException e)
 			{
+				if (className.startsWith("au.gov.ga.worldwind"))
+				{
+					className = className.replace("au.gov.ga.worldwind", "au.gov.ga.earthsci.worldwind");
+				}
 			}
 
 			domElement.setAttribute("className", className);
