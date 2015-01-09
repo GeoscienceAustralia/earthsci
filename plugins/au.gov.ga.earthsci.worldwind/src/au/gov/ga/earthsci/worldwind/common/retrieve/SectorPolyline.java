@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.retrieve;
 
+import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.render.DrawContext;
@@ -34,6 +35,7 @@ public class SectorPolyline extends Polyline
 
 	public SectorPolyline(Sector sector)
 	{
+		sector = sanitizeSector(sector);
 		this.sector = sector;
 
 		List<LatLon> latlons = new ArrayList<LatLon>();
@@ -47,6 +49,14 @@ public class SectorPolyline extends Polyline
 		setPathType(LINEAR);
 	}
 
+	private static Sector sanitizeSector(Sector sector)
+	{
+		return new Sector(Angle.fromDegreesLatitude(sector.getMinLatitude().degrees),
+				Angle.fromDegreesLatitude(sector.getMaxLatitude().degrees),
+				Angle.fromDegreesLongitude(sector.getMinLongitude().degrees),
+				Angle.fromDegreesLongitude(sector.getMaxLongitude().degrees));
+	}
+
 	@Override
 	public void render(DrawContext dc)
 	{
@@ -56,11 +66,17 @@ public class SectorPolyline extends Polyline
 		}
 		catch (NullPointerException e)
 		{
-			// catch bug in Position.interpolate
+			//catch bug in Position.interpolate
 			boolean followTerrain = isFollowTerrain();
-			setFollowTerrain(false);
-			super.render(dc);
-			setFollowTerrain(followTerrain);
+			try
+			{
+				setFollowTerrain(false);
+				super.render(dc);
+			}
+			finally
+			{
+				setFollowTerrain(followTerrain);
+			}
 		}
 	}
 
