@@ -38,6 +38,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.di.Focus;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.UIEvents;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
@@ -86,6 +87,7 @@ import au.gov.ga.earthsci.discovery.IDiscoveryResultHandler;
 import au.gov.ga.earthsci.discovery.IDiscoveryResultLabelProvider;
 import au.gov.ga.earthsci.discovery.IDiscoveryService;
 import au.gov.ga.earthsci.discovery.ui.handler.ServicesHandler;
+import au.gov.ga.earthsci.discovery.ui.handler.ViewOnGlobeHandler;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.retrieve.SectorPolyline;
@@ -130,10 +132,14 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 	private RenderableLayer mouseOverLayer;
 	private GlobeSceneController mouseOverSceneController;
 
+	private IDiscoveryResult selectedResult;
+	private boolean viewOnGlobe;
+
 	@PostConstruct
-	public void init(final Composite parent)
+	public void init(final Composite parent, final MPart part)
 	{
 		context.set(DiscoveryPart.class, this);
+		viewOnGlobe = ViewOnGlobeHandler.isViewOnGlobe(part);
 
 		parent.setLayout(new GridLayout(1, true));
 
@@ -230,6 +236,12 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 	private void setFocus()
 	{
 		searchText.setFocus();
+	}
+
+	public void setViewOnGlobe(boolean viewOnGlobe)
+	{
+		this.viewOnGlobe = viewOnGlobe;
+		resultSelected(selectedResult);
 	}
 
 	private void performSearch()
@@ -439,8 +451,9 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 
 	private void resultSelected(IDiscoveryResult result)
 	{
+		this.selectedResult = result;
 		selectionService.setSelection(result);
-		displaySectorAndZoom(result, true);
+		displaySectorAndZoom(viewOnGlobe ? result : null, true);
 	}
 
 	private void resultDefaultSelected(IDiscoveryResult result)
