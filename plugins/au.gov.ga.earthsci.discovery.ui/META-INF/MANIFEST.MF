@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.e4.core.contexts,
  org.eclipse.e4.ui.workbench,
  org.eclipse.e4.ui.di,
- gov.nasa.worldwind
+ gov.nasa.worldwind,
+ org.eclipse.e4.core.services
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.annotation;version="1.1.0"

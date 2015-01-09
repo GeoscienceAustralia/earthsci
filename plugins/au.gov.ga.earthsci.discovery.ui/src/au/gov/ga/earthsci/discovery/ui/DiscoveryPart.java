@@ -36,8 +36,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.e4.ui.workbench.UIEvents;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -108,6 +110,9 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 	@Inject
 	private ESelectionService selectionService;
 
+	@Inject
+	private IEventBroker eventBroker;
+
 	private Text searchText;
 	private Button searchButton;
 	private SashForm resultsSashForm;
@@ -128,6 +133,8 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 	@PostConstruct
 	public void init(final Composite parent)
 	{
+		context.set(DiscoveryPart.class, this);
+
 		parent.setLayout(new GridLayout(1, true));
 
 
@@ -234,32 +241,49 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 		currentDiscoveries.clear();
 		discoverySelected(null);
 
-		for (IDiscoveryService service : DiscoveryServiceManager.getServices())
+		if (searchText.getText().length() > 0)
 		{
-			if (service.isEnabled())
+			for (IDiscoveryService service : DiscoveryServiceManager.getServices())
 			{
-				DiscoveryParameters parameters = new DiscoveryParameters();
-				parameters.setQuery(searchText.getText());
-				IDiscovery discovery = service.createDiscovery(parameters);
-				if (discovery != null)
+				if (service.isEnabled())
 				{
-					currentDiscoveries.add(discovery);
-					discovery.addListener(DiscoveryPart.this);
-					discovery.start();
+					DiscoveryParameters parameters = new DiscoveryParameters();
+					parameters.setQuery(searchText.getText());
+					IDiscovery discovery = service.createDiscovery(parameters);
+					if (discovery != null)
+					{
+						currentDiscoveries.add(discovery);
+						discovery.addListener(DiscoveryPart.this);
+						discovery.start();
+					}
+				}
+			}
+
+			if (currentDiscoveries.isEmpty())
+			{
+				if (MessageDialog.openQuestion(shell, Messages.DiscoveryPart_NoServicesDialogTitle,
+						Messages.DiscoveryPart_NoServicesDialogMessage))
+				{
+					new ServicesHandler().execute(shell);
 				}
 			}
 		}
 
 		discoveriesViewer.setInput(currentDiscoveries);
+		resultSelected(null);
 
-		if (currentDiscoveries.isEmpty())
-		{
-			if (MessageDialog.openQuestion(shell, Messages.DiscoveryPart_NoServicesDialogTitle,
-					Messages.DiscoveryPart_NoServicesDialogMessage))
-			{
-				new ServicesHandler().execute(shell);
-			}
-		}
+		eventBroker.send(UIEvents.REQUEST_ENABLEMENT_UPDATE_TOPIC, UIEvents.ALL_ELEMENT_ID);
+	}
+
+	public boolean canClearResults()
+	{
+		return searchText.getText().length() > 0 || !currentDiscoveries.isEmpty();
+	}
+
+	public void clearResults()
+	{
+		searchText.setText(""); //$NON-NLS-1$
+		performSearch();
 	}
 
 	private void createResultsViewer()
