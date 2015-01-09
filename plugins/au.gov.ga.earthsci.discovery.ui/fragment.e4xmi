@@ -12,7 +12,7 @@
       <handlers xmi:id="_LWS9UMdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.servicesHandler" contributionURI="bundleclass://au.gov.ga.earthsci.discovery.ui/au.gov.ga.earthsci.discovery.ui.handler.ServicesHandler" command="_iZJ08MdkEeKLHJVniFVq1Q"/>
       <toolbar xmi:id="_ldtLEMdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.toolbar">
         <children xsi:type="menu:HandledToolItem" xmi:id="_Uf5dIJelEeSAbrrO8hg0cw" elementId="au.gov.ga.earthsci.discovery.ui.toolbar.clear" iconURI="platform:/plugin/au.gov.ga.earthsci.discovery.ui/icons/removeall.gif" tooltip="Clear results" command="_rrA44JelEeSAbrrO8hg0cw"/>
-        <children xsi:type="menu:HandledToolItem" xmi:id="_o77i0JetEeSAbrrO8hg0cw" elementId="au.gov.ga.earthsci.discovery.ui.toolbar.viewOnGlobe" iconURI="platform:/plugin/au.gov.ga.earthsci.discovery.ui/icons/glasses.gif" tooltip="View result sector on globe" selected="true" type="Check" command="_498N4JetEeSAbrrO8hg0cw"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_o77i0JetEeSAbrrO8hg0cw" elementId="au.gov.ga.earthsci.discovery.ui.toolbar.viewOnGlobe" iconURI="platform:/plugin/au.gov.ga.earthsci.discovery.ui/icons/glasses.gif" tooltip="View result extent on globe" selected="true" type="Check" command="_498N4JetEeSAbrrO8hg0cw"/>
         <children xsi:type="menu:ToolBarSeparator" xmi:id="_T7qHoJelEeSAbrrO8hg0cw" elementId="au.gov.ga.earthsci.discovery.ui.toolbarseparator.0"/>
         <children xsi:type="menu:HandledToolItem" xmi:id="_mH9B8MdkEeKLHJVniFVq1Q" elementId="au.gov.ga.earthsci.discovery.ui.toolbar.servers" label="" iconURI="platform:/plugin/au.gov.ga.earthsci.discovery.ui/icons/server.gif" tooltip="Services" command="_iZJ08MdkEeKLHJVniFVq1Q"/>
       </toolbar>
