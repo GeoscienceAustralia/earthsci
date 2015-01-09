@@ -69,7 +69,7 @@ public class CameraPropertyPersister implements IBookmarkPropertyCreator, IBookm
 		View view = WorldWindowRegistry.INSTANCE.getActiveView();
 		if (view == null)
 		{
-			return null;
+			return new CameraProperty(Position.ZERO, Position.ZERO, Vec4.ZERO);
 		}
 
 		Position eyePosition = view.getCurrentEyePosition();

@@ -136,6 +136,10 @@ public class BookmarksPreferencesPage extends FieldEditorPreferencePage
 		cachedProperties = new TreeMap<String, IBookmarkProperty>();
 		for (IBookmarkProperty p : BookmarkPropertyFactory.createKnownProperties())
 		{
+			if (p == null)
+			{
+				continue;
+			}
 			cachedProperties.put(p.getType(), p);
 		}
 	}
