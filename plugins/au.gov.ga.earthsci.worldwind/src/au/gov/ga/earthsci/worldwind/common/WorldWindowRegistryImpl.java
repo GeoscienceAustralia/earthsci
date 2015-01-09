@@ -64,7 +64,7 @@ class WorldWindowRegistryImpl implements WorldWindowRegistry, RenderingListener,
 				stack.remove(worldWindow);
 			}
 			stack.add(worldWindow);
-			if (first == null)
+			if (getFirstRegistered() == null)
 			{
 				first = worldWindow;
 			}
@@ -115,7 +115,7 @@ class WorldWindowRegistryImpl implements WorldWindowRegistry, RenderingListener,
 	@Override
 	public WorldWindow getFirstRegistered()
 	{
-		return first;
+		return first == null || first.getContext() == null ? null : first;
 	}
 
 	@Override
