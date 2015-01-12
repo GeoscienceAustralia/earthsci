@@ -15,18 +15,30 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.globe.handlers;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
+
 import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.model.application.ui.menu.MMenuItem;
+import org.eclipse.e4.ui.model.application.ui.menu.MToolBar;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolItem;
+import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import au.gov.ga.earthsci.application.parts.globe.GlobePart;
 import au.gov.ga.earthsci.newt.swt.WorldWindowNewtCanvasSWT;
 
 /**
@@ -36,10 +48,38 @@ import au.gov.ga.earthsci.newt.swt.WorldWindowNewtCanvasSWT;
  */
 public class FullscreenHandler
 {
+	public final static String COMMAND_ID = "au.gov.ga.earthsci.application.command.fullscreen"; //$NON-NLS-1$
+
 	private Shell fullscreenShell;
+	private Composite fullscreenComposite;
 
 	@Execute
 	public void execute(final Composite parent, final MToolItem item)
+	{
+		toggleFullscreen(parent, item, null);
+	}
+
+	@Execute
+	public void execute(final Composite parent, final MMenuItem item, final MPart part, final EModelService service)
+	{
+		MToolBar toolbar = part.getToolbar();
+		MToolItem toolItem = (MToolItem) service.find(GlobePart.FULLSCREEN_ID, toolbar);
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice[] devices = ge.getScreenDevices();
+		GraphicsDevice device = null;
+		for (GraphicsDevice d : devices)
+		{
+			if (item.getTags().contains(d.getIDstring()))
+			{
+				device = d;
+				break;
+			}
+		}
+		toggleFullscreen(parent, toolItem, device);
+
+	}
+
+	public void toggleFullscreen(final Composite parent, final MToolItem item, final GraphicsDevice device)
 	{
 		//already fullscreen, dispose of fullscreen shell
 		if (fullscreenShell != null)
@@ -62,8 +102,25 @@ public class FullscreenHandler
 		{
 			fullscreenShell = new Shell(parent.getDisplay(), SWT.NONE);
 			fullscreenShell.setLayout(new FillLayout());
+			if (device != null)
+			{
+				Rectangle bounds = device.getDefaultConfiguration().getBounds();
+				fullscreenShell.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			}
 			final WorldWindowNewtCanvasSWT wwdFinal = wwd;
 			wwd.setParent(fullscreenShell);
+
+			fullscreenComposite = new Composite(parent, SWT.NONE);
+			fullscreenComposite.setLayout(new GridLayout());
+			fullscreenComposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+			Label fullscreenLabel = new Label(fullscreenComposite, SWT.NONE);
+			fullscreenLabel.setText("Globe is fullscreen");
+			GridData gridData = new GridData();
+			gridData.verticalAlignment = SWT.CENTER;
+			gridData.horizontalAlignment = SWT.CENTER;
+			gridData.grabExcessVerticalSpace = true;
+			gridData.grabExcessHorizontalSpace = true;
+			fullscreenLabel.setLayoutData(gridData);
 
 			parent.addDisposeListener(new DisposeListener()
 			{
@@ -81,12 +138,14 @@ public class FullscreenHandler
 				@Override
 				public void widgetDisposed(DisposeEvent e)
 				{
+					fullscreenComposite.dispose();
 					if (!parent.isDisposed())
 					{
 						wwdFinal.setParent(parent);
 						parent.layout();
 					}
 					fullscreenShell = null;
+					fullscreenComposite = null;
 					item.setSelected(false);
 				}
 			});
@@ -105,6 +164,7 @@ public class FullscreenHandler
 			fullscreenShell.setVisible(true);
 			fullscreenShell.setFullScreen(true);
 			item.setSelected(true);
+			parent.layout();
 		}
 	}
 }

@@ -22,6 +22,8 @@ import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.WorldMapLayer;
 import gov.nasa.worldwindx.examples.ClickAndGoSelectListener;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +40,9 @@ import org.eclipse.e4.ui.model.application.commands.MParameter;
 import org.eclipse.e4.ui.model.application.ui.MUIElement;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.menu.ItemType;
+import org.eclipse.e4.ui.model.application.ui.menu.MHandledMenuItem;
 import org.eclipse.e4.ui.model.application.ui.menu.MHandledToolItem;
+import org.eclipse.e4.ui.model.application.ui.menu.MMenu;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenuFactory;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolBar;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolBarSeparator;
@@ -48,6 +52,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.gov.ga.earthsci.application.parts.globe.handlers.FullscreenHandler;
 import au.gov.ga.earthsci.application.parts.globe.handlers.ToggleHudHandler;
 import au.gov.ga.earthsci.layer.hud.HudLayer;
 import au.gov.ga.earthsci.layer.hud.HudLayers;
@@ -70,8 +75,8 @@ import au.gov.ga.earthsci.worldwind.common.view.orbit.DoubleClickZoomListener;
 public class GlobePart
 {
 	private static final Logger logger = LoggerFactory.getLogger(GlobePart.class);
-	public final static String TOOLBAR_ID = "au.gov.ga.earthsci.application.part.globe.toolbar"; //$NON-NLS-1$
 	public final static String HUD_ELEMENT_TAG = "au.gov.ga.earthsci.core.hudLayers"; //$NON-NLS-1$
+	public final static String FULLSCREEN_ID = "au.gov.ga.earthsci.application.globe.toolitems.fullscreen"; //$NON-NLS-1$
 
 	@Inject
 	private ITreeModel model;
@@ -101,6 +106,7 @@ public class GlobePart
 		Configuration.setValue(AVKey.WORLD_WINDOW_CLASS_NAME, WorldWindowNewtAutoDrawableSWT.class.getName());
 		Configuration.setValue(AVKey.SCENE_CONTROLLER_CLASS_NAME, GlobeSceneController.class.getName());
 		Configuration.setValue(AVKey.VIEW_INPUT_HANDLER_CLASS_NAME, ProviderOrbitViewInputHandler.class.getName());
+		//Configuration.setValue(AVKeyMore.DELEGATE_VIEW_DELEGATE_CLASS_NAME, RiftViewDistortionDelegate.class.getName());
 		worldWindow = new WorldWindowNewtCanvasSWT(parent, SWT.NONE, WorldWindowRegistry.INSTANCE.getFirstRegistered());
 		sceneController = (GlobeSceneController) worldWindow.getSceneController();
 		worldWindow.setModel(model);
@@ -112,6 +118,7 @@ public class GlobePart
 		WorldWindowRegistry.INSTANCE.register(worldWindow);
 
 		createHudLayers();
+		createFullscreenMenu(parent);
 
 		sceneController.getPreLayers().add(new FogMaskLayer());
 		sceneController.getPostLayers().add(new FPSLayer());
@@ -210,6 +217,38 @@ public class GlobePart
 						logger.error("Error creating hud layer", e); //$NON-NLS-1$
 					}
 				}
+			}
+		}
+	}
+
+	protected void createFullscreenMenu(final Composite parent)
+	{
+		MToolBar toolbar = part.getToolbar();
+		MHandledToolItem toolItem = (MHandledToolItem) service.find(FULLSCREEN_ID, toolbar);
+		MMenu menu = toolItem.getMenu();
+		menu.getChildren().clear();
+
+		MCommand command = null;
+		for (MCommand c : application.getCommands())
+		{
+			if (FullscreenHandler.COMMAND_ID.equals(c.getElementId()))
+			{
+				command = c;
+				break;
+			}
+		}
+
+		if (command != null)
+		{
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			GraphicsDevice[] devices = ge.getScreenDevices();
+			for (GraphicsDevice device : devices)
+			{
+				MHandledMenuItem menuItem = MMenuFactory.INSTANCE.createHandledMenuItem();
+				menuItem.setLabel(device.getIDstring());
+				menuItem.setCommand(command);
+				menuItem.getTags().add(device.getIDstring());
+				menu.getChildren().add(menuItem);
 			}
 		}
 	}
