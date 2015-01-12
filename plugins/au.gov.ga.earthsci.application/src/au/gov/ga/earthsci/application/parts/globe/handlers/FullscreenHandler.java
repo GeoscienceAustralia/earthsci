@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.application.parts.globe.GlobePart;
+import au.gov.ga.earthsci.application.parts.globe.Messages;
 import au.gov.ga.earthsci.newt.swt.WorldWindowNewtCanvasSWT;
 
 /**
@@ -114,7 +115,7 @@ public class FullscreenHandler
 			fullscreenComposite.setLayout(new GridLayout());
 			fullscreenComposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 			Label fullscreenLabel = new Label(fullscreenComposite, SWT.NONE);
-			fullscreenLabel.setText("Globe is fullscreen");
+			fullscreenLabel.setText(Messages.FullscreenHandler_FullscreenLabel);
 			GridData gridData = new GridData();
 			gridData.verticalAlignment = SWT.CENTER;
 			gridData.horizontalAlignment = SWT.CENTER;

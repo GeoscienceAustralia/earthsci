@@ -24,7 +24,14 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.application.parts.globe.messages"; //$NON-NLS-1$
+	public static String FullscreenHandler_FullscreenLabel;
+	public static String GlobeExaggerationToolControl_ToolTip0;
 	public static String GlobePart_ToggleHUDTooltip;
+	public static String GotoCoordinateDialog_EnterCoordinates;
+	public static String GotoCoordinateDialog_GotoCoordinates;
+	public static String GotoCoordinateDialog_InvalidCoordinates;
+	public static String GotoCoordinateDialog_Supports;
+	public static String GotoCoordinateDialog_TypeCoordinates;
 	static
 	{
 		// initialize resource bundle

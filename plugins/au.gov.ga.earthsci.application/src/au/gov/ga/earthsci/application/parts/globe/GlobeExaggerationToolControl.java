@@ -98,7 +98,7 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 		scale.setMinimum(exaggerationToScale(0));
 		scale.setMaximum(exaggerationToScale(SCALE_MAX));
 		scale.setLocation(0, (SCALE_HEIGHT - size.y) / 2);
-		scale.setToolTipText("Set vertical exaggeration");
+		scale.setToolTipText(Messages.GlobeExaggerationToolControl_ToolTip0);
 		scale.setIncrement(INCREMENTS_PER_POWER / 100);
 
 		scale.setSelection(exaggerationToScale(VerticalExaggerationService.INSTANCE.get()));

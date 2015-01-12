@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import au.gov.ga.earthsci.application.parts.globe.Messages;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 import au.gov.ga.earthsci.worldwind.common.view.orbit.FlyToOrbitViewAnimator;
 
@@ -60,7 +61,7 @@ public class GotoCoordinateDialog extends Dialog
 	protected void configureShell(Shell shell)
 	{
 		super.configureShell(shell);
-		shell.setText("Go to coordinates");
+		shell.setText(Messages.GotoCoordinateDialog_GotoCoordinates);
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class GotoCoordinateDialog extends Dialog
 
 		Label label = new Label(composite, SWT.NONE);
 		String prefix = "     "; //$NON-NLS-1$
-		String supported = "Supports Lat/Lon, DMS, UTM, and MGRS formats" + ":\n"; //$NON-NLS-2$
+		String supported = Messages.GotoCoordinateDialog_Supports + ":\n"; //$NON-NLS-1$
 		supported += prefix + "-27.0 133.5\n"; //$NON-NLS-1$
 		supported += prefix + "27.0S 133.5E\n"; //$NON-NLS-1$
 		supported += prefix + "-27\u00B00'0\" 133\u00B030'0\"\n"; //$NON-NLS-1$
@@ -81,11 +82,11 @@ public class GotoCoordinateDialog extends Dialog
 		label.setText(supported);
 
 		label = new Label(composite, SWT.NONE);
-		label.setText("Enter coordinates" + ':');
+		label.setText(Messages.GotoCoordinateDialog_EnterCoordinates + ':');
 
 		final Text text = new Text(composite, SWT.BORDER);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-		text.setToolTipText("Type coordinates and press Enter");
+		text.setToolTipText(Messages.GotoCoordinateDialog_TypeCoordinates);
 
 		final Label resultLabel = new Label(composite, SWT.NONE);
 		resultLabel.setText(" "); //$NON-NLS-1$
@@ -106,7 +107,7 @@ public class GotoCoordinateDialog extends Dialog
 					latlon = stringToLatLon(text.getText());
 					if (latlon == null)
 					{
-						resultLabel.setText("Invalid coordinates");
+						resultLabel.setText(Messages.GotoCoordinateDialog_InvalidCoordinates);
 					}
 					else
 					{
