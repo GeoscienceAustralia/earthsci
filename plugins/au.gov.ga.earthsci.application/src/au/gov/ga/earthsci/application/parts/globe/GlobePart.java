@@ -98,6 +98,9 @@ public class GlobePart
 	private MPart part;
 
 	@Inject
+	private ViewLinker linker;
+
+	@Inject
 	public void init(final Composite parent)
 	{
 		context.set(GlobePart.class, this);
@@ -110,7 +113,9 @@ public class GlobePart
 		worldWindow = new WorldWindowNewtCanvasSWT(parent, SWT.NONE, WorldWindowRegistry.INSTANCE.getFirstRegistered());
 		sceneController = (GlobeSceneController) worldWindow.getSceneController();
 		worldWindow.setModel(model);
-		worldWindow.setView(new DelegateOrbitView());
+		DelegateOrbitView view = new DelegateOrbitView();
+		worldWindow.setView(view);
+		linker.link(view);
 		worldWindow.addSelectListener(new ClickAndGoSelectListener(worldWindow, WorldMapLayer.class));
 		context.set(WorldWindow.class, worldWindow);
 		worldWindow.getInputHandler().addMouseListener(new DoubleClickZoomListener(worldWindow, 5000d));
@@ -127,6 +132,7 @@ public class GlobePart
 	@PreDestroy
 	private void preDestroy()
 	{
+		linker.unlink(worldWindow.getView());
 		WorldWindowRegistry.INSTANCE.unregister(worldWindow);
 	}
 
