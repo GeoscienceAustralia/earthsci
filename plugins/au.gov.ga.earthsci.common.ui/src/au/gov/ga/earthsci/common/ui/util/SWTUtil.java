@@ -52,8 +52,23 @@ public class SWTUtil
 	 */
 	public static Color darker(Color color)
 	{
-		return new Color(color.getDevice(), (int) (color.getRed() * RGB_VALUE_MULTIPLIER),
-				(int) (color.getGreen() * RGB_VALUE_MULTIPLIER), (int) (color.getBlue() * RGB_VALUE_MULTIPLIER));
+		return darker(color, RGB_VALUE_MULTIPLIER);
+	}
+
+	/**
+	 * Create a color with a darker hue than the given color.
+	 * 
+	 * @param color
+	 * @param multiplier
+	 *            Darken multiplier
+	 * @return Darker color
+	 */
+	public static Color darker(Color color, float multiplier)
+	{
+		return new Color(color.getDevice(),
+				(int) (color.getRed() * multiplier),
+				(int) (color.getGreen() * multiplier),
+				(int) (color.getBlue() * multiplier));
 	}
 
 	/**
@@ -64,9 +79,23 @@ public class SWTUtil
 	 */
 	public static Color lighter(Color color)
 	{
-		return new Color(color.getDevice(), Math.max(2, Math.min((int) (color.getRed() / RGB_VALUE_MULTIPLIER), 255)),
-				Math.max(2, Math.min((int) (color.getGreen() / RGB_VALUE_MULTIPLIER), 255)), Math.max(2,
-						Math.min((int) (color.getBlue() / RGB_VALUE_MULTIPLIER), 255)));
+		return lighter(color, RGB_VALUE_MULTIPLIER);
+	}
+
+	/**
+	 * Create a color with a lighter hue than the given color.
+	 * 
+	 * @param color
+	 * @param multiplier
+	 *            Lighten multiplier
+	 * @return Lighter color
+	 */
+	public static Color lighter(Color color, float multiplier)
+	{
+		return new Color(color.getDevice(),
+				(int) (255 - (255 - color.getRed()) * multiplier),
+				(int) (255 - (255 - color.getGreen()) * multiplier),
+				(int) (255 - (255 - color.getBlue()) * multiplier));
 	}
 
 	/**
