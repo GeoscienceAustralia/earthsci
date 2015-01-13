@@ -62,6 +62,8 @@ import au.gov.ga.earthsci.layer.tree.FolderNode;
 import au.gov.ga.earthsci.layer.tree.ILayerNode;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
 import au.gov.ga.earthsci.layer.tree.LayerNode;
+import au.gov.ga.earthsci.worldwind.common.util.Loader;
+import au.gov.ga.earthsci.worldwind.common.util.Loader.LoadingListener;
 
 /**
  * Label provider for the layer tree.
@@ -214,18 +216,10 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 			}
 			else if (caller instanceof Layer || caller instanceof ElevationModel)
 			{
-				WeakReference<ILayerNode> weak = delegate.weakLayerToNodeMap.get(caller);
-				if (weak == null)
+				ILayerNode node = delegate.getNodeForLayerOrElevationModel(caller);
+				if (node != null)
 				{
-					weak = delegate.weakElevationModelToNodeMap.get(caller);
-				}
-				if (weak != null)
-				{
-					ILayerNode node = weak.get();
-					if (node != null)
-					{
-						elements.add(node);
-					}
+					elements.add(node);
 				}
 			}
 		}
@@ -333,7 +327,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 	};
 
 	private static class LayerTreeLabelProviderDelegate extends LabelProvider implements ILabelDecorator,
-			IStyledLabelProvider, IFireableLabelProvider
+			IStyledLabelProvider, IFireableLabelProvider, LoadingListener
 	{
 		private WeakHashMap<Layer, WeakReference<ILayerNode>> weakLayerToNodeMap =
 				new WeakHashMap<Layer, WeakReference<ILayerNode>>();
@@ -344,9 +338,11 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 
 		private boolean disposed = false;
 
+		private final Font subscriptBoldFont;
 		private final Font subscriptFont;
 		private final TextStyler informationStyler = new TextStyler();
 		private final TextStyler legendStyler = new TextStyler();
+		private final TextStyler grayStyler = new TextStyler();
 
 		public LayerTreeLabelProviderDelegate()
 		{
@@ -356,11 +352,23 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 				fontData.setStyle(SWT.BOLD);
 				fontData.setHeight((int) (fontData.getHeight() * 0.8));
 			}
-			subscriptFont = new Font(Display.getDefault(), fontDatas);
+			subscriptBoldFont = new Font(Display.getDefault(), fontDatas);
 			informationStyler.style.foreground = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
-			informationStyler.style.font = subscriptFont;
+			informationStyler.style.font = subscriptBoldFont;
 			legendStyler.style.foreground = Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN);
-			legendStyler.style.font = subscriptFont;
+			legendStyler.style.font = subscriptBoldFont;
+
+			fontDatas = Display.getDefault().getSystemFont().getFontData();
+			for (FontData fontData : fontDatas)
+			{
+				fontData.setHeight((int) (fontData.getHeight() * 0.9));
+			}
+			subscriptFont = new Font(Display.getDefault(), fontDatas);
+			Color listColor = Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND);
+			Color gray = SWTUtil.shouldDarken(listColor) ? SWTUtil.darker(listColor, 0.6f) :
+					SWTUtil.lighter(listColor, 0.6f);
+			grayStyler.style.foreground = gray;
+			grayStyler.style.font = subscriptFont;
 		}
 
 		@Override
@@ -377,6 +385,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 
 			super.dispose();
 			iconLoader.dispose();
+			subscriptBoldFont.dispose();
 			subscriptFont.dispose();
 		}
 
@@ -390,6 +399,16 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 
 				if (layer != null)
 				{
+					if (!weakLayerToNodeMap.containsKey(layer))
+					{
+						//new layer, check if it's a Loader
+						if (layer instanceof Loader)
+						{
+							Loader loader = (Loader) layer;
+							loader.addLoadingListener(this);
+						}
+					}
+
 					WeakReference<ILayerNode> layerNodeReference = new WeakReference<ILayerNode>(layerNode);
 					weakLayerToNodeMap.put(layer, layerNodeReference);
 					if (layer instanceof IElevationModelLayer)
@@ -399,13 +418,7 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 					}
 				}
 
-				String label = layerNode.getLabelOrName();
-				if (layerNode.getOpacity() < 1)
-				{
-					label += String.format(" (%d%%)", (int) (layerNode.getOpacity() * 100)); //$NON-NLS-1$
-				}
-
-				return label;
+				return layerNode.getLabelOrName();
 			}
 			else if (element instanceof FolderNode)
 			{
@@ -426,6 +439,20 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 					addElevationModelToMap(child, layerNodeReference);
 				}
 			}
+		}
+
+		public ILayerNode getNodeForLayerOrElevationModel(Object key)
+		{
+			WeakReference<ILayerNode> weak = weakLayerToNodeMap.get(key);
+			if (weak == null)
+			{
+				weak = weakElevationModelToNodeMap.get(key);
+			}
+			if (weak == null)
+			{
+				return null;
+			}
+			return weak.get();
 		}
 
 		@Override
@@ -452,15 +479,31 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 			StyledString string = new StyledString(getText(element));
 			if (element instanceof ILayerTreeNode)
 			{
-				ILayerTreeNode layerNode = (ILayerTreeNode) element;
-				if (layerNode.getInformationURL() != null || layerNode.getLegendURL() != null)
+				ILayerTreeNode node = (ILayerTreeNode) element;
+
+				if (node instanceof ILayerNode)
+				{
+					ILayerNode layerNode = (ILayerNode) node;
+					if (layerNode.getOpacity() < 1)
+					{
+						string.append(String.format(" (%d%%)", (int) (layerNode.getOpacity() * 100)), grayStyler); //$NON-NLS-1$
+					}
+
+					Layer layer = layerNode.getGrandLayer();
+					if (layer instanceof Loader && ((Loader) layer).isLoading())
+					{
+						string.append(" " + Messages.LayerTreeLabelProvider_Loading, grayStyler); //$NON-NLS-1$
+					}
+				}
+
+				if (node.getInformationURL() != null || node.getLegendURL() != null)
 				{
 					string.append(" "); //$NON-NLS-1$
-					if (layerNode.getInformationURL() != null)
+					if (node.getInformationURL() != null)
 					{
 						string.append(" i", informationStyler); //$NON-NLS-1$
 					}
-					if (layerNode.getLegendURL() != null)
+					if (node.getLegendURL() != null)
 					{
 						string.append(" L", legendStyler); //$NON-NLS-1$
 					}
@@ -473,6 +516,16 @@ public class LayerTreeLabelProvider extends DecoratingStyledCellLabelProvider im
 		public void fireLabelProviderChanged(LabelProviderChangedEvent event)
 		{
 			super.fireLabelProviderChanged(event);
+		}
+
+		@Override
+		public void loadingStateChanged(Loader loader, boolean isLoading)
+		{
+			ILayerNode node = getNodeForLayerOrElevationModel(loader);
+			if (node != null)
+			{
+				fireLabelProviderChanged(new LabelProviderChangedEvent(this, node));
+			}
 		}
 	}
 }
