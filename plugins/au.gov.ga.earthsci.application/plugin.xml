@@ -103,7 +103,7 @@
             id="au.gov.ga.earthsci.application.hud.scalebar">
       </hud>
       <hud
-            class="gov.nasa.worldwind.layers.WorldMapLayer"
+            class="au.gov.ga.earthsci.worldwind.common.layers.worldmap.WorldMapLayer"
             enabled="true"
             icon="icons/world.gif"
             id="au.gov.ga.earthsci.application.hud.worldmap">
