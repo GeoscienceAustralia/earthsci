@@ -28,14 +28,16 @@ import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.application.parts.globe.GlobePart;
@@ -114,14 +116,22 @@ public class FullscreenHandler
 			fullscreenComposite = new Composite(parent, SWT.NONE);
 			fullscreenComposite.setLayout(new GridLayout());
 			fullscreenComposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-			Label fullscreenLabel = new Label(fullscreenComposite, SWT.NONE);
-			fullscreenLabel.setText(Messages.FullscreenHandler_FullscreenLabel);
+			Button fullscreenButton = new Button(fullscreenComposite, SWT.PUSH);
+			fullscreenButton.setText(Messages.FullscreenHandler_FullscreenLabel);
 			GridData gridData = new GridData();
 			gridData.verticalAlignment = SWT.CENTER;
 			gridData.horizontalAlignment = SWT.CENTER;
 			gridData.grabExcessVerticalSpace = true;
 			gridData.grabExcessHorizontalSpace = true;
-			fullscreenLabel.setLayoutData(gridData);
+			fullscreenButton.setLayoutData(gridData);
+			fullscreenButton.addSelectionListener(new SelectionAdapter()
+			{
+				@Override
+				public void widgetSelected(SelectionEvent e)
+				{
+					fullscreenShell.dispose();
+				}
+			});
 
 			parent.addDisposeListener(new DisposeListener()
 			{
