@@ -29,6 +29,7 @@ import org.eclipse.e4.ui.workbench.modeling.EPartService;
 
 import au.gov.ga.earthsci.application.parts.legend.LegendPart;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.ui.Messages;
 
 /**
  * Handles layer node legend button selection.

@@ -26,6 +26,8 @@ public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.layer.ui.messages"; //$NON-NLS-1$
 	public static String LayerTreeLabelProvider_Loading;
+	public static String LegendHandler_PartLabel;
+	public static String NewFolderHandler_DefaultNewFolderName;
 	static
 	{
 		// initialize resource bundle

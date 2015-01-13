@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 
 import au.gov.ga.earthsci.layer.tree.FolderNode;
 import au.gov.ga.earthsci.layer.tree.ILayerTreeNode;
+import au.gov.ga.earthsci.layer.ui.Messages;
 import au.gov.ga.earthsci.layer.worldwind.ITreeModel;
 
 /**
