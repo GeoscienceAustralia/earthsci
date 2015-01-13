@@ -101,7 +101,7 @@ public class FullscreenHandler
 
 		if (wwd != null)
 		{
-			fullscreenShell = new Shell(parent.getDisplay(), SWT.NONE);
+			fullscreenShell = new Shell(parent.getDisplay(), SWT.ON_TOP);
 			fullscreenShell.setLayout(new FillLayout());
 			if (device != null)
 			{
