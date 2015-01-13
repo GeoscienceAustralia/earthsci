@@ -237,7 +237,7 @@ public class KMLLayer extends RenderableLayer implements Loader, Hierarchical
 
 	protected void notifyLoadingListeners()
 	{
-		loadingListeners.notifyListeners(isLoading());
+		loadingListeners.notifyListeners(this, isLoading());
 	}
 
 	protected void notifyHierarchicalListeners(TreeNode node)

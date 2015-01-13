@@ -453,7 +453,7 @@ public class CrustLayer extends AbstractLayer implements Loader
 	{
 		for (int i = loadingListeners.size() - 1; i >= 0; i--)
 		{
-			loadingListeners.get(i).loadingStateChanged(isLoading());
+			loadingListeners.get(i).loadingStateChanged(this, isLoading());
 		}
 	}
 

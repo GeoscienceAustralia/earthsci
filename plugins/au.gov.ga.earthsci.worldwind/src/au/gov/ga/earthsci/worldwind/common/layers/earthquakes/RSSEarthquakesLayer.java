@@ -579,7 +579,7 @@ public class RSSEarthquakesLayer extends RenderableLayer implements Loader, Sele
 		for (int i = loadingListeners.size() - 1; i >= 0; i--)
 		{
 			LoadingListener listener = loadingListeners.get(i);
-			listener.loadingStateChanged(isLoading());
+			listener.loadingStateChanged(this, isLoading());
 		}
 	}
 

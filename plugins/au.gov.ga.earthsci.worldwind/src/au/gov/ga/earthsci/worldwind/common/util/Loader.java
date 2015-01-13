@@ -51,7 +51,7 @@ public interface Loader
 	 */
 	public static interface LoadingListener
 	{
-		void loadingStateChanged(boolean isLoading);
+		void loadingStateChanged(Loader loader, boolean isLoading);
 	}
 
 	/**
@@ -59,10 +59,10 @@ public interface Loader
 	 */
 	public static class LoadingListenerList extends ArrayList<LoadingListener>
 	{
-		public void notifyListeners(boolean isLoading)
+		public void notifyListeners(Loader loader, boolean isLoading)
 		{
 			for (int i = size() - 1; i >= 0; i--)
-				get(i).loadingStateChanged(isLoading);
+				get(i).loadingStateChanged(loader, isLoading);
 		}
 	}
 }

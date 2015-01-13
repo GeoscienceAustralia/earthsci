@@ -59,7 +59,7 @@ public abstract class AbstractDataProvider<L extends DataLayer> implements DataP
 				if (!WorldWind.getTaskService().isFull())
 				{
 					loading = true;
-					loadingListeners.notifyListeners(isLoading());
+					loadingListeners.notifyListeners(this, isLoading());
 					WorldWind.getTaskService().addTask(task);
 				}
 			}
@@ -195,7 +195,7 @@ public abstract class AbstractDataProvider<L extends DataLayer> implements DataP
 		synchronized (readLock)
 		{
 			loading = false;
-			loadingListeners.notifyListeners(isLoading());
+			loadingListeners.notifyListeners(this, isLoading());
 			reading = false;
 		}
 
