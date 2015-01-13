@@ -200,4 +200,20 @@ public class ExtendedDrawContext extends DrawContextDelegate implements Vertical
 			oldSurfaceGeomtry = null;
 		}
 	}
+
+	@Override
+	public final int getDrawableWidth()
+	{
+		//superclass uses getWidth() method which no longer exists in JOGL (see
+		//https://github.com/sgothel/jogl/commit/ebe980ad6ac40148bc84913d1ba1f7adf6200490)
+		return this.getGLDrawable().getSurfaceWidth();
+	}
+
+	@Override
+	public final int getDrawableHeight()
+	{
+		//superclass uses getHeight() method which no longer exists in JOGL (see
+		//https://github.com/sgothel/jogl/commit/ebe980ad6ac40148bc84913d1ba1f7adf6200490)
+		return this.getGLDrawable().getSurfaceHeight();
+	}
 }

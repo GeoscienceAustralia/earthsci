@@ -80,7 +80,7 @@ public class GLTestUtil
 		caps.setOnscreen(false);
 		caps.setPBuffer(true);
 		caps.setDoubleBuffered(false);
-		GLOffscreenAutoDrawable drawable = fact.createOffscreenAutoDrawable(null, caps, null, 100, 100, null);
+		GLOffscreenAutoDrawable drawable = fact.createOffscreenAutoDrawable(null, caps, null, 100, 100);
 		return drawable.getContext();
 	}
 }
