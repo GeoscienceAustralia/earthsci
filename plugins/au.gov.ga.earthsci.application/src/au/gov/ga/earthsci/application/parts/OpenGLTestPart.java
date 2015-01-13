@@ -44,7 +44,15 @@ public class OpenGLTestPart
 	{
 		GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 		final GLWindow glWindow = GLWindow.create(caps);
-		new NewtCanvasSWT(parent, SWT.NONE, glWindow);
+		new NewtCanvasSWT(parent, SWT.NONE, glWindow)
+		{
+			@Override
+			public void setBounds(int x, int y, int width, int height)
+			{
+				//do not allow a size of 0,0, because NEWT window becomes invisible (https://jogamp.org/bugzilla/show_bug.cgi?id=822)
+				super.setBounds(x, y, Math.max(1, width), Math.max(1, height));
+			}
+		};
 
 		glWindow.addGLEventListener(new MyGlEventListener());
 
