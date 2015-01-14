@@ -117,6 +117,7 @@ public class GlobePart
 		sceneController = (GlobeSceneController) worldWindow.getSceneController();
 		worldWindow.setModel(model);
 		DelegateOrbitView view = new DelegateOrbitView();
+		view.setPrioritizeFarClipping(false);
 		worldWindow.setView(view);
 		linker.link(view);
 		worldWindow.addSelectListener(new ClickAndGoSelectListener(worldWindow, WorldMapLayer.class));

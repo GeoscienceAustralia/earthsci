@@ -93,6 +93,10 @@
             class="au.gov.ga.earthsci.application.parts.globe.handlers.TargetModeSwitcher"
             priority="0">
       </inject>
+      <inject
+            class="au.gov.ga.earthsci.application.parts.globe.handlers.PrioritizeFarClippingSwitcher"
+            priority="0">
+      </inject>
    </extension>
    <extension
          point="au.gov.ga.earthsci.layer.hudLayers">
