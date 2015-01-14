@@ -32,7 +32,7 @@
 		<repository>
 			<id>e4</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/e4/downloads/drops/I20140706-2200/repository</url>
+			<url>http://download.eclipse.org/e4/downloads/drops/S-0.17-201501051100/repository</url>
 		</repository>
 		<repository>
 			<id>sapphire</id>
