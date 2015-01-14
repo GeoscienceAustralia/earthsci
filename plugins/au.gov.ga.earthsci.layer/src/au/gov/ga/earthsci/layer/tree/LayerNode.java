@@ -360,6 +360,10 @@ public class LayerNode extends AbstractLayerTreeNode implements ILayerNode
 	public void setEnabled(boolean enabled)
 	{
 		delegator.setEnabled(enabled);
+		if (enabled && getOpacity() <= 0.0)
+		{
+			setOpacity(1.0);
+		}
 	}
 
 	@Override
