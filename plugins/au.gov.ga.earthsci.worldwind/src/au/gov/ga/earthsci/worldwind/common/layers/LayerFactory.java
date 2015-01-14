@@ -24,6 +24,7 @@ import gov.nasa.worldwind.layers.SkyGradientLayer;
 import gov.nasa.worldwind.layers.StarsLayer;
 import gov.nasa.worldwind.layers.mercator.BasicMercatorTiledImageLayer;
 import gov.nasa.worldwind.ogc.OGCConstants;
+import gov.nasa.worldwind.util.WWUtil;
 import gov.nasa.worldwind.util.WWXML;
 
 import org.w3c.dom.Element;
@@ -138,6 +139,20 @@ public class LayerFactory extends BasicLayerFactory
 			}
 
 			domElement.setAttribute("className", className);
+
+			//try instantiate from this plugin, in case WorldWind plugin cannot find the class:
+			try
+			{
+				Class<?> c = Class.forName(className.trim());
+				Layer layer = (Layer) c.newInstance();
+				String actuate = WWXML.getText(domElement, "@actuate");
+				layer.setEnabled(WWUtil.isEmpty(actuate) || actuate.equals("onLoad"));
+				WWXML.invokePropertySetters(layer, domElement);
+				return layer;
+			}
+			catch (Exception e)
+			{
+			}
 		}
 
 		return super.createFromLayerDocument(domElement, params);
