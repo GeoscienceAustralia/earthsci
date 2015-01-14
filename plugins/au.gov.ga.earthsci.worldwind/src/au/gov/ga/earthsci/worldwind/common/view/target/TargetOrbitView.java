@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.view.target;
 
+import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Position;
@@ -123,6 +124,7 @@ public class TargetOrbitView extends BaseOrbitView implements ITargetView
 	public void setPrioritizeFarClipping(boolean prioritizeFarClipping)
 	{
 		this.prioritizeFarClipping = prioritizeFarClipping;
+		firePropertyChange(AVKey.VIEW, null, this);
 	}
 
 	@Override
