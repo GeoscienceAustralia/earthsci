@@ -220,6 +220,11 @@
             id="au.gov.ga.earthsci.application.logging"
             name="Logging">
       </page>
+      <page
+            class="au.gov.ga.earthsci.application.parts.globe.GlobePreferencePage"
+            id="au.gov.ga.earthsci.application.globe"
+            name="Globe">
+      </page>
    </extension>
    <extension
          point="au.gov.ga.earthsci.seeders">

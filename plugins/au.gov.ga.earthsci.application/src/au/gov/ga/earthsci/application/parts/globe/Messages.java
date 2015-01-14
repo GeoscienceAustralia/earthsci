@@ -27,6 +27,9 @@ public class Messages extends NLS
 	public static String FullscreenHandler_FullscreenLabel;
 	public static String GlobeExaggerationToolControl_ToolTip0;
 	public static String GlobePart_ToggleHUDTooltip;
+	public static String GlobePreferencePage_Description;
+	public static String GlobePreferencePage_FPS;
+	public static String GlobePreferencePage_Title;
 	public static String GotoCoordinateDialog_EnterCoordinates;
 	public static String GotoCoordinateDialog_GotoCoordinates;
 	public static String GotoCoordinateDialog_InvalidCoordinates;

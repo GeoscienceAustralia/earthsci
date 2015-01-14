@@ -33,6 +33,8 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.commands.MCommand;
 import org.eclipse.e4.ui.model.application.commands.MCommandsFactory;
@@ -87,6 +89,7 @@ public class GlobePart
 	private WorldWindow worldWindow;
 	private GlobeSceneController sceneController;
 	private final Map<String, Layer> hudLayers = new HashMap<String, Layer>();
+	private final FPSLayer fpsLayer = new FPSLayer();
 
 	@Inject
 	private EModelService service;
@@ -126,7 +129,8 @@ public class GlobePart
 		createFullscreenMenu(parent);
 
 		sceneController.getPreLayers().add(new FogMaskLayer());
-		sceneController.getPostLayers().add(new FPSLayer());
+		fpsLayer.setEnabled(false);
+		sceneController.getPostLayers().add(fpsLayer);
 	}
 
 	@PreDestroy
@@ -257,5 +261,13 @@ public class GlobePart
 				menu.getChildren().add(menuItem);
 			}
 		}
+	}
+
+	@Inject
+	@Optional
+	public void trackUserSettings(
+			@Preference(nodePath = GlobePreferencePage.QUALIFIER_ID, value = GlobePreferencePage.FPS_PREFERENCE_NAME) boolean fps)
+	{
+		fpsLayer.setEnabled(fps);
 	}
 }
