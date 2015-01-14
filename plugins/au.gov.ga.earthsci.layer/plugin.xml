@@ -153,6 +153,10 @@
             value="-20">
       </drawOrder>
       <drawOrder
+            class="gov.nasa.worldwind.layers.FogLayer"
+            value="-20">
+      </drawOrder>
+      <drawOrder
             class="au.gov.ga.earthsci.worldwind.common.layers.stars.InfiniteStarsLayer"
             value="-20">
       </drawOrder>
