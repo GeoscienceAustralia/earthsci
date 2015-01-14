@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.layer.ui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -105,8 +107,29 @@ public class LayerOpacityToolControl
 
 	private void setSelection(ILayerTreeNode[] selection)
 	{
+		if (this.selection != null)
+		{
+			for (ILayerTreeNode node : selection)
+			{
+				node.removePropertyChangeListener("opacity", opacityPropertyChangeListener); //$NON-NLS-1$
+			}
+		}
+
 		this.selection = selection;
 
+		if (this.selection != null)
+		{
+			for (ILayerTreeNode node : selection)
+			{
+				node.addPropertyChangeListener("opacity", opacityPropertyChangeListener); //$NON-NLS-1$
+			}
+		}
+
+		updateScale();
+	}
+
+	private void updateScale()
+	{
 		if (scale == null)
 		{
 			return;
@@ -150,4 +173,13 @@ public class LayerOpacityToolControl
 			}
 		}
 	}
+
+	private PropertyChangeListener opacityPropertyChangeListener = new PropertyChangeListener()
+	{
+		@Override
+		public void propertyChange(PropertyChangeEvent evt)
+		{
+			updateScale();
+		}
+	};
 }
