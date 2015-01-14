@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -230,6 +231,12 @@ public class DiscoveryPart implements IDiscoveryListener, PageListener
 				discoveryDefaultSelected(selection);
 			}
 		};
+	}
+
+	@PreDestroy
+	public void dispose()
+	{
+		displaySectorAndZoom(null, false);
 	}
 
 	@Focus
