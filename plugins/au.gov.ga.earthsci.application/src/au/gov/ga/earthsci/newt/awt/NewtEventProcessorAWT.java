@@ -98,11 +98,7 @@ public class NewtEventProcessorAWT extends NEWTEventFiFo implements com.jogamp.n
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-		//AWT doesn't raise click events after a drag, but NEWT does, so follow AWT behaviour.
-		if (!mouseDragged)
-		{
-			put(e);
-		}
+		//see mouseReleased method
 	}
 
 	@Override
@@ -128,6 +124,15 @@ public class NewtEventProcessorAWT extends NEWTEventFiFo implements com.jogamp.n
 	public void mouseReleased(MouseEvent e)
 	{
 		put(e);
+
+		//NEWT doesn't raise click events after a long press/release, but AWT does, so simulate one
+		//from this method instead of forwarding the clicked event.
+		//Also, AWT doesn't raise click events after a drag, but NEWT does, so follow AWT behaviour.
+		if (!mouseDragged)
+		{
+			MouseEvent click = e.createVariant(MouseEvent.EVENT_MOUSE_CLICKED);
+			put(click);
+		}
 	}
 
 	@Override

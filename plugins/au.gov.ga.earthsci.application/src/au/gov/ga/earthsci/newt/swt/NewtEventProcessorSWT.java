@@ -78,11 +78,7 @@ public class NewtEventProcessorSWT implements com.jogamp.newt.event.MouseListene
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-		//AWT doesn't raise click events after a drag, but NEWT does, so follow AWT behaviour.
-		if (!mouseDragged)
-		{
-			forward(e);
-		}
+		//see mouseReleased method
 	}
 
 	@Override
@@ -108,6 +104,15 @@ public class NewtEventProcessorSWT implements com.jogamp.newt.event.MouseListene
 	public void mouseReleased(MouseEvent e)
 	{
 		forward(e);
+
+		//NEWT doesn't raise click events after a long press/release, but AWT does, so simulate one
+		//from this method instead of forwarding the clicked event.
+		//Also, AWT doesn't raise click events after a drag, but NEWT does, so follow AWT behaviour.
+		if (!mouseDragged)
+		{
+			MouseEvent click = e.createVariant(MouseEvent.EVENT_MOUSE_CLICKED);
+			forward(click);
+		}
 	}
 
 	@Override
