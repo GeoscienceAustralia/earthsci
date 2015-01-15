@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.worldwind.common.view.delegate;
 
 import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Vec4;
@@ -82,6 +83,7 @@ public class DelegateOrbitView extends TargetOrbitView implements IDelegateView
 			{
 				this.delegate.installed(this);
 			}
+			firePropertyChange(AVKey.VIEW, null, this);
 		}
 	}
 
