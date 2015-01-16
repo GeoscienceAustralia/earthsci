@@ -57,7 +57,7 @@ public class ViewLinker implements PropertyChangeListener
 	public synchronized void unlink(View view)
 	{
 		view.removePropertyChangeListener(AVKey.VIEW, this);
-		views.add(view);
+		views.remove(view);
 	}
 
 	public boolean isEnabled()
