@@ -36,7 +36,6 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.OGLStackHandler;
 
 import java.awt.Dimension;
-import java.io.DataInputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -294,8 +293,6 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 		}
 		gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
-
-	DataInputStream dis;
 
 	@Override
 	public void draw(IDelegateView view, DrawContext dc, DrawableSceneController sc)
