@@ -99,6 +99,7 @@
           <children xsi:type="menu:HandledMenuItem" xmi:id="_my6SkJxoEeSwfuNJr-1RzQ" elementId="au.gov.ga.earthsci.application.globe.stereo.menuitems.blueyellow" label="Blue/yellow anaglyph" type="Radio" command="_mi-rEJxmEeSwfuNJr-1RzQ"/>
           <children xsi:type="menu:HandledMenuItem" xmi:id="_nBycEJxoEeSwfuNJr-1RzQ" elementId="au.gov.ga.earthsci.application.globe.stereo.menuitems.quadbuffered" label="Quad-buffered stereo" type="Radio" command="_mi-rEJxmEeSwfuNJr-1RzQ"/>
           <children xsi:type="menu:HandledMenuItem" xmi:id="_uJTRUJxoEeSwfuNJr-1RzQ" elementId="au.gov.ga.earthsci.application.globe.stereo.menuitems.oculusrift" label="Oculus Rift" type="Radio" command="_mi-rEJxmEeSwfuNJr-1RzQ"/>
+          <children xsi:type="menu:HandledMenuItem" xmi:id="_fzd3UJ0wEeSwfuNJr-1RzQ" elementId="au.gov.ga.earthsci.application.globe.stereo.menuitems.oculusriftpreview" label="Oculus Rift preview" type="Radio" command="_mi-rEJxmEeSwfuNJr-1RzQ"/>
         </menu>
       </children>
       <children xsi:type="menu:HandledToolItem" xmi:id="_OJweEGqLEeKz-NWw78ViTQ" elementId="au.gov.ga.earthsci.application.globe.toolitems.fullscreen" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/monitor.gif" tooltip="Fullscreen" type="Check" command="_HJh8kGqLEeKz-NWw78ViTQ">

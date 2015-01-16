@@ -77,31 +77,31 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 		count
 	}
 
-	private Hmd hmd;
-	private final OvrRecti[] eyeRenderViewport = (OvrRecti[]) new OvrRecti().toArray(2);
-	private final OvrVector2f[][] uvScaleOffset = new OvrVector2f[2][2];
-	private final EyeRenderDesc[] eyeRenderDescs = (EyeRenderDesc[]) new EyeRenderDesc().toArray(2);
-	private final OvrVector3f[] eyeOffsets = (OvrVector3f[]) new OvrVector3f().toArray(2);
-	private final FovPort[] eyeFov = (FovPort[]) new FovPort().toArray(2);
-	private final Posef[] eyePoses = (Posef[]) new Posef().toArray(2);
-	private int[][] distortionObjects;
-	private int indicesCount;
+	protected Hmd hmd;
+	protected final OvrRecti[] eyeRenderViewport = (OvrRecti[]) new OvrRecti().toArray(2);
+	protected final OvrVector2f[][] uvScaleOffset = new OvrVector2f[2][2];
+	protected final EyeRenderDesc[] eyeRenderDescs = (EyeRenderDesc[]) new EyeRenderDesc().toArray(2);
+	protected final OvrVector3f[] eyeOffsets = (OvrVector3f[]) new OvrVector3f().toArray(2);
+	protected final FovPort[] eyeFov = (FovPort[]) new FovPort().toArray(2);
+	protected final Posef[] eyePoses = (Posef[]) new Posef().toArray(2);
+	protected int[][] distortionObjects;
+	protected int indicesCount;
 
-	private final FrameBuffer frameBuffer = new FrameBuffer();
-	private final DistortionShader distortionShader = new DistortionShader();
+	protected final FrameBuffer frameBuffer = new FrameBuffer();
+	protected final DistortionShader distortionShader = new DistortionShader();
 
-	private int frameCount = -1;
-	private boolean inited = false;
-	private boolean renderEyes = false;
-	private int eye = 0; //0 == left, 1 == right
-	private Matrix pretransformedModelView = Matrix.IDENTITY;
+	protected int frameCount = -1;
+	protected boolean inited = false;
+	protected boolean renderEyes = false;
+	protected int eye = 0; //0 == left, 1 == right
+	protected Matrix pretransformedModelView = Matrix.IDENTITY;
 
 	protected boolean shouldRenderForHMD()
 	{
 		return renderEyes;
 	}
 
-	private static Hmd openFirstHmd()
+	protected static Hmd openFirstHmd()
 	{
 		Hmd hmd = Hmd.create(0);
 		if (null == hmd)
@@ -197,7 +197,7 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 				true));
 	}
 
-	private void init(GL2 gl)
+	protected void init(GL2 gl)
 	{
 		if (inited)
 		{
@@ -208,7 +208,19 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 		initOculus(gl);
 	}
 
-	private void initOculus(GL2 gl)
+	protected void initOculus(GL2 gl)
+	{
+		eyeFov[0] = hmd.DefaultEyeFov[0];
+		eyeFov[1] = hmd.DefaultEyeFov[1];
+
+		initDistortion(gl);
+
+		hmd.setEnabledCaps(ovrHmdCap_LowPersistence | ovrHmdCap_DynamicPrediction);
+		hmd.configureTracking(ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection | ovrTrackingCap_Position, 0);
+		hmd.recenterPose();
+	}
+
+	protected void initDistortion(GL2 gl)
 	{
 		//Configure Stereo settings.
 		OvrSizei recommendedTex0Size = hmd.getFovTextureSize(ovrEye_Left, hmd.DefaultEyeFov[0], 1f);
@@ -218,8 +230,6 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 		OvrSizei renderTargetSize = new OvrSizei(x, y);
 		frameBuffer.resize(gl, new Dimension(x, y));
 		// Initialize eye rendering information.
-		eyeFov[0] = hmd.DefaultEyeFov[0];
-		eyeFov[1] = hmd.DefaultEyeFov[1];
 		eyeRenderViewport[0].Pos = new OvrVector2i(0, 0);
 		eyeRenderViewport[0].Size = new OvrSizei(renderTargetSize.w / 2, renderTargetSize.h);
 		eyeRenderViewport[1].Pos = new OvrVector2i((renderTargetSize.w + 1) / 2, 0);
@@ -247,12 +257,9 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 			eyeOffsets[eyeNum].y = eyeRenderDescs[eyeNum].HmdToEyeViewOffset.y;
 			eyeOffsets[eyeNum].z = eyeRenderDescs[eyeNum].HmdToEyeViewOffset.z;
 		}
-		hmd.setEnabledCaps(ovrHmdCap_LowPersistence | ovrHmdCap_DynamicPrediction);
-		hmd.configureTracking(ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection | ovrTrackingCap_Position, 0);
-		hmd.recenterPose();
 	}
 
-	private void initDistortionVBOs(GL2 gl, int eyeNum, DistortionVertex[] structures)
+	protected void initDistortionVBOs(GL2 gl, int eyeNum, DistortionVertex[] structures)
 	{
 		int vertexSize = 2 + 1 + 1 + 2 + 2 + 2;
 		float[] vertexData = new float[vertexSize * structures.length];
@@ -278,7 +285,7 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 		gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
 	}
 
-	private void initDistortionIBO(GL2 gl, int eyeNum, short[] shortIndicesData)
+	protected void initDistortionIBO(GL2 gl, int eyeNum, short[] shortIndicesData)
 	{
 		int[] intIndicesData = new int[shortIndicesData.length];
 		for (int i = 0; i < shortIndicesData.length; i++)
@@ -310,7 +317,7 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 			{
 				sc.clearFrame(dc);
 
-				for (int i = 0; i < ovrEye_Count; ++i)
+				for (int i = 0; i < ovrEye_Count; i++)
 				{
 					int eye = hmd.EyeRenderOrder[i];
 					Posef pose = eyePoses[eye];

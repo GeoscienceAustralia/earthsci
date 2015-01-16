@@ -36,6 +36,7 @@ import au.gov.ga.earthsci.application.parts.globe.Messages;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.IViewDelegate;
 import au.gov.ga.earthsci.worldwind.common.view.oculus.RiftViewDistortionDelegate;
+import au.gov.ga.earthsci.worldwind.common.view.oculus.RiftViewPreviewDelegate;
 import au.gov.ga.earthsci.worldwind.common.view.stereo.StereoMode;
 import au.gov.ga.earthsci.worldwind.common.view.stereo.StereoViewDelegate;
 import au.gov.ga.earthsci.worldwind.common.view.stereo.StereoViewParameters;
@@ -54,6 +55,8 @@ public class StereoHandler
 	public static final String MENU_BLUEYELLOW = "au.gov.ga.earthsci.application.globe.stereo.menuitems.blueyellow"; //$NON-NLS-1$
 	public static final String MENU_QUADBUFFERED = "au.gov.ga.earthsci.application.globe.stereo.menuitems.quadbuffered"; //$NON-NLS-1$
 	public static final String MENU_OCULUSRIFT = "au.gov.ga.earthsci.application.globe.stereo.menuitems.oculusrift"; //$NON-NLS-1$
+	public static final String MENU_OCULUSRIFTPREVIEW =
+			"au.gov.ga.earthsci.application.globe.stereo.menuitems.oculusriftpreview"; //$NON-NLS-1$
 
 	private String lastMenuItemId = MENU_REDCYAN;
 
@@ -117,6 +120,10 @@ public class StereoHandler
 			if (MENU_OCULUSRIFT.equals(menuItemId))
 			{
 				view.setDelegate(new RiftViewDistortionDelegate());
+			}
+			else if (MENU_OCULUSRIFTPREVIEW.equals(menuItemId))
+			{
+				view.setDelegate(new RiftViewPreviewDelegate());
 			}
 			else
 			{
