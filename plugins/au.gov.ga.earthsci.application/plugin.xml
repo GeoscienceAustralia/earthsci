@@ -97,6 +97,10 @@
             class="au.gov.ga.earthsci.application.parts.globe.handlers.PrioritizeFarClippingSwitcher"
             priority="0">
       </inject>
+      <injectable
+            class="au.gov.ga.earthsci.application.parts.globe.QuadBufferedStereoPreference"
+            priority="1000">
+      </injectable>
    </extension>
    <extension
          point="au.gov.ga.earthsci.layer.hudLayers">

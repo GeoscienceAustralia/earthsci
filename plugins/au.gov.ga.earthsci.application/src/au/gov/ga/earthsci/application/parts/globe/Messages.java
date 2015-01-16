@@ -29,12 +29,15 @@ public class Messages extends NLS
 	public static String GlobePart_ToggleHUDTooltip;
 	public static String GlobePreferencePage_Description;
 	public static String GlobePreferencePage_FPS;
+	public static String GlobePreferencePage_Stereo;
 	public static String GlobePreferencePage_Title;
 	public static String GotoCoordinateDialog_EnterCoordinates;
 	public static String GotoCoordinateDialog_GotoCoordinates;
 	public static String GotoCoordinateDialog_InvalidCoordinates;
 	public static String GotoCoordinateDialog_Supports;
 	public static String GotoCoordinateDialog_TypeCoordinates;
+	public static String StereoHandler_StereoDialogMessage;
+	public static String StereoHandler_StereoDialogTitle;
 	static
 	{
 		// initialize resource bundle

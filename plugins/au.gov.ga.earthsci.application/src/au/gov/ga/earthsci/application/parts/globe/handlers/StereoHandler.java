@@ -17,13 +17,22 @@ package au.gov.ga.earthsci.application.parts.globe.handlers;
 
 import gov.nasa.worldwind.View;
 
+import javax.inject.Inject;
+
 import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenuElement;
 import org.eclipse.e4.ui.model.application.ui.menu.MMenuItem;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolItem;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import au.gov.ga.earthsci.application.parts.globe.GlobePart;
+import au.gov.ga.earthsci.application.parts.globe.GlobePreferencePage;
+import au.gov.ga.earthsci.application.parts.globe.Messages;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.IViewDelegate;
 import au.gov.ga.earthsci.worldwind.common.view.oculus.RiftViewDistortionDelegate;
@@ -48,8 +57,14 @@ public class StereoHandler
 
 	private String lastMenuItemId = MENU_REDCYAN;
 
+	@Inject
+	@Preference(nodePath = GlobePreferencePage.QUALIFIER_ID, value = GlobePreferencePage.STEREO_PREFERENCE_NAME)
+	private boolean stereo;
+
+	private boolean lastWasStereo = false;
+
 	@Execute
-	public void execute(MToolItem toolItem, GlobePart globe, EModelService service)
+	public void execute(MToolItem toolItem, GlobePart globe, EModelService service, Composite parent)
 	{
 		View view = globe.getWorldWindow().getView();
 		if (view instanceof IDelegateView)
@@ -70,7 +85,7 @@ public class StereoHandler
 				}
 			}
 
-			setupViewDelegate(delegateView, menuItemId);
+			setupViewDelegate(delegateView, menuItemId, parent);
 			MMenuItem menuItem = (MMenuItem) service.find(menuItemId, toolItem.getMenu());
 			if (menuItem != null)
 			{
@@ -80,50 +95,68 @@ public class StereoHandler
 	}
 
 	@Execute
-	public void execute(MMenuItem menuItem, GlobePart globe)
+	public void execute(MMenuItem menuItem, GlobePart globe, Composite parent)
 	{
 		View view = globe.getWorldWindow().getView();
 		if (view instanceof IDelegateView)
 		{
-			setupViewDelegate((IDelegateView) view, menuItem.getElementId());
+			setupViewDelegate((IDelegateView) view, menuItem.getElementId(), parent);
 		}
 	}
 
-	protected void setupViewDelegate(IDelegateView view, String menuItemId)
+	protected void setupViewDelegate(IDelegateView view, String menuItemId, Composite parent)
 	{
-		if (MENU_NONE.equals(menuItemId))
+		try
 		{
-			view.setDelegate(null);
-			return;
-		}
-		lastMenuItemId = menuItemId;
-		if (MENU_OCULUSRIFT.equals(menuItemId))
-		{
-			view.setDelegate(new RiftViewDistortionDelegate());
-		}
-		else
-		{
-			StereoViewDelegate delegate = new StereoViewDelegate();
-			view.setDelegate(delegate);
-
-			StereoViewParameters parameters = delegate.getParameters();
-			parameters.setStereoEnabled(true);
-			if (MENU_REDCYAN.equals(menuItemId))
+			if (MENU_NONE.equals(menuItemId))
 			{
-				parameters.setStereoMode(StereoMode.RC_ANAGLYPH);
+				view.setDelegate(null);
+				return;
 			}
-			else if (MENU_GREENMAGENTA.equals(menuItemId))
+			lastMenuItemId = menuItemId;
+			if (MENU_OCULUSRIFT.equals(menuItemId))
 			{
-				parameters.setStereoMode(StereoMode.GM_ANAGLYPH);
-			}
-			else if (MENU_BLUEYELLOW.equals(menuItemId))
-			{
-				parameters.setStereoMode(StereoMode.BY_ANAGLYPH);
+				view.setDelegate(new RiftViewDistortionDelegate());
 			}
 			else
 			{
-				parameters.setStereoMode(StereoMode.STEREO_BUFFER);
+				StereoViewDelegate delegate = new StereoViewDelegate();
+				view.setDelegate(delegate);
+
+				StereoViewParameters parameters = delegate.getParameters();
+				parameters.setStereoEnabled(true);
+				if (MENU_REDCYAN.equals(menuItemId))
+				{
+					parameters.setStereoMode(StereoMode.RC_ANAGLYPH);
+				}
+				else if (MENU_GREENMAGENTA.equals(menuItemId))
+				{
+					parameters.setStereoMode(StereoMode.GM_ANAGLYPH);
+				}
+				else if (MENU_BLUEYELLOW.equals(menuItemId))
+				{
+					parameters.setStereoMode(StereoMode.BY_ANAGLYPH);
+				}
+				else
+				{
+					parameters.setStereoMode(StereoMode.STEREO_BUFFER);
+
+					if (!lastWasStereo && !stereo)
+					{
+						if (MessageDialog.openQuestion(parent.getShell(),
+								Messages.StereoHandler_StereoDialogTitle, Messages.StereoHandler_StereoDialogMessage))
+						{
+							PreferenceDialog dialog = PreferencesUtil.createPreferenceDialogOn(
+									parent.getShell(), GlobePreferencePage.PREFERENCE_PAGE_ID, null, null);
+							dialog.open();
+						}
+					}
+				}
 			}
+		}
+		finally
+		{
+			lastWasStereo = MENU_QUADBUFFERED.equals(menuItemId);
 		}
 	}
 }

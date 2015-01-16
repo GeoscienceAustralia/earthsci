@@ -29,8 +29,10 @@ import au.gov.ga.earthsci.core.preferences.ScopedPreferenceStore;
  */
 public class GlobePreferencePage extends FieldEditorPreferencePage
 {
+	public static final String PREFERENCE_PAGE_ID = "au.gov.ga.earthsci.application.globe"; //$NON-NLS-1$
 	public static final String QUALIFIER_ID = "au.gov.ga.earthsci.globe"; //$NON-NLS-1$
 	public static final String FPS_PREFERENCE_NAME = "au.gov.ga.earthsci.globe.preferences.fps"; //$NON-NLS-1$
+	public static final String STEREO_PREFERENCE_NAME = "au.gov.ga.earthsci.globe.preferences.stereo"; //$NON-NLS-1$
 
 	public GlobePreferencePage()
 	{
@@ -45,8 +47,12 @@ public class GlobePreferencePage extends FieldEditorPreferencePage
 	@Override
 	protected void createFieldEditors()
 	{
-		BooleanFieldEditor fpsEditor =
-				new BooleanFieldEditor(FPS_PREFERENCE_NAME, Messages.GlobePreferencePage_FPS, getFieldEditorParent());
+		BooleanFieldEditor fpsEditor = new BooleanFieldEditor(FPS_PREFERENCE_NAME,
+				Messages.GlobePreferencePage_FPS, getFieldEditorParent());
 		addField(fpsEditor);
+
+		BooleanFieldEditor stereoCanvasEditor = new BooleanFieldEditor(STEREO_PREFERENCE_NAME,
+				Messages.GlobePreferencePage_Stereo, getFieldEditorParent());
+		addField(stereoCanvasEditor);
 	}
 }
