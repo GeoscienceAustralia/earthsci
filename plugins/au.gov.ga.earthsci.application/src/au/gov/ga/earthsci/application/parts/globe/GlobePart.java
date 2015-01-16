@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
@@ -103,7 +104,7 @@ public class GlobePart
 	@Inject
 	private ViewLinker linker;
 
-	@Inject
+	@PostConstruct
 	public void init(final Composite parent)
 	{
 		context.set(GlobePart.class, this);
