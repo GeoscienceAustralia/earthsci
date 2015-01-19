@@ -109,6 +109,12 @@ public class StereoViewDelegate implements IStereoViewDelegate
 	}
 
 	@Override
+	public void pick(IDelegateView view, DrawContext dc, DrawableSceneController sc)
+	{
+		view.pick(dc, sc);
+	}
+
+	@Override
 	public void draw(IDelegateView view, DrawContext dc, DrawableSceneController sc)
 	{
 		helper.draw(dc, sc);

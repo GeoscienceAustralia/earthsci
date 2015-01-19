@@ -121,7 +121,14 @@ public class ExtendedSceneController extends BasicSceneController implements Dra
 			this.createTerrain(dc);
 			this.preRender(dc);
 			this.clearFrame(dc);
-			this.pick(dc);
+			if (view instanceof IDelegateView)
+			{
+				((IDelegateView) view).pick(dc, this);
+			}
+			else
+			{
+				this.pick(dc);
+			}
 			this.clearFrame(dc);
 			if (view instanceof IDelegateView)
 			{
@@ -164,6 +171,12 @@ public class ExtendedSceneController extends BasicSceneController implements Dra
 	protected List<? extends Effect> getDrawEffects()
 	{
 		return getEffects();
+	}
+
+	@Override
+	public void pick(DrawContext dc)
+	{
+		super.pick(dc);
 	}
 
 	@Override

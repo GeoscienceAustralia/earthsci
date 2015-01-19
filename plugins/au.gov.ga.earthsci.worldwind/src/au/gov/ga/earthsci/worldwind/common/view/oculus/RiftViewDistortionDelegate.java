@@ -27,17 +27,24 @@ import static com.oculusvr.capi.OvrLibrary.ovrHmdType.ovrHmd_DK1;
 import static com.oculusvr.capi.OvrLibrary.ovrTrackingCaps.ovrTrackingCap_MagYawCorrection;
 import static com.oculusvr.capi.OvrLibrary.ovrTrackingCaps.ovrTrackingCap_Orientation;
 import static com.oculusvr.capi.OvrLibrary.ovrTrackingCaps.ovrTrackingCap_Position;
+import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
+import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Quaternion;
 import gov.nasa.worldwind.geom.Vec4;
+import gov.nasa.worldwind.pick.PickedObject;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.OGLStackHandler;
+import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.media.opengl.GL2;
 
@@ -95,6 +102,7 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 	protected boolean renderEyes = false;
 	protected int eye = 0; //0 == left, 1 == right
 	protected Matrix pretransformedModelView = Matrix.IDENTITY;
+	protected boolean disableHeadTransform = false;
 
 	protected boolean shouldRenderForHMD()
 	{
@@ -170,6 +178,11 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 
 	protected Matrix transformModelView(Matrix modelView)
 	{
+		if (disableHeadTransform)
+		{
+			return modelView;
+		}
+
 		Vec4 translation = RiftUtils.toVec4(eyePoses[eye].Position);
 		Quaternion rotation = RiftUtils.toQuaternion(eyePoses[eye].Orientation);
 
@@ -302,6 +315,14 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 	}
 
 	@Override
+	public void pick(IDelegateView view, DrawContext dc, DrawableSceneController sc)
+	{
+		view.pick(dc, sc);
+		sc.clearFrame(dc);
+		fixViewportCenterPosition(dc);
+	}
+
+	@Override
 	public void draw(IDelegateView view, DrawContext dc, DrawableSceneController sc)
 	{
 		GL2 gl = dc.getGL().getGL2();
@@ -387,5 +408,53 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 		hmd.endFrameTiming();
 
 		view.firePropertyChange(AVKey.VIEW, null, view); //make the view draw repeatedly for oculus rotation
+	}
+
+	/**
+	 * Transforming the modelview matrix with the Rift's head rotation causes
+	 * the the {@link OrbitView#focusOnViewportCenter()} method to focus on the
+	 * center of the viewport, which means the view jumps around depending on
+	 * the head rotation. This method calls the focus method using an
+	 * untransformed modelview matrix, keeping the center rotation point more
+	 * consistent.
+	 * 
+	 * @param dc
+	 */
+	protected void fixViewportCenterPosition(DrawContext dc)
+	{
+		dc.setViewportCenterPosition(null);
+		Point vpc = dc.getViewportCenterScreenPoint();
+		if (vpc == null)
+		{
+			return;
+		}
+
+		View view = dc.getView();
+		try
+		{
+			disableHeadTransform = true;
+			view.apply(dc);
+			dc.enablePickingMode();
+
+			List<Point> points = Arrays.asList(new Point[] { vpc });
+			List<PickedObject> pickedObjects = dc.getSurfaceGeometry().pick(dc, points);
+
+			if (pickedObjects == null || pickedObjects.size() == 0)
+			{
+				return;
+			}
+
+			dc.setViewportCenterPosition((Position) pickedObjects.get(0).getObject());
+			if (view instanceof OrbitView)
+			{
+				((OrbitView) view).focusOnViewportCenter();
+			}
+		}
+		finally
+		{
+			disableHeadTransform = false;
+			view.apply(dc);
+			dc.disablePickingMode();
+		}
 	}
 }

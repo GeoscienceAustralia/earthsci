@@ -27,6 +27,8 @@ import au.gov.ga.earthsci.worldwind.common.view.delegate.IViewDelegate;
  */
 public interface DrawableSceneController extends SceneController
 {
+	void pick(DrawContext dc);
+
 	void draw(DrawContext dc);
 
 	void clearFrame(DrawContext dc);

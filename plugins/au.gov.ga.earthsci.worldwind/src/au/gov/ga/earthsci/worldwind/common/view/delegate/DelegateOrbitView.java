@@ -41,6 +41,7 @@ public class DelegateOrbitView extends TargetOrbitView implements IDelegateView
 	private boolean callingComputeModelView = false;
 	private boolean callingGetPretransformedModelView = false;
 	private boolean callingComputeProjection = false;
+	private boolean callingPick = false;
 	private boolean callingDraw = false;
 	private Vec4 up = null;
 	private Vec4 forward = null;
@@ -199,6 +200,26 @@ public class DelegateOrbitView extends TargetOrbitView implements IDelegateView
 		finally
 		{
 			callingComputeProjection = false;
+		}
+	}
+
+	@Override
+	public void pick(DrawContext dc, DrawableSceneController sc)
+	{
+		if (currentDelegate == null || callingPick)
+		{
+			sc.pick(dc);
+			return;
+		}
+
+		try
+		{
+			callingPick = true;
+			currentDelegate.pick(this, dc, sc);
+		}
+		finally
+		{
+			callingPick = false;
 		}
 	}
 

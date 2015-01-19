@@ -102,6 +102,19 @@ public interface IDelegateView extends View
 	Matrix computeProjection(Angle horizontalFieldOfView, double nearDistance, double farDistance);
 
 	/**
+	 * Pick this view.
+	 * <p/>
+	 * Implementation should call
+	 * {@link DrawableSceneController#pick(DrawContext)} at least once.
+	 * 
+	 * @param dc
+	 *            Current draw context
+	 * @param sc
+	 *            Scene controller performing the pick
+	 */
+	void pick(DrawContext dc, DrawableSceneController sc);
+
+	/**
 	 * Draw this view.
 	 * <p/>
 	 * Implementation should call

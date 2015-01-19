@@ -107,6 +107,21 @@ public interface IViewDelegate
 	Matrix computeProjection(IDelegateView view, Angle horizontalFieldOfView, double nearDistance, double farDistance);
 
 	/**
+	 * Pick this view.
+	 * <p/>
+	 * Can call {@link IDelegateView#pick(DrawContext, DrawableSceneController)}
+	 * for a default implementation.
+	 * 
+	 * @param view
+	 *            View calling this delegate
+	 * @param dc
+	 *            Current draw context
+	 * @param sc
+	 *            Scene controller performing the pick
+	 */
+	void pick(IDelegateView view, DrawContext dc, DrawableSceneController sc);
+
+	/**
 	 * Draw this view.
 	 * <p/>
 	 * Can call {@link IDelegateView#draw(DrawContext, DrawableSceneController)}
