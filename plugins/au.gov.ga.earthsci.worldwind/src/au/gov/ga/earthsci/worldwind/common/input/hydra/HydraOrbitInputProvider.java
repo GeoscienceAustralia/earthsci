@@ -28,7 +28,7 @@ import au.gov.ga.earthsci.worldwind.common.input.IProviderOrbitViewInputHandler;
  */
 public class HydraOrbitInputProvider implements IOrbitInputProvider, IHydraListener
 {
-	private final static ActionAttributes horizontalAttributes = new ActionAttributes(2e-4, 1e2, false, 0.4);
+	private final static ActionAttributes horizontalAttributes = new ActionAttributes(3e-4, 1e2, false, 0.4);
 	private final static ActionAttributes verticalAttributes = new ActionAttributes(1e0, 1e0, false, 0.85);
 	private final static ActionAttributes headingAttributes = new ActionAttributes(1e2, 1e2, false, 0.85);
 	private final static ActionAttributes pitchAttributes = new ActionAttributes(5e1, 1e2, false, 0.85);
@@ -36,7 +36,7 @@ public class HydraOrbitInputProvider implements IOrbitInputProvider, IHydraListe
 
 	private IProviderOrbitViewInputHandler inputHandler;
 	private float x1, y1, x2, y2, z;
-	private boolean flip1 = false, flip2 = false;
+	private boolean flip1 = true, flip2 = false;
 	private long lastNanos;
 
 	public HydraOrbitInputProvider()
