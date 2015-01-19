@@ -64,7 +64,9 @@ import au.gov.ga.earthsci.newt.swt.NewtInputHandlerSWT;
 import au.gov.ga.earthsci.newt.swt.WorldWindowNewtAutoDrawableSWT;
 import au.gov.ga.earthsci.newt.swt.WorldWindowNewtCanvasSWT;
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
+import au.gov.ga.earthsci.worldwind.common.input.OrbitInputProviderManager;
 import au.gov.ga.earthsci.worldwind.common.input.ProviderOrbitViewInputHandler;
+import au.gov.ga.earthsci.worldwind.common.input.hydra.HydraOrbitInputProvider;
 import au.gov.ga.earthsci.worldwind.common.layers.fogmask.FogMaskLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.fps.FPSLayer;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.DelegateOrbitView;
@@ -108,6 +110,8 @@ public class GlobePart
 	public void init(final Composite parent)
 	{
 		context.set(GlobePart.class, this);
+
+		OrbitInputProviderManager.getInstance().addProvider(new HydraOrbitInputProvider());
 
 		Configuration.setValue(AVKey.INPUT_HANDLER_CLASS_NAME, NewtInputHandlerSWT.class.getName());
 		Configuration.setValue(AVKey.WORLD_WINDOW_CLASS_NAME, WorldWindowNewtAutoDrawableSWT.class.getName());
