@@ -443,6 +443,10 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 			}
 
 			dc.setViewportCenterPosition((Position) pickedObjects.get(0).getObject());
+			if (dc.getView() instanceof OrbitView)
+			{
+				((OrbitView) dc.getView()).focusOnViewportCenter();
+			}
 		}
 		finally
 		{
