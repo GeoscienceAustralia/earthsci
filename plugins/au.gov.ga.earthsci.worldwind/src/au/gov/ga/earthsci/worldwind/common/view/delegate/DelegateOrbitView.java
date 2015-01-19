@@ -46,6 +46,7 @@ public class DelegateOrbitView extends TargetOrbitView implements IDelegateView
 	private Vec4 up = null;
 	private Vec4 forward = null;
 	private Matrix postTransform = Matrix.IDENTITY;
+	private boolean disablePostTransform = false;
 
 	public DelegateOrbitView()
 	{
@@ -101,6 +102,10 @@ public class DelegateOrbitView extends TargetOrbitView implements IDelegateView
 	@Override
 	public Vec4 getUpVector()
 	{
+		if (disablePostTransform)
+		{
+			return super.getUpVector();
+		}
 		if (up == null)
 		{
 			up = super.getUpVector();
@@ -112,12 +117,24 @@ public class DelegateOrbitView extends TargetOrbitView implements IDelegateView
 	@Override
 	public Vec4 getForwardVector()
 	{
+		if (disablePostTransform)
+		{
+			return super.getForwardVector();
+		}
 		if (forward == null)
 		{
 			forward = super.getForwardVector();
 			forward = forward.transformBy3(postTransform);
 		}
 		return forward;
+	}
+
+	@Override
+	public void focusOnViewportCenter()
+	{
+		disablePostTransform = true;
+		super.focusOnViewportCenter();
+		disablePostTransform = false;
 	}
 
 	@Override

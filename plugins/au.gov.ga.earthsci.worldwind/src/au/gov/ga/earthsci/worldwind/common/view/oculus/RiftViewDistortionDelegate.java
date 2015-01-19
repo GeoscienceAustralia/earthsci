@@ -27,7 +27,6 @@ import static com.oculusvr.capi.OvrLibrary.ovrHmdType.ovrHmd_DK1;
 import static com.oculusvr.capi.OvrLibrary.ovrTrackingCaps.ovrTrackingCap_MagYawCorrection;
 import static com.oculusvr.capi.OvrLibrary.ovrTrackingCaps.ovrTrackingCap_Orientation;
 import static com.oculusvr.capi.OvrLibrary.ovrTrackingCaps.ovrTrackingCap_Position;
-import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
@@ -319,7 +318,7 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 	{
 		view.pick(dc, sc);
 		sc.clearFrame(dc);
-		fixViewportCenterPosition(dc);
+		fixViewportCenterPosition(dc, sc);
 	}
 
 	@Override
@@ -412,7 +411,7 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 
 	/**
 	 * Transforming the modelview matrix with the Rift's head rotation causes
-	 * the the {@link OrbitView#focusOnViewportCenter()} method to focus on the
+	 * the {@link OrbitView#focusOnViewportCenter()} method to focus on the
 	 * center of the viewport, which means the view jumps around depending on
 	 * the head rotation. This method calls the focus method using an
 	 * untransformed modelview matrix, keeping the center rotation point more
@@ -420,7 +419,7 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 	 * 
 	 * @param dc
 	 */
-	protected void fixViewportCenterPosition(DrawContext dc)
+	protected void fixViewportCenterPosition(DrawContext dc, DrawableSceneController sc)
 	{
 		dc.setViewportCenterPosition(null);
 		Point vpc = dc.getViewportCenterScreenPoint();
@@ -429,11 +428,10 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 			return;
 		}
 
-		View view = dc.getView();
 		try
 		{
 			disableHeadTransform = true;
-			view.apply(dc);
+			sc.applyView(dc);
 			dc.enablePickingMode();
 
 			List<Point> points = Arrays.asList(new Point[] { vpc });
@@ -445,15 +443,11 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 			}
 
 			dc.setViewportCenterPosition((Position) pickedObjects.get(0).getObject());
-			if (view instanceof OrbitView)
-			{
-				((OrbitView) view).focusOnViewportCenter();
-			}
 		}
 		finally
 		{
 			disableHeadTransform = false;
-			view.apply(dc);
+			sc.applyView(dc);
 			dc.disablePickingMode();
 		}
 	}
