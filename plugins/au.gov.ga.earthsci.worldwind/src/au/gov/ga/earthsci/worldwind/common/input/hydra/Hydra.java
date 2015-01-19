@@ -108,7 +108,15 @@ public class Hydra
 				while (true)
 				{
 					Sixense.getAllNewestData(data);
-					processData();
+					try
+					{
+						processData();
+					}
+					catch (Exception e)
+					{
+						//don't allow exception in listeners to stop the thread; print it instead
+						e.printStackTrace();
+					}
 
 					try
 					{

@@ -41,10 +41,18 @@ public class ProviderOrbitViewInputHandler extends FreeRotateOrbitViewInputHandl
 	@Override
 	public void markViewChanged()
 	{
-		View view = getView();
-		if (view != null)
+		try
 		{
-			view.firePropertyChange(AVKey.VIEW, null, view);
+			View view = getView();
+			if (view != null)
+			{
+				view.firePropertyChange(AVKey.VIEW, null, view);
+			}
+		}
+		catch (Exception e)
+		{
+			//don't allow view exception to bubble up to caller; print it instead
+			e.printStackTrace();
 		}
 	}
 

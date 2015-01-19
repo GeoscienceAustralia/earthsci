@@ -283,7 +283,15 @@ public class BaseOrbitViewCollisionSupport
 			Position position = globe.computePositionFromPoint(point);
 			Position surfacePosition = null;
 			// Look for the surface geometry point at 'position'.
-			Vec4 pointOnGlobe = dc.getPointOnTerrain(position.getLatitude(), position.getLongitude());
+			Vec4 pointOnGlobe = null;
+			try
+			{
+				pointOnGlobe = dc.getPointOnTerrain(position.getLatitude(), position.getLongitude());
+			}
+			catch (NullPointerException e)
+			{
+				//dc.getPointOnTerrain() can sometimes throw a NPE; ignore it
+			}
 			if (pointOnGlobe != null)
 			{
 				surfacePosition = globe.computePositionFromPoint(pointOnGlobe);
