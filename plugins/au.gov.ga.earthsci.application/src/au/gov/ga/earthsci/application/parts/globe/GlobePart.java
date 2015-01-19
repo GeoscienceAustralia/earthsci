@@ -117,7 +117,6 @@ public class GlobePart
 		Configuration.setValue(AVKey.WORLD_WINDOW_CLASS_NAME, WorldWindowNewtAutoDrawableSWT.class.getName());
 		Configuration.setValue(AVKey.SCENE_CONTROLLER_CLASS_NAME, GlobeSceneController.class.getName());
 		Configuration.setValue(AVKey.VIEW_INPUT_HANDLER_CLASS_NAME, ProviderOrbitViewInputHandler.class.getName());
-		//Configuration.setValue(AVKeyMore.DELEGATE_VIEW_DELEGATE_CLASS_NAME, RiftViewDistortionDelegate.class.getName());
 		worldWindow = new WorldWindowNewtCanvasSWT(parent, SWT.NONE, WorldWindowRegistry.INSTANCE.getFirstRegistered());
 		sceneController = (GlobeSceneController) worldWindow.getSceneController();
 		worldWindow.setModel(model);
