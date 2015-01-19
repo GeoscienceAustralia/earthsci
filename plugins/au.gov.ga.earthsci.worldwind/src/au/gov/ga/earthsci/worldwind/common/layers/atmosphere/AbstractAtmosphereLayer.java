@@ -16,6 +16,7 @@
 package au.gov.ga.earthsci.worldwind.common.layers.atmosphere;
 
 import gov.nasa.worldwind.View;
+import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Line;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Plane;
@@ -106,6 +107,14 @@ public abstract class AbstractAtmosphereLayer extends AbstractLayer
 	{
 		View view = dc.getView();
 		Vec4 forward = view.getForwardVector();
+		Vec4 eyeNormalized = view.getEyePoint().normalize3();
+		Angle pitch = eyeNormalized.angleBetween3(forward);
+		if (pitch.degrees < 90)
+		{
+			//don't clip the sky when looking up at it
+			return;
+		}
+
 		Vec4 up = view.getUpVector();
 		Vec4 side = forward.cross3(up);
 		Vec4 origin = Vec4.ZERO;
