@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.render;
 
+import gov.nasa.worldwind.render.DeclutteringTextRenderer;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.render.DrawContextImpl;
 import gov.nasa.worldwind.render.GLRuntimeCapabilities;
@@ -39,12 +40,19 @@ public class ExtendedDrawContext extends DrawContextDelegate implements Vertical
 	protected ExtendedSurfaceTileRenderer geographicSurfaceTileRenderer;
 	protected SectorGeometryList flatSurfaceGeometry;
 	protected SectorGeometryList oldSurfaceGeomtry;
+	protected DeclutteringTextRenderer declutteringTextRenderer = new DeclutteringTextViewportRenderer();
 
 	public ExtendedDrawContext(DrawContext delegate)
 	{
 		super(delegate);
 		delegate.getGeographicSurfaceTileRenderer().dispose();
 		geographicSurfaceTileRenderer = new ExtendedSurfaceTileRenderer();
+	}
+
+	@Override
+	public DeclutteringTextRenderer getDeclutteringTextRenderer()
+	{
+		return declutteringTextRenderer;
 	}
 
 	@Override
