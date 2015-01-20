@@ -21,6 +21,7 @@ import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.view.ViewUtil;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import java.awt.Point;
@@ -218,7 +219,7 @@ public class TargetOrbitView extends BaseOrbitView implements ITargetView
 	protected double computeNearClipDistance()
 	{
 		double near = Math.max(super.computeNearClipDistance(), MINIMUM_NEAR_DISTANCE);
-		if (prioritizeFarClipping)
+		if (shouldPrioritizeFarClipping())
 		{
 			double far = computeFarClipDistance();
 			return Math.max(near, far / MAXIMUM_FAR_NEAR_RATIO);
@@ -231,11 +232,28 @@ public class TargetOrbitView extends BaseOrbitView implements ITargetView
 	{
 		double elevation = getCurrentEyePosition().elevation;
 		double far = elevation + globe.getDiameter();
-		if (!prioritizeFarClipping)
+		if (!shouldPrioritizeFarClipping())
 		{
 			double near = computeNearClipDistance();
 			return Math.min(far, near * MAXIMUM_NEAR_FAR_RATIO);
 		}
 		return far;
+	}
+
+	protected boolean shouldPrioritizeFarClipping()
+	{
+		//always prioritize far clipping when below the earth's surface
+		return isPrioritizeFarClipping() || isBelowSurface();
+	}
+
+	protected boolean isBelowSurface()
+	{
+		if (dc == null)
+		{
+			return false;
+		}
+		Position eyePosition = getEyePosition();
+		double altitude = ViewUtil.computeElevationAboveSurface(dc, eyePosition);
+		return altitude < 0;
 	}
 }
