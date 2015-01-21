@@ -8,5 +8,5 @@ void main()
     float g = texture2D(texture0, gl_TexCoord[1].st).g;
     float b = texture2D(texture0, gl_TexCoord[2].st).b;
 
-    gl_FragColor = vec4(r, g, b, 1.0) * oVignette;
+    gl_FragColor = vec4(r, g, b, 1.0);
 }
