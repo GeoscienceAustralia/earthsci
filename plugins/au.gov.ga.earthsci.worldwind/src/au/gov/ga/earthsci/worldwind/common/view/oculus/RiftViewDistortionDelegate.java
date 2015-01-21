@@ -156,8 +156,13 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 	{
 		if (shouldRenderForHMD())
 		{
-			double hfovRadians = Math.atan(eyeFov[eye].LeftTan) + Math.atan(eyeFov[eye].RightTan);
-			view.setFieldOfView(Angle.fromRadians(hfovRadians));
+			//double hfovRadians = Math.atan(eyeFov[eye].LeftTan) + Math.atan(eyeFov[eye].RightTan);
+			//double vfovRadians = Math.atan(eyeFov[eye].UpTan) + Math.atan(eyeFov[eye].DownTan);
+			//view.setFieldOfView(Angle.fromRadians(hfovRadians));
+
+			//TODO hmmm, something about the reported Oculus FOV above and the World Wind's View FOV
+			//don't mix very well, so set it manually to a high FOV to ensure all tiles are rendered:
+			view.setFieldOfView(Angle.fromDegrees(130));
 		}
 	}
 
