@@ -184,10 +184,6 @@ public abstract class AbstractView extends WWObjectImpl implements View
 			Logging.logger().severe(message);
 			throw new IllegalStateException(message);
 		}
-		
-		// Update DrawContext and Globe references.
-		this.dc = dc;
-		this.globe = this.dc.getGlobe();
 
 		// Update DrawContext and Globe references.
 		this.dc = dc;
