@@ -259,4 +259,14 @@ public class DelegateOrbitView extends TargetOrbitView implements IDelegateView
 			callingDraw = false;
 		}
 	}
+
+	@Override
+	public boolean isTranslateAbsAllowed()
+	{
+		if (currentDelegate != null)
+		{
+			return currentDelegate.isTranslateAbsAllowed();
+		}
+		return true;
+	}
 }

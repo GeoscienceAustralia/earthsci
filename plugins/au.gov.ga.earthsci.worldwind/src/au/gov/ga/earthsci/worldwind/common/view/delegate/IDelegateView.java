@@ -132,4 +132,15 @@ public interface IDelegateView extends View
 	 *            Scene controller performing the draw
 	 */
 	void draw(DrawContext dc, DrawableSceneController sc);
+
+	/**
+	 * Is absolute horizontal translation enabled for the given delegate?
+	 * <p/>
+	 * Implementation should return the delegate's
+	 * {@link IViewDelegate#isTranslateAbsAllowed()}, or <code>true</code> if no
+	 * delegate is set.
+	 * 
+	 * @return Whether absolute horizontal translation is enabled
+	 */
+	boolean isTranslateAbsAllowed();
 }

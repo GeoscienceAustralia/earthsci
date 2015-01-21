@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.view.delegate;
 
+import gov.nasa.worldwind.awt.AbstractViewInputHandler;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.render.DrawContext;
@@ -135,4 +136,16 @@ public interface IViewDelegate
 	 *            Scene controller performing the draw
 	 */
 	void draw(IDelegateView view, DrawContext dc, DrawableSceneController sc);
+
+	/**
+	 * Is absolute horizontal translation enabled for this delegate? This
+	 * determines whether the mouse can grab a point on the surface of the globe
+	 * and move it in absolute coordinates instead of using relative mouse
+	 * movements. Sometimes delegates will want to disable this when they render
+	 * the globe differently on draw than they do on pick.
+	 * 
+	 * @return Whether absolute horizontal translation is enabled
+	 * @see AbstractViewInputHandler#onHorizontalTranslateAbs
+	 */
+	boolean isTranslateAbsAllowed();
 }

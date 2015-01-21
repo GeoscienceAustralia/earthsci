@@ -119,4 +119,10 @@ public class StereoViewDelegate implements IStereoViewDelegate
 	{
 		helper.draw(dc, sc);
 	}
+
+	@Override
+	public boolean isTranslateAbsAllowed()
+	{
+		return true;
+	}
 }

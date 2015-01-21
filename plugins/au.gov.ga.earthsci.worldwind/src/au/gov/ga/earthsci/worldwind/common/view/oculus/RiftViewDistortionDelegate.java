@@ -427,6 +427,12 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 		view.firePropertyChange(AVKey.VIEW, null, view); //make the view draw repeatedly for oculus rotation
 	}
 
+	@Override
+	public boolean isTranslateAbsAllowed()
+	{
+		return false;
+	}
+
 	/**
 	 * Transforming the modelview matrix with the Rift's head rotation causes
 	 * the {@link OrbitView#focusOnViewportCenter()} method to focus on the

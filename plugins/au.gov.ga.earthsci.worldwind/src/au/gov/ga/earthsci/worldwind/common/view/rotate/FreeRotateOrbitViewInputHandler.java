@@ -30,8 +30,8 @@ import gov.nasa.worldwind.view.orbit.OrbitView;
 import gov.nasa.worldwind.view.orbit.OrbitViewInputHandler;
 import gov.nasa.worldwind.view.orbit.OrbitViewInputSupport;
 import gov.nasa.worldwind.view.orbit.OrbitViewInputSupport.OrbitViewState;
+import au.gov.ga.earthsci.worldwind.common.view.delegate.DelegateOrbitViewInputHandler;
 import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
-import au.gov.ga.earthsci.worldwind.common.view.target.TargetOrbitViewInputHandler;
 
 /**
  * {@link OrbitViewInputHandler} subclass that adds support for free rotation of
@@ -39,7 +39,7 @@ import au.gov.ga.earthsci.worldwind.common.view.target.TargetOrbitViewInputHandl
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class FreeRotateOrbitViewInputHandler extends TargetOrbitViewInputHandler
+public class FreeRotateOrbitViewInputHandler extends DelegateOrbitViewInputHandler
 {
 	/**
 	 * Rotate the globe by an amount in a given direction.
@@ -63,7 +63,7 @@ public class FreeRotateOrbitViewInputHandler extends TargetOrbitViewInputHandler
 
 		amount = Angle.fromDegrees(amount.degrees * getScaleValueHorizTransRel(deviceAttributes, actionAttributes));
 
-		OrbitView view = (OrbitView) getView();
+		OrbitView view = getView();
 
 		//if this view hasn't been applied yet, its globe will be null
 		if (view.getGlobe() == null)
@@ -152,7 +152,7 @@ public class FreeRotateOrbitViewInputHandler extends TargetOrbitViewInputHandler
 
 		amount *= getScaleValueHorizTransRel(deviceAttributes, actionAttributes);
 
-		OrbitView view = (OrbitView) getView();
+		OrbitView view = getView();
 
 		//if this view hasn't been applied yet, its globe will be null
 		if (view.getGlobe() == null)
