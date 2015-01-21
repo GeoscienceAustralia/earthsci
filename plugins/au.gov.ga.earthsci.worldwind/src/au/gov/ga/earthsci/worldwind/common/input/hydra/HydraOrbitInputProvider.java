@@ -22,10 +22,12 @@ import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.view.BasicView;
 import gov.nasa.worldwind.view.ViewUtil;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 import au.gov.ga.earthsci.worldwind.common.input.IOrbitInputProvider;
 import au.gov.ga.earthsci.worldwind.common.input.IProviderOrbitViewInputHandler;
+import au.gov.ga.earthsci.worldwind.common.view.delegate.IDelegateView;
 import au.gov.ga.earthsci.worldwind.common.view.orbit.AbstractView;
 import au.gov.ga.earthsci.worldwind.common.view.target.ITargetView;
 
@@ -163,15 +165,27 @@ public class HydraOrbitInputProvider implements IOrbitInputProvider, IHydraListe
 			else
 			{
 				OrbitView view = inputHandler.getView();
-				if (!(view instanceof AbstractView))
+				DrawContext dc = null;
+				if (view instanceof AbstractView)
 				{
-					//AbstractView needed to get DrawContext below for altitude calculation
+					dc = ((AbstractView) view).getDC();
+				}
+				else if (view instanceof BasicView)
+				{
+					dc = ((BasicView) view).getDC();
+				}
+				else if (view instanceof IDelegateView)
+				{
+					dc = ((IDelegateView) view).getDC();
+				}
+
+				if (dc == null)
+				{
+					//need dc to calculate altitude below
 					return;
 				}
 
 				Globe globe = view.getGlobe();
-				DrawContext dc = ((AbstractView) view).getDC();
-
 				Position eyePosition = view.getEyePosition();
 				Vec4 eyePoint = view.getEyePoint();
 				Vec4 forward = view.getForwardVector();
@@ -192,15 +206,9 @@ public class HydraOrbitInputProvider implements IOrbitInputProvider, IHydraListe
 				Position centerPosition = globe.computePositionFromPoint(centerPoint);
 				centerPosition = new Position(centerPosition, centerPosition.elevation + altitudeChange);
 
-				double minimumAltitude = 100;
 				double maximumAltitude = radius * 0.5;
 				double centerAltitude = ViewUtil.computeElevationAboveSurface(dc, centerPosition);
-				if (centerAltitude < minimumAltitude)
-				{
-					/*centerPosition = new Position(centerPosition,
-							centerPosition.elevation - centerAltitude + minimumAltitude);*/
-				}
-				else if (centerAltitude > maximumAltitude)
+				if (centerAltitude > maximumAltitude)
 				{
 					centerPosition = new Position(centerPosition,
 							centerPosition.elevation - centerAltitude + maximumAltitude);
