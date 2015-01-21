@@ -15,7 +15,10 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.parts.globe.handlers;
 
+import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.View;
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.geom.Angle;
 
 import javax.inject.Inject;
 
@@ -111,6 +114,13 @@ public class StereoHandler
 	{
 		try
 		{
+			Double initFov = Configuration.getDoubleValue(AVKey.FOV);
+			if (initFov == null)
+			{
+				initFov = 45d;
+			}
+			view.setFieldOfView(Angle.fromDegrees(initFov));
+
 			if (MENU_NONE.equals(menuItemId))
 			{
 				view.setDelegate(null);
