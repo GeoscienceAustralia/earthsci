@@ -53,6 +53,12 @@ public interface IDelegateView extends View
 	void setDelegate(IViewDelegate delegate);
 
 	/**
+	 * @return Draw context passed to the last call to
+	 *         {@link #apply(DrawContext)}
+	 */
+	DrawContext getDC();
+
+	/**
 	 * Called by doApply function, before the transform matrices are computed.
 	 */
 	void beforeComputeMatrices();
