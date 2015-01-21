@@ -36,6 +36,7 @@ import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.pick.PickedObject;
 import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.util.OGLStackHandler;
+import gov.nasa.worldwind.view.ViewUtil;
 import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import java.awt.Dimension;
@@ -163,19 +164,11 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 	@Override
 	public Matrix computeModelView(IDelegateView view)
 	{
-		Matrix modelView = view.computeModelView();
-		/*if (shouldRenderForHMD())
-		{
-			double multiplier = dynamicEyeSeparationMultiplier(view);
-			modelView = Matrix.fromTranslation(
-					(eye == Eye.LEFT ? -1 : 1) * -getDistortion().getInterpupillaryDistance() * 0.5
-							* multiplier, 0, 0).multiply(modelView);
-		}*/
-		pretransformedModelView = modelView;
-		return transformModelView(pretransformedModelView);
+		pretransformedModelView = view.computeModelView();
+		return transformModelView(pretransformedModelView, view);
 	}
 
-	protected Matrix transformModelView(Matrix modelView)
+	protected Matrix transformModelView(Matrix modelView, IDelegateView view)
 	{
 		if (disableHeadTransform)
 		{
@@ -183,12 +176,25 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 		}
 
 		Vec4 translation = RiftUtils.toVec4(eyePoses[eye].Position);
+		double translationScale = getHeadTranslationScale(view);
 		Quaternion rotation = RiftUtils.toQuaternion(eyePoses[eye].Orientation);
 
-		Matrix translationM = Matrix.fromTranslation(translation.multiply3(-1));
+		Matrix translationM = Matrix.fromTranslation(translation.multiply3(-translationScale));
 		Matrix rotationM = Matrix.fromQuaternion(rotation.getInverse());
 
 		return rotationM.multiply(translationM.multiply(modelView));
+	}
+
+	protected double getHeadTranslationScale(IDelegateView view)
+	{
+		Position eyePosition = view.getEyePosition();
+		DrawContext dc = view.getDC();
+		if (dc == null)
+		{
+			return Math.abs(eyePosition.elevation);
+		}
+		double altitude = ViewUtil.computeElevationAboveSurface(dc, eyePosition);
+		return Math.abs(altitude);
 	}
 
 	@Override
