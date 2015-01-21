@@ -41,6 +41,7 @@ import gov.nasa.worldwind.view.orbit.OrbitView;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
@@ -338,6 +339,8 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 		GL2 gl = dc.getGL().getGL2();
 		init(gl);
 
+		Rectangle oldViewport = view.getViewport();
+
 		hmd.beginFrameTiming(++frameCount);
 		{
 			Posef[] eyePoses = hmd.getEyePoses(frameCount, eyeOffsets);
@@ -417,6 +420,10 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 		}
 		hmd.endFrameTiming();
 
+		//apply the old viewport, and ensure that the view is updated for the next picking round
+		gl.glViewport(oldViewport.x, oldViewport.y, oldViewport.width, oldViewport.height);
+		sc.applyView(dc);
+
 		view.firePropertyChange(AVKey.VIEW, null, view); //make the view draw repeatedly for oculus rotation
 	}
 
@@ -454,10 +461,6 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 			}
 
 			dc.setViewportCenterPosition((Position) pickedObjects.get(0).getObject());
-			if (dc.getView() instanceof OrbitView)
-			{
-				((OrbitView) dc.getView()).focusOnViewportCenter();
-			}
 		}
 		finally
 		{
