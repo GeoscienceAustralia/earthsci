@@ -113,6 +113,7 @@ public class HydraOrbitInputProvider implements IOrbitInputProvider, IHydraListe
 				if (view instanceof ITargetView)
 				{
 					((ITargetView) view).setTargetMode(fly);
+					((ITargetView) view).setDrawAxisMarker(!fly);
 				}
 			}
 		}
@@ -197,7 +198,7 @@ public class HydraOrbitInputProvider implements IOrbitInputProvider, IHydraListe
 				double[] range = flyHorizontalAttributes.getValues();
 				double speed = getScaleValue(range[0], range[1], altitude, 3.0 * radius, true) * time;
 
-				double eyeDistance = 10000;
+				double eyeDistance = 1;
 				Vec4 centerPoint = eyePoint.add3(forward.multiply3(eyeDistance));
 				centerPoint = centerPoint.add3(forward.multiply3(y1 * speed));
 				centerPoint = centerPoint.add3(side.multiply3(x1 * speed));
