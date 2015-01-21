@@ -50,14 +50,19 @@ public class TargetOrbitViewInputHandler extends BaseOrbitViewInputHandler
 	protected boolean isTargetMode()
 	{
 		OrbitView view = getView();
-		return view instanceof TargetOrbitView && ((ITargetView) view).isTargetMode();
+		return view instanceof ITargetView && ((ITargetView) view).isTargetMode();
+	}
+
+	protected boolean isTranslateAbsAllowed()
+	{
+		return !isTargetMode();
 	}
 
 	@Override
 	protected void onHorizontalTranslateRel(double forwardInput, double sideInput, double totalForwardInput,
 			double totalSideInput, DeviceAttributes deviceAttributes, ActionAttributes actionAttributes)
 	{
-		if (isTargetMode())
+		if (!isTranslateAbsAllowed())
 		{
 			//if the view is in target mode, then don't perform the absolute positioning, so
 			//only call the relative positioning function
