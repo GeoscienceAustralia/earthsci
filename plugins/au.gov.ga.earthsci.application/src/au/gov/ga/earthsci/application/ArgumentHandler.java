@@ -18,6 +18,8 @@ package au.gov.ga.earthsci.application;
 import jargs.gnu.LenientCmdLineParser;
 import jargs.gnu.LenientCmdLineParser.IllegalOptionValueException;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 
@@ -72,7 +74,16 @@ public class ArgumentHandler
 			logger.info("Starting Intent for resource provided via command line: " + arg); //$NON-NLS-1$
 			try
 			{
-				URL url = new URL(arg);
+				URL url = null;
+				try
+				{
+					url = new URL(arg);
+				}
+				catch (MalformedURLException e)
+				{
+					URL context = new File(".").toURI().toURL(); //$NON-NLS-1$
+					url = new URL(context, arg);
+				}
 				Intent intent = new Intent();
 				intent.setURI(url.toURI());
 				IIntentCallback callback = new AbstractIntentCallback()
