@@ -51,6 +51,7 @@ public class PostApplicationStartupAddon
 				@Override
 				public void handleEvent(Event event)
 				{
+					PreferencePageFilter.filter();
 					PartDescriptorFilter.run(application, service);
 					PartInstantiator.createParts(application, service, partService);
 					IntentManager.getInstance().beginExecution();
