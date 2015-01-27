@@ -32,10 +32,6 @@ http://www.apache.org/licenses/
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.equinox.p2.user.ui"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.sapphire"
          version="0.0.0"/>
 
