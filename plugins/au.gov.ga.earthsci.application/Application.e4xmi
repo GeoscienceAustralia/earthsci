@@ -51,7 +51,6 @@
   <handlers xmi:id="_007tX_sMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.handlers.open" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.OpenHandler" command="_007tXvsMEeG36NOaHUgVKA"/>
   <handlers xmi:id="_007tZfsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.handlers.about" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.AboutHandler" command="_007tZPsMEeG36NOaHUgVKA"/>
   <handlers xmi:id="_GJ_xEPvQEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.handlers.showView" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.ShowViewHandler" command="_pU-REPvQEeG36NOaHUgVKA"/>
-  <handlers xmi:id="_BbnXUPyJEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.handlers.preferences" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.ShowPreferencesHandler" command="_940mAPyIEeG36NOaHUgVKA"/>
   <handlers xmi:id="_KQJ3EAOEEeK17JdaarPZug" elementId="au.gov.ga.earthsci.application.handlers.helpContents" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.HelpHandler" command="_t3D6kAODEeK17JdaarPZug"/>
   <bindingTables xmi:id="_007tXPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.tables.dialogAndWindow" bindingContext="_007tUfsMEeG36NOaHUgVKA">
     <bindings xmi:id="_007tXfsMEeG36NOaHUgVKA" keySequence="M1+Q" command="_007tWvsMEeG36NOaHUgVKA"/>
