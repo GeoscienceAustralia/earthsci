@@ -36,8 +36,8 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_40V18Px8EeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.window.preferences" label="%menu.window.preferences.label" command="_940mAPyIEeG36NOaHUgVKA"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_007tbfsMEeG36NOaHUgVKA" elementId="help" label="%menu.help.label">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_ogLhQALaEeK4hsezy7qCSg" elementId="au.gov.ga.earthsci.application.menu.help.showhelp" label="%menu.help.contents.label" tooltip="%menu.help.contents.tooltip" command="_t3D6kAODEeK17JdaarPZug"/>
-        <children xsi:type="menu:MenuSeparator" xmi:id="_45q4MALaEeK4hsezy7qCSg" elementId="au.gov.ga.earthsci.application.menuseparator.0"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_ogLhQALaEeK4hsezy7qCSg" elementId="au.gov.ga.earthsci.application.menu.help.showhelp" toBeRendered="false" visible="false" label="%menu.help.contents.label" tooltip="%menu.help.contents.tooltip" command="_t3D6kAODEeK17JdaarPZug"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_45q4MALaEeK4hsezy7qCSg" elementId="au.gov.ga.earthsci.application.menuseparator.0" toBeRendered="false" visible="false"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_007tbvsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.menu.help.about" label="%menu.help.about.label" command="_007tZPsMEeG36NOaHUgVKA"/>
       </children>
     </mainMenu>
