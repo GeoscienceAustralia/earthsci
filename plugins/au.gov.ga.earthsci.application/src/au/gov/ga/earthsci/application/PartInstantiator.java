@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
@@ -45,6 +46,7 @@ public class PartInstantiator
 	public static final String PARENT_ID = "parent"; //$NON-NLS-1$
 	public static final String POSITION_ID = "position"; //$NON-NLS-1$
 	public static final String VISIBLE_ID = "visible"; //$NON-NLS-1$
+	public static final String ONTOP_ID = "ontop"; //$NON-NLS-1$
 
 	public static void createParts(MApplication application, EModelService service, EPartService partService)
 	{
@@ -75,6 +77,7 @@ public class PartInstantiator
 			}
 		}
 
+		List<MPart> ontops = new ArrayList<MPart>();
 		for (MPartDescriptor descriptor : application.getDescriptors())
 		{
 			if (!(descriptor.getPersistedState().containsKey(VISIBLE_ID) && Boolean.toString(true).equalsIgnoreCase(
@@ -95,6 +98,17 @@ public class PartInstantiator
 			}
 			addPartToAppropriateContainer(part, descriptor, application, service);
 			partService.activate(part);
+			if (descriptor.getPersistedState().containsKey(ONTOP_ID)
+					&& Boolean.toString(true).equalsIgnoreCase(descriptor.getPersistedState().get(ONTOP_ID)))
+			{
+				ontops.add(part);
+			}
+		}
+
+		//reactivate ontop parts to ensure they are on-top
+		for (MPart ontop : ontops)
+		{
+			partService.activate(ontop);
 		}
 	}
 

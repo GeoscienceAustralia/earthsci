@@ -11,6 +11,7 @@
       <persistedState key="parent" value="au.gov.ga.earthsci.application.partstack.0.0.0"/>
       <persistedState key="visible" value="true"/>
       <persistedState key="position" value="first"/>
+      <persistedState key="ontop" value="true"/>
       <tags>View</tags>
       <tags>categoryTag:Data</tags>
       <handlers xmi:id="_lCk1s5XJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.addhandler" contributionURI="bundleclass://au.gov.ga.earthsci.catalog.ui/au.gov.ga.earthsci.catalog.ui.handler.AddHandler" command="_I2rL8JZeEeKo0s_wGDk0-Q"/>

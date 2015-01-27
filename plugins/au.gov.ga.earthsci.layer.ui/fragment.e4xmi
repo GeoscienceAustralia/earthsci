@@ -17,6 +17,7 @@
       <persistedState key="parent" value="au.gov.ga.earthsci.application.partstack.0.1.0.1"/>
       <persistedState key="visible" value="true"/>
       <persistedState key="position" value="first"/>
+      <persistedState key="ontop" value="true"/>
       <tags>View</tags>
       <tags>categoryTag:Data</tags>
       <handlers xmi:id="_AKs3Q5dDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.CutHandler" command="_LhlP8JdDEeKAe5mIUYJvmg"/>
