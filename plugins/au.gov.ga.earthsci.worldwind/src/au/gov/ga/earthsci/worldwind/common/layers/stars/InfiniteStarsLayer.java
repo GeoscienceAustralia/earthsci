@@ -233,4 +233,10 @@ public class InfiniteStarsLayer extends AbstractLayer
 				radius * Math.sin(declination),
 				radCosLat * Math.cos(rightAscension));
 	}
+
+	@Override
+	public String toString()
+	{
+		return "Stars";
+	}
 }

@@ -384,4 +384,10 @@ public class SunLayer extends AbstractLayer
 			ogsh.pop(gl);
 		}
 	}
+
+	@Override
+	public String toString()
+	{
+		return "Sun";
+	}
 }

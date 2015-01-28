@@ -96,4 +96,10 @@ public class AtmosphereGroundLayer extends AbstractAtmosphereLayer
 		FrameBuffer.renderTexturedQuad(gl, frameBuffer.getTexture().getId());
 		gl.glDepthMask(true);
 	}
+
+	@Override
+	public String toString()
+	{
+		return "Atmosphere (ground)";
+	}
 }

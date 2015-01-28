@@ -95,4 +95,10 @@ public class AtmosphereSkyLayer extends AbstractAtmosphereLayer
 
 		gl.glDepthMask(true);
 	}
+
+	@Override
+	public String toString()
+	{
+		return "Atmosphere (sky)";
+	}
 }
