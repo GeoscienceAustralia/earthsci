@@ -20,6 +20,7 @@ import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
+import gov.nasa.worldwind.layers.WorldMapLayer;
 
 import java.net.URI;
 
@@ -62,6 +63,10 @@ public class DefaultLayers
 		for (Layer layer : layers)
 		{
 			if (HudLayers.containsLayerClass(layer.getClass()))
+			{
+				continue;
+			}
+			if (layer.getClass().equals(WorldMapLayer.class))
 			{
 				continue;
 			}
