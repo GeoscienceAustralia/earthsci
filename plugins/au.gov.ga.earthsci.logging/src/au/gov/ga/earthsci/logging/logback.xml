@@ -1,7 +1,7 @@
 <!-- Default configuration for the logging mechanism. -->
 <configuration>
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>earthsci.log</file>
+        <file>${osgi.logfile}.earthsci.log</file>
         <encoder>
             <pattern>%date %-5level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
         </encoder>
