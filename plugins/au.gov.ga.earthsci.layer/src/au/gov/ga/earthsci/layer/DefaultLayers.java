@@ -20,15 +20,22 @@ import gov.nasa.worldwind.Configuration;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
+import gov.nasa.worldwind.layers.SkyGradientLayer;
+import gov.nasa.worldwind.layers.StarsLayer;
 import gov.nasa.worldwind.layers.WorldMapLayer;
 
 import java.net.URI;
 
 import org.w3c.dom.Element;
 
+import au.gov.ga.earthsci.layer.delegator.ILayerDelegator;
 import au.gov.ga.earthsci.layer.hud.HudLayers;
 import au.gov.ga.earthsci.layer.tree.FolderNode;
 import au.gov.ga.earthsci.layer.tree.LayerNode;
+import au.gov.ga.earthsci.worldwind.common.layers.atmosphere.AtmosphereGroundLayer;
+import au.gov.ga.earthsci.worldwind.common.layers.atmosphere.AtmosphereSkyLayer;
+import au.gov.ga.earthsci.worldwind.common.layers.stars.InfiniteStarsLayer;
+import au.gov.ga.earthsci.worldwind.common.layers.sun.SunLayer;
 
 /**
  * Helper class which reads the "LayerList" element from the World Wind
@@ -58,6 +65,30 @@ public class DefaultLayers
 		if (elevationModelLayer instanceof Layer)
 		{
 			layers.add(0, (Layer) elevationModelLayer);
+		}
+
+		//replace stars, and add new atmosphere/sun layers
+		for (int i = 0; i < layers.size(); i++)
+		{
+			Layer layer = layers.get(i);
+			if (layer instanceof ILayerDelegator<?>)
+			{
+				layer = ((ILayerDelegator<?>) layer).getGrandLayer();
+			}
+			if (layer instanceof StarsLayer)
+			{
+				layers.remove(i);
+				layers.add(i, new InfiniteStarsLayer());
+			}
+			else if (layer instanceof SkyGradientLayer)
+			{
+				layer.setName("Sky"); //$NON-NLS-1$
+				layer.setEnabled(false);
+				i++;
+				layers.add(i++, new AtmosphereGroundLayer());
+				layers.add(i++, new AtmosphereSkyLayer());
+				layers.add(i, new SunLayer());
+			}
 		}
 
 		for (Layer layer : layers)
