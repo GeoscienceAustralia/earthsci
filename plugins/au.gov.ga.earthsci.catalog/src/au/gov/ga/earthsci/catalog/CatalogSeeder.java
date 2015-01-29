@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import au.gov.ga.earthsci.common.persistence.PersistenceException;
 import au.gov.ga.earthsci.common.util.XmlUtil;
 import au.gov.ga.earthsci.seeder.ISeeder;
 import au.gov.ga.earthsci.seeder.SeederManager;
@@ -56,9 +55,9 @@ public class CatalogSeeder implements ISeeder
 			{
 				try
 				{
-					CatalogPersister.loadCatalogModel(child2, catalogModel, this.context, true);
+					CatalogPersister.loadCatalogModel(child2, context.toURI(), catalogModel, this.context, true);
 				}
-				catch (PersistenceException e)
+				catch (Exception e)
 				{
 					logger.error("Error unpersisting catalogs from seed file", e); //$NON-NLS-1$
 				}

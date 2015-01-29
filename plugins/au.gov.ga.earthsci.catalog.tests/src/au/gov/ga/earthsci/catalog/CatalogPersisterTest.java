@@ -86,7 +86,7 @@ public class CatalogPersisterTest
 	{
 		InputStream is = null;
 
-		CatalogPersister.loadCatalogModel(is, null, null, false);
+		CatalogPersister.loadCatalogModel(is, null, null, null, false);
 	}
 
 	@Test(expected = SAXParseException.class)
@@ -96,7 +96,7 @@ public class CatalogPersisterTest
 
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 
-		CatalogPersister.loadCatalogModel(is, null, null, false);
+		CatalogPersister.loadCatalogModel(is, null, null, null, false);
 	}
 
 	@Test(expected = PersistenceException.class)
@@ -107,7 +107,7 @@ public class CatalogPersisterTest
 
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 
-		CatalogPersister.loadCatalogModel(is, null, null, false);
+		CatalogPersister.loadCatalogModel(is, null, null, null, false);
 	}
 
 	@Test
@@ -118,7 +118,7 @@ public class CatalogPersisterTest
 
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 
-		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is, null, null, false);
+		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is, null, null, null, false);
 
 		assertNotNull(catalogModel);
 		assertNotNull(catalogModel.getRoot());
@@ -137,7 +137,7 @@ public class CatalogPersisterTest
 		InputStream is = new ByteArrayInputStream(document.getBytes());
 
 		IntentManager.setInstance(new DummyIntentManager());
-		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is, null, null, false);
+		ICatalogModel catalogModel = CatalogPersister.loadCatalogModel(is, null, null, null, false);
 
 		assertNotNull(catalogModel);
 		assertNotNull(catalogModel.getRoot());
