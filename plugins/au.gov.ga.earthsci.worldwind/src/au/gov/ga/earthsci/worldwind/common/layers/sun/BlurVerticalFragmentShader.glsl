@@ -10,8 +10,8 @@ void main()
 	
 	for(int y = -Width; y <= Width; y++)
 	{
-		float width = (wp1 - abs(float(y)));
-		Color += texture2D(Texture, gl_TexCoord[0].st + vec2(0.0, od * y)).rgb * width;
+		float width = (float(wp1) - abs(float(y)));
+		Color += texture2D(Texture, gl_TexCoord[0].st + vec2(0.0, od * float(y))).rgb * width;
 		Sum += width;
 	}
 	

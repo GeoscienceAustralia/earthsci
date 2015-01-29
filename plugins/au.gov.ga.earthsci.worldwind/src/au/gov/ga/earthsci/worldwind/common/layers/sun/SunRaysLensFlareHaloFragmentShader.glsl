@@ -21,10 +21,10 @@ void main()
 {
 	vec3 RadialBlur = vec3(0.0);
 	vec2 TexCoord = gl_TexCoord[0].st;
-	int RadialBlurSamples = 128;
+	float RadialBlurSamples = 128.0;
 	vec2 RadialBlurVector = (SunPosProj - TexCoord) / RadialBlurSamples;
 
-	for(int i = 0; i < RadialBlurSamples; i++)
+	for(int i = 0; i < int(RadialBlurSamples); i++)
 	{
 		RadialBlur += texture2D(LowBlurredSunTexture, TexCoord).rgb;
 		TexCoord += RadialBlurVector;

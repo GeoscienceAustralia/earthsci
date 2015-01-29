@@ -9,5 +9,5 @@ void main(void)
 	float normalizedMagnitude = (gl_Vertex.w - minMag) / (maxMag - minMag);
 	float size = pow(normalizedMagnitude, 10.0);
 	gl_PointSize = (10.0 + size * 50.0);
-	gl_FrontColor = pow(gl_Color, 0.5) * size * 5.0;
+	gl_FrontColor = pow(gl_Color, vec4(0.5)) * size * 5.0;
 }
