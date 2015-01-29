@@ -20,7 +20,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -779,6 +782,33 @@ public class Persister
 		else if (attribute != null)
 		{
 			stringValue = attribute.getValue();
+		}
+
+		//if context is non-null, use it to resolve relative URIs/URLs
+		if (context != null)
+		{
+			if (URI.class.isAssignableFrom(type))
+			{
+				try
+				{
+					return context.resolve(new URI(stringValue));
+				}
+				catch (URISyntaxException e)
+				{
+					throw new PersistenceException("Error converting string to URI", e); //$NON-NLS-1$
+				}
+			}
+			if (URL.class.isAssignableFrom(type))
+			{
+				try
+				{
+					return new URL(context.toURL(), stringValue);
+				}
+				catch (MalformedURLException e)
+				{
+					throw new PersistenceException("Error converting string to URL", e); //$NON-NLS-1$
+				}
+			}
 		}
 
 		//once here, the only objects supported for unpersistance are those that are StringInstantiable
