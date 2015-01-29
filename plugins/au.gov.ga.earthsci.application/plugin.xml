@@ -250,5 +250,18 @@
             class="au.gov.ga.earthsci.application.KeyboardFocusManagerFixStartup">
       </startup>
    </extension>
+   <extension
+         id="au.gov.ga.earthsci.application.fragment"
+         point="org.eclipse.e4.workbench.model">
+      <fragment
+            apply="always"
+            uri="menu.e4xmi">
+      </fragment>
+      <processor
+            apply="always"
+            beforefragment="true"
+            class="au.gov.ga.earthsci.application.compatibility.ForceMainMenuProcessor">
+      </processor>
+   </extension>
 
 </plugin>

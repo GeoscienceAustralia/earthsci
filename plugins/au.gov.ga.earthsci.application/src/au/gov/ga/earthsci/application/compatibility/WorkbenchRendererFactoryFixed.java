@@ -18,34 +18,23 @@ package au.gov.ga.earthsci.application.compatibility;
 import org.eclipse.e4.ui.internal.workbench.swt.AbstractPartRenderer;
 import org.eclipse.e4.ui.model.application.ui.MUIElement;
 import org.eclipse.e4.ui.model.application.ui.basic.MTrimmedWindow;
-import org.eclipse.e4.ui.model.application.ui.menu.MMenu;
-import org.eclipse.e4.ui.workbench.renderers.swt.MenuManagerRenderer;
+import org.eclipse.e4.ui.workbench.renderers.swt.WBWRenderer;
 import org.eclipse.e4.ui.workbench.renderers.swt.WorkbenchRendererFactory;
 
 /**
  * {@link WorkbenchRendererFactory} subclass that creates the
- * {@link MenuManagerRendererFixed} instead of the {@link MenuManagerRenderer}
- * as the renderer for {@link MMenu} elements.
+ * {@link WindowRenderer} instead of the {@link WBWRenderer} as the renderer for
+ * {@link MTrimmedWindow} elements.
  *
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
 public class WorkbenchRendererFactoryFixed extends WorkbenchRendererFactory
 {
-	private MenuManagerRenderer menuRenderer;
 	private WindowRenderer windowRenderer;
 
 	@Override
 	public AbstractPartRenderer getRenderer(MUIElement uiElement, Object parent)
 	{
-		if (uiElement instanceof MMenu)
-		{
-			if (menuRenderer == null)
-			{
-				menuRenderer = new MenuManagerRendererFixed();
-				initRenderer(menuRenderer);
-			}
-			return menuRenderer;
-		}
 		if (uiElement instanceof MTrimmedWindow)
 		{
 			if (windowRenderer == null)
