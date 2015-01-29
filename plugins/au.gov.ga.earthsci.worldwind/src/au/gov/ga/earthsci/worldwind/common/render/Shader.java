@@ -175,15 +175,44 @@ public abstract class Shader
 		gl.glGetProgramiv(shaderProgram, GL2.GL_VALIDATE_STATUS, status, 0);
 		if (status[0] != GL2.GL_TRUE)
 		{
+			StringBuilder message = new StringBuilder();
+
 			int maxLength = 10240;
 			int[] length = new int[1];
 			byte[] bytes = new byte[maxLength];
 			gl.glGetProgramInfoLog(shaderProgram, maxLength, length, 0, bytes, 0);
-			String info = new String(bytes, 0, length[0]);
-			System.out.println(info);
+			if (length[0] > 0)
+			{
+				String programInfo = new String(bytes, 0, length[0]);
+				message.append("Program info: " + programInfo);
+			}
+
+			gl.glGetShaderInfoLog(vertexShader, maxLength, length, 0, bytes, 0);
+			if (length[0] > 0)
+			{
+				String vertexInfo = new String(bytes, 0, length[0]);
+				message.append("Vertex shader info: " + vertexInfo);
+			}
+
+			gl.glGetShaderInfoLog(fragmentShader, maxLength, length, 0, bytes, 0);
+			if (length[0] > 0)
+			{
+				String fragmentInfo = new String(bytes, 0, length[0]);
+				message.append("Fragment shader info: " + fragmentInfo);
+			}
+
+			if (gsrc != null)
+			{
+				gl.glGetShaderInfoLog(geometryShader, maxLength, length, 0, bytes, 0);
+				if (length[0] > 0)
+				{
+					String geometryInfo = new String(bytes, 0, length[0]);
+					message.append("Geometry shader info: " + geometryInfo);
+				}
+			}
 
 			delete(gl);
-			throw new IllegalStateException("Validation of shader program failed");
+			throw new IllegalStateException("Shader Validation failed\n" + message);
 		}
 
 		gl.glUseProgram(shaderProgram);
