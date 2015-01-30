@@ -58,9 +58,9 @@ public class ShaderRenderDelegate implements IRenderDelegate
 	@Override
 	public void preRender(DrawContext dc)
 	{
-		GL2 gl = dc.getGL().getGL2();
 		if (shader == null)
 		{
+			GL2 gl = dc.getGL().getGL2();
 			shader = new ShaderRenderDelegateShader(vertexShader, fragmentShader);
 			shader.create(gl);
 		}
