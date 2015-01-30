@@ -30,9 +30,9 @@ import au.gov.ga.earthsci.worldwind.common.render.Shader;
 public class SunDepthTestShader extends Shader
 {
 	@Override
-	public void use(GL2 gl)
+	public boolean use(GL2 gl)
 	{
-		super.use(gl);
+		return super.use(gl);
 	}
 
 	@Override

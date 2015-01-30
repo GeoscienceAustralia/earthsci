@@ -33,8 +33,10 @@ public class SunRaysLensFlareHaloShader extends Shader
 
 	public void use(GL2 gl, float projectedSunPosX, float projectedSunPosY)
 	{
-		super.use(gl);
-		gl.glUniform2f(sunPosProj, projectedSunPosX, projectedSunPosY);
+		if (super.use(gl))
+		{
+			gl.glUniform2f(sunPosProj, projectedSunPosX, projectedSunPosY);
+		}
 	}
 
 	@Override

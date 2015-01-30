@@ -109,8 +109,11 @@ public class DepthOfFieldEffect extends EffectBase
 	{
 		GL2 gl = dc.getGL().getGL2();
 
-		depthOfFieldShader.createIfRequired(gl);
-		gaussianBlurShader.createIfRequired(gl);
+		if (!(depthOfFieldShader.createIfRequired(gl) && gaussianBlurShader.createIfRequired(gl)))
+		{
+			FrameBuffer.renderTexturedQuad(gl, frameBuffer.getTexture().getId(), frameBuffer.getDepth().getId());
+			return;
+		}
 
 		try
 		{
@@ -127,9 +130,9 @@ public class DepthOfFieldEffect extends EffectBase
 				gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
 
 				//draw the scene, blurring vertically first, then horizontally
-				gaussianBlurShader.use(dc, blurFrameBuffer.getDimensions(), false);
+				gaussianBlurShader.use(gl, blurFrameBuffer.getDimensions(), false);
 				FrameBuffer.renderTexturedQuad(gl, frameBuffer.getTexture().getId());
-				gaussianBlurShader.use(dc, blurFrameBuffer.getDimensions(), true);
+				gaussianBlurShader.use(gl, blurFrameBuffer.getDimensions(), true);
 				FrameBuffer.renderTexturedQuad(gl, blurFrameBuffer.getTexture().getId());
 				gaussianBlurShader.unuse(gl);
 			}
@@ -145,7 +148,7 @@ public class DepthOfFieldEffect extends EffectBase
 
 		try
 		{
-			depthOfFieldShader.use(dc, frameBuffer.getDimensions(), (float) focus, (float) near, (float) far, 1f / 4f);
+			depthOfFieldShader.use(gl, frameBuffer.getDimensions(), (float) focus, (float) near, (float) far, 1f / 4f);
 			FrameBuffer.renderTexturedQuad(gl, frameBuffer.getTextures()[0].getId(), frameBuffer.getDepth().getId(),
 					blurFrameBuffer.getTextures()[0].getId());
 		}

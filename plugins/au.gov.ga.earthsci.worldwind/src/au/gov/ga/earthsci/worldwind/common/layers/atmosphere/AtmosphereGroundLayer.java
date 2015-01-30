@@ -39,14 +39,13 @@ public class AtmosphereGroundLayer extends AbstractAtmosphereLayer
 	private BlendSurfaceImage terrain;
 
 	private final FrameBuffer frameBuffer = new FrameBuffer();
+	private boolean shaderCreationFailed = false;
 
 	@Override
 	protected void init(DrawContext dc)
 	{
 		GL2 gl = dc.getGL().getGL2();
-
-		groundFromAtmosphereShader.create(gl);
-		groundFromSpaceShader.create(gl);
+		shaderCreationFailed = !(groundFromAtmosphereShader.create(gl) && groundFromSpaceShader.create(gl));
 
 		BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		image.setRGB(0, 0, 0xff << 24);
@@ -64,6 +63,11 @@ public class AtmosphereGroundLayer extends AbstractAtmosphereLayer
 	protected void renderAtmosphere(DrawContext dc, Vec4 lightDirection, Vec4 eyePoint, float eyeMagnitude,
 			float innerRadius, float outerRadius)
 	{
+		if (shaderCreationFailed)
+		{
+			return;
+		}
+
 		GL2 gl = dc.getGL().getGL2();
 
 		Rectangle viewport = dc.getView().getViewport();

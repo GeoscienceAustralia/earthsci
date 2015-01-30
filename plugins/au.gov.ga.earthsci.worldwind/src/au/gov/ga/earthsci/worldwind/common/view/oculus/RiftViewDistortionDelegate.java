@@ -339,6 +339,12 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 		GL2 gl = dc.getGL().getGL2();
 		init(gl);
 
+		if (distortionShader.isCreationFailed())
+		{
+			view.draw(dc, sc);
+			return;
+		}
+
 		Rectangle oldViewport = view.getViewport();
 
 		hmd.beginFrameTiming(++frameCount);
@@ -385,7 +391,7 @@ public class RiftViewDistortionDelegate implements IViewDelegate
 				{
 					OvrMatrix4f[] timeWarpMatricesRowMajor = new OvrMatrix4f[2];
 					hmd.getEyeTimewarpMatrices(eyeNum, eyePoses[eyeNum], timeWarpMatricesRowMajor);
-					distortionShader.use(dc, uvScaleOffset[eyeNum][0].x, -uvScaleOffset[eyeNum][0].y,
+					distortionShader.use(gl, uvScaleOffset[eyeNum][0].x, -uvScaleOffset[eyeNum][0].y,
 							uvScaleOffset[eyeNum][1].x, 1 - uvScaleOffset[eyeNum][1].y, timeWarpMatricesRowMajor[0].M,
 							timeWarpMatricesRowMajor[1].M);
 

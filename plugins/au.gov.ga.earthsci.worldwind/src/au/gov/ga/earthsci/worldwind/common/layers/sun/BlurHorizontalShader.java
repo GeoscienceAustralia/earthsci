@@ -34,9 +34,11 @@ public class BlurHorizontalShader extends Shader
 
 	public void use(GL2 gl, int width, float od)
 	{
-		super.use(gl);
-		gl.glUniform1i(this.width, width);
-		gl.glUniform1f(this.od, od);
+		if (super.use(gl))
+		{
+			gl.glUniform1i(this.width, width);
+			gl.glUniform1f(this.od, od);
+		}
 	}
 
 	@Override

@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.effects.depthoffield;
 
-import gov.nasa.worldwind.render.DrawContext;
-
 import java.awt.Dimension;
 import java.io.InputStream;
 
@@ -40,22 +38,22 @@ public class GaussianBlurShader extends Shader
 	/**
 	 * Use this shader.
 	 * 
-	 * @param dc
-	 *            Draw context
+	 * @param gl
+	 *            GL context
 	 * @param dimensions
 	 *            Dimensions of the input texture
 	 * @param horizontal
 	 *            Blur horizontally?
 	 */
-	public void use(DrawContext dc, Dimension dimensions, boolean horizontal)
+	public void use(GL2 gl, Dimension dimensions, boolean horizontal)
 	{
-		GL2 gl = dc.getGL().getGL2();
-		super.use(gl);
-
-		gl.glUniform1f(sigmaUniform, 4.0f);
-		gl.glUniform1i(horizontalUniform, horizontal ? 1 : 0);
-		float blurSize = 1.0f / (horizontal ? dimensions.width : dimensions.height);
-		gl.glUniform1f(blurSizeUniform, blurSize);
+		if (super.use(gl))
+		{
+			gl.glUniform1f(sigmaUniform, 4.0f);
+			gl.glUniform1i(horizontalUniform, horizontal ? 1 : 0);
+			float blurSize = 1.0f / (horizontal ? dimensions.width : dimensions.height);
+			gl.glUniform1f(blurSizeUniform, blurSize);
+		}
 	}
 
 	@Override

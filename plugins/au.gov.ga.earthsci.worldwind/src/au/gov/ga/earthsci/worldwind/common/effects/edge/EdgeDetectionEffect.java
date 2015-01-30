@@ -41,7 +41,12 @@ public class EdgeDetectionEffect extends EffectBase
 	{
 		GL2 gl = dc.getGL().getGL2();
 
-		edgeShader.createIfRequired(gl);
+		if (!edgeShader.createIfRequired(gl))
+		{
+			FrameBuffer.renderTexturedQuad(gl, frameBuffer.getTexture().getId(), frameBuffer.getDepth().getId());
+			return;
+		}
+
 		try
 		{
 			edgeShader.use(gl, dimensions.width, dimensions.height);

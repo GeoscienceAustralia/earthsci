@@ -35,14 +35,13 @@ public class AtmosphereSkyLayer extends AbstractAtmosphereLayer
 
 	private Globe lastGlobe;
 	private int sphereList = -1;
+	private boolean shaderCreationFailed = false;
 
 	@Override
 	protected void init(DrawContext dc)
 	{
 		GL2 gl = dc.getGL().getGL2();
-
-		skyFromAtmosphereShader.create(gl);
-		skyFromSpaceShader.create(gl);
+		shaderCreationFailed = !(skyFromAtmosphereShader.create(gl) && skyFromSpaceShader.create(gl));
 	}
 
 	@Override
@@ -55,6 +54,11 @@ public class AtmosphereSkyLayer extends AbstractAtmosphereLayer
 	protected void renderAtmosphere(DrawContext dc, Vec4 lightDirection, Vec4 eyePoint, float eyeMagnitude,
 			float innerRadius, float outerRadius)
 	{
+		if (shaderCreationFailed)
+		{
+			return;
+		}
+
 		GL2 gl = dc.getGL().getGL2();
 
 		SkyShader skyShader = eyeMagnitude < outerRadius ? skyFromAtmosphereShader : skyFromSpaceShader;

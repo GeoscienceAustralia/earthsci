@@ -15,8 +15,11 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.render;
 
+import gov.nasa.worldwind.util.Logging;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -34,6 +37,7 @@ public abstract class Shader
 	protected int vertexShader = 0;
 	protected int fragmentShader = 0;
 	protected int geometryShader = 0;
+	protected boolean creationFailed = false;
 
 	/**
 	 * @return An {@link InputStream} containing the GLSL vertex shader string
@@ -91,133 +95,145 @@ public abstract class Shader
 	 * Setup this GLSL shader in OpenGL
 	 * 
 	 * @param gl
+	 * @return Was this shader created?
 	 */
-	public final void create(GL2 gl)
+	public final boolean create(GL2 gl)
 	{
-		if (isCreated())
+		if (isCreated() || creationFailed)
 		{
-			return;
+			return false;
 		}
 
-		InputStream vertex = getVertexSource();
-		InputStream fragment = getFragmentSource();
-		InputStream geometry = getGeometrySource();
-
-		String vsrc = null, fsrc = null, gsrc = null;
 		try
 		{
-			vsrc = IOUtil.readStreamToStringKeepingNewlines(vertex, null);
-			fsrc = IOUtil.readStreamToStringKeepingNewlines(fragment, null);
-			gsrc = geometry == null ? null : IOUtil.readStreamToStringKeepingNewlines(geometry, null);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+			InputStream vertex = getVertexSource();
+			InputStream fragment = getFragmentSource();
+			InputStream geometry = getGeometrySource();
 
-		String[] defines = getDefines();
-		vsrc = insertDefines(vsrc, defines, "_VERTEX_");
-		fsrc = insertDefines(fsrc, defines, "_FRAGMENT_");
-		gsrc = gsrc == null ? null : insertDefines(gsrc, defines, "_GEOMETRY_");
+			String vsrc = null, fsrc = null, gsrc = null;
+			try
+			{
+				vsrc = IOUtil.readStreamToStringKeepingNewlines(vertex, null);
+				fsrc = IOUtil.readStreamToStringKeepingNewlines(fragment, null);
+				gsrc = geometry == null ? null : IOUtil.readStreamToStringKeepingNewlines(geometry, null);
+			}
+			catch (IOException e)
+			{
+				throw new ShaderException("Error reading shader source", e);
+			}
 
-		vertexShader = gl.glCreateShader(GL2.GL_VERTEX_SHADER);
-		if (vertexShader <= 0)
-		{
-			delete(gl);
-			throw new IllegalStateException("Error creating vertex shader");
-		}
-		fragmentShader = gl.glCreateShader(GL2.GL_FRAGMENT_SHADER);
-		if (fragmentShader <= 0)
-		{
-			delete(gl);
-			throw new IllegalStateException("Error creating fragment shader");
-		}
-		if (gsrc != null)
-		{
-			geometryShader = gl.glCreateShader(GL2.GL_GEOMETRY_SHADER_ARB);
-			if (geometryShader <= 0)
+			String[] defines = getDefines();
+			vsrc = insertDefines(vsrc, defines, "_VERTEX_");
+			fsrc = insertDefines(fsrc, defines, "_FRAGMENT_");
+			gsrc = gsrc == null ? null : insertDefines(gsrc, defines, "_GEOMETRY_");
+
+			vertexShader = gl.glCreateShader(GL2.GL_VERTEX_SHADER);
+			if (vertexShader <= 0)
 			{
 				delete(gl);
-				throw new IllegalStateException("Error creating geometry shader");
+				throw new ShaderException("Error creating vertex shader");
 			}
-		}
-
-		gl.glShaderSource(vertexShader, 1, new String[] { vsrc }, new int[] { vsrc.length() }, 0);
-		gl.glCompileShader(vertexShader);
-		gl.glShaderSource(fragmentShader, 1, new String[] { fsrc }, new int[] { fsrc.length() }, 0);
-		gl.glCompileShader(fragmentShader);
-		if (gsrc != null)
-		{
-			gl.glShaderSource(geometryShader, 1, new String[] { gsrc }, new int[] { gsrc.length() }, 0);
-			gl.glCompileShader(geometryShader);
-		}
-
-		shaderProgram = gl.glCreateProgram();
-		if (shaderProgram <= 0)
-		{
-			delete(gl);
-			throw new IllegalStateException("Error creating shader program");
-		}
-
-		gl.glAttachShader(shaderProgram, vertexShader);
-		gl.glAttachShader(shaderProgram, fragmentShader);
-		if (gsrc != null)
-		{
-			gl.glAttachShader(shaderProgram, geometryShader);
-			gl.glProgramParameteriARB(shaderProgram, GL2.GL_GEOMETRY_INPUT_TYPE_ARB, getGeometryInputType());
-			gl.glProgramParameteriARB(shaderProgram, GL2.GL_GEOMETRY_OUTPUT_TYPE_ARB, getGeometryOutputType());
-			gl.glProgramParameteriARB(shaderProgram, GL2.GL_GEOMETRY_VERTICES_OUT_ARB, getGeometryVerticesOut());
-		}
-		gl.glLinkProgram(shaderProgram);
-		gl.glValidateProgram(shaderProgram);
-
-		int[] status = new int[1];
-		gl.glGetProgramiv(shaderProgram, GL2.GL_VALIDATE_STATUS, status, 0);
-		if (status[0] != GL2.GL_TRUE)
-		{
-			StringBuilder message = new StringBuilder();
-
-			int maxLength = 10240;
-			int[] length = new int[1];
-			byte[] bytes = new byte[maxLength];
-			gl.glGetProgramInfoLog(shaderProgram, maxLength, length, 0, bytes, 0);
-			if (length[0] > 0)
+			fragmentShader = gl.glCreateShader(GL2.GL_FRAGMENT_SHADER);
+			if (fragmentShader <= 0)
 			{
-				String programInfo = new String(bytes, 0, length[0]);
-				message.append("Program info: " + programInfo);
+				delete(gl);
+				throw new ShaderException("Error creating fragment shader");
 			}
-
-			gl.glGetShaderInfoLog(vertexShader, maxLength, length, 0, bytes, 0);
-			if (length[0] > 0)
-			{
-				String vertexInfo = new String(bytes, 0, length[0]);
-				message.append("Vertex shader info: " + vertexInfo);
-			}
-
-			gl.glGetShaderInfoLog(fragmentShader, maxLength, length, 0, bytes, 0);
-			if (length[0] > 0)
-			{
-				String fragmentInfo = new String(bytes, 0, length[0]);
-				message.append("Fragment shader info: " + fragmentInfo);
-			}
-
 			if (gsrc != null)
 			{
-				gl.glGetShaderInfoLog(geometryShader, maxLength, length, 0, bytes, 0);
-				if (length[0] > 0)
+				geometryShader = gl.glCreateShader(GL2.GL_GEOMETRY_SHADER_ARB);
+				if (geometryShader <= 0)
 				{
-					String geometryInfo = new String(bytes, 0, length[0]);
-					message.append("Geometry shader info: " + geometryInfo);
+					delete(gl);
+					throw new ShaderException("Error creating geometry shader");
 				}
 			}
 
-			delete(gl);
-			throw new IllegalStateException("Shader Validation failed\n" + message);
-		}
+			gl.glShaderSource(vertexShader, 1, new String[] { vsrc }, new int[] { vsrc.length() }, 0);
+			gl.glCompileShader(vertexShader);
+			gl.glShaderSource(fragmentShader, 1, new String[] { fsrc }, new int[] { fsrc.length() }, 0);
+			gl.glCompileShader(fragmentShader);
+			if (gsrc != null)
+			{
+				gl.glShaderSource(geometryShader, 1, new String[] { gsrc }, new int[] { gsrc.length() }, 0);
+				gl.glCompileShader(geometryShader);
+			}
 
-		gl.glUseProgram(shaderProgram);
-		getUniformLocations(gl);
-		gl.glUseProgram(0);
+			shaderProgram = gl.glCreateProgram();
+			if (shaderProgram <= 0)
+			{
+				delete(gl);
+				throw new ShaderException("Error creating shader program");
+			}
+
+			gl.glAttachShader(shaderProgram, vertexShader);
+			gl.glAttachShader(shaderProgram, fragmentShader);
+			if (gsrc != null)
+			{
+				gl.glAttachShader(shaderProgram, geometryShader);
+				gl.glProgramParameteriARB(shaderProgram, GL2.GL_GEOMETRY_INPUT_TYPE_ARB, getGeometryInputType());
+				gl.glProgramParameteriARB(shaderProgram, GL2.GL_GEOMETRY_OUTPUT_TYPE_ARB, getGeometryOutputType());
+				gl.glProgramParameteriARB(shaderProgram, GL2.GL_GEOMETRY_VERTICES_OUT_ARB, getGeometryVerticesOut());
+			}
+			gl.glLinkProgram(shaderProgram);
+			gl.glValidateProgram(shaderProgram);
+
+			int[] status = new int[1];
+			gl.glGetProgramiv(shaderProgram, GL2.GL_VALIDATE_STATUS, status, 0);
+			if (status[0] != GL2.GL_TRUE)
+			{
+				StringBuilder message = new StringBuilder();
+
+				int maxLength = 10240;
+				int[] length = new int[1];
+				byte[] bytes = new byte[maxLength];
+				gl.glGetProgramInfoLog(shaderProgram, maxLength, length, 0, bytes, 0);
+				if (length[0] > 0)
+				{
+					String programInfo = new String(bytes, 0, length[0]);
+					message.append("Program info: " + programInfo);
+				}
+
+				gl.glGetShaderInfoLog(vertexShader, maxLength, length, 0, bytes, 0);
+				if (length[0] > 0)
+				{
+					String vertexInfo = new String(bytes, 0, length[0]);
+					message.append("Vertex shader info: " + vertexInfo);
+				}
+
+				gl.glGetShaderInfoLog(fragmentShader, maxLength, length, 0, bytes, 0);
+				if (length[0] > 0)
+				{
+					String fragmentInfo = new String(bytes, 0, length[0]);
+					message.append("Fragment shader info: " + fragmentInfo);
+				}
+
+				if (gsrc != null)
+				{
+					gl.glGetShaderInfoLog(geometryShader, maxLength, length, 0, bytes, 0);
+					if (length[0] > 0)
+					{
+						String geometryInfo = new String(bytes, 0, length[0]);
+						message.append("Geometry shader info: " + geometryInfo);
+					}
+				}
+
+				delete(gl);
+				throw new ShaderException(message.toString());
+			}
+
+			gl.glUseProgram(shaderProgram);
+			getUniformLocations(gl);
+			gl.glUseProgram(0);
+
+			return true;
+		}
+		catch (ShaderException e)
+		{
+			creationFailed = true;
+			Logging.logger().log(Level.SEVERE, "Shader creation failed", e);
+			return false;
+		}
 	}
 
 	/**
@@ -249,11 +265,20 @@ public abstract class Shader
 	}
 
 	/**
-	 * @return Has this shader been created yet?
+	 * @return Has this shader been created yet (and not
+	 *         {@link #isCreationFailed()})?
 	 */
 	public final boolean isCreated()
 	{
-		return shaderProgram > 0;
+		return shaderProgram > 0 && !isCreationFailed();
+	}
+
+	/**
+	 * @return Did this shader fail to be created (due to compile error, etc)?
+	 */
+	public final boolean isCreationFailed()
+	{
+		return creationFailed;
 	}
 
 	/**
@@ -261,10 +286,16 @@ public abstract class Shader
 	 * {@link Shader} subclasses.
 	 * 
 	 * @param gl
+	 * @return <code>True</code> if this shader was created and used
 	 */
-	protected void use(GL2 gl)
+	protected boolean use(GL2 gl)
 	{
-		gl.glUseProgram(shaderProgram); //if !isCreated(), then shaderProgram == 0
+		if (isCreated())
+		{
+			gl.glUseProgram(shaderProgram);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -310,14 +341,17 @@ public abstract class Shader
 	 * Create this shader if not created already.
 	 * 
 	 * @param gl
+	 * @return Is this shader created, ie {@link #isCreated()}
 	 * @see Shader#create(GL)
 	 */
-	public void createIfRequired(GL2 gl)
+	public boolean createIfRequired(GL2 gl)
 	{
 		if (!isCreated())
 		{
 			create(gl);
+			return true;
 		}
+		return false;
 	}
 
 	/**

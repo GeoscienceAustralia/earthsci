@@ -54,11 +54,12 @@ public class ShaderRenderDelegateShader extends Shader
 	public void use(DrawContext dc)
 	{
 		GL2 gl = dc.getGL().getGL2();
-		super.use(gl);
-
-		for (Entry<Integer, IUniformSetter> entry : uniforms.entrySet())
+		if (super.use(gl))
 		{
-			entry.getValue().set(dc, gl, entry.getKey());
+			for (Entry<Integer, IUniformSetter> entry : uniforms.entrySet())
+			{
+				entry.getValue().set(dc, gl, entry.getKey());
+			}
 		}
 	}
 

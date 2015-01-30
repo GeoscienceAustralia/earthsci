@@ -56,6 +56,7 @@ public class SunLayer extends AbstractLayer
 	protected final float sunSize = 20;
 
 	protected boolean inited = false;
+	protected boolean creationFailed = false;
 	protected Dimension size;
 	protected Dimension stageTextureSize;
 	protected Texture circleTexture;
@@ -75,6 +76,10 @@ public class SunLayer extends AbstractLayer
 		{
 			init(dc);
 			inited = true;
+		}
+		if (creationFailed)
+		{
+			return;
 		}
 		resize(dc);
 		renderSun(dc);
@@ -106,10 +111,9 @@ public class SunLayer extends AbstractLayer
 		gl.glGenFramebuffers(fbo.length, fbo, 0);
 
 		//compile the shaders
-		sunDepthTestShader.create(gl);
-		sunRaysLensFlareHaloShader.create(gl);
-		blurHorizontalShader.create(gl);
-		blurVerticalShader.create(gl);
+		creationFailed = !(sunDepthTestShader.create(gl) &&
+				sunRaysLensFlareHaloShader.create(gl) &&
+				blurHorizontalShader.create(gl) && blurVerticalShader.create(gl));
 	}
 
 	protected void resize(DrawContext dc)

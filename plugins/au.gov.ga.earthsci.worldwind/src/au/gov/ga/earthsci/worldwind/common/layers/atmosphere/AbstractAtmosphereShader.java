@@ -63,30 +63,32 @@ public abstract class AbstractAtmosphereShader extends Shader
 			float innerRadius, float outerRadius, float rayleighScattering, float mieScattering, float sunBrightness,
 			float scaleDepth, float exposure)
 	{
-		super.use(gl);
-		if (cameraHeight < innerRadius + 1)
+		if (super.use(gl))
 		{
-			cameraHeight = innerRadius + 1;
-			cameraPos = cameraPos.normalize3().multiply3(cameraHeight);
+			if (cameraHeight < innerRadius + 1)
+			{
+				cameraHeight = innerRadius + 1;
+				cameraPos = cameraPos.normalize3().multiply3(cameraHeight);
+			}
+			float fScale = 1f / (outerRadius - innerRadius);
+			gl.glUniform3f(this.v3CameraPos, (float) cameraPos.x, (float) cameraPos.y, (float) cameraPos.z);
+			gl.glUniform3f(this.v3LightPos, (float) lightDir.x, (float) lightDir.y, (float) lightDir.z);
+			gl.glUniform3f(this.v3InvWavelength, invWavelength4[0], invWavelength4[1], invWavelength4[2]);
+			gl.glUniform1f(this.fCameraHeight, cameraHeight);
+			gl.glUniform1f(this.fCameraHeight2, cameraHeight * cameraHeight);
+			gl.glUniform1f(this.fInnerRadius, innerRadius);
+			gl.glUniform1f(this.fInnerRadius2, innerRadius * innerRadius);
+			gl.glUniform1f(this.fOuterRadius, outerRadius);
+			gl.glUniform1f(this.fOuterRadius2, outerRadius * outerRadius);
+			gl.glUniform1f(this.fKrESun, rayleighScattering * sunBrightness);
+			gl.glUniform1f(this.fKmESun, mieScattering * sunBrightness);
+			gl.glUniform1f(this.fKr4PI, rayleighScattering * 4f * (float) Math.PI);
+			gl.glUniform1f(this.fKm4PI, mieScattering * 4f * (float) Math.PI);
+			gl.glUniform1f(this.fScale, fScale);
+			gl.glUniform1f(this.fScaleDepth, scaleDepth);
+			gl.glUniform1f(this.fScaleOverScaleDepth, fScale / scaleDepth);
+			gl.glUniform1f(this.fExposure, exposure);
 		}
-		float fScale = 1f / (outerRadius - innerRadius);
-		gl.glUniform3f(this.v3CameraPos, (float) cameraPos.x, (float) cameraPos.y, (float) cameraPos.z);
-		gl.glUniform3f(this.v3LightPos, (float) lightDir.x, (float) lightDir.y, (float) lightDir.z);
-		gl.glUniform3f(this.v3InvWavelength, invWavelength4[0], invWavelength4[1], invWavelength4[2]);
-		gl.glUniform1f(this.fCameraHeight, cameraHeight);
-		gl.glUniform1f(this.fCameraHeight2, cameraHeight * cameraHeight);
-		gl.glUniform1f(this.fInnerRadius, innerRadius);
-		gl.glUniform1f(this.fInnerRadius2, innerRadius * innerRadius);
-		gl.glUniform1f(this.fOuterRadius, outerRadius);
-		gl.glUniform1f(this.fOuterRadius2, outerRadius * outerRadius);
-		gl.glUniform1f(this.fKrESun, rayleighScattering * sunBrightness);
-		gl.glUniform1f(this.fKmESun, mieScattering * sunBrightness);
-		gl.glUniform1f(this.fKr4PI, rayleighScattering * 4f * (float) Math.PI);
-		gl.glUniform1f(this.fKm4PI, mieScattering * 4f * (float) Math.PI);
-		gl.glUniform1f(this.fScale, fScale);
-		gl.glUniform1f(this.fScaleDepth, scaleDepth);
-		gl.glUniform1f(this.fScaleOverScaleDepth, fScale / scaleDepth);
-		gl.glUniform1f(this.fExposure, exposure);
 	}
 
 	@Override

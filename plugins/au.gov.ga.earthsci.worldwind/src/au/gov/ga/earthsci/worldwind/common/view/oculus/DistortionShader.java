@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.view.oculus;
 
-import gov.nasa.worldwind.render.DrawContext;
-
 import java.io.InputStream;
 
 import javax.media.opengl.GL2;
@@ -57,15 +55,15 @@ public class DistortionShader extends Shader
 		gl.glUniform1i(gl.glGetUniformLocation(shaderProgram, "texture0"), 0);
 	}
 
-	public void use(DrawContext dc, float eyeToSourceUscale, float eyeToSourceVscale, float eyeToSourceUoffset,
+	public void use(GL2 gl, float eyeToSourceUscale, float eyeToSourceVscale, float eyeToSourceUoffset,
 			float eyeToSourceVoffset, float[] eyeRotationStart, float[] eyeRotationEnd)
 	{
-		GL2 gl = dc.getGL().getGL2();
-		super.use(gl);
-
-		gl.glUniform2f(eyeToSourceUVscaleUniform, eyeToSourceUscale, eyeToSourceVscale);
-		gl.glUniform2f(eyeToSourceUVoffsetUniform, eyeToSourceUoffset, eyeToSourceVoffset);
-		gl.glUniformMatrix4fv(eyeRotationStartUniform, 1, true, eyeRotationStart, 0);
-		gl.glUniformMatrix4fv(eyeRotationEndUniform, 1, true, eyeRotationEnd, 0);
+		if (super.use(gl))
+		{
+			gl.glUniform2f(eyeToSourceUVscaleUniform, eyeToSourceUscale, eyeToSourceVscale);
+			gl.glUniform2f(eyeToSourceUVoffsetUniform, eyeToSourceUoffset, eyeToSourceVoffset);
+			gl.glUniformMatrix4fv(eyeRotationStartUniform, 1, true, eyeRotationStart, 0);
+			gl.glUniformMatrix4fv(eyeRotationEndUniform, 1, true, eyeRotationEnd, 0);
+		}
 	}
 }

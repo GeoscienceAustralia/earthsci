@@ -66,6 +66,10 @@ public class InfiniteStarsLayer extends AbstractLayer
 			init(dc);
 			inited = true;
 		}
+		if (shader.isCreationFailed())
+		{
+			return;
+		}
 
 		GL2 gl = dc.getGL().getGL2();
 		OGLStackHandler ogsh = new OGLStackHandler();
@@ -155,7 +159,10 @@ public class InfiniteStarsLayer extends AbstractLayer
 	protected void init(DrawContext dc)
 	{
 		GL2 gl = dc.getGL().getGL2();
-		shader.create(gl);
+		if (!shader.create(gl))
+		{
+			return;
+		}
 
 		try
 		{

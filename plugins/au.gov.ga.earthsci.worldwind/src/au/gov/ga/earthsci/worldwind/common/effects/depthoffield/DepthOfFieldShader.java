@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.effects.depthoffield;
 
-import gov.nasa.worldwind.render.DrawContext;
-
 import java.awt.Dimension;
 import java.io.InputStream;
 
@@ -42,8 +40,8 @@ public class DepthOfFieldShader extends Shader
 	/**
 	 * Use this shader.
 	 * 
-	 * @param dc
-	 *            Draw context
+	 * @param gl
+	 *            GL context
 	 * @param dimensions
 	 *            Dimensions of the textures
 	 * @param focus
@@ -55,16 +53,16 @@ public class DepthOfFieldShader extends Shader
 	 * @param blurTextureScale
 	 *            Scale of the blurred texture compared to the scene texture
 	 */
-	public void use(DrawContext dc, Dimension dimensions, float focus, float near, float far, float blurTextureScale)
+	public void use(GL2 gl, Dimension dimensions, float focus, float near, float far, float blurTextureScale)
 	{
-		GL2 gl = dc.getGL().getGL2();
-		super.use(gl);
-
-		gl.glUniform1f(cameraNearUniform, near);
-		gl.glUniform1f(cameraFarUniform, far);
-		gl.glUniform1f(focalLengthUniform, focus);
-		gl.glUniform2f(pixelSizeUniform, 1f / dimensions.width, 1f / dimensions.height);
-		gl.glUniform1f(blurTextureScaleUniform, blurTextureScale);
+		if (super.use(gl))
+		{
+			gl.glUniform1f(cameraNearUniform, near);
+			gl.glUniform1f(cameraFarUniform, far);
+			gl.glUniform1f(focalLengthUniform, focus);
+			gl.glUniform2f(pixelSizeUniform, 1f / dimensions.width, 1f / dimensions.height);
+			gl.glUniform1f(blurTextureScaleUniform, blurTextureScale);
+		}
 	}
 
 	@Override
