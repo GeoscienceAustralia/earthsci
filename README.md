@@ -9,16 +9,6 @@ The vision for `EarthSci` is to take the best features of the [GA World Wind Sui
 
 **For more information on the project, see the [Wiki](https://github.com/GeoscienceAustralia/earthsci/wiki)**
 
-- - -
-
->**EarthSci has moved!** 
->
->The `EarthSci` project has been brought into the [GeoscienceAustralia](https://github.com/GeoscienceAustralia) organisation account on Github.
->
->Redirects are in place, so your existing URLs should still work. However, we recommend that you update URLs to the new location: **https://github.com/geoscienceaustralia/earthsci** 
-
-- - -
-
 ## Contents: ##
 
 * [Wiki](https://github.com/GeoscienceAustralia/earthsci/wiki)
@@ -29,18 +19,6 @@ The vision for `EarthSci` is to take the best features of the [GA World Wind Sui
 * <a href="#pluginsFeatures">Plugins and features</a>
 * <a href="#license">License</a>
 * <a href="#contact">Contact</a>
-
-- - -
-
->**Important:** 
->
->`EarthSci` is still under development. We encourage you to try it out, but if you choose to use it in a production environment you do so at your own risk. 
->
->Development is ongoing - stay tuned! Feel free to help out and shape the direction of the platform.
->
->For a production-ready platform, consider the [GA World Wind Suite](https://github.com/ga-m3dv/ga-worldwind-suite).
-
-- - -
 
 <img src="https://github.com/GeoscienceAustralia/earthsci/wiki/images/screenshots/3dmodels.jpg"/>
 
