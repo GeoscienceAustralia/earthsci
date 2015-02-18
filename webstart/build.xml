@@ -91,7 +91,6 @@
 		<unsign todir="${unsigned.dir}">
 			<fileset dir="${plugins.dir}">
 				<include name="*.jar" />
-				<exclude name="com.ibm.icu_*" />
 			</fileset>
 		</unsign>
 	</target>
@@ -135,12 +134,13 @@
 			</fileset>
 		</jnlpresources>
 
-		<osgibundles property="osgi.bundles.string">
+		<osgibundles property="osgi.bundles.string" defaultAutoStart="false" defaultStartLevel="4">
 			<fileset refid="signed.fileset.id" />
-			<startlevel bundle="org.eclipse.osgi" level="-1" />
-			<startlevel bundle="org.eclipse.equinox.ds" level="1" />
-			<startlevel bundle="org.eclipse.equinox.common" level="2" />
+			<startlevel bundle="org.eclipse.core.runtime" autoStart="true"/>
+			<startlevel bundle="org.eclipse.equinox.common" autoStart="true" />
+			<startlevel bundle="org.eclipse.equinox.ds" autoStart="true" />
 			<startlevel bundle="org.eclipse.ui.ide" level="10" />
+			<startlevel bundle="org.eclipse.osgi" level="-1" />
 		</osgibundles>
 
 		<javaargs property="java.args.string" version="1.6+">

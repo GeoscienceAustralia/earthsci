@@ -39,14 +39,28 @@ import org.apache.tools.ant.types.FileSet;
 public class OsgiBundles extends Task
 {
 	private String property;
+	
+	private String defaultStartLevel = "4";
+	private boolean defaultAutoStart = false;
+	
 	private List<FileSet> filesets = new ArrayList<FileSet>();
-	private Map<String, Integer> startLevels = new HashMap<String, Integer>();
+	private Map<String, StartLevel> startLevels = new HashMap<String, StartLevel>();
 
 	public void setProperty(String property)
 	{
 		this.property = property;
 	}
 
+	public void setDefaultStartLevel(String startLevel)
+	{
+		this.defaultStartLevel = startLevel;
+	}
+	
+	public void setDefaultAutoStart(boolean autoStart)
+	{
+		this.defaultAutoStart = autoStart;
+	}
+	
 	public void addFileset(FileSet fileset)
 	{
 		filesets.add(fileset);
@@ -54,7 +68,7 @@ public class OsgiBundles extends Task
 
 	public void addConfiguredStartLevel(StartLevel startLevel)
 	{
-		startLevels.put(startLevel.getBundle(), startLevel.getLevel());
+		startLevels.put(startLevel.getBundle(), startLevel);
 	}
 
 	@Override
@@ -127,9 +141,24 @@ public class OsgiBundles extends Task
 					for (BundleProperties bundle : bundles)
 					{
 						String name = bundle.getSymbolicName();
-						Integer startLevel = startLevels.get(name);
-						sb.append(name);
-						sb.append(startLevel != null ? "@" + startLevel + ":start," : "@:start,");
+						sb.append(name).append("@");
+						
+						String startLevel = getStartLevel(name);
+						boolean autoStart = isAutoStart(name);
+						
+						if (startLevel != null)
+						{
+							sb.append(startLevel);
+						}
+						if (startLevel != null && autoStart)
+						{
+							sb.append("\\");
+						}
+						if (autoStart)
+						{
+							sb.append(":start");
+						}
+						sb.append(',');
 					}
 				}
 			}
@@ -139,5 +168,23 @@ public class OsgiBundles extends Task
 		}
 
 		getProject().setNewProperty(property, sb.toString());
+	}
+	
+	private boolean isAutoStart(String bundle)
+	{
+		if (startLevels.containsKey(bundle))
+		{
+			return startLevels.get(bundle).isAutoStart();
+		}
+		return defaultAutoStart;
+	}
+	
+	private String getStartLevel(String bundle)
+	{
+		if (startLevels.containsKey(bundle))
+		{
+			return startLevels.get(bundle).getLevel();
+		}
+		return defaultStartLevel;
 	}
 }

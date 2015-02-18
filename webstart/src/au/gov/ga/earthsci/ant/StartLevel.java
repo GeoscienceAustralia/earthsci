@@ -24,7 +24,8 @@ package au.gov.ga.earthsci.ant;
 public class StartLevel
 {
 	private String bundle;
-	private int level;
+	private String level = null;
+	private boolean autoStart = false;
 
 	public String getBundle()
 	{
@@ -36,13 +37,22 @@ public class StartLevel
 		this.bundle = bundle;
 	}
 
-	public int getLevel()
+	public String getLevel()
 	{
 		return level;
 	}
 
-	public void setLevel(int level)
+	public void setLevel(String level)
 	{
 		this.level = level;
+	}
+	
+	public void setAutoStart(boolean autoStart)
+	{
+		this.autoStart = autoStart;
+	}
+	
+	public boolean isAutoStart() {
+		return autoStart;
 	}
 }
