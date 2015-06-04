@@ -38,6 +38,11 @@ public class Messages extends NLS
 	public static String GotoCoordinateDialog_TypeCoordinates;
 	public static String StereoHandler_StereoDialogMessage;
 	public static String StereoHandler_StereoDialogTitle;
+	public static String GlobeExaggerationSet_Title;
+	public static String GlobeExaggerationSet_Message;
+	public static String GlobeExaggerationSet_RangeExceeded;
+	public static String GlobeExaggerationSet_PatternNotMatched;
+
 	static
 	{
 		// initialize resource bundle

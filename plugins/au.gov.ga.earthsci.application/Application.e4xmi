@@ -33,19 +33,45 @@
   <handlers xmi:id="_GJ_xEPvQEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.handlers.showView" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.ShowViewHandler" command="_pU-REPvQEeG36NOaHUgVKA"/>
   <handlers xmi:id="_KQJ3EAOEEeK17JdaarPZug" elementId="au.gov.ga.earthsci.application.handlers.helpContents" contributionURI="bundleclass://au.gov.ga.earthsci.application/au.gov.ga.earthsci.application.handlers.HelpHandler" command="_t3D6kAODEeK17JdaarPZug"/>
   <bindingTables xmi:id="_007tXPsMEeG36NOaHUgVKA" elementId="au.gov.ga.earthsci.application.tables.dialogAndWindow" bindingContext="_007tUfsMEeG36NOaHUgVKA">
-    <bindings xmi:id="_007tXfsMEeG36NOaHUgVKA" keySequence="M1+Q" command="_007tWvsMEeG36NOaHUgVKA"/>
-    <bindings xmi:id="_007tYPsMEeG36NOaHUgVKA" keySequence="M1+O" command="_007tXvsMEeG36NOaHUgVKA"/>
-    <bindings xmi:id="_007tZvsMEeG36NOaHUgVKA" keySequence="M1+A" command="_007tZPsMEeG36NOaHUgVKA"/>
-    <bindings xmi:id="_fpbdkAOLEeK17JdaarPZug" keySequence="F1" command="_t3D6kAODEeK17JdaarPZug"/>
-    <bindings xmi:id="_s4zkMCfCEeKGOtKz07iBzg" keySequence="M1+C" command="_1NhMYCfCEeKGOtKz07iBzg"/>
-    <bindings xmi:id="_tZcMECfCEeKGOtKz07iBzg" keySequence="M1+X" command="_09bh8CfCEeKGOtKz07iBzg"/>
-    <bindings xmi:id="_tqRdYCfCEeKGOtKz07iBzg" keySequence="M1+V" command="_1dBA8CfCEeKGOtKz07iBzg"/>
-    <bindings xmi:id="_X7SL8CfDEeKGOtKz07iBzg" keySequence="M1+P" command="_940mAPyIEeG36NOaHUgVKA"/>
-    <bindings xmi:id="_Ya3q8CfDEeKGOtKz07iBzg" keySequence="M1+Z" command="_O1ivcCfDEeKGOtKz07iBzg"/>
-    <bindings xmi:id="_Y5kZICfDEeKGOtKz07iBzg" keySequence="M1+Y" command="_RYtPwCfDEeKGOtKz07iBzg"/>
-    <bindings xmi:id="_G-EAYCfEEeKGOtKz07iBzg" keySequence="DEL" command="_7dKlgCfCEeKGOtKz07iBzg"/>
-    <bindings xmi:id="_ZbtfwCkqEeKGOtKz07iBzg" keySequence="F2" command="_KVOo0CkqEeKGOtKz07iBzg"/>
-    <bindings xmi:id="_hjwy0N7CEeKgHpp-DSY_sQ" elementId="" keySequence="F10" command="_pU-REPvQEeG36NOaHUgVKA"/>
+    <bindings xmi:id="_007tXfsMEeG36NOaHUgVKA" keySequence="M1+Q" command="_007tWvsMEeG36NOaHUgVKA">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_007tYPsMEeG36NOaHUgVKA" keySequence="M1+O" command="_007tXvsMEeG36NOaHUgVKA">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_007tZvsMEeG36NOaHUgVKA" keySequence="M1+A" command="_007tZPsMEeG36NOaHUgVKA">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_fpbdkAOLEeK17JdaarPZug" keySequence="F1" command="_t3D6kAODEeK17JdaarPZug">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_s4zkMCfCEeKGOtKz07iBzg" keySequence="M1+C" command="_1NhMYCfCEeKGOtKz07iBzg">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_tZcMECfCEeKGOtKz07iBzg" keySequence="M1+X" command="_09bh8CfCEeKGOtKz07iBzg">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_tqRdYCfCEeKGOtKz07iBzg" keySequence="M1+V" command="_1dBA8CfCEeKGOtKz07iBzg">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_X7SL8CfDEeKGOtKz07iBzg" keySequence="M1+P" command="_940mAPyIEeG36NOaHUgVKA">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_Ya3q8CfDEeKGOtKz07iBzg" keySequence="M1+Z" command="_O1ivcCfDEeKGOtKz07iBzg">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_Y5kZICfDEeKGOtKz07iBzg" keySequence="M1+Y" command="_RYtPwCfDEeKGOtKz07iBzg">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_G-EAYCfEEeKGOtKz07iBzg" keySequence="DEL" command="_7dKlgCfCEeKGOtKz07iBzg">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_ZbtfwCkqEeKGOtKz07iBzg" keySequence="F2" command="_KVOo0CkqEeKGOtKz07iBzg">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_hjwy0N7CEeKgHpp-DSY_sQ" elementId="" keySequence="F10" command="_pU-REPvQEeG36NOaHUgVKA">
+      <tags>type:user</tags>
+    </bindings>
   </bindingTables>
   <rootContext xmi:id="_007tUfsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_007tUvsMEeG36NOaHUgVKA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>

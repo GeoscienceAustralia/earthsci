@@ -16,14 +16,24 @@
 package au.gov.ga.earthsci.application.parts.globe;
 
 import java.text.DecimalFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -37,6 +47,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Shell;
 
 import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationListener;
 import au.gov.ga.earthsci.worldwind.common.exaggeration.VerticalExaggerationService;
@@ -88,6 +99,7 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 		label = new Label(labelParent, SWT.NONE);
 		label.setAlignment(SWT.RIGHT);
 		label.setText("1.000x"); //$NON-NLS-1$
+		label.addMouseListener(new LabelDoubleClickListener());
 
 		Composite child = new Composite(parent, SWT.NONE);
 		child.setSize(child.computeSize(SCALE_WIDTH, SWT.DEFAULT));
@@ -157,6 +169,7 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 			return 0;
 		}
 
+
 		double log10 = Math.max(SCALE_LOG_MIN, Math.min(SCALE_LOG_MAX, Math.log10(value)));
 		return (int) Math.round((log10 - SCALE_LOG_MIN) * INCREMENTS_PER_POWER);
 	}
@@ -205,6 +218,7 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 	private void updateSelection(boolean setService)
 	{
 		double exaggeration = scaleToExaggeration(scale.getSelection());
+
 		if (setService)
 		{
 			VerticalExaggerationService.INSTANCE.set(exaggeration);
@@ -278,5 +292,84 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 				}
 			});
 		}
+	}
+
+	private class LabelDoubleClickListener extends MouseAdapter
+	{
+		@Inject
+		@Named(IServiceConstants.ACTIVE_SHELL)
+		private Shell shell;
+
+
+
+		@Override
+		public void mouseDoubleClick(MouseEvent e)
+		{
+			handle();
+		}
+
+		private void handle()
+		{
+			Shell parentShell = scale.getShell();
+			String title = Messages.GlobeExaggerationSet_Title;
+			String message = Messages.GlobeExaggerationSet_Message;
+			IInputValidator validator = new IInputValidator()
+			{
+
+				@Override
+				public String isValid(String inputString)
+				{
+					Pattern matingPattern = Pattern.compile("\\d+(\\.\\d+)?"); // \d+\.\d+ //$NON-NLS-1$
+					Matcher matcher = matingPattern.matcher(inputString);
+
+					if (!matcher.matches())
+					{
+						return Messages.GlobeExaggerationSet_PatternNotMatched;
+					}
+
+					try
+					{
+						double value = Double.parseDouble(inputString);
+						//TODO: Specifies a minimum at  the top of the file, yet to see it enforced.
+						//if (value < SCALE_MIN)
+						//{
+						//	return "Must be at least 0.1";
+						//}
+						if (value > 100)
+						{
+							return Messages.GlobeExaggerationSet_RangeExceeded;
+						}
+					}
+					catch (NumberFormatException ex)
+					{
+						return ex.getLocalizedMessage();
+					}
+					return null;
+
+				}
+			};
+			InputDialog inputDialog =
+					new InputDialog(parentShell, title, message, String.valueOf(scaleToExaggeration(scale
+							.getSelection())), validator);
+			int buttonClicked = inputDialog.open();
+			if (buttonClicked == Dialog.OK)
+			{
+				try
+				{
+					double value = Double.parseDouble(inputDialog.getValue());
+					scale.setSelection(exaggerationToScale(value));
+					updateSelection(true);
+				}
+				catch (NumberFormatException ex)
+				{
+					ex.getLocalizedMessage();
+				}
+			}
+
+
+
+		}
+
+
 	}
 }
