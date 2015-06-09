@@ -130,7 +130,7 @@ public class LayersPropertyPersisterTest
 
 		assertNotNull(result);
 		assertTrue(result instanceof LayersProperty);
-		assertTrue(((LayersProperty) result).getLayerState().isEmpty());
+		assertTrue(((LayersProperty) result).getLayerStateInfo().isEmpty());
 	}
 
 	@Test
@@ -145,10 +145,12 @@ public class LayersPropertyPersisterTest
 		assertTrue(result instanceof LayersProperty);
 
 		LayersProperty layersProperty = (LayersProperty) result;
-		assertEquals(2, layersProperty.getLayerState().size());
-
-		assertEquals(0.5, layersProperty.getLayerState().get("id1"), 0.001);
-		assertEquals(0.8, layersProperty.getLayerState().get("id2"), 0.001);
+		assertEquals(2, layersProperty.getLayerStateInfo().size());
+		String opacityVal =
+				layersProperty.getLayerStateInfo().get("id1").get(LayersPropertyPersister.OPACITY_ATTRIBUTE_NAME);
+		assertEquals(0.5, Double.parseDouble(opacityVal), 0.001);
+		opacityVal = layersProperty.getLayerStateInfo().get("id2").get(LayersPropertyPersister.OPACITY_ATTRIBUTE_NAME);
+		assertEquals(0.8, Double.parseDouble(opacityVal), 0.001);
 
 	}
 
@@ -164,11 +166,13 @@ public class LayersPropertyPersisterTest
 
 		for (int i = 0; i < ids.length; i++)
 		{
-			p.addLayer(ids[i], opacities[i]);
+			p.addLayer(ids[i], opacities[i], ids[i]);
 		}
 
 		return p;
 	}
+
+
 
 	private Element createLayersPropertyElement(String[] ids, Double[] opacities)
 	{

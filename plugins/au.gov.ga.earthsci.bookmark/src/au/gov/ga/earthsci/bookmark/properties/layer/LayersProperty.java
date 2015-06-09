@@ -15,9 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.bookmark.properties.layer;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import au.gov.ga.earthsci.bookmark.Messages;
 import au.gov.ga.earthsci.bookmark.model.IBookmarkProperty;
@@ -32,10 +36,12 @@ public class LayersProperty implements IBookmarkProperty
 
 	public static final String TYPE = "au.gov.ga.earthsci.bookmark.properties.layers"; //$NON-NLS-1$
 
+
 	/**
 	 * Map of {@code Layer ID -> opacity}. Inclusion in the map implies enabled.
 	 */
-	private Map<String, Double> layerState = new ConcurrentHashMap<String, Double>();
+	private Map<String, Map<String, String>> layerStateInfo = new ConcurrentHashMap<String, Map<String, String>>();
+
 
 	@Override
 	public String getType()
@@ -49,23 +55,24 @@ public class LayersProperty implements IBookmarkProperty
 		return Messages.LayersProperty_Name;
 	}
 
-	/**
-	 * Return the (unmodifiable) layer state recorded on this property.
-	 * <p/>
-	 * To add additional layer state, use {@link #addLayer}.
-	 */
-	public Map<String, Double> getLayerState()
-	{
-		return Collections.unmodifiableMap(layerState);
-	}
+	//
+	//	/**
+	//	 * Return the (unmodifiable) layer state recorded on this property.
+	//	 * <p/>
+	//	 * To add additional layer state, use {@link #addLayer}.
+	//	 */
+	//	public Map<String, Double> getLayerState()
+	//	{
+	//		return Collections.unmodifiableMap(layerState);
+	//	}
 
 	/**
 	 * Set the layer state on this property, replacing any already stored.
 	 */
-	public void setLayerState(Map<String, Double> newLayerState)
+	public void setLayerState(Map<String, Map<String, String>> newLayerState)
 	{
-		layerState.clear();
-		layerState.putAll(newLayerState);
+		layerStateInfo.clear();
+		layerStateInfo.putAll(newLayerState);
 	}
 
 	/**
@@ -76,9 +83,43 @@ public class LayersProperty implements IBookmarkProperty
 	 * @param opacity
 	 *            The opacity of the layer
 	 */
-	public void addLayer(String id, Double opacity)
+	public void addLayer(String id, Pair<String, String>... keyandValues)
 	{
-		layerState.put(id, opacity);
+		if (!layerStateInfo.containsKey(id))
+		{
+			layerStateInfo.put(id, new ConcurrentHashMap<String, String>());
+		}
+		for (Pair<String, String> pair : keyandValues)
+		{
+			layerStateInfo.get(id).put(pair.getKey(), pair.getValue());
+		}
+
+
+	}
+
+	public Map<String, Map<String, String>> getLayerStateInfo()
+	{
+		return layerStateInfo;
+	}
+
+
+	/**
+	 * Add additional layer state to this property.
+	 * 
+	 * @param id
+	 *            The id of the layer
+	 * @param opacity
+	 *            The opacity of the layer
+	 */
+	public void addLayer(String id, Double opacity, String name)
+	{
+		//		layerState.put(id, opacity);
+		//		layerName.put(id, name);
+		List<Pair<String, String>> pairs = new ArrayList<>();
+		pairs.add(new ImmutablePair<String, String>("opacity", opacity.toString()));
+		pairs.add(new ImmutablePair<String, String>("name", name));
+		addLayer(id, pairs.toArray(new Pair[0]));
+
 	}
 
 }

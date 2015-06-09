@@ -38,7 +38,6 @@ public class BookmarkEditorMessage implements IBookmarkEditorMessage
 	@Override
 	public Level getLevel()
 	{
-		// TODO Auto-generated method stub
 		return level;
 	}
 
