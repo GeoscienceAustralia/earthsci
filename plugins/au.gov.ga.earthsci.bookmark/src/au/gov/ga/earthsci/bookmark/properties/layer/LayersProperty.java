@@ -115,7 +115,7 @@ public class LayersProperty implements IBookmarkProperty
 	{
 		//		layerState.put(id, opacity);
 		//		layerName.put(id, name);
-		List<Pair<String, String>> pairs = new ArrayList<>();
+		List<Pair<String, String>> pairs = new ArrayList<Pair<String, String>>();
 		pairs.add(new ImmutablePair<String, String>("opacity", opacity.toString()));
 		pairs.add(new ImmutablePair<String, String>("name", name));
 		addLayer(id, pairs.toArray(new Pair[0]));

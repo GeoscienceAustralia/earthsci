@@ -97,7 +97,7 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 			NamedNodeMap attrs = state.getAttributes();
 			if (id != null)
 			{
-				List<Pair<String, String>> pairs = new ArrayList<>();
+				List<Pair<String, String>> pairs = new ArrayList<Pair<String, String>>();
 				for (int i = 0; i < attrs.getLength(); i++)
 				{
 					String key = attrs.item(i).getNodeName();
