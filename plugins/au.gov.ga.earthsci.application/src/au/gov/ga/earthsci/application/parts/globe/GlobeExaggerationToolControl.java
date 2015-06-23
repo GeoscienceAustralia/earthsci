@@ -26,18 +26,21 @@ import javax.inject.Named;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.custom.VerifyKeyListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -45,7 +48,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
 
@@ -73,7 +75,7 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 
 	private final static int KEY_DELAY = 1500; //ms
 
-	private Label label;
+	private StyledText scaleText;
 	private Scale scale;
 	private Color tickForeground;
 	private String keyString = ""; //$NON-NLS-1$
@@ -83,7 +85,7 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 	public void createControls(Composite parent, IEclipseContext context)
 	{
 		VerticalExaggerationService.INSTANCE.addListener(this);
-
+		parent.setBackgroundMode(SWT.INHERIT_FORCE);
 		RowLayout layout = new RowLayout(SWT.HORIZONTAL);
 		layout.wrap = false;
 		layout.spacing = layout.marginBottom = layout.marginTop = layout.marginLeft = layout.marginRight = 0;
@@ -96,10 +98,15 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 		labelParent.setLayout(gridLayout);
 		labelParent.setSize(labelParent.computeSize(SWT.DEFAULT, SCALE_HEIGHT));
 
-		label = new Label(labelParent, SWT.NONE);
-		label.setAlignment(SWT.RIGHT);
-		label.setText("1.000x"); //$NON-NLS-1$
-		label.addMouseListener(new LabelDoubleClickListener());
+
+		scaleText = new StyledText(labelParent, SWT.NONE);
+		scaleText.setText("1.000x");
+
+		ScaleEditListener clickListener = new ScaleEditListener();
+		scaleText.addFocusListener(clickListener);
+		scaleText.addKeyListener(clickListener);
+		scaleText.addVerifyKeyListener(clickListener);
+		scaleText.setSize(50, scaleText.computeSize(SCALE_WIDTH, SWT.DEFAULT).y);
 
 		Composite child = new Composite(parent, SWT.NONE);
 		child.setSize(child.computeSize(SCALE_WIDTH, SWT.DEFAULT));
@@ -228,7 +235,7 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 		DecimalFormat format = new DecimalFormat();
 		format.setMinimumFractionDigits(decimalPlaces);
 		format.setMaximumFractionDigits(decimalPlaces);
-		label.setText(format.format(exaggeration) + "x"); //$NON-NLS-1$
+		scaleText.setText(format.format(exaggeration) + "x"); //$NON-NLS-1$
 	}
 
 	private void handleKey(KeyEvent e)
@@ -294,32 +301,25 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 		}
 	}
 
-	private class LabelDoubleClickListener extends MouseAdapter
+	private class ScaleEditListener extends MouseAdapter implements FocusListener, KeyListener, VerifyKeyListener
 	{
 		@Inject
 		@Named(IServiceConstants.ACTIVE_SHELL)
 		private Shell shell;
+		IInputValidator validator;
 
-
-
-		@Override
-		public void mouseDoubleClick(MouseEvent e)
+		/**
+		 * 
+		 */
+		public ScaleEditListener()
 		{
-			handle();
-		}
-
-		private void handle()
-		{
-			Shell parentShell = scale.getShell();
-			String title = Messages.GlobeExaggerationSet_Title;
-			String message = Messages.GlobeExaggerationSet_Message;
-			IInputValidator validator = new IInputValidator()
+			validator = new IInputValidator()
 			{
 
 				@Override
 				public String isValid(String inputString)
 				{
-					Pattern matingPattern = Pattern.compile("\\d+(\\.\\d+)?"); // \d+\.\d+ //$NON-NLS-1$
+					Pattern matingPattern = Pattern.compile("\\d+(\\.\\d+)?x?"); // \d+\.\d+ //$NON-NLS-1$
 					Matcher matcher = matingPattern.matcher(inputString);
 
 					if (!matcher.matches())
@@ -329,7 +329,7 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 
 					try
 					{
-						double value = Double.parseDouble(inputString);
+						double value = Double.parseDouble(inputString.replace("x", ""));
 						//TODO: Specifies a minimum at  the top of the file, yet to see it enforced.
 						//if (value < SCALE_MIN)
 						//{
@@ -348,28 +348,80 @@ public class GlobeExaggerationToolControl implements VerticalExaggerationListene
 
 				}
 			};
-			InputDialog inputDialog =
-					new InputDialog(parentShell, title, message, String.valueOf(scaleToExaggeration(scale
-							.getSelection())), validator);
-			int buttonClicked = inputDialog.open();
-			if (buttonClicked == Dialog.OK)
-			{
-				try
-				{
-					double value = Double.parseDouble(inputDialog.getValue());
-					scale.setSelection(exaggerationToScale(value));
-					updateSelection(true);
-				}
-				catch (NumberFormatException ex)
-				{
-					ex.getLocalizedMessage();
-				}
-			}
-
-
 
 		}
 
 
+
+		String originalValue;
+
+		@Override
+		public void focusGained(FocusEvent arg0)
+		{
+			if (validator.isValid(scaleText.getText()) == null)
+			{
+				originalValue = scaleText.getText();
+			}
+
+		}
+
+		@Override
+		public void focusLost(FocusEvent arg0)
+		{
+			scaleText.setMarginColor(null);
+			if (validator.isValid(scaleText.getText()) == null)
+			{
+				double value = Double.parseDouble(scaleText.getText().replace("x", ""));
+				scale.setSelection(exaggerationToScale(value));
+				updateSelection(true);
+			}
+			else
+			{
+				scaleText.setText(originalValue);
+			}
+			showValidNess(validator.isValid(scaleText.getText()));
+		}
+
+		@Override
+		public void keyPressed(KeyEvent event)
+		{
+			if (event.keyCode == SWT.CR || event.keyCode == SWT.LF)
+			{
+				event.doit = false;
+			}
+		}
+
+
+		@Override
+		public void keyReleased(KeyEvent event)
+		{
+			scaleText.setMarginColor(null);
+
+			showValidNess(validator.isValid(scaleText.getText()));
+			if (event.keyCode == SWT.CR || event.keyCode == SWT.LF)
+			{
+				event.doit = false;
+				focusLost(null);
+			}
+		}
+
+		private void showValidNess(String message)
+		{
+			Color background = message == null ? null : Display.getDefault().getSystemColor(SWT.COLOR_RED);
+			scaleText.setForeground(background);
+			scaleText.setToolTipText(message);
+			//			scaleError
+		}
+
+		@Override
+		public void verifyKey(VerifyEvent event)
+		{
+			if (event.keyCode == SWT.CR || event.keyCode == SWT.LF)
+			{
+				// The user pressed Enter 
+				event.doit = false;
+			}
+
+		}
 	}
 }
