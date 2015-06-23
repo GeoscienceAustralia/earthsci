@@ -114,7 +114,20 @@ public class InfoPart
 			URL url = informationed.getInformationURL();
 			if (url != null)
 			{
-				browser.setUrl(url.toString());
+				if (url.getFile().endsWith("pdf"))
+				{
+					// embed the pdf into the browser. GH#101
+					browser.setText("<html><body><embed"
+							+ " type=\"application/pdf\""
+							+ " src=\"" + url.toString() + "\""
+							+ " id=\"pdfDocument\"" + " width=\"100%\""
+							+ " height=\"100%\">" + "</embed>" + "</body>"
+							+ "</html>");
+				}
+				else
+				{
+					browser.setUrl(url.toString());
+				}
 			}
 			else
 			{

@@ -21,6 +21,7 @@ import jargs.gnu.LenientCmdLineParser.IllegalOptionValueException;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Vector;
 
 import javax.annotation.PostConstruct;
@@ -49,7 +50,7 @@ public class ArgumentHandler
 	private static final Logger logger = LoggerFactory.getLogger(ArgumentHandler.class);
 
 	@Inject
-	private IEclipseContext context;
+	private static IEclipseContext context;
 
 	@PostConstruct
 	public void handle()
@@ -59,6 +60,10 @@ public class ArgumentHandler
 		LenientCmdLineParser.Option openOption = parser.addStringOption('o', "open"); //$NON-NLS-1$
 		try
 		{
+			for (String s : CommandLineArgs.getApplicationArgs())
+			{
+				logger.info("ARG: " + s);
+			}
 			parser.parse(CommandLineArgs.getApplicationArgs());
 		}
 		catch (IllegalOptionValueException e)
@@ -69,7 +74,14 @@ public class ArgumentHandler
 		@SuppressWarnings("unchecked")
 		Vector<String> openValues = parser.getOptionValues(openOption);
 
-		for (final String arg : openValues)
+
+		openURLs(openValues);
+
+	}
+
+	public static void openURLs(Collection<String> urlToOpen)
+	{
+		for (final String arg : urlToOpen)
 		{
 			logger.info("Starting Intent for resource provided via command line: " + arg); //$NON-NLS-1$
 			try
@@ -112,7 +124,7 @@ public class ArgumentHandler
 		}
 	}
 
-	private void handleError(String argument, Exception e)
+	private static void handleError(String argument, Exception e)
 	{
 		logger.error("Error handling command line argument as Intent: " + argument, e); //$NON-NLS-1$
 	}

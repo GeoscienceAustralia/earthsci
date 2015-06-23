@@ -74,10 +74,13 @@ public class LayersPropertyApplicator implements IBookmarkPropertyApplicator
 			}
 
 			ILayerNode layerNode = (ILayerNode) l;
-			if (layersProperty.getLayerState().containsKey(layerNode.getId()))
+			if (layersProperty.getLayerStateInfo().containsKey(layerNode.getId()))
 			{
 				layerNode.setEnabled(true);
-				layerNode.setOpacity(layersProperty.getLayerState().get(layerNode.getId()));
+				String opacityVal =
+						layersProperty.getLayerStateInfo().get(layerNode.getId())
+								.get(LayersPropertyPersister.OPACITY_ATTRIBUTE_NAME);
+				layerNode.setOpacity(Double.parseDouble(opacityVal));
 			}
 			else
 			{

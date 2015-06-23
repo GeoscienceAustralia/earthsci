@@ -31,7 +31,7 @@
         <children xsi:type="menu:ToolBarSeparator" xmi:id="_lCk1v5XJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>
         <children xsi:type="menu:HandledToolItem" xmi:id="_lCk1wJXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar.info" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/information.gif" tooltip="Show information" command="_I1_kkJZgEeKo0s_wGDk0-Q"/>
         <children xsi:type="menu:ToolBarSeparator" xmi:id="_lCk1wZXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.toolbarseparator.0"/>
-        <children xsi:type="menu:HandledToolItem" xmi:id="_rI97IKspEeONQrgh0nmR-w" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar.addCatalog" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add_list.gif" tooltip="Add catalog from URL" command="_m-I5cKspEeONQrgh0nmR-w"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_rI97IKspEeONQrgh0nmR-w" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar.addCatalog" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/add_list.gif" tooltip="%au.gov.ga.earthsci.application.catalog.part.add.label" command="_m-I5cKspEeONQrgh0nmR-w"/>
         <children xsi:type="menu:HandledToolItem" xmi:id="_lCk1wpXJEeKo0s_wGDk0-Q" elementId="au.gov.ga.earthsci.application.catalogbrowser.toolbar.delete" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/delete.gif" tooltip="Delete catalog" command="_J0a7sJZgEeKo0s_wGDk0-Q"/>
       </toolbar>
     </elements>

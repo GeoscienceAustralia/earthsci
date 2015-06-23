@@ -15,6 +15,9 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Main class for starting the webstart version. Fixes the osgi.install.area
  * user.home bug (https://bugs.eclipse.org/bugs/show_bug.cgi?id=349834).
@@ -26,7 +29,16 @@ public class WebStartMain
 	public static void main(String[] args)
 	{
 		fixInstallArea();
-		org.eclipse.equinox.launcher.WebStartMain.main(args);
+		List<String> newArgs = new ArrayList<String>();
+		for (String s : args)
+		{
+
+			for (String brokenArg : s.split(";;"))
+			{
+				newArgs.add(brokenArg);
+			}
+		}
+		org.eclipse.equinox.launcher.WebStartMain.main(newArgs.toArray(new String[0]));
 	}
 
 	private final static String PROP_INSTALL_AREA = "osgi.install.area"; //$NON-NLS-1$

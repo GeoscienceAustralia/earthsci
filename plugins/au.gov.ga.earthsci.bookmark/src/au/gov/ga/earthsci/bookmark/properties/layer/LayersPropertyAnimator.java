@@ -140,7 +140,10 @@ public class LayersPropertyAnimator extends AbstractBookmarkPropertyAnimator
 	{
 		if (isInStartProperty(l))
 		{
-			return getStartProperty().getLayerState().get(l.getId());
+			String opacityVal =
+					getStartProperty().getLayerStateInfo().get(l.getId())
+							.get(LayersPropertyPersister.OPACITY_ATTRIBUTE_NAME);
+			return Double.parseDouble(opacityVal);
 		}
 		return getWorldOpacity(l);
 	}
@@ -149,14 +152,17 @@ public class LayersPropertyAnimator extends AbstractBookmarkPropertyAnimator
 	{
 		if (isInEndProperty(l))
 		{
-			return getEndProperty().getLayerState().get(l.getId());
+			String opacityVal =
+					getEndProperty().getLayerStateInfo().get(l.getId())
+							.get(LayersPropertyPersister.OPACITY_ATTRIBUTE_NAME);
+			return Double.parseDouble(opacityVal);
 		}
 		return 0.0;
 	}
 
 	private boolean isInStartProperty(ILayerNode l)
 	{
-		return getStartProperty().getLayerState().containsKey(l.getId());
+		return getStartProperty().getLayerStateInfo().containsKey(l.getId());
 	}
 
 	private LayersProperty getStartProperty()
@@ -166,7 +172,7 @@ public class LayersPropertyAnimator extends AbstractBookmarkPropertyAnimator
 
 	private boolean isInEndProperty(ILayerNode l)
 	{
-		return getEndProperty().getLayerState().containsKey(l.getId());
+		return getEndProperty().getLayerStateInfo().containsKey(l.getId());
 	}
 
 	private LayersProperty getEndProperty()

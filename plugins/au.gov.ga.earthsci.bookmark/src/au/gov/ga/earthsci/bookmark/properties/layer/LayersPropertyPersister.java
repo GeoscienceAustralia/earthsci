@@ -17,11 +17,17 @@ package au.gov.ga.earthsci.bookmark.properties.layer;
 
 import gov.nasa.worldwind.layers.Layer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyCreator;
 import au.gov.ga.earthsci.bookmark.IBookmarkPropertyExporter;
@@ -40,7 +46,7 @@ import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
  */
 public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookmarkPropertyExporter
 {
-	private static final String OPACITY_ATTRIBUTE_NAME = "opacity"; //$NON-NLS-1$
+	public static final String OPACITY_ATTRIBUTE_NAME = "opacity"; //$NON-NLS-1$
 	private static final String OPACITY_ATTRIBUTE_XPATH = "@" + OPACITY_ATTRIBUTE_NAME; //$NON-NLS-1$
 	private static final String ID_ATTRIBUTE_NAME = "id"; //$NON-NLS-1$
 	private static final String ID_ATTRIBUTE_XPATH = "@" + ID_ATTRIBUTE_NAME; //$NON-NLS-1$
@@ -70,7 +76,7 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 				continue;
 			}
 
-			result.addLayer(((ILayerTreeNode) l).getId(), l.getOpacity());
+			result.addLayer(((ILayerTreeNode) l).getId(), l.getOpacity(), l.getName());
 		}
 
 		return result;
@@ -85,13 +91,23 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 		LayersProperty result = new LayersProperty();
 		for (Element state : XmlUtil.getElements(propertyElement, LAYER_XPATH, null))
 		{
-
+			//			state.getAttributes()
 			String id = XMLUtil.getText(state, ID_ATTRIBUTE_XPATH);
 			Double opacity = XMLUtil.getDouble(state, OPACITY_ATTRIBUTE_XPATH, 1.0d);
-
+			NamedNodeMap attrs = state.getAttributes();
 			if (id != null)
 			{
-				result.addLayer(id, opacity);
+				List<Pair<String, String>> pairs = new ArrayList<Pair<String, String>>();
+				for (int i = 0; i < attrs.getLength(); i++)
+				{
+					String key = attrs.item(i).getNodeName();
+					String value = attrs.item(i).getNodeValue();
+					if (!key.equals(ID_ATTRIBUTE_NAME))
+					{
+						pairs.add(new ImmutablePair<String, String>(key, value));
+					}
+				}
+				result.addLayer(id, pairs.toArray(new Pair[0]));
 			}
 		}
 
@@ -109,11 +125,23 @@ public class LayersPropertyPersister implements IBookmarkPropertyCreator, IBookm
 		Validate.notNull(parent, "A property element is required"); //$NON-NLS-1$
 
 		Element layerStateElement = XMLUtil.appendElement(parent, "layerState"); //$NON-NLS-1$
-		for (Entry<String, Double> e : ((LayersProperty) property).getLayerState().entrySet())
+
+		for (Entry<String, Map<String, String>> layerInfo : ((LayersProperty) property).getLayerStateInfo().entrySet())
 		{
 			Element state = XMLUtil.appendElement(layerStateElement, LAYER_ELEMENT_NAME);
-			state.setAttribute(ID_ATTRIBUTE_NAME, e.getKey());
-			state.setAttribute(OPACITY_ATTRIBUTE_NAME, Double.toString(e.getValue()));
+			state.setAttribute(ID_ATTRIBUTE_NAME, layerInfo.getKey());
+			for (Entry<String, String> stateInfo : layerInfo.getValue().entrySet())
+			{
+				state.setAttribute(stateInfo.getKey(), stateInfo.getValue());
+			}
+
 		}
+
+		//		for (Entry<String, Double> e : ((LayersProperty) property).getLayerState().entrySet())
+		//		{
+		//			Element state = XMLUtil.appendElement(layerStateElement, LAYER_ELEMENT_NAME);
+		//			state.setAttribute(ID_ATTRIBUTE_NAME, e.getKey());
+		//			state.setAttribute(OPACITY_ATTRIBUTE_NAME, Double.toString(e.getValue()));
+		//		}
 	}
 }
