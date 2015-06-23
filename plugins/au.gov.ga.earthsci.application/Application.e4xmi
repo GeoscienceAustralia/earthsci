@@ -54,9 +54,6 @@
     <bindings xmi:id="_tqRdYCfCEeKGOtKz07iBzg" keySequence="M1+V" command="_1dBA8CfCEeKGOtKz07iBzg">
       <tags>type:user</tags>
     </bindings>
-    <bindings xmi:id="_X7SL8CfDEeKGOtKz07iBzg" keySequence="M1+P" command="_940mAPyIEeG36NOaHUgVKA">
-      <tags>type:user</tags>
-    </bindings>
     <bindings xmi:id="_Ya3q8CfDEeKGOtKz07iBzg" keySequence="M1+Z" command="_O1ivcCfDEeKGOtKz07iBzg">
       <tags>type:user</tags>
     </bindings>
@@ -70,6 +67,9 @@
       <tags>type:user</tags>
     </bindings>
     <bindings xmi:id="_hjwy0N7CEeKgHpp-DSY_sQ" elementId="" keySequence="F10" command="_pU-REPvQEeG36NOaHUgVKA">
+      <tags>type:user</tags>
+    </bindings>
+    <bindings xmi:id="_waWRUBCwEeWj-55Y08rDBQ" elementId="au.gov.ga.earthsci.application.keybinding.0" keySequence="F11" command="_940mAPyIEeG36NOaHUgVKA">
       <tags>type:user</tags>
     </bindings>
   </bindingTables>
