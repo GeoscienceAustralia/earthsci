@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -30,6 +31,7 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Scale;
@@ -44,9 +46,15 @@ import au.gov.ga.earthsci.layer.tree.LayerNode;
  */
 public class LayerOpacityToolControl
 {
+	/**
+	 * 
+	 */
+	private static final String OPACITY = "opacity";
 	private boolean settingScale = false;
 	private Scale scale;
 	private ILayerTreeNode[] selection = null;
+
+	private SelectionListener selectionListener;
 
 	@PostConstruct
 	public void createControls(Composite parent, IEclipseContext context)
@@ -67,7 +75,7 @@ public class LayerOpacityToolControl
 		scale.setToolTipText("Set opacity of the selected layer(s)");
 		scale.setEnabled(false);
 
-		scale.addSelectionListener(new SelectionAdapter()
+		selectionListener = new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -79,12 +87,20 @@ public class LayerOpacityToolControl
 				double opacity = scale.getSelection() / 100d;
 				setOpacity(Arrays.asList(selection), opacity);
 			}
-		});
+		};
+		scale.addSelectionListener(selectionListener);
 
 		if (selection != null)
 		{
 			setSelection(selection);
 		}
+	}
+
+	@PreDestroy
+	public void tearDown()
+	{
+		setSelection(null); // wipes out the selection listers.
+		scale.removeSelectionListener(selectionListener);
 	}
 
 	@Inject
@@ -109,9 +125,9 @@ public class LayerOpacityToolControl
 	{
 		if (this.selection != null)
 		{
-			for (ILayerTreeNode node : selection)
+			for (ILayerTreeNode node : this.selection)
 			{
-				node.removePropertyChangeListener("opacity", opacityPropertyChangeListener); //$NON-NLS-1$
+				node.removePropertyChangeListener(OPACITY, opacityPropertyChangeListener);
 			}
 		}
 
@@ -119,13 +135,14 @@ public class LayerOpacityToolControl
 
 		if (this.selection != null)
 		{
-			for (ILayerTreeNode node : selection)
+			for (ILayerTreeNode node : this.selection)
 			{
-				node.addPropertyChangeListener("opacity", opacityPropertyChangeListener); //$NON-NLS-1$
+				node.addPropertyChangeListener(OPACITY, opacityPropertyChangeListener);
 			}
+			updateScale();
 		}
 
-		updateScale();
+
 	}
 
 	private void updateScale()
