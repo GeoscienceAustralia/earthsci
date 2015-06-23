@@ -17,7 +17,7 @@
 
 	<modules>
 		<module>verifier</module>
-		<!--<module>externals</module>-->
+		<module>externals</module>
 		<module>plugins</module>
 		<module>features/au.gov.ga.earthsci.feature</module>
 		<module>features/au.gov.ga.earthsci.product</module>
