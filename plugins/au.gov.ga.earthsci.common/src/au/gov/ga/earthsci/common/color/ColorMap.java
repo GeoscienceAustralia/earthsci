@@ -579,4 +579,17 @@ public class ColorMap implements INamed, IDescribed, Colormap
 		hash += entries.hashCode();
 		return hash;
 	}
+
+	public au.gov.ga.earthsci.worldwind.common.util.ColorMap toLegacy()
+	{
+		au.gov.ga.earthsci.worldwind.common.util.ColorMap legacy =
+				new au.gov.ga.earthsci.worldwind.common.util.ColorMap();
+		for (Entry<Double, Color> entry : entries.entrySet())
+		{
+			legacy.put(entry.getKey(), entry.getValue());
+		}
+		legacy.setValuesPercentages(isPercentageBased());
+		legacy.setInterpolateHue(mode == InterpolationMode.INTERPOLATE_HUE);
+		return legacy;
+	}
 }
