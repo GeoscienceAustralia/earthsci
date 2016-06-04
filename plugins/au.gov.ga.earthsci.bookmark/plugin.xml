@@ -13,6 +13,9 @@
       <creator
             class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
       </creator>
+      <creator
+            class="au.gov.ga.earthsci.bookmark.properties.exaggeration.ExaggerationPropertyPersister">
+      </creator>
    </extension>
    <extension
          point="au.gov.ga.earthsci.bookmark.exporters">
@@ -23,6 +26,9 @@
       <exporter
             class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyPersister">
       </exporter>
+      <exporter
+            class="au.gov.ga.earthsci.bookmark.properties.exaggeration.ExaggerationPropertyPersister">
+      </exporter>
    </extension>
    <extension
          point="au.gov.ga.earthsci.bookmark.applicators">
@@ -31,6 +37,9 @@
       </applicator>
       <applicator
             class="au.gov.ga.earthsci.bookmark.properties.layer.LayersPropertyApplicator">
+      </applicator>
+      <applicator
+            class="au.gov.ga.earthsci.bookmark.properties.exaggeration.ExaggerationPropertyApplicator">
       </applicator>
    </extension>
    <extension

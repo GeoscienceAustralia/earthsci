@@ -34,6 +34,10 @@ public class Messages extends NLS
 	public static String LayersPropertyEditor_LayerStateLabel;
 	public static String LayersPropertyEditor_LayerStateLabelColumnLabel;
 	public static String LayersPropertyEditor_LayerStateOpacityColumnLabel;
+	public static String ExaggerationPropertyEditor_EditorDescription;
+	public static String ExaggerationPropertyEditor_EditorName;
+	public static String ExaggerationPropertyEditor_InvalidMessage;
+	public static String ExaggerationPropertyEditor_ExaggerationLabel;
 	static
 	{
 		// initialize resource bundle

@@ -52,5 +52,9 @@
             class="au.gov.ga.earthsci.bookmark.ui.editor.LayersPropertyEditor"
             type="au.gov.ga.earthsci.bookmark.properties.layers">
       </editor>
+      <editor
+            class="au.gov.ga.earthsci.bookmark.ui.editor.ExaggerationPropertyEditor"
+            type="au.gov.ga.earthsci.bookmark.properties.exaggeration">
+      </editor>
    </extension>
 </plugin>

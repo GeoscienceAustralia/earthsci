@@ -24,6 +24,7 @@ public class Messages extends NLS
 	public static String Bookmarks_DefaultListName;
 	public static String CameraProperty_Name;
 	public static String LayersProperty_Name;
+	public static String ExaggerationProperty_Name;
 	static
 	{
 		// initialize resource bundle
