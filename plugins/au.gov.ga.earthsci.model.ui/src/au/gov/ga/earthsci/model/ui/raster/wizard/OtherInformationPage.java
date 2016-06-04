@@ -6,10 +6,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.gdal.gdal.Dataset;
 
 import au.gov.ga.earthsci.common.util.Util;
-import au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters;
+import au.gov.ga.earthsci.model.core.parameters.IInformationParameters;
 
 /**
  * A wizard page for collecting additional information about a raster model
@@ -17,12 +16,12 @@ import au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class RasterModelOtherInformationPage extends AbstractRasterModelPage
+public class OtherInformationPage extends AbstractWizardPage<IInformationParameters>
 {
 
-	protected RasterModelOtherInformationPage(Dataset dataset, GDALRasterModelParameters params)
+	public OtherInformationPage(IInformationParameters params)
 	{
-		super(dataset, params, Messages.RasterModelOtherInformationPage_PageTitle,
+		super(params, Messages.RasterModelOtherInformationPage_PageTitle,
 				Messages.RasterModelOtherInformationPage_PageDescription);
 	}
 
@@ -63,7 +62,7 @@ public class RasterModelOtherInformationPage extends AbstractRasterModelPage
 	}
 
 	@Override
-	void bind()
+	public void bind()
 	{
 		if (!Util.isEmpty(nameField.getText()))
 		{

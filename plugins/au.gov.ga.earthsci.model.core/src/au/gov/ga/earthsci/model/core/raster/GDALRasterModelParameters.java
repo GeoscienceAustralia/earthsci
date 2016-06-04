@@ -27,6 +27,9 @@ import au.gov.ga.earthsci.common.color.ColorMaps;
 import au.gov.ga.earthsci.common.color.io.CompactStringColorMapWriter;
 import au.gov.ga.earthsci.common.util.FileUtil;
 import au.gov.ga.earthsci.model.IModel;
+import au.gov.ga.earthsci.model.core.parameters.IColorMapParameters;
+import au.gov.ga.earthsci.model.core.parameters.IInformationParameters;
+import au.gov.ga.earthsci.model.core.parameters.ISourceProjectionParameters;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
 
 /**
@@ -35,7 +38,8 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public class GDALRasterModelParameters
+public class GDALRasterModelParameters implements IColorMapParameters, ISourceProjectionParameters,
+		IInformationParameters
 {
 
 	@SuppressWarnings("unused")
@@ -168,11 +172,13 @@ public class GDALRasterModelParameters
 		this.elevationBandIndex = elevationBandIndex;
 	}
 
+	@Override
 	public String getSourceProjection()
 	{
 		return sourceProjection;
 	}
 
+	@Override
 	public void setSourceProjection(String sourceProjection)
 	{
 		this.sourceProjection = sourceProjection;
@@ -198,21 +204,25 @@ public class GDALRasterModelParameters
 		this.offset = offset;
 	}
 
+	@Override
 	public String getModelName()
 	{
 		return modelName;
 	}
 
+	@Override
 	public void setModelName(String modelName)
 	{
 		this.modelName = modelName;
 	}
 
+	@Override
 	public String getModelDescription()
 	{
 		return modelDescription;
 	}
 
+	@Override
 	public void setModelDescription(String modelDescription)
 	{
 		this.modelDescription = modelDescription;
@@ -237,14 +247,28 @@ public class GDALRasterModelParameters
 		return subsample == null ? 1 : Math.max(1, subsample);
 	}
 
+	@Override
 	public ColorMap getColorMap()
 	{
 		return colorMap;
 	}
 
+	@Override
 	public void setColorMap(ColorMap colorMap)
 	{
 		this.colorMap = colorMap;
+	}
+
+	@Override
+	public String getPaintedVariable()
+	{
+		return null;
+	}
+
+	@Override
+	public void setPaintedVariable(String paintedVariable)
+	{
+		//not used by the GDALRasterModel
 	}
 
 	/**

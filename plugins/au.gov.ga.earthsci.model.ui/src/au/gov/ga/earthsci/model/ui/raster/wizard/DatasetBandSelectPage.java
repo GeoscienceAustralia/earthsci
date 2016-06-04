@@ -19,18 +19,19 @@ import au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters;
  * @author James Navin (james.navin@ga.gov.au)
  * 
  */
-public class RasterModelBandSelectPage extends AbstractRasterModelPage
+public class DatasetBandSelectPage extends AbstractWizardPage<GDALRasterModelParameters>
 {
-
+	private final Dataset dataset;
 	private Text scaleField;
 	private Text offsetField;
 	private Combo bandDropdown;
 	private Text subsampleField;
 
-	protected RasterModelBandSelectPage(Dataset dataset, GDALRasterModelParameters params)
+	protected DatasetBandSelectPage(Dataset dataset, GDALRasterModelParameters params)
 	{
-		super(dataset, params, Messages.RasterModelBandSelectPage_PageTitle,
+		super(params, Messages.RasterModelBandSelectPage_PageTitle,
 				Messages.RasterModelBandSelectPage_PageDescription);
+		this.dataset = dataset;
 	}
 
 	@Override
@@ -124,7 +125,7 @@ public class RasterModelBandSelectPage extends AbstractRasterModelPage
 	}
 
 	@Override
-	protected void bind()
+	public void bind()
 	{
 		params.setElevationBandIndex(bandDropdown.getSelectionIndex() + 1); // Bands are 1-indexed
 		params.setScaleFactor(getDoubleOrNull(scaleField.getText()));

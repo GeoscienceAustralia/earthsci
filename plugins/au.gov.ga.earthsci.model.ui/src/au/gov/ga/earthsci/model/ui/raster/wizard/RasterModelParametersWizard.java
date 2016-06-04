@@ -42,10 +42,10 @@ public class RasterModelParametersWizard extends Wizard
 	@Override
 	public void addPages()
 	{
-		addPage(new RasterModelBandSelectPage(dataset, params));
-		addPage(new RasterModelProjectionPage(dataset, params));
-		addPage(new RasterModelColorPage(dataset, params));
-		addPage(new RasterModelOtherInformationPage(dataset, params));
+		addPage(new DatasetBandSelectPage(dataset, params));
+		addPage(new ProjectionPage(params, dataset.GetProjection()));
+		addPage(new ColorMapPage(params));
+		addPage(new OtherInformationPage(params));
 	}
 
 	@Override
@@ -53,9 +53,9 @@ public class RasterModelParametersWizard extends Wizard
 	{
 		for (IWizardPage page : getPages())
 		{
-			if (page instanceof AbstractRasterModelPage)
+			if (page instanceof AbstractWizardPage)
 			{
-				((AbstractRasterModelPage) page).bind();
+				((AbstractWizardPage<?>) page).bind();
 			}
 		}
 		return true;

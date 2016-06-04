@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
 import org.gdal.ogr.ogrConstants;
 import org.gdal.osr.SpatialReference;
@@ -19,7 +18,7 @@ import au.gov.ga.earthsci.common.spatial.SpatialReferences.SpatialReferenceSumma
 import au.gov.ga.earthsci.common.ui.dialogs.SpatialReferenceSelectorDialog;
 import au.gov.ga.earthsci.common.ui.util.SWTUtil;
 import au.gov.ga.earthsci.common.util.Util;
-import au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters;
+import au.gov.ga.earthsci.model.core.parameters.ISourceProjectionParameters;
 
 /**
  * A wizard page that collects source projection information in the case where
@@ -29,8 +28,9 @@ import au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters;
  * @author James Navin (james.navin@ga.gov.au)
  * 
  */
-public class RasterModelProjectionPage extends AbstractRasterModelPage
+public class ProjectionPage extends AbstractWizardPage<ISourceProjectionParameters>
 {
+	private final String sourceProjection;
 	private Button useExistingButton;
 	private Button usePreDefinedButton;
 	private Button useUserDefinedButton;
@@ -41,9 +41,11 @@ public class RasterModelProjectionPage extends AbstractRasterModelPage
 	private SpatialReferenceSummary selectedSummary = SpatialReferenceSummary.WGS84;
 	private Text srsText;
 
-	protected RasterModelProjectionPage(Dataset dataset, GDALRasterModelParameters params)
+	public ProjectionPage(ISourceProjectionParameters params, String sourceProjection)
 	{
-		super(dataset, params, Messages.RasterModelProjectionPage_PageTitle, Messages.RasterModelProjectionPage_PageDescription);
+		super(params, Messages.RasterModelProjectionPage_PageTitle,
+				Messages.RasterModelProjectionPage_PageDescription);
+		this.sourceProjection = sourceProjection;
 	}
 
 	@Override
@@ -226,7 +228,7 @@ public class RasterModelProjectionPage extends AbstractRasterModelPage
 
 	private boolean hasSourceSRS()
 	{
-		return !Util.isEmpty(dataset.GetProjection());
+		return !Util.isEmpty(sourceProjection);
 	}
 
 	@Override
@@ -256,11 +258,11 @@ public class RasterModelProjectionPage extends AbstractRasterModelPage
 	}
 
 	@Override
-	void bind()
+	public void bind()
 	{
 		if (hasSourceSRS() && useExistingButton.getSelection())
 		{
-			params.setSourceProjection(dataset.GetProjection());
+			params.setSourceProjection(sourceProjection);
 		}
 		else if (usePreDefinedButton.getSelection())
 		{
