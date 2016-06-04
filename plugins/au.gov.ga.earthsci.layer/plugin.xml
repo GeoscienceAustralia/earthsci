@@ -39,6 +39,12 @@
             name="KML layer"
             priority="normal">
       </content-type>
+      <content-type
+            file-extensions="sg,ts,gp,vo,pl,grs"
+            id="au.gov.ga.earthsci.layer.gocad.object"
+            name="GOCAD Object"
+            priority="normal">
+      </content-type>
    </extension>
    <extension
          point="au.gov.ga.earthsci.injectables">
