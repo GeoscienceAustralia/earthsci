@@ -40,7 +40,7 @@
             priority="normal">
       </content-type>
       <content-type
-            file-extensions="sg,ts,gp,vo,pl,grs"
+            file-extensions="sg,ts,gp,vo,pl,grs,wl"
             id="au.gov.ga.earthsci.layer.gocad.object"
             name="GOCAD Object"
             priority="normal">

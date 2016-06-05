@@ -31,11 +31,13 @@ public class GOCADLayerParametersWizard extends Wizard
 {
 	private final GOCADLayerParameters params;
 	private final String[] properties;
+	private final boolean skipColorMap;
 
-	public GOCADLayerParametersWizard(GOCADLayerParameters params, String[] properties)
+	public GOCADLayerParametersWizard(GOCADLayerParameters params, String[] properties, boolean skipColorMap)
 	{
 		this.params = params;
 		this.properties = properties;
+		this.skipColorMap = skipColorMap;
 
 		setWindowTitle("Import GOCAD object as layer");
 		setNeedsProgressMonitor(false);
@@ -45,7 +47,10 @@ public class GOCADLayerParametersWizard extends Wizard
 	public void addPages()
 	{
 		addPage(new ProjectionPage(params, null));
-		addPage(new ColorMapPage(params, false, properties));
+		if (!skipColorMap)
+		{
+			addPage(new ColorMapPage(params, false, properties));
+		}
 	}
 
 	@Override
