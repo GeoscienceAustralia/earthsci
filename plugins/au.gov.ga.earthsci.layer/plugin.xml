@@ -155,6 +155,14 @@
             value="-10">
       </drawOrder>
       <drawOrder
+            class="au.gov.ga.earthsci.worldwind.common.layers.volume.VolumeLayer"
+            value="-10">
+      </drawOrder>
+      <drawOrder
+            class="au.gov.ga.earthsci.worldwind.common.layers.borehole.BoreholeLayer"
+            value="-10">
+      </drawOrder>
+      <drawOrder
             class="au.gov.ga.earthsci.worldwind.common.layers.fogmask.FogMaskLayer"
             value="-20">
       </drawOrder>
