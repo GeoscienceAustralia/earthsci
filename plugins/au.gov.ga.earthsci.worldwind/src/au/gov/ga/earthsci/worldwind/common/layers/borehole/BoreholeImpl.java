@@ -41,12 +41,12 @@ import au.gov.ga.earthsci.worldwind.common.util.Validate;
 public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 {
 	private final BoreholeLayer layer;
-	private final Object sampleLock = new Object();
+	private BoreholePath path = new BoreholePathImpl();
 	private List<BoreholeSample> samples = new ArrayList<BoreholeSample>();
+	private List<BoreholeMarker> markers = new ArrayList<BoreholeMarker>();
 
-	private FastShape fastShape;
-	private FastShape centreline;
-	private float[] boreholeColorBuffer;
+	private FastShape pathShape;
+	private FastShape samplesShape;
 	private float[] pickingColorBuffer;
 
 	private final PickSupport pickSupport = new PickSupport();
@@ -54,11 +54,22 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 	public BoreholeImpl(BoreholeLayer layer, Position position, MarkerAttributes attrs)
 	{
 		super(position, attrs);
-		
+
 		Validate.notNull(layer, "A borehole layer is required");
-		Validate.notNull(position, "A marker position is required");
-		
+		Validate.notNull(position, "A borehole position is required");
+
 		this.layer = layer;
+	}
+
+	@Override
+	public BoreholePath getPath()
+	{
+		return path;
+	}
+
+	public void setPath(BoreholePath path)
+	{
+		this.path = path;
 	}
 
 	@Override
@@ -72,31 +83,50 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 		this.samples = samples;
 	}
 
+	@Override
+	public List<BoreholeMarker> getMarkers()
+	{
+		return markers;
+	}
+
+	public void setMarkers(List<BoreholeMarker> markers)
+	{
+		this.markers = markers;
+	}
+
+	/**
+	 * Add a position to this borehole's path.
+	 * 
+	 * @param measuredDepth
+	 *            The measured depth of this position
+	 * @param position
+	 *            The position to add
+	 */
+	public void addPath(double measuredDepth, Position position)
+	{
+		path.addPosition(measuredDepth, position);
+	}
+
 	/**
 	 * Add a sample to this borehole.
-	 * <p/>
-	 * Threadsafe.
 	 * 
-	 * @param sample The sample to add. Null samples will be ignored.
-	 * 
-	 * @throw IllegalArgumentException If the provided sample is from the wrong borehole.
+	 * @param sample
+	 *            The sample to add
 	 */
 	public void addSample(BoreholeSample sample)
 	{
-		if (sample == null)
-		{
-			return;
-		}
-		
-		if (sample.getBorehole() != this)
-		{
-			throw new IllegalArgumentException("Sample added from wrong borehole: " + sample.getBorehole() == null ? "null" : sample.getBorehole().toString());
-		}
-		
-		synchronized (sampleLock)
-		{
-			samples.add(sample);
-		}
+		samples.add(sample);
+	}
+
+	/**
+	 * Add a marker to this borehole.
+	 * 
+	 * @param marker
+	 *            The marker to add
+	 */
+	public void addMarker(BoreholeMarker marker)
+	{
+		markers.add(marker);
 	}
 
 	/**
@@ -104,46 +134,55 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 	 * it can create it's geometry. This should be called by the
 	 * {@link BoreholeLayer} in it's own loadComplete() function.
 	 */
+	@Override
 	public void loadComplete()
 	{
 		List<Position> positions = new ArrayList<Position>();
 		List<Color> colors = new ArrayList<Color>();
 
-		List<Position> centrelinePositions = new ArrayList<Position>();
-		
-		double latitude = getPosition().getLatitude().degrees;
-		double longitude = getPosition().getLongitude().degrees;
-		
+		if (path.getPositions().isEmpty() && !getSamples().isEmpty())
+		{
+			double minDepth = Double.MAX_VALUE;
+			double maxDepth = -Double.MAX_VALUE;
+			for (BoreholeSample sample : getSamples())
+			{
+				minDepth = Math.min(minDepth, sample.getDepthFrom());
+				minDepth = Math.min(minDepth, sample.getDepthTo());
+				maxDepth = Math.max(maxDepth, sample.getDepthFrom());
+				maxDepth = Math.max(maxDepth, sample.getDepthTo());
+			}
+			Position minPosition = getPosition();
+			Position maxPosition = new Position(minPosition, minPosition.elevation - (maxDepth - minDepth));
+			path.addPosition(minDepth, minPosition);
+			path.addPosition(maxDepth, maxPosition);
+		}
+
 		for (BoreholeSample sample : getSamples())
 		{
-			Position sampleTop = Position.fromDegrees(latitude, longitude, -sample.getDepthFrom());
-			Position sampleBottom = Position.fromDegrees(latitude, longitude, -sample.getDepthTo());
+			Position sampleTop = path.getPosition(sample.getDepthFrom());
+			Position sampleBottom = path.getPosition(sample.getDepthTo());
 
 			positions.add(sampleTop);
 			positions.add(sampleBottom);
-			
-			Color sampleColor = sample.getColor() == null ? this.layer.getDefaultSampleColor() : sample.getColor();
+
+			Color sampleColor = sample.getColor();
+			sampleColor = sampleColor != null ? sampleColor : this.layer.getDefaultSampleColor();
 			colors.add(sampleColor);
 			colors.add(sampleColor);
 		}
-		
-		if (!positions.isEmpty())
-		{
-			centrelinePositions.add(getPosition());
-			centrelinePositions.add(positions.get(positions.size() - 1));
-		}
-		
-		boreholeColorBuffer = FastShape.color3ToFloats(colors);
+
+		List<Position> pathPositions = new ArrayList<Position>(path.getPositions().values());
+		pathShape = new FastShape(pathPositions, GL2.GL_LINE_STRIP);
+		pathShape.setColor(Color.LIGHT_GRAY);
+		pathShape.setLineWidth(1.0);
+		pathShape.setFollowTerrain(layer.isFollowTerrain());
+
+		float[] boreholeColorBuffer = FastShape.color3ToFloats(colors);
 		pickingColorBuffer = new float[colors.size() * 3];
 
-		fastShape = new FastShape(positions, GL2.GL_LINES);
-		fastShape.setColorBuffer(boreholeColorBuffer);
-		fastShape.setFollowTerrain(true);
-		
-		centreline = new FastShape(centrelinePositions, GL2.GL_LINES);
-		centreline.setColor(Color.LIGHT_GRAY);
-		centreline.setLineWidth(1.0);
-		centreline.setFollowTerrain(true);
+		samplesShape = new FastShape(positions, GL2.GL_LINES);
+		samplesShape.setColorBuffer(boreholeColorBuffer);
+		samplesShape.setFollowTerrain(layer.isFollowTerrain());
 	}
 
 	@Override
@@ -161,13 +200,13 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 	@Override
 	public void render(DrawContext dc)
 	{
-		if (fastShape == null)
+		if (samplesShape == null)
 		{
 			return;
 		}
 
 		//check if the borehole is within the minimum drawing distance; if not, don't draw
-		Extent extent = fastShape.getExtent();
+		Extent extent = pathShape.getExtent();
 		if (extent != null && layer.getMinimumDistance() != null)
 		{
 			double distanceToEye = extent.getCenter().distanceTo3(dc.getView().getEyePoint()) - extent.getRadius();
@@ -179,8 +218,8 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 
 		if (!dc.isPickingMode())
 		{
-			fastShape.render(dc);
-			centreline.render(dc);
+			samplesShape.render(dc);
+			pathShape.render(dc);
 		}
 		else
 		{
@@ -202,10 +241,10 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 				//This will determine if we have to go further and pick individual samples.
 				Color overallPickColor = dc.getUniquePickColor();
 				pickSupport.addPickableObject(overallPickColor.getRGB(), this, getPosition());
-				fastShape.setColor(overallPickColor);
-				fastShape.setColorBufferEnabled(false);
-				fastShape.render(dc);
-				fastShape.setColorBufferEnabled(true);
+				samplesShape.setColor(overallPickColor);
+				samplesShape.setColorBufferEnabled(false);
+				samplesShape.render(dc);
+				samplesShape.setColorBufferEnabled(true);
 
 				PickedObject object = pickSupport.getTopObject(dc, dc.getPickPoint());
 				pickSupport.clearPickList();
@@ -229,8 +268,8 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 					}
 
 					//render the shape with the pickingColorBuffer, and then resolve the pick
-					fastShape.setPickingColorBuffer(pickingColorBuffer);
-					fastShape.render(dc);
+					samplesShape.setPickingColorBuffer(pickingColorBuffer);
+					samplesShape.render(dc);
 					pickSupport.resolvePick(dc, dc.getPickPoint(), layer);
 				}
 			}
@@ -241,14 +280,14 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 			}
 		}
 	}
-	
+
+	FastShape getPathShape()
+	{
+		return pathShape;
+	}
+
 	FastShape getSamplesShape()
 	{
-		return fastShape;
-	}
-	
-	FastShape getCentrelineShape()
-	{
-		return centreline;
+		return samplesShape;
 	}
 }

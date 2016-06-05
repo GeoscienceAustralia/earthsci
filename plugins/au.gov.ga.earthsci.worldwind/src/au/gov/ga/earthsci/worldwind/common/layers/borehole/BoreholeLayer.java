@@ -20,7 +20,10 @@ import gov.nasa.worldwind.geom.Position;
 
 import java.awt.Color;
 
+import org.gdal.osr.CoordinateTransformation;
+
 import au.gov.ga.earthsci.worldwind.common.layers.data.DataLayer;
+import au.gov.ga.earthsci.worldwind.common.util.ColorMap;
 
 /**
  * Layer used to visualise borehole data.
@@ -30,13 +33,24 @@ import au.gov.ga.earthsci.worldwind.common.layers.data.DataLayer;
 public interface BoreholeLayer extends DataLayer
 {
 	/**
+	 * Add a borehole to this layer.
+	 * 
+	 * @param borehole
+	 *            Borehole to add
+	 */
+	void addBorehole(Borehole borehole);
+
+	/**
 	 * Add a borehole sample to this layer. Called by the
 	 * {@link BoreholeProvider}.
+	 * <p/>
+	 * If a borehole doesn't yet exist for this sample/position, a new borehole
+	 * is created.
 	 * 
 	 * @param position
-	 *            Borehole sample position
+	 *            Position of the borehole that contains this sample
 	 * @param attributeValues
-	 *            Attribute values for this point
+	 *            Attribute values for this sample, including from/to depth
 	 */
 	void addBoreholeSample(Position position, AVList attributeValues);
 
@@ -52,10 +66,22 @@ public interface BoreholeLayer extends DataLayer
 	 *         should be rendered. If null, there's no minimum distance.
 	 */
 	Double getMinimumDistance();
-	
+
 	/**
-	 * @return The default colour to use when rendering samples that have no colour
-	 * 		   information available.
+	 * @return The default colour to use when rendering samples that have no
+	 *         colour information available.
 	 */
 	Color getDefaultSampleColor();
+
+	/**
+	 * @return Optional {@link CoordinateTransformation} used to transform
+	 *         coordinates into WGS84
+	 */
+	CoordinateTransformation getCoordinateTransformation();
+
+	/**
+	 * @return Optional {@link ColorMap} used to calculate colors of markers and
+	 *         samples
+	 */
+	ColorMap getColorMap();
 }

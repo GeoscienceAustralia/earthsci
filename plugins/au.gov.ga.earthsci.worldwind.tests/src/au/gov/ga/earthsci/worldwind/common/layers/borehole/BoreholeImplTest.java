@@ -104,7 +104,7 @@ public class BoreholeImplTest
 	public void testShapesNotInitialisedOnCreate()
 	{
 		assertNull(classUnderTest.getSamplesShape());
-		assertNull(classUnderTest.getCentrelineShape());
+		assertNull(classUnderTest.getPathShape());
 		
 		assertEquals(0, classUnderTest.getSamples().size());
 	}
@@ -115,7 +115,7 @@ public class BoreholeImplTest
 		classUnderTest.addSample(createSampleForBoreHole(classUnderTest, 0, 15, Color.RED));
 		
 		assertNull(classUnderTest.getSamplesShape());
-		assertNull(classUnderTest.getCentrelineShape());
+		assertNull(classUnderTest.getPathShape());
 		
 		assertEquals(1, classUnderTest.getSamples().size());
 	}
@@ -127,7 +127,7 @@ public class BoreholeImplTest
 		classUnderTest.addSample(null);
 		
 		assertNull(classUnderTest.getSamplesShape());
-		assertNull(classUnderTest.getCentrelineShape());
+		assertNull(classUnderTest.getPathShape());
 		
 		assertEquals(1, classUnderTest.getSamples().size());
 	}
@@ -147,7 +147,7 @@ public class BoreholeImplTest
 		assertNotNull(samplesShape);
 		assertEquals(0, samplesShape.getPositions().size());
 		
-		FastShape centrelineShape = classUnderTest.getCentrelineShape();
+		FastShape centrelineShape = classUnderTest.getPathShape();
 		assertNotNull(centrelineShape);
 		assertEquals(0, centrelineShape.getPositions().size());
 	}
@@ -169,7 +169,7 @@ public class BoreholeImplTest
 										  0,0,1,0,0,1};
 		assertArrayEquals(colorBuffer, samplesShape.getColorBuffer(), 0.001f);
 		
-		FastShape centrelineShape = classUnderTest.getCentrelineShape();
+		FastShape centrelineShape = classUnderTest.getPathShape();
 		assertNotNull(centrelineShape);
 		assertEquals(2, centrelineShape.getPositions().size());
 		assertNull(centrelineShape.getColorBuffer());

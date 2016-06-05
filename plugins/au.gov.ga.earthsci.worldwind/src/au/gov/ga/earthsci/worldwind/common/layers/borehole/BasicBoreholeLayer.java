@@ -15,6 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.borehole;
 
+import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.event.SelectEvent;
@@ -29,7 +30,6 @@ import gov.nasa.worldwind.render.GlobeAnnotation;
 import gov.nasa.worldwind.render.markers.BasicMarkerAttributes;
 import gov.nasa.worldwind.render.markers.Marker;
 import gov.nasa.worldwind.render.markers.MarkerAttributes;
-import gov.nasa.worldwind.render.markers.MarkerRenderer;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -39,10 +39,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.media.opengl.GL2;
+
+import org.gdal.osr.CoordinateTransformation;
 
 import au.gov.ga.earthsci.worldwind.common.WorldWindowRegistry;
 import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
@@ -52,7 +55,10 @@ import au.gov.ga.earthsci.worldwind.common.layers.styled.BasicStyleProvider;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.Style;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.StyleAndText;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.StyleProvider;
+import au.gov.ga.earthsci.worldwind.common.render.DeepPickingMarkerRenderer;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
+import au.gov.ga.earthsci.worldwind.common.util.ColorMap;
+import au.gov.ga.earthsci.worldwind.common.util.CoordinateTransformationUtil;
 import au.gov.ga.earthsci.worldwind.common.util.DefaultLauncher;
 import au.gov.ga.earthsci.worldwind.common.util.OnTopGlobeAnnotation;
 import au.gov.ga.earthsci.worldwind.common.util.Util;
@@ -71,10 +77,10 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 	protected BoreholeProvider boreholeProvider;
 	protected StyleProvider boreholeStyleProvider = new BasicStyleProvider();
 	protected StyleProvider sampleStyleProvider = new BasicStyleProvider();
-	protected final List<BoreholeImpl> boreholes = new ArrayList<BoreholeImpl>();
+	protected final List<Borehole> boreholes = new ArrayList<Borehole>();
 	protected final List<Marker> markers = new ArrayList<Marker>();
 	protected final Map<Object, BoreholeImpl> idToBorehole = new HashMap<Object, BoreholeImpl>();
-	protected final MarkerRenderer markerRenderer = new MarkerRenderer();
+	protected final DeepPickingMarkerRenderer markerRenderer = new DeepPickingMarkerRenderer();
 	protected final AnnotationRenderer annotationRenderer = new BasicAnnotationRenderer();
 
 	protected URL context;
@@ -84,8 +90,10 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 	protected String sampleDepthFromAttribute;
 	protected String sampleDepthToAttribute;
 	protected boolean attributesRepresentPositiveDepth = true;
-	protected double lineWidth = 10;
+	protected double lineWidth = 5;
 	protected Double minimumDistance;
+	protected CoordinateTransformation coordinateTransformation;
+	protected ColorMap colorMap;
 
 	protected GlobeAnnotation tooltipAnnotation;
 
@@ -118,6 +126,18 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 			lineWidth = d;
 		}
 
+		String s = (String) params.getValue(AVKey.COORDINATE_SYSTEM);
+		if (s != null)
+		{
+			setCoordinateTransformation(CoordinateTransformationUtil.getTransformationToWGS84(s));
+		}
+
+		ColorMap cm = (ColorMap) params.getValue(AVKeyMore.COLOR_MAP);
+		if (cm != null)
+		{
+			setColorMap(cm);
+		}
+
 		minimumDistance = (Double) params.getValue(AVKeyMore.MINIMUM_DISTANCE);
 
 		Validate.notBlank(url, "Borehole data url not set");
@@ -129,10 +149,6 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 		Validate.notNull(sampleStyleProvider.getStyles(), "Borehole sample style list is null");
 		Validate.notNull(sampleStyleProvider.getAttributes(), "Borehole sample attribute list is null");
 
-		Validate.notBlank(uniqueIdentifierAttribute, "Borehole unique identifier attribute not set");
-		Validate.notBlank(sampleDepthFromAttribute, "Borehole sample depth-from attribute not set");
-		Validate.notBlank(sampleDepthToAttribute, "Borehole sample depth-to attribute not set");
-
 		// Init tooltip annotation
 		this.tooltipAnnotation = new OnTopGlobeAnnotation("", Position.fromDegrees(0, 0, 0));
 		Font font = Font.decode("Arial-Plain-15");
@@ -143,9 +159,16 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 		this.tooltipAnnotation.getAttributes().setVisible(false);
 		this.tooltipAnnotation.setPickEnabled(false);
 		this.tooltipAnnotation.setAlwaysOnTop(true);
+		this.tooltipAnnotation
+				.setAltitudeMode(isFollowTerrain() ? WorldWind.RELATIVE_TO_GROUND : WorldWind.ABSOLUTE);
 
-		markerRenderer.setOverrideMarkerElevation(true);
-		markerRenderer.setElevation(0);
+		markerRenderer.setKeepSeparated(false);
+		markerRenderer.setDrawImmediately(true);
+		if (isFollowTerrain())
+		{
+			markerRenderer.setOverrideMarkerElevation(true);
+			markerRenderer.setElevation(0);
+		}
 
 		WorldWindowRegistry.INSTANCE.addSelectListener(this);
 	}
@@ -172,6 +195,16 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 	public String getDataCacheName()
 	{
 		return dataCacheName;
+	}
+
+	@Override
+	public void addBorehole(Borehole borehole)
+	{
+		synchronized (boreholes)
+		{
+			boreholes.add(borehole);
+			markers.add(borehole);
+		}
 	}
 
 	@Override
@@ -218,7 +251,7 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 	@Override
 	public void loadComplete()
 	{
-		for (BoreholeImpl borehole : boreholes)
+		for (Borehole borehole : boreholes)
 		{
 			borehole.loadComplete();
 		}
@@ -247,7 +280,7 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 		boreholeProvider.requestData(this);
 		synchronized (boreholes)
 		{
-			markerRenderer.render(dc, markers);
+			markerRenderer.render(dc, allMarkers());
 			annotationRenderer.render(dc, tooltipAnnotation, tooltipAnnotation.getAnnotationDrawPoint(dc), this);
 
 			GL2 gl = dc.getGL().getGL2();
@@ -256,7 +289,7 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 				gl.glPushAttrib(GL2.GL_LINE_BIT);
 				gl.glLineWidth((float) lineWidth);
 
-				for (BoreholeImpl borehole : boreholes)
+				for (Borehole borehole : boreholes)
 				{
 					borehole.render(dc);
 				}
@@ -295,21 +328,26 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 		}
 
 		PickedObject topPickedObject = e.getTopPickedObject();
-		if (topPickedObject != null
-				&& (topPickedObject.getObject() instanceof Borehole || topPickedObject.getObject() instanceof BoreholeSample))
+		Object object = topPickedObject != null ? topPickedObject.getObject() : null;
+		if (object instanceof Borehole || object instanceof BoreholeSample || object instanceof BoreholeMarker)
 		{
-			highlight(topPickedObject.getObject(), true);
+			highlight(object, true);
 
 			if (e.getEventAction() == SelectEvent.LEFT_CLICK)
 			{
 				String link = null;
-				if (topPickedObject.getObject() instanceof Borehole)
+
+				if (object instanceof Borehole)
 				{
-					link = ((Borehole) topPickedObject.getObject()).getLink();
+					link = ((Borehole) object).getLink();
 				}
-				else if (topPickedObject.getObject() instanceof BoreholeSample)
+				else if (object instanceof BoreholeSample)
 				{
-					link = ((BoreholeSample) topPickedObject.getObject()).getLink();
+					link = ((BoreholeSample) object).getLink();
+				}
+				else if (object instanceof BoreholeMarker)
+				{
+					link = ((BoreholeMarker) object).getLink();
 				}
 				if (link != null)
 				{
@@ -324,10 +362,6 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 				}
 			}
 		}
-		else if (topPickedObject != null && topPickedObject.getObject() instanceof BoreholeSample)
-		{
-
-		}
 		else
 		{
 			highlight(null, false);
@@ -338,6 +372,28 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 	public Color getDefaultSampleColor()
 	{
 		return DEFAULT_SAMPLE_COLOR;
+	}
+
+	@Override
+	public CoordinateTransformation getCoordinateTransformation()
+	{
+		return coordinateTransformation;
+	}
+
+	public void setCoordinateTransformation(CoordinateTransformation coordinateTransformation)
+	{
+		this.coordinateTransformation = coordinateTransformation;
+	}
+
+	@Override
+	public ColorMap getColorMap()
+	{
+		return colorMap;
+	}
+
+	public void setColorMap(ColorMap colorMap)
+	{
+		this.colorMap = colorMap;
 	}
 
 	/**
@@ -365,10 +421,14 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 			{
 				BoreholeSample sample = (BoreholeSample) object;
 				text = sample.getText();
-				position =
-						Position.fromDegrees(sample.getBorehole().getPosition().getLatitude().degrees, sample
-								.getBorehole().getPosition().getLongitude().degrees,
-								-(sample.getDepthTo() + sample.getDepthFrom()) / 2d);
+				double depth = (sample.getDepthTo() + sample.getDepthFrom()) / 2d;
+				position = sample.getBorehole().getPath().getPosition(depth);
+			}
+			else if (object instanceof BoreholeMarker)
+			{
+				BoreholeMarker marker = (BoreholeMarker) object;
+				text = marker.getText();
+				position = marker.getBorehole().getPath().getPosition(marker.getDepth());
 			}
 
 			if (text != null)
@@ -382,5 +442,49 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 		{
 			tooltipAnnotation.getAttributes().setVisible(false);
 		}
+	}
+
+	protected Iterable<Marker> allMarkers()
+	{
+		return new Iterable<Marker>()
+		{
+			@Override
+			public Iterator<Marker> iterator()
+			{
+				return new Iterator<Marker>()
+				{
+					private Iterator<? extends Marker> current = markers.iterator();
+					private int boreholeIndex = 0;
+
+					@Override
+					public boolean hasNext()
+					{
+						if (current.hasNext())
+						{
+							return true;
+						}
+						while (boreholeIndex < boreholes.size())
+						{
+							current = boreholes.get(boreholeIndex++).getMarkers().iterator();
+							if (current.hasNext())
+							{
+								return true;
+							}
+						}
+						return false;
+					}
+
+					@Override
+					public Marker next()
+					{
+						if (!hasNext())
+						{
+							return null;
+						}
+						return current.next();
+					}
+				};
+			}
+		};
 	}
 }

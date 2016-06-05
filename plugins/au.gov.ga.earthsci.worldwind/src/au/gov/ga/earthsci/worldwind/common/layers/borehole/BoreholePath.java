@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright 2012 Geoscience Australia
- * 
+ * Copyright 2016 Geoscience Australia
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,44 +15,36 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.borehole;
 
-import java.awt.Color;
+import gov.nasa.worldwind.geom.Position;
+
+import java.util.SortedMap;
 
 /**
- * Represents a sample in a borehole.
- * 
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * Represents the path of a borehole (not necessarily vertical).
+ *
+ * @author Michael de Hoog
  */
-public interface BoreholeSample
+public interface BoreholePath
 {
 	/**
-	 * @return {@link Borehole} that this sample is associated with
+	 * @return Map of borehole measured depth to true position.
 	 */
-	Borehole getBorehole();
+	SortedMap<Double, Position> getPositions();
 
 	/**
-	 * @return Top measured depth of this sample (in positive meters)
+	 * Add a position to the borehole path.
+	 * 
+	 * @param measuredDepth
+	 * @param position
 	 */
-	double getDepthFrom();
+	void addPosition(double measuredDepth, Position position);
 
 	/**
-	 * @return Bottom measured depth of this sample (in positive meters)
+	 * Get the position for the given measured depth.
+	 * 
+	 * @param measuredDepth
+	 *            Measured depth to get the position for
+	 * @return Position for the given measured depth
 	 */
-	double getDepthTo();
-
-	/**
-	 * @return Color used to display this sample
-	 */
-	Color getColor();
-
-	/**
-	 * @return The display text associated with this sample; eg to show as a
-	 *         tooltip
-	 */
-	String getText();
-
-	/**
-	 * @return A URL string to a website that describes this sample (null if
-	 *         none)
-	 */
-	String getLink();
+	Position getPosition(double measuredDepth);
 }
