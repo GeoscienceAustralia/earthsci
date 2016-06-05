@@ -42,6 +42,7 @@ import au.gov.ga.earthsci.worldwind.common.layers.Bounds;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayer;
 import au.gov.ga.earthsci.worldwind.common.layers.point.PointLayerHelper;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.StyleAndText;
+import au.gov.ga.earthsci.worldwind.common.render.DiskMarkerShape;
 import au.gov.ga.earthsci.worldwind.common.util.DefaultLauncher;
 
 /**
@@ -183,6 +184,10 @@ public class MarkerPointLayer extends MarkerLayer implements PointLayer, SelectL
 			else if (BasicMarkerShape.ORIENTED_CYLINDER_LINE.equalsIgnoreCase(shapetype))
 			{
 				attributes.setShapeType(BasicMarkerShape.ORIENTED_CYLINDER_LINE);
+			}
+			else if (DiskMarkerShape.DISK.equalsIgnoreCase(shapetype))
+			{
+				attributes.setShapeType(DiskMarkerShape.DISK);
 			}
 		}
 	}
