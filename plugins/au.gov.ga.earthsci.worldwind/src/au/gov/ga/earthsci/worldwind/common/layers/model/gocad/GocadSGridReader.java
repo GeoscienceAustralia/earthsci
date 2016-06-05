@@ -49,6 +49,7 @@ public class GocadSGridReader implements GocadReader<FastShape>
 {
 	public final static String HEADER_REGEX = "(?i).*sgrid.*";
 
+	public final static Pattern headerPattern = Pattern.compile("GOCAD\\s+SGrid\\s+.*");
 	private final static Pattern propAlignmentPattern = Pattern.compile("PROP_ALIGNMENT\\s+(.*?)\\s*");
 	private final static Pattern asciiDataFilePattern = Pattern.compile("ASCII_DATA_FILE\\s+(.*?)\\s*");
 	public final static Pattern propertyNamePattern = Pattern.compile("PROPERTY\\s+(\\d+)\\s+\"?(.*?)\"?\\s*");
