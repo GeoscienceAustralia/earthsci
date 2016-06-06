@@ -141,7 +141,12 @@ public class ViewState implements IViewState
 
 		if (lastRotation == null)
 		{
-			lastRotation = getRotationInverse(globe).getInverse();
+			Matrix rotationInverse = getRotationInverse(globe);
+			if (rotationInverse == null)
+			{
+				rotationInverse = Matrix.IDENTITY;
+			}
+			lastRotation = rotationInverse.getInverse();
 			if (lastRotation == null)
 			{
 				//last resort if rotation couldn't be found
