@@ -31,19 +31,15 @@ import au.gov.ga.earthsci.worldwind.common.util.Validate;
  */
 public class BoreholeImpl extends UrlMarker implements Borehole
 {
-	private final BoreholeLayer layer;
 	private final BoreholePath path = new BoreholePathImpl(this);
 	private List<BoreholeSample> samples = new ArrayList<BoreholeSample>();
 	private List<BoreholeMarker> markers = new ArrayList<BoreholeMarker>();
 
-	public BoreholeImpl(BoreholeLayer layer, Position position, MarkerAttributes attrs)
+	public BoreholeImpl(Position position, MarkerAttributes attrs)
 	{
 		super(position, attrs);
 
-		Validate.notNull(layer, "A borehole layer is required");
 		Validate.notNull(position, "A borehole position is required");
-
-		this.layer = layer;
 	}
 
 	@Override

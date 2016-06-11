@@ -349,7 +349,7 @@ public class GocadWellBoreholeProvider extends AbstractDataProvider<BoreholeLaye
 			MarkerAttributes markerAttributes = new BasicMarkerAttributes();
 			markerAttributes.setShapeType(BasicMarkerShape.CONE);
 			markerAttributes.setMarkerPixels(4);
-			BoreholeImpl borehole = new BoreholeImpl(layer, position, markerAttributes);
+			BoreholeImpl borehole = new BoreholeImpl(position, markerAttributes);
 			borehole.setTooltipText(data.name);
 			layer.addBorehole(borehole);
 

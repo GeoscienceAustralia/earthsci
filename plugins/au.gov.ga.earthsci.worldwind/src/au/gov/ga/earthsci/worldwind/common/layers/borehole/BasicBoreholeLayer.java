@@ -227,7 +227,7 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 		if (borehole == null)
 		{
 			MarkerAttributes markerAttributes = new BasicMarkerAttributes();
-			borehole = new BoreholeImpl(this, position, markerAttributes);
+			borehole = new BoreholeImpl(position, markerAttributes);
 			idToBorehole.put(id, borehole);
 			synchronized (boreholes)
 			{
