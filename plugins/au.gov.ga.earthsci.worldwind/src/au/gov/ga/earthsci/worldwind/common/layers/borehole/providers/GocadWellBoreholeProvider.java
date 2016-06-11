@@ -17,6 +17,7 @@ package au.gov.ga.earthsci.worldwind.common.layers.borehole.providers;
 
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Quaternion;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.render.markers.BasicMarkerAttributes;
 import gov.nasa.worldwind.render.markers.BasicMarkerShape;
@@ -64,6 +65,8 @@ public class GocadWellBoreholeProvider extends AbstractDataProvider<BoreholeLaye
 			.compile("WREF\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s*");
 	private final static Pattern vrtxPattern = Pattern
 			.compile("VRTX\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s*");
+	private final static Pattern stationPattern = Pattern
+			.compile("STATION\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s*");
 	private final static Pattern pathPattern = Pattern
 			.compile("PATH\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s*");
 	private final static Pattern tvssPathPattern = Pattern
@@ -76,6 +79,7 @@ public class GocadWellBoreholeProvider extends AbstractDataProvider<BoreholeLaye
 
 	private final static Pattern mrkrPattern = Pattern.compile("MRKR\\s+([^\\s]+)\\s+([^\\s]+)\\s+([\\d.\\-]+)\\s*");
 	private final static Pattern dipPattern = Pattern.compile("DIP\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s*");
+	private final static Pattern dipDegPattern = Pattern.compile("DIPDEG\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s*");
 	private final static Pattern normPattern = Pattern
 			.compile("NORM\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s+([\\d.\\-]+)\\s*");
 
@@ -187,6 +191,30 @@ public class GocadWellBoreholeProvider extends AbstractDataProvider<BoreholeLaye
 			return;
 		}
 
+		matcher = stationPattern.matcher(line);
+		if (matcher.matches())
+		{
+			double depth = Double.valueOf(matcher.group(1));
+			Angle pitch = Angle.fromDegrees(Double.valueOf(matcher.group(2)));
+			Angle heading = Angle.fromDegrees(Double.valueOf(matcher.group(3)));
+			BoreholeDataPathItem lastItem =
+					!currentData.path.isEmpty() ? currentData.path.get(currentData.path.size() - 1) : null;
+			double lastDepth = lastItem != null ? lastItem.depth : 0;
+			Vec4 lastVrtx = lastItem != null ? lastItem.vertex : currentData.wref;
+			Angle currentPitch =
+					currentData.lastStationPitch != null ? Angle.mix(0.5, currentData.lastStationPitch, pitch) : pitch;
+			Angle currentHeading =
+					currentData.lastStationHeading != null ? Angle.mix(0.5, currentData.lastStationHeading, heading)
+							: heading;
+			Vec4 vrtx = new Vec4(0, 0, lastDepth - depth);
+			Quaternion q = Quaternion.fromRotationXYZ(currentPitch, Angle.ZERO, currentHeading.multiply(-1));
+			vrtx = vrtx.transformBy3(q);
+			vrtx = lastVrtx.add3(vrtx);
+			currentData.path.add(new BoreholeDataPathItem(depth, vrtx));
+			currentData.lastStationPitch = pitch;
+			currentData.lastStationHeading = heading;
+		}
+
 		matcher = pathPattern.matcher(line);
 		if (matcher.matches())
 		{
@@ -245,22 +273,44 @@ public class GocadWellBoreholeProvider extends AbstractDataProvider<BoreholeLaye
 		matcher = normPattern.matcher(line);
 		if (matcher.matches())
 		{
+			if (currentData.markers.isEmpty())
+			{
+				return;
+			}
 			BoreholeDataMarker marker = currentData.markers.get(currentData.markers.size() - 1);
 			double x = Double.valueOf(matcher.group(1));
 			double y = Double.valueOf(matcher.group(2));
 			double z = Double.valueOf(matcher.group(3));
-			Vec4 norm = new Vec4(x, y, z);
-			//TODO
+			Vec4 norm = new Vec4(x, y, z).normalize3();
+			marker.azimuth = Angle.fromRadians(Math.atan2(norm.x, norm.y)); //reversed x,y
+			marker.dip = Angle.fromRadians(Math.atan2(Math.sqrt(norm.x * norm.x + norm.y * norm.y), norm.z));
 			return;
 		}
 
 		matcher = dipPattern.matcher(line);
 		if (matcher.matches())
 		{
+			if (currentData.markers.isEmpty())
+			{
+				return;
+			}
 			BoreholeDataMarker marker = currentData.markers.get(currentData.markers.size() - 1);
 			//in gradians, convert to degrees
 			marker.azimuth = Angle.fromDegrees(Double.valueOf(matcher.group(1)) * 90d / 100d);
 			marker.dip = Angle.fromDegrees(Double.valueOf(matcher.group(2)) * 90d / 100d);
+			return;
+		}
+
+		matcher = dipDegPattern.matcher(line);
+		if (matcher.matches())
+		{
+			if (currentData.markers.isEmpty())
+			{
+				return;
+			}
+			BoreholeDataMarker marker = currentData.markers.get(currentData.markers.size() - 1);
+			marker.azimuth = Angle.fromDegrees(Double.valueOf(matcher.group(1)));
+			marker.dip = Angle.fromDegrees(Double.valueOf(matcher.group(2)));
 			return;
 		}
 	}
@@ -362,6 +412,8 @@ public class GocadWellBoreholeProvider extends AbstractDataProvider<BoreholeLaye
 		public final List<BoreholeDataPathItem> path = new ArrayList<BoreholeDataPathItem>();
 		public final List<BoreholeDataMarker> markers = new ArrayList<BoreholeDataMarker>();
 		public final List<BoreholeDataZone> zones = new ArrayList<BoreholeDataZone>();
+		public Angle lastStationPitch;
+		public Angle lastStationHeading;
 	}
 
 	private static class BoreholeDataPathItem
