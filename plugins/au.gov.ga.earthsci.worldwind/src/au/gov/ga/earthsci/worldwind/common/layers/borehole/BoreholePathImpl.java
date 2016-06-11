@@ -30,7 +30,19 @@ import java.util.TreeMap;
  */
 public class BoreholePathImpl implements BoreholePath
 {
+	private final Borehole borehole;
 	private final NavigableMap<Double, Position> positions = new TreeMap<Double, Position>();
+
+	public BoreholePathImpl(Borehole borehole)
+	{
+		this.borehole = borehole;
+	}
+
+	@Override
+	public Borehole getBorehole()
+	{
+		return borehole;
+	}
 
 	@Override
 	public SortedMap<Double, Position> getPositions()
@@ -49,7 +61,8 @@ public class BoreholePathImpl implements BoreholePath
 	{
 		if (positions.isEmpty())
 		{
-			return null;
+			Position boreholePosition = borehole.getPosition();
+			return new Position(boreholePosition, boreholePosition.elevation - measuredDepth);
 		}
 		if (positions.size() == 1)
 		{
@@ -70,6 +83,11 @@ public class BoreholePathImpl implements BoreholePath
 		{
 			ceiling = floor;
 			floor = positions.lowerEntry(ceiling.getKey());
+		}
+		if (floor.getKey() == ceiling.getKey())
+		{
+			//exact match, so don't interpolate
+			return floor.getValue();
 		}
 
 		double amount = (measuredDepth - floor.getKey()) / (ceiling.getKey() - floor.getKey());

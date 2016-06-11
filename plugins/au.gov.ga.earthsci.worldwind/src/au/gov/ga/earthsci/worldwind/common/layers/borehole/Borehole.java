@@ -15,7 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.borehole;
 
-import gov.nasa.worldwind.render.Renderable;
 import gov.nasa.worldwind.render.markers.Marker;
 
 import java.util.List;
@@ -25,7 +24,7 @@ import java.util.List;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface Borehole extends Renderable, Marker
+public interface Borehole extends Marker
 {
 	/**
 	 * @return The path of this borehole

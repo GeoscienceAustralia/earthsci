@@ -22,6 +22,7 @@ import gov.nasa.worldwind.event.SelectEvent;
 import gov.nasa.worldwind.event.SelectListener;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.AbstractLayer;
+import gov.nasa.worldwind.pick.PickSupport;
 import gov.nasa.worldwind.pick.PickedObject;
 import gov.nasa.worldwind.render.AnnotationRenderer;
 import gov.nasa.worldwind.render.BasicAnnotationRenderer;
@@ -56,6 +57,7 @@ import au.gov.ga.earthsci.worldwind.common.layers.styled.Style;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.StyleAndText;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.StyleProvider;
 import au.gov.ga.earthsci.worldwind.common.render.DeepPickingMarkerRenderer;
+import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShape;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
 import au.gov.ga.earthsci.worldwind.common.util.ColorMap;
 import au.gov.ga.earthsci.worldwind.common.util.CoordinateTransformationUtil;
@@ -78,7 +80,6 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 	protected StyleProvider boreholeStyleProvider = new BasicStyleProvider();
 	protected StyleProvider sampleStyleProvider = new BasicStyleProvider();
 	protected final List<Borehole> boreholes = new ArrayList<Borehole>();
-	protected final List<Marker> markers = new ArrayList<Marker>();
 	protected final Map<Object, BoreholeImpl> idToBorehole = new HashMap<Object, BoreholeImpl>();
 	protected final DeepPickingMarkerRenderer markerRenderer = new DeepPickingMarkerRenderer();
 	protected final AnnotationRenderer annotationRenderer = new BasicAnnotationRenderer();
@@ -96,6 +97,11 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 	protected ColorMap colorMap;
 
 	protected GlobeAnnotation tooltipAnnotation;
+
+	protected FastShape pathShape;
+	protected FastShape samplesShape;
+	protected float[] pickingColorBuffer;
+	protected final PickSupport pickSupport = new PickSupport();
 
 	@SuppressWarnings("unchecked")
 	public BasicBoreholeLayer(AVList params)
@@ -203,7 +209,6 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 		synchronized (boreholes)
 		{
 			boreholes.add(borehole);
-			markers.add(borehole);
 		}
 	}
 
@@ -227,7 +232,6 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 			synchronized (boreholes)
 			{
 				boreholes.add(borehole);
-				markers.add(borehole);
 			}
 
 			StyleAndText boreholeProperties = boreholeStyleProvider.getStyle(attributeValues);
@@ -251,10 +255,57 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 	@Override
 	public void loadComplete()
 	{
+		List<Position> positions = new ArrayList<Position>();
+		List<Color> colors = new ArrayList<Color>();
+		List<Position> pathPositions = new ArrayList<Position>();
+
 		for (Borehole borehole : boreholes)
 		{
 			borehole.loadComplete();
+
+			BoreholePath path = borehole.getPath();
+			for (BoreholeSample sample : borehole.getSamples())
+			{
+				Position sampleTop = path.getPosition(sample.getDepthFrom());
+				Position sampleBottom = path.getPosition(sample.getDepthTo());
+
+				positions.add(sampleTop);
+				positions.add(sampleBottom);
+
+				Color sampleColor = sample.getColor();
+				sampleColor = sampleColor != null ? sampleColor : getDefaultSampleColor();
+				colors.add(sampleColor);
+				colors.add(sampleColor);
+			}
+
+			Position lastPosition = null;
+			for (Position position : path.getPositions().values())
+			{
+				if (lastPosition != null)
+				{
+					pathPositions.add(lastPosition);
+					pathPositions.add(position);
+				}
+				lastPosition = position;
+			}
 		}
+
+		FastShape pathShape = new FastShape(pathPositions, GL2.GL_LINES);
+		pathShape.setColor(Color.LIGHT_GRAY);
+		pathShape.setLineWidth(1.0);
+		pathShape.setFollowTerrain(isFollowTerrain());
+
+		float[] boreholeColorBuffer = FastShape.color3ToFloats(colors);
+		pickingColorBuffer = new float[colors.size() * 3];
+
+		FastShape samplesShape = new FastShape(positions, GL2.GL_LINES);
+		samplesShape.setColorBuffer(boreholeColorBuffer);
+		samplesShape.setFollowTerrain(isFollowTerrain());
+		samplesShape.setLineWidth(lineWidth);
+
+		//set at the end, so that half-setup shape isn't rendered on the render thread 
+		this.pathShape = pathShape;
+		this.samplesShape = samplesShape;
 	}
 
 	@Override
@@ -282,21 +333,67 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 		{
 			markerRenderer.render(dc, allMarkers());
 			annotationRenderer.render(dc, tooltipAnnotation, tooltipAnnotation.getAnnotationDrawPoint(dc), this);
-
-			GL2 gl = dc.getGL().getGL2();
-			try
+			if (samplesShape != null)
 			{
-				gl.glPushAttrib(GL2.GL_LINE_BIT);
-				gl.glLineWidth((float) lineWidth);
-
-				for (Borehole borehole : boreholes)
+				if (!dc.isPickingMode())
 				{
-					borehole.render(dc);
+					samplesShape.render(dc);
+					pathShape.render(dc);
 				}
-			}
-			finally
-			{
-				gl.glPopAttrib();
+				else
+				{
+					boolean oldDeepPicking = dc.isDeepPickingEnabled();
+					try
+					{
+						//deep picking needs to be enabled, because boreholes are below the surface
+						dc.setDeepPickingEnabled(true);
+						pickSupport.beginPicking(dc);
+
+						//First pick on the entire object by setting the shape to a single color.
+						//This will determine if we have to go further and pick individual samples.
+						Color overallPickColor = dc.getUniquePickColor();
+						pickSupport.addPickableObject(overallPickColor.getRGB(), samplesShape, getBounds().center);
+						samplesShape.setColor(overallPickColor);
+						samplesShape.setColorBufferEnabled(false);
+						samplesShape.render(dc);
+						samplesShape.setColorBufferEnabled(true);
+
+						PickedObject object = pickSupport.getTopObject(dc, dc.getPickPoint());
+						pickSupport.clearPickList();
+
+						if (object != null && object.getObject() == samplesShape)
+						{
+							//This layer has been picked; now try picking the samples individually
+
+							//Put unique pick colours into the pickingColorBuffer (2 per sample)
+							int i = 0;
+							for (Borehole borehole : boreholes)
+							{
+								for (BoreholeSample sample : borehole.getSamples())
+								{
+									Color color = dc.getUniquePickColor();
+									pickSupport.addPickableObject(color.getRGB(), sample, getBounds().center);
+									for (int j = 0; j < 2; j++)
+									{
+										pickingColorBuffer[i++] = color.getRed() / 255f;
+										pickingColorBuffer[i++] = color.getGreen() / 255f;
+										pickingColorBuffer[i++] = color.getBlue() / 255f;
+									}
+								}
+							}
+
+							//render the shape with the pickingColorBuffer, and then resolve the pick
+							samplesShape.setPickingColorBuffer(pickingColorBuffer);
+							samplesShape.render(dc);
+							pickSupport.resolvePick(dc, dc.getPickPoint(), this);
+						}
+					}
+					finally
+					{
+						pickSupport.endPicking(dc);
+						dc.setDeepPickingEnabled(oldDeepPicking);
+					}
+				}
 			}
 		}
 	}
@@ -453,7 +550,7 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 			{
 				return new Iterator<Marker>()
 				{
-					private Iterator<? extends Marker> current = markers.iterator();
+					private Iterator<? extends Marker> current = boreholes.iterator();
 					private int boreholeIndex = 0;
 
 					@Override

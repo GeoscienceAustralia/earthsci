@@ -15,22 +15,13 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.borehole;
 
-import gov.nasa.worldwind.geom.Extent;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.pick.PickSupport;
-import gov.nasa.worldwind.pick.PickedObject;
-import gov.nasa.worldwind.render.DrawContext;
-import gov.nasa.worldwind.render.Renderable;
 import gov.nasa.worldwind.render.markers.MarkerAttributes;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.opengl.GL2;
-
 import au.gov.ga.earthsci.worldwind.common.layers.point.types.UrlMarker;
-import au.gov.ga.earthsci.worldwind.common.render.fastshape.FastShape;
 import au.gov.ga.earthsci.worldwind.common.util.Validate;
 
 /**
@@ -38,18 +29,12 @@ import au.gov.ga.earthsci.worldwind.common.util.Validate;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
+public class BoreholeImpl extends UrlMarker implements Borehole
 {
 	private final BoreholeLayer layer;
-	private BoreholePath path = new BoreholePathImpl();
+	private final BoreholePath path = new BoreholePathImpl(this);
 	private List<BoreholeSample> samples = new ArrayList<BoreholeSample>();
 	private List<BoreholeMarker> markers = new ArrayList<BoreholeMarker>();
-
-	private FastShape pathShape;
-	private FastShape samplesShape;
-	private float[] pickingColorBuffer;
-
-	private final PickSupport pickSupport = new PickSupport();
 
 	public BoreholeImpl(BoreholeLayer layer, Position position, MarkerAttributes attrs)
 	{
@@ -65,11 +50,6 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 	public BoreholePath getPath()
 	{
 		return path;
-	}
-
-	public void setPath(BoreholePath path)
-	{
-		this.path = path;
 	}
 
 	@Override
@@ -137,9 +117,6 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 	@Override
 	public void loadComplete()
 	{
-		List<Position> positions = new ArrayList<Position>();
-		List<Color> colors = new ArrayList<Color>();
-
 		if (path.getPositions().isEmpty() && !getSamples().isEmpty())
 		{
 			double minDepth = Double.MAX_VALUE;
@@ -156,33 +133,6 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 			path.addPosition(minDepth, minPosition);
 			path.addPosition(maxDepth, maxPosition);
 		}
-
-		for (BoreholeSample sample : getSamples())
-		{
-			Position sampleTop = path.getPosition(sample.getDepthFrom());
-			Position sampleBottom = path.getPosition(sample.getDepthTo());
-
-			positions.add(sampleTop);
-			positions.add(sampleBottom);
-
-			Color sampleColor = sample.getColor();
-			sampleColor = sampleColor != null ? sampleColor : this.layer.getDefaultSampleColor();
-			colors.add(sampleColor);
-			colors.add(sampleColor);
-		}
-
-		List<Position> pathPositions = new ArrayList<Position>(path.getPositions().values());
-		pathShape = new FastShape(pathPositions, GL2.GL_LINE_STRIP);
-		pathShape.setColor(Color.LIGHT_GRAY);
-		pathShape.setLineWidth(1.0);
-		pathShape.setFollowTerrain(layer.isFollowTerrain());
-
-		float[] boreholeColorBuffer = FastShape.color3ToFloats(colors);
-		pickingColorBuffer = new float[colors.size() * 3];
-
-		samplesShape = new FastShape(positions, GL2.GL_LINES);
-		samplesShape.setColorBuffer(boreholeColorBuffer);
-		samplesShape.setFollowTerrain(layer.isFollowTerrain());
 	}
 
 	@Override
@@ -195,99 +145,5 @@ public class BoreholeImpl extends UrlMarker implements Borehole, Renderable
 	public String getLink()
 	{
 		return getUrl();
-	}
-
-	@Override
-	public void render(DrawContext dc)
-	{
-		if (samplesShape == null)
-		{
-			return;
-		}
-
-		//check if the borehole is within the minimum drawing distance; if not, don't draw
-		Extent extent = pathShape.getExtent();
-		if (extent != null && layer.getMinimumDistance() != null)
-		{
-			double distanceToEye = extent.getCenter().distanceTo3(dc.getView().getEyePoint()) - extent.getRadius();
-			if (distanceToEye > layer.getMinimumDistance())
-			{
-				return;
-			}
-		}
-
-		if (!dc.isPickingMode())
-		{
-			samplesShape.render(dc);
-			pathShape.render(dc);
-		}
-		else
-		{
-			//Don't calculate the picking buffer if the shape isn't going to be rendered anyway.
-			//This check is also performed in the shape's render() function, so don't do it above.
-			if (extent != null && !dc.getView().getFrustumInModelCoordinates().intersects(extent))
-			{
-				return;
-			}
-
-			boolean oldDeepPicking = dc.isDeepPickingEnabled();
-			try
-			{
-				//deep picking needs to be enabled, because boreholes are below the surface
-				dc.setDeepPickingEnabled(true);
-				pickSupport.beginPicking(dc);
-
-				//First pick on the entire object by setting the shape to a single color.
-				//This will determine if we have to go further and pick individual samples.
-				Color overallPickColor = dc.getUniquePickColor();
-				pickSupport.addPickableObject(overallPickColor.getRGB(), this, getPosition());
-				samplesShape.setColor(overallPickColor);
-				samplesShape.setColorBufferEnabled(false);
-				samplesShape.render(dc);
-				samplesShape.setColorBufferEnabled(true);
-
-				PickedObject object = pickSupport.getTopObject(dc, dc.getPickPoint());
-				pickSupport.clearPickList();
-
-				if (object != null && object.getObject() == this)
-				{
-					//This borehole has been picked; now try picking the samples individually
-
-					//Put unique pick colours into the pickingColorBuffer (2 per sample)
-					int i = 0;
-					for (BoreholeSample sample : getSamples())
-					{
-						Color color = dc.getUniquePickColor();
-						pickSupport.addPickableObject(color.getRGB(), sample, getPosition());
-						for (int j = 0; j < 2; j++)
-						{
-							pickingColorBuffer[i++] = color.getRed() / 255f;
-							pickingColorBuffer[i++] = color.getGreen() / 255f;
-							pickingColorBuffer[i++] = color.getBlue() / 255f;
-						}
-					}
-
-					//render the shape with the pickingColorBuffer, and then resolve the pick
-					samplesShape.setPickingColorBuffer(pickingColorBuffer);
-					samplesShape.render(dc);
-					pickSupport.resolvePick(dc, dc.getPickPoint(), layer);
-				}
-			}
-			finally
-			{
-				pickSupport.endPicking(dc);
-				dc.setDeepPickingEnabled(oldDeepPicking);
-			}
-		}
-	}
-
-	FastShape getPathShape()
-	{
-		return pathShape;
-	}
-
-	FastShape getSamplesShape()
-	{
-		return samplesShape;
 	}
 }

@@ -27,6 +27,11 @@ import java.util.SortedMap;
 public interface BoreholePath
 {
 	/**
+	 * @return {@link Borehole} that this path is for
+	 */
+	Borehole getBorehole();
+
+	/**
 	 * @return Map of borehole measured depth to true position.
 	 */
 	SortedMap<Double, Position> getPositions();
