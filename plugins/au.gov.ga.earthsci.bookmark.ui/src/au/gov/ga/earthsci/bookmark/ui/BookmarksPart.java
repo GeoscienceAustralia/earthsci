@@ -208,7 +208,8 @@ public class BookmarksPart
 			@Override
 			public void selectionChanged(SelectionChangedEvent event)
 			{
-				bookmarkListTableViewer.setInput(BeanProperties.list("bookmarks").observe(getSelectedBookmarkList())); //$NON-NLS-1$
+				bookmarkListTableViewer.setInput(BeanProperties
+						.list(IBookmarkList.class, "bookmarks").observe(getSelectedBookmarkList())); //$NON-NLS-1$
 			}
 		});
 	}
