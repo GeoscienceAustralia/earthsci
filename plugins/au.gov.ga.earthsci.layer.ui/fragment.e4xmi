@@ -10,11 +10,11 @@
   <imports xsi:type="commands:Command" xmi:id="_OjStcJdDEeKAe5mIUYJvmg" elementId="org.eclipse.ui.edit.rename"/>
   <imports xsi:type="commands:Command" xmi:id="_PgYn0JdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.command.newFolder"/>
   <imports xsi:type="commands:Command" xmi:id="__zAbMB6VEeOlpu5oZDxrXg" elementId="au.gov.ga.earthsci.application.command.properties"/>
+  <imports xsi:type="commands:Command" xmi:id="_FKmsgFDfEeOjrrDspo67ky" elementId="au.gov.ga.earthsci.application.command.export"/>
+  <imports xsi:type="commands:Command" xmi:id="_FKmsgFDfEeOjrrDspo67kz" elementId="au.gov.ga.earthsci.application.command.import"/>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_BEjdIFDfEeOjrrDspo67kw" featurename="commands" parentElementId="au.gov.ga.earthsci.application">
     <elements xsi:type="commands:Command" xmi:id="_FKmsgFDfEeOjrrDspo67kw" elementId="au.gov.ga.earthsci.layer.ui.zoomToLayer" commandName="Zoom to Layer"/>
     <elements xsi:type="commands:Command" xmi:id="_FKmsgFDfEeOjrrDspo67kx" elementId="au.gov.ga.earthsci.layer.ui.resetLayers" commandName="Reset layers to default"/>
-    <elements xsi:type="commands:Command" xmi:id="_FKmsgFDfEeOjrrDspo67ky" elementId="au.gov.ga.earthsci.layer.ui.exportLayers" commandName="Export layers"/>
-    <elements xsi:type="commands:Command" xmi:id="_FKmsgFDfEeOjrrDspo67kz" elementId="au.gov.ga.earthsci.layer.ui.importLayers" commandName="Import layers"/>
   </fragments>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_AKs3QZdDEeKAe5mIUYJvmg" featurename="descriptors" parentElementId="au.gov.ga.earthsci.application">
     <elements xsi:type="basic:PartDescriptor" xmi:id="_AKs3QpdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.part" label="%au.gov.ga.earthsci.application.layertree.part.label" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/layer.png" tooltip="%au.gov.ga.earthsci.application.layertree.part.tooltip" closeable="true" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.LayerTreePart">
@@ -34,10 +34,10 @@
       <handlers xmi:id="_AKs3SZdDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.LegendHandler" command="_IehHkJdDEeKAe5mIUYJvmg"/>
       <handlers xmi:id="_AKs3SpdDEeKAe5mIUYJvmg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.NewFolderHandler" command="_PgYn0JdDEeKAe5mIUYJvmg"/>
       <handlers xmi:id="_Y9dRcB6WEeOlpu5oZDxrXg" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.PropertiesHandler" command="__zAbMB6VEeOlpu5oZDxrXg"/>
-      <handlers xmi:id="_gF2K8FDfEeOjrrDspo67kw" elementId="au.gov.ga.earthsci.layer.ui.handler.0" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.ZoomToHandler" command="_FKmsgFDfEeOjrrDspo67kw"/>
-      <handlers xmi:id="_gF2K8FDfEeOjrrDspo67kx" elementId="au.gov.ga.earthsci.layer.ui.handler.1" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.ResetHandler" command="_FKmsgFDfEeOjrrDspo67kx"/>
-      <handlers xmi:id="_gF2K8FDfEeOjrrDspo67ky" elementId="au.gov.ga.earthsci.layer.ui.handler.2" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.ExportHandler" command="_FKmsgFDfEeOjrrDspo67ky"/>
-      <handlers xmi:id="_gF2K8FDfEeOjrrDspo67kz" elementId="au.gov.ga.earthsci.layer.ui.handler.3" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.ImportHandler" command="_FKmsgFDfEeOjrrDspo67kz"/>
+      <handlers xmi:id="_gF2K8FDfEeOjrrDspo67kw" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.ZoomToHandler" command="_FKmsgFDfEeOjrrDspo67kw"/>
+      <handlers xmi:id="_gF2K8FDfEeOjrrDspo67kx" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.ResetHandler" command="_FKmsgFDfEeOjrrDspo67kx"/>
+      <handlers xmi:id="_gF2K8FDfEeOjrrDspo67ky" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.ExportHandler" command="_FKmsgFDfEeOjrrDspo67ky"/>
+      <handlers xmi:id="_gF2K8FDfEeOjrrDspo67kz" elementId="" contributionURI="bundleclass://au.gov.ga.earthsci.layer.ui/au.gov.ga.earthsci.layer.ui.handlers.ImportHandler" command="_FKmsgFDfEeOjrrDspo67kz"/>
       <menus xsi:type="menu:PopupMenu" xmi:id="_AKs3S5dDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu" label="Layer Menu">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3TJdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.rename" label="Rename" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/rename.gif" command="_OjStcJdDEeKAe5mIUYJvmg"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_AKs3TZdDEeKAe5mIUYJvmg" elementId="au.gov.ga.earthsci.application.layertree.popupmenu.delete" label="Delete" iconURI="platform:/plugin/au.gov.ga.earthsci.application/icons/delete.gif" command="_KTDAQJdDEeKAe5mIUYJvmg"/>
