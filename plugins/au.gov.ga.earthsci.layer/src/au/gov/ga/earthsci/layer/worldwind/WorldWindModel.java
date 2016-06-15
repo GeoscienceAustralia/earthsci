@@ -166,7 +166,7 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 
 	public void resetToDefaultLayers(IEclipseContext context)
 	{
-		if (layerFile.delete())
+		if (!layerFile.exists() || layerFile.delete())
 		{
 			removeAllLayers();
 			loadLayers(context);
