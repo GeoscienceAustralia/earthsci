@@ -22,19 +22,17 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.gdal.gdal.Dataset;
 
 import au.gov.ga.earthsci.common.util.Util;
-import au.gov.ga.earthsci.model.core.raster.GDALRasterModelParameters;
 
 /**
- * Base class for raster model wizard pages
+ * Base class for wizard pages
  * <p/>
  * Provides convenient methods for validation and data binding.
  * 
  * @author James Navin (james.navin@ga.gov.au)
  */
-public abstract class AbstractRasterModelPage extends WizardPage
+public abstract class AbstractWizardPage<P> extends WizardPage
 {
 
 	private static final Point DEFAULT_MIN_PAGE_SIZE = new Point(300, 300);
@@ -44,11 +42,8 @@ public abstract class AbstractRasterModelPage extends WizardPage
 	private static final String NORMAL_TEXT_COLOR = "normalText"; //$NON-NLS-1$
 	private static final String ERROR_TEXT_COLOR = "errorText"; //$NON-NLS-1$
 
-	/** The raster dataset parameters are being collected for */
-	protected final Dataset dataset;
-
 	/** The parameters being collected with this page */
-	protected final GDALRasterModelParameters params;
+	protected final P params;
 
 	private final ColorRegistry colorRegistry;
 
@@ -65,15 +60,13 @@ public abstract class AbstractRasterModelPage extends WizardPage
 
 	private ScrolledComposite scroller;
 
-	protected AbstractRasterModelPage(Dataset dataset, GDALRasterModelParameters params,
-			String title, String description)
+	protected AbstractWizardPage(P params, String title, String description)
 	{
 		super(title);
 
 		setTitle(title);
 		setDescription(description);
 
-		this.dataset = dataset;
 		this.params = params;
 
 		colorRegistry = new ColorRegistry(Display.getDefault(), true);
@@ -202,7 +195,7 @@ public abstract class AbstractRasterModelPage extends WizardPage
 	/**
 	 * Bind collected values to the backing parameters object
 	 */
-	abstract void bind();
+	public abstract void bind();
 
 	/**
 	 * Register a field to trigger validation on change

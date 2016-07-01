@@ -16,7 +16,6 @@
 package au.gov.ga.earthsci.core.url;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,7 +29,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.SwingUtilities;
 
 import org.osgi.service.url.AbstractURLStreamHandlerService;
@@ -88,14 +87,14 @@ public class SystemIconURLStreamHandlerService extends AbstractURLStreamHandlerS
 						throw new FileNotFoundException(file.getAbsolutePath());
 					}
 
-					final ImageIcon[] iconResult = new ImageIcon[1];
+					final Icon[] iconResult = new Icon[1];
 					Runnable task = new Runnable()
 					{
 						@Override
 						public void run()
 						{
 							iconResult[0] =
-									(ImageIcon) javax.swing.filechooser.FileSystemView.getFileSystemView()
+									javax.swing.filechooser.FileSystemView.getFileSystemView()
 											.getSystemIcon(file);
 						}
 					};
@@ -108,13 +107,12 @@ public class SystemIconURLStreamHandlerService extends AbstractURLStreamHandlerS
 						SwingUtilities.invokeAndWait(task);
 					}
 
-					ImageIcon icon = iconResult[0];
+					Icon icon = iconResult[0];
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					Image image = icon.getImage();
 					BufferedImage bi =
-							new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+							new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
 					Graphics2D g = bi.createGraphics();
-					g.drawImage(image, 0, 0, null);
+					icon.paintIcon(null, g, 0, 0);
 					g.dispose();
 					ImageIO.write(bi, "PNG", baos); //$NON-NLS-1$
 					baos.close();

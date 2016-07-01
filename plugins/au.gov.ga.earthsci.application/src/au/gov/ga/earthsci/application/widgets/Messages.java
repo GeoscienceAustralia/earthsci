@@ -30,6 +30,7 @@ public class Messages extends NLS
 	public static String Vec4Editor_XLabel;
 	public static String Vec4Editor_YLabel;
 	public static String Vec4Editor_ZLabel;
+	public static String DoubleEditor_Label;
 	static
 	{
 		// initialize resource bundle

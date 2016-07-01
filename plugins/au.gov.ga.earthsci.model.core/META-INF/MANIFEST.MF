@@ -20,6 +20,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: au.gov.ga.earthsci.model.core,
+ au.gov.ga.earthsci.model.core.parameters,
  au.gov.ga.earthsci.model.core.raster,
  au.gov.ga.earthsci.model.core.render,
  au.gov.ga.earthsci.model.core.worldwind

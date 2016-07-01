@@ -91,4 +91,20 @@ public class FileUtil
 		
 		return fileExtension.equalsIgnoreCase(extension.replace(".", ""));
 	}
+
+	public static String getFilename(String filename)
+	{
+		if (Util.isBlank(filename))
+		{
+			return null;
+		}
+
+		filename = filename.replace('\\', '/');
+		if (filename.lastIndexOf('/') == -1)
+		{
+			return null;
+		}
+
+		return filename.substring(filename.lastIndexOf('/') + 1);
+	}
 }

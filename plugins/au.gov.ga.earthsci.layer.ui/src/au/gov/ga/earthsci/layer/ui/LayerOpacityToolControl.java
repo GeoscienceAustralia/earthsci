@@ -152,13 +152,20 @@ public class LayerOpacityToolControl
 			return;
 		}
 
-		settingScale = true;
-		double opacity = scale.getSelection() / 100d;
-		Double o = getMinOpacity(Arrays.asList(selection), null);
-		opacity = o == null ? opacity : o;
-		scale.setSelection((int) (opacity * 100d));
-		scale.setEnabled(selection.length > 0);
-		settingScale = false;
+		scale.getDisplay().syncExec(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				settingScale = true;
+				double opacity = scale.getSelection() / 100d;
+				Double o = getMinOpacity(Arrays.asList(selection), null);
+				opacity = o == null ? opacity : o;
+				scale.setSelection((int) (opacity * 100d));
+				scale.setEnabled(selection.length > 0);
+				settingScale = false;
+			}
+		});
 	}
 
 	private Double getMinOpacity(List<ILayerTreeNode> nodes, Double opacity)

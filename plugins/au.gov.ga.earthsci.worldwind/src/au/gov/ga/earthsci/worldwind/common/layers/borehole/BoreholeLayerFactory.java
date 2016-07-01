@@ -25,10 +25,13 @@ import javax.xml.xpath.XPath;
 
 import org.w3c.dom.Element;
 
+import au.gov.ga.earthsci.worldwind.common.layers.borehole.providers.GocadWellBoreholeProvider;
 import au.gov.ga.earthsci.worldwind.common.layers.borehole.providers.ShapefileBoreholeProvider;
 import au.gov.ga.earthsci.worldwind.common.layers.data.DataLayerFactory;
 import au.gov.ga.earthsci.worldwind.common.layers.styled.StyleAndAttributeFactory;
 import au.gov.ga.earthsci.worldwind.common.util.AVKeyMore;
+import au.gov.ga.earthsci.worldwind.common.util.ColorMap;
+import au.gov.ga.earthsci.worldwind.common.util.XMLUtil;
 
 /**
  * Helper class for the creation of {@link BoreholeLayer}s. Contains XML parsing
@@ -60,7 +63,9 @@ public class BoreholeLayerFactory
 	public static AVList getParamsFromDocument(Element domElement, AVList params)
 	{
 		if (params == null)
+		{
 			params = new AVListImpl();
+		}
 
 		XPath xpath = WWXML.makeXPath();
 
@@ -80,6 +85,11 @@ public class BoreholeLayerFactory
 				"SampleDepthAttributes/@positive", xpath);
 		WWXML.checkAndSetDoubleParam(domElement, params, AVKeyMore.LINE_WIDTH, "LineWidth", xpath);
 		WWXML.checkAndSetDoubleParam(domElement, params, AVKeyMore.MINIMUM_DISTANCE, "MinimumDistance", xpath);
+
+		WWXML.checkAndSetStringParam(domElement, params, AVKey.COORDINATE_SYSTEM, "CoordinateSystem", xpath);
+
+		ColorMap colorMap = XMLUtil.getColorMap(domElement, "ColorMap", xpath);
+		params.setValue(AVKeyMore.COLOR_MAP, colorMap);
 
 		setupBoreholeProvider(domElement, xpath, params);
 
@@ -109,6 +119,10 @@ public class BoreholeLayerFactory
 		if ("Shapefile".equalsIgnoreCase(format))
 		{
 			params.setValue(AVKeyMore.DATA_LAYER_PROVIDER, new ShapefileBoreholeProvider());
+		}
+		else if ("GOCAD Well".equalsIgnoreCase(format))
+		{
+			params.setValue(AVKeyMore.DATA_LAYER_PROVIDER, new GocadWellBoreholeProvider());
 		}
 		else
 		{

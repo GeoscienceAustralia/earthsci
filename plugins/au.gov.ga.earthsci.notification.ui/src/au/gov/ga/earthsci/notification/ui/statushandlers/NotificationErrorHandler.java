@@ -44,17 +44,29 @@ public class NotificationErrorHandler extends AbstractStatusHandler
 	public void handle(StatusAdapter statusAdapter, int style)
 	{
 		IStatus status = statusAdapter.getStatus();
+		Throwable exception = status.getException();
+		if (exception instanceof NullPointerException)
+		{
+			StackTraceElement[] stackTrace = exception.getStackTrace();
+			StackTraceElement firstElement = stackTrace != null && stackTrace.length > 0 ? stackTrace[0] : null;
+			if (firstElement != null && "internal_new_GC".equals(firstElement.getMethodName())) //$NON-NLS-1$
+			{
+				//ignore this Eclipse bug on mac:
+				//https://bugs.eclipse.org/bugs/show_bug.cgi?id=434393
+				return;
+			}
+		}
 		NotificationManager.notify(createNotification(status, style));
 		switch (status.getSeverity())
 		{
 		case IStatus.ERROR:
-			logger.error(status.getMessage(), status.getException());
+			logger.error(status.getMessage(), exception);
 			break;
 		case IStatus.WARNING:
-			logger.warn(status.getMessage(), status.getException());
+			logger.warn(status.getMessage(), exception);
 			break;
 		default:
-			logger.info(status.getMessage(), status.getException());
+			logger.info(status.getMessage(), exception);
 			break;
 		}
 	}

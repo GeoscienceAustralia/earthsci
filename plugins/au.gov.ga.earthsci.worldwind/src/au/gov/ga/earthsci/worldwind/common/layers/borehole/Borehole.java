@@ -15,7 +15,7 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.worldwind.common.layers.borehole;
 
-import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.render.markers.Marker;
 
 import java.util.List;
 
@@ -24,17 +24,22 @@ import java.util.List;
  * 
  * @author Michael de Hoog (michael.dehoog@ga.gov.au)
  */
-public interface Borehole
+public interface Borehole extends Marker
 {
+	/**
+	 * @return The path of this borehole
+	 */
+	BoreholePath getPath();
+
 	/**
 	 * @return List of samples associated with this borehole
 	 */
 	List<BoreholeSample> getSamples();
 
 	/**
-	 * @return This borehole's position
+	 * @return List of markers associated with this borehole
 	 */
-	Position getPosition();
+	List<BoreholeMarker> getMarkers();
 
 	/**
 	 * @return The display text associated with this borehole; eg to show as a
@@ -47,4 +52,10 @@ public interface Borehole
 	 *         none)
 	 */
 	String getLink();
+
+	/**
+	 * Called by the {@link BoreholeLayer} after all data for this borehole has
+	 * been loaded.
+	 */
+	void loadComplete();
 }

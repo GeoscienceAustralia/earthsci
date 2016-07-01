@@ -39,6 +39,12 @@
             name="KML layer"
             priority="normal">
       </content-type>
+      <content-type
+            file-extensions="sg,ts,gp,vo,pl,grs,wl,vs"
+            id="au.gov.ga.earthsci.layer.gocad.object"
+            name="GOCAD Object"
+            priority="normal">
+      </content-type>
    </extension>
    <extension
          point="au.gov.ga.earthsci.injectables">
@@ -146,6 +152,14 @@
       </drawOrder>
       <drawOrder
             class="au.gov.ga.earthsci.worldwind.common.layers.model.ModelLayer"
+            value="-10">
+      </drawOrder>
+      <drawOrder
+            class="au.gov.ga.earthsci.worldwind.common.layers.volume.VolumeLayer"
+            value="-10">
+      </drawOrder>
+      <drawOrder
+            class="au.gov.ga.earthsci.worldwind.common.layers.borehole.BoreholeLayer"
             value="-10">
       </drawOrder>
       <drawOrder

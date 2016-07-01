@@ -170,6 +170,8 @@
   <commands xmi:id="_dPfHYOgcEeKDKYCx5tWecQ" elementId="au.gov.ga.earthsci.application.command.clear" commandName="clearCommand" description="Clear all items"/>
   <commands xmi:id="_6LV8YEfvEeKRt8yHXSHYtA" elementId="au.gov.ga.earthsci.application.command.apply" commandName="applyCommand" description="Apply and item state"/>
   <commands xmi:id="_7h3-kEf8EeKRt8yHXSHYtA" elementId="au.gov.ga.earthsci.application.command.edit" commandName="editCommand" description="Edit an item"/>
+  <commands xmi:id="_7h3-kEf8EeKRt8yHXSHYtB" elementId="au.gov.ga.earthsci.application.command.export" commandName="exportCommand" description="Export"/>
+  <commands xmi:id="_7h3-kEf8EeKRt8yHXSHYtC" elementId="au.gov.ga.earthsci.application.command.import" commandName="importCommand" description="Import"/>
   <commands xmi:id="_TwF28F9zEeKICM2QMruAHQ" elementId="au.gov.ga.earthsci.application.command.newFolder" commandName="newFolderCommand" description="Create a new folder"/>
   <commands xmi:id="_cdOmEGXdEeKxr8W5TdCnMQ" elementId="au.gov.ga.earthsci.application.command.toggleHud" commandName="toggleHudCommand">
     <parameters xmi:id="_hEH4sGXdEeKxr8W5TdCnMQ" elementId="au.gov.ga.earthsci.application.command.toggleHud.hudId" name="hudId"/>

@@ -28,6 +28,10 @@ public class Messages extends NLS
 	public static String LayerTreeLabelProvider_Loading;
 	public static String LegendHandler_PartLabel;
 	public static String NewFolderHandler_DefaultNewFolderName;
+	public static String ResetHandler_QuestionTitle;
+	public static String ResetHandler_QuestionMessage;
+	public static String DeleteAllHandler_QuestionTitle;
+	public static String DeleteAllHandler_QuestionMessage;
 	static
 	{
 		// initialize resource bundle

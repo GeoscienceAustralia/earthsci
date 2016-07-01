@@ -194,6 +194,24 @@ public class ColorMaps
 		}
 	}
 
+	@Inject
+	public static void loadGOCADColorMaps()
+	{
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/africa.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/bgr.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/classic.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/cyan_red.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/flag.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/gray.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/grn_yel.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/high_res.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/rainbow.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/rainbow1.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/rainbow2.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/red_blue.cmap"))); //$NON-NLS-1$
+		add(readFrom(ColorMaps.class.getResource("/colormaps/gocad/whi_blue.cmap"))); //$NON-NLS-1$
+	}
+
 	/**
 	 * Register the provided {@link IColorMapReader} on this class
 	 * 

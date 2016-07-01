@@ -30,12 +30,12 @@ public interface BoreholeSample
 	Borehole getBorehole();
 
 	/**
-	 * @return Top depth of this sample (in positive meters)
+	 * @return Top measured depth of this sample (in positive meters)
 	 */
 	double getDepthFrom();
 
 	/**
-	 * @return Bottom depth of this sample (in positive meters)
+	 * @return Bottom measured depth of this sample (in positive meters)
 	 */
 	double getDepthTo();
 

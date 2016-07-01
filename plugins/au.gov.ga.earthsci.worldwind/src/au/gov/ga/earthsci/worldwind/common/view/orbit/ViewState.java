@@ -47,17 +47,23 @@ public class ViewState implements IViewState
 	protected Vec4 lastEyePoint;
 	protected Position lastEye;
 
+	//semaphore for cached values
+	protected final Object cacheSemaphore = new Object();
+
 	protected void clearCachedValues()
 	{
-		lastUp = null;
-		lastForward = null;
-		lastSide = null;
-		lastTransform = null;
-		lastRotation = null;
-		lastRotationInverse = null;
-		lastCenterPoint = null;
-		lastEyePoint = null;
-		lastEye = null;
+		synchronized (cacheSemaphore)
+		{
+			lastUp = null;
+			lastForward = null;
+			lastSide = null;
+			lastTransform = null;
+			lastRotation = null;
+			lastRotationInverse = null;
+			lastCenterPoint = null;
+			lastEyePoint = null;
+			lastEye = null;
+		}
 	}
 
 	protected void clearCachedValuesIfGlobeChanged(Globe globe)
@@ -137,147 +143,184 @@ public class ViewState implements IViewState
 	@Override
 	public Matrix getRotation(Globe globe)
 	{
-		clearCachedValuesIfGlobeChanged(globe);
-
-		if (lastRotation == null)
+		synchronized (cacheSemaphore)
 		{
-			lastRotation = getRotationInverse(globe).getInverse();
+			clearCachedValuesIfGlobeChanged(globe);
+
+			if (lastRotation == null)
+			{
+				Matrix rotationInverse = getRotationInverse(globe);
+				if (rotationInverse == null)
+				{
+					rotationInverse = Matrix.IDENTITY;
+				}
+				lastRotation = rotationInverse.getInverse();
+				if (lastRotation == null)
+				{
+					//last resort if rotation couldn't be found
+					lastRotation = Matrix.IDENTITY;
+				}
+			}
+			return lastRotation;
 		}
-		return lastRotation;
 	}
 
 	@Override
 	public Matrix getRotationInverse(Globe globe)
 	{
-		clearCachedValuesIfGlobeChanged(globe);
-
-		if (lastRotationInverse == null)
+		synchronized (cacheSemaphore)
 		{
-			//compute heading/pitch/roll transform
-			Matrix transform = Matrix.fromRotationZ(roll).multiply(
-					Matrix.fromRotationXYZ(pitch, Angle.ZERO, heading.multiply(-1)));
+			clearCachedValuesIfGlobeChanged(globe);
 
-			//compute rotation for current position on globe
-			Vec4 up = globe.computeNorthPointingTangentAtLocation(center.latitude, center.longitude);
-			Vec4 f = globe.computeSurfaceNormalAtLocation(center.latitude, center.longitude);
-			Vec4 s = f.cross3(up);
-			Vec4 u = s.cross3(f);
-			Matrix rotation = new Matrix(
-					s.x, s.y, s.z, 0.0,
-					u.x, u.y, u.z, 0.0,
-					-f.x, -f.y, -f.z, 0.0,
-					0.0, 0.0, 0.0, 1.0);
+			if (lastRotationInverse == null)
+			{
+				//compute heading/pitch/roll transform
+				Matrix transform = Matrix.fromRotationZ(roll).multiply(
+						Matrix.fromRotationXYZ(pitch, Angle.ZERO, heading.multiply(-1)));
 
-			//multiply the two rotations to get the center->eye rotation matrix
-			lastRotationInverse = transform.multiply(rotation);
+				//compute rotation for current position on globe
+				Vec4 up = globe.computeNorthPointingTangentAtLocation(center.latitude, center.longitude);
+				Vec4 f = globe.computeSurfaceNormalAtLocation(center.latitude, center.longitude);
+				Vec4 s = f.cross3(up).normalize3();
+				Vec4 u = s.cross3(f).normalize3();
+				Matrix rotation = new Matrix(
+						s.x, s.y, s.z, 0.0,
+						u.x, u.y, u.z, 0.0,
+						-f.x, -f.y, -f.z, 0.0,
+						0.0, 0.0, 0.0, 1.0);
+
+				//multiply the two rotations to get the center->eye rotation matrix
+				lastRotationInverse = transform.multiply(rotation);
+			}
+			return lastRotationInverse;
 		}
-		return lastRotationInverse;
 	}
 
 	@Override
 	public Vec4 getForward(Globe globe)
 	{
-		clearCachedValuesIfGlobeChanged(globe);
-
-		if (lastForward == null)
+		synchronized (cacheSemaphore)
 		{
-			Matrix rotation = getRotation(globe);
-			lastForward = lastSide != null && lastUp != null ?
-					lastSide.cross3(lastUp) :
-					Vec4.UNIT_Z.transformBy3(rotation);
+			clearCachedValuesIfGlobeChanged(globe);
+
+			if (lastForward == null)
+			{
+				Matrix rotation = getRotation(globe);
+				lastForward = lastSide != null && lastUp != null ?
+						lastSide.cross3(lastUp) :
+						Vec4.UNIT_Z.transformBy3(rotation);
+			}
+			return lastForward;
 		}
-		return lastForward;
 	}
 
 	@Override
 	public Vec4 getUp(Globe globe)
 	{
-		clearCachedValuesIfGlobeChanged(globe);
-
-		if (lastUp == null)
+		synchronized (cacheSemaphore)
 		{
-			Matrix rotation = getRotation(globe);
-			lastUp = lastForward != null && lastSide != null ?
-					lastForward.cross3(lastSide) :
-					Vec4.UNIT_Y.transformBy3(rotation);
+			clearCachedValuesIfGlobeChanged(globe);
+
+			if (lastUp == null)
+			{
+				Matrix rotation = getRotation(globe);
+				lastUp = lastForward != null && lastSide != null ?
+						lastForward.cross3(lastSide) :
+						Vec4.UNIT_Y.transformBy3(rotation);
+			}
+			return lastUp;
 		}
-		return lastUp;
 	}
 
 	@Override
 	public Vec4 getSide(Globe globe)
 	{
-		clearCachedValuesIfGlobeChanged(globe);
-
-		if (lastSide == null)
+		synchronized (cacheSemaphore)
 		{
-			Matrix rotation = getRotation(globe);
-			lastSide = lastUp != null && lastForward != null ?
-					lastUp.cross3(lastForward) :
-					Vec4.UNIT_X.transformBy3(rotation);
+			clearCachedValuesIfGlobeChanged(globe);
+
+			if (lastSide == null)
+			{
+				Matrix rotation = getRotation(globe);
+				lastSide = lastUp != null && lastForward != null ?
+						lastUp.cross3(lastForward) :
+						Vec4.UNIT_X.transformBy3(rotation);
+			}
+			return lastSide;
 		}
-		return lastSide;
 	}
 
 	@Override
 	public Matrix getTransform(Globe globe)
 	{
-		clearCachedValuesIfGlobeChanged(globe);
-
-		if (lastTransform == null)
+		synchronized (cacheSemaphore)
 		{
-			//gluLookAt defines s as (f x u), but getSide returns (u x f), so negate it during matrix creation
-			Vec4 s = getSide(globe);
-			Vec4 u = getUp(globe);
-			Vec4 f = getForward(globe);
-			Vec4 eye = getEyePoint(globe);
-			Matrix mAxes = new Matrix(
-					-s.x, -s.y, -s.z, 0.0,
-					u.x, u.y, u.z, 0.0,
-					-f.x, -f.y, -f.z, 0.0,
-					0.0, 0.0, 0.0, 1.0);
-			Matrix mEye = Matrix.fromTranslation(-eye.x, -eye.y, -eye.z);
-			lastTransform = mAxes.multiply(mEye);
+			clearCachedValuesIfGlobeChanged(globe);
+
+			if (lastTransform == null)
+			{
+				//gluLookAt defines s as (f x u), but getSide returns (u x f), so negate it during matrix creation
+				Vec4 s = getSide(globe);
+				Vec4 u = getUp(globe);
+				Vec4 f = getForward(globe);
+				Vec4 eye = getEyePoint(globe);
+				Matrix mAxes = new Matrix(
+						-s.x, -s.y, -s.z, 0.0,
+						u.x, u.y, u.z, 0.0,
+						-f.x, -f.y, -f.z, 0.0,
+						0.0, 0.0, 0.0, 1.0);
+				Matrix mEye = Matrix.fromTranslation(-eye.x, -eye.y, -eye.z);
+				lastTransform = mAxes.multiply(mEye);
+			}
+			return lastTransform;
 		}
-		return lastTransform;
 	}
 
 	@Override
 	public Vec4 getCenterPoint(Globe globe)
 	{
-		clearCachedValuesIfGlobeChanged(globe);
-
-		if (lastCenterPoint == null)
+		synchronized (cacheSemaphore)
 		{
-			lastCenterPoint = globe.computePointFromPosition(center);
+			clearCachedValuesIfGlobeChanged(globe);
+
+			if (lastCenterPoint == null)
+			{
+				lastCenterPoint = globe.computePointFromPosition(center);
+			}
+			return lastCenterPoint;
 		}
-		return lastCenterPoint;
 	}
 
 	@Override
 	public Vec4 getEyePoint(Globe globe)
 	{
-		clearCachedValuesIfGlobeChanged(globe);
-
-		if (lastEyePoint == null)
+		synchronized (cacheSemaphore)
 		{
-			Vec4 center = getCenterPoint(globe);
-			Vec4 forward = getForward(globe);
-			lastEyePoint = center.add3(forward.multiply3(-zoom));
+			clearCachedValuesIfGlobeChanged(globe);
+
+			if (lastEyePoint == null)
+			{
+				Vec4 center = getCenterPoint(globe);
+				Vec4 forward = getForward(globe);
+				lastEyePoint = center.add3(forward.multiply3(-zoom));
+			}
+			return lastEyePoint;
 		}
-		return lastEyePoint;
 	}
 
 	@Override
 	public Position getEye(Globe globe)
 	{
-		clearCachedValuesIfGlobeChanged(globe);
-
-		if (lastEye == null)
+		synchronized (cacheSemaphore)
 		{
-			lastEye = globe.computePositionFromPoint(getEyePoint(globe));
+			clearCachedValuesIfGlobeChanged(globe);
+
+			if (lastEye == null)
+			{
+				lastEye = globe.computePositionFromPoint(getEyePoint(globe));
+			}
+			return lastEye;
 		}
-		return lastEye;
 	}
 
 	@Override

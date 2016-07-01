@@ -28,7 +28,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.sapphire.modeling;bundle-version="0.6.4",
  org.eclipse.sapphire.ui;bundle-version="0.6.4",
  au.gov.ga.earthsci.editable;bundle-version="1.0.0",
- au.gov.ga.earthsci.layer
+ au.gov.ga.earthsci.layer,
+ au.gov.ga.earthsci.model.ui,
+ au.gov.ga.earthsci.model;bundle-version="1.0.0",
+ au.gov.ga.earthsci.model.core;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.annotation;version="1.1.0",

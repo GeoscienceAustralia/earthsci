@@ -44,5 +44,23 @@
             type="au.gov.ga.earthsci.layer.wrappers.TiledImageLayerWrapper">
       </element>
    </extension>
+   <extension
+         point="au.gov.ga.earthsci.intent.filters">
+      <filter
+            class="au.gov.ga.earthsci.layer.ui.wizard.gocad.GOCADLayerIntentHandler"
+            description="Layer created from a GOCAD object"
+            icon32="icons/gocadlayer_intent.png"
+            label="GOCAD layer"
+            priority="0"
+            prompt="true"
+            returns-result="true">
+         <return-type
+               class="gov.nasa.worldwind.layers.Layer">
+         </return-type>
+         <content-type
+               id="au.gov.ga.earthsci.layer.gocad.object">
+         </content-type>
+      </filter>
+   </extension>
 
 </plugin>

@@ -77,21 +77,21 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 	@PostConstruct
 	public void loadLayers(IEclipseContext context)
 	{
-		loadRootNode(constructionParameters.rootNode, context);
+		loadRootNode(constructionParameters.rootNode, layerFile, context);
 	}
 
 	@PreDestroy
 	public void saveLayers()
 	{
-		saveRootNode(constructionParameters.rootNode);
+		saveRootNode(constructionParameters.rootNode, layerFile);
 	}
 
-	protected void loadRootNode(ILayerTreeNode rootNode, IEclipseContext context)
+	protected void loadRootNode(ILayerTreeNode rootNode, File file, IEclipseContext context)
 	{
 		ILayerTreeNode loadedNode = null;
 		try
 		{
-			loadedNode = LayerPersister.loadLayers(layerFile);
+			loadedNode = LayerPersister.loadLayers(file);
 		}
 		catch (FileNotFoundException e)
 		{
@@ -152,16 +152,40 @@ public class WorldWindModel extends BasicModel implements ITreeModel
 		}
 	}
 
-	protected void saveRootNode(ILayerTreeNode rootNode)
+	protected void saveRootNode(ILayerTreeNode rootNode, File file)
 	{
 		try
 		{
-			LayerPersister.saveLayers(rootNode, layerFile);
+			LayerPersister.saveLayers(rootNode, file);
 		}
 		catch (Exception e)
 		{
 			logger.error("Error saving layer file", e); //$NON-NLS-1$
 		}
+	}
+
+	public void resetToDefaultLayers(IEclipseContext context)
+	{
+		if (!layerFile.exists() || layerFile.delete())
+		{
+			removeAllLayers();
+			loadLayers(context);
+		}
+	}
+
+	public void removeAllLayers()
+	{
+		constructionParameters.rootNode.clearChildren();
+	}
+
+	public void exportLayers(File file)
+	{
+		saveRootNode(constructionParameters.rootNode, file);
+	}
+
+	public void importLayers(File file, IEclipseContext context)
+	{
+		loadRootNode(constructionParameters.rootNode, file, context);
 	}
 
 	private static class ConstructionParameters
