@@ -7,3 +7,5 @@
 .DS_Store
 Thumbs.db
 *.pmd
+.idea
+*.iml
