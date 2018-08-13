@@ -580,6 +580,10 @@ public class BasicBoreholeLayer extends AbstractLayer implements BoreholeLayer, 
 						}
 						return current.next();
 					}
+
+					@Override
+					public void remove() {
+					}
 				};
 			}
 		};
