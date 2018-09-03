@@ -92,4 +92,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Permissions: all-permissions
 Application-Name: EarthSci
-
+Codebase: http://earthsci-nonprod-elb-2008079246.ap-southeast-2.elb.amazonaws.com/
