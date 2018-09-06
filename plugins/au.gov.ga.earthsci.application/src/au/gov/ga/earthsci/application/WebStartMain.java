@@ -15,8 +15,6 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application;
 
-import gov.nasa.worldwind.util.Logging;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,11 +63,9 @@ public class WebStartMain
 			System.setProperty(PROP_INSTALL_AREA, osgiInstallArea);
 		}
 
-		System.setProperty("eclipse.security", "osgi");
 		java.util.Properties props = System.getProperties();
 		for (String key : props.stringPropertyNames()) {
-			Logging.logger().info("key: " + key + " value: " + props.getProperty(key));
-			//System.out.println("key: " + key + " value: " + props.getProperty(key));
+			System.out.println("key: " + key + " value: " + props.getProperty(key));
 			if (key.startsWith("jnlp.")) {
 				System.setProperty(key.substring(5), props.getProperty(key));
 			}
