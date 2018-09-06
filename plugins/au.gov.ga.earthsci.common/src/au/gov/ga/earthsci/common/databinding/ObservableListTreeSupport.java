@@ -160,9 +160,9 @@ public class ObservableListTreeSupport<E>
 	private final IListChangeListener<E> listChangeListener = new IListChangeListener<E>()
 	{
 		@Override
-		public void handleListChange(ListChangeEvent<E> event)
+		public void handleListChange(ListChangeEvent<? extends E> event)
 		{
-			for (ListDiffEntry<? extends E> entry : event.diff.getDifferencesAsList())
+			for (ListDiffEntry<? extends E> entry : event.diff.getDifferences())
 			{
 				E element = entry.getElement();
 				if (entry.isAddition())

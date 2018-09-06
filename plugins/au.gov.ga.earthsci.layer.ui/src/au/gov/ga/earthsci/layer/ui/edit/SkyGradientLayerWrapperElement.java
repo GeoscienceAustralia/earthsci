@@ -18,12 +18,12 @@ package au.gov.ga.earthsci.layer.ui.edit;
 import java.awt.Color;
 
 import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.InitialValue;
 import org.eclipse.sapphire.modeling.annotations.NumericRange;
 import org.eclipse.sapphire.modeling.annotations.Service;
 import org.eclipse.sapphire.modeling.annotations.Services;
-import org.eclipse.sapphire.modeling.annotations.Type;
 
 import au.gov.ga.earthsci.editable.annotations.Sync;
 import au.gov.ga.earthsci.editable.serialization.ColorAwtToStringConversionService;

@@ -20,6 +20,7 @@ import org.eclipse.e4.ui.services.EMenuService;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -91,13 +92,13 @@ public class CatalogBrowserPart
 		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(labelProvider, labelProvider, null));
 		viewer.setSorter(null);
 
-		IBeanListProperty<ICatalogTreeNode, ICatalogTreeNode> childrenProperty =
+		IBeanListProperty childrenProperty =
 				BeanProperties.list(ICatalogTreeNode.class, "children", ICatalogTreeNode.class); //$NON-NLS-1$
 		IObservableFactory<ICatalogTreeNode, IObservableList<ICatalogTreeNode>> listFactory =
 				childrenProperty.listFactory();
 		LazyObservableListTreeContentProvider<ICatalogTreeNode> contentProvider =
 				new LazyObservableListTreeContentProvider<ICatalogTreeNode>(listFactory, null);
-		viewer.setContentProvider(contentProvider);
+		viewer.setContentProvider((IContentProvider) contentProvider);
 
 		observableListTreeSupport = new ObservableListTreeSupport<ICatalogTreeNode>(listFactory);
 		observableListTreeSupport.addListener(new TreeChangeAdapter<ICatalogTreeNode>()

@@ -15,16 +15,15 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.layer.ui.edit;
 
-import gov.nasa.worldwind.layers.Layer;
-
 import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.NumericRange;
-import org.eclipse.sapphire.modeling.annotations.Type;
 
 import au.gov.ga.earthsci.editable.annotations.Accuracy;
 import au.gov.ga.earthsci.editable.annotations.Sync;
+import gov.nasa.worldwind.layers.Layer;
 
 /**
  * Sapphire {@link IModelElement} describing {@link Layer} instances.
