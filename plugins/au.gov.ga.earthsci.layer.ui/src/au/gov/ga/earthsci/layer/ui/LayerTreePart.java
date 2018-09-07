@@ -15,6 +15,14 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.layer.ui;
 
+import gov.nasa.worldwind.View;
+import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.view.orbit.OrbitView;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -94,13 +102,6 @@ import au.gov.ga.earthsci.worldwind.common.util.Util;
 import au.gov.ga.earthsci.worldwind.common.view.orbit.FlyToOrbitViewAnimator;
 import au.gov.ga.earthsci.worldwind.common.view.orbit.FlyToSectorAnimator;
 import au.gov.ga.earthsci.worldwind.common.view.target.TargetOrbitView;
-import gov.nasa.worldwind.View;
-import gov.nasa.worldwind.WorldWind;
-import gov.nasa.worldwind.avlist.AVKey;
-import gov.nasa.worldwind.geom.Angle;
-import gov.nasa.worldwind.geom.LatLon;
-import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.view.orbit.OrbitView;
 
 /**
  * Part that shows the hierarchical tree of layers.
@@ -191,7 +192,7 @@ public class LayerTreePart
 		labelProvider = new LayerTreeLabelProvider();
 
 		//create a bean list property associated with ILayerTreeNode's children property
-		IBeanListProperty childrenProperty =
+		IBeanListProperty<ILayerTreeNode, ILayerTreeNode> childrenProperty =
 				BeanProperties.list(ILayerTreeNode.class, "children", ILayerTreeNode.class); //$NON-NLS-1$
 		//setup a factory for creating observables observing ILayerTreeNodes
 		IObservableFactory<ILayerTreeNode, IObservableList<ILayerTreeNode>> observableFactory =
@@ -217,8 +218,8 @@ public class LayerTreePart
 		});
 
 		//create a content provider that listens for changes to any children in the tree
-		ObservableListTreeContentProvider contentProvider =
-				new ObservableListTreeContentProvider(observableFactory, null);
+		ObservableListTreeContentProvider<ILayerTreeNode> contentProvider =
+				new ObservableListTreeContentProvider<ILayerTreeNode>(observableFactory, null);
 
 		//set the viewer's providers
 		structureViewer.setContentProvider(contentProvider);
@@ -398,7 +399,7 @@ public class LayerTreePart
 		drawOrderModel.setInput(model.getRootNode());
 
 		//create a bean list property associated with ILayerTreeNode's children property
-		IBeanListProperty childrenProperty =
+		IBeanListProperty<DrawOrderModel.IDrawOrderModelElement, DrawOrderModel.IDrawOrderModelElement> childrenProperty =
 				BeanProperties.list(DrawOrderModel.IDrawOrderModelElement.class,
 						"children", DrawOrderModel.IDrawOrderModelElement.class); //$NON-NLS-1$
 		//setup a factory for creating observables observing ILayerTreeNodes
@@ -406,8 +407,8 @@ public class LayerTreePart
 				childrenProperty.listFactory();
 
 		//create a content provider that listens for changes to any children in the tree
-		ObservableListTreeContentProvider contentProvider =
-				new ObservableListTreeContentProvider(observableFactory, null);
+		ObservableListTreeContentProvider<DrawOrderModel.IDrawOrderModelElement> contentProvider =
+				new ObservableListTreeContentProvider<DrawOrderModel.IDrawOrderModelElement>(observableFactory, null);
 
 		DrawOrderLabelProvider labelProvider = new DrawOrderLabelProvider();
 
@@ -523,7 +524,7 @@ public class LayerTreePart
 			if (treeNode instanceof KMLFeatureTreeNode)
 			{
 				KMLAbstractFeature feature = ((KMLFeatureTreeNode) treeNode).getFeature();
-		
+
 				KMLViewController viewController = CustomKMLViewControllerFactory.create(wwd);
 				if (viewController != null)
 				{

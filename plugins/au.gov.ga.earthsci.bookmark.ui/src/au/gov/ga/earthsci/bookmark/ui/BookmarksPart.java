@@ -199,7 +199,7 @@ public class BookmarksPart
 
 	private void setupBookmarkListInput()
 	{
-		IBeanListProperty bookmarksProperty =
+		IBeanListProperty<IBookmarkList, IBookmark> bookmarksProperty =
 				BeanProperties.list(IBookmarkList.class, "bookmarks", IBookmark.class); //$NON-NLS-1$
 		IObservableList<IBookmark> observableList = bookmarksProperty.observe(getSelectedBookmarkList());
 		bookmarkListTableViewer.setInput(observableList);
@@ -237,15 +237,15 @@ public class BookmarksPart
 		});
 
 		// Trigger a label refresh if a list name changes etc.
-		ObservableListContentProvider contentProvider =
-				new ObservableListContentProvider();
+		ObservableListContentProvider<IBookmarkList> contentProvider =
+				new ObservableListContentProvider<IBookmarkList>(IBookmarkList.class);
 		IObservableSet<IBookmarkList> knownElements = contentProvider.getKnownElements();
 		IObservableMap<IBookmarkList, String> nameMap =
 				BeanProperties.value(IBookmarkList.class, "name", String.class).observeDetail(knownElements); //$NON-NLS-1$
 		nameMap.addMapChangeListener(new IMapChangeListener<IBookmarkList, String>()
 		{
 			@Override
-			public void handleMapChange(MapChangeEvent<? extends IBookmarkList, ? extends String> event)
+			public void handleMapChange(MapChangeEvent<IBookmarkList, String> event)
 			{
 				for (IBookmarkList key : event.diff.getChangedKeys())
 				{
@@ -254,7 +254,7 @@ public class BookmarksPart
 			}
 		});
 
-		IBeanListProperty listsProperty =
+		IBeanListProperty<IBookmarks, IBookmarkList> listsProperty =
 				BeanProperties.list(IBookmarks.class, "lists", IBookmarkList.class); //$NON-NLS-1$
 		IObservableList<IBookmarkList> observableList = listsProperty.observe(bookmarks);
 		bookmarkListsComboViewer.setContentProvider(contentProvider);
@@ -290,8 +290,8 @@ public class BookmarksPart
 
 		bookmarkListTableViewer.getTable().setLayoutData(gd);
 
-		ObservableListContentProvider contentProvider =
-				new ObservableListContentProvider();
+		ObservableListContentProvider<IBookmark> contentProvider =
+				new ObservableListContentProvider<IBookmark>(IBookmark.class);
 		bookmarkListTableViewer.setContentProvider(contentProvider);
 
 		IObservableSet<IBookmark> knownElements = contentProvider.getKnownElements();
@@ -300,7 +300,7 @@ public class BookmarksPart
 
 		TableViewerColumn column = new TableViewerColumn(bookmarkListTableViewer, SWT.LEFT);
 		column.setEditingSupport(new BookmarkNameEditingSupport(bookmarkListTableViewer));
-		column.setLabelProvider(new ObservableMapCellLabelProvider(nameMap)
+		column.setLabelProvider(new ObservableMapCellLabelProvider<IBookmark, String>(nameMap)
 		{
 			@Override
 			public void update(ViewerCell cell)
@@ -381,14 +381,14 @@ public class BookmarksPart
 		updateMoveToMenu();
 
 		bookmarks.addPropertyChangeListener("lists", new PropertyChangeListener() //$NON-NLS-1$
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				updateCopyToMenu();
-				updateMoveToMenu();
-			}
-		});
+				{
+					@Override
+					public void propertyChange(PropertyChangeEvent evt)
+					{
+						updateCopyToMenu();
+						updateMoveToMenu();
+					}
+				});
 	}
 
 	private void updateCopyToMenu()
