@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://hostname.com/directory/" href="webstart.jnlp">
+<jnlp spec="1.0+" codebase="http://earthsci.ga.gov.au/" href="webstart.jnlp">
 	<information>
 		<title>EarthSci</title>
 		<vendor>Geoscience Australia</vendor>
@@ -17,14 +17,14 @@
 	</application-desc>
 
 	<resources>
-		<property name="jnlp.packEnabled" value="true" />
-		<property name="eclipse.product" value="au.gov.ga.earthsci.application.product" />
-		<property name="eclipse.application" value="au.gov.ga.earthsci.application.application" />
-		<property name="osgi.instance.area" value="@user.home/.earthsci/instance" />
-		<property name="osgi.install.area" value="@user.home/.earthsci/install" />
-		<property name="osgi.configuration.area" value="@user.home/.earthsci/configuration" />
-		<property name="osgi.user.area" value="@user.home/.earthsci/user" />
-		<property name="osgi.splashPath" value="platform:/base/plugins/au.gov.ga.earthsci.application" />
+		<property name="jnlp.eclipse.product" value="au.gov.ga.earthsci.application.product" />
+		<property name="jnlp.eclipse.application" value="au.gov.ga.earthsci.application.application" />
+		<property name="jnlp.eclipse.security" value="osgi" />
+		<property name="jnlp.osgi.instance.area" value="@user.home/.earthsci/instance" />
+		<property name="jnlp.osgi.install.area" value="@user.home/.earthsci/install" />
+		<property name="jnlp.osgi.configuration.area" value="@user.home/.earthsci/configuration" />
+		<property name="jnlp.osgi.user.area" value="@user.home/.earthsci/user" />
+		<property name="jnlp.osgi.splashPath" value="platform:/base/plugins/au.gov.ga.earthsci.application" />
 	</resources>
 
 @javaargs@

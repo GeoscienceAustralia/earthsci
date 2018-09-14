@@ -36,6 +36,7 @@
 	<property name="keystore_file" value="${basedir}/keystore" />
 	<property name="keystore_alias" value="selfsigned" />
 	<property name="keystore_password" value="password" />
+	<property name="key_password" value="password" />
 
 	<property name="war.dir" value="${target.dir}/war" />
 	<property name="war.file" value="${war.dir}/earthsci.war" />
@@ -107,7 +108,7 @@
 	<target name="sign-jars" depends="repack-jars">
 		<mkdir dir="${selfsigned.dir}" />
 		<syncdir fromdir="${repacked.dir}" todir="${selfsigned.dir}" keeppacked="true" />
-		<signjar destDir="${selfsigned.dir}" keystore="${keystore_file}" alias="${keystore_alias}" storepass="${keystore_password}">
+		<signjar destDir="${selfsigned.dir}" keystore="${keystore_file}" alias="${keystore_alias}" storepass="${keystore_password}" keypass="${key_password}">
 			<path>
 				<fileset dir="${repacked.dir}" includes="*.jar" />
 			</path>
@@ -128,7 +129,7 @@
 		<typedef name="javaarg" classname="au.gov.ga.earthsci.ant.JavaArg" classpath="${ant.task.jar}" />
 		<typedef name="javaargs" classname="au.gov.ga.earthsci.ant.JavaArgs" classpath="${ant.task.jar}" />
 
-		<jnlpresources property="jnlp.resources.string" basedir="${webstart.dir}">
+		<jnlpresources property1="jnlp.resources.string" property2="main.application.jar" basedir="${webstart.dir}">
 			<fileset dir="${selfsigned.dir}" id="signed.fileset.id">
 				<include name="*.jar" />
 			</fileset>
@@ -143,9 +144,9 @@
 			<startlevel bundle="org.eclipse.osgi" level="-1" />
 		</osgibundles>
 
-		<javaargs property="java.args.string" version="1.6+">
+		<javaargs property="java.args.string" version="1.7+">
 			<fileset refid="signed.fileset.id" />
-			<javaarg argument="-XX:MaxPermSize=128m -Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none" />
+			<javaarg argument="-XX:MaxPermSize=128m -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2 -Dosgi.classloader.lock=classname -Dosgi.classloader.type=parallel -Declipse.p2.profile=SDKProfile -Dosgi.console=none" />
 			<javaarg os="Mac OS X" argument="-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts" />
 			<javaarg arch="x86" initialheapsize="1024m" maxheapsize="1024m" />
 			<javaarg arch="ppc" initialheapsize="1024m" maxheapsize="1024m" />
@@ -190,6 +191,30 @@
 		<war destfile="${war.file}" webxml="${web.xml.file}" basedir="${webstart.dir}" />
 	</target>
 
-	<target name="run" depends="generate-war" />
+	<target name="bundle-jnlp-inf" depends="generate-war">
+		<copy file="${jnlp.file}" tofile="${webstart.dir}/APPLICATION.JNLP" overwrite="true"/>
+		<copy file="${unsigned.dir}/${main.application.jar}" tofile="${repacked.dir}/${main.application.jar}" overwrite="true" />
+		<jar destfile="${repacked.dir}/${main.application.jar}" update="true">
+			<zipfileset dir="${webstart.dir}" includes="APPLICATION.JNLP" prefix="JNLP-INF"/>
+		</jar>
+	</target>
+
+	<target name="sign-jnlp-inf" depends="bundle-jnlp-inf">
+		<signjar destDir="${selfsigned.dir}" keystore="${keystore_file}" alias="${keystore_alias}" storepass="${keystore_password}" keypass="${key_password}">
+			<path>
+				<fileset dir="${repacked.dir}" includes="${main.application.jar}" />
+			</path>
+		</signjar>
+		<flattenmapper />
+	</target>
+
+	<target name="pack-jnlp-inf" depends="sign-jnlp-inf">
+		<taskdef name="jarpack200" classname="au.gov.ga.earthsci.ant.JarPack200" classpath="${ant.task.jar}" />
+		<jarpack200>
+			<fileset dir="${selfsigned.dir}" includes="${main.application.jar}" />
+		</jarpack200>
+	</target>
+	
+	<target name="run" depends="pack-jnlp-inf" />
 
 </project>

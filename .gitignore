@@ -9,3 +9,5 @@ Thumbs.db
 *.pmd
 .idea
 *.iml
+/data/
+/bin/

@@ -132,7 +132,7 @@ public class OsgiBundles extends Task
 			sb.append("\t<resources");
 			sb.append(topLevelOsArch.getKey());
 			sb.append(">\n");
-			sb.append("\t\t<property name=\"osgi.bundles\" value=\"");
+			sb.append("\t\t<property name=\"jnlp.osgi.bundles\" value=\"");
 			for (String osArch : topLevelOsArch.getValue())
 			{
 				List<BundleProperties> bundles = resources.get(osArch);

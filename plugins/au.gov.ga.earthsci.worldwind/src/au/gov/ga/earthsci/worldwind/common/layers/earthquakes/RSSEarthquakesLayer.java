@@ -89,7 +89,7 @@ public class RSSEarthquakesLayer extends RenderableLayer implements Loader, Sele
 	private Timer updateTimer;
 	private SurfaceEarthquakeAnnotation mouseEq, latestEq;
 	private GlobeAnnotation tooltipAnnotation;
-	private List<LoadingListener> loadingListeners = new ArrayList<LoadingListener>();
+	private LoadingListenerList loadingListeners = new LoadingListenerList();
 	private boolean loading;
 
 	public RSSEarthquakesLayer()
@@ -576,11 +576,7 @@ public class RSSEarthquakesLayer extends RenderableLayer implements Loader, Sele
 
 	protected void fireLoadingStateChanged()
 	{
-		for (int i = loadingListeners.size() - 1; i >= 0; i--)
-		{
-			LoadingListener listener = loadingListeners.get(i);
-			listener.loadingStateChanged(this, isLoading());
-		}
+		loadingListeners.notifyListeners(this, isLoading());
 	}
 
 	protected void setLoading(boolean loading)

@@ -41,7 +41,7 @@ public class WebStartMain
 		org.eclipse.equinox.launcher.WebStartMain.main(newArgs.toArray(new String[0]));
 	}
 
-	private final static String PROP_INSTALL_AREA = "osgi.install.area"; //$NON-NLS-1$
+	private final static String PROP_INSTALL_AREA = "jnlp.osgi.install.area"; //$NON-NLS-1$
 	private final static String PROP_USER_HOME = "user.home"; //$NON-NLS-1$
 	private final static String PROP_USER_DIR = "user.dir"; //$NON-NLS-1$
 
@@ -61,6 +61,15 @@ public class WebStartMain
 						+ osgiInstallArea.substring(1 + PROP_USER_DIR.length());
 			}
 			System.setProperty(PROP_INSTALL_AREA, osgiInstallArea);
+		}
+
+		java.util.Properties props = System.getProperties();
+		for (String key : props.stringPropertyNames())
+		{
+			if (key.startsWith("jnlp."))
+			{
+				System.setProperty(key.substring(5), props.getProperty(key));
+			}
 		}
 	}
 }
