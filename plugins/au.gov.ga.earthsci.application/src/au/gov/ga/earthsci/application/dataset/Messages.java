@@ -15,22 +15,25 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.application.dataset;
 
-import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.swt.widgets.Composite;
-
-import au.gov.ga.earthsci.application.parts.globe.GlobePart;
+import org.eclipse.osgi.util.NLS;
 
 /**
- * Handler for the goto coordinates command.
- * 
- * @author Michael de Hoog (michael.dehoog@ga.gov.au)
+ * @author u24529
+ *
  */
-public class GotoCoordinateHandler
+public class Messages extends NLS
 {
-	@Execute
-	public void execute(Composite parent, GlobePart globe)
+	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.application.dataset.messages"; //$NON-NLS-1$
+	public static String DatasetSelectionDialog_DatasetSelection;
+	public static String DatasetSelectionDialog_ChooseDataset;
+
+	static
 	{
-		GotoCoordinateDialog dialog = new GotoCoordinateDialog(parent.getShell(), globe.getWorldWindow());
-		dialog.open();
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+	}
+
+	private Messages()
+	{
 	}
 }
