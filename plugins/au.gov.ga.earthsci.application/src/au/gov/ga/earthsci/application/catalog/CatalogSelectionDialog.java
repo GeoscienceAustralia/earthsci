@@ -18,7 +18,9 @@ package au.gov.ga.earthsci.application.catalog;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.Properties;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
@@ -54,7 +56,7 @@ import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
 public class CatalogSelectionDialog extends Dialog
 {
 	private static final Logger logger = LoggerFactory.getLogger(CatalogSelectionDialog.class);
-	private static final String BUNDLE_NAME = "catalogs.properties";
+	private static final String CATALOG_LIST_URL = "http://data.earthsci.ga.gov.au/catalogs.properties";
 
 	private Properties catalogProperties;
 	private String catalogName = null;
@@ -77,9 +79,32 @@ public class CatalogSelectionDialog extends Dialog
 	private void loadCatalogProperties() throws IOException
 	{
 		catalogProperties = new Properties();
-		InputStream inputStream = getClass().getResourceAsStream(BUNDLE_NAME);
-		catalogProperties.load(inputStream);
-		inputStream.close();
+		InputStream is = null;
+		HttpURLConnection connection = null;
+		try
+		{
+			URL url = new URL(CATALOG_LIST_URL);
+			connection = (HttpURLConnection) url.openConnection();
+			is = connection.getInputStream();
+			catalogProperties.load(is);
+		}
+		finally
+		{
+			if (is != null)
+			{
+				try
+				{
+					is.close();
+				}
+				catch (IOException e)
+				{
+				}
+			}
+			if (connection != null)
+			{
+				connection.disconnect();
+			}
+		}
 	}
 
 	private String getCatalogValue(String key, int index)
