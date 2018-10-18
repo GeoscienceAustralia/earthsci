@@ -8,9 +8,9 @@ Bundle-Vendor: %plugin.vendor
 Bundle-Localization: OSGI-INF/l10n/bundle
 Export-Package: au.gov.ga.earthsci.application,
  au.gov.ga.earthsci.application.about,
+ au.gov.ga.earthsci.application.catalog,
  au.gov.ga.earthsci.application.compatibility,
  au.gov.ga.earthsci.application.console,
- au.gov.ga.earthsci.application.dataset,
  au.gov.ga.earthsci.application.handlers,
  au.gov.ga.earthsci.application.intent,
  au.gov.ga.earthsci.application.parts,

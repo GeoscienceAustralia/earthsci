@@ -27,7 +27,7 @@ import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
-import au.gov.ga.earthsci.application.dataset.DatasetSelectionDialog;
+import au.gov.ga.earthsci.application.catalog.CatalogSelectionDialog;
 import au.gov.ga.earthsci.intent.IntentManager;
 
 /**
@@ -52,7 +52,7 @@ public class PostApplicationStartupAddon
 				@Override
 				public void handleEvent(Event event)
 				{
-					DatasetSelectionDialog.openDialog(application.getContext());
+					CatalogSelectionDialog.openDialog(application.getContext());
 					PreferencePageFilter.filter();
 					PartDescriptorFilter.run(application, service);
 					PartInstantiator.createParts(application, service, partService);

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package au.gov.ga.earthsci.application.dataset;
+package au.gov.ga.earthsci.application.catalog;
 
 import org.eclipse.osgi.util.NLS;
 
@@ -23,9 +23,9 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS
 {
-	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.application.dataset.messages"; //$NON-NLS-1$
-	public static String DatasetSelectionDialog_DatasetSelection;
-	public static String DatasetSelectionDialog_ChooseDataset;
+	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.application.catalog.messages"; //$NON-NLS-1$
+	public static String CatalogSelectionDialog_CatalogSelection;
+	public static String CatalogSelectionDialog_ChooseCatalog;
 
 	static
 	{
