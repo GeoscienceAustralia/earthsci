@@ -8,6 +8,7 @@ Bundle-Vendor: %plugin.vendor
 Bundle-Localization: OSGI-INF/l10n/bundle
 Export-Package: au.gov.ga.earthsci.application,
  au.gov.ga.earthsci.application.about,
+ au.gov.ga.earthsci.application.catalog,
  au.gov.ga.earthsci.application.compatibility,
  au.gov.ga.earthsci.application.console,
  au.gov.ga.earthsci.application.handlers,
@@ -94,7 +95,8 @@ Require-Bundle: javax.inject;bundle-version="1.0.0",
  au.gov.ga.earthsci.seeder,
  au.gov.ga.earthsci.layer,
  org.eclipse.e4.ui.di
-Import-Package: javax.annotation;version="1.1.0",
+Import-Package: au.gov.ga.earthsci.catalog.dataset,
+ javax.annotation;version="1.1.0",
  org.osgi.framework;version="1.3.0"
 Eclipse-BundleShape: dir
 Bundle-ActivationPolicy: lazy
