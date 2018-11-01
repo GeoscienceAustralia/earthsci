@@ -239,10 +239,6 @@ public class CatalogSelectionDialog extends Dialog
 	@Override
 	protected void okPressed()
 	{
-
-		logger.info("worldWindModel? " + worldWindModel);
-		logger.info("Will reset layers to default? " + resetToDefaultLayers.getSelection());
-
 		// Reset to default is checked
 		if (resetToDefaultLayers.getSelection())
 		{
