@@ -246,10 +246,7 @@ public class CatalogSelectionDialog extends Dialog
 		// Reset to default is checked
 		if (resetToDefaultLayers.getSelection())
 		{
-			if (worldWindModel != null)
-			{
-				worldWindModel.resetToDefaultLayers(eclipseContext);
-			}
+			worldWindModel.resetToDefaultLayers(eclipseContext);
 		}
 
 		// Obtain and load a catalog
