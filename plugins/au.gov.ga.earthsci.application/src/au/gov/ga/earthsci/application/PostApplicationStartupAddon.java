@@ -29,6 +29,7 @@ import org.osgi.service.event.EventHandler;
 
 import au.gov.ga.earthsci.application.catalog.CatalogSelectionDialog;
 import au.gov.ga.earthsci.intent.IntentManager;
+import au.gov.ga.earthsci.layer.worldwind.WorldWindModel;
 
 /**
  * Addon that runs some initialization after the application startup is
@@ -42,6 +43,9 @@ public class PostApplicationStartupAddon
 	private IEventBroker broker;
 	private EventHandler handler;
 
+	@Inject
+	private WorldWindModel worldWindModel;
+
 	@PostConstruct
 	public void subscribe(final MApplication application, final EModelService service, final EPartService partService)
 	{
@@ -52,7 +56,7 @@ public class PostApplicationStartupAddon
 				@Override
 				public void handleEvent(Event event)
 				{
-					CatalogSelectionDialog.openDialog(application.getContext());
+					CatalogSelectionDialog.openDialog(application.getContext(), worldWindModel);
 					PreferencePageFilter.filter();
 					PartDescriptorFilter.run(application, service);
 					PartInstantiator.createParts(application, service, partService);

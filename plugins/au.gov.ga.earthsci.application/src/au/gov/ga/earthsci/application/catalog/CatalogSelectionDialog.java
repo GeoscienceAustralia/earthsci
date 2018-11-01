@@ -31,6 +31,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -46,6 +47,7 @@ import au.gov.ga.earthsci.intent.IIntentCallback;
 import au.gov.ga.earthsci.intent.Intent;
 import au.gov.ga.earthsci.intent.IntentManager;
 import au.gov.ga.earthsci.intent.dispatch.Dispatcher;
+import au.gov.ga.earthsci.layer.worldwind.WorldWindModel;
 
 /**
  * Dialog which allows a user to choose from a catalog list.
@@ -59,16 +61,19 @@ public class CatalogSelectionDialog extends Dialog
 	private static final String CATALOG_LIST_URL = "http://data.earthsci.ga.gov.au/catalogs.properties";
 
 	private Properties catalogProperties;
-	private String catalogName = null;
-	private IEclipseContext context;
+	private String catalogName;
+	private Button resetToDefaultLayers;
+	private IEclipseContext eclipseContext;
+	private WorldWindModel worldWindModel;
 
-	public CatalogSelectionDialog(Shell parentShell, IEclipseContext context)
+	public CatalogSelectionDialog(Shell parentShell, IEclipseContext eclipseContext, WorldWindModel worldWindModel)
 	{
 		super(parentShell);
 		try
 		{
-			this.context = context;
-			loadCatalogProperties();
+			this.eclipseContext = eclipseContext;
+			this.worldWindModel = worldWindModel;
+			this.loadCatalogProperties();
 		}
 		catch (IOException e)
 		{
@@ -146,10 +151,10 @@ public class CatalogSelectionDialog extends Dialog
 				@Override
 				public void completed(Object result, Intent intent)
 				{
-					Dispatcher.getInstance().dispatch(result, intent, context);
+					Dispatcher.getInstance().dispatch(result, intent, eclipseContext);
 				}
 			};
-			IntentManager.getInstance().start(intent, callback, context);
+			IntentManager.getInstance().start(intent, callback, eclipseContext);
 		}
 		catch (Exception e)
 		{
@@ -168,18 +173,32 @@ public class CatalogSelectionDialog extends Dialog
 	protected Control createDialogArea(Composite parent)
 	{
 		Composite composite = (Composite) super.createDialogArea(parent);
-		composite.setLayout(new GridLayout());
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.marginTop = 5;
+		gridLayout.marginLeft = 5;
+		gridLayout.marginBottom = 0;
+		gridLayout.marginRight = 5;
+		composite.setLayout(gridLayout);
+
+		GridData data = new GridData();
+		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
 
 		Label label = new Label(composite, SWT.NONE);
 		label.setText(Messages.CatalogSelectionDialog_ChooseCatalog + ':');
+		label.setLayoutData(data);
 
 		createCatalogCombo(composite);
+		createResetCheckBox(composite);
 
 		return composite;
 	}
 
 	protected void createCatalogCombo(Composite parent)
 	{
+
+		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
+
 		final Combo catalogCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
 
 		// Add all catalog names into the drop-down list
@@ -192,8 +211,6 @@ public class CatalogSelectionDialog extends Dialog
 		}
 
 		catalogCombo.select(0);
-		GridData data = new GridData(GridData.FILL_HORIZONTAL);
-		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
 		catalogCombo.setLayoutData(data);
 
 		catalogCombo.addModifyListener(new ModifyListener()
@@ -206,9 +223,28 @@ public class CatalogSelectionDialog extends Dialog
 		});
 	}
 
+	protected void createResetCheckBox(Composite parent)
+	{
+		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		data.heightHint = 30;
+		data.verticalAlignment = GridData.VERTICAL_ALIGN_END;
+		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
+
+		resetToDefaultLayers = new Button(parent, SWT.CHECK);
+		resetToDefaultLayers.setSelection(false);
+		resetToDefaultLayers.setText(Messages.CatalogSelectionDialog_ResetLayers);
+		resetToDefaultLayers.setLayoutData(data);
+	}
+
 	@Override
 	protected void okPressed()
 	{
+		// Reset to default is checked
+		if (resetToDefaultLayers.getSelection())
+		{
+			worldWindModel.resetToDefaultLayers(eclipseContext);
+		}
+
 		// Obtain and load a catalog
 		String catalogUrl = null;
 		if (!"None".equals(catalogName))
@@ -237,10 +273,12 @@ public class CatalogSelectionDialog extends Dialog
 		logger.warn("showError - could not load selected catalog, reason: ", e);
 	}
 
-	public static void openDialog(IEclipseContext context)
+	public static void openDialog(IEclipseContext context, WorldWindModel worldWindModel)
 	{
 		Shell activeShell = Display.getDefault().getActiveShell();
-		CatalogSelectionDialog catalogSelectionDialog = new CatalogSelectionDialog(activeShell, context);
+		CatalogSelectionDialog catalogSelectionDialog =
+				new CatalogSelectionDialog(activeShell, context, worldWindModel);
 		catalogSelectionDialog.open();
 	}
+
 }
