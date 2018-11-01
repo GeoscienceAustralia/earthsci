@@ -26,6 +26,7 @@ public class Messages extends NLS
 	private static final String BUNDLE_NAME = "au.gov.ga.earthsci.application.catalog.messages"; //$NON-NLS-1$
 	public static String CatalogSelectionDialog_CatalogSelection;
 	public static String CatalogSelectionDialog_ChooseCatalog;
+	public static String CatalogSelectionDialog_ResetLayers;
 
 	static
 	{

@@ -108,7 +108,7 @@ public class IntentManager implements IIntentManager
 		{
 			if (executor == null)
 			{
-				executor = Executors.newFixedThreadPool(5, new ThreadFactory()
+				executor = Executors.newFixedThreadPool(10, new ThreadFactory()
 				{
 					private int count = 0;
 
