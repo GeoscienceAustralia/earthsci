@@ -18,7 +18,7 @@
 	<property name="unsigned.dir" value="${target.dir}/unsigned" />
 	<property name="webstart.dir" value="${target.dir}/webstart" />
 	<property name="repacked.dir" value="${webstart.dir}/repacked" />
-	<property name="selfsigned.dir" value="${webstart.dir}/selfsigned" />
+	<property name="selfsigned.dir" value="${webstart.dir}/signed" />
 	<property name="signscript.file" value="${webstart.dir}/sign.sh" />
 
 	<property name="jnlp.file" value="${webstart.dir}/webstart.jnlp" />
@@ -33,10 +33,11 @@
 	<property name="seed.src.file" value="${basedir}/seed.xml" />
 	<property name="seed.dst.file" value="${webstart.dir}/seed.xml" />
 
-	<property name="keystore_file" value="${basedir}/keystore" />
-	<property name="keystore_alias" value="selfsigned" />
-	<property name="keystore_password" value="password" />
-	<property name="key_password" value="password" />
+	<property environment="env"/>
+	<property name="keystore_file" value="${env.KEYSTORE_FILE}" />
+	<property name="keystore_alias" value="${env.KEYSTORE_ALIAS}" />
+	<property name="keystore_password" value="${env.KEYSTORE_PASSWORD}" />
+	<property name="key_password" value="${env.KEY_PASSWORD}" />
 
 	<property name="war.dir" value="${target.dir}/war" />
 	<property name="war.file" value="${war.dir}/earthsci.war" />
