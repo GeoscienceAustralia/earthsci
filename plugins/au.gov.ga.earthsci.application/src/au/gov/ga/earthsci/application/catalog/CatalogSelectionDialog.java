@@ -125,15 +125,23 @@ public class CatalogSelectionDialog extends Dialog
 		{
 			URI uri = null;
 
-			// Try a local file first, then a remote URL
+			// Try a local file first
 			File file = new File(catalogUrl);
 			if (file.isFile())
 			{
 				uri = file.toURI();
 			}
-			else
+			// Then try a direct remote URL
+			else if (catalogUrl.toLowerCase().startsWith("http://") || catalogUrl.toLowerCase().startsWith("https://"))
 			{
 				uri = new URI(catalogUrl);
+			}
+			// Then try a relative remote URL
+			else
+			{
+				URL relative = new URL(new URL(CATALOG_LIST_URL), catalogUrl);
+				uri = relative.toURI();
+				logger.info("Relative URI = {}", uri);
 			}
 
 			Intent intent = new Intent();
