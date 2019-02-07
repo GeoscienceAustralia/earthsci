@@ -4,7 +4,7 @@ Bundle-Name: GDAL natives for Windows x86
 Bundle-SymbolicName: org.gdal.win32.x86
 Bundle-Version: 1.7.2
 Bundle-Vendor: GDAL
-Bundle-NativeCode: gdalalljni32.dll; osname="win32"; processor="x86"
+Bundle-NativeCode: gdalalljni32.dll; osname="win32"; osname="Windows 10"; processor="x86"
 Fragment-Host: org.gdal;bundle-version="1.7.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-BundleShape: dir

@@ -10,7 +10,7 @@ Bundle-NativeCode: jogl_desktop.dll;
  nativewindow_win32.dll;
  newt.dll;
  gluegen-rt.dll;
- osname="win32"; processor="x86"
+ osname="win32"; osname="Windows 10"; processor="x86"
 Fragment-Host: com.jogamp.jogl;bundle-version="2.0.0"
 Eclipse-BundleShape: dir
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
