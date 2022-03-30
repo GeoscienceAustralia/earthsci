@@ -15,6 +15,8 @@
  ******************************************************************************/
 package au.gov.ga.earthsci.catalog;
 
+import java.util.ArrayList;
+
 import org.eclipse.e4.core.contexts.IEclipseContext;
 
 import au.gov.ga.earthsci.core.model.ModelStatus;
@@ -60,9 +62,33 @@ public class CatalogLayerHelper
 		{
 			FolderNode folder = createFolderNode(node);
 			parent.addChild(folder);
+
+			ArrayList<ILayerTreeNode> children = new ArrayList<ILayerTreeNode>();
 			for (ICatalogTreeNode child : node.getChildren())
 			{
-				insertIntoLayerModel(folder, child, context);
+				if (child.isLayerNode())
+				{
+
+					LayerNode layer = createLayerNode(child);
+					children.add(layer);
+					try
+					{
+						child.loadLayer(layer, context);
+					}
+					catch (Exception e)
+					{
+						layer.setStatus(ModelStatus.error(Messages.CatalogLayerHelper_LoadLayerError, e));
+					}
+				}
+				else
+				{
+					insertIntoLayerModel(folder, child, context);
+				}
+			}
+
+			if (children.size() > 0)
+			{
+				folder.addChildren(children);
 			}
 		}
 	}
