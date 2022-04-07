@@ -88,6 +88,7 @@ public class CatalogBrowserPart
 	private void initViewer(final Composite parent, final MPart part, final EMenuService menuService)
 	{
 		viewer = new ControlTreeViewer(parent, SWT.MULTI);
+		viewer.setUseHashlookup(true);
 		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(labelProvider, labelProvider, null));
 		viewer.setSorter(null);
 
