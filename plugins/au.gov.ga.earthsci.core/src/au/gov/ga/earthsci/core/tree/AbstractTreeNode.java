@@ -18,7 +18,6 @@ package au.gov.ga.earthsci.core.tree;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 
 import au.gov.ga.earthsci.common.util.AbstractTreePropertyChangeBean;
 
@@ -183,43 +182,6 @@ public abstract class AbstractTreeNode<E extends ITreeNode<E>> extends AbstractT
 		List<E> newChildren = new ArrayList<E>(children);
 		newChildren.add(index, child);
 		setChildren(newChildren);
-	}
-
-	public void addChildren(ArrayList<E> childs)
-	{
-		addChildren(-1, childs);
-	}
-
-	public void addChildren(int index, ArrayList<E> newChildren)
-	{
-		ListIterator<E> childIterator = newChildren.listIterator();
-		while (childIterator.hasNext())
-		{
-			E child = childIterator.next();
-
-			// Handle the edge case of a child node being added that already exists
-			// Note - the rest of the tree API expects child arrays to act as sets
-			if (child.getParent() == this)
-			{
-				moveChild(child, index);
-				childIterator.remove();
-				continue;
-			}
-
-			if (child.getParent() != null)
-			{
-				child.getParent().removeChild(child);
-			}
-		}
-
-		if (index < 0 || index > this.children.size())
-		{
-			index = this.children.size();
-		}
-
-		List<E> children = new ArrayList<E>(this.children);
-		children.addAll(index, newChildren);
-		setChildren(children);
 	}
 
 	@Override
