@@ -493,7 +493,7 @@ public class LayerTreePart
 
 	private void addExpandedChildrenToList(ILayerTreeNode parent, List<ILayerTreeNode> list)
 	{
-		if (parent.isExpanded())
+		if (parent.isExpanded() && parent.hasChildren())
 		{
 			list.add(parent);
 		}
