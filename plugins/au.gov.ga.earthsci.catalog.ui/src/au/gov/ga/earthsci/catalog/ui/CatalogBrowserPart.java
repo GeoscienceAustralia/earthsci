@@ -200,10 +200,6 @@ public class CatalogBrowserPart
 		}
 		StructuredSelection selection = new StructuredSelection(nodes);
 		viewer.setSelection(selection, true);
-		for (ICatalogTreeNode node : nodes)
-		{
-			viewer.expandToLevel(node, 1);
-		}
 	}
 
 	@Inject
