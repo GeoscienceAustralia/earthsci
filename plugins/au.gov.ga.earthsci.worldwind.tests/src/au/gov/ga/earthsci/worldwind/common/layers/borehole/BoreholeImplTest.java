@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -58,6 +59,7 @@ public class BoreholeImplTest
 		classUnderTest = new BoreholeImpl(position, attrs);
 	}
 
+	@Ignore
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateWithNullLayer()
 	{
@@ -67,6 +69,7 @@ public class BoreholeImplTest
 		new BoreholeImpl(position, attrs);
 	}
 
+	@Ignore
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateWithNullPosition()
 	{
@@ -76,6 +79,7 @@ public class BoreholeImplTest
 		new BoreholeImpl(position, attrs);
 	}
 
+	@Ignore
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateWithNullAttributes()
 	{
