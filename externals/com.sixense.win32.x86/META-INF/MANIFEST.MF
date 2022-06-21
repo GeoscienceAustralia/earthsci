@@ -6,7 +6,7 @@ Bundle-Version: 0.0.1
 Bundle-NativeCode: sixense_utils.dll;
  sixense.dll;
  SixenseJava.dll;
- osname="win32"; processor="x86"
+ osname="win32"; osname="Windows 10"; processor="x86"
 Fragment-Host: com.sixense;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=x86))

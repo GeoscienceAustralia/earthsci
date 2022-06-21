@@ -160,6 +160,7 @@ public class LayerTreePart
 	protected void createStructureViewer(Composite parent, EMenuService menuService, CTabItem tabItem)
 	{
 		structureViewer = new CheckboxTreeViewer(parent, SWT.MULTI);
+		structureViewer.setUseHashlookup(true);
 		tabItem.setControl(structureViewer.getControl());
 		structureViewer.getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
 		context.set(TreeViewer.class, structureViewer);
@@ -392,6 +393,7 @@ public class LayerTreePart
 	protected void createOrderViewer(Composite parent, EMenuService menuService, CTabItem tabItem)
 	{
 		orderViewer = new TreeViewer(parent, SWT.MULTI);
+		orderViewer.setUseHashlookup(true);
 		tabItem.setControl(orderViewer.getControl());
 		orderViewer.getTree().setBackgroundImage(ImageRegistry.getInstance().get(ImageRegistry.ICON_TRANSPARENT));
 		orderViewer.setAutoExpandLevel(2);
@@ -491,7 +493,7 @@ public class LayerTreePart
 
 	private void addExpandedChildrenToList(ILayerTreeNode parent, List<ILayerTreeNode> list)
 	{
-		if (parent.isExpanded())
+		if (parent.isExpanded() && parent.hasChildren())
 		{
 			list.add(parent);
 		}

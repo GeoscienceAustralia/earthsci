@@ -72,8 +72,25 @@ public class CatalogBrowserController implements ICatalogBrowserController
 		boolean fullNodePathRequiredOnAdd = isFullNodePathRequiredOnAdd();
 		for (ICatalogTreeNode node : nodes)
 		{
-			ILayerTreeNode parent = fullNodePathRequiredOnAdd ? createNodePath(node) : currentLayerModel.getRootNode();
-			CatalogLayerHelper.insertIntoLayerModel(parent, node, context);
+			//If the node is not a layer load then try loading all of the children it has
+			if (!node.isLayerNode())
+			{
+				if (node.getChildCount() > 0)
+				{
+					addToLayerModel(node.getChildren().toArray(new ICatalogTreeNode[node.getChildCount()]));
+				}
+			}
+			else
+			{
+				ILayerTreeNode parent =
+						fullNodePathRequiredOnAdd ? createNodePath(node) : currentLayerModel.getRootNode();
+				CatalogLayerHelper.insertIntoLayerModel(parent, node, context);
+				if (node == nodes[nodes.length - 1])
+				{
+					parent.updateLayers();
+				}
+
+			}
 		}
 	}
 

@@ -1,7 +1,6 @@
 ## Geoscience Australia ##
 
-<img src="https://github.com/GeoscienceAustralia/earthsci/wiki/images/earthsci-logo.png"/>
-
+![EarthSci Logo](https://github.com/GeoscienceAustralia/earthsci/wiki/images/earthsci-logo.png)
 
 `EarthSci` is an Eclipse RCP platform for creating applications for the visualisation of earth science data. It is an evolution of the existing [GA World Wind Suite](https://github.com/ga-m3dv/ga-worldwind-suite) built on the [NASA World Wind Java SDK](http://worldwind.arc.nasa.gov/java/).
 
@@ -17,12 +16,14 @@ The vision for `EarthSci` is to take the best features of the [GA World Wind Sui
 * <a href="#contribute">How to contribute</a>
 * <a href="#projectStructure">Project structure</a>
 * <a href="#pluginsFeatures">Plugins and features</a>
+* <a href="#deployingToAWS">Deploying to AWS</a>
 * <a href="#license">License</a>
 * <a href="#contact">Contact</a>
 
-<img src="https://github.com/GeoscienceAustralia/earthsci/wiki/images/screenshots/3dmodels.jpg"/>
+![EarthSci Screenshot](https://github.com/GeoscienceAustralia/earthsci/wiki/images/screenshots/3dmodels.jpg)
 
 <a name="basics"/>
+
 ## Project basics ##
 
 The `EarthSci` project is built on the [Eclipse 4 RCP platform](http://www.eclipse.org/eclipse4/). 
@@ -36,6 +37,7 @@ The project uses [Maven 3.0+](http://maven.apache.org) and [Tycho](http://eclips
 For information on getting up and running with the project, see the [Developer's guide](https://github.com/GeoscienceAustralia/earthsci/wiki/Developer%27s-guide).
 
 <a name="reportBugs"/>
+
 ## Reporting bugs and requesting features ##
 
 Our goal is to make `EarthSci` a solid platform for developing earth science visualisation applications. 
@@ -48,6 +50,7 @@ you raise a ticket to make sure you aren't duplicating an existing issue. For a 
 see Allan McRae's blog post ["How to file a bug report"](http://allanmcrae.com/2011/05/how-to-file-a-bug-report/).
 
 <a name="contribute"/>
+
 ## How to contribute ##
 
 We welcome all contributions to the project, no matter how large or small.
@@ -72,6 +75,7 @@ Some ideas for how to contribute:
 * Translate some of the message bundles to make the platform accessible to a wider audience
 
 <a name="projectStructure"/>
+
 ## Project Structure ##
 
 The overall project structure is as follows:
@@ -84,78 +88,93 @@ The overall project structure is as follows:
     |- webstart\			Contains a utility project used to generate webstart JNLP definitions for
     |- verifier\			Contains a utility project that checks the configuration of plugins and features and fails the build if it detects mis-configured projects etc. 
 
+<a name="deployingToAWS"/>
+### Deploying To AWS ###
+
+#### 1. Building ####
+
+Before starting the build, we need to adjust the `Codebase` variable in the following 2 files:
+- plugins\au.gov.ga.application\META-INF\MANIFEST.MF
+- webstart\webstart.jnlp.template
+
+For **test** use `http://test.earthsci.ga.gov.au` or `http://earthsci.ga.gov.au` for the **production** environment.
+
+We also need to set JAVA_HOME to Java 8. I've tested successfully with jdk1.8.0_45 but it might work with other builds as well.
+
+Finally, to build the entire product suite, simply navigate to the root folder and run one of following scripts:
+- **build.bat:** Will generate all the plugins and the executables for different OS
+- **build-webstart.bat:** Will run the above process and also sign the jar files and generate the webstart.jnlp for deployment to S3   
+
+The **build-webstart.bat** requires that the following arguments be provided for the jar files to be signed with GA's certificate store, otherwise the jars will be signed with a self-signed certificate (okay for test).
+See sample command below:
+
+`build-webstart.bat <keystore_file> <keystore_alias> <keystore_password> <key_password>`
+
+**Note** The keystore details and passwords are in the team's passwords file.
+
+#### 2. Pushing to S3
+
+Once the build is complete, go to the terminal and navigate to ${PROJECT_HOME}\webstart\target\webstart.
+From there execute the following two commands:
+- `aws s3 cp webstart.jnlp s3://earthsci.ga.gov.au/`
+- `aws s3 sync signed/ s3://earthsci.ga.gov.au/signed/ --delete`
+
+**Note** the above URL will vary according to the environment we are deployment to.
+
 <a name="pluginsFeatures"/>
+
 ### Plugins and Features ###
 
 The project follows the Eclipse application pattern, and is composed of a number of plugins (or bundles) and features (groups of plugins that are related).
 
-<table>
-	<thead><tr><td><b>Plugin</b></td><td><b>Description</b></td></tr></thead>
-	<tbody>
-		<tr><td>au.gov.ga.earthsci.core</td><td>The core, non-UI components of the EarthSci platform</td></tr>
-		<tr><td>au.gov.ga.earthsci.core.tests</td><td>Tests for the core plugin</td></tr>
-		
-		<tr><td>au.gov.ga.earthsci.application</td><td>The core UI components of the EarthSci platform</td></tr>
-		<tr><td>au.gov.ga.earthsci.application.tests</td><td>Tests for the application UI plugin</td></tr>
-		
-		<tr><td>au.gov.ga.earthsci.common</td><td>Shared, reusable non-UI components</td></tr>
-		<tr><td>au.gov.ga.earthsci.common.tests</td><td>Tests for the common components</td></tr>
-		<tr><td>au.gov.ga.earthsci.common.ui</td><td>Shared, reusable UI components</td></tr>
+Plugin|Description
+------|-----------
+au.gov.ga.earthsci.core|The core, non-UI components of the EarthSci platform
+au.gov.ga.earthsci.core.tests|Tests for the core plugin
+au.gov.ga.earthsci.application|The core UI components of the EarthSci platform
+au.gov.ga.earthsci.application.tests|Tests for the application UI plugin
+au.gov.ga.earthsci.common|Shared, reusable non-UI components
+au.gov.ga.earthsci.common.tests|Tests for the common components
+au.gov.ga.earthsci.common.ui|Shared, reusable UI components
+au.gov.ga.earthsci.eclipse.extras|A copy of some internal Eclipse RCP components for use in the application
+au.gov.ga.earthsci.jface.extras|A copy of some internal JFace components for use in the application
+org.eclipse.ui.workbench.compatibility|Some adapters for working with the Workbench in an e4 application
+au.gov.ga.earthsci.injectable|Provides a mechanism for having arbitrary objects participate in the DI mechanism
+au.gov.ga.earthsci.intent|The Intent API
+au.gov.ga.earthsci.logging|Provides configuration to enable [SLF4J](http://www.slf4j.org/) logging
+au.gov.ga.earthsci.catalog|The core Catalog API
+au.gov.ga.earthsci.catalog.tests|Tests for the core Catalog API
+au.gov.ga.earthsci.catalog.ui|The basic UI components for the Catalog API
+au.gov.ga.earthsci.catalog.ui.tests|Tests for the Catalog API UI components
+au.gov.ga.earthsci.catalog.dataset|A catalog implementation that reads legacy dataset.xml files
+au.gov.ga.earthsci.catalog.directory|A catalog implementation that reads from a local file system
+au.gov.ga.earthsci.catalog.wms|A catalog implementation that reads from [OGC WMS](http://www.opengeospatial.org/standards/wms) services
+au.gov.ga.earthsci.layer.ui|Basic UI components for interacting with the Layer API
+au.gov.ga.earthsci.layer.ui.tests|Tests for the Layer UI components
+au.gov.ga.earthsci.bookmark|The core Bookmark API
+au.gov.ga.earthsci.bookmark.tests|Tests for the core Bookmark API
+au.gov.ga.earthsci.bookmark.ui|The basic UI components for the Bookmark API
+au.gov.ga.earthsci.bookmark.ui.tests|Tests for Bookmark API UI components
+au.gov.ga.earthsci.notification|The core Notification API
+au.gov.ga.earthsci.notification.tests|Tests for the core Notification API
+au.gov.ga.earthsci.notification.ui|The basic UI components for the Notification mechanism
+au.gov.ga.earthsci.notification.popup|A plugin that provides a popup notification receiver
+au.gov.ga.earthsci.model|The core 3D Model API
+au.gov.ga.earthsci.model.tests|Tests for the core 3D Model API
+au.gov.ga.earthsci.model.core|Basic implementations for the 3D Model API
+au.gov.ga.earthsci.model.core.tests|Tests for the basic 3D Model API implementations
+au.gov.ga.earthsci.model.ui|Basic UI components for the 3D Model API
+au.gov.ga.earthsci.worldwind|Extensions and utilities for the NASA WorldWind SDK, used to provided additional layer types etc.
+au.gov.ga.earthsci.worldwind.tests|Tests for the au.gov.ga.earthsci.worldwind plugin
 
-		<tr><td>au.gov.ga.earthsci.eclipse.extras</td><td>A copy of some internal Eclipse RCP components for use in the application</td></tr>
-		<tr><td>au.gov.ga.earthsci.jface.extras</td><td>A copy of some internal JFace components for use in the application</td></tr>
-		<tr><td>org.eclipse.ui.workbench.compatibility</td><td>Some adapters for working with the Workbench in an e4 application</td></tr>
-
-		<tr><td>au.gov.ga.earthsci.injectable</td><td>Provides a mechanism for having arbitrary objects participate in the DI mechanism</td></tr>
-
-		<tr><td>au.gov.ga.earthsci.intent</td><td>The Intent API</td></tr>
-
-		<tr><td>au.gov.ga.earthsci.logging</td><td>Provides configuration to enable <a href="http://www.slf4j.org/">SLF4J</a> logging</td></tr>
-
-		<tr><td>au.gov.ga.earthsci.catalog</td><td>The core Catalog API</td></tr>
-		<tr><td>au.gov.ga.earthsci.catalog.tests</td><td>Tests for the core Catalog API</td></tr>
-		<tr><td>au.gov.ga.earthsci.catalog.ui</td><td>The basic UI components for the Catalog API</td></tr>
-		<tr><td>au.gov.ga.earthsci.catalog.ui.tests</td><td>Tests for the Catalog API UI components</td></tr>
-		<tr><td>au.gov.ga.earthsci.catalog.dataset</td><td>A catalog implementation that reads legacy dataset.xml files</td></tr>
-		<tr><td>au.gov.ga.earthsci.catalog.directory</td><td>A catalog implementation that reads from a local file system</td></tr>
-		<tr><td>au.gov.ga.earthsci.catalog.wms</td><td>A catalog implementation that reads from <a href="http://www.opengeospatial.org/standards/wms">OGC WMS</a> services</td></tr>
-
-		<tr><td>au.gov.ga.earthsci.layer.ui</td><td>Basic UI components for interacting with the Layer API</td></tr>
-		<tr><td>au.gov.ga.earthsci.layer.ui.tests</td><td>Tests for the Layer UI components</td></tr>
-
-		<tr><td>au.gov.ga.earthsci.bookmark</td><td>The core Bookmark API</td></tr>
-		<tr><td>au.gov.ga.earthsci.bookmark.tests</td><td>Tests for the core Bookmark API</td></tr>
-		<tr><td>au.gov.ga.earthsci.bookmark.ui</td><td>The basic UI components for the Bookmark API</td></tr>
-		<tr><td>au.gov.ga.earthsci.bookmark.ui.tests</td><td>Tests for Bookmark API UI components</td></tr>
-
-		<tr><td>au.gov.ga.earthsci.notification</td><td>The core Notification API</td></tr>
-		<tr><td>au.gov.ga.earthsci.notification.tests</td><td>Tests for the core Notification API</td></tr>
-		<tr><td>au.gov.ga.earthsci.notification.ui</td><td>The basic UI components for the Notification mechanism</td></tr>
-		<tr><td>au.gov.ga.earthsci.notification.popup</td><td>A plugin that provides a popup notification receiver</td></tr>
-		
-		<tr><td>au.gov.ga.earthsci.model</td><td>The core 3D Model API</td></tr>
-		<tr><td>au.gov.ga.earthsci.model.tests</td><td>Tests for the core 3D Model API</td></tr>
-		<tr><td>au.gov.ga.earthsci.model.core</td><td>Basic implementations for the 3D Model API</td></tr>
-		<tr><td>au.gov.ga.earthsci.model.core.tests</td><td>Tests for the basic 3D Model API implementations</td></tr>
-		<tr><td>au.gov.ga.earthsci.model.ui</td><td>Basic UI components for the 3D Model API</td></tr>
-
-		<tr><td>au.gov.ga.earthsci.worldwind</td><td>Extensions and utilities for the NASA WorldWind SDK, used to provided additional layer types etc.</td></tr>
-		<tr><td>au.gov.ga.earthsci.worldwind.tests</td><td>Tests for the au.gov.ga.earthsci.worldwind plugin</td></tr>
-	</tbody>
-</table>
-
-<br/>
-
-<table>
-	<thead><tr><td><b>Feature</b></td><td><b>Description</b></td></tr></thead>
-	<tbody>
-		<tr><td>au.gov.ga.earthsci.feature</td><td>The core feature of the EarthSci platform</td></tr>
-		<tr><td>au.gov.ga.earthsci.product</td><td>The product feature of the EarthSci platform</td></tr>
-		<tr><td>org.eclipse.rcp.minimal</td><td>A cut-down Eclipse RCP feature that removes unneeded plugins</td></tr>
-	</tbody>
-</table>
+Feature|Description
+-------|-----------
+au.gov.ga.earthsci.feature|The core feature of the EarthSci platform
+au.gov.ga.earthsci.product|The product feature of the EarthSci platform
+org.eclipse.rcp.minimal|A cut-down Eclipse RCP feature that removes unneeded plugins
 
 <a name="license"/>
+
 ## License ##
 The `EarthSci` project is released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html) and is distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
@@ -164,5 +183,6 @@ See the License for the specific language governing permissions and limitations 
 The project uses third party components which may have different licenses. Please refer to individual components for more details. 
 
 <a name="contact"/>
+
 ## Contact ##
 For more information on the `EarthSci` project, please email *m3dv:at:ga.gov.au*.

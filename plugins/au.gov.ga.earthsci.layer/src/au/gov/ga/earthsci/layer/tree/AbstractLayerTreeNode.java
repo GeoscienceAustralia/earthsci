@@ -443,7 +443,12 @@ public abstract class AbstractLayerTreeNode extends AbstractTreeNode<ILayerTreeN
 	{
 		//TODO should we implement a (more efficient?) modification of these collections according to changed children?
 		//update the collections if they exist
-		updateLayers();
+
+		//If the user is deleting loaded data then update the layers. Don't do it otherwise (eg. while adding) as it can cause severe performance issues
+		if (oldChildren.size() > newChildren.size())
+		{
+			updateLayers();
+		}
 		updateElevationModels();
 		updateCatalogURIMap();
 

@@ -79,7 +79,7 @@ import au.gov.ga.earthsci.worldwind.common.util.MapBackedNamespaceContext;
  */
 public class RSSEarthquakesLayer extends RenderableLayer implements Loader, SelectListener
 {
-	private static final String RSS_URL = "http://www.ga.gov.au/earthquakes/all_recent.rss";
+	private static final String RSS_URL = "https://earthquakes.ga.gov.au/feeds/all_recent_unformatted.rss";
 
 	private static final int UPDATE_TIME = 10 * 60 * 1000; //10 minutes
 	private static final long ONE_DAY = 24 * 60 * 60 * 1000; //1 day
@@ -89,7 +89,7 @@ public class RSSEarthquakesLayer extends RenderableLayer implements Loader, Sele
 	private Timer updateTimer;
 	private SurfaceEarthquakeAnnotation mouseEq, latestEq;
 	private GlobeAnnotation tooltipAnnotation;
-	private List<LoadingListener> loadingListeners = new ArrayList<LoadingListener>();
+	private LoadingListenerList loadingListeners = new LoadingListenerList();
 	private boolean loading;
 
 	public RSSEarthquakesLayer()
@@ -576,11 +576,7 @@ public class RSSEarthquakesLayer extends RenderableLayer implements Loader, Sele
 
 	protected void fireLoadingStateChanged()
 	{
-		for (int i = loadingListeners.size() - 1; i >= 0; i--)
-		{
-			LoadingListener listener = loadingListeners.get(i);
-			listener.loadingStateChanged(this, isLoading());
-		}
+		loadingListeners.notifyListeners(this, isLoading());
 	}
 
 	protected void setLoading(boolean loading)

@@ -7,14 +7,24 @@ Bundle-Activator: au.gov.ga.earthsci.application.Activator
 Bundle-Vendor: %plugin.vendor
 Bundle-Localization: OSGI-INF/l10n/bundle
 Export-Package: au.gov.ga.earthsci.application,
+ au.gov.ga.earthsci.application.about,
+ au.gov.ga.earthsci.application.catalog,
  au.gov.ga.earthsci.application.compatibility,
  au.gov.ga.earthsci.application.console,
  au.gov.ga.earthsci.application.handlers,
+ au.gov.ga.earthsci.application.intent,
  au.gov.ga.earthsci.application.parts,
+ au.gov.ga.earthsci.application.parts.browser,
+ au.gov.ga.earthsci.application.parts.browser.handlers,
+ au.gov.ga.earthsci.application.parts.exaggeration,
  au.gov.ga.earthsci.application.parts.globe,
  au.gov.ga.earthsci.application.parts.globe.handlers,
  au.gov.ga.earthsci.application.parts.info,
+ au.gov.ga.earthsci.application.parts.info.handlers,
  au.gov.ga.earthsci.application.parts.legend,
+ au.gov.ga.earthsci.application.parts.progress,
+ au.gov.ga.earthsci.application.parts.retrieve,
+ au.gov.ga.earthsci.application.theme,
  au.gov.ga.earthsci.application.tree,
  au.gov.ga.earthsci.application.util,
  au.gov.ga.earthsci.application.widgets,
@@ -54,7 +64,7 @@ Require-Bundle: javax.inject;bundle-version="1.0.0",
  org.eclipse.equinox.launcher;bundle-version="1.3.0",
  org.eclipse.osgi.services;bundle-version="3.3.100",
  javax.inject;bundle-version="1.0.0",
- org.eclipse.core.databinding;bundle-version="1.4.1",
+ org.eclipse.core.databinding;bundle-version="1.5.0",
  org.eclipse.jface.databinding;bundle-version="1.6.0",
  org.eclipse.e4.ui.services;bundle-version="0.10.1",
  org.eclipse.e4.ui.workbench;bundle-version="0.10.2",
@@ -85,11 +95,12 @@ Require-Bundle: javax.inject;bundle-version="1.0.0",
  au.gov.ga.earthsci.seeder,
  au.gov.ga.earthsci.layer,
  org.eclipse.e4.ui.di
-Import-Package: javax.annotation;version="1.1.0",
+Import-Package: au.gov.ga.earthsci.catalog.dataset,
+ javax.annotation;version="1.1.0",
  org.osgi.framework;version="1.3.0"
 Eclipse-BundleShape: dir
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Permissions: all-permissions
 Application-Name: EarthSci
-
+Codebase: http://earthsci.ga.gov.au/

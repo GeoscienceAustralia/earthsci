@@ -45,6 +45,7 @@ public class AddHandler
 	@CanExecute
 	public boolean canExecute(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) ICatalogTreeNode[] selectedNodes)
 	{
-		return selectedNodes != null && selectedNodes.length > 0 && controller.areAllLayerNodes(selectedNodes);
+		//I've removed the layer node check as a user wants to be able to add every child node with one click
+		return selectedNodes != null && selectedNodes.length > 0; // && controller.areAllLayerNodes(selectedNodes);
 	}
 }

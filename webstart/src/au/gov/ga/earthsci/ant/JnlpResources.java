@@ -35,13 +35,19 @@ import org.apache.tools.ant.types.FileSet;
  */
 public class JnlpResources extends Task
 {
-	private String property;
+	private String property1;
+	private String property2;
 	private String basedir;
 	private Vector<FileSet> filesets = new Vector<FileSet>();
 
-	public void setProperty(String property)
+	public void setProperty1(String property1)
 	{
-		this.property = property;
+		this.property1 = property1;
+	}
+	
+	public void setProperty2(String property2)
+	{
+		this.property2 = property2;
 	}
 
 	public void setBasedir(String basedir)
@@ -77,6 +83,9 @@ public class JnlpResources extends Task
 					{
 						resources.putSingle(osArch, relative.getPath().replace('\\', '/'));
 					}
+					if (filename.startsWith("au.gov.ga.earthsci.application")) {
+						getProject().setNewProperty(property2, filename);
+					}
 				}
 				catch (IOException e)
 				{
@@ -94,7 +103,7 @@ public class JnlpResources extends Task
 			appendResources(sb, entry.getKey(), entry.getValue());
 		}
 
-		getProject().setNewProperty(property, sb.toString());
+		getProject().setNewProperty(property1, sb.toString());
 	}
 
 	private void appendResources(StringBuilder sb, String osArch, List<String> filenames)
