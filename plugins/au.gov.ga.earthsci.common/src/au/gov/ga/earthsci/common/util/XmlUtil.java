@@ -130,7 +130,7 @@ public class XmlUtil
 		int count = 0;
 		for (int i = 0; i < children.getLength(); i++)
 		{
-			Node node = children.item(i);
+			Node node = children.item(i).cloneNode(true);
 			if (nodeType.isAssignableFrom(node.getClass()))
 			{
 				if (count++ == index)
@@ -167,7 +167,7 @@ public class XmlUtil
 		int count = 0;
 		for (int i = 0; i < children.getLength(); i++)
 		{
-			Node node = children.item(i);
+			Node node = children.item(i).cloneNode(false);
 			if (nodeType.isAssignableFrom(node.getClass()))
 			{
 				count++;
@@ -177,7 +177,7 @@ public class XmlUtil
 		N[] array = (N[]) Array.newInstance(nodeType, count);
 		for (int i = 0, pos = 0; i < children.getLength(); i++)
 		{
-			Node node = children.item(i);
+			Node node = children.item(i).cloneNode(true);
 			if (nodeType.isAssignableFrom(node.getClass()))
 			{
 				@SuppressWarnings("unchecked")
@@ -212,7 +212,7 @@ public class XmlUtil
 		int count = 0;
 		for (int i = 0; i < children.getLength(); i++)
 		{
-			Node node = children.item(i);
+			Node node = children.item(i).cloneNode(false);
 			if (node instanceof Element)
 			{
 				Element e = (Element) node;
@@ -251,7 +251,7 @@ public class XmlUtil
 		int count = 0;
 		for (int i = 0; i < children.getLength(); i++)
 		{
-			Node node = children.item(i);
+			Node node = children.item(i).cloneNode(true);
 			if (node instanceof Element)
 			{
 				Element e = (Element) node;
@@ -284,7 +284,7 @@ public class XmlUtil
 			{
 				for (int i = 0; i < children.getLength(); i++)
 				{
-					Node node = children.item(i);
+					Node node = children.item(i).cloneNode(true);
 					if (node instanceof Element)
 					{
 						Element e = (Element) node;
