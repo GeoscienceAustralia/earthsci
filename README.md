@@ -72,13 +72,13 @@ Some ideas for how to contribute:
 
 The overall project structure is as follows:
 
-    -- pom.xml				The master POM file. Will build all plugins, features and products.
-    |- parent-pom.xml		A common parent POM that should be referenced by all plugin POMs.
-    |- externals\			Contains all included third-party plugins (e.g. NASA World Wind)
-    |- plugins\				Contains all plugin projects developed as part of the platform. This includes test plugins.
-    |- features\			Contains all feature projects developed as part of the platform. This includes product features.
-    |- webstart\			Contains a utility project used to generate webstart JNLP definitions for
-    |- verifier\			Contains a utility project that checks the configuration of plugins and features and fails the build if it detects mis-configured projects etc.
+    -- pom.xml          The master POM file. Will build all plugins, features and products.
+    |- parent-pom.xml   A common parent POM that should be referenced by all plugin POMs.
+    |- externals\       Contains all included third-party plugins (e.g. NASA World Wind)
+    |- plugins\         Contains all plugin projects developed as part of the platform. This includes test plugins.
+    |- features\        Contains all feature projects developed as part of the platform. This includes product features.
+    |- webstart\        Contains a utility project used to generate webstart JNLP definitions for
+    |- verifier\        Contains a utility project that checks the configuration of plugins and features and fails the build if it detects mis-configured projects etc.
 
 ### Plugins and Features ###
 
