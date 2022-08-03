@@ -78,39 +78,7 @@ The overall project structure is as follows:
     |- plugins\				Contains all plugin projects developed as part of the platform. This includes test plugins.
     |- features\			Contains all feature projects developed as part of the platform. This includes product features.
     |- webstart\			Contains a utility project used to generate webstart JNLP definitions for
-    |- verifier\			Contains a utility project that checks the configuration of plugins and features and fails the build if it detects mis-configured projects etc. 
-
-### Deploying To AWS ###
-
-#### 1. Building ####
-
-Before starting the build, we need to adjust the `Codebase` variable in the following 2 files:
-- plugins\au.gov.ga.application\META-INF\MANIFEST.MF
-- webstart\webstart.jnlp.template
-
-For **test** use `http://test.earthsci.ga.gov.au` or `http://earthsci.ga.gov.au` for the **production** environment.
-
-We also need to set JAVA_HOME to Java 8. I've tested successfully with jdk1.8.0_45 but it might work with other builds as well.
-
-Finally, to build the entire product suite, simply navigate to the root folder and run one of following scripts:
-- **build.bat:** Will generate all the plugins and the executables for different OS
-- **build-webstart.bat:** Will run the above process and also sign the jar files and generate the webstart.jnlp for deployment to S3   
-
-The **build-webstart.bat** requires that the following arguments be provided for the jar files to be signed with GA's certificate store, otherwise the jars will be signed with a self-signed certificate (okay for test).
-See sample command below:
-
-`build-webstart.bat <keystore_file> <keystore_alias> <keystore_password> <key_password>`
-
-**Note** The keystore details and passwords are in the team's passwords file.
-
-#### 2. Pushing to S3
-
-Once the build is complete, go to the terminal and navigate to ${PROJECT_HOME}\webstart\target\webstart.
-From there execute the following two commands:
-- `aws s3 cp webstart.jnlp s3://earthsci.ga.gov.au/`
-- `aws s3 sync signed/ s3://earthsci.ga.gov.au/signed/ --delete`
-
-**Note** the above URL will vary according to the environment we are deployment to.
+    |- verifier\			Contains a utility project that checks the configuration of plugins and features and fails the build if it detects mis-configured projects etc.
 
 ### Plugins and Features ###
 
