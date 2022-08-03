@@ -22,8 +22,6 @@ The vision for `EarthSci` is to take the best features of the [GA World Wind Sui
 
 ![EarthSci Screenshot](https://github.com/GeoscienceAustralia/earthsci/wiki/images/screenshots/3dmodels.jpg)
 
-<a name="basics"/>
-
 ## Project basics ##
 
 The `EarthSci` project is built on the [Eclipse 4 RCP platform](http://www.eclipse.org/eclipse4/). 
@@ -36,8 +34,6 @@ The project uses [Maven 3.0+](http://maven.apache.org) and [Tycho](http://eclips
 
 For information on getting up and running with the project, see the [Developer's guide](https://github.com/GeoscienceAustralia/earthsci/wiki/Developer%27s-guide).
 
-<a name="reportBugs"/>
-
 ## Reporting bugs and requesting features ##
 
 Our goal is to make `EarthSci` a solid platform for developing earth science visualisation applications. 
@@ -48,8 +44,6 @@ Better yet, implement the changes yourself and then open a [pull request](http:/
 Please note that your bug/issue/feature may already be registered in the issue tracker. Please take a quick look before
 you raise a ticket to make sure you aren't duplicating an existing issue. For a good guide on writing effective issue reports,
 see Allan McRae's blog post ["How to file a bug report"](http://allanmcrae.com/2011/05/how-to-file-a-bug-report/).
-
-<a name="contribute"/>
 
 ## How to contribute ##
 
@@ -74,8 +68,6 @@ Some ideas for how to contribute:
 * Help create technical documentation and developer guides to make it easier for future developers to get involved.
 * Translate some of the message bundles to make the platform accessible to a wider audience
 
-<a name="projectStructure"/>
-
 ## Project Structure ##
 
 The overall project structure is as follows:
@@ -88,7 +80,6 @@ The overall project structure is as follows:
     |- webstart\			Contains a utility project used to generate webstart JNLP definitions for
     |- verifier\			Contains a utility project that checks the configuration of plugins and features and fails the build if it detects mis-configured projects etc. 
 
-<a name="deployingToAWS"/>
 ### Deploying To AWS ###
 
 #### 1. Building ####
@@ -120,8 +111,6 @@ From there execute the following two commands:
 - `aws s3 sync signed/ s3://earthsci.ga.gov.au/signed/ --delete`
 
 **Note** the above URL will vary according to the environment we are deployment to.
-
-<a name="pluginsFeatures"/>
 
 ### Plugins and Features ###
 
@@ -173,16 +162,12 @@ au.gov.ga.earthsci.feature|The core feature of the EarthSci platform
 au.gov.ga.earthsci.product|The product feature of the EarthSci platform
 org.eclipse.rcp.minimal|A cut-down Eclipse RCP feature that removes unneeded plugins
 
-<a name="license"/>
-
 ## License ##
 The `EarthSci` project is released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html) and is distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 See the License for the specific language governing permissions and limitations under the License.
 
 The project uses third party components which may have different licenses. Please refer to individual components for more details. 
-
-<a name="contact"/>
 
 ## Contact ##
 For more information on the `EarthSci` project, please email *m3dv:at:ga.gov.au*.
